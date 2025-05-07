@@ -1,12 +1,14 @@
 import React from "react";
-import Test from "@/components/modal/Modal";
-import { SidebarTest } from "@/components/sidebar/SideBar";
-export default function TestPage() {
+
+import Workspace from "@/components/appserver/Workspace";
+import { getWorkspace } from "@/service/test.service";
+export default async function TestPage() {
+  const data = await getWorkspace();
+  console.log(data);
+
   return (
     <div>
-      <Test />
-      <p className="text-5xl text-green-500">a</p>
-      <SidebarTest />
+      <Workspace data={data} />
     </div>
   );
 }

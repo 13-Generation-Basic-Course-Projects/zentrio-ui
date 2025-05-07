@@ -2,12 +2,12 @@ const {heroui} = require('@heroui/theme');
 /** @type {import('tailwindcss').Config} */
 module.exports = {
     darkMode: ["class"],
-    content: [
+  content: [
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
-    "// Or if using `src` directory:\n    \"./src/**/*.{js,ts,jsx,tsx,mdx}\"",
-    "./node_modules/@heroui/theme/dist/components/modal.js"
+    "// Or if using `src` directory:\\n    \\\"./src/**/*.{js,ts,jsx,tsx,mdx}\\\"",
+    "./node_modules/@heroui/theme/dist/components/(card|modal|ripple).js"
   ],
   theme: {
   	extend: {

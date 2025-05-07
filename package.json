@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@heroui/card": "^2.2.18",
     "@heroui/modal": "^2.2.16",
     "@heroui/react": "^2.7.8",
     "@heroui/system": "^2.4.15",
