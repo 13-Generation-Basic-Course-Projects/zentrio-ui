@@ -6,9 +6,5 @@ export default async function TestPage() {
   const data = await getWorkspace();
   console.log(data);
 
-  return (
-    <div>
-      <Workspace data={data} />
-    </div>
-  );
+  return <Workspace data={data} />;
 }

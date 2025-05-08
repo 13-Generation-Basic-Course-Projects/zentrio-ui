@@ -1,6 +1,6 @@
 "use client";
 import { Calendar, Home, Inbox, Search, Settings } from "lucide-react";
-
+import LoginForm from "@/app/(auth)/_components/LoginForm";
 import {
   Sidebar,
   SidebarContent,
@@ -15,15 +15,16 @@ import {
 // Menu items.
 const items = [
   {
-    title: "Home",
-    url: "#",
-    icon: Home,
-  },
-  {
-    title: "Inbox",
-    url: "#",
+    title: "Test",
+    url: "/test",
     icon: Inbox,
   },
+  {
+    title: "Home",
+    url: "/",
+    icon: Home,
+  },
+
   {
     title: "Calendar",
     url: "#",
