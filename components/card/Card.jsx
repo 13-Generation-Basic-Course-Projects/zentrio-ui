@@ -47,11 +47,11 @@ export function CardSimple({ item }) {
     <Card>
       <CardBody>
         <p>
-          {`owner: ${item?.owner}` ||
+          {`id: ${item?.createdBy}` ||
             " Make beautiful websites regardless of your design experience."}
         </p>
         <p>
-          {`title: ${item?.name}` ||
+          {`title: ${item?.title}` ||
             " Make beautiful websites regardless of your design experience."}
         </p>
         <p>
@@ -59,7 +59,7 @@ export function CardSimple({ item }) {
             " Make beautiful websites regardless of your design experience."}
         </p>
         <p>
-          {`${item?.members} members` ||
+          {`${item?.updatedAt} members` ||
             " Make beautiful websites regardless of your design experience."}
         </p>
       </CardBody>

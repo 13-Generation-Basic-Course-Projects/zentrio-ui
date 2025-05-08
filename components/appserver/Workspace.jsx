@@ -15,7 +15,7 @@ export default function Workspace({ data }) {
       {/* loop */}
       <div className="px-3 grid grid-cols-3  gap-4">
         {data.map((item) => (
-          <div key={item.id}>
+          <div key={item.workspaceId}>
             <CardSimple item={item} />
           </div>
         ))}
