@@ -42,6 +42,7 @@ export function CardNormal() {
   );
 }
 
+//for testing purpose
 export function CardSimple({ item }) {
   return (
     <Card>
@@ -60,6 +61,31 @@ export function CardSimple({ item }) {
         </p>
         <p>
           {`${item?.updatedAt} members` ||
+            " Make beautiful websites regardless of your design experience."}
+        </p>
+      </CardBody>
+    </Card>
+  );
+}
+
+export function CardSimpleBySignleId({ itembyid }) {
+  return (
+    <Card>
+      <CardBody>
+        <p>
+          {`id: ${itembyid?.createdBy}` ||
+            " Make beautiful websites regardless of your design experience."}
+        </p>
+        <p>
+          {`title: ${itembyid?.title}` ||
+            " Make beautiful websites regardless of your design experience."}
+        </p>
+        <p>
+          {`description: ${itembyid?.description}` ||
+            " Make beautiful websites regardless of your design experience."}
+        </p>
+        <p>
+          {`${itembyid?.updatedAt} members` ||
             " Make beautiful websites regardless of your design experience."}
         </p>
       </CardBody>
