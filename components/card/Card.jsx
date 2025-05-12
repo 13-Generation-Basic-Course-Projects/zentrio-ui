@@ -47,19 +47,19 @@ export function CardSimple({ item }) {
   return (
     <Card>
       <CardBody>
-        <p>
+        <p className="text-primary">
           {`id: ${item?.createdBy}` ||
             " Make beautiful websites regardless of your design experience."}
         </p>
-        <p>
+        <p className=" text-gradient text-4xl font-bold">
           {`title: ${item?.title}` ||
             " Make beautiful websites regardless of your design experience."}
         </p>
-        <p>
+        <p className="text-slate-purple-more">
           {`description: ${item?.description}` ||
             " Make beautiful websites regardless of your design experience."}
         </p>
-        <p>
+        <p className="text-description">
           {`${item?.updatedAt} members` ||
             " Make beautiful websites regardless of your design experience."}
         </p>
