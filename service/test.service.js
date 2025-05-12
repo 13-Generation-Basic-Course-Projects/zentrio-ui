@@ -1,10 +1,11 @@
 "use server";
 console.log("test services must create folders");
 import { apiConfig } from "@/constant/baseurl";
-import { dashboardRoute } from "@/routes/workspace.route";
+import { dashboardRoute } from "@/routes/allRoute";
 import { mockWorkspaces } from "@/data/workspace/data";
 export const getWorkspace = async () => {
-  const res = await fetch(`${apiConfig.baseUrl}/api/workspace`);
+  const url = `${dashboardRoute.getWorkspace}`;
+  const res = await fetch(url);
   //const res = await fetch(`${dashboardRoute.getWorkspace}`);
 
   const data = await res.json();
@@ -12,7 +13,9 @@ export const getWorkspace = async () => {
 };
 
 export const getWorkspaceById = async (workspaceId) => {
-  const res = await fetch(`${dashboardRoute.getWorkspaceById(workspaceId)}`);
+  //enpoint
+  const url = `${dashboardRoute.getWorkspaceById(workspaceId)}`;
+  const res = await fetch(url);
   // Filter the data based on workspaceId
   const data = mockWorkspaces;
   const filteredWorkspace = data.payload.filter(
