@@ -52,30 +52,8 @@ module.exports = {
     },
 
     // Define responsive breakpoints
-    screens: {
-      mobile: { max: "768px" },
-      tablet: { min: "769px", max: "1024px" },
-      "lg-desktop": { min: "1440px" },
-    },
+
     extend: {
-      // Responsive font size adjustments
-      fontSize: {
-        // Mobile-specific (root: 14px)
-        "h1-mobile": "2.25rem",
-        "h2-mobile": "1.875rem",
-        "h3-mobile": "1.5rem",
-        "body-mobile": "0.9375rem",
-        "body-sm-mobile": "0.8125rem",
-        "btn-mobile": "0.9375rem",
-
-        // Tablet-specific (root: 15px)
-        "h1-tablet": "2.375rem",
-        "h2-tablet": "1.9375rem",
-
-        // Large Desktop-specific (root: 18px)
-        "h1-lg-desktop": "2.75rem",
-        "body-lg-desktop": "1.125rem",
-      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
