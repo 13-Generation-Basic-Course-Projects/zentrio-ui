@@ -59,11 +59,11 @@ export function CardSimple({ item }) {
           {`description: ${item?.description}` ||
             " Make beautiful websites regardless of your design experience."}
         </p>
-        <p className="text-description">
+        <p className="text-description text-body-lg ">
           {`${item?.updatedAt} members` ||
             " Make beautiful websites regardless of your design experience."}
         </p>
-        <p className="font-khmer">សួស្ដី</p>
+        <p className="font-khmer text-h1 ">សួស្ដី</p>
       </CardBody>
     </Card>
   );

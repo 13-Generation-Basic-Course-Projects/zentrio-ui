@@ -10,7 +10,72 @@ module.exports = {
     "./node_modules/@heroui/theme/dist/components/(card|modal|ripple).js",
   ],
   theme: {
+    // Define font sizes
+    fontSize: {
+      // Headings
+      h1: "2.5rem", // ~40px at 16px root
+      h2: "2rem", // ~32px
+      h3: "1.75rem", // ~28px
+      h4: "1.5rem", // ~24px
+      h5: "1.25rem", // ~20px
+      h6: "1rem", // ~16px
+
+      // Body
+      body: "1rem", // ~16px
+      "body-sm": "0.875rem", // ~14px
+      "body-lg": "1.125rem", // ~18px
+
+      // Captions
+      caption: "0.75rem", // ~12px
+      "caption-tiny": "0.625rem", // ~10px
+
+      // Buttons
+      btn: "1rem", // ~16px
+      "btn-sm": "0.875rem", // ~14px
+      "btn-lg": "1.125rem", // ~18px
+
+      // Descriptions
+      desc: "0.875rem", // ~14px
+      "desc-lg": "1rem", // ~16px
+
+      // Navigation
+      nav: "1rem", // ~16px
+      "nav-dropdown": "0.875rem", // ~14px
+
+      // Labels
+      label: "0.875rem", // ~14px
+      "label-sm": "0.75rem", // ~12px
+
+      // Inputs
+      input: "1rem", // ~16px
+      "input-placeholder": "0.875rem", // ~14px
+    },
+
+    // Define responsive breakpoints
+    screens: {
+      mobile: { max: "768px" },
+      tablet: { min: "769px", max: "1024px" },
+      "lg-desktop": { min: "1440px" },
+    },
     extend: {
+      // Responsive font size adjustments
+      fontSize: {
+        // Mobile-specific (root: 14px)
+        "h1-mobile": "2.25rem",
+        "h2-mobile": "1.875rem",
+        "h3-mobile": "1.5rem",
+        "body-mobile": "0.9375rem",
+        "body-sm-mobile": "0.8125rem",
+        "btn-mobile": "0.9375rem",
+
+        // Tablet-specific (root: 15px)
+        "h1-tablet": "2.375rem",
+        "h2-tablet": "1.9375rem",
+
+        // Large Desktop-specific (root: 18px)
+        "h1-lg-desktop": "2.75rem",
+        "body-lg-desktop": "1.125rem",
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
@@ -20,6 +85,7 @@ module.exports = {
         poppin: ["Poppins", "sans-serif"],
         khmer: ["Khmer", "sans-serif"],
       },
+
       colors: {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
