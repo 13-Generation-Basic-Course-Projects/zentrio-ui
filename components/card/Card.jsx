@@ -45,7 +45,7 @@ export function CardNormal() {
 //for testing purpose
 export function CardSimple({ item }) {
   return (
-    <Card>
+    <Card className="font-poppin">
       <CardBody>
         <p className="text-primary">
           {`id: ${item?.createdBy}` ||
@@ -63,6 +63,7 @@ export function CardSimple({ item }) {
           {`${item?.updatedAt} members` ||
             " Make beautiful websites regardless of your design experience."}
         </p>
+        <p className="font-khmer">សួស្ដី</p>
       </CardBody>
     </Card>
   );

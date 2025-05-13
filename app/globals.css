@@ -9,3 +9,17 @@
     background-image: linear-gradient(90deg, #59bad5, #abaaff, #59bad5);
   }
 }
+
+/* font */
+@font-face {
+  font-family: "Poppins";
+  src: url("../styles/fonts/Poppins-Regular.ttf") format("truetype");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "Khmer";
+  src: url("../styles/fonts/KantumruyPro-VariableFont_wght.ttf")
+    format("truetype");
+  font-weight: 400;
+}
