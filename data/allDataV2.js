@@ -529,7 +529,6 @@ export const workspaces = [
 /** 
  * 
 The JavaScript file contains 17 arrays of objects, each representing a different data table. Here is the list of arrays:
-
 notifications
 documents
 users
