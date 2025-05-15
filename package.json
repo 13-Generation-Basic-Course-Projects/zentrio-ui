@@ -9,7 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@heroui/calendar": "^2.2.19",
     "@heroui/card": "^2.2.18",
+    "@heroui/input": "^2.4.19",
     "@heroui/modal": "^2.2.16",
     "@heroui/react": "^2.7.8",
     "@heroui/system": "^2.4.15",
@@ -20,7 +22,7 @@
     "@radix-ui/react-tooltip": "^1.2.6",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "framer-motion": "^12.10.1",
+    "framer-motion": "^12.11.3",
     "lucide-react": "^0.508.0",
     "next": "^15.3.2",
     "next-auth": "^5.0.0-beta.27",
