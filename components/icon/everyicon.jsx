@@ -46,7 +46,7 @@ export function UpdateIcon({ strokeWidth, color, size }) {
       viewBox="0 0 24 24"
       strokeWidth={strokeWidth || 1.5}
       stroke={color}
-      className={`size-${size} `}
+      // // className={`size-${size} }`
     >
       <path
         strokeLinecap="round"
