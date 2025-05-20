@@ -5,8 +5,6 @@ export const metadata = {
   description: "Please fill up the credentail",
 };
 
-//this layout is use for dashbaord
-
 export default function Layout({ children }) {
   return (
     <html lang="en">

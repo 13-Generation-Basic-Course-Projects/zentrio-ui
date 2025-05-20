@@ -22,9 +22,9 @@ export const metadata = {
   description: "Please fill up the credentail",
 };
 
-//this layout is use for dashbaord
+//this layout is use for auth
 
-export default async function DashBoardLayout({ children }) {
+export default async function AuthLayout({ children }) {
   const session = await auth();
   console.log("aaa", session?.user);
   return (
