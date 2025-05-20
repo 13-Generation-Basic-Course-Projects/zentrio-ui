@@ -12,15 +12,14 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-
+import Link from "next/link";
 import calender from "../../assets/calendarSideBar.png";
 import member from "../../assets/memberSideBar.png";
 import board from "../../assets/boardSideBar.png";
 import folder from "../../assets/folderSidBar.png";
 import report from "@/assets/report.png";
-import Link from "next/link";
 import { LeaveIcon } from "../icon/everyicon";
-// Add activeIcon for visual state
+
 const items = [
   {
     title: "Board",
@@ -64,29 +63,30 @@ export function SidebarTest() {
   const pathname = usePathname();
 
   return (
-    <Sidebar className="border-none ">
-      <SidebarContent className="h-screen flex flex-col">
-        <div className="p-4">
+    <Sidebar collapsible="icon" className="border-none ">
+      <SidebarContent className="h-screen flex flex-col !border-0">
+        <div className="p-4 !border-0">
           <Image src={logo} className="w-[168px] object-cover" alt="logo" />
         </div>
 
-        <SidebarGroup className="flex-1 flex flex-col">
-          <SidebarGroupContent className="flex-1 flex flex-col justify-between ">
+        <SidebarGroup className="flex-1 flex flex-col !border-0">
+          <SidebarGroupContent className="flex-1 flex flex-col justify-between !border-0">
             {/* TOP MENU */}
-            <SidebarMenu>
+            <SidebarMenu className="!border-0">
               {items.map((item) => {
                 const isActive = pathname === item.url;
                 return (
-                  <SidebarMenuItem className="py-1" key={item.title}>
-                    <SidebarMenuButton asChild>
-                      <Link
-                        href={item.url}
-                        className={
-                          isActive
-                            ? "bg-slate-blue rounded-lg text-primary"
-                            : ""
-                        }
-                      >
+                  <SidebarMenuItem className="py-1 !border-0" key={item.title}>
+                    <SidebarMenuButton
+                      asChild
+                      tooltip={item.title}
+                      className={
+                        isActive
+                          ? "bg-slate-blue rounded-lg text-primary !border-0"
+                          : "!border-0"
+                      }
+                    >
+                      <Link href={item.url}>
                         <Image
                           src={isActive ? item.activeIcon : item.icon}
                           className="w-[18px] object-cover"
@@ -101,11 +101,19 @@ export function SidebarTest() {
             </SidebarMenu>
 
             {/* BOTTOM LOGOUT */}
-            <SidebarMenu>
-              <div className="flex items-center gap-2 px-4 py-2 cursor-pointer pb-10">
-                <LeaveIcon strokwidth={2} size={4} color={"red"} />
-                <span className="text-red-500 font-medium">Logout</span>
-              </div>
+            <SidebarMenu className="!border-0">
+              <SidebarMenuItem className="!border-0">
+                <SidebarMenuButton
+                  asChild
+                  tooltip="Logout"
+                  className="flex items-center gap-2 px-4 py-2 cursor-pointer pb-10 !border-0"
+                >
+                  <div>
+                    <LeaveIcon strokwidth={2} size={4} color={"red"} />
+                    <span className="text-red-500 font-medium">Logout</span>
+                  </div>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
