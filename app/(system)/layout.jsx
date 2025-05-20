@@ -14,10 +14,10 @@ const geistMono = Geist_Mono({
 
 export const metadata = {
   title: "Zentrio | Task Mangement",
-  description: "Welcome to Zentrio",
+  description: "Welcome to Zentrio Cambodia",
 };
 
-//this layout is use for dashbaord
+//this layout is use for everything of workspace, and dashbaord .......
 
 export default async function SystemLayout({ children }) {
   const session = await auth();
