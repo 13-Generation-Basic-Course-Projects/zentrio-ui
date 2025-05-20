@@ -18,24 +18,22 @@ export default async function RootLayout({ children }) {
   const session = await auth();
   console.log("aaa", session?.user);
   return (
-    <html lang="en">
-      <body className={`font-poppin `}>
-        <div className="mx-[50px]">
-          <NavbarLanding />
-          <div className="hidden fixed top-[50px] right-0 z-50 p-4">
-            {session?.user ? (
-              <div className="flex gap-2 ">
-                <Logout />
-                <UserAvatar data={session?.user} />
-              </div>
-            ) : (
-              ""
-            )}
-          </div>
-          {children}
+    <body className={" font-poppin "}>
+      <div className="mx-[50px]">
+        <NavbarLanding />
+        <div className="hidden fixed top-[50px] right-0 z-50 p-4">
+          {session?.user ? (
+            <div className="flex gap-2 ">
+              <Logout />
+              <UserAvatar data={session?.user} />
+            </div>
+          ) : (
+            ""
+          )}
         </div>
-        <Footer />
-      </body>
-    </html>
+        {children}
+      </div>
+      <Footer />
+    </body>
   );
 }
