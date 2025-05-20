@@ -2,7 +2,8 @@
 import React from "react";
 import LoginForm from "./LoginForm";
 import { Input } from "@heroui/react";
-
+import { Button } from "@heroui/react";
+import { GoogleIcon } from "@/components/icon/everyicon";
 import { useState } from "react";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 export default function LoginCredentail() {
@@ -11,7 +12,7 @@ export default function LoginCredentail() {
   const [agreed, setAgreed] = useState(false);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white to-sky-50 p-4 relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white to-sky-50 p-4 relative overflow-hidden font-poppin">
       {/* Background decorative elements */}
       <div className="absolute top-0 right-0 w-full h-full overflow-hidden -z-20">
         <div className="absolute top-[10%] right-[5%] w-64 h-64 rounded-full bg-sky-100/50 blur-3xl"></div>
@@ -75,7 +76,7 @@ export default function LoginCredentail() {
         </svg>
       </div>
 
-      <div className="relative w-full max-w-md">
+      <div className="relative w-full max-w-lg">
         {/* Logo */}
         <div className="absolute top-0 left-0 p-4">
           <div className="flex items-center text-sky-400 font-semibold">
@@ -111,61 +112,81 @@ export default function LoginCredentail() {
         </div>
 
         {/* Sign up form */}
-        <div className="bg-white/80 backdrop-blur-sm rounded-lg shadow-lg p-8 border border-sky-100">
-          <div className="text-center mb-6">
-            <h1 className="text-2xl font-medium text-sky-400">Sign up</h1>
-            <p className="text-sm text-sky-300 mt-1">
-              Let's get you all set up so you can access your personal account.
-            </p>
+        <div className="bg-white/80 backdrop-blur-sm  shadow-lg p-8 border border-white  rounded-[20px]">
+          <div className=" mb-8">
+            <div className="flex flex-col items-start justify-start">
+              <p className="text-h1 font-medium text-primary">Sign up</p>
+              <p className="text-description">
+                Let's get you all set up so you can access your personal
+                account.
+              </p>
+            </div>
           </div>
 
           <form className="space-y-4">
             <div>
               <label
                 htmlFor="username"
-                className="block text-sm font-medium text-sky-600 mb-1"
+                className="block text-label  text-title mb-1"
               >
                 Username
               </label>
               <Input
                 isRequired
-                className="max-w-xs"
-                defaultValue="junior@heroui.com"
-                label="Email"
-                type="email"
+                //defaultValue="junior@heroui.com"
+                //label="username"
+                variant="bordered"
+                placeholder="Username"
+                type="text"
+                color="white"
+                classNames={{
+                  inputWrapper:
+                    "bg-white hover:border-transparent focus:border-transparent border-none",
+                  input: "bg-white",
+                }}
               />
             </div>
 
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-sky-600 mb-1"
+                className="block text-label  text-title mb-1"
               >
                 Email
               </label>
               <Input
                 isRequired
-                className="max-w-xs"
-                defaultValue="junior@heroui.com"
-                label="Email"
-                type="email"
+                variant="bordered"
+                placeholder="Email"
+                type="text"
+                color="white"
+                classNames={{
+                  inputWrapper:
+                    "bg-white hover:border-transparent focus:border-transparent border-none",
+                  input: "bg-white",
+                }}
               />
             </div>
 
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-sky-600 mb-1"
+                className="block text-label  text-title mb-1"
               >
                 Password
               </label>
               <div className="relative">
                 <Input
                   isRequired
-                  className="max-w-xs"
-                  defaultValue="junior@heroui.com"
-                  label="Email"
-                  type="email"
+                  variant="bordered"
+                  placeholder="Password"
+                  type="password"
+                  color="white"
+                  classNames={{
+                    inputWrapper:
+                      "bg-white hover:border-transparent focus:border-transparent border-none",
+                    input: "bg-white",
+                  }}
                 />
               </div>
             </div>
@@ -173,17 +194,22 @@ export default function LoginCredentail() {
             <div>
               <label
                 htmlFor="confirmPassword"
-                className="block text-sm font-medium text-sky-600 mb-1"
+                className="block text-label  text-title mb-1"
               >
                 Confirm Password
               </label>
               <div className="relative">
                 <Input
                   isRequired
-                  className="max-w-xs"
-                  defaultValue="junior@heroui.com"
-                  label="Email"
-                  type="email"
+                  variant="bordered"
+                  placeholder="Confirm Password"
+                  type="password"
+                  color="white"
+                  classNames={{
+                    inputWrapper:
+                      "bg-white hover:border-transparent focus:border-transparent border-none",
+                    input: "bg-white",
+                  }}
                 />
               </div>
             </div>
@@ -210,53 +236,27 @@ export default function LoginCredentail() {
                 </a>
               </label>
             </div>
-
-            <button
-              type="submit"
-              className="w-full bg-sky-400 hover:bg-sky-500 text-white font-medium py-2 px-4 rounded-md transition duration-200"
-            >
-              Sign Up
-            </button>
-
-            <div className="text-center text-sm text-sky-600">
-              <p>
-                Have Account?{" "}
-                <a
-                  href="#"
-                  className="text-sky-500 font-medium hover:underline"
-                >
-                  Sign In
-                </a>
-              </p>
-              <p className="text-xs text-sky-300 mt-1">Or Sign up with</p>
-            </div>
-
-            <div className="flex justify-center">
-              <button
-                type="button"
-                className="flex items-center justify-center w-10 h-10 rounded-full border border-gray-200 hover:bg-gray-50 transition-colors"
+            {/* s */}
+            <div className="w-full max-w-full ">
+              <Button
+                type="submit"
+                radius="md"
+                className="w-full bg-primary text-white normal-case min-w-0 max-w-none "
               >
-                <svg width="20" height="20" viewBox="0 0 20 20">
-                  <path
-                    d="M18.1711 8.36788H17.5V8.33333H10V11.6667H14.6898C14.0224 13.6071 12.1568 15 10 15C7.23858 15 5 12.7614 5 10C5 7.23858 7.23858 5 10 5C11.2843 5 12.4565 5.48697 13.3204 6.28465L15.8198 3.78532C14.3113 2.41895 12.2692 1.66667 10 1.66667C5.39763 1.66667 1.66667 5.39763 1.66667 10C1.66667 14.6024 5.39763 18.3333 10 18.3333C14.6024 18.3333 18.3333 14.6024 18.3333 10C18.3333 9.44117 18.2746 8.89588 18.1711 8.36788Z"
-                    fill="#4285F4"
-                  />
-                  <path
-                    d="M2.62744 6.12116L5.51507 8.23742C6.25294 6.38873 7.98011 5 10 5C11.2843 5 12.4565 5.48697 13.3204 6.28465L15.8198 3.78532C14.3113 2.41895 12.2692 1.66667 10 1.66667C6.83832 1.66667 4.12277 3.48421 2.62744 6.12116Z"
-                    fill="#EA4335"
-                  />
-                  <path
-                    d="M10 18.3333C12.2158 18.3333 14.2123 17.6168 15.7215 16.3045L13.0131 13.9826C12.1578 14.6356 11.1054 15 10 15C7.85328 15 6.00229 13.6214 5.32488 11.6969L2.49286 13.9429C3.97086 16.6395 6.71595 18.3333 10 18.3333Z"
-                    fill="#34A853"
-                  />
-                  <path
-                    d="M18.1711 8.36788H17.5V8.33333H10V11.6667H14.6898C14.3724 12.5902 13.7917 13.3972 13.0108 13.9832L13.0131 13.9826L15.7215 16.3045C15.5428 16.4661 18.3333 14.1667 18.3333 10C18.3333 9.44117 18.2746 8.89588 18.1711 8.36788Z"
-                    fill="#FBBC05"
-                  />
-                </svg>
-              </button>
+                Medium
+              </Button>
             </div>
           </form>
+          <div className=" hidden flex items justify-center mt-4">
+            <Button className="bg-white  py-6">
+              <GoogleIcon />
+            </Button>
+          </div>
+
+          {/* nh test sen button ng */}
+          <div className="py-3 flex justify-center items-center">
+            <LoginForm />
+          </div>
         </div>
       </div>
     </div>
