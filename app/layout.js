@@ -26,10 +26,10 @@ export default async function RootLayout({ children }) {
   console.log("aaa", session?.user);
   return (
     <SidebarProvider>
-      <SidebarTest />
+      {/* <SidebarTest /> */}
       <html lang="en">
         <body className={`${geistSans.variable} ${geistMono.variable}`}>
-          <SidebarTrigger className="sticky top-0" />
+          {/* <SidebarTrigger className="sticky top-0" /> */}
           <div className="fixed top-[50px] right-0 z-50 p-4">
             {session?.user ? (
               <div className="flex gap-2 ">
