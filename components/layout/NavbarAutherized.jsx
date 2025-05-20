@@ -2,9 +2,10 @@ import React from "react";
 import Image from "next/image";
 import notification from "../../assets/notification.png";
 import Link from "next/link";
-export default function NavbarAutherized() {
+export default function NavbarAutherized({ user }) {
+  console.log("pf", user);
   return (
-    <div className="w-full">
+    <div className="w-full sticky top-0 z-10">
       <header className="w-full bg-bgColor">
         <div className="  px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-end">
@@ -27,8 +28,14 @@ export default function NavbarAutherized() {
                     <span className="sr-only">Toggle dashboard menu</span>
 
                     <img
-                      src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzyLc8LMQIrviNz6u2EP3TtPRZZt3OlhrhHA&s"
-                      alt=""
+                      src={
+                        user?.image ||
+                        " https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzyLc8LMQIrviNz6u2EP3TtPRZZt3OlhrhHA&s"
+                      }
+                      alt={
+                        user?.name ||
+                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzyLc8LMQIrviNz6u2EP3TtPRZZt3OlhrhHA&s"
+                      }
                       className="size-10 object-cover"
                     />
                   </div>

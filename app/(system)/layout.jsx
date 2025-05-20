@@ -20,16 +20,13 @@ export default async function SystemLayout({ children }) {
   return (
     <SidebarProvider>
       <SidebarTest />
-      <html lang="en">
-        <body className=" font-poppin ">
-          <SidebarTrigger className="sticky top-0" />
-
-          <div className="w-full ">
-            <NavbarAutherized />
-            {children}
-          </div>
-        </body>
-      </html>
+      <body className={" font-poppin  "}>
+        <SidebarTrigger className="sticky top-0" />
+        <div className="w-full ">
+          <NavbarAutherized user={session?.user} />
+          {children}
+        </div>
+      </body>
     </SidebarProvider>
   );
 }
