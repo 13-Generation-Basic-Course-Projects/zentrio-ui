@@ -28,7 +28,9 @@ export default async function RootLayout({ children }) {
     // <SidebarProvider>
     //   <SidebarTest />
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} font-poppin`}
+      >
         {/* <SidebarTrigger className="sticky top-0" /> */}
         <div className="hidden fixed top-[50px] right-0 z-50 p-4">
           {session?.user ? (
