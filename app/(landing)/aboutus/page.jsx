@@ -1,5 +1,5 @@
 import React from "react";
 
-export default function Member() {
+export default function AboutUs() {
   return <div></div>;
 }
