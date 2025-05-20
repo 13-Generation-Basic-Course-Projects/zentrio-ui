@@ -252,7 +252,11 @@ export default function LoginCredentail() {
               <GoogleIcon />
             </Button>
           </div>
-          <LoginForm />
+
+          {/* nh test sen button ng */}
+          <div className="py-3 flex justify-center items-center">
+            <LoginForm />
+          </div>
         </div>
       </div>
     </div>

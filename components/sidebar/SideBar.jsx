@@ -19,42 +19,42 @@ import board from "../../assets/boardSideBar.png";
 import folder from "../../assets/folderSidBar.png";
 import report from "@/assets/report.png";
 import Link from "next/link";
-
+import { LeaveIcon } from "../icon/everyicon";
 // Add activeIcon for visual state
 const items = [
   {
-    title: "Test",
-    url: "/test",
-    icon: report,
-    activeIcon: report,
-  },
-  {
     title: "Board",
-    url: "/",
+    url: "/dashboard/1/1/board",
     icon: board,
     activeIcon: board,
   },
   {
     title: "Document",
-    url: "/docs",
+    url: "/dashboard/1/1/document",
     icon: folder,
     activeIcon: folder,
   },
   {
     title: "Calendar",
-    url: "/calendar",
+    url: "/dashboard/1/1/calendar",
     icon: calender,
     activeIcon: calender,
   },
   {
     title: "Members",
-    url: "/members",
+    url: "/dashboard/1/1/member",
     icon: member,
     activeIcon: member,
   },
   {
     title: "Reports",
-    url: "/reports",
+    url: "/dashboard/1/1/report",
+    icon: report,
+    activeIcon: report,
+  },
+  {
+    title: "nh test lg lg 1 auth",
+    url: "/test",
     icon: report,
     activeIcon: report,
   },
@@ -65,12 +65,14 @@ export function SidebarTest() {
 
   return (
     <Sidebar className="border-none ">
-      <SidebarContent>
-        <div className="border-0  p-4">
+      <SidebarContent className="h-screen flex flex-col">
+        <div className="p-4">
           <Image src={logo} className="w-[168px] object-cover" alt="logo" />
         </div>
-        <SidebarGroup className="border-0">
-          <SidebarGroupContent>
+
+        <SidebarGroup className="flex-1 flex flex-col">
+          <SidebarGroupContent className="flex-1 flex flex-col justify-between ">
+            {/* TOP MENU */}
             <SidebarMenu>
               {items.map((item) => {
                 const isActive = pathname === item.url;
@@ -81,7 +83,7 @@ export function SidebarTest() {
                         href={item.url}
                         className={
                           isActive
-                            ? "bg-slate-blue rounded-lg  text-primary"
+                            ? "bg-slate-blue rounded-lg text-primary"
                             : ""
                         }
                       >
@@ -96,6 +98,14 @@ export function SidebarTest() {
                   </SidebarMenuItem>
                 );
               })}
+            </SidebarMenu>
+
+            {/* BOTTOM LOGOUT */}
+            <SidebarMenu>
+              <div className="flex items-center gap-2 px-4 py-2 cursor-pointer pb-10">
+                <LeaveIcon strokwidth={2} size={4} color={"red"} />
+                <span className="text-red-500 font-medium">Logout</span>
+              </div>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

@@ -1,6 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import notification from "../../assets/notification.png";
+import Link from "next/link";
 export default function NavbarAutherized() {
   return (
     <div className="w-full">
@@ -21,18 +22,17 @@ export default function NavbarAutherized() {
               </nav>
 
               <div className="relative hidden md:block">
-                <button
-                  type="button"
-                  className="overflow-hidden rounded-full border border-gray-300 shadow-inner dark:border-gray-600"
-                >
-                  <span className="sr-only">Toggle dashboard menu</span>
+                <Link href="/login">
+                  <div className="overflow-hidden rounded-full border border-gray-300 shadow-inner dark:border-gray-600">
+                    <span className="sr-only">Toggle dashboard menu</span>
 
-                  <img
-                    src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=1770&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                    alt=""
-                    className="size-10 object-cover"
-                  />
-                </button>
+                    <img
+                      src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzyLc8LMQIrviNz6u2EP3TtPRZZt3OlhrhHA&s"
+                      alt=""
+                      className="size-10 object-cover"
+                    />
+                  </div>
+                </Link>
               </div>
             </div>
           </div>
