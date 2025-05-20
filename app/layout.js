@@ -27,22 +27,24 @@ export default async function RootLayout({ children }) {
   return (
     // <SidebarProvider>
     //   <SidebarTest />
-      <html lang="en">
-        <body className={`${geistSans.variable} ${geistMono.variable}`}>
-          {/* <SidebarTrigger className="sticky top-0" /> */}
-          <div className="fixed top-[50px] right-0 z-50 p-4">
-            {session?.user ? (
-              <div className="flex gap-2 ">
-                <Logout />
-                <UserAvatar data={session?.user} />
-              </div>
-            ) : (
-              ""
-            )}
-          </div>
-          {children}
-        </body>
-      </html>
-    // </SidebarProvider>
+    <html lang="en">
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} font-poppin`}
+      >
+        {/* <SidebarTrigger className="sticky top-0" /> */}
+        <div className="hidden fixed top-[50px] right-0 z-50 p-4">
+          {session?.user ? (
+            <div className="flex gap-2 ">
+              <Logout />
+              <UserAvatar data={session?.user} />
+            </div>
+          ) : (
+            ""
+          )}
+        </div>
+        {children}
+      </body>
+    </html>
+    //</SidebarProvider>
   );
 }
