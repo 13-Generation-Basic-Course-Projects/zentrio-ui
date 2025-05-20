@@ -247,11 +247,12 @@ export default function LoginCredentail() {
               </Button>
             </div>
           </form>
-          <div className=" flex items justify-center mt-4">
+          <div className=" hidden flex items justify-center mt-4">
             <Button className="bg-white  py-6">
               <GoogleIcon />
             </Button>
           </div>
+          <LoginForm />
         </div>
       </div>
     </div>
