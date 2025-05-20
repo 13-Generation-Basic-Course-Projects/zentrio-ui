@@ -15,11 +15,13 @@ export const NavbarLanding = () => {
     // <div className="w-full max-w-[955px] h-[70px] font-poppin bg-white shadow-md rounded-full mx-auto mt-[30px] px-4 sm:px-6 relative">
     <div className="w-full h-[70px] font-poppin bg-white shadow-md rounded-full mx-auto mt-[30px] px-4 sm:px-6 relative">
       <div className="flex justify-between items-center h-full">
-        <Image
-          src={logo}
-          alt="Zentrio Logo"
-          className="w-[50px] sm:w-[60px] md:w-[144px]"
-        />
+        <Link href="/">
+          <Image
+            src={logo}
+            alt="Zentrio Logo"
+            className="w-[50px] sm:w-[60px] md:w-[144px]"
+          />
+        </Link>
 
         {/* Desktop Navigation (hidden on mobile) */}
         <nav className="hidden md:flex justify-between items-center w-[250px] font-medium text-body-lg">
@@ -36,7 +38,7 @@ export const NavbarLanding = () => {
 
         {/* Desktop Buttons (hidden on mobile) */}
         <div className="hidden min-[400px]:flex gap-2 sm:gap-[10px] ">
-          <Button className=" text-primary border-none font-semibold rounded-full text-[16px] sm:px-[26px] py-2 px-4">
+          <Button className=" bg-transparent text-primary border-none font-semibold rounded-full text-[16px] sm:px-[26px] py-2 px-4">
             Login
           </Button>
           <Button className="bg-primary text-white border-none font-semibold text-[16px] rounded-full sm:px-[26px] py-2 px-4">
