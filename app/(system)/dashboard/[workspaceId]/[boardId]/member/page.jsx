@@ -1,3 +1,4 @@
+import Memberempty from "@/components/appserver/Memberempty";
 import Memberpage from "@/components/appserver/Memberpage";
 import React from "react";
 
@@ -5,7 +6,7 @@ import React from "react";
 export default function Member() {
   return (
     <>
-      <Memberpage />
+      <Memberempty />
     </>
   );
 }
