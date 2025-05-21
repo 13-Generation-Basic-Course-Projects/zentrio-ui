@@ -1,3 +1,4 @@
+import Footer from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import React from "react";
 
@@ -68,8 +69,8 @@ export default function AboutUs() {
         </section>
       </main>
 
-      <footer className="col-span-12 mt-8 py-4 bg-gray-200 text-center text-sm text-gray-700">
-        © 2025 ZenTrio. All rights reserved.
+      <footer className="col-span-12">
+        <Footer/>
       </footer>
     </div>
   );
