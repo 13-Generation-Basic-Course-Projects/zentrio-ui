@@ -1,7 +1,9 @@
 "use client";
 import React, { useState } from "react";
 import { Button } from "@heroui/react";
-
+import Link from "next/link";
+import Image from "next/image";
+import logo from "../../public/image/Zentrio-Logo.png";
 export const NavbarLanding = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -13,28 +15,30 @@ export const NavbarLanding = () => {
     // <div className="w-full max-w-[955px] h-[70px] font-poppin bg-white shadow-md rounded-full mx-auto mt-[30px] px-4 sm:px-6 relative">
     <div className="w-full h-[70px] font-poppin bg-white shadow-md rounded-full mx-auto mt-[30px] px-4 sm:px-6 relative">
       <div className="flex justify-between items-center h-full">
-        <img
-          src="Zentrio-Logo.png"
-          alt="Zentrio Logo"
-          className="w-[100px] sm:w-[120px] md:w-[144px]"
-        />
+        <Link href="/">
+          <Image
+            src={logo}
+            alt="Zentrio Logo"
+            className="w-[50px] sm:w-[60px] md:w-[144px]"
+          />
+        </Link>
 
         {/* Desktop Navigation (hidden on mobile) */}
         <nav className="hidden md:flex justify-between items-center w-[250px] font-medium text-body-lg">
-          <a href="#" className="hover:text-primary transition-all">
+          <Link href="/" className="hover:text-primary transition-all">
             Home
-          </a>
-          <a href="#" className="hover:text-primary transition-all">
+          </Link>
+          <Link href="/aboutus" className="hover:text-primary transition-all">
             About us
-          </a>
-          <a href="#" className="hover:text-primary transition-all">
+          </Link>
+          <Link href="/contact" className="hover:text-primary transition-all">
             Contact
-          </a>
+          </Link>
         </nav>
 
         {/* Desktop Buttons (hidden on mobile) */}
         <div className="hidden min-[400px]:flex gap-2 sm:gap-[10px] ">
-          <Button className=" text-primary border-none font-semibold rounded-full text-[16px] sm:px-[26px] py-2 px-4">
+          <Button className=" bg-transparent text-primary border-none font-semibold rounded-full text-[16px] sm:px-[26px] py-2 px-4">
             Login
           </Button>
           <Button className="bg-primary text-white border-none font-semibold text-[16px] rounded-full sm:px-[26px] py-2 px-4">
@@ -77,9 +81,15 @@ export const NavbarLanding = () => {
       {isMenuOpen && (
         <div className="md:hidden flex flex-col items-center absolute top-full left-0 right-0 bg-white shadow-lg py-4 px-6 mt-2 z-50 rounded-b-xl">
           <nav className="flex flex-col items-center space-y-4 w-full">
-            <a href="#" className="hover:text-primary w-full text-center">Home</a>
-            <a href="#" className="hover:text-primary w-full text-center">About us</a>
-            <a href="#" className="hover:text-primary w-full text-center">Contact</a>
+            <a href="#" className="hover:text-primary w-full text-center">
+              Home
+            </a>
+            <a href="#" className="hover:text-primary w-full text-center">
+              About us
+            </a>
+            <a href="#" className="hover:text-primary w-full text-center">
+              Contact
+            </a>
           </nav>
           <div className="min-[400px]:hidden flex flex-col items-center space-y-2 mt-4 w-full max-w-[200px]">
             <Button className="text-primary border-none font-semibold text-[16px] rounded-full sm:px-[26px] py-2 px-4 w-full">

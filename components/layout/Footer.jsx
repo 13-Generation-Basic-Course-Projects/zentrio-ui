@@ -3,12 +3,15 @@ import { Input, Button } from "@heroui/react";
 
 export default function Footer() {
   return (
-    <div className="w-full  overflow-hidden mt-8 relative font-poppin " style={{
-    backgroundImage: "url('/map.png')",
-    backgroundSize: "contain",
-    backgroundPosition: "center",
-    backgroundRepeat: "no-repeat"
-  }}>
+    <div
+      className="w-full  overflow-hidden mt-8 relative font-poppin "
+      style={{
+        backgroundImage: "url('/map.png')",
+        backgroundSize: "contain",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      }}
+    >
       <div className="inset-0 flex flex-col items-center text-center ">
         {/* Main Heading */}
         <h2 className="text-[50px] max-[600px]:text-[45px] max-[500px]:text-[35px] max-[400px]:text-[25px] max-[300px]:text-[17px] max-[200px]:text-[15px] max-[100px]:text-[13px] sm:text-4xl md:text-[56px] font-semibold text-title">
@@ -65,23 +68,71 @@ export default function Footer() {
         </div>
 
         <div className="grid max-[500px]:grid-cols-2 lg:grid-cols-2 md:grid-cols-1 sm:grid-col-2 gap-6 md:gap-6 mt-8 md:mt-16 w-[75%] px-4">
-          
           <div className="grid lg:grid-cols-5 grid-cols-5 md:grid-cols-5 sm:grid-cols-5 max-[500px]:grid-cols-1 gap-2 lg:gap-4 text-caption-tiny text-xs md:text-base">
-            <a href="#" className="hover:text-primary transition-colors whitespace-nowrap text-center">Home</a>
-            <a href="#" className="hover:text-primary transition-colors whitespace-nowrap text-center">Features</a>
-            <a href="#" className="hover:text-primary transition-colors whitespace-nowrap text-center">Pricing</a>
-            <a href="#" className="hover:text-primary transition-colors whitespace-nowrap text-center">Integrations</a>
-            <a href="#" className="hover:text-primary transition-colors whitespace-nowrap text-center">Support</a>
+            <a
+              href="#"
+              className="hover:text-primary transition-colors whitespace-nowrap text-center"
+            >
+              Home
+            </a>
+            <a
+              href="#"
+              className="hover:text-primary transition-colors whitespace-nowrap text-center"
+            >
+              Features
+            </a>
+            <a
+              href="#"
+              className="hover:text-primary transition-colors whitespace-nowrap text-center"
+            >
+              Pricing
+            </a>
+            <a
+              href="#"
+              className="hover:text-primary transition-colors whitespace-nowrap text-center"
+            >
+              Integrations
+            </a>
+            <a
+              href="#"
+              className="hover:text-primary transition-colors whitespace-nowrap text-center"
+            >
+              Support
+            </a>
           </div>
 
           <div className="grid lg:grid-cols-5 grid-cols-5 md:grid-cols-5 sm:grid-cols-5 max-[500px]:grid-cols-1 gap-2 lg:gap-4  text-caption-tiny text-xs  md:text-base">
-            <a href="#" className="hover:text-primary transition-colors whitespace-nowrap text-center">Instagram</a>
-            <a href="#" className="hover:text-primary transition-colors whitespace-nowrap text-center">LinkedIn</a>
-            <a href="#" className="hover:text-primary transition-colors whitespace-nowrap text-center">Twitter</a>
-            <a href="#" className="hover:text-primary transition-colors whitespace-nowrap text-center">Facebook</a>
-            <a href="#" className="hover:text-primary transition-colors whitespace-nowrap text-center">Discord</a>
+            <a
+              href="#"
+              className="hover:text-primary transition-colors whitespace-nowrap text-center"
+            >
+              Instagram
+            </a>
+            <a
+              href="#"
+              className="hover:text-primary transition-colors whitespace-nowrap text-center"
+            >
+              LinkedIn
+            </a>
+            <a
+              href="#"
+              className="hover:text-primary transition-colors whitespace-nowrap text-center"
+            >
+              Twitter
+            </a>
+            <a
+              href="#"
+              className="hover:text-primary transition-colors whitespace-nowrap text-center"
+            >
+              Facebook
+            </a>
+            <a
+              href="#"
+              className="hover:text-primary transition-colors whitespace-nowrap text-center"
+            >
+              Discord
+            </a>
           </div>
-
         </div>
 
         <div className="grid mb-14 lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-3 gap-6 pt-7 md:gap-0 mt-8 md:mt-7  px-4 text-caption-tiny tracking-widest text-description border-t-[1.4px] border-title w-[75%]">
