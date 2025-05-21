@@ -7,6 +7,8 @@ import interactionPlugin from "@fullcalendar/interaction";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import listPlugin from "@fullcalendar/list";
 import CardTaskCalender from "../card/CardTaskCalender";
+import CardTCommentCalender from "../card/CardCommentCalender";
+
 export default function MyCalendar({ tasks }) {
   const events = [
     {
@@ -38,11 +40,13 @@ export default function MyCalendar({ tasks }) {
           />
         </div>
         {/* display task */}
-        <div className="flex flex-col p-3">
-          <div className="h-32 w-full">
+        <div className="flex flex-col gap-5 p-4">
+          <div className=" w-full">
             <CardTaskCalender tasks={tasks} />
           </div>
-          <div className="h-32 w-full">2</div>
+          <div className=" w-full">
+            {/* <CardTCommentCalender tasks={tasks} / >*/}
+          </div>
         </div>
       </div>
     </>
