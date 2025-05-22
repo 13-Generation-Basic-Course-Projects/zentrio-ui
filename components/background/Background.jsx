@@ -10,6 +10,7 @@ import LongGrayBrash from "@/assets/backgroundAuthentication/long-gray-brash.png
 import PlusIcon from "@/assets/backgroundAuthentication/plus-icon.png";
 import RedGlow from "@/assets/backgroundAuthentication/red-glow.png";
 import YellowGlow from "@/assets/backgroundAuthentication/yellow-glow.png";
+import GrayBrashKanban from "@/assets/backgroundAuthentication/gray-brash-from-kanban.png";
 import Image from "next/image";
 
 export function BackgroundAuthentication({ actionCard }) {
@@ -62,4 +63,111 @@ export function BackgroundAuthentication({ actionCard }) {
       </div>
     </>
   );
+}
+
+export function BackgroundKanbanPage(){
+  return(
+    <>
+      <div className="bg-bgColor w-full h-screen relative overflow-hidden">
+        <div className="absolute left-[-14%] top-[5%]">
+          <Image 
+            src={GrayBrashKanban}
+            alt=""
+            className="w-[400.56px] h-[468.58px]"
+          />
+        </div>
+        <div className="absolute right-[1%] top-[50%] bottom-[50%] rotate-[-45deg]">
+          <Image 
+            src={LineWorm}
+            alt=""
+            className="w-[119.94px] h-[23.98px]"
+          />
+        </div>
+        <div className="absolute right-[50%] left top-[50%] bottom-[50%] rotate-[-10deg]">
+          <Image 
+            src={LineWorm}
+            alt=""
+            className="w-[119.94px] h-[23.98px]"
+          />
+        </div>
+        <div className="absolute right-[-10%] top-auto bottom-[-30%] rotate-[45deg]">
+          <Image 
+            src={GrayBrashKanban}
+            alt=""
+            className="w-[400.56px] h-[468.58px]"
+          />
+        </div>
+      </div>
+    </>
+  )
+}
+
+export function BackgroundGanChartPage(){
+  return<>
+    <div className="bg-bgColor w-full h-screen relative overflow-hidden">
+      <div className="absolute left-[-5%] top-[5%]">
+        <Image 
+          src={GrayBrashKanban}
+          alt=""
+          className="w-[400.56px] h-[468.58px]"
+        />
+      </div>
+      <div className="absolute right-[60%] left-auto top-[25%] rotate-[-45deg]">
+        <Image 
+          src={LineWorm}
+          alt=""
+          className="w-[119.94px] h-[23.98px]"
+        />
+      </div>
+      <div className="absolute right-[25%] top-auto bottom-[45%] rotate-[-45deg]">
+        <Image 
+          src={LineWorm}
+          alt=""
+          className="w-[119.94px] h-[23.98px]"
+        />
+      </div>
+      <div className="absolute right-[-12%] bottom-[-30%] top-auto rotate-[45deg]">
+        <Image 
+          src={GrayBrashKanban}
+          alt=""
+          className="w-[400.56px] h-[468.58px]"
+        />
+      </div>
+      <div className="absolute right-[40%] top-auto bottom-[50%]">
+        <Image 
+          src={BlurLineDash}
+          alt=""
+          className="w-[174.94px] h-[22px]"
+        />
+      </div>
+      <div className="absolute right-[15%] top-auto bottom-[30%]">
+        <Image 
+          src={BlurPlusIcon}
+          alt=""
+          className="w-[24px] h-[24px]"
+        />
+      </div>
+    </div>
+  </>
+}
+
+export function BackgroundDocumentPage(){
+  return<>
+    <div className="bg-bgColor w-full h-screen relative overflow-hidden">
+        <div className="absolute left-[5%] top-auto bottom-[15%]">
+          <Image 
+            src={GrayBrashKanban}
+            className="w-[404px] h-[479px] rotate-[-140deg]"
+            alt=""
+          />
+        </div>
+        <div className="absolute right-[5%] top-auto bottom-[-20%]">
+          <Image 
+            src={GrayBrashKanban}
+            className="w-[404px] h-[479px] rotate-[12deg]"
+            alt=""
+          />
+        </div>
+    </div>
+  </>
 }
