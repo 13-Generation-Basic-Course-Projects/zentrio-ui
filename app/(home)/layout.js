@@ -19,7 +19,7 @@ export default async function RootLayout({ children }) {
   console.log("aaa", session?.user);
   return (
     <body className={" font-poppin "}>
-      <div className="mx-[50px]">
+      <div className="mx-[20px] md:mx-[50px]">
         <NavbarLanding />
         <div className="hidden fixed top-[50px] right-0 z-50 p-4">
           {session?.user ? (

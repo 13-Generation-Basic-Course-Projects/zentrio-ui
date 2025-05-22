@@ -141,13 +141,13 @@ export default function KanbanBoard() {
   };
 
   return (
-    <div className="p-4">
+    <div className="p-4 w-full ">
       <h1 className="text-2xl font-bold mb-4">Kanban Board</h1>
-      <div className="flex space-x-4 overflow-x-auto pb-4">
+      <div className="flex space-x-4 overflow-x-auto pb-4 grid grid-cols-4 px-4 gap-4">
         {columns.map((column) => (
           <div
             key={column.id}
-            className="flex-shrink-0 w-64 bg-gray-100 rounded-lg shadow"
+            className="flex-shrink-0 w-full  bg-gray-100 rounded-lg shadow"
             onDragOver={(e) => handleDragOver(e, "column", column.id)}
             onDrop={handleDrop}
           >

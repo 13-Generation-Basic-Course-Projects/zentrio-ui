@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { Button, Input, Textarea } from "@heroui/react";
 import Image from "next/image";
-
+import contact from "../../../assets/contact.png";
 export default function ContactUs() {
   return (
     <div className="flex flex-col items-center w-full max-w-[1728px] mx-auto px-4 sm:px-6 lg:px-8">
@@ -98,7 +98,7 @@ export default function ContactUs() {
         </div>
       </section>
       {/* section 3 */}
-      <section className="w-full max-w-[1328px] grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 mb-12 sm:mb-16 px-4">
+      <section className="w-full max-w-[1328px] grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 mb-12 sm:mb-16 ">
         {/* form */}
         <div className="bg-bgColor p-4 sm:p-6 lg:p-8 rounded-3xl">
           <div className="mb-6 sm:mb-8">
@@ -179,19 +179,14 @@ export default function ContactUs() {
         </div>
 
         {/* feature */}
-        <div className="flex flex-col justify-center">
-          <div className="relative h-48 mb-6">
-            {/* <Image
-              src=""
-              alt="Support representative waving"
-              fill
-              className="object-contain"
-            /> */}
-          </div>
+        <div className="flex  flex-col justify-center  ">
+          <div className="space-y-4  bg-bgColor p-3 md:p-5 rounded-xl  relative">
+            {/* 1 */}
+            <div className="flex items-center  gap-3 bg-white rounded-xl p-3">
+              <div className="bg-primary h-7 w-7 md:h-10  md:w-10 rounded-full  flex items-center justify-center">
+                <CheckCircle className="md:h-6  md:w-6 text-white flex-shrink-0 " />
+              </div>
 
-          <div className="space-y-4">
-            <div className="flex items-start gap-3 bg-bgColor">
-              <CheckCircle className="h-6 w-6 text-primary flex-shrink-0" />
               <div>
                 <h4 className="font-medium text-title">Task Management</h4>
                 <p className="text-description text-desc">
@@ -199,11 +194,15 @@ export default function ContactUs() {
                 </p>
               </div>
             </div>
+            {/* 2 */}
+            <div className="flex items-center  gap-3 bg-white rounded-xl p-3">
+              <div className="bg-primary h-7 w-7 md:h-10  md:w-10 rounded-full  flex items-center justify-center">
+                <Calendar className="md:h-6  md:w-6 text-white flex-shrink-0 " />
+              </div>
 
-            <div className="flex items-start gap-3">
-              <Calendar className="h-6 w-6 text-primary flex-shrink-0" />
               <div>
                 <h4 className="font-medium text-title">
+                  {" "}
                   Calendar & Scheduling
                 </h4>
                 <p className="text-description text-desc">
@@ -211,11 +210,15 @@ export default function ContactUs() {
                 </p>
               </div>
             </div>
+            {/* 3 */}
+            <div className="flex items-center  gap-3 bg-white rounded-xl p-3">
+              <div className="bg-primary h-7 w-7 md:h-10  md:w-10 rounded-full  flex items-center justify-center">
+                <FileText className="md:h-6  md:w-6 text-white flex-shrink-0 " />
+              </div>
 
-            <div className="flex items-start gap-3">
-              <FileText className="h-6 w-6 text-primary flex-shrink-0" />
               <div>
                 <h4 className="font-medium text-title">
+                  {" "}
                   Document Collaboration
                 </h4>
                 <p className="text-description text-desc">
@@ -223,11 +226,15 @@ export default function ContactUs() {
                 </p>
               </div>
             </div>
+            {/* 4 */}
+            <div className="flex items-center  gap-3 bg-white rounded-xl p-3">
+              <div className="bg-primary  h-7 w-7 md:h-10 md:w-10 rounded-full  flex items-center justify-center">
+                <Bell className="  md:h-6  md:w-6 text-white flex-shrink-0 " />
+              </div>
 
-            <div className="flex items-start gap-3">
-              <Bell className="h-6 w-6 text-primary flex-shrink-0" />
               <div>
                 <h4 className="font-medium text-title">
+                  {" "}
                   Notifications & Team Communication
                 </h4>
                 <p className="text-description text-desc">
