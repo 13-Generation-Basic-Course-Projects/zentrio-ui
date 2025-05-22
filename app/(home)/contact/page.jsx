@@ -1,8 +1,4 @@
 import React from "react";
-import { Mail, MapPin, Phone, CheckCircle, Calendar, FileText, Bell } from "lucide-react";
-import { Button, Input, Textarea } from "@heroui/react";
-import Image from "next/image";
-
 
 //useage : http://localhost:3000/contact
 
@@ -19,7 +15,6 @@ import { Button, Input, Textarea } from "@heroui/react";
 import Image from "next/image";
 
 export default function ContactUs() {
-
   return (
     <div className="flex flex-col items-center w-full max-w-[1728px] mx-auto px-4 sm:px-6 lg:px-8">
       {/* section 1 */}
