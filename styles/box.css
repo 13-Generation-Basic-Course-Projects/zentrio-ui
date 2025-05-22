@@ -1,0 +1,19 @@
+.boxTop {
+    width: 300px;
+    aspect-ratio: 1.5;
+    position: relative; /* Optional but recommended */
+    background:
+      radial-gradient(circle 30px at bottom left, #0000 98%, green) bottom left;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    overflow: hidden;
+  }
+  
+.boxBottom {
+    width: 300px;
+    aspect-ratio: 1.5;
+    background:
+        radial-gradient(circle 30px at top left, #0000 98%, red) top left;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+}
