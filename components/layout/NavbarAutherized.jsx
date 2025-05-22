@@ -1,50 +1,135 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import Image from "next/image";
 import notification from "../../assets/notification.png";
 import Link from "next/link";
-export default function NavbarAutherized({ user }) {
+import Tapp from "../taps/BoardTab";
+
+export function NavbarAuthorized({ user }) {
   console.log("pf", user);
   return (
-    <div className="w-full sticky top-0 z-10">
-      <header className="w-full bg-bgColor">
-        <div className="  px-4 sm:px-6 lg:px-8">
-          <div className="flex h-16 items-center justify-end">
-            <div className="md:flex md:items-center md:gap-12">
-              <nav aria-label="Global" className="hidden md:block">
-                <ul className="flex items-center gap-6 text-sm">
-                  <li>
-                    <Image
-                      src={notification}
-                      className="size-4"
-                      alt="notification"
-                    />
-                  </li>
-                </ul>
-              </nav>
+    <>
+      {/* Navbar */}
 
-              <div className="relative hidden md:block">
-                <Link href="/login">
-                  <div className="overflow-hidden rounded-full border border-gray-300 shadow-inner dark:border-gray-600">
-                    <span className="sr-only">Toggle dashboard menu</span>
+      <div className="w-full sticky top-0 z-10  bg-bgColor flex justify-end items-center ">
+        <header className="px-4 sm:px-6 lg:px-8 ">
+          <div className="flex w-full h-16 items-center justify-end ">
+            {/* Right side - Notification and Profile */}
+            <div className="flex items-center gap-4">
+              {/* Notification Icon */}
+              <button className="p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200">
+                <Image
+                  src={notification}
+                  className="size-5"
+                  alt="notification"
+                />
+              </button>
 
-                    <img
-                      src={
-                        user?.image ||
-                        " https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzyLc8LMQIrviNz6u2EP3TtPRZZt3OlhrhHA&s"
-                      }
-                      alt={
-                        user?.name ||
-                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzyLc8LMQIrviNz6u2EP3TtPRZZt3OlhrhHA&s"
-                      }
-                      className="size-10 object-cover"
-                    />
-                  </div>
-                </Link>
-              </div>
+              {/* Profile */}
+              <Link href="/login">
+                <div className="overflow-hidden rounded-full border-2 border-gray-200 hover:border-gray-300 shadow-sm transition-all duration-200 hover:shadow-md">
+                  <span className="sr-only">Toggle dashboard menu</span>
+                  <img
+                    src={
+                      user?.image ||
+                      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzyLc8LMQIrviNz6u2EP3TtPRZZt3OlhrhHA&s"
+                    }
+                    alt={user?.name || "User"}
+                    className="size-10 object-cover hover:scale-105 transition-transform duration-200"
+                  />
+                </div>
+              </Link>
             </div>
           </div>
-        </div>
-      </header>
-    </div>
+        </header>
+      </div>
+    </>
+  );
+}
+
+//2
+import KanbanBoard from "../testcomponent/Kanban";
+import GanttChart from "../testcomponent/Calender";
+const tabItems = [
+  {
+    key: "kanban",
+    title: "Kanban",
+    content: <KanbanBoard />,
+  },
+  {
+    key: "calendar",
+    title: "Calendar",
+    content: <GanttChart />,
+  },
+];
+
+export function NavbarAuthorizedBoard({ user }) {
+  const [activeTab, setActiveTab] = useState("kanban");
+
+  const currentTab = tabItems.find((tab) => tab.key === activeTab);
+
+  return (
+    <>
+      {/* Navbar */}
+
+      <div className="w-full sticky top-0 z-10  bg-bgColor  ">
+        <header className=" px-4 sm:px-6 lg:px-8  ">
+          <div className="flex w-full h-16 items-center justify-between ">
+            {/* Left side - Navigation Tabs */}
+            <nav className="flex-1">
+              <ul className="flex gap-1 text-sm font-medium">
+                {tabItems.map((tab) => (
+                  <li
+                    key={tab.key}
+                    onClick={() => setActiveTab(tab.key)}
+                    className={`cursor-pointer rounded-lg transition-all duration-200 ${
+                      activeTab === tab.key
+                        ? "border-b-2 border-blue-500  px-4 py-2  text-blue-600 font-semibold"
+                        : "text-gray-600   px-4 py-2  hover:text-gray-900"
+                    }
+`}
+                  >
+                    {tab.title}
+                  </li>
+                ))}
+              </ul>
+            </nav>
+
+            {/* Right side - Notification and Profile */}
+            <div className="flex items-center gap-4">
+              {/* Notification Icon */}
+              <button className="p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200">
+                <Image
+                  src={notification}
+                  className="size-5"
+                  alt="notification"
+                />
+              </button>
+
+              {/* Profile */}
+              <Link href="/login">
+                <div className="overflow-hidden rounded-full border-2 border-gray-200 hover:border-gray-300 shadow-sm transition-all duration-200 hover:shadow-md">
+                  <span className="sr-only">Toggle dashboard menu</span>
+                  <img
+                    src={
+                      user?.image ||
+                      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzyLc8LMQIrviNz6u2EP3TtPRZZt3OlhrhHA&s"
+                    }
+                    alt={user?.name || "User"}
+                    className="size-10 object-cover hover:scale-105 transition-transform duration-200"
+                  />
+                </div>
+              </Link>
+            </div>
+          </div>
+        </header>
+      </div>
+
+      {/* Tab Content Area */}
+      <main className="p-6  min-h-screen">
+        <div className=" mx-auto">{currentTab?.content}</div>
+      </main>
+    </>
   );
 }

@@ -5,7 +5,7 @@ import { SidebarTest } from "@/components/sidebar/SideBar";
 
 import { auth } from "../../auth";
 import { UserAvatar } from "@/components/testcomponent/Avatar";
-import NavbarAutherized from "@/components/layout/NavbarAutherized";
+import NavbarWrapper from "@/components/layout/NavbarWrapper";
 
 export const metadata = {
   title: "Zentrio | Task Mangement",
@@ -23,7 +23,7 @@ export default async function SystemLayout({ children }) {
       <body className={" font-poppin  "}>
         <SidebarTrigger className="sticky top-0" />
         <div className="w-full ">
-          <NavbarAutherized user={session?.user} />
+          <NavbarWrapper user={session?.user} />
           {children}
         </div>
       </body>
