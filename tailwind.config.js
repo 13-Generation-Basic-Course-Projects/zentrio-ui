@@ -6,8 +6,8 @@ module.exports = {
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
-    "// Or if using `src` directory:\\\\\\\\\\\\\\\\n    \\\\\\\\\\\\\\\\\\\\\"./src/**/*.{js,ts,jsx,tsx,mdx}\\\\\\\\\\\\\\\\\\\\\"",
-    "./node_modules/@heroui/theme/dist/components/(calendar|card|input|modal|tabs|button|ripple|spinner|form).js"
+    '// Or if using `src` directory:\\\\n    \\\\"./src/**/*.{js,ts,jsx,tsx,mdx}\\\\"',
+    "./node_modules/@heroui/theme/dist/components/(card|image|modal|ripple).js",
   ],
   theme: {
     // Define font sizes
