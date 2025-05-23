@@ -44,7 +44,7 @@ import Image from "next/image";
 export default function AboutUs() {
   return (
     <div className=" grid grid-cols-12 gap-4 p-4 min-h-screen bg-gray-50 ">
-      <main className="col-span-12 space-y-28">
+      <main className="col-span-12 space-y-40">
         <section className="relative flex justify-center items-center gap-4 ">
           <div className="relative grid grid-cols-2 w-full">
             <div className="relative w-full">
@@ -133,8 +133,8 @@ export default function AboutUs() {
           </div>
         </section>
 
-        <section className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="relative h-auto  overflow-hidden p-6 sm:p-10 flex  items-center right-0 justify-center">
+        <section className="grid grid-row-1 sm:grid-cols-2 gap-4">
+          <div className="relative h-auto  overflow-hidden p-6 sm:p-10 flex  items-center right-0 justify-center ">
             <div className="flex flex-col justify-center space-y-6 max-w-xl right-1">
               <p className="text-h1 font-bold text-gradient text-left">
                 ZenTrio Founder
@@ -148,81 +148,81 @@ export default function AboutUs() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 max-w-[1300px] mx-auto mr-20">
-            <div className="relative items-center justify-center flex flex-col">
-              <div
-                className="boxTop mx-auto bg-cover bg-center "
-                style={{ backgroundImage: `url(${ourInstructor.src})` }}
-              ></div>
-
-              <div
-                className="boxBottom mx-auto bg-cover bg-center "
-                style={{ backgroundImage: `url(${ksgh.src})` }}
-              ></div>
-
-              <div className="hidden md:block absolute items-center left-[15%] top-[51%] transform -translate-x-1/2 -translate-y-1/2 w-[140px] h-[140px]  bg-cover rounded-full z-20">
-                <div className="relative">
-                  <svg
-                    className="w-full h-full"
-                    viewBox="0 0 300 300"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <circle
-                      cx="150"
-                      cy="150"
-                      r="100"
-                      // stroke="blue"
-                      strokeWidth="2"
-                      fill="none"
-                    />
-                    <text className="fill-red text-h1 font-medium">
-                      <textPath href="#circlePath" startOffset="0%">
-                        Our best mentor and nice at KSHRD .
-                      </textPath>
-                    </text>
-                    <path
-                      id="circlePath"
-                      d="M 150 30 A 120 120 0 1 1 150 270 A 120 120 0 1 1 150 30"
-                      fill="none"
-                      stroke="none"
-                    />
-                  </svg>
-
-                  {/* Center Icon */}
-                  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+          <div className="relative h-auto overflow-hidden p-4 sm:p-10 flex flex-col lg:flex-row items-center lg:items-start justify-center gap-10">
+            {/* LEFT: Image Cards + Circle SVG */}
+            <div className="flex flex-col items-center space-y-5 mt-24">
+              <div className="card w-[300px] md:w-[320px]">
+                <div className="box">
+                  <div className="imgBx">
                     <Image
-                      src={arrowright}
-                      alt="Arrow Down"
-                      width="12"
-                      height="12"
+                      src={ourInstructor}
+                      alt="Our Instructor"
+                      className="w-full h-full object-cover"
                     />
+                  </div>
+                </div>
+                <div className="box">
+                  <div className="imgBx">
+                    <Image
+                      src={ksgh}
+                      alt="KSGH"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                </div>
+                {/* Circle SVG */}
+                <div className="circle">
+                  <div className="relative">
+                    <svg viewBox="0 0 300 300" className="w-full h-full">
+                      <path
+                        id="circlePath"
+                        d="M 150 30 A 120 120 0 1 1 150 270 A 120 120 0 1 1 150 30"
+                        fill="none"
+                      />
+                      <text className="fill-red text-h1 font-medium">
+                        <textPath href="#circlePath" startOffset="0%">
+                          Our best mentor and nice at KSHRD .
+                        </textPath>
+                      </text>
+                    </svg>
+                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                      <Image
+                        src={arrowright}
+                        alt="Arrow"
+                        width={12}
+                        height={12}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="grid grid-rows-2 gap-4 ">
-              <div className="relative w-auto max-w-full  mx-auto rounded-xl overflow-hidden shadow-lg">
+            {/* RIGHT: Instructor Cards */}
+            <div className="flex flex-col space-y-5 mt-2">
+              {/* Card 1 */}
+              <div className="relative w-full max-w-[300px] mx-auto rounded-xl overflow-hidden shadow-lg">
                 <Image
                   alt="Teacher Nak"
                   src={cherNak}
                   className="object-cover w-full h-full"
                 />
-                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 bg-transparent backdrop-blur-md border border-white/20 rounded-xl flex flex-col items-center px-3 py-1 shadow-md w-[200px]">
-                  <div className="text-h6 text-white/80">Kheng Sovannak</div>
-                  <div className="text-h6 text-white/80">IT Instructor</div>
+                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 bg-white/20 backdrop-blur-md border border-white/30 rounded-xl flex flex-col items-center px-3 py-2 shadow-md w-[200px]">
+                  <div className="text-sm text-white">Kheng Sovannak</div>
+                  <div className="text-sm text-white">IT Instructor</div>
                 </div>
               </div>
 
-              <div className="relative w-[296px] max-w-full h-[199px] mx-auto rounded-xl overflow-hidden shadow-lg">
+              {/* Card 2 */}
+              <div className="relative w-full max-w-[300px] h-[199px] mx-auto rounded-xl overflow-hidden shadow-lg">
                 <Image
-                  alt="Teacher dara"
+                  alt="Teacher Dara"
                   src={cherDara}
                   className="object-cover w-full h-full"
                 />
-                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 bg-transparent backdrop-blur-md border border-white/20 rounded-xl flex flex-col items-center px-3 py-1 shadow-md w-[200px]">
-                  <div className="text-h6 text-white/80">Tan Dara</div>
-                  <div className="text-h6 text-white/80">IT Instructor</div>
+                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 bg-white/20 backdrop-blur-md border border-white/30 rounded-xl flex flex-col items-center px-3 py-2 shadow-md w-[200px]">
+                  <div className="text-sm text-white">Tan Dara</div>
+                  <div className="text-sm text-white">IT Instructor</div>
                 </div>
               </div>
             </div>
@@ -447,85 +447,74 @@ export default function AboutUs() {
           </div>
 
           <div className="flex justify-center items-center">
-            <div className="grid grid-flow-col grid-rows-2 gap-4 ">
-              <div className="box-content w-[197px] h-[374px]  border-4 rounded-full bg-black overflow-hidden group">
+            <div class="grid grid-cols-4  text-white text-sm text-center font-bold leading-6">
+              <div class="box-content h-[374px]  border-4 rounded-full bg-black overflow-hidden group row-span-3">
                 <Image
                   src={cherDara}
                   alt="Example"
-                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110 "
                 />
               </div>
-              <div className="row-span-1"></div>
-              <div className="flex flex-col gap-4 justify-end items-end p-4 ">
-            
-                <div className="box-content w-[200px] h-[200px] rounded-full overflow-hidden group mr-8">
+              <div className="flex flex-col space-y-8 justify-center items-center col-span-2">
+                <div class="box-content w-[200px] h-[200px]  rounded-full overflow-hidden group mr-8 bg-indigo-300">
                   <Image
                     src={cherDara}
                     alt="Circular"
                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                   />
                 </div>
-
-                <div className="box-content w-[281px] h-[168px] rounded-full overflow-hidden group">
+                <div class="box-content w-[251px] h-[120px] rounded-full overflow-hidden group">
                   <Image
                     src={cherDara}
-                    alt="Oval"
+                    alt="Circular"
                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                   />
                 </div>
               </div>
-
-              <div className="flex flex-col gap-4 col-span-2">
-                <div className="flex flex-row gap-4 items-center">
-                  <div className="box-content w-[161px] h-[150px] rounded-full rounded-br-none overflow-hidden group">
-                    <Image
-                      src={cherDara}
-                      alt="Example"
-                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-                    />
-                  </div>
-
-                  <div className="box-content w-[161px] h-[150px] rounded-full rounded-br-none overflow-hidden group">
-                    <Image
-                      src={cherDara}
-                      alt="Example"
-                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-                    />
-                  </div>
-                </div>
-
-                <div className="flex flex-row gap-4 items-start">
-                  <div className="box-content w-[161px] h-[150px] rounded-full rounded-br-none overflow-hidden group">
-                    <Image
-                      src={cherDara}
-                      alt="Example"
-                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-                    />
-                  </div>
-                  <div className="box-content w-[281px] h-[168px] rounded-full overflow-hidden group">
-                    <Image
-                      src={cherDara}
-                      alt="Example"
-                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-                    />
-                  </div>
-                </div>
+              <div class="box-content w-[180px] h-[220px] rounded-tl-[100px] rounded-bl-[150px] rounded-tr-[50px] rounded-br-[50px] overflow-hidden group ">
+                <Image
+                  src={cherDara}
+                  alt="Example"
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                />
               </div>
-              <div className="row-span-2  justify-start items-center flex flex-col mr-10">
-                <div className="box-content w-[220px] h-[240px] rounded-tl-[100px] rounded-bl-[150px] rounded-tr-[50px] rounded-br-[50px] overflow-hidden group">
+              <div class="flex flex-row col-span-2 space-x-2 justify-center items-center">
+                <div className="box-content w-[161px] h-[150px] rounded-full rounded-br-none overflow-hidden group">
                   <Image
                     src={cherDara}
                     alt="Example"
                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                   />
                 </div>
-                <div className="box-content w-[197px] h-[374px] rounded-full overflow-hidden group">
+                <div className="box-content w-[161px] h-[150px] rounded-full rounded-br-none overflow-hidden group ">
                   <Image
                     src={cherDara}
                     alt="Example"
                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                   />
                 </div>
+              </div>
+              <div class="box-content w-full h-[374px] rounded-full overflow-hidden group">
+                <Image
+                  src={cherDara}
+                  alt="Example"
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                />
+              </div>
+              <div class="box-content w-[161px] h-[150px] rounded-full rounded-br-none overflow-hidden group">
+                {" "}
+                <Image
+                  src={cherDara}
+                  alt="Example"
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                />
+              </div>
+              <div class="box-content w-[281px] h-[168px] rounded-full overflow-hidden group">
+                <Image
+                  src={cherDara}
+                  alt="Example"
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                />
               </div>
             </div>
           </div>
@@ -548,7 +537,7 @@ export default function AboutUs() {
                     Adventure with Thrillz
                   </p>
 
-                  <Button className="bg-white text-[#59BAD5] text-sm sm:text-base md:text-[15.18px] font-normal rounded-[30px] px-6 py-2">
+                  <Button className="bg-white text-[#59BAD5] hover:text-white text-sm sm:text-base md:text-[15.18px] font-normal rounded-[30px] px-6 py-2 ml-20">
                     Get Start Now
                   </Button>
                 </div>
