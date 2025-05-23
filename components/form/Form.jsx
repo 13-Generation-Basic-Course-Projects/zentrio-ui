@@ -1,7 +1,7 @@
 "use client";
 
 import { Input } from '@heroui/input';
-import { Button, Checkbox, Form } from '@heroui/react';
+import { Button, Checkbox, Form, InputOtp } from '@heroui/react';
 import { useState } from 'react';
 import Google from '@/assets/googleIcon.png';
 import Image from 'next/image';
@@ -290,6 +290,282 @@ export const SigninForm = () => {
     </div>
   );
 };
+
+export const ForgetPass = () => {
+  const [formData, setFormData] = useState({
+    email: '',
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // Validation logic
+    if (!formData.email) {
+      alert("Email is required!");
+      return;
+    }
+
+    // Add form submission logic here
+    console.log('Password reset request submitted for:', formData.email);
+  };
+
+  return (
+    <div className='w-full h-screen flex items-center justify-center'>
+      <div className='w-[1728px] h-[1117px] bg-bgColor flex items-center justify-center'>
+        <Form onSubmit={handleSubmit} className="w-[640px] h-fit bg-white px-[55px] py-[40px] rounded-[20px] shadow-lg gap-[50px]">
+          <div>
+              <Link href="#" className='flex items-center gap-3 pb-[5%] text-body-sm text-primary'>
+                <svg width="18" height="12" viewBox="0 0 18 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M2 6L17 5.99976" stroke="#59BAD5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M6 1L1.70711 5.29289C1.37377 5.62623 1.20711 5.79289 1.20711 6C1.20711 6.20711 1.37377 6.37377 1.70711 6.70711L6 11" stroke="#59BAD5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <p>Back to Login</p>
+              </Link>
+              <div className='flex flex-col gap-4'>
+                <p className='text-h1 text-primary'><span className='font-bold'>Forgot Password</span></p>
+                <p className='text-body text-[#787486]'>Don’t worry, happens to all of us. Enter your email below to recover your password</p>
+              </div>
+            </div>
+            <div className='flex flex-col gap-4 w-full'>
+              <div className='w-full'>
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="Email"
+                  required
+                  radius='sm'
+                  variant="bordered"
+                  className="w-full placeholder:text-input-placeholder text-input"
+                  size='lg'
+                />
+              </div>
+            </div>
+            <Button type="submit" className="w-full bg-primary text-white">
+              <p className='text-h6'>
+                Submit
+              </p>
+            </Button>
+        </Form>
+      </div>
+    </div>
+  );
+};
+
+export const SetNewPass = () => {
+  const [isVisible, setIsVisible] = useState(false);
+  const toggleVisibility = () => setIsVisible(!isVisible);
+
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+    rememberMe: false,
+  });
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData({
+      ...formData,
+      [name]: type === 'checkbox' ? checked : value,
+    });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // Validation logic
+    if (!formData.email || !formData.password) {
+      alert("Email and Password are required!");
+      return;
+    }
+
+    // Add form submission logic here
+    console.log('Form submitted:', formData);
+  };
+
+  return (
+    <div className='w-full h-screen flex items-center justify-center'>
+      <div className='w-[1728px] h-[1117px] bg-bgColor flex items-center justify-center'>
+        <Form onSubmit={handleSubmit} className="w-[640px] h-fit bg-white px-[55px] py-[40px] rounded-[20px] shadow-lg gap-[50px]">
+          <div>
+            <Link href="#" className='flex items-center gap-3 pb-[5%] text-body-sm text-primary'>
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M2 6L17 5.99976" stroke="#59BAD5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M6 1L1.70711 5.29289C1.37377 5.62623 1.20711 5.79289 1.20711 6C1.20711 6.20711 1.37377 6.37377 1.70711 6.70711L6 11" stroke="#59BAD5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <p>Back to Email</p>
+            </Link>
+            <div className='flex flex-col gap-4'>
+              <p className='text-h1 text-primary'><span className='font-bold'>Set a password</span></p>
+              <p className='text-body text-[#787486]'>Your previous password has been reseted. Please set a new password for your account.</p>
+            </div>
+          </div>
+          <div className='flex flex-col gap-[15px] w-full'>
+          <div className="relative">
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
+              <Input
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Password"
+                type={isVisible ? "text" : "password"}
+                variant="bordered"
+                radius='sm'
+                required
+                className="w-full"
+                size='lg'
+                endContent={
+                  <button
+                    aria-label="toggle password visibility"
+                    className="focus:outline-none"
+                    type="button"
+                    onClick={toggleVisibility}
+                  >
+                    {isVisible ? (
+                      <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                    ) : (
+                      <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                    )}
+                  </button>
+                }
+              />
+            </div>
+            <div className="relative">
+              <label htmlFor="re-enter password" className="block text-sm font-medium text-gray-700">Re-enter Password</label>
+              <Input
+                id="re-enter password"
+                name="re-enter password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="New Password"
+                type={isVisible ? "text" : "re-enter password"}
+                variant="bordered"
+                radius='sm'
+                required
+                className="w-full"
+                size='lg'
+                endContent={
+                  <button
+                    aria-label="toggle re-enter password visibility"
+                    className="focus:outline-none"
+                    type="button"
+                    onClick={toggleVisibility}
+                  >
+                    {isVisible ? (
+                      <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                    ) : (
+                      <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                    )}
+                  </button>
+                }
+              />
+            </div>
+          </div>
+          <div className='w-full gap-[10px] flex flex-col'>
+            <Button type="submit" className="w-full bg-primary text-white">
+              Sign in
+            </Button>
+          </div>
+        </Form>
+      </div>
+    </div>
+  );
+};
+
+export const OtpForm = () => {
+  const [otp, setOtp] = useState(Array(6).fill("")); // Initialize an array with 6 empty strings
+  
+    const handleChange = (value, index) => {
+      if (value.length > 1) return; // Ensure only one character is entered
+      const newOtp = [...otp];
+      newOtp[index] = value;
+      setOtp(newOtp);
+  
+      // Automatically focus the next input
+      if (value && index < 5) {
+        document.getElementById(`otp-input-${index + 1}`).focus();
+      }
+    };
+  
+    const handleKeyDown = (e, index) => {
+      if (e.key === "Backspace" && !otp[index] && index > 0) {
+        document.getElementById(`otp-input-${index - 1}`).focus();
+      }
+    };
+  
+    const handleSubmit = (e) => {
+      e.preventDefault();
+  
+      const otpValue = otp.join(""); // Combine all values into a single string
+      if (otpValue.length !== 6) {
+        alert("Please enter the complete 6-digit OTP.");
+        return;
+      }
+  
+      // Add form submission logic here
+      console.log('OTP submitted:', otpValue);
+    };
+  
+    return (
+      <div className='w-full h-screen flex items-center justify-center'>
+        <div className='w-[1728px] h-[1117px] bg-bgColor flex items-center justify-center'>
+          <Form onSubmit={handleSubmit} className="w-[640px] h-fit bg-white px-[55px] py-[40px] rounded-[20px] shadow-lg gap-[50px]">
+            <div>
+              <Link href="#" className='flex items-center gap-3 pb-[5%] text-body-sm text-primary'>
+                <svg width="18" height="12" viewBox="0 0 18 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M2 6L17 5.99976" stroke="#59BAD5" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M6 1L1.70711 5.29289C1.37377 5.62623 1.20711 5.79289 1.20711 6C1.20711 6.20711 1.37377 6.37377 1.70711 6.70711L6 11" stroke="#59BAD5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <p>Back to Sign in</p>
+              </Link>
+              <div className='flex flex-col gap-4'>
+                <p className='text-h2 text-primary'><span className='font-bold'>Please check your email</span></p>
+                <p className='text-body text-primary'>We’ve sent a code to helloworld@gmail.com</p>
+              </div>
+            </div>
+            <div className='flex flex-col gap-[15px] w-full'>
+              <div className='flex w-full justify-between'>
+              {otp.map((value, index) => (
+                <input
+                  key={index}
+                  id={`otp-input-${index}`}
+                  type="text"
+                  value={value}
+                  onChange={(e) => handleChange(e.target.value, index)}
+                  onKeyDown={(e) => handleKeyDown(e, index)}
+                  maxLength={1}
+                  className="rounded-[15px] w-16 h-16 text-center border-[1.5px] border-primary focus:outline-none focus:ring-2 focus:ring-primary text-primary font-semibold text-body"
+                />
+              ))}
+            </div>
+            </div>
+            <div className='w-full gap-[10px] flex flex-col'>
+              <Button type="submit" className="w-full bg-primary text-white">
+                Submit
+              </Button>
+            </div>
+            <div className='w-full'>
+              <p className='font-bold text-description text-center'>
+                <span className='text-body'>Send Code again : 03:12</span>
+              </p>
+            </div>
+          </Form>
+        </div>
+      </div>
+    );
+  };
 
 export const EyeSlashFilledIcon = (props) => {
   return (
