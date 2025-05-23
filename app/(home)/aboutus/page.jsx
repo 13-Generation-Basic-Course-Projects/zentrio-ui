@@ -1,12 +1,8 @@
 //useage : http://localhost:3000/aboutus
-
 import { Button } from "@/components/ui/button";
 
-import React from "react";
 import aboutus1 from "@/public/image/Rectangle_header1.png";
 import aboutus2 from "@/public/image/Rectangle_header2.png";
-import letterRound from "@/public/image/roundLetter1.png";
-import letterRound2 from "@/public/image/roundLetter2.png";
 import ourInstructor from "@/public/image/ourInstructor.png";
 import ksgh from "@/public/image/ksgh.png";
 import cherNak from "@/public/image/teacherNak.png";
@@ -19,7 +15,6 @@ import square1 from "@/public/image/square1.png";
 import square2 from "@/public/image/square2.png";
 import square3 from "@/public/image/square3.png";
 import square4 from "@/public/image/square4.png";
-import letterRound3 from "@/public/image/roundLetter3.png";
 import imgs1 from "@/public/image/img-s1.png";
 import imgs2 from "@/public/image/img-s2.png";
 import imgs3 from "@/public/image/img-s3.png";
@@ -42,6 +37,7 @@ import "@/styles/box.css";
 import Image from "next/image";
 
 export default function AboutUs() {
+
   return (
     <div className=" grid grid-cols-12 gap-4 p-4 min-h-screen bg-gray-50 ">
       <main className="col-span-12 space-y-40">
@@ -54,7 +50,7 @@ export default function AboutUs() {
                 className="h-full w-full object-cover"
               />
               <div className="absolute top-10 left-0 right-0 px-6">
-                <div className="space-y-4 ml-16  text-title">
+                <div className="space-y-4 ml-16  text-title mt-10 ">
                   <p className="text-h1 font-semibold">
                     We are from Korean Software HRD Center
                   </p>
@@ -65,7 +61,9 @@ export default function AboutUs() {
                     We’re really confident with this project that can bring the
                     best tool for software development.
                   </p>
-                  <Button>Get Start</Button>
+                  <Button className=" hover:bg-white hover:text-primary hover:border-primary border-2 text-sm sm:text-base md:text-[15.18px] font-normal rounded-[30px] ">
+                    Get Start
+                  </Button>
                 </div>
               </div>
             </div>
@@ -231,7 +229,7 @@ export default function AboutUs() {
 
         <section className="grid grid-cols-1 sm:grid-cols-2 gap-4 ">
           <div className="h-auto flex items-center justify-center w-full">
-            <div className="relative grid grid-cols-2 grid-rows-2 w-full gap-y-8 gap-x-8 ">
+            <div className="relative grid grid-cols-1 sm:grid-cols-2 grid-rows-1 sm:grid-rows-2  w-full gap-y-8 gap-x-8 ">
               <div className="relative">
                 <Image
                   src={square1}
@@ -373,8 +371,8 @@ export default function AboutUs() {
                   </div>
                 </div>
               </div>
-              <div className="hidden md:block absolute items-center left-[50%] top-[50%] transform -translate-x-1/2 -translate-y-1/2 w-[140px] h-[140px]  bg-cover rounded-full z-20">
-                <div className="relative">
+              <div className="absolute items-center left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-32 sm:w-36 md:w-40 h-32 sm:h-36 md:h-40 bg-cover rounded-full z-20">
+                <div className="relative w-full h-full">
                   <svg
                     className="w-full h-full"
                     viewBox="0 0 300 300"
@@ -384,13 +382,12 @@ export default function AboutUs() {
                       cx="150"
                       cy="150"
                       r="100"
-                      // stroke="blue"
                       strokeWidth="2"
                       fill="none"
                     />
-                    <text className="fill-red text-[38px] font-medium">
+                    <text className="fill-red text-h4 sm:text-h3 md:text-[36px] font-medium">
                       <textPath href="#circlePath" startOffset="2%">
-                        Features · Features ·Features ·Features ·
+                        Features · Features · Features · Features ·
                       </textPath>
                     </text>
                     <path
@@ -406,8 +403,9 @@ export default function AboutUs() {
                     <Image
                       src={arrowdown}
                       alt="Arrow Down"
-                      width="12"
-                      height="12"
+                      width="16"
+                      height="16"
+                      className="w-4 sm:w-5 md:w-6 h-auto"
                     />
                   </div>
                 </div>
@@ -443,6 +441,7 @@ export default function AboutUs() {
                 alt="Webcash Logo"
                 className="w-full max-w-sm object-contain"
               />
+      
             </div>
           </div>
 
@@ -450,7 +449,7 @@ export default function AboutUs() {
             <div class="grid grid-cols-4  text-white text-sm text-center font-bold leading-6">
               <div class="box-content h-[374px]  border-4 rounded-full bg-black overflow-hidden group row-span-3">
                 <Image
-                  src={cherDara}
+                  src={fong}
                   alt="Example"
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110 "
                 />
@@ -458,14 +457,14 @@ export default function AboutUs() {
               <div className="flex flex-col space-y-8 justify-center items-center col-span-2">
                 <div class="box-content w-[200px] h-[200px]  rounded-full overflow-hidden group mr-8 bg-indigo-300">
                   <Image
-                    src={cherDara}
+                    src={minh}
                     alt="Circular"
                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                   />
                 </div>
                 <div class="box-content w-[251px] h-[120px] rounded-full overflow-hidden group">
                   <Image
-                    src={cherDara}
+                    src={senghun}
                     alt="Circular"
                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                   />
@@ -473,7 +472,7 @@ export default function AboutUs() {
               </div>
               <div class="box-content w-[180px] h-[220px] rounded-tl-[100px] rounded-bl-[150px] rounded-tr-[50px] rounded-br-[50px] overflow-hidden group ">
                 <Image
-                  src={cherDara}
+                  src={fanau}
                   alt="Example"
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                 />
@@ -481,14 +480,14 @@ export default function AboutUs() {
               <div class="flex flex-row col-span-2 space-x-2 justify-center items-center">
                 <div className="box-content w-[161px] h-[150px] rounded-full rounded-br-none overflow-hidden group">
                   <Image
-                    src={cherDara}
+                    src={theara}
                     alt="Example"
                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                   />
                 </div>
                 <div className="box-content w-[161px] h-[150px] rounded-full rounded-br-none overflow-hidden group ">
                   <Image
-                    src={cherDara}
+                    src={roskan}
                     alt="Example"
                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                   />
@@ -496,7 +495,7 @@ export default function AboutUs() {
               </div>
               <div class="box-content w-full h-[374px] rounded-full overflow-hidden group">
                 <Image
-                  src={cherDara}
+                  src={visa}
                   alt="Example"
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                 />
@@ -504,14 +503,14 @@ export default function AboutUs() {
               <div class="box-content w-[161px] h-[150px] rounded-full rounded-br-none overflow-hidden group">
                 {" "}
                 <Image
-                  src={cherDara}
+                  src={leap}
                   alt="Example"
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                 />
               </div>
-              <div class="box-content w-[281px] h-[168px] rounded-full overflow-hidden group">
+              <div class="box-content w-[280px] h-[165px] rounded-full overflow-hidden group">
                 <Image
-                  src={cherDara}
+                  src={vit}
                   alt="Example"
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                 />
