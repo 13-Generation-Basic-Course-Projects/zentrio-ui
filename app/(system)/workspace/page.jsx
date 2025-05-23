@@ -1,3 +1,4 @@
+import Myworkspace from "@/components/appserver/MyworkspaceEmpty";
 import React from "react";
 
 //useage route : http://localhost:3000/workspace
@@ -5,8 +6,7 @@ import React from "react";
 export default function WorkspaceArea() {
   return (
     <div>
-      over view + showe workspace that contains baords ....other workspace and
-      myworkspace
+      <Myworkspace />
     </div>
   );
 }
