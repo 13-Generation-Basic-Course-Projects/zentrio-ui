@@ -1,12 +1,8 @@
 //useage : http://localhost:3000/aboutus
-
 import { Button } from "@/components/ui/button";
-
-import React from "react";
+import TeamProfile from "@/components/testcomponent/Teampf";
 import aboutus1 from "@/public/image/Rectangle_header1.png";
 import aboutus2 from "@/public/image/Rectangle_header2.png";
-import letterRound from "@/public/image/roundLetter1.png";
-import letterRound2 from "@/public/image/roundLetter2.png";
 import ourInstructor from "@/public/image/ourInstructor.png";
 import ksgh from "@/public/image/ksgh.png";
 import cherNak from "@/public/image/teacherNak.png";
@@ -19,7 +15,6 @@ import square1 from "@/public/image/square1.png";
 import square2 from "@/public/image/square2.png";
 import square3 from "@/public/image/square3.png";
 import square4 from "@/public/image/square4.png";
-import letterRound3 from "@/public/image/roundLetter3.png";
 import imgs1 from "@/public/image/img-s1.png";
 import imgs2 from "@/public/image/img-s2.png";
 import imgs3 from "@/public/image/img-s3.png";
@@ -35,12 +30,17 @@ import minh from "@/public/image/minh.png";
 import senghun from "@/public/image/senghun.png";
 import visa from "@/public/image/visa.png";
 
+import arrowdown from "@/public/image/arrow-down.png";
+import arrowright from "@/public/image/arrow-right.png";
+import "@/styles/box.css";
+
 import Image from "next/image";
+import Link from "next/link";
 
 export default function AboutUs() {
   return (
-    <div className=" grid grid-cols-12 gap-4 p-4 min-h-screen  ">
-      <main className="col-span-12 space-y-28">
+    <div className=" grid grid-cols-12 gap-4 p-4 min-h-screen">
+      <main className="col-span-12 space-y-40">
         <section className="relative flex justify-center items-center gap-4 ">
           <div className="relative grid grid-cols-2 w-full">
             <div className="relative w-full">
@@ -50,7 +50,7 @@ export default function AboutUs() {
                 className="h-full w-full object-cover"
               />
               <div className="absolute top-10 left-0 right-0 px-6">
-                <div className="space-y-4 ml-16  text-title">
+                <div className="space-y-4 ml-16  text-title mt-10 ">
                   <p className="text-h1 font-semibold">
                     We are from Korean Software HRD Center
                   </p>
@@ -61,7 +61,9 @@ export default function AboutUs() {
                     We’re really confident with this project that can bring the
                     best tool for software development.
                   </p>
-                  <Button>Get Start</Button>
+                  <Button className=" hover:bg-white hover:text-primary hover:border-primary border-2 text-sm sm:text-base md:text-[15.18px] font-normal rounded-[30px] ">
+                    Get Start
+                  </Button>
                 </div>
               </div>
             </div>
@@ -88,14 +90,49 @@ export default function AboutUs() {
             </div>
           </div>
 
-          <div
-            className="absolute left-1/2 bottom-0 translate-y-1/2 -translate-x-1/2 w-[250px] h-[250px] bg-center bg-cover rounded-full z-20"
-            style={{ backgroundImage: `url(${letterRound.src})` }}
-          />
+          <div className="absolute left-1/2 bottom-0 translate-y-1/2 -translate-x-1/2 w-[250px] h-[250px] bg-center bg-cover rounded-full z-20">
+            <div className="relative">
+              <svg
+                className="w-full h-full"
+                viewBox="0 0 300 300"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle
+                  cx="150"
+                  cy="150"
+                  r="100"
+                  // stroke="blue"
+                  strokeWidth="2"
+                  fill="none"
+                />
+                <text className="fill-red text-h1 font-medium">
+                  <textPath href="#circlePath" startOffset="2%">
+                    Learn more . Learn more . Learn more .
+                  </textPath>
+                </text>
+                <path
+                  id="circlePath"
+                  d="M 150 30 A 120 120 0 1 1 150 270 A 120 120 0 1 1 150 30"
+                  fill="none"
+                  stroke="none"
+                />
+              </svg>
+
+              {/* Center Icon */}
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                <Image
+                  src={arrowdown}
+                  alt="Arrow Down"
+                  width="12"
+                  height="12"
+                />
+              </div>
+            </div>
+          </div>
         </section>
 
-        <section className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="relative h-auto  overflow-hidden p-6 sm:p-10 flex  items-center right-0 justify-center">
+        <section className="grid grid-row-1 sm:grid-cols-2 gap-4">
+          <div className="relative h-auto  overflow-hidden p-6 sm:p-10 flex  items-center right-0 justify-center ">
             <div className="flex flex-col justify-center space-y-6 max-w-xl right-1">
               <p className="text-h1 font-bold text-gradient text-left">
                 ZenTrio Founder
@@ -109,51 +146,80 @@ export default function AboutUs() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 max-w-[1300px] mx-auto mr-20">
-            <div className="relative items-center justify-center flex flex-col">
-              <div className="relative w-[257px] h-[210px] mx-auto">
-                <Image
-                  alt="Instructor"
-                  src={ourInstructor}
-                  className="object-cover w-full h-full"
-                />
+          <div className="relative h-auto overflow-hidden p-4 sm:p-10 flex flex-col lg:flex-row items-center lg:items-start justify-center gap-10">
+            <div className="flex flex-col items-center space-y-5 mt-24">
+              <div className="card w-[300px] md:w-[320px]">
+                <div className="box">
+                  <div className="imgBx">
+                    <Image
+                      src={ourInstructor}
+                      alt="Our Instructor"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                </div>
+                <div className="box">
+                  <div className="imgBx">
+                    <Image
+                      src={ksgh}
+                      alt="KSGH"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                </div>
+                {/* Circle SVG */}
+                <div className="circle">
+                  <div className="relative">
+                    <svg viewBox="0 0 300 300" className="w-full h-full">
+                      <path
+                        id="circlePath"
+                        d="M 150 30 A 120 120 0 1 1 150 270 A 120 120 0 1 1 150 30"
+                        fill="none"
+                      />
+                      <text className="fill-red text-h1 font-medium">
+                        <textPath href="#circlePath" startOffset="0%">
+                          Our best mentor and nice at KSHRD .
+                        </textPath>
+                      </text>
+                    </svg>
+                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                      <Image
+                        src={arrowright}
+                        alt="Arrow"
+                        width={12}
+                        height={12}
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="relative w-[242px] h-[133px] mx-auto">
-                <Image
-                  alt="Instructor 2"
-                  src={ksgh}
-                  className="object-cover w-full h-full"
-                />
-              </div>
-
-              <div
-                className="hidden md:block absolute items-center left-[10%] top-[55%] transform -translate-x-1/2 -translate-y-1/2 w-[140px] h-[140px]  bg-cover rounded-full z-20"
-                style={{ backgroundImage: `url(${letterRound2.src})` }}
-              />
             </div>
 
-            <div className="grid grid-rows-2 gap-4 ">
-              <div className="relative w-[313px] max-w-full h-[292px] mx-auto">
+            {/* RIGHT: Instructor Cards */}
+            <div className="flex flex-col space-y-5 mt-2">
+              {/* Card 1 */}
+              <div className="relative w-full max-w-[300px] mx-auto rounded-xl overflow-hidden shadow-lg">
                 <Image
                   alt="Teacher Nak"
                   src={cherNak}
                   className="object-cover w-full h-full"
                 />
-                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 bg-transparent backdrop-blur-md border border-white/20 rounded-xl flex flex-col items-center px-3 py-1 shadow-md w-[200px]">
-                  <div className="text-h6 text-white/80">Kheng Sovannak</div>
-                  <div className="text-h6 text-white/80">IT Instructor</div>
+                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 bg-white/20 backdrop-blur-md border border-white/30 rounded-xl flex flex-col items-center px-3 py-2 shadow-md w-[200px]">
+                  <div className="text-sm text-white">Kheng Sovannak</div>
+                  <div className="text-sm text-white">IT Instructor</div>
                 </div>
               </div>
 
-              <div className="relative w-[296px] max-w-full h-[199px] mx-auto">
+              {/* Card 2 */}
+              <div className="relative w-full max-w-[300px] h-[199px] mx-auto rounded-xl overflow-hidden shadow-lg">
                 <Image
                   alt="Teacher Dara"
                   src={cherDara}
                   className="object-cover w-full h-full"
                 />
-                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 bg-transparent backdrop-blur-md border border-white/20 rounded-xl flex flex-col items-center px-3 py-1 shadow-md w-[200px]">
-                  <div className="text-h6 text-white/80">Tan Dara</div>
-                  <div className="text-h6 text-white/80">IT Instructor</div>
+                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 bg-white/20 backdrop-blur-md border border-white/30 rounded-xl flex flex-col items-center px-3 py-2 shadow-md w-[200px]">
+                  <div className="text-sm text-white">Tan Dara</div>
+                  <div className="text-sm text-white">IT Instructor</div>
                 </div>
               </div>
             </div>
@@ -162,7 +228,7 @@ export default function AboutUs() {
 
         <section className="grid grid-cols-1 sm:grid-cols-2 gap-4 ">
           <div className="h-auto flex items-center justify-center w-full">
-            <div className="relative grid grid-cols-2 grid-rows-2 w-full gap-y-8 gap-x-8 ">
+            <div className="relative grid grid-cols-1 sm:grid-cols-2 grid-rows-1 sm:grid-rows-2  w-full gap-y-8 gap-x-8 ">
               <div className="relative">
                 <Image
                   src={square1}
@@ -304,10 +370,45 @@ export default function AboutUs() {
                   </div>
                 </div>
               </div>
-              <div
-                className="hidden md:block absolute items-center left-[50%] top-[50%] transform -translate-x-1/2 -translate-y-1/2 w-[140px] h-[140px]  bg-cover rounded-full z-20"
-                style={{ backgroundImage: `url(${letterRound3.src})` }}
-              />
+              <div className="absolute items-center left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-32 sm:w-36 md:w-40 h-32 sm:h-36 md:h-40 bg-cover rounded-full z-20">
+                <div className="relative w-full h-full">
+                  <svg
+                    className="w-full h-full"
+                    viewBox="0 0 300 300"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <circle
+                      cx="150"
+                      cy="150"
+                      r="100"
+                      strokeWidth="2"
+                      fill="none"
+                    />
+                    <text className="fill-red text-h4 sm:text-h3 md:text-[36px] font-medium">
+                      <textPath href="#circlePath" startOffset="2%">
+                        Features · Features · Features · Features ·
+                      </textPath>
+                    </text>
+                    <path
+                      id="circlePath"
+                      d="M 150 30 A 120 120 0 1 1 150 270 A 120 120 0 1 1 150 30"
+                      fill="none"
+                      stroke="none"
+                    />
+                  </svg>
+
+                  {/* Center Icon */}
+                  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                    <Image
+                      src={arrowdown}
+                      alt="Arrow Down"
+                      width="16"
+                      height="16"
+                      className="w-4 sm:w-5 md:w-6 h-auto"
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
           <div className="relative p-6  h-auto flex items-center justify-center">
@@ -342,64 +443,10 @@ export default function AboutUs() {
             </div>
           </div>
 
-          <div className="grid grid-cols-3 grid-rows-2 w-full p-6 gap-4">
-            <Image
-              src={fong}
-              alt="Fong's portrait"
-              className="w-full h-full object-cover rounded-md"
-            />
-
-            <div className="row-span-2 flex flex-col gap-4">
-              <Image
-                src={minh}
-                alt="Minh's portrait"
-                className="w-[200px] h-[200px] object-cover "
-              />
-              <Image
-                src={senghun}
-                alt="Senghun's portrait"
-                className="w-[200px] h-[120px] object-cover"
-              />
-              <div className="flex gap-2 justify-center">
-                <Image
-                  src={roskan}
-                  alt="Roskan's portrait"
-                  className="w-full h-full object-cover"
-                />
-                <Image
-                  src={theara}
-                  alt="Theara's portrait"
-                  className="w-full h-full object-cover "
-                />
-              </div>
-              <Image
-                src={leap}
-                alt="Leap's portrait"
-                className="w-[160px] h-[150px] object-cover "
-              />
-            </div>
-
-            <div className="row-span-2 flex flex-col justify-end gap-4">
-              <Image
-                src={fanau}
-                alt="Fanau's portrait"
-                className="w-full h-full object-cover "
-              />
-              <Image
-                src={visa}
-                alt="Visa's portrait"
-                className="w-full h-full object-cover"
-              />
-              <Image
-                src={vit}
-                alt="Vit's portrait"
-                className="w-[281px] h-[168px] object-cover "
-              />
-            </div>
-          </div>
+          <TeamProfile />
         </section>
 
-        <section className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <section className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           <div className="text-white p-4 rounded col-span-2">
             <div
               className="relative w-full h-[400px] sm:h-[450px] md:h-[500px] lg:h-[515px] bg-center bg-cover rounded-[24px]"
@@ -416,7 +463,7 @@ export default function AboutUs() {
                     Adventure with Thrillz
                   </p>
 
-                  <Button className="bg-white text-[#59BAD5] text-sm sm:text-base md:text-[15.18px] font-normal rounded-[30px] px-6 py-2">
+                  <Button className="bg-white text-[#59BAD5] hover:text-white text-sm sm:text-base md:text-[15.18px] font-normal rounded-[30px] px-6 py-2 ml-20">
                     Get Start Now
                   </Button>
                 </div>

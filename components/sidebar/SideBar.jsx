@@ -59,14 +59,16 @@ const items = [
   },
 ];
 
-export function SidebarTest() {
+export default function DashbaordSideBar() {
   const pathname = usePathname();
 
   return (
     <Sidebar collapsible="icon" className="border-none  ">
       <SidebarContent className="h-screen flex flex-col !border-0">
-        <div className="p-4 !border-0">
-          <Image src={logo} className="w-[168px] object-cover" alt="logo" />
+        <div className="p-4 !border-0 ">
+          <Link href="/workspace">
+            <Image src={logo} className="w-[168px] object-cover" alt="logo" />
+          </Link>
         </div>
 
         <SidebarGroup className="flex-1 flex flex-col !border-0">

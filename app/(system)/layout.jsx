@@ -1,13 +1,13 @@
 import "../globals.css";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { SidebarTest } from "@/components/sidebar/SideBar";
+import { SidebarTest } from "@/components/sidebar/Sidebar";
 
 import { auth } from "../../auth";
 import { UserAvatar } from "@/components/testcomponent/Avatar";
 import NavbarWrapper from "@/components/layout/NavbarWrapper";
 import { Suspense } from "react";
 import Loading from "../loading";
-
+import SidebarRenderer from "@/components/sidebar/SidebarRenderer";
 export const metadata = {
   title: "Zentrio | Task Mangement",
   description: "Welcome to Zentrio Cambodia",
@@ -20,7 +20,7 @@ export default async function SystemLayout({ children }) {
   console.log("aaa", session?.user);
   return (
     <SidebarProvider className=" ">
-      <SidebarTest />
+      <SidebarRenderer />
       <div className={" font-poppin   w-full"}>
         <SidebarTrigger className="fixed top-0   z-[30]" />
         <div className="w-full ">

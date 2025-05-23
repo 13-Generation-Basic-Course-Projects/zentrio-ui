@@ -118,7 +118,7 @@ export default function Home() {
             </span>
             <img
               className="absolute bottom-3 right-[-25px] translate-y-full mt-1 w-12 h-12 rounded-full border-8 border-white"
-              src="https://photoshop-tutorial.org/wp-content/uploads/2023/12/1703824838_Follow-7-Steps-to-Sharpen-Image-in-Photoshop.jpg"
+              src="https://www.adobe.com/acrobat/hub/media_173d13651460eb7e12c0ef4cf8410e0960a20f0ee.jpeg?width=750&format=jpeg&optimize=medium"
               alt="profile user"
               width={60}
               height={60}
@@ -272,7 +272,7 @@ export default function Home() {
             <div className="">
               <Image
                 alt="four states"
-                className=" object-contain"
+                className="w-full "
                 src={ganttChartImg}
               />
             </div>

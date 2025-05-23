@@ -38,7 +38,7 @@ export const NavbarLanding = () => {
         {/* Desktop Buttons (hidden on mobile) */}
         <div className="hidden min-[400px]:flex gap-2 sm:gap-[10px] ">
           <Button className=" bg-transparent text-primary border-none font-semibold rounded-full text-[16px] sm:px-[26px] py-2 px-4">
-            <Link href="/dashboard/1/1/board">Login</Link>
+            <Link href="/workspace">Login</Link>
           </Button>
           <Button className="bg-primary text-white border-none font-semibold text-[16px] rounded-full sm:px-[26px] py-2 px-4">
             Register
@@ -92,7 +92,7 @@ export const NavbarLanding = () => {
           </nav>
           <div className="min-[400px]:hidden flex flex-col items-center space-y-2 mt-4 w-full max-w-[200px]">
             <Button className="text-primary border-none font-semibold text-[16px] rounded-full sm:px-[26px] py-2 px-4 w-full">
-              <Link href="/dashboard/1/1/board">Login</Link>
+              <Link href="/workspaced">Login</Link>
             </Button>
             <Button className="bg-primary text-white border-none font-semibold text-[16px] rounded-full sm:px-[26px] py-2 px-4 w-full">
               Register
