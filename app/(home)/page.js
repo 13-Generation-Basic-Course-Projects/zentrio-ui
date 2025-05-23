@@ -56,7 +56,7 @@ export default function Home() {
   return (
     <div className="w-full">
       <section className="relative h-[990px] bg-gradient-to-b from-[#bdeffc] to-slate-50 overflow-hidden">
-        <div className="mx-[50px]">
+        <div className="mx-[35px] md:mx-[50px]">
           <NavbarLanding />
         </div>
         {/* Floating Chat Bubbles */}
@@ -116,9 +116,9 @@ export default function Home() {
               />
               Sending a file project
             </span>
-            <Image
+            <img
               className="absolute bottom-3 right-[-25px] translate-y-full mt-1 w-12 h-12 rounded-full border-8 border-white"
-              src="/avatars/avatar1.jpg"
+              src="https://photoshop-tutorial.org/wp-content/uploads/2023/12/1703824838_Follow-7-Steps-to-Sharpen-Image-in-Photoshop.jpg"
               alt="profile user"
               width={60}
               height={60}
@@ -137,9 +137,9 @@ export default function Home() {
               />
               Sending a file project
             </span>
-            <Image
+            <img
               className="absolute bottom-3 right-[-25px] translate-y-full mt-1 w-12 h-12 rounded-full border-8 border-white"
-              src="/avatars/avatar1.jpg"
+              src="https://imgv3.fotor.com/images/slider-image/A-clear-image-of-a-woman-wearing-red-sharpened-by-Fotors-image-sharpener.jpg"
               alt="profile user"
               width={60}
               height={60}

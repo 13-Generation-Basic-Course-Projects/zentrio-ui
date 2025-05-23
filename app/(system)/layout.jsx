@@ -1,4 +1,3 @@
-import { Geist, Geist_Mono } from "next/font/google";
 import "../globals.css";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { SidebarTest } from "@/components/sidebar/SideBar";
@@ -7,6 +6,7 @@ import { auth } from "../../auth";
 import { UserAvatar } from "@/components/testcomponent/Avatar";
 import NavbarWrapper from "@/components/layout/NavbarWrapper";
 import { Suspense } from "react";
+import Loading from "../loading";
 
 export const metadata = {
   title: "Zentrio | Task Mangement",
@@ -19,17 +19,15 @@ export default async function SystemLayout({ children }) {
   const session = await auth();
   console.log("aaa", session?.user);
   return (
-    <Suspense fallback={<p>loading</p>}>
-      <SidebarProvider>
-        <SidebarTest />
-        <div className={" font-poppin  "}>
-          <SidebarTrigger className="sticky top-0" />
-          <div className="w-full ">
-            <NavbarWrapper user={session?.user} />
-            {children}
-          </div>
+    <SidebarProvider className=" ">
+      <SidebarTest />
+      <div className={" font-poppin   w-full"}>
+        <SidebarTrigger className="fixed top-0   z-[30]" />
+        <div className="w-full ">
+          <NavbarWrapper user={session?.user} />
+          {children}
         </div>
-      </SidebarProvider>
-    </Suspense>
+      </div>
+    </SidebarProvider>
   );
 }
