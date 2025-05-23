@@ -1,39 +1,26 @@
-import { Geist, Geist_Mono } from "next/font/google";
+"use client";
+
 import "../globals.css";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { SidebarTest } from "@/components/sidebar/SideBar";
-import Logout from "../(auth)/_components/Logout";
-import { auth } from "@/auth";
-import { UserAvatar } from "@/components/testcomponent/Avatar";
-import NavbarAutherized from "@/components/layout/NavbarAutherized";
+import { usePathname } from "next/navigation";
 import { NavbarLanding } from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 
-export const metadata = {
-  title: "Zentrio | Landing",
-  description: "Landing Page",
-};
+export default function RootLayout({ children }) {
+  const pathname = usePathname();
+  const isRoot = pathname === "/";
 
-export default async function RootLayout({ children }) {
-  const session = await auth();
-  console.log("aaa", session?.user);
   return (
-    <body className={" font-poppin "}>
-      <div className="mx-[20px] md:mx-[50px]">
-        <NavbarLanding />
-        <div className="hidden fixed top-[50px] right-0 z-50 p-4">
-          {session?.user ? (
-            <div className="flex gap-2 ">
-              <Logout />
-              <UserAvatar data={session?.user} />
-            </div>
-          ) : (
-            ""
-          )}
-        </div>
+    <div className="font-poppin">
+      <div className={isRoot ? "mx-0" : "mx-[50px]"}>
+        {/* Show landing header background only on root */}
+        {isRoot && ""}
+
+        {/* Show Navbar only once */}
+        {!isRoot && <NavbarLanding />}
+
         {children}
       </div>
       <Footer />
-    </body>
+    </div>
   );
 }

@@ -1,5 +1,9 @@
 import React from "react";
-
+import { Dashbaord } from "@/components/testcomponent/Dashboard";
 export default function page() {
-  return <div></div>;
+  return (
+    <div>
+      <Dashbaord />
+    </div>
+  );
 }

@@ -1,4 +1,4 @@
-import { NavbarAuthorizedBoard } from "@/components/layout/NavbarAutherized";
+import SystemBoard from "@/components/appserver/Boardpage";
 import { auth } from "@/auth";
 
 export default async function BoardLayout({ children }) {
@@ -6,7 +6,7 @@ export default async function BoardLayout({ children }) {
 
   return (
     <div>
-      <NavbarAuthorizedBoard user={session?.user} />
+      <SystemBoard user={session?.user} />
       <main>{children}</main>
     </div>
   );

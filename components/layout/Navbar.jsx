@@ -39,7 +39,7 @@ export const NavbarLanding = () => {
         {/* Desktop Buttons (hidden on mobile) */}
         <div className="hidden min-[400px]:flex gap-2 sm:gap-[10px] ">
           <Button className=" bg-transparent text-primary border-none font-semibold rounded-full text-[16px] sm:px-[26px] py-2 px-4">
-            Login
+            <Link href="/dashboard/1/1/docu">Login</Link>
           </Button>
           <Button className="bg-primary text-white border-none font-semibold text-[16px] rounded-full sm:px-[26px] py-2 px-4">
             Register
