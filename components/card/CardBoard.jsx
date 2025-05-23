@@ -2,21 +2,26 @@
 
 import React, { useState } from "react";
 import { Card, CardHeader, CardBody, CardFooter } from "@heroui/card";
-import { IconDelete, StackedProfiles, StarIconOutline, StarIconSolid } from "../icon/everyicon";
+import {
+  IconDelete,
+  StackedProfiles,
+  StarIconOutline,
+  StarIconSolid,
+} from "../icon/everyicon";
 import iconMember from "@/assets/memberSideBar.png";
 
 import Image from "next/image";
 
 
-export default function CardBoard() {
+export default function CardBoard({ title, color }) {
   const [favorited, setFavorited] = useState(false);
 
   return (
-    <div className="max-w-sm mx-auto mt-10">
+    <div className="mx-auto mt-10 w-full max-w-auto">
       <Card className="py-4">
         {/* Header */}
         <CardHeader className="pb-0 pt-2 px-4 flex justify-between items-center">
-          <p className="text-h2 font-semibold text-primary">UX/UI Design</p>
+          <p className="text-h2 font-semibold text-primary truncate">{title}</p>
 
           <button
             onClick={() => setFavorited(!favorited)}
@@ -34,9 +39,9 @@ export default function CardBoard() {
         {/* Body */}
         <CardBody className="overflow-visible py-2">
           <img
-            src="https://www.hunterlab.com/media/images/light-yellow-background.max-2560x789.jpg.pagespeed.ce.epOGMRWGhe.jpg"
-            alt="Card background"
-            className="object-cover rounded-xl w-full"
+            src={color}
+            alt={`Card background for ${title}`}
+            className="object-cover rounded-xl w-full h-48"
           />
         </CardBody>
 
@@ -46,12 +51,16 @@ export default function CardBoard() {
 
           <div className="flex w-full justify-between text-sm text-gray-600">
             <div className="flex flex-row justify-center items-center space-x-2">
-              <Image src={iconMember} className="w-[16px] h-[16px]" />
+              <Image
+                src={iconMember}
+                className="w-[16px] h-[16px]"
+                alt="Members icon"
+              />
               <p>13 Members</p>
             </div>
             <div className="flex flex-row justify-center items-center space-x-2 text-progress-red">
-              <IconDelete/>
-              <button className=" hover:underline">Remove</button>
+              <IconDelete />
+              <button className="hover:underline">Remove</button>
             </div>
           </div>
         </CardFooter>
