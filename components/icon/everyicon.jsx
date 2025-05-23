@@ -149,3 +149,101 @@ export function ArrowLeftIcon() {
     </>
   );
 }
+
+//test Star Icon
+
+// Solid Star Icon
+export function StarIconSolid({ className = "w-6 h-6" }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="currentColor"
+      viewBox="0 0 24 24"
+      strokeWidth={1.5}
+      stroke="currentColor"
+      className={className}
+    >
+      <path
+        fillRule="evenodd"
+        d="M11.48 3.499a.75.75 0 011.04 0l2.733 2.772 3.864.562a.75.75 0 01.416 1.279l-2.798 2.73.661 3.852a.75.75 0 01-1.088.79L12 14.347l-3.468 1.823a.75.75 0 01-1.088-.79l.661-3.852-2.798-2.73a.75.75 0 01.416-1.28l3.864-.561 2.733-2.772z"
+        clipRule="evenodd"
+      />
+    </svg>
+  );
+}
+
+// Outline Star Icon
+export function StarIconOutline({ className = "w-6 h-6" }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={1.5}
+      stroke="currentColor"
+      className={className}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M11.48 3.499a.75.75 0 011.04 0l2.733 2.772 3.864.562a.75.75 0 01.416 1.279l-2.798 2.73.661 3.852a.75.75 0 01-1.088.79L12 14.347l-3.468 1.823a.75.75 0 01-1.088-.79l.661-3.852-2.798-2.73a.75.75 0 01.416-1.28l3.864-.561 2.733-2.772z"
+      />
+    </svg>
+  );
+}
+
+export function StackedProfiles() {
+  return (
+    <div className="flex items-center space-x-[-10px]">
+      <img
+        src="https://randomuser.me/api/portraits/women/1.jpg"
+        alt="User 1"
+        className="w-10 h-10 rounded-full border-2 border-white shadow"
+      />
+      <img
+        src="https://randomuser.me/api/portraits/men/2.jpg"
+        alt="User 2"
+        className="w-10 h-10 rounded-full border-2 border-white shadow"
+      />
+      <img
+        src="https://randomuser.me/api/portraits/women/3.jpg"
+        alt="User 3"
+        className="w-10 h-10 rounded-full border-2 border-white shadow"
+      />
+      <div className="w-10 h-10 rounded-full bg-gray-300 text-xs flex items-center justify-center border-2 border-white shadow">
+        +3
+      </div>
+    </div>
+  );
+}
+export function IconDelete({
+  className = "w-5 h-5 text-red-500 hover:text-red-700 cursor-pointer",
+}) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={2}
+      className={className}
+    >
+      {/* Trash bin lid */}
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M3 6h18M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"
+      />
+      {/* Trash bin body */}
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"
+      />
+      {/* Trash bin handles */}
+      <path strokeLinecap="round" strokeLinejoin="round" d="M10 11v6M14 11v6" />
+    </svg>
+  );
+}
+
+
