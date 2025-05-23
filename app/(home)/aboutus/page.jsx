@@ -148,7 +148,7 @@ export default function AboutUs() {
           </div>
 
           <div className="relative h-auto overflow-hidden p-4 sm:p-10 flex flex-col lg:flex-row items-center lg:items-start justify-center gap-10">
-            {/* LEFT: Image Cards + Circle SVG */}
+            
             <div className="flex flex-col items-center space-y-5 mt-24">
               <div className="card w-[300px] md:w-[320px]">
                 <div className="box">
