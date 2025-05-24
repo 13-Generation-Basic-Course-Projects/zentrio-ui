@@ -19,13 +19,32 @@ import board from "../../assets/boardSideBar.png";
 import folder from "../../assets/folderSidBar.png";
 import report from "@/assets/report.png";
 import { LeaveIcon } from "../icon/everyicon";
+const randomColor = () =>
+  Math.floor(Math.random() * 16777215)
+    .toString(16)
+    .padStart(6, "0");
 
 const items = [
   {
-    title: "Board",
-    url: "/dashboard/1/1/board",
-    icon: board,
+    title: "workspace1",
+    url: "/workspace",
+    color: "bg-pink-300",
     activeIcon: board,
+    myworkspace: true,
+  },
+  {
+    title: "workspace2",
+    url: "/workspace/2",
+    color: "bg-pink-300",
+    activeIcon: board,
+    myworkspace: true,
+  },
+  {
+    title: "workspace3",
+    url: "/workspace/3",
+    color: "bg-pink-300",
+    activeIcon: board,
+    myworkspace: true,
   },
 ];
 
@@ -45,10 +64,10 @@ export default function WorkSpaceSideBar() {
           <SidebarGroupContent className="flex-1 flex flex-col justify-between !border-0">
             {/* TOP MENU */}
             <SidebarMenu className="!border-0">
-              {items.map((item) => {
+              {items.map((item, i) => {
                 const isActive = pathname === item.url;
                 return (
-                  <SidebarMenuItem className="py-1 !border-0" key={item.title}>
+                  <SidebarMenuItem className="py-1 !border-0" key={i}>
                     <SidebarMenuButton
                       asChild
                       tooltip={item.title}
@@ -59,11 +78,11 @@ export default function WorkSpaceSideBar() {
                       }
                     >
                       <Link href={item.url}>
-                        <Image
-                          src={isActive ? item.activeIcon : item.icon}
-                          className="w-[18px] object-cover"
-                          alt={`${item.title} icon`}
-                        />
+                        <p className={`${item.color} h-5 w-5 rounded-full`}>
+                          {" "}
+                          3
+                        </p>
+
                         <span>{item.title}</span>
                       </Link>
                     </SidebarMenuButton>

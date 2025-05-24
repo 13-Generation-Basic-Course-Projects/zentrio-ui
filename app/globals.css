@@ -9,6 +9,16 @@
     -webkit-text-fill-color: transparent;
     background-image: linear-gradient(90deg, #59bad5, #abaaff, #59bad5);
   }
+
+  /* Chrome, Safari and Opera */
+  .scrollbar-hidden::-webkit-scrollbar {
+    display: none;
+  }
+
+  .scrollbar-hidden {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+  }
 }
 
 /* font */

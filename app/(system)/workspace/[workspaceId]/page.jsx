@@ -1,5 +1,6 @@
+import Myworkspace from "@/components/appserver/Myworkspace";
 import React from "react";
 
-export default function WorkspaceSpcific() {
-  return <div>here is like other and my work space contain here</div>;
+export default async function WorkspaceSpcific({ params }) {
+  return <Myworkspace Workspaceid={await params.workspaceId} />;
 }

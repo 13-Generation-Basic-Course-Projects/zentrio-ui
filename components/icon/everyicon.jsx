@@ -150,12 +150,13 @@ export function ArrowLeftIcon() {
   );
 }
 // Solid Star Icon
-export function StarIconSolid({ className = "w-4 h-4" }) {
+export function StarIconSolid({ className = "w-6 h-6" }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       fill="currentColor"
+      strokeWidth={1.5}
       className={`${className} text-yellow-400`}
     >
       <path
@@ -168,7 +169,7 @@ export function StarIconSolid({ className = "w-4 h-4" }) {
 }
 
 // Outline Star Icon
-export function StarIconOutline({ className = "w-4 h-4" }) {
+export function StarIconOutline({ className = "w-6 h-6" }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

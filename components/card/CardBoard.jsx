@@ -16,21 +16,19 @@ export default function CardBoard({ title, image }) {
   const [favorited, setFavorited] = useState(false);
 
   return (
-    <Card className="py-4  rounded-xl  text-blue-400 cursor-pointer hover:bg-blue-50 transition ">
+    <Card className="py-4  h-[300px] rounded-xl shadow-sm  ">
       {/* Header */}
       <CardHeader className="pb-0 pt-2 px-4 flex justify-between items-center">
-        <p className="text-h2 font-semibold text-primary truncate">{title}</p>
+        <p className="text-body-sm font-semibold text-primary truncate">
+          {title}
+        </p>
 
         <button
           onClick={() => setFavorited(!favorited)}
           className="text-yellow-500 hover:text-yellow-600"
           aria-label="Toggle favorite"
         >
-          {favorited ? (
-            <StarIconSolid className="w-10 h-10 text-yellow-500" />
-          ) : (
-            <StarIconOutline className="w-10 h-10 text-yellow-500" />
-          )}
+          {favorited ? <StarIconSolid /> : <StarIconOutline />}
         </button>
       </CardHeader>
 
