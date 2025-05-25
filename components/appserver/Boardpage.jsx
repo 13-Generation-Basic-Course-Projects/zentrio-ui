@@ -8,7 +8,7 @@ import GanttChart from "../testcomponent/Calender";
 const tabItems = [
   {
     key: "kanban",
-    title: "Kanban",
+    title: "Board",
     content: <KanbanBoard />,
   },
   {

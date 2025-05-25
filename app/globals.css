@@ -10,6 +10,10 @@
     background-image: linear-gradient(90deg, #59bad5, #abaaff, #59bad5);
   }
 
+  * {
+    @apply box-border m-0 p-0;
+  }
+
   /* Chrome, Safari and Opera */
   .scrollbar-hidden::-webkit-scrollbar {
     display: none;

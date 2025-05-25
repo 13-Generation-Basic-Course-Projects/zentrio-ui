@@ -19,8 +19,8 @@ export default async function OverviewLayout({ children }) {
   const session = await auth();
   console.log("aaa", session?.user);
   return (
-    <div className="h-screen flex flex-col overflow-hidden">
-      <div className="flex-1 pt-0 flex flex-col overflow-hidden pt-3">
+    <div className="h-screen flex flex-col overflow-y-hidden">
+      <div className="flex-1 pt-0 flex flex-col overflow-hidden h-[100%] pt-3">
         {/* Top section - fixed height */}
         <div className="grid grid-cols-12  flex-shrink-0">
           <div className="col-span-9 flex flex-col p-2 pt-10 ">

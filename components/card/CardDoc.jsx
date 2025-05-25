@@ -48,8 +48,8 @@ export default function CardFolder({ title, status, date }) {
             y2="33.533"
             gradientUnits="userSpaceOnUse"
           >
-            <stop offset="0" stop-color="#fac017"></stop>
-            <stop offset=".909" stop-color="#e1ab2d"></stop>
+            <stop offset="0" stopColor="#fac017"></stop>
+            <stop offset=".909" stopColor="#e1ab2d"></stop>
           </linearGradient>
           <path
             fill="url(#Om5yvFr6YrdlC0q2Vet0Ha_WWogVNJDSfZ5_gr1)"
@@ -63,8 +63,8 @@ export default function CardFolder({ title, status, date }) {
             y2="27.39"
             gradientUnits="userSpaceOnUse"
           >
-            <stop offset="0" stop-color="#fbfef3"></stop>
-            <stop offset=".909" stop-color="#e2e4e3"></stop>
+            <stop offset="0" stopColor="#fbfef3"></stop>
+            <stop offset=".909" stopColor="#e2e4e3"></stop>
           </linearGradient>
           <path
             fill="url(#Om5yvFr6YrdlC0q2Vet0Hb_WWogVNJDSfZ5_gr2)"
@@ -78,8 +78,8 @@ export default function CardFolder({ title, status, date }) {
             y2="19"
             gradientUnits="userSpaceOnUse"
           >
-            <stop offset="0" stop-color="#fbfef3"></stop>
-            <stop offset=".909" stop-color="#e2e4e3"></stop>
+            <stop offset="0" stopColor="#fbfef3"></stop>
+            <stop offset=".909" stopColor="#e2e4e3"></stop>
           </linearGradient>
           <path
             fill="url(#Om5yvFr6YrdlC0q2Vet0Hc_WWogVNJDSfZ5_gr3)"
@@ -93,8 +93,8 @@ export default function CardFolder({ title, status, date }) {
             y2="39.792"
             gradientUnits="userSpaceOnUse"
           >
-            <stop offset="0" stop-color="#e3a917"></stop>
-            <stop offset=".464" stop-color="#d79c1e"></stop>
+            <stop offset="0" stopColor="#e3a917"></stop>
+            <stop offset=".464" stopColor="#d79c1e"></stop>
           </linearGradient>
           <path
             fill="url(#Om5yvFr6YrdlC0q2Vet0Hd_WWogVNJDSfZ5_gr4)"
@@ -108,11 +108,11 @@ export default function CardFolder({ title, status, date }) {
             y2="30.778"
             gradientUnits="userSpaceOnUse"
           >
-            <stop offset=".34" stop-color="#ffefb2"></stop>
-            <stop offset=".485" stop-color="#ffedad"></stop>
-            <stop offset=".652" stop-color="#ffe99f"></stop>
-            <stop offset=".828" stop-color="#fee289"></stop>
-            <stop offset="1" stop-color="#fed86b"></stop>
+            <stop offset=".34" stopColor="#ffefb2"></stop>
+            <stop offset=".485" stopColor="#ffedad"></stop>
+            <stop offset=".652" stopColor="#ffe99f"></stop>
+            <stop offset=".828" stopColor="#fee289"></stop>
+            <stop offset="1" stopColor="#fed86b"></stop>
           </linearGradient>
           <path
             fill="url(#Om5yvFr6YrdlC0q2Vet0He_WWogVNJDSfZ5_gr5)"
@@ -125,11 +125,11 @@ export default function CardFolder({ title, status, date }) {
             r="53.875"
             gradientUnits="userSpaceOnUse"
           >
-            <stop offset=".199" stop-color="#fec832"></stop>
-            <stop offset=".601" stop-color="#fcd667"></stop>
-            <stop offset=".68" stop-color="#fdda75"></stop>
-            <stop offset=".886" stop-color="#fee496"></stop>
-            <stop offset="1" stop-color="#ffe8a2"></stop>
+            <stop offset=".199" stopColor="#fec832"></stop>
+            <stop offset=".601" stopColor="#fcd667"></stop>
+            <stop offset=".68" stopColor="#fdda75"></stop>
+            <stop offset=".886" stopColor="#fee496"></stop>
+            <stop offset="1" stopColor="#ffe8a2"></stop>
           </radialGradient>
           <path
             fill="url(#Om5yvFr6YrdlC0q2Vet0Hf_WWogVNJDSfZ5_gr6)"

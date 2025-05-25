@@ -3,6 +3,8 @@ import { useState } from "react";
 import { Plus, ChevronDown, ChevronRight } from "lucide-react";
 
 import { initialColumns } from "@/data/boardData";
+import { CardCheckList } from "../card/CardChecklist";
+import UserAvater from "../useravatar/UserAvatar";
 
 export default function KanbanBoard() {
   const [columns, setColumns] = useState(initialColumns);
@@ -266,7 +268,7 @@ export default function KanbanBoard() {
   return (
     <div className="p-4 w-full h-screen flex flex-col">
       {/* Column Headers */}
-      <div className="pb-2 grid grid-cols-4 px-4 gap-4">
+      <div className="pb-2 grid grid-cols-4 gap-4">
         <div className="mb-4 border-b-4 border-blue-500 pb-2 flex items-center gap-3">
           <p className="text-2xl font-bold">To Do</p>
           <button className="px-3 py-1 text-sm rounded-full bg-transparent border-2 border-gray-300 shadow-sm">
@@ -295,17 +297,17 @@ export default function KanbanBoard() {
       </div>
 
       {/* Kanban Columns */}
-      <div className="   grid grid-cols-4 px-4 gap-4 h-full  ">
+      <div className="   grid grid-cols-4  gap-1 h-full  ">
         {columns.map((column) => (
           // parent
           <div
             key={column.id}
-            className="flex  flex-col min-h-0 w-full px-3 h-[99%] overflow-hidden  "
+            className="flex  flex-col min-h-0 w-full  h-[99%] overflow-hidden  "
             onDragOver={(e) => handleDragOver(e, "column", column.id)}
             onDrop={handleDrop}
           >
             {/* child */}
-            <div className="  scrollbar-hidden pb-20 overflow-y-auto gap-2 bp-3  ">
+            <div className="  scrollbar-hidden pb-20 overflow-y-auto  bp-3  ">
               {column.cards
                 .sort((a, b) => a.order - b.order)
                 .map((card, cardIndex) => (
@@ -330,7 +332,7 @@ export default function KanbanBoard() {
                     <div className="bg-white rounded-xl shadow mb-2 overflow-hidden hover:shadow-md transition-shadow border-1 border-bgColor">
                       {/* Task Header */}
                       <div
-                        className="p-3 border-b border-gray-100 cursor-move"
+                        className="py-3  cursor-move"
                         draggable
                         onDragStart={(e) => handleDragStart(e, card.id, "card")}
                         onDragEnd={handleDragEnd}
@@ -354,16 +356,23 @@ export default function KanbanBoard() {
                               </div>
                             </div>
                           </div>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              e.preventDefault();
-                              addSubtask(card.id);
-                            }}
-                            className="p-1 hover:bg-gray-100 rounded text-gray-500 hover:text-gray-700"
-                          >
-                            <Plus size={16} />
-                          </button>
+                          <div className="flex items-center justify-between gap-2">
+                            <UserAvater
+                              image={
+                                "https://is5-ssl.mzstatic.com/image/thumb/Purple124/v4/3d/32/20/3d322049-015a-0e3b-e512-583ac627d478/source/256x256bb.jpg"
+                              }
+                            />
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                e.preventDefault();
+                                addSubtask(card.id);
+                              }}
+                              className="p-1 hover:bg-gray-100 rounded text-gray-500 hover:text-gray-700"
+                            >
+                              <Plus size={16} />
+                            </button>
+                          </div>
                         </div>
                       </div>
 
@@ -405,19 +414,22 @@ export default function KanbanBoard() {
 
                                 {/* Subtask Item */}
                                 <div
-                                  className="ml-4 p-2 mb-1 bg-gray-50 rounded text-sm cursor-move hover:bg-gray-100 transition-colors border-l-2 border-gray-300"
+                                  className=""
                                   draggable
                                   onDragStart={(e) =>
                                     handleDragStart(e, subtask.id, "subtask")
                                   }
                                   onDragEnd={handleDragEnd}
                                 >
-                                  <div className="font-medium text-gray-700">
-                                    {subtask.title}
-                                  </div>
-                                  <div className="text-xs text-gray-500">
-                                    {subtask.description}
-                                  </div>
+                                  <CardCheckList
+                                    title="Hello"
+                                    startDate={"25/05/25"}
+                                    label={subtask.label}
+                                    comment={subtask.comment}
+                                    image={
+                                      "https://codewithmosh.com/_next/image?url=https%3A%2F%2Fcdn.filestackcontent.com%2F8MbtJ4hTAaOk3KPcptqZ&w=3840&q=75"
+                                    }
+                                  />
                                 </div>
                               </div>
                             ))}
