@@ -3,7 +3,7 @@ import { Card, CardHeader, CardBody, CardFooter } from "@heroui/card";
 
 export default function CardBoardEmpty() {
   return (
-    <Card className="bg-transparent  shadow-none border-none">
+    <Card className="bg-transparent h-[340px]  shadow-none border-none">
       {/* Body */}
 
       <div className="flex items-center justify-center h-full bg-transparent">

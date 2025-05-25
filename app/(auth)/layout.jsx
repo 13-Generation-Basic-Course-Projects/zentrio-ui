@@ -29,11 +29,7 @@ export default async function AuthLayout({ children }) {
   console.log("aaa", session?.user);
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} font-poppin`}
-      >
-        {children}
-      </body>
+      <body className={" font-poppin"}>{children}</body>
     </html>
   );
 }
