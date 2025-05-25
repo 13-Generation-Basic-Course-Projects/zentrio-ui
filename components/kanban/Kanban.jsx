@@ -327,7 +327,7 @@ export default function KanbanBoard() {
                     />
 
                     {/* Main Task Card */}
-                    <div className="bg-white rounded shadow mb-2 overflow-hidden hover:shadow-md transition-shadow">
+                    <div className="bg-white rounded-xl shadow mb-2 overflow-hidden hover:shadow-md transition-shadow border-1 border-bgColor">
                       {/* Task Header */}
                       <div
                         className="p-3 border-b border-gray-100 cursor-move"
