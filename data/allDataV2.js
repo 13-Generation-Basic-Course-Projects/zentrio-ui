@@ -276,7 +276,7 @@ export const comments = [
 export const tasks = [
   {
     task_id: "t-1",
-    title: "Design homepage UI",
+    title: "Design  UI",
     description: "Create wireframes and prototypes for the homepage.",
     is_done: false,
     created_at: "2025-04-20T10:15:00Z",

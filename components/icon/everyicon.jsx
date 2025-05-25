@@ -149,23 +149,18 @@ export function ArrowLeftIcon() {
     </>
   );
 }
-
-//test Star Icon
-
 // Solid Star Icon
-export function StarIconSolid({ className = "w-6 h-6" }) {
+export function StarIconSolid({ className = "w-4 h-4" }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      fill="currentColor"
       viewBox="0 0 24 24"
-      strokeWidth={1.5}
-      stroke="currentColor"
-      className={className}
+      fill="currentColor"
+      className={`${className} text-yellow-400`}
     >
       <path
         fillRule="evenodd"
-        d="M11.48 3.499a.75.75 0 011.04 0l2.733 2.772 3.864.562a.75.75 0 01.416 1.279l-2.798 2.73.661 3.852a.75.75 0 01-1.088.79L12 14.347l-3.468 1.823a.75.75 0 01-1.088-.79l.661-3.852-2.798-2.73a.75.75 0 01.416-1.28l3.864-.561 2.733-2.772z"
+        d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345l2.125-5.111Z"
         clipRule="evenodd"
       />
     </svg>
@@ -173,7 +168,7 @@ export function StarIconSolid({ className = "w-6 h-6" }) {
 }
 
 // Outline Star Icon
-export function StarIconOutline({ className = "w-6 h-6" }) {
+export function StarIconOutline({ className = "w-4 h-4" }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -181,12 +176,12 @@ export function StarIconOutline({ className = "w-6 h-6" }) {
       viewBox="0 0 24 24"
       strokeWidth={1.5}
       stroke="currentColor"
-      className={className}
+      className={`${className} `}
     >
       <path
         strokeLinecap="round"
         strokeLinejoin="round"
-        d="M11.48 3.499a.75.75 0 011.04 0l2.733 2.772 3.864.562a.75.75 0 01.416 1.279l-2.798 2.73.661 3.852a.75.75 0 01-1.088.79L12 14.347l-3.468 1.823a.75.75 0 01-1.088-.79l.661-3.852-2.798-2.73a.75.75 0 01.416-1.28l3.864-.561 2.733-2.772z"
+        d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z"
       />
     </svg>
   );
@@ -245,5 +240,3 @@ export function IconDelete({
     </svg>
   );
 }
-
-
