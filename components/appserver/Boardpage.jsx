@@ -81,8 +81,10 @@ export default function SystemBoard({ user }) {
       </div>
 
       {/* Tab Content Area */}
-      <main className="p-6  overflow-hidden max-h-screen overflow-y-hidden">
-        <div className=" mx-auto ">{currentTab?.content}</div>
+      <main className="p-6  ">
+        <div className=" mx-auto overflow-hidden h-screen ">
+          {currentTab?.content}
+        </div>
       </main>
     </>
   );

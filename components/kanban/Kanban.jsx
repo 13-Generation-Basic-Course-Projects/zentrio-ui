@@ -1,7 +1,9 @@
 "use client";
 import { useState } from "react";
 import { Plus, ChevronDown, ChevronRight } from "lucide-react";
+
 import { initialColumns } from "@/data/boardData";
+
 export default function KanbanBoard() {
   const [columns, setColumns] = useState(initialColumns);
   const [draggedItem, setDraggedItem] = useState(null);
@@ -68,6 +70,7 @@ export default function KanbanBoard() {
                     id: newSubtaskId,
                     title: `subtask ${card.subtasks.length + 1}`,
                     description: "New subtask",
+                    order: card.subtasks.length,
                   },
                 ],
                 expanded: true,
@@ -114,14 +117,10 @@ export default function KanbanBoard() {
 
     if (!draggedItem) return;
 
-    // Prevent dropping a task into its own subtasks
+    // Prevent cards from being dropped into subtask or task-body areas
     if (
       draggedItem.type === "card" &&
-      targetType === "subtask" &&
-      draggedItem.itemId ===
-        columns[columns.findIndex((col) => col.id === columnId)].cards[
-          cardIndex
-        ].id
+      ["subtask", "task-body"].includes(targetType)
     ) {
       return;
     }
@@ -205,7 +204,7 @@ export default function KanbanBoard() {
       newColumns[targetColumnIndex].cards.splice(targetIndex, 0, itemToMove);
     } else if (
       dragTarget.type === "subtask" &&
-      (draggedItem.type === "card" || draggedItem.type === "subtask")
+      draggedItem.type === "subtask"
     ) {
       // Dropping as a subtask
       const targetCard =
@@ -214,7 +213,6 @@ export default function KanbanBoard() {
 
       // If moving within same subtask array, adjust index for removal
       if (
-        draggedItem.type === "subtask" &&
         sourceColumnIndex === targetColumnIndex &&
         draggedItem.cardIndex === dragTarget.cardIndex &&
         draggedItem.subtaskIndex < targetIndex
@@ -222,47 +220,25 @@ export default function KanbanBoard() {
         targetIndex -= 1;
       }
 
-      if (draggedItem.type === "card") {
-        // Remove card from source
-        newColumns[sourceColumnIndex].cards.splice(draggedItem.cardIndex, 1);
-        // Convert main task to subtask
-        const newSubtask = {
-          id: itemToMove.id,
-          title: itemToMove.title,
-          description: itemToMove.description,
-        };
-        targetCard.subtasks.splice(targetIndex, 0, newSubtask);
-      } else {
-        // Remove subtask from source
-        const sourceCard =
-          newColumns[sourceColumnIndex].cards[draggedItem.cardIndex];
-        sourceCard.subtasks.splice(draggedItem.subtaskIndex, 1);
-        // Insert subtask at target position
-        targetCard.subtasks.splice(targetIndex, 0, itemToMove);
-      }
+      // Remove subtask from source
+      const sourceCard =
+        newColumns[sourceColumnIndex].cards[draggedItem.cardIndex];
+      sourceCard.subtasks.splice(draggedItem.subtaskIndex, 1);
+      // Insert subtask at target position
+      targetCard.subtasks.splice(targetIndex, 0, itemToMove);
       targetCard.expanded = true;
     } else if (
       dragTarget.type === "task-body" &&
-      (draggedItem.type === "card" || draggedItem.type === "subtask")
+      draggedItem.type === "subtask"
     ) {
       // Dropping into task body (append to end)
       const targetCard =
         newColumns[targetColumnIndex].cards[dragTarget.cardIndex];
 
-      if (draggedItem.type === "card") {
-        newColumns[sourceColumnIndex].cards.splice(draggedItem.cardIndex, 1);
-        const newSubtask = {
-          id: itemToMove.id,
-          title: itemToMove.title,
-          description: itemToMove.description,
-        };
-        targetCard.subtasks.push(newSubtask);
-      } else {
-        const sourceCard =
-          newColumns[sourceColumnIndex].cards[draggedItem.cardIndex];
-        sourceCard.subtasks.splice(draggedItem.subtaskIndex, 1);
-        targetCard.subtasks.push(itemToMove);
-      }
+      const sourceCard =
+        newColumns[sourceColumnIndex].cards[draggedItem.cardIndex];
+      sourceCard.subtasks.splice(draggedItem.subtaskIndex, 1);
+      targetCard.subtasks.push(itemToMove);
       targetCard.expanded = true;
     } else if (dragTarget.type === "column" && draggedItem.type === "card") {
       // Dropping into empty column (append to end, only allowed for cards)
@@ -270,196 +246,215 @@ export default function KanbanBoard() {
       newColumns[targetColumnIndex].cards.push(itemToMove);
     }
 
+    // Update order properties
+    newColumns.forEach((column) => {
+      column.cards.forEach((card, index) => {
+        card.order = index;
+      });
+      column.cards.forEach((card) => {
+        card.subtasks.forEach((subtask, subIndex) => {
+          subtask.order = subIndex;
+        });
+      });
+    });
+
     setColumns(newColumns);
     setDraggedItem(null);
     setDragTarget(null);
   };
 
   return (
-    <div className="p-4 w-full h-screen">
+    <div className="p-4 w-full h-screen flex flex-col">
       {/* Column Headers */}
-      <div className="pb-4 grid grid-cols-4 px-4 gap-4">
+      <div className="pb-2 grid grid-cols-4 px-4 gap-4">
         <div className="mb-4 border-b-4 border-blue-500 pb-2 flex items-center gap-3">
           <p className="text-2xl font-bold">To Do</p>
           <button className="px-3 py-1 text-sm rounded-full bg-transparent border-2 border-gray-300 shadow-sm">
-            18
+            {columns.find((col) => col.id === "todo")?.cards.length || 0}
           </button>
         </div>
         <div className="mb-4 border-b-4 border-yellow-500 pb-2 flex items-center gap-3">
           <p className="text-2xl font-bold">In Progress</p>
           <button className="px-3 py-1 text-sm rounded-full bg-transparent border-2 border-gray-300 shadow-sm">
-            10
+            {columns.find((col) => col.id === "in-progress")?.cards.length || 0}
           </button>
         </div>
         <div className="mb-4 border-b-4 border-purple-500 pb-2 flex items-center gap-3">
           <p className="text-2xl font-bold">Under Review</p>
           <button className="px-3 py-1 text-sm rounded-full bg-transparent border-2 border-gray-300 shadow-sm">
-            7
+            {columns.find((col) => col.id === "under-review")?.cards.length ||
+              0}
           </button>
         </div>
         <div className="mb-4 border-b-4 border-green-500 pb-2 flex items-center gap-3">
           <p className="text-2xl font-bold">Done</p>
           <button className="px-3 py-1 text-sm rounded-full bg-transparent border-2 border-gray-300 shadow-sm">
-            25
+            {columns.find((col) => col.id === "done")?.cards.length || 0}
           </button>
         </div>
       </div>
 
       {/* Kanban Columns */}
-      <div className="overflow-x-auto pb-4 grid grid-cols-4 px-4 gap-4">
+      <div className="   grid grid-cols-4 px-4 gap-4 h-full  ">
         {columns.map((column) => (
+          // parent
           <div
             key={column.id}
-            className="flex-shrink-0 w-full  "
+            className="flex  flex-col min-h-0 w-full px-3 h-[99%] overflow-hidden  "
             onDragOver={(e) => handleDragOver(e, "column", column.id)}
             onDrop={handleDrop}
           >
-            <div className="p-2 min-h-40">
-              {column.cards.map((card, cardIndex) => (
-                <div key={card.id}>
-                  {/* Drop zone above card */}
-                  <div
-                    className={`h-4 w-full transition-all ${
-                      dragTarget &&
-                      dragTarget.type === "card" &&
-                      dragTarget.columnId === column.id &&
-                      dragTarget.index === cardIndex
-                        ? "border-t-2 border-blue-500 bg-blue-50"
-                        : "border-t-2 border-transparent"
-                    }`}
-                    onDragOver={(e) =>
-                      handleDragOver(e, "card", column.id, cardIndex)
-                    }
-                    onDrop={handleDrop}
-                  />
-
-                  {/* Main Task Card */}
-                  <div className="bg-white rounded shadow mb-2 overflow-hidden hover:shadow-md transition-shadow">
-                    {/* Task Header */}
+            {/* child */}
+            <div className="  scrollbar-hidden pb-20 overflow-y-auto gap-2 bp-3  ">
+              {column.cards
+                .sort((a, b) => a.order - b.order)
+                .map((card, cardIndex) => (
+                  <div key={card.id}>
+                    {/* Drop zone above card */}
                     <div
-                      className="p-3 border-b border-gray-100 cursor-move"
-                      draggable
-                      onDragStart={(e) => handleDragStart(e, card.id, "card")}
-                      onDragEnd={handleDragEnd}
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <button
-                            onClick={() => toggleTaskExpansion(card.id)}
-                            className="p-1 hover:bg-gray-100 rounded"
-                          >
-                            {card.expanded ? (
-                              <ChevronDown size={16} />
-                            ) : (
-                              <ChevronRight size={16} />
-                            )}
-                          </button>
-                          <div>
-                            <div className="font-medium">{card.title}</div>
-                            <div className="text-sm text-gray-600">
-                              {card.description}
-                            </div>
-                          </div>
-                        </div>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            e.preventDefault();
-                            addSubtask(card.id);
-                          }}
-                          className="p-1 hover:bg-gray-100 rounded text-gray-500 hover:text-gray-700"
-                        >
-                          <Plus size={16} />
-                        </button>
-                      </div>
-                    </div>
+                      className={`h-4 w-full transition-all ${
+                        dragTarget &&
+                        dragTarget.type === "card" &&
+                        dragTarget.columnId === column.id &&
+                        dragTarget.index === cardIndex
+                          ? "border-t-2 border-blue-500 bg-blue-50"
+                          : "border-t-2 border-transparent"
+                      }`}
+                      onDragOver={(e) =>
+                        handleDragOver(e, "card", column.id, cardIndex)
+                      }
+                      onDrop={handleDrop}
+                    />
 
-                    {/* Subtasks */}
-                    {card.expanded && (
+                    {/* Main Task Card */}
+                    <div className="bg-white rounded shadow mb-2 overflow-hidden hover:shadow-md transition-shadow">
+                      {/* Task Header */}
                       <div
-                        className="px-3 pb-2"
-                        onDragOver={(e) =>
-                          handleDragOver(e, "task-body", column.id, cardIndex)
-                        }
-                        onDrop={handleDrop}
+                        className="p-3 border-b border-gray-100 cursor-move"
+                        draggable
+                        onDragStart={(e) => handleDragStart(e, card.id, "card")}
+                        onDragEnd={handleDragEnd}
                       >
-                        {card.subtasks.map((subtask, subtaskIndex) => (
-                          <div key={subtask.id}>
-                            {/* Drop zone above subtask */}
-                            <div
-                              className={`h-2 w-full transition-all ${
-                                dragTarget &&
-                                dragTarget.type === "subtask" &&
-                                dragTarget.columnId === column.id &&
-                                dragTarget.cardIndex === cardIndex &&
-                                dragTarget.index === subtaskIndex
-                                  ? "border-t-2 border-green-500 bg-green-50"
-                                  : "border-t-2 border-transparent"
-                              }`}
-                              onDragOver={(e) =>
-                                handleDragOver(
-                                  e,
-                                  "subtask",
-                                  column.id,
-                                  cardIndex,
-                                  subtaskIndex
-                                )
-                              }
-                              onDrop={handleDrop}
-                            />
-
-                            {/* Subtask Item */}
-                            <div
-                              className="ml-4 p-2 mb-1 bg-gray-50 rounded text-sm cursor-move hover:bg-gray-100 transition-colors border-l-2 border-gray-300"
-                              draggable
-                              onDragStart={(e) =>
-                                handleDragStart(e, subtask.id, "subtask")
-                              }
-                              onDragEnd={handleDragEnd}
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={() => toggleTaskExpansion(card.id)}
+                              className="p-1 hover:bg-gray-100 rounded"
                             >
-                              <div className="font-medium text-gray-700">
-                                {subtask.title}
-                              </div>
-                              <div className="text-xs text-gray-500">
-                                {subtask.description}
+                              {card.expanded ? (
+                                <ChevronDown size={16} />
+                              ) : (
+                                <ChevronRight size={16} />
+                              )}
+                            </button>
+                            <div>
+                              <div className="font-medium">{card.title}</div>
+                              <div className="text-sm text-gray-600">
+                                {card.description}
                               </div>
                             </div>
                           </div>
-                        ))}
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              e.preventDefault();
+                              addSubtask(card.id);
+                            }}
+                            className="p-1 hover:bg-gray-100 rounded text-gray-500 hover:text-gray-700"
+                          >
+                            <Plus size={16} />
+                          </button>
+                        </div>
+                      </div>
 
-                        {/* Drop zone at end of subtasks */}
+                      {/* Subtasks */}
+                      {card.expanded && (
                         <div
-                          className={`h-2 w-full transition-all ${
-                            dragTarget &&
-                            dragTarget.type === "subtask" &&
-                            dragTarget.columnId === column.id &&
-                            dragTarget.cardIndex === cardIndex &&
-                            dragTarget.index === card.subtasks.length
-                              ? "border-t-2 border-green-500 bg-green-50"
-                              : "border-t-2 border-transparent"
-                          }`}
+                          className="px-3 pb-2"
                           onDragOver={(e) =>
-                            handleDragOver(
-                              e,
-                              "subtask",
-                              column.id,
-                              cardIndex,
-                              card.subtasks.length
-                            )
+                            handleDragOver(e, "task-body", column.id, cardIndex)
                           }
                           onDrop={handleDrop}
-                        />
+                        >
+                          {card.subtasks
+                            .sort((a, b) => a.order - b.order)
+                            .map((subtask, subtaskIndex) => (
+                              <div key={subtask.id}>
+                                {/* Drop zone above subtask */}
+                                <div
+                                  className={`h-2 w-full transition-all ${
+                                    dragTarget &&
+                                    dragTarget.type === "subtask" &&
+                                    dragTarget.columnId === column.id &&
+                                    dragTarget.cardIndex === cardIndex &&
+                                    dragTarget.index === subtaskIndex
+                                      ? "border-t-2 border-green-500 bg-green-50"
+                                      : "border-t-2 border-transparent"
+                                  }`}
+                                  onDragOver={(e) =>
+                                    handleDragOver(
+                                      e,
+                                      "subtask",
+                                      column.id,
+                                      cardIndex,
+                                      subtaskIndex
+                                    )
+                                  }
+                                  onDrop={handleDrop}
+                                />
 
-                        {card.subtasks.length === 0 && (
-                          <div className="ml-4 p-2 border-2 border-dashed border-gray-300 rounded text-xs text-gray-400 text-center">
-                            Drop subtasks here
-                          </div>
-                        )}
-                      </div>
-                    )}
+                                {/* Subtask Item */}
+                                <div
+                                  className="ml-4 p-2 mb-1 bg-gray-50 rounded text-sm cursor-move hover:bg-gray-100 transition-colors border-l-2 border-gray-300"
+                                  draggable
+                                  onDragStart={(e) =>
+                                    handleDragStart(e, subtask.id, "subtask")
+                                  }
+                                  onDragEnd={handleDragEnd}
+                                >
+                                  <div className="font-medium text-gray-700">
+                                    {subtask.title}
+                                  </div>
+                                  <div className="text-xs text-gray-500">
+                                    {subtask.description}
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+
+                          {/* Drop zone at end of subtasks */}
+                          <div
+                            className={`h-2 w-full transition-all ${
+                              dragTarget &&
+                              dragTarget.type === "subtask" &&
+                              dragTarget.columnId === column.id &&
+                              dragTarget.cardIndex === cardIndex &&
+                              dragTarget.index === card.subtasks.length
+                                ? "border-t-2 border-green-500 bg-green-50"
+                                : "border-t-2 border-transparent"
+                            }`}
+                            onDragOver={(e) =>
+                              handleDragOver(
+                                e,
+                                "subtask",
+                                column.id,
+                                cardIndex,
+                                card.subtasks.length
+                              )
+                            }
+                            onDrop={handleDrop}
+                          />
+
+                          {card.subtasks.length === 0 && (
+                            <div className="ml-4 p-2 border-2 border-dashed border-gray-300 rounded text-xs text-gray-400 text-center">
+                              Drop subtasks here
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
 
               {/* Drop zone at end of column */}
               <div

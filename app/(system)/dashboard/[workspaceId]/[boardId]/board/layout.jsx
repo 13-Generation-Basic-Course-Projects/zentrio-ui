@@ -7,7 +7,7 @@ export default async function BoardLayout({ children }) {
   return (
     <div>
       <SystemBoard user={session?.user} />
-      <main>{children}</main>
+      <main> {children}</main>
     </div>
   );
 }
