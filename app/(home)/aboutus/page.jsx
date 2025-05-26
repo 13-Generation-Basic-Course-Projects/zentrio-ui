@@ -1,5 +1,6 @@
 //useage : http://localhost:3000/aboutus
 import { Button } from "@/components/ui/button";
+import "../../../styles/roundText.css";
 
 import aboutus1 from "@/public/image/Rectangle_header1.png";
 import aboutus2 from "@/public/image/Rectangle_header2.png";
@@ -17,7 +18,8 @@ import square3 from "@/public/image/square3.png";
 import square4 from "@/public/image/square4.png";
 import imgs1 from "@/public/image/img-s1.png";
 import imgs2 from "@/public/image/img-s2.png";
-import imgs3 from "@/public/image/img-s3.png";
+import bellNotification from "@/public/image/bellNotification.png";
+import google from "@/public/image/google.png";
 import imgs4 from "@/public/image/img-s4.png";
 
 import fong from "@/public/image/fong.png";
@@ -36,99 +38,77 @@ import "@/styles/box.css";
 
 import Image from "next/image";
 import Link from "next/link";
+import { RoundText1, RoundText2, RoundText3 } from "@/components/testcomponent/RoundText";
 
 export default function AboutUs() {
-
   return (
     <div className=" grid grid-cols-12 gap-4 p-4 min-h-screen">
       <main className="col-span-12 space-y-40">
-        <section className="relative flex justify-center items-center gap-4 ">
-          <div className="relative grid grid-cols-2 w-full">
-            <div className="relative w-full">
-              <Image
-                src={aboutus1}
-                alt="Webcash Logo"
-                className="h-full w-full object-cover"
-              />
-              <div className="absolute top-10 left-0 right-0 px-6">
-                <div className="space-y-4 ml-16  text-title mt-10 ">
-                  <p className="text-h1 font-semibold">
-                    We are from Korean Software HRD Center
-                  </p>
-                  <p className="text-h3">
-                    13th Generation Student Basic Course.
-                  </p>
-                  <p className="text-base max-w-md">
-                    We’re really confident with this project that can bring the
-                    best tool for software development.
-                  </p>
-                  <Button className=" hover:bg-white hover:text-primary hover:border-primary border-2 text-sm sm:text-base md:text-[15.18px] font-normal rounded-[30px] ">
-                    Get Start
-                  </Button>
-                </div>
+        <section className="relative flex justify-center items-center gap-4 h-[700px]">
+          <div className="grid grid-cols-2">
+            <div className="ml-2 imgBg1 flex items-start text-title text-center p-8">
+              <div className="z-10 text-left w-[90%] p-5">
+                <h1 className="text-h3 md:text-h2 lg:text-h1 font-bold mb-4">
+                  We are from <br />
+                  Korean Software HRD Center
+                </h1>
+                <p className="md:text-h6 lg:text-h4 mb-2 font-bold">
+                  13th Generation Student Basic Course.
+                </p>
+                <p className="md:text-h5 lg:text-h6 text-title/60 mb-20">
+                  We’re really confident with this project that can bring the
+                  best tool for software development.
+                </p>
+                <Button
+                  className="text-btn-sm text-[#FFFFFF] rounded-small"
+                  type="button"
+                >
+                  Get Start
+                  <span>
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                    >
+                      <g id="SVGRepo_bgCarrier"></g>
+                      <g
+                        id="SVGRepo_tracerCarrier"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      ></g>
+                      <g id="SVGRepo_iconCarrier">
+                        <path
+                          fillRule="evenodd"
+                          clipRule="evenodd"
+                          d="M9 6.75C8.58579 6.75 8.25 6.41421 8.25 6C8.25 5.58579 8.58579 5.25 9 5.25H18C18.4142 5.25 18.75 5.58579 18.75 6V15C18.75 15.4142 18.4142 15.75 18 15.75C17.5858 15.75 17.25 15.4142 17.25 15V7.81066L6.53033 18.5303C6.23744 18.8232 5.76256 18.8232 5.46967 18.5303C5.17678 18.2374 5.17678 17.7626 5.46967 17.4697L16.1893 6.75H9Z"
+                          fill="#FFFFFF"
+                        ></path>
+                      </g>
+                    </svg>
+                  </span>
+                </Button>
               </div>
             </div>
 
-            <div className="relative w-full">
-              <Image
-                src={aboutus2}
-                alt="Webcash Logo"
-                className="h-full w-full object-contain z-0"
-              />
-
-              <div
-                className="absolute inset-0 bg-center bg-cover z-10 bottom-5"
-                style={{ backgroundImage: `url(${hrd.src})` }}
-              />
-              <div
-                className="absolute top-12 z-10 left-1/3 transform -translate-x-1/2 backdrop-blur-md border border-[#E2E8F0]/50 rounded-xl
-        flex flex-col px-6 py-2 shadow-md w-auto text-left bg-[#FFFFFF]/50"
-              >
-                <p className="text-h6 text-blueActive">Our school</p>
-                <p className="text-h1 text-primary">Korea Software</p>
-                <p className="text-h2 text-primary">HRD Center</p>
+            <div className="imgBg2 flex items-start  text-title text-center p-8 ml-10">
+              <div className="z-10 border-2 rounded-large p-2  bg-bgColor/40 bg-blur backdrop-blur-sm text-left ml-10 mt-14 ">
+                <p className="text-caption text-blueActive">Our school</p>
+                <p className="text-h4 text-primary ">
+                  Korean Software <br />
+                  HRD Center
+                </p>
               </div>
+              <img
+                src="/image/hrdaboutus.png"
+                alt="Overlay"
+                className="overlay"
+              />
             </div>
           </div>
-
-          <div className="absolute left-1/2 bottom-0 translate-y-1/2 -translate-x-1/2 w-[250px] h-[250px] bg-center bg-cover rounded-full z-20">
-            <div className="relative">
-              <svg
-                className="w-full h-full"
-                viewBox="0 0 300 300"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <circle
-                  cx="150"
-                  cy="150"
-                  r="100"
-                  // stroke="blue"
-                  strokeWidth="2"
-                  fill="none"
-                />
-                <text className="fill-red text-h1 font-medium">
-                  <textPath href="#circlePath" startOffset="2%">
-                    Learn more . Learn more . Learn more .
-                  </textPath>
-                </text>
-                <path
-                  id="circlePath"
-                  d="M 150 30 A 120 120 0 1 1 150 270 A 120 120 0 1 1 150 30"
-                  fill="none"
-                  stroke="none"
-                />
-              </svg>
-
-              {/* Center Icon */}
-              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                <Image
-                  src={arrowdown}
-                  alt="Arrow Down"
-                  width="12"
-                  height="12"
-                />
-              </div>
-            </div>
+          <div className="absolute bottom-0 ">
+            <RoundText1 />
           </div>
         </section>
 
@@ -147,81 +127,64 @@ export default function AboutUs() {
             </div>
           </div>
 
-          <div className="relative h-auto overflow-hidden p-4 sm:p-10 flex flex-col lg:flex-row items-center lg:items-start justify-center gap-10">
-            
-            <div className="flex flex-col items-center space-y-5 mt-24">
-              <div className="card w-[300px] md:w-[320px]">
-                <div className="box">
-                  <div className="imgBx">
-                    <Image
-                      src={ourInstructor}
-                      alt="Our Instructor"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                </div>
-                <div className="box">
-                  <div className="imgBx">
-                    <Image
-                      src={ksgh}
-                      alt="KSGH"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                </div>
-                {/* Circle SVG */}
-                <div className="circle">
-                  <div className="relative">
-                    <svg viewBox="0 0 300 300" className="w-full h-full">
-                      <path
-                        id="circlePath"
-                        d="M 150 30 A 120 120 0 1 1 150 270 A 120 120 0 1 1 150 30"
-                        fill="none"
-                      />
-                      <text className="fill-red text-h1 font-medium">
-                        <textPath href="#circlePath" startOffset="0%">
-                          Our best mentor and nice at KSHRD .
-                        </textPath>
-                      </text>
-                    </svg>
-                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+          <div className="relative flex items-center min-h-screen px-10">
+            {/* RoundText2 Center-Left */}
+            <div className="absolute left-0 top-1/2 -translate-y-1/2 ml-5 z-10">
+              <RoundText3 />
+            </div>
+
+            {/* Content Row: Black Section + Instructor Cards */}
+            <div className="flex flex-row justify-between w-full">
+              {/* LEFT: Black Card Section */}
+              <div className="flex flex-col justify-center items-center space-y-5 p-5 rounded-lg">
+                <div className="card w-[300px] md:w-[320px]">
+                  <div className="box">
+                    <div className="imgBx">
                       <Image
-                        src={arrowright}
-                        alt="Arrow"
-                        width={12}
-                        height={12}
+                        src={ourInstructor}
+                        alt="Our Instructor"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  </div>
+                  <div className="box">
+                    <div className="imgBx">
+                      <Image
+                        src={ksgh}
+                        alt="KSGH"
+                        className="w-full h-full object-cover"
                       />
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            {/* RIGHT: Instructor Cards */}
-            <div className="flex flex-col space-y-5 mt-2">
-              {/* Card 1 */}
-              <div className="relative w-full max-w-[300px] mx-auto rounded-xl overflow-hidden shadow-lg">
-                <Image
-                  alt="Teacher Nak"
-                  src={cherNak}
-                  className="object-cover w-full h-full"
-                />
-                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 bg-white/20 backdrop-blur-md border border-white/30 rounded-xl flex flex-col items-center px-3 py-2 shadow-md w-[200px]">
-                  <div className="text-sm text-white">Kheng Sovannak</div>
-                  <div className="text-sm text-white">IT Instructor</div>
+              {/* RIGHT: Instructor Cards */}
+              <div className="flex flex-col space-y-5 ml-10">
+                {/* Card 1 */}
+                <div className="relative w-full max-w-[300px] rounded-xl overflow-hidden shadow-lg">
+                  <Image
+                    alt="Teacher Nak"
+                    src={cherNak}
+                    className="object-cover w-full h-full"
+                  />
+                  <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 bg-white/20 backdrop-blur-md border border-white/30 rounded-xl flex flex-col items-center px-3 py-2 shadow-md w-[200px]">
+                    <div className="text-sm text-white">Kheng Sovannak</div>
+                    <div className="text-sm text-white">IT Instructor</div>
+                  </div>
                 </div>
-              </div>
 
-              {/* Card 2 */}
-              <div className="relative w-full max-w-[300px] h-[199px] mx-auto rounded-xl overflow-hidden shadow-lg">
-                <Image
-                  alt="Teacher Dara"
-                  src={cherDara}
-                  className="object-cover w-full h-full"
-                />
-                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 bg-white/20 backdrop-blur-md border border-white/30 rounded-xl flex flex-col items-center px-3 py-2 shadow-md w-[200px]">
-                  <div className="text-sm text-white">Tan Dara</div>
-                  <div className="text-sm text-white">IT Instructor</div>
+                {/* Card 2 */}
+                <div className="relative w-full max-w-[300px] h-[199px] rounded-xl overflow-hidden shadow-lg">
+                  <Image
+                    alt="Teacher Dara"
+                    src={cherDara}
+                    className="object-cover w-full h-full"
+                  />
+                  <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 bg-white/20 backdrop-blur-md border border-white/30 rounded-xl flex flex-col items-center px-3 py-2 shadow-md w-[200px]">
+                    <div className="text-sm text-white">Tan Dara</div>
+                    <div className="text-sm text-white">IT Instructor</div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -229,196 +192,64 @@ export default function AboutUs() {
         </section>
 
         <section className="grid grid-cols-1 sm:grid-cols-2 gap-4 ">
-          <div className="h-auto flex items-center justify-center w-full">
-            <div className="relative grid grid-cols-1 sm:grid-cols-2 grid-rows-1 sm:grid-rows-2  w-full gap-y-8 gap-x-8 ">
-              <div className="relative">
-                <Image
-                  src={square1}
-                  alt="Webcash Logo"
-                  className="h-full w-full object-cover"
-                />
-                <div className="absolute top-10 left-0 right-0 px-4">
-                  <div className="space-y-4 ml-10 mr-20 w-[85%] text-title">
-                    <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-6 p-4">
-                      {/* Left Image */}
-                      <div>
-                        <Image
-                          src={imgs1}
-                          alt="Core Stage"
-                          className="object-cover w-full h-auto"
-                        />
-                      </div>
-
-                      {/* Right Text */}
-                      <div>
-                        <p className="text-h4 font-semibold text-primary">
-                          4 Core Stages
-                        </p>
-                      </div>
-                    </div>
-
-                    <p className="text-h6 text-title/50 text-center">
-                      Todo, progress, Review, Completed
-                    </p>
-                  </div>
-                </div>
+          <div className="grid grid-cols-2 gap-6 relative items-center justify-center">
+            <div className="imgBgStage p-16">
+              <div className="flex flex-row space-x-2 ">
+                <Image src={imgs1} width={80} height={80} />
+                <p className="text-h4 text-primary uppercase font-semibold">
+                  4 Core Stages
+                </p>
               </div>
-
-              <div className="relative">
-                <Image
-                  src={square2}
-                  alt="Webcash Logo"
-                  className="h-full w-full object-cover"
-                />
-
-                <div className="absolute top-10 left-0 right-0 px-4">
-                  <div className="space-y-4 ml-10 mr-20 w-[85%] text-title">
-                    <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-6 p-4">
-                      {/* Left Image */}
-                      <div>
-                        <Image
-                          src={imgs2}
-                          alt="Core Stage"
-                          width={500}
-                          height={300}
-                          className="object-cover w-full h-auto"
-                        />
-                      </div>
-
-                      {/* Right Text */}
-                      <div>
-                        <p className="text-h4 font-semibold text-primary">
-                          Personal Calendar
-                        </p>
-                      </div>
-                    </div>
-
-                    <p className="text-h6 text-title/50 text-center">
-                      manage daily tasks, deadlines, and project plans
-                      efficiently.
-                    </p>
-                  </div>
-                </div>
+              <p className="text-h6 text-title/50 text-center mt-10">
+                Todo, Progress, Review, Completed
+              </p>
+            </div>
+            <div className="imgBgCalendar p-14 ">
+              <div className="flex flex-row space-x-2 ">
+                <Image src={imgs2} width={80} height={80} />
+                <p className="text-h4 text-primary uppercase font-semibold">
+                  Personal Calendar
+                </p>
               </div>
-
-              <div className="relative">
-                <Image
-                  src={square3}
-                  alt="Webcash Logo"
-                  className="h-full w-full object-cover"
-                />
-
-                <div className="absolute top-10 left-0 right-0 px-4">
-                  <div className="space-y-4 ml-10 mr-20 w-[85%] text-title">
-                    <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-6 p-4">
-                      {/* Left Image */}
-                      <div>
-                        <Image
-                          src={imgs3}
-                          alt="Core Stage"
-                          width={500}
-                          height={300}
-                          className="object-cover w-full h-auto"
-                        />
-                      </div>
-
-                      {/* Right Text */}
-                      <div>
-                        <p className="text-h4 font-semibold text-primary uppercase">
-                          Real-Time Alerts
-                        </p>
-                      </div>
-                    </div>
-
-                    <p className="text-h6 text-title/50 text-center">
-                      Notifications on task activity
-                    </p>
-                  </div>
-                </div>
+              <p className="text-h6 text-title/50 text-center mt-10">
+                manage daily tasks, deadlines, and project plans efficiently.
+              </p>
+            </div>
+            <div className="imgBgBell p-14 ">
+              <div className="flex flex-row space-x-2 ">
+                <Image src={bellNotification} width={80} height={80} />
+                <p className="text-h4 text-primary uppercase font-semibold">
+                  Real-Time Alerts
+                </p>
               </div>
-
-              <div className="relative">
-                <Image
-                  src={square4}
-                  alt="Webcash Logo"
-                  className="h-full w-full object-cover"
-                />
-
-                <div className="absolute top-10 left-0 right-0 px-4">
-                  <div className="space-y-4 ml-10 mr-20  text-title">
-                    <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-6 p-4">
-                      {/* Left Image */}
-                      <div>
-                        <Image
-                          src={imgs4}
-                          alt="Core Stage"
-                          width={500}
-                          height={300}
-                          className="object-cover w-full h-auto"
-                        />
-                      </div>
-
-                      {/* Right Text */}
-                      <div>
-                        <p className="text-h4 font-semibold text-primary uppercase">
-                          Google Tools Integrated
-                        </p>
-                      </div>
-                    </div>
-
-                    <p className="text-h6 text-title/50 text-center">
-                      Using Google Docs, Sheets, and Slides
-                    </p>
-                  </div>
-                </div>
+              <p className="text-h6 text-title/50 text-center mt-10">
+                Notifications on task activity
+              </p>
+            </div>
+            <div className="imgBgGoogle p-12">
+              <div className="flex flex-row space-x-2 ">
+                <Image src={google} width={80} height={80} />
+                <p className="text-h4 text-primary uppercase font-semibold">
+                  Google Tools Integrated
+                </p>
               </div>
-              <div className="absolute items-center left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-32 sm:w-36 md:w-40 h-32 sm:h-36 md:h-40 bg-cover rounded-full z-20">
-                <div className="relative w-full h-full">
-                  <svg
-                    className="w-full h-full"
-                    viewBox="0 0 300 300"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <circle
-                      cx="150"
-                      cy="150"
-                      r="100"
-                      strokeWidth="2"
-                      fill="none"
-                    />
-                    <text className="fill-red text-h4 sm:text-h3 md:text-[36px] font-medium">
-                      <textPath href="#circlePath" startOffset="2%">
-                        Features · Features · Features · Features ·
-                      </textPath>
-                    </text>
-                    <path
-                      id="circlePath"
-                      d="M 150 30 A 120 120 0 1 1 150 270 A 120 120 0 1 1 150 30"
-                      fill="none"
-                      stroke="none"
-                    />
-                  </svg>
+              <p className="text-h6 text-title/50 text-center mt-8">
+                Using Google Docs, Sheets, and Slides.
+              </p>
+            </div>
 
-                  {/* Center Icon */}
-                  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                    <Image
-                      src={arrowdown}
-                      alt="Arrow Down"
-                      width="16"
-                      height="16"
-                      className="w-4 sm:w-5 md:w-6 h-auto"
-                    />
-                  </div>
-                </div>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="p-4">
+                <RoundText2 />
               </div>
             </div>
           </div>
+
           <div className="relative p-6  h-auto flex items-center justify-center">
             <div className="flex flex-col justify-center items-start space-y-6 max-w-xl">
               <p className="text-h1 font-bold text-gradient text-left">
                 Effortless project management for teams.
               </p>
-
               <p className="text-base text-h4 leading-relaxed  text-left">
                 Jump in and see how ZenTrio lightens your workday and gets
                 things done.
@@ -437,11 +268,23 @@ export default function AboutUs() {
               <p className="text-base text-h4 leading-relaxed uppercase text-left">
                 ZenTrio Sponsored
               </p>
-              <Image
-                src={webcash}
-                alt="Webcash Logo"
-                className="w-full max-w-sm object-contain"
-              />
+              <div className="slideshow-container">
+                <img
+                  src="https://i.namu.wiki/i/w66OcGVsvFp18xw7x29LBAp-ftsDHptDxMqj7RAUQEowlntsJbvxM0y7GBlwHI58cVkq-klMnpCuUjfH1Pxm_A.webp"
+                  alt="Image 1"
+                  className="slide"
+                />
+                <img
+                  src="https://is5-ssl.mzstatic.com/image/thumb/Purple124/v4/3d/32/20/3d322049-015a-0e3b-e512-583ac627d478/source/512x512bb.jpg"
+                  alt="Image 2"
+                  className="slide"
+                />
+                <img
+                  src="https://kshrd.com.kh/_next/image?url=%2Fsponsor%2Fkosign.png&w=640&q=75"
+                  alt="Image 3"
+                  className="slide"
+                />
+              </div>
             </div>
           </div>
 
