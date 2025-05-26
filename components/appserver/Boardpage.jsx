@@ -3,12 +3,12 @@ import Image from "next/image";
 import notification from "../../assets/notification.png";
 import Link from "next/link";
 import React, { useState } from "react";
-import KanbanBoard from "../testcomponent/Kanban";
+import KanbanBoard from "../kanban/Kanban";
 import GanttChart from "../testcomponent/Calender";
 const tabItems = [
   {
     key: "kanban",
-    title: "Kanban",
+    title: "Board",
     content: <KanbanBoard />,
   },
   {
@@ -81,8 +81,10 @@ export default function SystemBoard({ user }) {
       </div>
 
       {/* Tab Content Area */}
-      <main className="p-6  min-h-screen">
-        <div className=" mx-auto">{currentTab?.content}</div>
+      <main className="p-6  ">
+        <div className=" mx-auto overflow-hidden h-screen ">
+          {currentTab?.content}
+        </div>
       </main>
     </>
   );

@@ -1,7 +1,7 @@
 "use client";
 
 import { Tabs, Tab, Card, CardBody } from "@heroui/react";
-import KanbanBoard from "../testcomponent/Kanban";
+import KanbanBoard from "../kanban/Kanban";
 import GanttChart from "../testcomponent/Calender";
 const tabItems = [
   {

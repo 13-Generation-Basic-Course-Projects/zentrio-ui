@@ -20,12 +20,60 @@ import folder from "../../assets/folderSidBar.png";
 import report from "@/assets/report.png";
 import { LeaveIcon } from "../icon/everyicon";
 
-const items = [
+import { icon } from "../icon/allicon";
+import SaveWorkspace from "../button/SaveWorkspace";
+import AddButton from "../button/AddButton";
+import ModalCreateWorkspace from "../modal/ModalCreateWorkSpace";
+
+const randomColor = () =>
+  Math.floor(Math.random() * 16777215)
+    .toString(16)
+    .padStart(6, "0");
+
+const myworkspaceItem = [
   {
-    title: "Board",
-    url: "/dashboard/1/1/board",
-    icon: board,
+    title: "My Empty workspace",
+    url: "/workspace",
+    color: "bg-pink-300",
     activeIcon: board,
+    myworkspace: true,
+  },
+  {
+    title: "My workspace 2",
+    url: "/workspace/2",
+    color: "bg-pink-300",
+    activeIcon: board,
+    myworkspace: true,
+  },
+  {
+    title: "My workspace 3",
+    url: "/workspace/3",
+    color: "bg-pink-300",
+    activeIcon: board,
+    myworkspace: false,
+  },
+];
+const otherworkspaceItem = [
+  {
+    title: "OtherWorkspace 1",
+    url: "/workspace/otherworkspace/1",
+    color: "bg-pink-300",
+    activeIcon: board,
+    myworkspace: true,
+  },
+  {
+    title: "OtherWorkspace 2",
+    url: "/workspace/otherworkspace/2",
+    color: "bg-pink-300",
+    activeIcon: board,
+    myworkspace: true,
+  },
+  {
+    title: "OtherWorkspace 3",
+    url: "/workspace/otherworkspace/3",
+    color: "bg-pink-300",
+    activeIcon: board,
+    myworkspace: false,
   },
 ];
 
@@ -34,37 +82,78 @@ export default function WorkSpaceSideBar() {
 
   return (
     <Sidebar collapsible="icon" className="border-none  ">
-      <SidebarContent className="h-screen flex flex-col !border-0">
+      <SidebarContent className="h-screen flex flex-col !border-0 ">
         <div className="p-4 !border-0">
           <Link href="/">
             <Image src={logo} className="w-[168px] object-cover" alt="logo" />
           </Link>
         </div>
 
-        <SidebarGroup className="flex-1 flex flex-col !border-0">
-          <SidebarGroupContent className="flex-1 flex flex-col justify-between !border-0">
-            {/* TOP MENU */}
-            <SidebarMenu className="!border-0">
-              {items.map((item) => {
+        <SidebarGroup className="flex flex-col flex-1 !border-0 px-5">
+          <SidebarGroupContent className="flex flex-col flex-1 !border-0 gap-6">
+            {/* TOP + MIDDLE MENU Combined */}
+            <SidebarMenu className="space-y-1 !border-0">
+              <SaveWorkspace />
+              {/* 1 */}
+              <div className="flex items-center justify-between">
+                <p className=" px-3 text-body-sm ">My Workspace</p>
+                <div></div>
+              </div>
+              {myworkspaceItem.map((item, i) => {
                 const isActive = pathname === item.url;
                 return (
-                  <SidebarMenuItem className="py-1 !border-0" key={item.title}>
+                  <SidebarMenuItem key={i} className="!border-0">
                     <SidebarMenuButton
                       asChild
                       tooltip={item.title}
-                      className={
-                        isActive
-                          ? "bg-slate-blue rounded-lg text-primary !border-0"
-                          : "!border-0"
-                      }
+                      className={`group flex w-full items-center justify-between px-3 py-2 rounded-lg transition-colors duration-200 
+                ${
+                  isActive
+                    ? "bg-slate-blue text-primary"
+                    : "hover:bg-slate-100 text-gray-700"
+                } !border-0`}
                     >
                       <Link href={item.url}>
-                        <Image
-                          src={isActive ? item.activeIcon : item.icon}
-                          className="w-[18px] object-cover"
-                          alt={`${item.title} icon`}
-                        />
-                        <span>{item.title}</span>
+                        <div className="flex items-center justify-between w-full">
+                          <span
+                            className={`${item.color} h-5 w-5 rounded-full`}
+                          ></span>
+                          <span className="flex-1 text-left sm:text-body-sm px-3 truncate overflow-hidden whitespace-nowrap">
+                            {item.title}
+                          </span>
+                          <span>{icon.threedotH}</span>
+                        </div>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
+              {/* 2 */}
+              <p className=" px-3">Other Workspace</p>
+              {otherworkspaceItem.map((item, i) => {
+                const isActive = pathname === item.url;
+                return (
+                  <SidebarMenuItem key={i} className="!border-0">
+                    <SidebarMenuButton
+                      asChild
+                      tooltip={item.title}
+                      className={`group flex w-full items-center justify-between px-3 py-2 rounded-lg transition-colors duration-200 
+                ${
+                  isActive
+                    ? "bg-slate-blue text-primary"
+                    : "hover:bg-slate-100 text-gray-700"
+                } !border-0`}
+                    >
+                      <Link href={item.url}>
+                        <div className="flex items-center justify-between w-full">
+                          <span
+                            className={`${item.color} h-5 w-5 rounded-full`}
+                          ></span>
+                          <span className="flex-1 text-left sm:text-body-sm px-3 truncate overflow-hidden whitespace-nowrap">
+                            {item.title}
+                          </span>
+                          <span>{icon.threedotH}</span>
+                        </div>
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -72,15 +161,15 @@ export default function WorkSpaceSideBar() {
               })}
             </SidebarMenu>
 
-            {/* BOTTOM LOGOUT */}
-            <SidebarMenu className="!border-0 hidden">
+            {/* LOGOUT (Shown conditionally with hidden class removed if needed) */}
+            <SidebarMenu className="!border-0 mt-auto">
               <SidebarMenuItem className="!border-0">
                 <SidebarMenuButton
                   asChild
                   tooltip="Logout"
-                  className="flex items-center gap-2 px-4 py-2 cursor-pointer pb-10 !border-0"
+                  className="flex items-center gap-2 px-4 py-3 rounded-lg hover:bg-red-50 transition-colors !border-0"
                 >
-                  <div>
+                  <div className="flex items-center gap-2 cursor-pointer">
                     <LeaveIcon strokwidth={2} size={4} color={"red"} />
                     <span className="text-red-500 font-medium">Logout</span>
                   </div>

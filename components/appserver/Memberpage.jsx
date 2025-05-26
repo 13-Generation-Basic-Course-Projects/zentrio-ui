@@ -7,7 +7,7 @@ import iconSearch from "@/assets/search.png";
 import icon1 from "@/assets/icon1.png";
 import arrowdown from "@/assets/arrow-down.png";
 import member from "@/assets/memberSideBar.png";
-
+import ModalInviteMember from "../modal/ModalInviteMember";
 import {
   Popover,
   PopoverTrigger,
@@ -21,6 +21,7 @@ import {
   useDisclosure,
   useDraggable,
 } from "@heroui/react";
+import BredCrum from "../bredcrum/bredcrum";
 
 export default function Memberpage() {
   const initialMembers = [
@@ -133,32 +134,8 @@ export default function Memberpage() {
   };
   return (
     <div className="p-6 space-y-4">
-      <nav className="text-h6 text-[#94A3B8]">
-        <ol className="flex space-x-2">
-          <li>
-            <a href="#" className="hover:text-blueActive">
-              Workspace
-            </a>
-          </li>
-          <li>/</li>
-          <li>
-            <a href="#" className="hover:text-blueActive">
-              Hikoko Design
-            </a>
-          </li>
-          <li>/</li>
-          <li>
-            <a href="#" className="hover:text-blueActive">
-              Member
-            </a>
-          </li>
-        </ol>
-      </nav>
-
-      <header className="text-h1 text-titles font-semibold">
-        <p>Members</p>
-      </header>
-
+      {/* breadcrum */}
+      <BredCrum board={"Hikko Design"} feature={"Members"} header={"Member"} />
       <div className="flex justify-between">
         <div className="flex items-center w-[600px] h-[45px] border border-gray-200 rounded-[16px] shadow-sm overflow-hidden bg-white text-input text-title">
           <div className="relative flex items-center gap-1 px-3 border-r border-gray-200">
@@ -184,16 +161,14 @@ export default function Memberpage() {
             className="flex-1 h-full px-2 bg-white text-gray-700 outline-none placeholder-gray-400"
           />
         </div>
-        <Button className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-[8px] shadow-sm hover:bg-gray-100">
-          <Image src={member} alt="Member Icon" className="w-4 h-4" />
-          Invite
-        </Button>
+        {/* invite */}
+        <ModalInviteMember />
       </div>
 
       <section>
         <div className="relative overflow-x-auto mt-10">
-          <table className="w-full text-h6 text-left text-title">
-            <thead className="text-h6 text-[#64748B] bg-primary/20">
+          <table className="w-full text-body-sm text-left text-title ">
+            <thead className=" text-[#64748B] bg-primary/20">
               <tr>
                 <th className="px-6 py-3 rounded-s-lg">No.</th>
                 <th className="px-6 py-3">Member Name</th>
@@ -305,8 +280,8 @@ export default function Memberpage() {
                             >
                               <path
                                 stroke="currentColor"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
                                 stroke-width="2"
                                 d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"
                               />
@@ -348,8 +323,8 @@ export default function Memberpage() {
                         >
                           <path
                             stroke="currentColor"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
                             stroke-width="2"
                             d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"
                           />

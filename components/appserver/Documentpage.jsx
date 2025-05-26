@@ -1,13 +1,14 @@
 import DocumentLayout from "../documentcomponent/DocumentLayout";
-import PersonalDocument from "../documentcomponent/PublicDocument";
-import PublicDocument from "../documentcomponent/PrivateDocument";
+import Privatedocument from "../documentcomponent/PrivateDocument";
+import PublicDocument from "../documentcomponent/PublicDocument";
+
 export default function DocumentAutherize({ user }) {
   return (
     <>
       <DocumentLayout
         user={user}
-        publicdocument={<PersonalDocument title="Personal" />}
-        privatedocument={<PublicDocument title="Private" />}
+        privatedocument={<Privatedocument title="Private" />}
+        publicdocument={<PublicDocument title="Public" />}
       />
     </>
   );

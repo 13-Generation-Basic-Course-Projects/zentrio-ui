@@ -6,8 +6,8 @@ module.exports = {
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
-    "// Or if using `src` directory:\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\n    \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"./src/**/*.{js,ts,jsx,tsx,mdx}\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"",
-    "./node_modules/@heroui/theme/dist/components/(calendar|card|input|modal|skeleton|tabs|button|ripple|spinner|form).js"
+    '// Or if using `src` directory:\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\n    \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"./src/**/*.{js,ts,jsx,tsx,mdx}\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"',
+    "./node_modules/@heroui/theme/dist/components/(calendar|card|input|modal|skeleton|tabs|button|ripple|spinner|form).js",
   ],
   theme: {
     // Define font sizes
@@ -54,6 +54,16 @@ module.exports = {
     // Define responsive breakpoints
 
     extend: {
+      // Gradient Color
+      backgroundImage: {
+        "custom-gradient": "linear-gradient(90deg, #59BAD5, #ABAAFF, #59BAD5)",
+        "board-purple": "linear-gradient(135.8deg, #ffffff, #800080)",
+        "board-orange": "linear-gradient(145.88deg, #ffffff, #ffbc6b, #ff8c00)",
+        "board-green": "linear-gradient(138.29deg, #ffffff, #008000)",
+        "board-red": "linear-gradient(138.66deg, #ff0000, #ffffff, #ff0000)",
+        "board-primary":
+          "linear-gradient(140.08deg, #59bad5, #ffffff, #59bad5)",
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
@@ -106,11 +116,7 @@ module.exports = {
           orange: "#FFF8EF",
           "orange-more": "#FFE1CC",
         },
-        // Gradient Color
-        backgroundImage: {
-          "custom-gradient":
-            "linear-gradient(90deg, #59BAD5, #ABAAFF, #59BAD5)",
-        },
+
         muted: {
           DEFAULT: "hsl(var(--muted))",
           foreground: "hsl(var(--muted-foreground))",
