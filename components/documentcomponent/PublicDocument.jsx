@@ -10,7 +10,7 @@ export default async function PublicDocument({ modal }) {
   console.log(data);
 
   return (
-    <div>
+    <div className="h-screen flex flex-col">
       <div className="grid grid-cols-1 gap-3 ">
         <BredCrum
           board={"Hikko Design"}
@@ -29,7 +29,7 @@ export default async function PublicDocument({ modal }) {
         </div>
       </div>
 
-      <div className="grid grid-cols-6 gap-3">
+      <div className="grid grid-cols-6 gap-3 overflow-y-auto scrollbar-hidden pb-40 pt-10">
         {data.map((el, i) => (
           <CardFolder
             key={i}
