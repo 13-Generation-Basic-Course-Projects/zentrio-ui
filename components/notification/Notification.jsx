@@ -1,10 +1,15 @@
+"use client";
+
 import ActiveIcon from "@/assets/notification/activeIcon.png";
 import SettingIcon from "@/assets/notification/settingIcon.png";
 import TrashIcon from "@/assets/notification/trashIcon.png";
 import Image from "next/image";
 import {notifications} from "@/data/allDataV2"
+import { useState } from "react";
 
 export function Notification() {
+    const [isActive, setIsActive] = useState(false);
+
     const notifi = notifications;
     console.log(notifi);
     return <>
@@ -57,7 +62,7 @@ export function Notification() {
                             />
                         </div>
                     </div>
-                    <div className="flex justify-between items-start bg-slate-blue-more py-[20px]">
+                    {/* <div className="flex justify-between items-start bg-slate-blue-more py-[20px]">
                         <div className="flex gap-[15px] pl-[15px]">
                             <div>
                                 <Image
@@ -143,13 +148,13 @@ export function Notification() {
                                 className="w-[20px] h-fit mt-[10px] cursor-pointer"
                             />
                         </div>
-                    </div>
+                    </div> */}
                 </div>
 
                 {/* footerNotification */}
                 <div className="flex justify-between px-[15px] py-[33px]">
-                    <p className="text-description">See All Notification</p>
-                    <p className="text-description">Mark All As Read</p>
+                    <p className="text-description cursor-pointer">See All Notification</p>
+                    <p className={isActive ? `text-description cursor-pointer` : `text-blueActive cursor-pointer`} onClick={()=>setIsActive(!isActive)}>Mark All As Read</p>
                 </div>
             </div>
         </div>
