@@ -18,7 +18,7 @@ export default async function PublicDocument({ modal }) {
           header={"Hikko Design"}
           modal={modal}
         />
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-center pb-5">
           <MyDatePicker />
         </div>
         {/* 1 */}

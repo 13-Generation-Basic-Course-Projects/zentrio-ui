@@ -2,7 +2,7 @@ import React from "react";
 
 export default function BredCrum({ board, feature, header, modal }) {
   return (
-    <div className="pb-10">
+    <div className="p-0">
       <nav className="text-h6 text-[#94A3B8]">
         <ol className="flex space-x-2">
           <li>

@@ -13,16 +13,10 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
-import calender from "../../assets/calendarSideBar.png";
-import member from "../../assets/memberSideBar.png";
 import board from "../../assets/boardSideBar.png";
-import folder from "../../assets/folderSidBar.png";
-import report from "@/assets/report.png";
 import { LeaveIcon } from "../icon/everyicon";
-
 import { icon } from "../icon/allicon";
 import SaveWorkspace from "../button/SaveWorkspace";
-import AddButton from "../button/AddButton";
 import ModalCreateWorkspace from "../modal/ModalCreateWorkspace";
 import ModalCreateBoard from "../modal/ModalCreateBoard";
 

@@ -93,7 +93,7 @@ export default function DocumentLayout({
       </div>
 
       {/* Tab Content Area */}
-      <main className="p-6  min-h-screen">
+      <main className="p-4   min-h-screen">
         <div className=" mx-auto">{currentTab?.content}</div>
       </main>
     </>

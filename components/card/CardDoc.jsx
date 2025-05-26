@@ -15,7 +15,7 @@ import { icon } from "../icon/allicon";
 
 export default function CardFolder({ title, status, date }) {
   return (
-    <Card className="rounded-xl text-blue-400 cursor-pointer hover:bg-blue-50 transition w-[160px] h-[160px] shadow-md ">
+    <Card className="rounded-xl text-blue-400 cursor-pointer hover:bg-blue-50 transition sm:w-[160px] md:w-full h-[160px] shadow-md ">
       {/* Header */}
       <CardHeader className="pb-0 pt-2 px-4 flex justify-end">
         <div className="hover:text-black text-gray-600">
@@ -196,7 +196,7 @@ function FileIcon({ type = "default", size = 45 }) {
 
 export function CardFile({ title, status, date, type }) {
   return (
-    <Card className="rounded-xl text-blue-400 cursor-pointer hover:bg-blue-50 transition w-[160px] h-[160px] shadow-md">
+    <Card className="rounded-xl text-blue-400 cursor-pointer hover:bg-blue-50 transition sm:w-[160px] md:w-full h-[160px] shadow-md">
       {/* Header */}
       <CardHeader className="pb-0 pt-2 px-4 flex justify-end">
         <div className="hover:text-black text-gray-600">

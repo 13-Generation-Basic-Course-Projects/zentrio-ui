@@ -10,7 +10,7 @@ export default async function Privatedocument({ modal }) {
   console.log(data);
 
   return (
-    <div>
+    <div className=" ">
       <div className="grid grid-cols-1 gap-3 ">
         <BredCrum
           board={"Hikko Design"}
@@ -18,7 +18,7 @@ export default async function Privatedocument({ modal }) {
           header={"Hikko Design"}
           modal={modal}
         />
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-center pb-5">
           <MyDatePicker />
         </div>
         {/* 1 */}

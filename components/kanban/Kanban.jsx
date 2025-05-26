@@ -267,7 +267,7 @@ export default function KanbanBoard({ modal }) {
   };
 
   return (
-    <div className="p-4 w-full h-screen flex flex-col">
+    <div className="w-full h-screen flex flex-col">
       <BredCrum
         board={"Hikko Design"}
         feature={"Board"}
@@ -276,7 +276,7 @@ export default function KanbanBoard({ modal }) {
       />
 
       {/* Column Headers */}
-      <div className=" pt-10 pb-2 grid grid-cols-4 gap-4">
+      <div className=" pt-5 pb-2 grid grid-cols-4 gap-4">
         <div className="mb-4 border-b-4 border-blue-500 pb-2 flex items-center gap-3">
           <p className="text-2xl font-bold">To Do</p>
           <button className="px-3 py-1 text-sm rounded-full bg-transparent border-2 border-gray-300 shadow-sm">

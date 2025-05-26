@@ -14,11 +14,10 @@ import {
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 import calender from "../../assets/calendarSideBar.png";
-import member from "../../assets/memberSidebar.png";
+import member from "../../assets/memberSideBar.png";
 import board from "../../assets/boardSideBar.png";
 import folder from "../../assets/folderSidBar.png";
 import report from "@/assets/report.png";
-import { LeaveIcon } from "../icon/everyicon";
 import ModalLeave from "../modal/ModalLeave";
 import LeaveButton from "../button/LeaveButton";
 

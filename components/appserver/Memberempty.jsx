@@ -7,7 +7,7 @@ import Image from "next/image";
 import { Button } from "@heroui/react";
 export default function Memberempty() {
   return (
-    <div className="p-6 space-y-4">
+    <div className="p-4 ">
       <nav className="text-h6 text-[#94A3B8]">
         <ol className="flex space-x-2">
           <li>
