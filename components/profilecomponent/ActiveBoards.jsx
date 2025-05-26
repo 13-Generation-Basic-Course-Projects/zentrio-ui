@@ -3,19 +3,19 @@ import { IconEllipsisVertical } from "../icon/everyicon";
 
 export default function ActiveBoards() {
   const boards = [
-    { percent: 25, role: "Owner", color: "bg-red-500" },
-    { percent: 50, role: "Team Leader", color: "bg-orange-400" },
-    { percent: 75, role: "Owner", color: "bg-blue-500" },
-    { percent: 90, role: "Owner", color: "bg-green-500" },
+    { percent: 25, role: "Owner", color: "bg-progress-red" },
+    { percent: 50, role: "Team Leader", color: "bg-progress-orange" },
+    { percent: 75, role: "Owner", color: "bg-progress-blue" },
+    { percent: 90, role: "Owner", color: "bg-progress-green" },
   ];
 
   return (
     <div className="rounded-xl shadow bg-white">
-      <div className="flex justify-between py-4 px-4 border-b-1">
+      <div className="flex justify-between py-4 px-4 border-b-1 border-stroke">
         <h3 className="text-body font-semibold">Active Boards</h3>
         <IconEllipsisVertical strokeWidth={2} color={"currentColor"} size={6} />
       </div>
-      <div className="grid grid-cols-2 text-body-sm font-semibold text-gray-500 bg-gray-100 p-4">
+      <div className="grid grid-cols-2 text-body-sm font-semibold text-description bg-gray-100 p-4">
         <span>Board Name</span>
         <span>Progress</span>
       </div>
@@ -30,7 +30,7 @@ export default function ActiveBoards() {
               </div>
               <div>
                 <p className="font-medium">Zentrio UI Design</p>
-                <p className="text-body-sm text-gray-500">Role: {board.role}</p>
+                <p className="text-body-sm text-description">Role: {board.role}</p>
               </div>
             </div>
             <div className="w-1/2">
@@ -40,7 +40,7 @@ export default function ActiveBoards() {
                   style={{ width: `${board.percent}%` }}
                 ></div>
               </div>
-              <p className="text-body-sm text-gray-600 mt-1 text-right">
+              <p className="text-body-sm text-description mt-1 text-right">
                 {board.percent}%
               </p>
             </div>
