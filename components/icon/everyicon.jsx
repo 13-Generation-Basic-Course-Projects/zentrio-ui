@@ -445,3 +445,38 @@ export function IconShield({ strokeWidth, size, color }) {
 export function IconMemberSide({}) {
   reutrn;
 }
+export function IconAdd({}) {
+  return (
+    <svg
+      width={17}
+      height={16}
+      viewBox="0 0 17 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M8.2159 5.55273V10.437"
+        stroke="white"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M10.6604 7.99489H5.77148"
+        stroke="white"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M11.3393 1.33398H5.09169C2.91391 1.33398 1.54883 2.87537 1.54883 5.05742V10.9439C1.54883 13.1259 2.90756 14.6673 5.09169 14.6673H11.3393C13.5234 14.6673 14.8822 13.1259 14.8822 10.9439V5.05742C14.8822 2.87537 13.5234 1.33398 11.3393 1.33398Z"
+        stroke="white"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}

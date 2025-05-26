@@ -276,7 +276,7 @@ export default function KanbanBoard({ modal }) {
       />
 
       {/* Column Headers */}
-      <div className="pb-2 grid grid-cols-4 gap-4">
+      <div className=" pt-10 pb-2 grid grid-cols-4 gap-4">
         <div className="mb-4 border-b-4 border-blue-500 pb-2 flex items-center gap-3">
           <p className="text-2xl font-bold">To Do</p>
           <button className="px-3 py-1 text-sm rounded-full bg-transparent border-2 border-gray-300 shadow-sm">

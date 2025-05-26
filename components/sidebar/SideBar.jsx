@@ -110,11 +110,9 @@ export default function DashbaordSideBar() {
                 <SidebarMenuButton
                   asChild
                   tooltip="Logout"
-                  className="flex items-center gap-2 px-4 py-2 cursor-pointer pb-10 !border-0"
+                  className="flex items-center gap-2 px-4 cursor-pointer pb-10 !border-0"
                 >
-                  <div>
-                    {/* <LeaveIcon strokwidth={2} size={4} color={"red"} />
-                    <span className="text-red-500 font-medium">Logout</span> */}
+                  <div className=" ">
                     <ModalLeave
                       massageTitle={"Are you sure?"}
                       massageBody={"You want to leave this board “Zin two"}

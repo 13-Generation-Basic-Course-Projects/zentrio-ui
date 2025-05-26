@@ -6,10 +6,10 @@ import { Button } from "@heroui/react";
 export default function StarBoard() {
   const [favorited, setFavorited] = useState(false);
   return (
-    <div className="">
+    <div className="h-[50px]">
       <Button
         onPress={() => setFavorited(!favorited)}
-        className="w-[30px] h-full min-w-0 bg-transparent border  text-primary p-0"
+        className="w-[40px] h-[50px] h-full min-w-0 bg-transparent border  text-primary p-0"
         size="sm"
         aria-label="Toggle favorite"
       >

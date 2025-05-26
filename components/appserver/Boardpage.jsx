@@ -8,11 +8,16 @@ import GanttChart from "../testcomponent/Calender";
 import userProfile from "@/assets/profile.png";
 import ModalInviteMember from "../modal/ModalInviteMember";
 import StarBoard from "../button/StarBoard";
+import ModalCreateTask from "../modal/board/ModalCreateTask";
 const tabItems = [
   {
     key: "kanban",
     title: "Board",
-    content: <KanbanBoard modal={[<ModalInviteMember />, <StarBoard />]} />,
+    content: (
+      <KanbanBoard
+        modal={[<ModalCreateTask />, <ModalInviteMember />, <StarBoard />]}
+      />
+    ),
   },
   {
     key: "calendar",
