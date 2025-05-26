@@ -1,9 +1,15 @@
+"use client";
+
 import React from "react";
 import BredCrum from "../bredcrum/Bredcrum";
 import { BtnPreview, BtnSaveAs } from "../button/ButtonReport";
 import HorizontalChart from "../chart/horizontalChart";
-import VerticalChart from "../chart/VerticalChart";
+// import VerticalChart from "../chart/VerticalChart";
+import dynamic from "next/dynamic";
 
+const VerticalChartNoSSR = dynamic(() => import("../chart/VerticalChart"), {
+  ssr: false,
+});
 
 export default function Reportpage() {
   return (
@@ -116,7 +122,7 @@ export default function Reportpage() {
 
           {/* Show chart vertical chart */}
           <div className="mt-10">
-            <VerticalChart/>
+            <VerticalChartNoSSR />;
           </div>
 
           {/* Show chart horizontal chart */}
