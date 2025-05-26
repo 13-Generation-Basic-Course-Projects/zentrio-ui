@@ -14,11 +14,13 @@ import {
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 import calender from "../../assets/calendarSideBar.png";
-import member from "../../assets/memberSideBar.png";
+import member from "../../assets/memberSidebar.png";
 import board from "../../assets/boardSideBar.png";
 import folder from "../../assets/folderSidBar.png";
 import report from "@/assets/report.png";
 import { LeaveIcon } from "../icon/everyicon";
+import ModalLeave from "../modal/ModalLeave";
+import LeaveButton from "../button/LeaveButton";
 
 const items = [
   {
@@ -111,8 +113,15 @@ export default function DashbaordSideBar() {
                   className="flex items-center gap-2 px-4 py-2 cursor-pointer pb-10 !border-0"
                 >
                   <div>
-                    <LeaveIcon strokwidth={2} size={4} color={"red"} />
-                    <span className="text-red-500 font-medium">Logout</span>
+                    {/* <LeaveIcon strokwidth={2} size={4} color={"red"} />
+                    <span className="text-red-500 font-medium">Logout</span> */}
+                    <ModalLeave
+                      massageTitle={"Are you sure?"}
+                      massageBody={"You want to leave this board “Zin two"}
+                      massageUndo={"No, cancel"}
+                      massageDo={"Yes, Leave"}
+                      action={[<LeaveButton />]}
+                    />
                   </div>
                 </SidebarMenuButton>
               </SidebarMenuItem>

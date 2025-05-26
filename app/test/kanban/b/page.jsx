@@ -7,3 +7,4 @@ export default function page() {
     </div>
   );
 }
+//http://localhost:3000/dashboard/1/1/board

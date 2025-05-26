@@ -441,3 +441,7 @@ export function IconShield({ strokeWidth, size, color }) {
     </svg>
   );
 }
+
+export function IconMemberSide({}) {
+  reutrn;
+}

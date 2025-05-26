@@ -163,7 +163,7 @@ export default function WorkSpaceSideBar() {
             </SidebarMenu>
 
             {/* LOGOUT (Shown conditionally with hidden class removed if needed) */}
-            <SidebarMenu className="!border-0 mt-auto">
+            <SidebarMenu className="!border-0 mt-auto hidden">
               <SidebarMenuItem className="!border-0">
                 <SidebarMenuButton
                   asChild

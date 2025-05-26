@@ -6,11 +6,13 @@ import React, { useState } from "react";
 import KanbanBoard from "../kanban/Kanban";
 import GanttChart from "../testcomponent/Calender";
 import userProfile from "@/assets/profile.png";
+import ModalInviteMember from "../modal/ModalInviteMember";
+import StarBoard from "../button/StarBoard";
 const tabItems = [
   {
     key: "kanban",
     title: "Board",
-    content: <KanbanBoard />,
+    content: <KanbanBoard modal={[<ModalInviteMember />, <StarBoard />]} />,
   },
   {
     key: "calendar",
@@ -42,8 +44,7 @@ export default function SystemBoard({ user }) {
                       activeTab === tab.key
                         ? "border-b-2 border-blue-500  px-4 py-2  text-blue-600 font-semibold"
                         : "text-gray-600   px-4 py-2  hover:text-gray-900"
-                    }
-`}
+                    }`}
                   >
                     {tab.title}
                   </li>
