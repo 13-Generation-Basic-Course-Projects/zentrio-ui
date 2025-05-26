@@ -330,7 +330,7 @@ export const DatePicker = () => {
 
       {/* Date Picker Modal */}
       {isOpen && (
-        <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-sm z-50 p-4 w-80">
+        <div className="absolute top-[-250%] left-[-40%] mt-2 bg-white border border-gray-200 rounded-xl shadow-sm z-50 p-4 w-80 scale-[0.6]">
           {/* Header */}
           <div className="flex items-center justify-between mb-4">
             <button
