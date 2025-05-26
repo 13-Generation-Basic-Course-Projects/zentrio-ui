@@ -5,6 +5,7 @@ import Link from "next/link";
 import React, { useState } from "react";
 import KanbanBoard from "../kanban/Kanban";
 import GanttChart from "../testcomponent/Calender";
+import userProfile from "@/assets/profile.png";
 const tabItems = [
   {
     key: "kanban",
@@ -65,14 +66,22 @@ export default function SystemBoard({ user }) {
               <Link href="/login">
                 <div className="overflow-hidden rounded-full border-2 border-gray-200 hover:border-gray-300 shadow-sm transition-all duration-200 hover:shadow-md">
                   <span className="sr-only">Toggle dashboard menu</span>
-                  <img
-                    src={
-                      user?.image ||
-                      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzyLc8LMQIrviNz6u2EP3TtPRZZt3OlhrhHA&s"
-                    }
-                    alt={user?.name || "User"}
-                    className="size-10 object-cover hover:scale-105 transition-transform duration-200"
-                  />
+                  {user?.image != null ? (
+                    <img
+                      src={
+                        user?.image ||
+                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzyLc8LMQIrviNz6u2EP3TtPRZZt3OlhrhHA&s"
+                      }
+                      alt={user?.name || "User"}
+                      className={`size-10 object-cover hover:scale-105 transition-transform duration-200 `}
+                    />
+                  ) : (
+                    <Image
+                      src={userProfile}
+                      alt="person"
+                      className={`size-10 object-cover hover:scale-105 transition-transform duration-200 `}
+                    />
+                  )}
                 </div>
               </Link>
             </div>
