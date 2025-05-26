@@ -1,5 +1,8 @@
 import CardBoard from "@/components/card/CardBoard";
 import React from "react";
+import cher from "@/public/image/teacherDara.png";
+import "@/styles/box.css";
+import Image from "next/image";
 
 //useage : http://localhost:3000/contact
 
