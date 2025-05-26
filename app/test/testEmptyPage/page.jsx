@@ -4,5 +4,5 @@ import { EmptyKanban } from "@/components/emptypage/EmptyKanban";
 import { EmptyMemberPage } from "@/components/emptypage/EmptyMemberPage";
 
 export default function TestEmptyPage() {
-    return <EmptyMemberPage />
+    return <EmptyDocumentPage />
 }
