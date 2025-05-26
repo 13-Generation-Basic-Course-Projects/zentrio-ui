@@ -2,8 +2,11 @@ import ActiveIcon from "@/assets/notification/activeIcon.png";
 import SettingIcon from "@/assets/notification/settingIcon.png";
 import TrashIcon from "@/assets/notification/trashIcon.png";
 import Image from "next/image";
+import {notifications} from "@/data/allDataV2"
 
 export function Notification() {
+    const notifi = notifications;
+    console.log(notifi);
     return <>
         <div className="w-full h-screen flex items-center justify-center bg-slate-blue">
             <div className="w-[450px] h-fit bg-white shadow-sm rounded-[22px]">
@@ -24,62 +27,122 @@ export function Notification() {
                 </div>
 
                 {/* User */}
-                <div className="flex justify-between items-start bg-slate-blue-more py-[20px]">
-                    <div className="flex gap-[15px] pl-[15px]">
-                        <div>
+                <div className="overflow-y-scroll h-[400px]">
+                    <div className="flex justify-between items-start bg-slate-blue-more py-[20px]">
+                        <div className="flex gap-[15px] pl-[15px]">
+                            <div>
+                                <Image
+                                    src={ActiveIcon}
+                                    alt="ActiveIcon"
+                                    className="w-[40px] h-fit"
+                                />
+                            </div>
+                            <div className="flex flex-col gap-[3.5px]">
+                                <p className="text-[15px] text-title">Seam Chiminh</p>
+                                <p className="text-body-sm text-description">welcome to Zentrio system</p>
+                                <p className="text-body-sm text-description">created Task Back-End.</p>
+                                <p className="text-body-sm text-description">5 May</p>
+                            </div>
+                        </div>
+                        <div className="flex flex-col items-center justify-center pr-[15px]">
                             <Image
                                 src={ActiveIcon}
                                 alt="ActiveIcon"
-                                className="w-[40px] h-fit"
+                                className="w-[7px] h-fit"
+                            />
+                            <Image
+                                src={TrashIcon}
+                                alt="TrashIcon"
+                                className="w-[20px] h-fit mt-[10px] cursor-pointer"
                             />
                         </div>
-                        <div className="flex flex-col gap-[3.5px]">
-                            <p className="text-[15px] text-title">Seam Chiminh</p>
-                            <p className="text-body-sm text-description">welcome to Zentrio system</p>
-                            <p className="text-body-sm text-description">created Task Back-End.</p>
-                            <p className="text-body-sm text-description">5 May</p>
+                    </div>
+                    <div className="flex justify-between items-start bg-slate-blue-more py-[20px]">
+                        <div className="flex gap-[15px] pl-[15px]">
+                            <div>
+                                <Image
+                                    src={ActiveIcon}
+                                    alt="ActiveIcon"
+                                    className="w-[40px] h-fit"
+                                />
+                            </div>
+                            <div className="flex flex-col gap-[3.5px]">
+                                <p className="text-[15px] text-title">Seam Chiminh</p>
+                                <p className="text-body-sm text-description">welcome to Zentrio system</p>
+                                <p className="text-body-sm text-description">created Task Back-End.</p>
+                                <p className="text-body-sm text-description">5 May</p>
+                            </div>
                         </div>
-                    </div>
-                    <div className="flex flex-col items-center justify-center pr-[15px]">
-                        <Image
-                            src={ActiveIcon}
-                            alt="ActiveIcon"
-                            className="w-[7px] h-fit"
-                        />
-                        <Image
-                            src={TrashIcon}
-                            alt="TrashIcon"
-                            className="w-[20px] h-fit mt-[10px] cursor-pointer"
-                        />
-                    </div>
-                </div>
-                <div className="flex justify-between items-start bg-slate-blue-more py-[20px]">
-                    <div className="flex gap-[15px] pl-[15px]">
-                        <div>
+                        <div className="flex flex-col items-center justify-center pr-[15px]">
                             <Image
                                 src={ActiveIcon}
                                 alt="ActiveIcon"
-                                className="w-[40px] h-fit"
+                                className="w-[7px] h-fit"
+                            />
+                            <Image
+                                src={TrashIcon}
+                                alt="TrashIcon"
+                                className="w-[20px] h-fit mt-[10px] cursor-pointer"
                             />
                         </div>
-                        <div className="flex flex-col gap-[3.5px]">
-                            <p className="text-[15px] text-title">Seam Chiminh</p>
-                            <p className="text-body-sm text-description">welcome to Zentrio system</p>
-                            <p className="text-body-sm text-description">created Task Back-End.</p>
-                            <p className="text-body-sm text-description">5 May</p>
+                    </div>
+                    <div className="flex justify-between items-start bg-slate-blue-more py-[20px]">
+                        <div className="flex gap-[15px] pl-[15px]">
+                            <div>
+                                <Image
+                                    src={ActiveIcon}
+                                    alt="ActiveIcon"
+                                    className="w-[40px] h-fit"
+                                />
+                            </div>
+                            <div className="flex flex-col gap-[3.5px]">
+                                <p className="text-[15px] text-title">Seam Chiminh</p>
+                                <p className="text-body-sm text-description">welcome to Zentrio system</p>
+                                <p className="text-body-sm text-description">created Task Back-End.</p>
+                                <p className="text-body-sm text-description">5 May</p>
+                            </div>
+                        </div>
+                        <div className="flex flex-col items-center justify-center pr-[15px]">
+                            <Image
+                                src={ActiveIcon}
+                                alt="ActiveIcon"
+                                className="w-[7px] h-fit"
+                            />
+                            <Image
+                                src={TrashIcon}
+                                alt="TrashIcon"
+                                className="w-[20px] h-fit mt-[10px] cursor-pointer"
+                            />
                         </div>
                     </div>
-                    <div className="flex flex-col items-center justify-center pr-[15px]">
-                        <Image
-                            src={ActiveIcon}
-                            alt="ActiveIcon"
-                            className="w-[7px] h-fit"
-                        />
-                        <Image
-                            src={TrashIcon}
-                            alt="TrashIcon"
-                            className="w-[20px] h-fit mt-[10px] cursor-pointer"
-                        />
+                    <div className="flex justify-between items-start bg-slate-blue-more py-[20px]">
+                        <div className="flex gap-[15px] pl-[15px]">
+                            <div>
+                                <Image
+                                    src={ActiveIcon}
+                                    alt="ActiveIcon"
+                                    className="w-[40px] h-fit"
+                                />
+                            </div>
+                            <div className="flex flex-col gap-[3.5px]">
+                                <p className="text-[15px] text-title">Seam Chiminh</p>
+                                <p className="text-body-sm text-description">welcome to Zentrio system</p>
+                                <p className="text-body-sm text-description">created Task Back-End.</p>
+                                <p className="text-body-sm text-description">5 May</p>
+                            </div>
+                        </div>
+                        <div className="flex flex-col items-center justify-center pr-[15px]">
+                            <Image
+                                src={ActiveIcon}
+                                alt="ActiveIcon"
+                                className="w-[7px] h-fit"
+                            />
+                            <Image
+                                src={TrashIcon}
+                                alt="TrashIcon"
+                                className="w-[20px] h-fit mt-[10px] cursor-pointer"
+                            />
+                        </div>
                     </div>
                 </div>
 
