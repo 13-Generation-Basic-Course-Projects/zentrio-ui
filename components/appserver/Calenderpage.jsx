@@ -26,7 +26,6 @@ export default function MyCalendar({ tasks }) {
           feature={"Calender"}
           header={"Calender"}
         />
-
         <div className="p-4 max-w-full overflow-x-auto grid grid-cols-1 sm:grid-cols-4">
           {/* calender */}
           <div className="min-w-[300px] sm:min-w-full col-span-3 overflow-y-auto scrollbar-hidden pb-40 pt-10">

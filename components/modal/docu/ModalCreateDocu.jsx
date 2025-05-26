@@ -38,6 +38,7 @@ export default function ModalCreateDocu({ input }) {
               <ModalBody>
                 <form action="">
                   <div className=" flex flex-col  gap-3 ">input</div>
+                  <div className=" flex flex-col  gap-3 ">input</div>
                   <div className="grid grid-cols-2 gap-3 pt-2">
                     <Button
                       className="bg-transparent border-1 border-bgColor"

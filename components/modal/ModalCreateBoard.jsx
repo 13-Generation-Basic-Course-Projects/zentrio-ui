@@ -106,7 +106,7 @@ export default function ModalCreateBoard() {
                   </div>
                   <div className="flex justify-end items-center pt-2">
                     <Button color="primary" radius="full" onPress={onClose}>
-                      Create Workspace
+                      Create Board
                     </Button>
                   </div>
                 </form>

@@ -199,7 +199,13 @@ export default function AboutUs() {
           <div className="grid grid-cols-2 gap-6 relative items-center justify-center ">
             <div className="imgBgStage p-16">
               <div className="flex flex-row space-x-2 ">
-                <Image src={imgs1} width={80} height={80} alt="img" />
+                <Image
+                  src={imgs1}
+                  width={80}
+                  height={80}
+                  className="object-contain"
+                  alt="img"
+                />
                 <p className="text-h4 text-primary uppercase font-semibold">
                   4 Core Stages
                 </p>
@@ -211,7 +217,13 @@ export default function AboutUs() {
             <div className="imgBgCalendar p-14 ">
               <div className="flex flex-row space-x-2 ">
                 {" "}
-                <Image src={imgs2} width={80} height={80} alt="img" />
+                <Image
+                  src={imgs2}
+                  width={80}
+                  height={80}
+                  className="object-contain"
+                  alt="img"
+                />
                 <p className="text-h4 text-primary uppercase font-semibold">
                   Personal Calendar
                 </p>
@@ -226,6 +238,7 @@ export default function AboutUs() {
                   src={bellNotification}
                   width={80}
                   height={80}
+                  className="object-contain"
                   alt="img"
                 />
                 <p className="text-h4 text-primary uppercase font-semibold">
@@ -238,7 +251,13 @@ export default function AboutUs() {
             </div>
             <div className="imgBgGoogle p-12">
               <div className="flex flex-row space-x-2 ">
-                <Image src={google} width={80} height={80} alt="img" />
+                <Image
+                  src={google}
+                  width={80}
+                  height={80}
+                  className="object-contain"
+                  alt="img"
+                />
                 <p className="text-h4 text-primary uppercase font-semibold">
                   Google Tools Integrated
                 </p>
