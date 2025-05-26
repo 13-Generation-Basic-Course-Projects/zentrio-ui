@@ -5,6 +5,7 @@ import { Plus, ChevronDown, ChevronRight } from "lucide-react";
 import { initialColumns } from "@/data/boardData";
 import { CardCheckList } from "../card/CardChecklist";
 import UserAvater from "../useravatar/UserAvatar";
+import BredCrum from "../bredcrum/bredcrum";
 
 export default function KanbanBoard() {
   const [columns, setColumns] = useState(initialColumns);
@@ -267,6 +268,11 @@ export default function KanbanBoard() {
 
   return (
     <div className="p-4 w-full h-screen flex flex-col">
+      <BredCrum
+        board={"Hikko Design"}
+        feature={"Board"}
+        header={"Hikko Design"}
+      />
       {/* Column Headers */}
       <div className="pb-2 grid grid-cols-4 gap-4">
         <div className="mb-4 border-b-4 border-blue-500 pb-2 flex items-center gap-3">
@@ -351,7 +357,7 @@ export default function KanbanBoard() {
                             </button>
                             <div>
                               <div className="font-medium">{card.title}</div>
-                              <div className="text-sm text-gray-600">
+                              <div className="text-sm text-gray-600 sm:text-body-sm truncate max-w-[150px]">
                                 {card.description}
                               </div>
                             </div>

@@ -1,6 +1,6 @@
 import SmallCalendar from "../testcomponent/SmallCalendar";
 import CardWelcomeComponent from "../card/CardWelcome";
-import CardBoardEmpty from "../card/CardBoardEmpty";
+import CardBoardEmpty from "../card/CardBoardAdd";
 
 export default function MyworkspaceEmpty() {
   return (

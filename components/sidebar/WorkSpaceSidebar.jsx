@@ -22,6 +22,8 @@ import { LeaveIcon } from "../icon/everyicon";
 
 import { icon } from "../icon/allicon";
 import SaveWorkspace from "../button/SaveWorkspace";
+import AddButton from "../button/AddButton";
+import ModalCreateWorkspace from "../modal/ModalCreateWorkSpace";
 
 const randomColor = () =>
   Math.floor(Math.random() * 16777215)
@@ -93,7 +95,10 @@ export default function WorkSpaceSideBar() {
             <SidebarMenu className="space-y-1 !border-0">
               <SaveWorkspace />
               {/* 1 */}
-              <p className=" px-3 text-body-sm ">My Workspace</p>
+              <div className="flex items-center justify-between">
+                <p className=" px-3 text-body-sm ">My Workspace</p>
+                <div></div>
+              </div>
               {myworkspaceItem.map((item, i) => {
                 const isActive = pathname === item.url;
                 return (

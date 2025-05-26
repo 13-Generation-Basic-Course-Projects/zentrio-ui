@@ -6,8 +6,8 @@ import Memberempty from "@/components/appserver/Memberempty";
 export default function Member() {
   return (
     <>
-      {/* <Memberpage /> */}
-      <Memberempty />
+      <Memberpage />
+      {/* <Memberempty /> */}
     </>
   );
 }

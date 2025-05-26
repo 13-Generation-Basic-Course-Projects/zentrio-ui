@@ -1,7 +1,7 @@
 import SmallCalendar from "../testcomponent/SmallCalendar";
 import CardWelcomeComponent from "../card/CardWelcome";
 import CardBoard from "../card/CardBoard";
-import CardBoardEmpty from "../card/CardBoardEmpty";
+import CardBoardEmpty from "../card/CardBoardAdd";
 import { Link } from "lucide-react";
 
 export default function Myworkspace({ Workspaceid }) {
