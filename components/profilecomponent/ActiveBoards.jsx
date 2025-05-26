@@ -24,13 +24,15 @@ export default function ActiveBoards() {
           <li key={index} className="flex justify-between items-center gap-4">
             <div className="flex items-center gap-3">
               <div
-                className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold ${board.color}`}
+                className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold ${board.color}`}
               >
                 D
               </div>
               <div>
                 <p className="font-medium">Zentrio UI Design</p>
-                <p className="text-body-sm text-description">Role: {board.role}</p>
+                <p className="text-body-sm text-description">
+                  Role: {board.role}
+                </p>
               </div>
             </div>
             <div className="w-1/2">

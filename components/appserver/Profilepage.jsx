@@ -4,8 +4,7 @@ import coverProfile from "@/assets/coverprofile.png";
 import userProfile from "@/assets/profile.png";
 import { Button } from "@heroui/react";
 import { Camera } from "lucide-react";
-import ActiveBoards from "../profilecomponent/ActiveBoards";
-import ProfileDetailsCard from "../profilecomponent/ProfileDetailsCard";
+import "@/styles/profile.css";
 import {
   IconDate,
   IconEdit,
@@ -13,19 +12,23 @@ import {
   IconMap,
   IconReturnLeft,
 } from "../icon/everyicon";
+import ProfileComponent from "../profilecomponent/ProfileComponent";
+import AchievmentComponent from "../profilecomponent/AchievmentComponent";
 
 export default function Profilepage() {
   return (
     <div className="mt-4 px-8 rounded-xl">
       <div className="relative">
+        <div className="w-full h-[175px] cut-left-radius">
         <Image
-          className="w-full rounded-xl"
+          className="w-full h-full rounded-xl"
           src={coverProfile}
           alt="cover profile"
         />
+        </div>
         <Button
           className="absolute top-2 left-0"
-          size="md"
+          size="lg"
           color="primary"
           variant="bordered"
         >
@@ -34,16 +37,18 @@ export default function Profilepage() {
         </Button>
 
         {/* Profile Image with hover effect */}
-        <div className="absolute bottom-[-60px] left-1/2 -translate-x-1/2 w-28 h-28 rounded-full border-2 border-desc p-0.5 group cursor-pointer bg-white shadow overflow-hidden">
-          <Image
-            className="rounded-full w-full h-full object-cover"
-            src={userProfile}
-            alt="user profile"
-          />
+        <div className="absolute bottom-[-60px] left-1/2 -translate-x-1/2 p-4 bg-white rounded-full">
+          <div className="relative w-28 h-28 rounded-full border-2 border-desc p-0.5 group cursor-pointer bg-white shadow overflow-hidden">
+            <Image
+              className="rounded-full w-full h-full object-cover"
+              src={userProfile}
+              alt="user profile"
+            />
 
-          {/* Hover Overlay (stays within circle) */}
-          <div className="absolute top-20 inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-            <Camera className="text-white w-3 h-3" />
+            {/* Hover Overlay (stays within circle) */}
+            <div className="absolute top-20 inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+              <Camera className="text-white w-3 h-3" />
+            </div>
           </div>
         </div>
       </div>
@@ -80,26 +85,8 @@ export default function Profilepage() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-[43%_55%] gap-6 mt-6">
-        <div className="space-y-6">
-          {/* Overall Board Completeness */}
-          <div className="p-4 rounded-xl shadow bg-white">
-            <h3 className="text-md font-semibold mb-2">
-              Overall Board Completeness
-            </h3>
-            <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-              <div className="h-full bg-progress-blue w-[70%]"></div>
-            </div>
-            <p className="text-body text-right text-description mt-1">70%</p>
-          </div>
-
-          {/* Profile Details */}
-          <ProfileDetailsCard />
-        </div>
-
-        {/* Active Boards */}
-        <ActiveBoards />
-      </div>
+      {/* <ProfileComponent /> */}
+      <AchievmentComponent />
     </div>
   );
 }

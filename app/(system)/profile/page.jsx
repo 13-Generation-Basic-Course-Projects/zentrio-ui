@@ -5,8 +5,8 @@ import React from "react";
 export default function Profile() {
   return (
     <div>
-      {/* <Profilepage /> */}
-      {<OtherProfilepage />}
+      <Profilepage />
+      {/* <OtherProfilepage /> */}
     </div>
   );
 }

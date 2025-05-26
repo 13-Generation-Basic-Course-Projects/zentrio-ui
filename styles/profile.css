@@ -1,0 +1,17 @@
+.cut-left-radius {
+  background: linear-gradient(135deg, #a8d5ff 0%, #7bb3ff 100%);
+  position: relative;
+  overflow: hidden; /* Ensures the cut doesn't overflow */
+  border-radius: 20px;
+}
+
+.cut-left-radius::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 165px;
+  height: 65px;
+  background: white; /* Match your background */
+  border-radius: 0 0 20px 0; /* Rounded bottom-right corner of this block */
+}
