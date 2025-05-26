@@ -2,12 +2,13 @@ import React from "react";
 import LoginForm from "../_components/LoginForm";
 import LoginCredentail from "../_components/LoginCredentail";
 import { BackgroundAuthentication } from "@/components/background/Background";
+import { SigninForm } from "../_components/form/Form";
 
 export default function Login() {
   return (
     <>
       <div className="w-full   ">
-        <BackgroundAuthentication actionCard={<LoginCredentail />} />
+        <BackgroundAuthentication actionCard={<SigninForm />} />
       </div>
     </>
   );

@@ -32,7 +32,7 @@ export default function DocumentLayout({
     <>
       {/* Navbar */}
 
-      <div className="w-full sticky top-0 z-[30]  bg-bgColor  ">
+      <div className="w-full sticky top-0 z-[20]  bg-bgColor  ">
         <header className=" px-4 sm:px-6 lg:px-8  ">
           <div className="flex w-full h-16 items-center justify-between ">
             {/* Left side - Navigation Tabs */}
@@ -46,8 +46,7 @@ export default function DocumentLayout({
                       activeTab === tab.key
                         ? "border-b-2 border-blue-500  px-4 py-2  text-blue-600 font-semibold"
                         : "text-gray-600   px-4 py-2  hover:text-gray-900"
-                    }
-`}
+                    }`}
                   >
                     {tab.title}
                   </li>
@@ -67,7 +66,7 @@ export default function DocumentLayout({
               </button>
 
               {/* Profile */}
-              <Link href="/login">
+              <Link href="/profile">
                 <div className="overflow-hidden rounded-full border-2 border-gray-200 hover:border-gray-300 shadow-sm transition-all duration-200 hover:shadow-md">
                   <span className="sr-only">Toggle dashboard menu</span>
                   <img

@@ -51,12 +51,12 @@ const items = [
     icon: report,
     activeIcon: report,
   },
-  {
-    title: "nh test lg lg 1 auth",
-    url: "/test",
-    icon: report,
-    activeIcon: report,
-  },
+  // {
+  //   title: "nh test lg lg 1 auth",
+  //   url: "/test",
+  //   icon: report,
+  //   activeIcon: report,
+  // },
 ];
 
 export default function DashbaordSideBar() {

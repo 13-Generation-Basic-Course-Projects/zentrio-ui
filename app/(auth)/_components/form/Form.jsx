@@ -166,14 +166,14 @@ export const SignUpForm = () => {
               </div>
             </div>
             <div className="flex flex-col gap-[10px]">
-              <Button type="submit" className="w-full bg-primary text-bgColor">
-                <span className="text-h6">Create account</span>
+              <Button className="w-full bg-primary text-white normal-case min-w-0 max-w-none  border-none">
+                <Link href="/verify">Create account</Link>
               </Button>
               <p className="text-center text-body">
                 Have an account?{" "}
-                <a href="/login" className="text-primary text-body">
+                <Link href="/login" className="text-primary text-body">
                   Sign in
-                </a>
+                </Link>
               </p>
               <div className="text-center">
                 <div className="flex items-center gap-2">
@@ -181,8 +181,14 @@ export const SignUpForm = () => {
                   <p className="text-body-sm text-[#787486]">Or sign up with</p>
                   <hr className="flex-grow border-t border-gray-300" />
                 </div>
+
+                {/* logo */}
                 <div className="flex justify-center mt-2">
-                  <Image src={Google} alt="Google Icon" className="w-24 h-24" />
+                  <Image
+                    src={Google}
+                    alt="Google Icon"
+                    className="w-24 h-24 object-contain"
+                  />
                 </div>
               </div>
             </div>
@@ -211,29 +217,29 @@ export const SigninForm = () => {
     });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
 
-    // Validation logic
-    if (!formData.email || !formData.password) {
-      alert("Email and Password are required!");
-      return;
-    }
+  //   // Validation logic
+  //   if (!formData.email || !formData.password) {
+  //     alert("Email and Password are required!");
+  //     return;
+  //   }
 
-    // Add form submission logic here
-    console.log("Form submitted:", formData);
-  };
+  //   // Add form submission logic here
+  //   console.log("Form submitted:", formData);
+  // };
 
   return (
     <div className="w-full h-screen flex items-center justify-center">
-      <div className="w-[1728px] h-[1117px] bg-bgColor flex items-center justify-center">
+      <div className="w-[1728px] h-[1117px] flex items-center justify-center">
         <Form
-          onSubmit={handleSubmit}
+          // onSubmit={handleSubmit}
           className="w-[640px] h-fit bg-white px-[55px] py-[40px] rounded-[20px] shadow-lg gap-[50px]"
         >
           <div>
             <p className="text-h1 text-primary">
-              <span className="font-bold">Login in</span>
+              <span className="font-bold">Login</span>
             </p>
             <p className="text-body text-[#787486]">
               Login to access your Zentrio account
@@ -282,13 +288,13 @@ export const SigninForm = () => {
                 size="lg"
                 endContent={
                   <button
-                    aria-label="toggle password visibility"
-                    className="focus:outline-none"
+                    aria-label="toggle password visibility "
+                    className=" border-none"
                     type="button"
                     onClick={toggleVisibility}
                   >
                     {isVisible ? (
-                      <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                      <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none " />
                     ) : (
                       <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
                     )}
@@ -313,14 +319,16 @@ export const SigninForm = () => {
             </div>
           </div>
           <div className="w-full gap-[10px] flex flex-col">
-            <Button type="submit" className="w-full bg-primary text-white">
-              Sign in
+            <Button className="w-full bg-primary text-white normal-case min-w-0 max-w-none  border-none">
+              <Link href="/workspace" className="text-white text-body">
+                Sign in
+              </Link>
             </Button>
             <p className="text-center text-body">
-              Have an account?{" "}
-              <a href="/login" className="text-primary text-body">
-                Sign in
-              </a>
+              No Account ?{" "}
+              <Link href="/register" className="text-primary text-body">
+                Sign up
+              </Link>
             </p>
             <div className="text-center">
               <div className="flex items-center gap-2">
@@ -329,7 +337,11 @@ export const SigninForm = () => {
                 <hr className="flex-grow border-t border-gray-300" />
               </div>
               <div className="flex justify-center mt-2">
-                <Image src={Google} alt="Google Icon" className="w-24 h-24" />
+                <Image
+                  src={Google}
+                  alt="Google Icon"
+                  className="w-24 h-24 object-contain"
+                />
               </div>
             </div>
           </div>
@@ -699,8 +711,10 @@ export const OtpForm = () => {
             </div>
           </div>
           <div className="w-full gap-[10px] flex flex-col">
-            <Button type="submit" className="w-full bg-primary text-white">
-              Submit
+            <Button className="w-full bg-primary text-white">
+              <Link href="/login" className="text-white text-body">
+                Submit
+              </Link>
             </Button>
           </div>
           <div className="w-full">

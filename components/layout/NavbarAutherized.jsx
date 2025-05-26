@@ -27,7 +27,7 @@ export function NavbarAuthorized({ user }) {
               </button>
 
               {/* Profile */}
-              <Link href="/login">
+              <Link href="/profile">
                 <div className="overflow-hidden rounded-full border-2 border-gray-200 hover:border-gray-300 shadow-sm transition-all duration-200 hover:shadow-md">
                   <span className="sr-only">Toggle dashboard menu</span>
                   <img

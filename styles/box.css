@@ -90,3 +90,96 @@
   height: 100%;
   object-fit: cover;
 }
+
+.card .shape {
+  width: 100px;
+}
+
+/* test card background image for aboutus */
+/* styles/globals.css or your specific CSS file */
+.imgBg1 {
+  background-image: url("/image/Rectangle_header1.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  max-width: 640px;
+  aspect-ratio: 640 / 560;
+  height: auto;
+}
+.imgBg2 {
+  background-image: url("/image/Rectangle_header2.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  max-width: 640px;
+  aspect-ratio: 640 / 560;
+  height: auto;
+  position: relative;
+  /* IMPORTANT for overlay positioning */
+}
+
+.imgBg2 img.overlay {
+  position: absolute;
+  bottom: 6px;
+  /* distance from bottom */
+  right: 20px;
+  /* distance from right */
+  width: 600px;
+  /* size of overlay image */
+  height: auto;
+  z-index: 1;
+  /* make sure it’s on top */
+}
+
+/* for square */
+
+.imgBgStage {
+  background-image: url("/image/square1.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  max-width: 640px;
+  aspect-ratio: 640 / 560;
+  height: auto;
+  position: relative;
+  /* IMPORTANT for overlay positioning */
+}
+.imgBgCalendar {
+  background-image: url("/image/square2.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  max-width: 640px;
+  aspect-ratio: 640 / 560;
+  height: auto;
+  position: relative;
+  /* IMPORTANT for overlay positioning */
+}
+.imgBgBell {
+  background-image: url("/image/square3.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  max-width: 640px;
+  aspect-ratio: 640 / 560;
+  height: auto;
+  position: relative;
+  /* IMPORTANT for overlay positioning */
+}
+.imgBgGoogle {
+  background-image: url("/image/square4.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  max-width: 640px;
+  aspect-ratio: 640 / 560;
+  height: auto;
+  position: relative;
+  /* IMPORTANT for overlay positioning */
+}
