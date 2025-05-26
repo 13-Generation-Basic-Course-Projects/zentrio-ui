@@ -21,9 +21,9 @@ export default async function SystemLayout({ children }) {
   return (
     <SidebarProvider className=" ">
       <SidebarRenderer />
-      <div className={" font-poppin   w-full"}>
+      <div className={" font-poppin h-screen overflow-hidden   w-full"}>
         <SidebarTrigger className="fixed top-0   z-[30]" />
-        <div className="w-full ">
+        <div className="w-full  ">
           <NavbarWrapper user={session?.user} />
           {children}
         </div>

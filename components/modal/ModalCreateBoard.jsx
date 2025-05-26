@@ -58,12 +58,11 @@ export default function ModalCreateBoard() {
                   <div className="grid grid-cols-4 gap-2">
                     {/* title */}
                     <div className="col-span-3 flex flex-col items-start justify-center">
-                      <label className="text-label-sm"> workspace title</label>
+                      <label className="text-label-sm"> Board Title </label>
                       <Input
                         className="max-w-none h-[40px] bg-transparent"
                         radius="full"
-                        defaultValue="junior@heroui.com"
-                        placeholder="Enter your email"
+                        placeholder="Type here"
                         type="text"
                         variant="bordered"
                       />
@@ -97,9 +96,7 @@ export default function ModalCreateBoard() {
                     </div>
                     {/* description */}
                     <div className="col-span-4">
-                      <label className="text-label-sm">
-                        Workspace Description
-                      </label>
+                      <label className="text-label-sm">Board Description</label>
                       <Textarea
                         className="max-w-none bg-transparent"
                         placeholder="Enter your description"

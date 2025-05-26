@@ -18,7 +18,8 @@ import member from "../../assets/memberSideBar.png";
 import board from "../../assets/boardSideBar.png";
 import folder from "../../assets/folderSidBar.png";
 import report from "@/assets/report.png";
-import { LeaveIcon } from "../icon/everyicon";
+import ModalLeave from "../modal/ModalLeave";
+import LeaveButton from "../button/LeaveButton";
 
 const items = [
   {
@@ -51,12 +52,12 @@ const items = [
     icon: report,
     activeIcon: report,
   },
-  {
-    title: "nh test lg lg 1 auth",
-    url: "/test",
-    icon: report,
-    activeIcon: report,
-  },
+  // {
+  //   title: "nh test lg lg 1 auth",
+  //   url: "/test",
+  //   icon: report,
+  //   activeIcon: report,
+  // },
 ];
 
 export default function DashbaordSideBar() {
@@ -108,11 +109,16 @@ export default function DashbaordSideBar() {
                 <SidebarMenuButton
                   asChild
                   tooltip="Logout"
-                  className="flex items-center gap-2 px-4 py-2 cursor-pointer pb-10 !border-0"
+                  className="flex items-center gap-2 px-4 cursor-pointer pb-10 !border-0"
                 >
-                  <div>
-                    <LeaveIcon strokwidth={2} size={4} color={"red"} />
-                    <span className="text-red-500 font-medium">Logout</span>
+                  <div className=" ">
+                    <ModalLeave
+                      massageTitle={"Are you sure?"}
+                      massageBody={"You want to leave this board “Zin two"}
+                      massageUndo={"No, cancel"}
+                      massageDo={"Yes, Leave"}
+                      action={[<LeaveButton />]}
+                    />
                   </div>
                 </SidebarMenuButton>
               </SidebarMenuItem>

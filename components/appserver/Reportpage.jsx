@@ -2,6 +2,7 @@
 
 import React from "react";
 import BredCrum from "../bredcrum/Bredcrum";
+<<<<<<< HEAD
 import { BtnPreview, BtnSaveAs } from "../button/ButtonReport";
 import HorizontalChart from "../chart/horizontalChart";
 // import VerticalChart from "../chart/VerticalChart";
@@ -244,6 +245,13 @@ export default function Reportpage() {
           </div>
         </div>
       </div>
+=======
+
+export default function Reportpage() {
+  return (
+    <div className="p-4 ">
+      <BredCrum board={"Hikko Design"} feature={"Report"} header={"Reports"} />
+>>>>>>> 1689331d87de19d72ad14babf449da83519871c4
     </div>
   );
 }

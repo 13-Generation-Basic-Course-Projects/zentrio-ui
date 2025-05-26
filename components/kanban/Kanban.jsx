@@ -7,7 +7,7 @@ import { CardCheckList } from "../card/CardChecklist";
 import UserAvater from "../useravatar/UserAvatar";
 import BredCrum from "../bredcrum/bredcrum";
 
-export default function KanbanBoard() {
+export default function KanbanBoard({ modal }) {
   const [columns, setColumns] = useState(initialColumns);
   const [draggedItem, setDraggedItem] = useState(null);
   const [dragTarget, setDragTarget] = useState(null);
@@ -267,14 +267,16 @@ export default function KanbanBoard() {
   };
 
   return (
-    <div className="p-4 w-full h-screen flex flex-col">
+    <div className="w-full h-screen flex flex-col">
       <BredCrum
         board={"Hikko Design"}
         feature={"Board"}
         header={"Hikko Design"}
+        modal={modal}
       />
+
       {/* Column Headers */}
-      <div className="pb-2 grid grid-cols-4 gap-4">
+      <div className=" pt-5 pb-2 grid grid-cols-4 gap-4">
         <div className="mb-4 border-b-4 border-blue-500 pb-2 flex items-center gap-3">
           <p className="text-2xl font-bold">To Do</p>
           <button className="px-3 py-1 text-sm rounded-full bg-transparent border-2 border-gray-300 shadow-sm">

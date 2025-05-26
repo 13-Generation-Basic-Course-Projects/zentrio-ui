@@ -5,11 +5,19 @@ import Link from "next/link";
 import React, { useState } from "react";
 import KanbanBoard from "../kanban/Kanban";
 import GanttChart from "../testcomponent/Calender";
+import userProfile from "@/assets/profile.png";
+import ModalInviteMember from "../modal/ModalInviteMember";
+import StarBoard from "../button/StarBoard";
+import ModalCreateTask from "../modal/board/ModalCreateTask";
 const tabItems = [
   {
     key: "kanban",
     title: "Board",
-    content: <KanbanBoard />,
+    content: (
+      <KanbanBoard
+        modal={[<ModalCreateTask />, <ModalInviteMember />, <StarBoard />]}
+      />
+    ),
   },
   {
     key: "calendar",
@@ -41,8 +49,7 @@ export default function SystemBoard({ user }) {
                       activeTab === tab.key
                         ? "border-b-2 border-blue-500  px-4 py-2  text-blue-600 font-semibold"
                         : "text-gray-600   px-4 py-2  hover:text-gray-900"
-                    }
-`}
+                    }`}
                   >
                     {tab.title}
                   </li>
@@ -65,14 +72,22 @@ export default function SystemBoard({ user }) {
               <Link href="/login">
                 <div className="overflow-hidden rounded-full border-2 border-gray-200 hover:border-gray-300 shadow-sm transition-all duration-200 hover:shadow-md">
                   <span className="sr-only">Toggle dashboard menu</span>
-                  <img
-                    src={
-                      user?.image ||
-                      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzyLc8LMQIrviNz6u2EP3TtPRZZt3OlhrhHA&s"
-                    }
-                    alt={user?.name || "User"}
-                    className="size-10 object-cover hover:scale-105 transition-transform duration-200"
-                  />
+                  {user?.image != null ? (
+                    <img
+                      src={
+                        user?.image ||
+                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzyLc8LMQIrviNz6u2EP3TtPRZZt3OlhrhHA&s"
+                      }
+                      alt={user?.name || "User"}
+                      className={`size-10 object-cover hover:scale-105 transition-transform duration-200 `}
+                    />
+                  ) : (
+                    <Image
+                      src={userProfile}
+                      alt="person"
+                      className={`size-10 object-cover hover:scale-105 transition-transform duration-200 `}
+                    />
+                  )}
                 </div>
               </Link>
             </div>
@@ -81,7 +96,7 @@ export default function SystemBoard({ user }) {
       </div>
 
       {/* Tab Content Area */}
-      <main className="p-6  ">
+      <main className="p-4  ">
         <div className=" mx-auto overflow-hidden h-screen ">
           {currentTab?.content}
         </div>

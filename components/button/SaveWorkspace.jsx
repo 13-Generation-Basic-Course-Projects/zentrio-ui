@@ -9,7 +9,6 @@ export default function SaveWorkspace() {
     <div>
       <Link href="/workspace/favoriteboard">
         <Button
-          size="md"
           className="w-full text-white font-medium  h-[48px]"
           style={{
             background:

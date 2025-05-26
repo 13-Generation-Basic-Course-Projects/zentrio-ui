@@ -38,16 +38,20 @@ import "@/styles/box.css";
 
 import Image from "next/image";
 import Link from "next/link";
-import { RoundText1, RoundText2, RoundText3 } from "@/components/testcomponent/RoundText";
+import {
+  RoundText1,
+  RoundText2,
+  RoundText3,
+} from "@/components/testcomponent/RoundText";
 
 export default function AboutUs() {
   return (
-    <div className=" grid grid-cols-12 gap-4 p-4 min-h-screen">
-      <main className="col-span-12 space-y-40">
+    <div className=" grid grid-cols-12 gap-4 p-4 min-h-screen ">
+      <div className="col-span-12 space-y-40 ">
         <section className="relative flex justify-center items-center gap-4 h-[700px]">
           <div className="grid grid-cols-2">
             <div className="ml-2 imgBg1 flex items-start text-title text-center p-8">
-              <div className="z-10 text-left w-[90%] p-5">
+              <div className="z-10 text-left w-[90%] p-5 ">
                 <h1 className="text-h3 md:text-h2 lg:text-h1 font-bold mb-4">
                   We are from <br />
                   Korean Software HRD Center
@@ -190,12 +194,12 @@ export default function AboutUs() {
             </div>
           </div>
         </section>
-
-        <section className="grid grid-cols-1 sm:grid-cols-2 gap-4 ">
-          <div className="grid grid-cols-2 gap-6 relative items-center justify-center">
+        {/* feature */}
+        <section className="grid grid-cols-1 sm:grid-cols-2 gap-4  ">
+          <div className="grid grid-cols-2 gap-6 relative items-center justify-center ">
             <div className="imgBgStage p-16">
               <div className="flex flex-row space-x-2 ">
-                <Image src={imgs1} width={80} height={80} />
+                <Image src={imgs1} width={80} height={80} alt="img" />
                 <p className="text-h4 text-primary uppercase font-semibold">
                   4 Core Stages
                 </p>
@@ -206,7 +210,8 @@ export default function AboutUs() {
             </div>
             <div className="imgBgCalendar p-14 ">
               <div className="flex flex-row space-x-2 ">
-                <Image src={imgs2} width={80} height={80} />
+                {" "}
+                <Image src={imgs2} width={80} height={80} alt="img" />
                 <p className="text-h4 text-primary uppercase font-semibold">
                   Personal Calendar
                 </p>
@@ -217,7 +222,12 @@ export default function AboutUs() {
             </div>
             <div className="imgBgBell p-14 ">
               <div className="flex flex-row space-x-2 ">
-                <Image src={bellNotification} width={80} height={80} />
+                <Image
+                  src={bellNotification}
+                  width={80}
+                  height={80}
+                  alt="img"
+                />
                 <p className="text-h4 text-primary uppercase font-semibold">
                   Real-Time Alerts
                 </p>
@@ -228,7 +238,7 @@ export default function AboutUs() {
             </div>
             <div className="imgBgGoogle p-12">
               <div className="flex flex-row space-x-2 ">
-                <Image src={google} width={80} height={80} />
+                <Image src={google} width={80} height={80} alt="img" />
                 <p className="text-h4 text-primary uppercase font-semibold">
                   Google Tools Integrated
                 </p>
@@ -244,7 +254,6 @@ export default function AboutUs() {
               </div>
             </div>
           </div>
-
           <div className="relative p-6  h-auto flex items-center justify-center">
             <div className="flex flex-col justify-center items-start space-y-6 max-w-xl">
               <p className="text-h1 font-bold text-gradient text-left">
@@ -257,7 +266,7 @@ export default function AboutUs() {
             </div>
           </div>
         </section>
-
+        {/* team */}
         <section className="grid grid-cols-1 sm:grid-cols-2 gap-4 ">
           <div className="relative flex justify-center">
             <div className="flex flex-col justify-center items-start space-y-6 max-w-xl">
@@ -288,8 +297,8 @@ export default function AboutUs() {
             </div>
           </div>
 
-          <div className="flex justify-center items-center">
-            <div class="grid grid-cols-4  text-white text-sm text-center font-bold leading-6">
+          <div className="flex justify-center items-center ">
+            <div className="grid grid-cols-4  text-white text-sm text-center font-bold leading-6">
               <div className="box-content h-[374px] border-4 rounded-full bg-black overflow-hidden group row-span-3 relative">
                 <Image
                   src={fong}
@@ -383,8 +392,8 @@ export default function AboutUs() {
                             y2="23.508"
                             gradientUnits="userSpaceOnUse"
                           >
-                            <stop offset="0" stop-color="#4c4c4c"></stop>
-                            <stop offset="1" stop-color="#343434"></stop>
+                            <stop offset="0" stopColor="#4c4c4c"></stop>
+                            <stop offset="1" stopColor="#343434"></stop>
                           </linearGradient>
                           <path
                             fill="url(#rL2wppHyxHVbobwndsT6Ca_AZOZNnY73haj_gr1)"
@@ -410,7 +419,7 @@ export default function AboutUs() {
               </div>
 
               <div className="flex flex-col space-y-8 justify-center items-center col-span-2">
-                <div class="relative box-content w-[200px] h-[200px]  rounded-full overflow-hidden group mr-8 bg-indigo-300">
+                <div className="relative box-content w-[200px] h-[200px]  rounded-full overflow-hidden group mr-8 bg-indigo-300">
                   <Image
                     src={minh}
                     alt="Circular"
@@ -502,8 +511,8 @@ export default function AboutUs() {
                               y2="23.508"
                               gradientUnits="userSpaceOnUse"
                             >
-                              <stop offset="0" stop-color="#4c4c4c"></stop>
-                              <stop offset="1" stop-color="#343434"></stop>
+                              <stop offset="0" stopColor="#4c4c4c"></stop>
+                              <stop offset="1" stopColor="#343434"></stop>
                             </linearGradient>
                             <path
                               fill="url(#rL2wppHyxHVbobwndsT6Ca_AZOZNnY73haj_gr1)"
@@ -527,7 +536,7 @@ export default function AboutUs() {
                     </div>
                   </div>
                 </div>
-                <div class="relative box-content w-[251px] h-[120px] rounded-full overflow-hidden group">
+                <div className="relative box-content w-[251px] h-[120px] rounded-full overflow-hidden group">
                   <Image
                     src={senghun}
                     alt="Circular"
@@ -619,8 +628,8 @@ export default function AboutUs() {
                               y2="23.508"
                               gradientUnits="userSpaceOnUse"
                             >
-                              <stop offset="0" stop-color="#4c4c4c"></stop>
-                              <stop offset="1" stop-color="#343434"></stop>
+                              <stop offset="0" stopColor="#4c4c4c"></stop>
+                              <stop offset="1" stopColor="#343434"></stop>
                             </linearGradient>
                             <path
                               fill="url(#rL2wppHyxHVbobwndsT6Ca_AZOZNnY73haj_gr1)"
@@ -645,7 +654,7 @@ export default function AboutUs() {
                   </div>
                 </div>
               </div>
-              <div class="relative box-content w-[180px] h-[220px] rounded-tl-[100px] rounded-bl-[150px] rounded-tr-[50px] rounded-br-[50px] overflow-hidden group ">
+              <div className="relative box-content w-[180px] h-[220px] rounded-tl-[100px] rounded-bl-[150px] rounded-tr-[50px] rounded-br-[50px] overflow-hidden group ">
                 <Image
                   src={fanau}
                   alt="Example"
@@ -737,8 +746,8 @@ export default function AboutUs() {
                             y2="23.508"
                             gradientUnits="userSpaceOnUse"
                           >
-                            <stop offset="0" stop-color="#4c4c4c"></stop>
-                            <stop offset="1" stop-color="#343434"></stop>
+                            <stop offset="0" stopColor="#4c4c4c"></stop>
+                            <stop offset="1" stopColor="#343434"></stop>
                           </linearGradient>
                           <path
                             fill="url(#rL2wppHyxHVbobwndsT6Ca_AZOZNnY73haj_gr1)"
@@ -762,7 +771,7 @@ export default function AboutUs() {
                   </div>
                 </div>
               </div>
-              <div class="flex flex-row col-span-2 space-x-2 justify-center items-center">
+              <div className="flex flex-row col-span-2 space-x-2 justify-center items-center">
                 <div className="relative box-content w-[161px] h-[150px] rounded-full rounded-br-none overflow-hidden group">
                   <Image
                     src={theara}
@@ -855,8 +864,8 @@ export default function AboutUs() {
                               y2="23.508"
                               gradientUnits="userSpaceOnUse"
                             >
-                              <stop offset="0" stop-color="#4c4c4c"></stop>
-                              <stop offset="1" stop-color="#343434"></stop>
+                              <stop offset="0" stopColor="#4c4c4c"></stop>
+                              <stop offset="1" stopColor="#343434"></stop>
                             </linearGradient>
                             <path
                               fill="url(#rL2wppHyxHVbobwndsT6Ca_AZOZNnY73haj_gr1)"
@@ -972,8 +981,8 @@ export default function AboutUs() {
                               y2="23.508"
                               gradientUnits="userSpaceOnUse"
                             >
-                              <stop offset="0" stop-color="#4c4c4c"></stop>
-                              <stop offset="1" stop-color="#343434"></stop>
+                              <stop offset="0" stopColor="#4c4c4c"></stop>
+                              <stop offset="1" stopColor="#343434"></stop>
                             </linearGradient>
                             <path
                               fill="url(#rL2wppHyxHVbobwndsT6Ca_AZOZNnY73haj_gr1)"
@@ -998,7 +1007,7 @@ export default function AboutUs() {
                   </div>
                 </div>
               </div>
-              <div class="relative box-content w-full h-[374px] rounded-full overflow-hidden group">
+              <div className="relative box-content w-full h-[374px] rounded-full overflow-hidden group">
                 <Image
                   src={visa}
                   alt="Example"
@@ -1090,8 +1099,8 @@ export default function AboutUs() {
                             y2="23.508"
                             gradientUnits="userSpaceOnUse"
                           >
-                            <stop offset="0" stop-color="#4c4c4c"></stop>
-                            <stop offset="1" stop-color="#343434"></stop>
+                            <stop offset="0" stopColor="#4c4c4c"></stop>
+                            <stop offset="1" stopColor="#343434"></stop>
                           </linearGradient>
                           <path
                             fill="url(#rL2wppHyxHVbobwndsT6Ca_AZOZNnY73haj_gr1)"
@@ -1115,7 +1124,7 @@ export default function AboutUs() {
                   </div>
                 </div>
               </div>
-              <div class="relative box-content w-[161px] h-[150px] rounded-full rounded-br-none overflow-hidden group">
+              <div className="relative box-content w-[161px] h-[150px] rounded-full rounded-br-none overflow-hidden group">
                 <Image
                   src={leap}
                   alt="Example"
@@ -1207,8 +1216,8 @@ export default function AboutUs() {
                             y2="23.508"
                             gradientUnits="userSpaceOnUse"
                           >
-                            <stop offset="0" stop-color="#4c4c4c"></stop>
-                            <stop offset="1" stop-color="#343434"></stop>
+                            <stop offset="0" stopColor="#4c4c4c"></stop>
+                            <stop offset="1" stopColor="#343434"></stop>
                           </linearGradient>
                           <path
                             fill="url(#rL2wppHyxHVbobwndsT6Ca_AZOZNnY73haj_gr1)"
@@ -1232,7 +1241,8 @@ export default function AboutUs() {
                   </div>
                 </div>
               </div>
-              <div class="relative box-content w-[280px] h-[165px] rounded-full overflow-hidden group">
+
+              <div className="relative box-content w-[280px] h-[165px] rounded-full overflow-hidden group">
                 <Image
                   src={vit}
                   alt="Example"
@@ -1324,8 +1334,8 @@ export default function AboutUs() {
                             y2="23.508"
                             gradientUnits="userSpaceOnUse"
                           >
-                            <stop offset="0" stop-color="#4c4c4c"></stop>
-                            <stop offset="1" stop-color="#343434"></stop>
+                            <stop offset="0" stopColor="#4c4c4c"></stop>
+                            <stop offset="1" stopColor="#343434"></stop>
                           </linearGradient>
                           <path
                             fill="url(#rL2wppHyxHVbobwndsT6Ca_AZOZNnY73haj_gr1)"
@@ -1378,7 +1388,7 @@ export default function AboutUs() {
             </div>
           </div>
         </section>
-      </main>
+      </div>
     </div>
   );
 }

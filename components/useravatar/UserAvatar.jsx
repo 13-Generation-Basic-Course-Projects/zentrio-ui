@@ -1,15 +1,8 @@
-import { User } from "@heroui/react";
+"use client";
+import { Avatar } from "@heroui/avatar";
 
 export default function UserAvatar({ image }) {
   return (
-    <User
-      avatarProps={{
-        radius: "full",
-        imgProps: {
-          src: "https://static01.nyt.com/images/2020/01/28/multimedia/28xp-memekid3/28cp-memekid3-articleLarge.jpg?quality=75&auto=webp&disable=upscale", // use the passed-in image prop
-          alt: "User Avatar",
-        },
-      }}
-    />
+    <Avatar src={image && "https://i.pravatar.cc/150?u=a042581f4e29026024d"} />
   );
 }

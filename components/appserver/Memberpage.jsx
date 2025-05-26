@@ -115,6 +115,56 @@ export default function Memberpage() {
       profileImage:
         "https://i.pinimg.com/736x/b2/66/f7/b266f7c8ecb53960c5eaa19d2a40dc41.jpg",
     },
+    {
+      memberId: "1a2b3c4d-0006-0006-0006-000000000006",
+      username: "Senghun",
+      gender: "Male",
+      email: "senghun233@gmail.com",
+      roleName: ["Member"],
+      task: ["Front-End Dev"],
+      profileImage:
+        "https://i.pinimg.com/736x/b2/66/f7/b266f7c8ecb53960c5eaa19d2a40dc41.jpg",
+    },
+    {
+      memberId: "1a2b3c4d-0006-0006-0006-000000000006",
+      username: "Senghun",
+      gender: "Male",
+      email: "senghun233@gmail.com",
+      roleName: ["Member"],
+      task: ["Front-End Dev"],
+      profileImage:
+        "https://i.pinimg.com/736x/b2/66/f7/b266f7c8ecb53960c5eaa19d2a40dc41.jpg",
+    },
+    {
+      memberId: "1a2b3c4d-0006-0006-0006-000000000006",
+      username: "Senghun",
+      gender: "Male",
+      email: "senghun233@gmail.com",
+      roleName: ["Member"],
+      task: ["Front-End Dev"],
+      profileImage:
+        "https://i.pinimg.com/736x/b2/66/f7/b266f7c8ecb53960c5eaa19d2a40dc41.jpg",
+    },
+    {
+      memberId: "1a2b3c4d-0006-0006-0006-000000000006",
+      username: "Senghun",
+      gender: "Male",
+      email: "senghun233@gmail.com",
+      roleName: ["Member"],
+      task: ["Front-End Dev"],
+      profileImage:
+        "https://i.pinimg.com/736x/b2/66/f7/b266f7c8ecb53960c5eaa19d2a40dc41.jpg",
+    },
+    {
+      memberId: "1a2b3c4d-0006-0006-0006-000000000006",
+      username: "Senghun",
+      gender: "Male",
+      email: "senghun233@gmail.com",
+      roleName: ["Member"],
+      task: ["Front-End Dev"],
+      profileImage:
+        "https://i.pinimg.com/736x/b2/66/f7/b266f7c8ecb53960c5eaa19d2a40dc41.jpg",
+    },
   ];
 
   const [members, setMembers] = useState(initialMembers);
@@ -133,7 +183,7 @@ export default function Memberpage() {
     setMembers((prev) => prev.filter((m) => m.memberId !== id));
   };
   return (
-    <div className="p-6 space-y-4">
+    <div className="p-4 ">
       {/* breadcrum */}
       <BredCrum board={"Hikko Design"} feature={"Members"} header={"Member"} />
       <div className="flex justify-between">
@@ -165,9 +215,9 @@ export default function Memberpage() {
         <ModalInviteMember />
       </div>
 
-      <section>
-        <div className="relative overflow-x-auto mt-10">
-          <table className="w-full text-body-sm text-left text-title ">
+      <section className="overflow-hidden">
+        <div className="relative  max-h-[500px] overflow-x-auto mt-10 scrollbar-hidden ">
+          <table className="w-full text-body-sm text-left text-title  overflow-y-auto">
             <thead className=" text-[#64748B] bg-primary/20">
               <tr>
                 <th className="px-6 py-3 rounded-s-lg">No.</th>
@@ -182,7 +232,7 @@ export default function Memberpage() {
             <tbody>
               {members.map((member, index) => (
                 <tr
-                  key={member.memberId}
+                  key={index}
                   className={`${index % 2 !== 0 ? "bg-gray-100" : "bg-white"}`}
                 >
                   <td className="px-6 py-2">{index + 1}</td>

@@ -20,7 +20,7 @@ export default function ModalInviteMember() {
     <>
       <Button
         onPress={onOpen}
-        className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-[8px] shadow-sm hover:bg-gray-100"
+        className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-[8px] shadow-sm hover:bg-gray-100 h-[50px]"
         // className="bg-transparent h-[340px]  "
         fullWidth="true "
       >

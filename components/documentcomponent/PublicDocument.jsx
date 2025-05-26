@@ -4,14 +4,21 @@ import CardFolder, { CardFile } from "../card/CardDoc";
 import MyDatePicker from "../date/Datepicker";
 import publicIcon from "../../assets/public.png";
 import Image from "next/image";
-export default async function PublicDocument() {
+import BredCrum from "../bredcrum/Bredcrum";
+export default async function PublicDocument({ modal }) {
   const data = await testSusupne();
   console.log(data);
 
   return (
     <div>
-      <div className="grid grid-cols-1 gap-3 h-[150px]">
-        <div className="flex items-center justify-center">
+      <div className="grid grid-cols-1 gap-3 ">
+        <BredCrum
+          board={"Hikko Design"}
+          feature={"Board"}
+          header={"Hikko Design"}
+          modal={modal}
+        />
+        <div className="flex items-center justify-center pb-5">
           <MyDatePicker />
         </div>
         {/* 1 */}
