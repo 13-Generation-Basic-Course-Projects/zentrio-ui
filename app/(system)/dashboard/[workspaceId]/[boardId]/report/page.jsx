@@ -22,7 +22,7 @@ export default function Report() {
 
       {/* <ModalUpdateChecklist/> */}
 
-      <CardBoardReport/>
+      {/* <CardBoardReport/> */}
     </>
   );
 }
