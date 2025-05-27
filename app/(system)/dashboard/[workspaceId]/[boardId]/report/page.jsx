@@ -1,4 +1,5 @@
 import Reportpage from "@/components/appserver/Reportpage";
+import CardBoardReport from "@/components/card/CardBoardReport";
 import ModalCreateChecklist from "@/components/modal/board/ModalCreateChecklist";
 import ModalCreateGanttBar from "@/components/modal/board/ModalCreateGanttBar";
 import ModalCreateGanttChart from "@/components/modal/board/ModalCreateGanttChart";
@@ -20,6 +21,8 @@ export default function Report() {
       {/* <ModalCreateChecklist/> */}
 
       {/* <ModalUpdateChecklist/> */}
+
+      <CardBoardReport/>
     </>
   );
 }
