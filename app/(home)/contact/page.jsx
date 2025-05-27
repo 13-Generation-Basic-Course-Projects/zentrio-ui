@@ -14,6 +14,7 @@ import {
 import { Button, Input, Textarea } from "@heroui/react";
 import Image from "next/image";
 import contact from "../../../assets/contact.png";
+import Loader from "@/components/testcomponent/Loader";
 export default function ContactUs() {
   return (
     <div className="flex flex-col items-center w-full max-w-[1728px] mx-auto px-4 sm:px-6 lg:px-8">

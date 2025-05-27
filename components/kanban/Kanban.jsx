@@ -6,6 +6,7 @@ import { initialColumns } from "@/data/boardData";
 import { CardCheckList } from "../card/CardChecklist";
 import UserAvater from "../useravatar/UserAvatar";
 import BredCrum from "../bredcrum/bredcrum";
+import { StackedUser } from "../useravatar/StackUser";
 
 export default function KanbanBoard({ modal }) {
   const [columns, setColumns] = useState(initialColumns);
@@ -274,7 +275,7 @@ export default function KanbanBoard({ modal }) {
         header={"Hikko Design"}
         modal={modal}
       />
-
+      <StackedUser />
       {/* Column Headers */}
       <div className=" pt-5 pb-2 grid grid-cols-4 gap-4">
         <div className="mb-4 border-b-4 border-blue-500 pb-2 flex items-center gap-3">
