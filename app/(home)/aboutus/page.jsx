@@ -111,7 +111,7 @@ export default function AboutUs() {
               />
             </div>
           </div>
-          <div className="absolute bottom-0 ">
+          <div className="absolute bottom-0">
             <RoundText1 />
           </div>
         </section>
