@@ -319,11 +319,11 @@ export const SigninForm = () => {
             </div>
           </div>
           <div className="w-full gap-[10px] flex flex-col">
-            <Button className="w-full bg-primary text-white normal-case min-w-0 max-w-none  border-none">
-              <Link href="/workspace" className="text-white text-body">
-                Sign in
-              </Link>
-            </Button>
+            <Link href="/workspace" className="text-white text-body">
+              <Button className="w-full bg-primary text-white normal-case min-w-0 max-w-none  border-none">
+                Login
+              </Button>
+            </Link>
             <p className="text-center text-body">
               No Account ?{" "}
               <Link href="/register" className="text-primary text-body">

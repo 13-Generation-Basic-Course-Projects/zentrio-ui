@@ -12,28 +12,18 @@ import {
 } from "recharts";
 
 const chartData = [
-  { date: "2024-04-01", stage: "Todo", weekly: 3, monthly: 6 },
-  { date: "2024-04-01", stage: "On Progress", weekly: 2, monthly: 6 },
-  { date: "2024-04-01", stage: "Done", weekly: 1, monthly: 6 },
-
-  { date: "2024-04-02", stage: "Todo", weekly: 2, monthly: 8 },
-  { date: "2024-04-02", stage: "Under Review", weekly: 2, monthly: 12 },
-
-  { date: "2024-04-09", stage: "Todo", weekly: 3, monthly: 0 },
-  { date: "2024-04-09", stage: "On Progress", weekly: 2, monthly: 0 },
-  { date: "2024-04-09", stage: "Done", weekly: 1, monthly: 0 },
-
-  { date: "2024-04-17", stage: "Done", weekly: 5, monthly: 0 },
-
-  { date: "2024-04-24", stage: "Todo", weekly: 2, monthly: 0 },
-  { date: "2024-04-24", stage: "Done", weekly: 3, monthly: 0 },
-
-  { date: "2024-04-28", stage: "On Progress", weekly: 4, monthly: 0 },
-  { date: "2024-04-28", stage: "Under Review", weekly: 1, monthly: 0 },
-  { date: "2024-04-28", stage: "Done", weekly: 2, monthly: 0 },
-
-  { date: "2024-04-30", stage: "Todo", weekly: 1, monthly: 0 },
-  { date: "2024-04-30", stage: "On Progress", weekly: 2, monthly: 0 },
+  { date: "2024-01-10", stage: "Todo", weekly: 2, monthly: 6 },
+  { date: "2024-02-12", stage: "On Progress", weekly: 3, monthly: 7 },
+  { date: "2024-03-15", stage: "Done", weekly: 1, monthly: 4 },
+  { date: "2024-04-18", stage: "Under Review", weekly: 2, monthly: 5 },
+  { date: "2024-05-20", stage: "Todo", weekly: 4, monthly: 8 },
+  { date: "2024-06-22", stage: "On Progress", weekly: 3, monthly: 6 },
+  { date: "2024-07-24", stage: "Done", weekly: 2, monthly: 7 },
+  { date: "2024-08-26", stage: "Under Review", weekly: 1, monthly: 3 },
+  { date: "2024-09-10", stage: "Todo", weekly: 2, monthly: 4 },
+  { date: "2024-10-14", stage: "On Progress", weekly: 3, monthly: 5 },
+  { date: "2024-11-17", stage: "Done", weekly: 2, monthly: 6 },
+  { date: "2024-12-19", stage: "Under Review", weekly: 1, monthly: 2 },
 ];
 
 // Fixed soft colors for 4 stages
@@ -102,7 +92,7 @@ export default function VerticalChart() {
             <button
               className={`px-3 py-1 rounded ${
                 activeChart === "weekly"
-                  ? "bg-blue-500 text-white"
+                  ? "bg-black text-white"
                   : "bg-gray-200 text-gray-800"
               }`}
               onClick={() => setActiveChart("weekly")}
@@ -112,7 +102,7 @@ export default function VerticalChart() {
             <button
               className={`px-3 py-1 rounded ${
                 activeChart === "monthly"
-                  ? "bg-green-500 text-white"
+                  ? "bg-black text-white"
                   : "bg-gray-200 text-gray-800"
               }`}
               onClick={() => setActiveChart("monthly")}

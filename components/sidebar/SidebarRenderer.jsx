@@ -14,6 +14,9 @@ export default function SidebarRenderer() {
   if (pathname.startsWith("/workspace")) {
     return <WorkSpaceSideBar />;
   }
-
+  // Show sidebar on /profile/... but NOT exactly /profile
+  if (pathname.startsWith("/profile/")) {
+    return <DashbaordSideBar />; // or your own <ProfileSidebar />
+  }
   return ""; // fallback default
 }

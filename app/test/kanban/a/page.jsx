@@ -1,5 +1,10 @@
+import { Notification } from "@/components/notification/Notification";
 import React from "react";
 
 export default function page() {
-  return <div></div>;
+  return (
+    <>
+      <Notification />
+    </>
+  );
 }

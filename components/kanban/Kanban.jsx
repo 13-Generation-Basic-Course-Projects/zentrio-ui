@@ -7,6 +7,7 @@ import { CardCheckList } from "../card/CardChecklist";
 import UserAvater from "../useravatar/UserAvatar";
 import BredCrum from "../bredcrum/bredcrum";
 import { StackedUser } from "../useravatar/StackUser";
+import ModalCreateChecklist from "../modal/board/ModalCreateChecklist";
 
 export default function KanbanBoard({ modal }) {
   const [columns, setColumns] = useState(initialColumns);
@@ -58,8 +59,8 @@ export default function KanbanBoard({ modal }) {
     );
   };
 
-  // Add new subtask
-  const addSubtask = (cardId) => {
+  // Add new subtask with data from modal
+  const addSubtask = (cardId, subtaskData) => {
     const newSubtaskId = `${cardId}-${Date.now()}`;
     setColumns((prev) =>
       prev.map((column) => ({
@@ -72,8 +73,13 @@ export default function KanbanBoard({ modal }) {
                   ...card.subtasks,
                   {
                     id: newSubtaskId,
-                    title: `subtask ${card.subtasks.length + 1}`,
-                    description: "New subtask",
+                    title:
+                      subtaskData.title ||
+                      `subtask ${card.subtasks.length + 1}`,
+                    description: subtaskData.description || "New subtask",
+                    duration: subtaskData.duration || null,
+                    label: subtaskData.label || null,
+                    comment: subtaskData.comment || null,
                     order: card.subtasks.length,
                   },
                 ],
@@ -346,7 +352,7 @@ export default function KanbanBoard({ modal }) {
                         onDragStart={(e) => handleDragStart(e, card.id, "card")}
                         onDragEnd={handleDragEnd}
                       >
-                        <div className="flex items-center justify-between">
+                        <div className="flex items-center justify-between px-3">
                           <div className="flex items-center gap-2">
                             <button
                               onClick={() => toggleTaskExpansion(card.id)}
@@ -371,34 +377,24 @@ export default function KanbanBoard({ modal }) {
                                 "https://is5-ssl.mzstatic.com/image/thumb/Purple124/v4/3d/32/20/3d322049-015a-0e3b-e512-583ac627d478/source/256x256bb.jpg"
                               }
                             />
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                e.preventDefault();
-                                addSubtask(card.id);
-                              }}
-                              className="p-1 hover:bg-gray-100 rounded text-gray-500 hover:text-gray-700"
-                            >
-                              <Plus size={16} />
-                            </button>
                           </div>
                         </div>
                       </div>
 
-                      {/* Subtasks */}
-                      {card.expanded && (
-                        <div
-                          className="px-3 pb-2"
-                          onDragOver={(e) =>
-                            handleDragOver(e, "task-body", column.id, cardIndex)
-                          }
-                          onDrop={handleDrop}
-                        >
-                          {card.subtasks
-                            .sort((a, b) => a.order - b.order)
-                            .map((subtask, subtaskIndex) => (
-                              <div key={subtask.id}>
-                                {/* Drop zone above subtask */}
+                      {/* Subtasks - Always visible, but images hidden when collapsed */}
+                      <div
+                        className="px-3 pb-5"
+                        onDragOver={(e) =>
+                          handleDragOver(e, "task-body", column.id, cardIndex)
+                        }
+                        onDrop={handleDrop}
+                      >
+                        {card.subtasks
+                          .sort((a, b) => a.order - b.order)
+                          .map((subtask, subtaskIndex) => (
+                            <div key={subtask.id}>
+                              {/* Drop zone above subtask - only visible when expanded */}
+                              {card.expanded && (
                                 <div
                                   className={`h-2 w-full transition-all ${
                                     dragTarget &&
@@ -420,30 +416,35 @@ export default function KanbanBoard({ modal }) {
                                   }
                                   onDrop={handleDrop}
                                 />
+                              )}
 
-                                {/* Subtask Item */}
-                                <div
-                                  className=""
-                                  draggable
-                                  onDragStart={(e) =>
-                                    handleDragStart(e, subtask.id, "subtask")
+                              {/* Subtask Item */}
+                              <div
+                                className="pb-4"
+                                draggable
+                                onDragStart={(e) =>
+                                  handleDragStart(e, subtask.id, "subtask")
+                                }
+                                onDragEnd={handleDragEnd}
+                              >
+                                <CardCheckList
+                                  title="Hello"
+                                  startDate={"25/05/25"}
+                                  label={subtask.label}
+                                  comment={subtask.comment}
+                                  image={
+                                    card.expanded
+                                      ? "https://codewithmosh.com/_next/image?url=https%3A%2F%2Fcdn.filestackcontent.com%2F8MbtJ4hTAaOk3KPcptqZ&w=3840&q=75"
+                                      : null
                                   }
-                                  onDragEnd={handleDragEnd}
-                                >
-                                  <CardCheckList
-                                    title="Hello"
-                                    startDate={"25/05/25"}
-                                    label={subtask.label}
-                                    comment={subtask.comment}
-                                    image={
-                                      "https://codewithmosh.com/_next/image?url=https%3A%2F%2Fcdn.filestackcontent.com%2F8MbtJ4hTAaOk3KPcptqZ&w=3840&q=75"
-                                    }
-                                  />
-                                </div>
+                                  hideImage={!card.expanded}
+                                />
                               </div>
-                            ))}
+                            </div>
+                          ))}
 
-                          {/* Drop zone at end of subtasks */}
+                        {/* Drop zone at end of subtasks - only visible when expanded */}
+                        {card.expanded && (
                           <div
                             className={`h-2 w-full transition-all ${
                               dragTarget &&
@@ -465,12 +466,27 @@ export default function KanbanBoard({ modal }) {
                             }
                             onDrop={handleDrop}
                           />
+                        )}
 
-                          {card.subtasks.length === 0 && (
-                            <div className="ml-4 p-2 border-2 border-dashed border-gray-300 rounded text-xs text-gray-400 text-center">
-                              Drop subtasks here
-                            </div>
-                          )}
+                        {card.expanded && card.subtasks.length === 0 && (
+                          <div className="ml-4 p-2 border-2 border-dashed border-gray-300 rounded text-xs text-gray-400 text-center">
+                            Drop subtasks here
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Create Subtask Button at Bottom of Card */}
+                      {card.expanded && (
+                        <div className="px-3 pb-3 pt-1">
+                          <div className="w-full">
+                            <ModalCreateChecklist
+                              onSubmit={(subtaskData) =>
+                                addSubtask(card.id, subtaskData)
+                              }
+                              buttonText="create new checklist"
+                              modalTitle="Create Subtask"
+                            />
+                          </div>
                         </div>
                       )}
                     </div>

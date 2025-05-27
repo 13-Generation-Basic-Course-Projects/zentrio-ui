@@ -72,7 +72,7 @@ const MyDocument = () => (
 
     {/* Page 2 */}
     <Page size="A4" style={styles.page}>
-      <Text style={styles.header}>React PDF Preview - Page 3</Text>
+      <Text style={styles.header}>React PDF Preview - Page 2</Text>
 
       <View style={styles.section}>
         <Text style={styles.title}>Advanced Features</Text>
