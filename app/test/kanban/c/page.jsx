@@ -4,7 +4,7 @@ import React from "react";
 
 // ✅ Turn off SSR for the PDF preview
 const PDFPreview = dynamic(
-  () => import("@/components/testcomponent/PreviewPDF"),
+  () => import("@/components/integrate/pdf/PreviewPDF"),
   { ssr: false }
 );
 
