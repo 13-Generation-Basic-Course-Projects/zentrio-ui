@@ -18,7 +18,7 @@ const files = [
 
 export default function CardBoardReport() {
   return (
-    <div className="bg-white text-title text-h6 p-5 border border-gray-200  rounded-large w-full max-w-md">
+    <div className="bg-white text-title text-h6 p-5 border border-gray-200  rounded-large w-full max-w-sm">
       <header className="mb-4 text-h6 font-semibold">My Report Board</header>
 
       <div className="space-y-4">
@@ -51,3 +51,8 @@ export default function CardBoardReport() {
     </div>
   );
 }
+
+
+
+
+
