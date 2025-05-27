@@ -2,7 +2,6 @@
 
 import React from "react";
 import BredCrum from "../bredcrum/Bredcrum";
-<<<<<<< HEAD
 import { BtnPreview, BtnSaveAs } from "../button/ButtonReport";
 import HorizontalChart from "../chart/horizontalChart";
 // import VerticalChart from "../chart/VerticalChart";
@@ -14,7 +13,7 @@ const VerticalChartNoSSR = dynamic(() => import("../chart/VerticalChart"), {
 
 export default function Reportpage() {
   return (
-    <div className="p-5">
+    <div className="p-5 overflow-y-scroll">
       <BredCrum
         board={"Hikoko Design"}
         feature={"Reports"}
@@ -32,98 +31,68 @@ export default function Reportpage() {
         <div className="col-span-8">
           {/* Show number have in 4 Stage */}
           <div className="grid grid-cols-4 gap-2">
-            {/* Todo */}
-            <div className="bg-primary/20 rounded-medium p-5 text-primary text-h6 font-semibold">
-              <div className="flex flex-col space-y-2">
-                <p>Todo</p>
-                <div className="flex justify-between items-center">
-                  <p>3</p>
-                  <p className="flex items-center gap-1 text-h6">
-                    Task
-                    <svg
-                      className="w-4 h-4"
-                      fill="currentColor"
-                      viewBox="0 0 32 32"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <polygon points="14 20.18 10.41 16.59 9 18 14 23 23 14 21.59 12.58 14 20.18"></polygon>
-                      <path d="M25,5H22V4a2,2,0,0,0-2-2H12a2,2,0,0,0-2,2V5H7A2,2,0,0,0,5,7V28a2,2,0,0,0,2,2H25a2,2,0,0,0,2-2V7A2,2,0,0,0,25,5ZM12,4h8V8H12ZM25,28H7V7h3v3H22V7h3Z"></path>
-                    </svg>
-                  </p>
+            {[
+              {
+                title: "Todo",
+                count: 3,
+                color: "text-primary",
+                iconFill: "#59BAD5",
+                bg: "bg-primary/20",
+              },
+              {
+                title: "On Progress",
+                count: 3,
+                color: "text-progress-purple/90",
+                iconFill: "#A855F7",
+                bg: "bg-progress-purple/20",
+              },
+              {
+                title: "Under Review",
+                count: 3,
+                color: "text-progress-red/90",
+                iconFill: "#F87171",
+                bg: "bg-progress-red/20",
+              },
+              {
+                title: "Done",
+                count: 3,
+                color: "text-progress-green/90",
+                iconFill: "#4ADE80",
+                bg: "bg-progress-green/20",
+              },
+            ].map((item, idx) => (
+              <div
+                key={idx}
+                className={`${item.bg} rounded-medium p-5 ${item.color} text-h6 font-semibold`}
+              >
+                <div className="flex flex-col space-y-2">
+                  <p>{item.title}</p>
+                  <div className="flex justify-between items-center">
+                    <p>{item.count}</p>
+                    <p className="flex items-center gap-1 text-h6">
+                      Task
+                      <svg
+                        width="12"
+                        height="14"
+                        viewBox="0 0 12 14"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M5.03508 10.7313L8.79491 6.97146L7.83 6.00655L5.01844 8.8181L3.62098 7.42064L2.67271 8.36892L5.03508 10.7313ZM1.74107 13.3931C1.37507 13.3931 1.06186 13.2629 0.801445 13.0025C0.541029 12.7421 0.4106 12.4286 0.410156 12.0622V1.4149C0.410156 1.0489 0.540586 0.735688 0.801445 0.475273C1.0623 0.214858 1.37551 0.084428 1.74107 0.0839844H7.06472L11.0575 4.07672V12.0622C11.0575 12.4282 10.9273 12.7416 10.6668 13.0025C10.4064 13.2634 10.093 13.3936 9.72655 13.3931H1.74107ZM6.39927 4.74218H9.72655L6.39927 1.4149V4.74218Z"
+                          fill={item.iconFill}
+                        />
+                      </svg>
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-
-            {/* On Progress */}
-            <div className="bg-progress-purple/20 rounded-medium p-5 text-progress-purple/90 text-h6 font-semibold">
-              <div className="flex flex-col space-y-2">
-                <p>On Progress</p>
-                <div className="flex justify-between items-center">
-                  <p>3</p>
-                  <p className="flex items-center gap-1 text-h6">
-                    Task
-                    <svg
-                      className="w-4 h-4"
-                      fill="currentColor"
-                      viewBox="0 0 32 32"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <polygon points="14 20.18 10.41 16.59 9 18 14 23 23 14 21.59 12.58 14 20.18"></polygon>
-                      <path d="M25,5H22V4a2,2,0,0,0-2-2H12a2,2,0,0,0-2,2V5H7A2,2,0,0,0,5,7V28a2,2,0,0,0,2,2H25a2,2,0,0,0,2-2V7A2,2,0,0,0,25,5ZM12,4h8V8H12ZM25,28H7V7h3v3H22V7h3Z"></path>
-                    </svg>
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Under Review */}
-            <div className="bg-progress-red/20 rounded-medium p-5 text-progress-red/90 text-h6 font-semibold">
-              <div className="flex flex-col space-y-2">
-                <p>Under Review</p>
-                <div className="flex justify-between items-center">
-                  <p>3</p>
-                  <p className="flex items-center gap-1 text-h6">
-                    Task
-                    <svg
-                      className="w-4 h-4"
-                      fill="currentColor"
-                      viewBox="0 0 32 32"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <polygon points="14 20.18 10.41 16.59 9 18 14 23 23 14 21.59 12.58 14 20.18"></polygon>
-                      <path d="M25,5H22V4a2,2,0,0,0-2-2H12a2,2,0,0,0-2,2V5H7A2,2,0,0,0,5,7V28a2,2,0,0,0,2,2H25a2,2,0,0,0,2-2V7A2,2,0,0,0,25,5ZM12,4h8V8H12ZM25,28H7V7h3v3H22V7h3Z"></path>
-                    </svg>
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Done */}
-            <div className="bg-progress-green/20 rounded-medium p-5 text-progress-green/90 text-h6 font-semibold">
-              <div className="flex flex-col space-y-2">
-                <p>Done</p>
-                <div className="flex justify-between items-center">
-                  <p>3</p>
-                  <p className="flex items-center gap-1 text-h6">
-                    Task
-                    <svg
-                      className="w-4 h-4"
-                      fill="currentColor"
-                      viewBox="0 0 32 32"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <polygon points="14 20.18 10.41 16.59 9 18 14 23 23 14 21.59 12.58 14 20.18"></polygon>
-                      <path d="M25,5H22V4a2,2,0,0,0-2-2H12a2,2,0,0,0-2,2V5H7A2,2,0,0,0,5,7V28a2,2,0,0,0,2,2H25a2,2,0,0,0,2-2V7A2,2,0,0,0,25,5ZM12,4h8V8H12ZM25,28H7V7h3v3H22V7h3Z"></path>
-                    </svg>
-                  </p>
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
 
           {/* Show chart vertical chart */}
           <div className="mt-10">
-            <VerticalChartNoSSR />;
+            <VerticalChartNoSSR />
           </div>
 
           {/* Show chart horizontal chart */}
@@ -245,13 +214,6 @@ export default function Reportpage() {
           </div>
         </div>
       </div>
-=======
-
-export default function Reportpage() {
-  return (
-    <div className="p-4 ">
-      <BredCrum board={"Hikko Design"} feature={"Report"} header={"Reports"} />
->>>>>>> 1689331d87de19d72ad14babf449da83519871c4
     </div>
   );
 }
