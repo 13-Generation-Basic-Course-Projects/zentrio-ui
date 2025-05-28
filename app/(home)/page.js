@@ -127,7 +127,7 @@ export default function Home() {
 
           {/* Bottom Right */}
           <div className="hidden sm:flex absolute bottom-[140px] right-[40px] items-center gap-2 bg-white bg-opacity-90 backdrop-blur-md shadow-md px-5 py-3 rounded-full z-30">
-            <span className="text-sm text-primary font-medium flex items-center gap-1">
+          <span className="text-sm text-primary font-medium flex items-center gap-1 relative">
               <Image
                 className="mx-2"
                 src={shareImg}
@@ -136,14 +136,15 @@ export default function Home() {
                 height={20}
               />
               Sending a file project
+              {/* Absolutely positioned image at bottom-left of text */}
+              <img
+                className="absolute bottom-3 left-[-40px] translate-y-full mt-1 w-12 h-12 rounded-full border-8 border-white"
+                src="https://media.kasperskydaily.com/wp-content/uploads/sites/92/2024/04/09102942/real-or-fake-image-analysis-and-provenance-01.jpg"
+                alt="profile user"
+                width={60}
+                height={60}
+              />
             </span>
-            <img
-              className="absolute bottom-3 right-[-25px] translate-y-full mt-1 w-12 h-12 rounded-full border-8 border-white"
-              src="https://example.com/image4.jpg"
-              alt="profile user"
-              width={60}
-              height={60}
-            />
           </div>
         </div>
 
