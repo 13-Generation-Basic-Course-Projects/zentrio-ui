@@ -8,13 +8,62 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import listPlugin from "@fullcalendar/list";
 import CardTaskCalender from "../card/CardTaskCalender";
 import CardTCommentCalender from "../card/CardCommentCalender";
+import { CalendarDays, MessageCircleMore } from "lucide-react";
 import BredCrum from "../bredcrum/Bredcrum";
+// import { Tooltip } from "react-tooltip";
 
-export default function MyCalendar({ tasks }) {
+export default function MyCalendar({ tasks, comments }) {
+  const renderEventContent = (eventInfo) => {
+    const { event } = eventInfo;
+    const { comment } = event.extendedProps;
+
+    const formatDate = (dateStr) =>
+      new Date(dateStr).toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "short",
+      });
+
+    return (
+      <div className="bg-green-50 border border-green-300 rounded-xl p-2 h-auto">
+        <div className="flex text-green-600 mb-1 gap-2 text-body-sm ">
+          <div className="bg-green-200 p-2 rounded-xl">
+            {formatDate(event.start)} - {formatDate(event.end)}
+          </div>
+        </div>
+        <div className="text-gray-600 flex items-center gap-3 font-bold text-body-lg mb-2">
+          <CalendarDays className="w-5 h-5 text-green-600" />
+          <span>{event.title}</span>
+        </div>
+        {comment && (
+          <div className="flex items-start gap-2 text-xs text-gray-500 ">
+            <div className=" flex rounded-xl gap-1 border p-1">
+              <span>{comment}</span>
+              <MessageCircleMore className="w-4 h-4" />
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   const events = [
     {
-      title: "Today's Event",
-      date: new Date().toISOString().split("T")[0], // "YYYY-MM-DD"
+      title: "Meeting",
+      start: "2025-05-27",
+      end: "2025-05-30",
+      type: "meeting",
+      comment: "comment",
+      backgroundColor: "#E6F9EC",
+      borderColor: "#4ADE80",
+    },
+    {
+      title: "Cooking",
+      start: "2025-05-29",
+      end: "2025-06-01",
+      type: "cooking",
+      comment: "comment",
+      backgroundColor: "#E6F9EC",
+      borderColor: "#4ADE80",
     },
   ];
 
@@ -37,9 +86,10 @@ export default function MyCalendar({ tasks }) {
                 listPlugin,
               ]}
               initialView="dayGridMonth"
-              selectable={true}
-              editable={true}
+              selectable
+              editable
               events={events}
+              eventContent={renderEventContent}
               headerToolbar={{
                 left: "today",
                 center: "prev,next",
@@ -47,6 +97,7 @@ export default function MyCalendar({ tasks }) {
               }}
             />
           </div>
+          {/* display task */}
           {/* display task */}
           <div className="flex flex-col gap-5 p-4 overflow-y-auto scrollbar-hidden pb-40 pt-10">
             <div className=" w-full ">

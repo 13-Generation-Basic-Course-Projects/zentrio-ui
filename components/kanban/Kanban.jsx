@@ -484,7 +484,7 @@ export default function KanbanBoard({ modal }) {
                                 addSubtask(card.id, subtaskData)
                               }
                               buttonText="create new checklist"
-                              modalTitle="Create Subtask"
+                              modalTitle="Create Checklist"
                             />
                           </div>
                         </div>

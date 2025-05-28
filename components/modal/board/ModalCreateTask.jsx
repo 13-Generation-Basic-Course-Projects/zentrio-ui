@@ -21,7 +21,7 @@ export default function ModalCreateTask({ input }) {
     <>
       <Button
         onPress={onOpen}
-        className="flex  items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-primary border border-gray-300 rounded-[8px] shadow-sm hover:bg-gray-100 h-[50px]"
+        className="flex  items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-primary border border-gray-300 rounded-[8px] shadow-sm hover:bg-[#000] h-[50px]"
         // className="bg-transparent h-[340px]  "
         fullWidth="true "
       >

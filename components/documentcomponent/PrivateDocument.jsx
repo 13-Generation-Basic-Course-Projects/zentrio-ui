@@ -33,7 +33,7 @@ export default async function Privatedocument({ modal }) {
           <CardFile
             key={i}
             title={"nigga"}
-            status={"true"}
+            status={"personal"}
             date={"2025-05-25"}
           />
         ))}

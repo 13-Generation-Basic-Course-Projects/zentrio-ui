@@ -156,7 +156,7 @@ export default function ModalCreateChecklist({
                       }
                     />
                   </div>
-
+                  {/* button */}
                   <div className="grid grid-cols-2 gap-3 pt-2 py-4">
                     <Button
                       type="button"
