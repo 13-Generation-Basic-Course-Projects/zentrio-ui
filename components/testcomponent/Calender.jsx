@@ -6,6 +6,7 @@ import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
 import interactionPlugin from "@fullcalendar/interaction";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import moment from "moment"; 
+import "@/styles/ganttchart.css"
 
 export default function GanttChart() {
   const calendarRef = useRef(null);
@@ -244,6 +245,7 @@ export default function GanttChart() {
             },
           }}
           nowIndicator={true}
+          now={new Date()}
           // resourceAreaHeaderContent="Activity Name"
           eventContent={renderEventContent}
           resourceAreaWidth="0px"
