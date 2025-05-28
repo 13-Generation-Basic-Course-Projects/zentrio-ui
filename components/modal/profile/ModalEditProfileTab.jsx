@@ -9,9 +9,9 @@ import {
   useDisclosure,
 } from "@heroui/react";
 import React from "react";
-import { IconEdit } from "../icon/everyicon";
+import { IconEdit } from "../../icon/everyicon";
 
-export function ButtonEditprofile() {
+export function ModalEditProfile() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   return (
@@ -52,7 +52,7 @@ export function ButtonEditprofile() {
     </>
   );
 }
-export function ButtonEditAchievment() {
+export function ModalEditAchievment() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   return (

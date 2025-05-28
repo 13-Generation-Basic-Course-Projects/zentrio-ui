@@ -12,7 +12,7 @@ import {
   IconMap,
   IconReturnLeft,
 } from "../icon/everyicon";
-import ButtonEditprofile from "../button/ButtonEditprofile";
+import ButtonEditprofile from "../modal/profile/ModalEditProfileTab";
 
 export default function ProfileLayout({ user, acheivment, profile, action }) {
   const tabItems = [
