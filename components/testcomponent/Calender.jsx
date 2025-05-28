@@ -5,7 +5,7 @@ import FullCalendar from "@fullcalendar/react";
 import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
 import interactionPlugin from "@fullcalendar/interaction";
 import dayGridPlugin from "@fullcalendar/daygrid";
-// import moment from "moment"; 
+import moment from "moment"; 
 
 export default function GanttChart() {
   const calendarRef = useRef(null);
@@ -204,7 +204,7 @@ export default function GanttChart() {
           initialView="resourceTimelineCustom"
           headerToolbar={{
             left: "title",
-            right: "prev,next",
+            right: "today prev,next",
           }}
           slotMinWidth={80} // Ensure columns are wide enough
           initialDate="2025-04-15" // Start in the middle of April
@@ -243,6 +243,7 @@ export default function GanttChart() {
               slotDuration: "24:00:00",
             },
           }}
+          nowIndicator={true}
           // resourceAreaHeaderContent="Activity Name"
           eventContent={renderEventContent}
           resourceAreaWidth="0px"
