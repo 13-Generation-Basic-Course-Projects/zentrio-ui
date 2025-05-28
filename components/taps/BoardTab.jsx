@@ -5,15 +5,15 @@ import KanbanBoard from "../testcomponent/Kanban";
 import GanttChart from "../testcomponent/Calender";
 const tabItems = [
   {
-    key: "photos",
-    title: "Photos",
-    content: <KanbanBoard />,
-  },
-  {
     key: "music",
     title: "Music",
     content: <GanttChart />,
   },
+  // {
+  //   key: "photos",
+  //   title: "Photos",
+  //   content: <KanbanBoard />,
+  // },
 ];
 
 export default function Tapp() {

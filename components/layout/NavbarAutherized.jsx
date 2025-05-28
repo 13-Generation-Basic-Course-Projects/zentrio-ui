@@ -55,7 +55,7 @@ const tabItems = [
   {
     key: "kanban",
     title: "Kanban",
-    content: <KanbanBoard />,
+    content: <GanttChart />,
   },
   {
     key: "calendar",
