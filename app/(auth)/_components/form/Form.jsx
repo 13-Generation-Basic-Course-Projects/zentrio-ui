@@ -711,7 +711,7 @@ export const OtpForm = () => {
             </div>
           </div>
           <div className="w-full gap-[10px] flex flex-col">
-            <Button className="w-full bg-primary text-white">
+            <Button className="w-full bg-primary text-white max-w-none">
               <Link href="/login" className="text-white text-body">
                 Submit
               </Link>

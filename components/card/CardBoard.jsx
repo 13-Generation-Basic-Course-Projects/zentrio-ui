@@ -9,15 +9,26 @@ import {
   StarIconSolid,
 } from "../icon/everyicon";
 import iconMember from "@/assets/memberSideBar.png";
-
 import Image from "next/image";
 
-export default function CardBoard({ title, image }) {
+import { usePathname, useSearchParams } from "next/navigation";
+
+export default function CardBoard({ title, image, role }) {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  // extract workspaceId and projectId from URL
+  const pathSegments = pathname.split("/"); // ['', 'dashboard', workspaceId, projectId, 'board']
+  const workspaceId = pathSegments[2] || "defaultWorkspace";
+  const projectId = pathSegments[3] || "defaultProject";
+
+  // get role from props or query param
+  const userRole = role || searchParams.get("role") || "pm";
   const [favorited, setFavorited] = useState(false);
 
   return (
-    <Link href="/dashboard/1/1/board">
-      <Card className="py-4  h-[340px] rounded-xl shadow-lg  ">
+    <Link href={`/dashboard/${workspaceId}/${projectId}/board?role=${role}`}>
+      <Card className="py-4 h-[340px] rounded-xl shadow-lg">
         {/* Header */}
         <CardHeader className="pb-0 pt-2 px-4 flex justify-between items-center">
           <p className="text-body-sm font-semibold text-primary truncate">
@@ -26,11 +37,11 @@ export default function CardBoard({ title, image }) {
 
           <button
             onClick={(e) => {
-              e.preventDefault(); // stop link
-              e.stopPropagation(); // stop event bubbling
+              e.preventDefault();
+              e.stopPropagation();
               setFavorited(!favorited);
             }}
-            className="text-yellow-500 hover:text-yellow-600  p-3"
+            className="text-yellow-500 hover:text-yellow-600 p-3"
             aria-label="Toggle favorite"
           >
             {favorited ? <StarIconSolid /> : <StarIconOutline />}
@@ -56,19 +67,18 @@ export default function CardBoard({ title, image }) {
         {/* Footer */}
         <CardFooter className="pt-2 px-4 flex flex-col items-start space-y-4">
           <StackedProfiles />
-
           <div className="flex w-full justify-between text-sm text-gray-600">
-            <div className="flex flex-row justify-center items-center ">
+            <div className="flex items-center gap-1">
               <Image
                 src={iconMember}
                 className="w-[16px] h-[16px]"
                 alt="Members icon"
               />
-              <p className="text-body-sm"> 13 Members</p>
+              <p className="text-body-sm">13 Members</p>
             </div>
-            <div className="flex flex-row justify-center items-center  text-progress-red p-3">
+            <div className="flex items-center text-progress-red p-3 gap-1">
               <IconDelete />
-              <button className="hover:underline text-body-sm ">Remove</button>
+              <button className="hover:underline text-body-sm">Remove</button>
             </div>
           </div>
         </CardFooter>

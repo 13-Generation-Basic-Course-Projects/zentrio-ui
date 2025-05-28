@@ -54,7 +54,7 @@ const stats = [
 // //useage : http://localhost:3000/
 export default function Home() {
   return (
-    <div className="w-full">
+    <div className="w-full ">
       <section className="relative h-auto bg-gradient-to-b from-[#bdeffc] to-slate-50 overflow-hidden">
         <div className="mx-4 sm:mx-8 lg:mx-[50px] relative z-50">
           <NavbarLanding />

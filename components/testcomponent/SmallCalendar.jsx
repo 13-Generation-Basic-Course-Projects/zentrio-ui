@@ -17,6 +17,7 @@ export default function SmallCalendar() {
       className="bg-white"
       pageBehavior="single"
       firstDayOfWeek="sun"
+      classNames="w-full max-w-none"
     />
   );
 }
