@@ -1,12 +1,14 @@
 import React from "react";
-import { testSusupne } from "@/service/test.service";
+// import { testSusupne } from "@/service/test.service";
+
 import CardFolder, { CardFile } from "../card/CardDoc";
 import Image from "next/image";
 import personal from "../../assets/personal.png";
 import MyDatePicker from "../date/Datepicker";
 import BredCrum from "../bredcrum/Bredcrum";
+import { documentData } from "@/data/document/documentData";
 export default async function Privatedocument({ modal }) {
-  const data = await testSusupne();
+  const data =  documentData;
   console.log(data);
 
   return (
@@ -29,14 +31,30 @@ export default async function Privatedocument({ modal }) {
         </div>
       </div>
       <div className="grid grid-cols-6 gap-3 overflow-y-auto scrollbar-hidden pb-40 pt-10">
-        {data.map((el, i) => (
-          <CardFile
-            key={i}
-            title={"nigga"}
-            status={"true"}
-            date={"2025-05-25"}
-          />
-        ))}
+        {data
+          .filter((el) => el.status === "personal")
+          .map((el, i) => {
+            if (el.category === "Folder" || el.type === "folder") {
+              return (
+                <CardFolder
+                  key={i}
+                  title={el.title}
+                  status={el.status}
+                  date={el.date}
+                />
+              );
+            } else {
+              return (
+                <CardFile
+                  key={i}
+                  title={el.title}
+                  status={el.status}
+                  date={el.date}
+                  type={el.type}
+                />
+              );
+            }
+          })}
       </div>
     </div>
   );

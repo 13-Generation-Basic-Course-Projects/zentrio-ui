@@ -5,6 +5,8 @@ import Link from "next/link";
 import React, { useState } from "react";
 import userProfile from "@/assets/profile.png";
 import AllDocument from "./AllDocument";
+import ModalCreateDocu from "../modal/docu/ModalCreateDocu";
+import { documentData } from "@/data/document/documentData";
 
 export default function DocumentLayout({
   user,
@@ -25,7 +27,7 @@ export default function DocumentLayout({
   ];
 
   const [activeTab, setActiveTab] = useState(null); // null = show all by default
-
+  
   const handleTabClick = (tabKey) => {
     // If clicking the same tab, reset (show all)
     if (activeTab === tabKey) {
@@ -104,13 +106,7 @@ export default function DocumentLayout({
         <div className="mx-auto">
           {activeTab === "kanban" && privatedocument}
           {activeTab === "calendar" && publicdocument}
-          {activeTab === null && (
-            <AllDocument
-              privateData={privatedocument}
-              publicData={privatedocument}
-              // modal={modal}
-            />
-          )}
+          {activeTab === null && <AllDocument/>}
         </div>
       </main>
     </>

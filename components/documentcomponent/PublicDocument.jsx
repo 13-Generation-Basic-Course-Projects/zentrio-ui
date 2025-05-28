@@ -5,9 +5,10 @@ import MyDatePicker from "../date/Datepicker";
 import publicIcon from "../../assets/public.png";
 import Image from "next/image";
 import BredCrum from "../bredcrum/Bredcrum";
+import { documentData } from "@/data/document/documentData";
 export default async function PublicDocument({ modal }) {
-  const data = await testSusupne();
-  console.log(data);
+  const data =  documentData;
+    console.log(data);
 
   return (
     <div className="h-screen flex flex-col">
@@ -30,23 +31,31 @@ export default async function PublicDocument({ modal }) {
       </div>
 
       <div className="grid grid-cols-6 gap-3 overflow-y-auto scrollbar-hidden pb-40 pt-10">
-        {data.map((el, i) => (
-          <CardFolder
-            key={i}
-            title={"nigga"}
-            status={"true"}
-            date={"2025-05-25"}
-          />
-        ))}
-        {data.map((el, i) => (
-          <CardFile
-            key={i}
-            title={"nigga"}
-            status={"true"}
-            date={"2025-05-25"}
-          />
-        ))}
-      </div>
+              {data
+                .filter((el) => el.status === "public")
+                .map((el, i) => {
+                  if (el.category === "Folder" || el.type === "folder") {
+                    return (
+                      <CardFolder
+                        key={i}
+                        title={el.title}
+                        status={el.status}
+                        date={el.date}
+                      />
+                    );
+                  } else {
+                    return (
+                      <CardFile
+                        key={i}
+                        title={el.title}
+                        status={el.status}
+                        date={el.date}
+                        type={el.type}
+                      />
+                    );
+                  }
+                })}
+            </div>
     </div>
   );
 }

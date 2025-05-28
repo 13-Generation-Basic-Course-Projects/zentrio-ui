@@ -1,3 +1,4 @@
+import AllDocument from "../documentcomponent/AllDocument";
 import DocumentLayout from "../documentcomponent/DocumentLayout";
 import Privatedocument from "../documentcomponent/PrivateDocument";
 import PublicDocument from "../documentcomponent/PublicDocument";
@@ -14,6 +15,7 @@ export default function DocumentAutherize({ user }) {
         publicdocument={
           <PublicDocument title="Public" modal={[<ModalCreateDocu />]} />
         }
+        
       />
     </>
   );
