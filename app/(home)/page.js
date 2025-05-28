@@ -42,7 +42,7 @@ export default function Home() {
         {/* Floating Chat Bubbles */}
         <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-40">
           {/* Top Left */}
-          <div className="hidden sm:flex absolute top-[25%] left-[9%] items-center gap-2 bg-white bg-opacity-90 backdrop-blur-md shadow-md px-5 py-3 rounded-full z-30">
+          <div className="hidden sm:flex absolute top-[19%] left-[9%] items-center gap-2 bg-white bg-opacity-90 backdrop-blur-md shadow-md px-5 py-3 rounded-full z-30">
             <span className="text-sm text-primary font-medium flex items-center gap-1 relative">
               <Image
                 className="mx-2"
@@ -194,7 +194,7 @@ export default function Home() {
               Seamless collaboration and effective task management.
             </p>
           </div>
-          <div className="text-center border-dashed border-r-[3px] border-l-[3px] px-[18%]">
+          <div className="text-center border-dashed border-title/50 border-r-[2px] border-l-[2px] px-[18%]">
             <h1 className="text-h1 sm:text-h1 lg:text-h1 text-primary font-extrabold pb-[10%]">
               10K+
             </h1>
@@ -215,9 +215,9 @@ export default function Home() {
 
         <section className="mt-16">
           <div className="grid grid-cols-1 gap-y-6 md:gap-4 items-center sm:grid-cols-1 md:grid-cols-2">
-            <div>
+            <div className="flex flex-col gap-[10px]">
               <h2 className="text-h4 sm:text-h3 lg:text-h2 font-semibold">
-                Organize, Prioritize,{" "}
+                Organize, Prioritize,{" "} <br />
                 <span className="bg-gradient-to-r from-[#59BAD5] via-[#ABAAFF] to-[#59BAD5] bg-clip-text text-transparent">
                   Achieve Goals
                 </span>
@@ -240,12 +240,12 @@ export default function Home() {
             <div className="order-2 sm:order-1">
               <Image alt="four states" src={calendarImg} className="" />
             </div>
-            <div className="order-1 sm:order-2  md:pl-5">
+            <div className="order-1 sm:order-2  md:pl-5 flex flex-col gap-[10px]">
               <h2 className="text-h4 sm:text-h3 lg:text-h2 font-semibold">
                 <span className="bg-gradient-to-r from-[#59BAD5] via-[#ABAAFF] to-[#59BAD5] bg-clip-text text-transparent">
-                  Effortless,
+                  Effortless,&nbsp;
                 </span>
-                Real-Time Connectivity
+                Real-<br />Time Connectivity
               </h2>
               <p className="text-description">
                 Experience smooth, real-time communication and collaboration
@@ -260,10 +260,10 @@ export default function Home() {
 
         <section className="mt-16">
           <div className="grid grid-cols-1 gap-y-6 md:gap-x-6 items-center sm:grid-cols-1 md:grid-cols-2">
-            <div>
+            <div className="flex flex-col gap-[10px]">
               <h2 className="text-h4 sm:text-h3 lg:text-h2 font-semibold">
                 <span className="bg-gradient-to-r from-[#59BAD5] via-[#ABAAFF] to-[#59BAD5] bg-clip-text text-transparent">
-                  Visualizing,
+                  Visualizing, <br />
                 </span>
                 Your Time-Line
               </h2>
