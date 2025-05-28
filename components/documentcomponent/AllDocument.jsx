@@ -5,10 +5,45 @@ import MyDatePicker from "../date/DatePicker";
 import CardFolder, { CardFile } from "../card/CardDoc";
 import ModalCreateDocu from "../modal/docu/ModalCreateDocu";
 import { documentData } from "@/data/document/documentData";
+import { Input } from "@heroui/input";
+import { Autocomplete, AutocompleteItem, Select, SelectItem } from "@heroui/react";
+import { useState } from "react";
 
 export default function AllDocument() {
   const data = documentData;
   console.log("Received data in all:", data);
+
+  
+const [sortOrder, setSortOrder] = useState("asc");
+const [searchTerm, setSearchTerm] = useState("");
+const sortOptions = [
+  { key: "asc", label: "A-Z" },
+  { key: "desc", label: "Z-A" },
+];
+const myFilter = (textValue, inputValue) => {
+  if (inputValue.length === 0) {
+    return true;
+  }
+
+  textValue = textValue.normalize("NFC").toLowerCase();
+  inputValue = inputValue.normalize("NFC").toLowerCase();
+
+  return textValue.startsWith(inputValue);
+};
+
+// Sort and filter documentData
+const filteredData = [...documentData]
+  .filter((item) => {
+    // Filter by title or other fields if you want
+    return myFilter(item.title, searchTerm);
+  })
+  .sort((a, b) => {
+    if (sortOrder === "asc") {
+      return a.title.localeCompare(b.title);
+    } else {
+      return b.title.localeCompare(a.title);
+    }
+  });
 
   return (
     <div className="h-full flex flex-col">
@@ -47,46 +82,143 @@ export default function AllDocument() {
           </div>
         </div>
 
-        <div className="flex items-center justify-center pb-5">
-          <MyDatePicker />
+        <div className="flex items-center justify-between pb-5">
+          <div className="flex flex-row items-end gap-4 mb-4">
+            <div className="flex-1">
+              <MyDatePicker className="h-12" />
+            </div>
+
+            <div className="w-40">
+              <Autocomplete
+                // label="Sort Order"
+                labelPlacement="inside"
+                placeholder="Select order"
+                // variant="bordered"
+                selectedKey={sortOrder}
+                onSelectionChange={(key) => setSortOrder(key)}
+                className="text-default-700/50 dark:placeholder:text-white/60 bg-gray-100 rounded-medium"
+                // size="lg"
+              >
+                {sortOptions.map((option) => (
+                  <AutocompleteItem key={option.key} textValue={option.label}>
+                    {option.label}
+                  </AutocompleteItem>
+                ))}
+              </Autocomplete>
+            </div>
+          </div>
+
+          {/* for search */}
+          <div className="w-[340px] rounded-2xl flex justify-center items-center  text-white ">
+            <Input
+              isClearable
+              classNames={{
+                label: "text-black/50 dark:text-white/90",
+                input: [
+                  "bg-transparent",
+                  "text-black/90 dark:text-white/90",
+                  "placeholder:text-default-700/50 dark:placeholder:text-white/60",
+                ],
+                innerWrapper: "bg-transparent",
+              }}
+              placeholder="Type to search..."
+              radius="lg"
+              startContent={
+                <SearchIcon className="text-black/50 mb-0.5 dark:text-white/90 text-slate-400 pointer-events-none flex-shrink-0" />
+              }
+            />
+          </div>
         </div>
 
-        {/* Folders Section */}
-        <div className="grid grid-cols-6 gap-3 overflow-y-auto scrollbar-hidden pb-40 pt-10">
-          {data && data.length > 0 ? (
-            data
-              .filter((el) => el.category === "Folder")
-              .map((el, i) => (
-                <CardFolder
-                  key={`folder-${i}`}
-                  title={el.title || "Untitled Folder"}
-                  status={el.status || "personal"}
-                  date={el.date || "2025-05-25"}
-                />
-              ))
-          ) : (
-            <p className="text-gray-500 col-span-6">No Folders</p>
-          )}
-        </div>
+        <div className="w-full p-4 max-h-screen overflow-y-auto">
+          {/* Folders Section */}
+          <div className="mb-8">
+            <div className="flex items-center justify-between mb-4">
+              <p className="text-h5 font-semibold">Folders</p>
+              <span className="text-sm text-gray-500">
+                {data?.filter((el) => el.category === "Folder").length || 0}{" "}
+                folders
+              </span>
+            </div>
+            <div className="grid grid-cols-6 gap-3  pb-4 pr-2 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
+              {filteredData && filteredData.length > 0 ? (
+                filteredData
+                  .filter((el) => el.category === "Folder")
+                  .map((el, i) => (
+                    <CardFolder
+                      key={`folder-${i}`}
+                      title={el.title || "Untitled Folder"}
+                      status={el.status || "personal"}
+                      date={el.date || "2025-05-25"}
+                    />
+                  ))
+              ) : (
+                <p className="text-gray-500 col-span-6">No Folders</p>
+              )}
+            </div>
+          </div>
 
-        {/* Files Section */}
-        <div className="grid grid-cols-6 gap-3 overflow-y-auto scrollbar-hidden pb-40 pt-10">
-          {data && data.length > 0 ? (
-            data
-              .filter((el) => el.category === "File")
-              .map((el, i) => (
-                <CardFile
-                  key={`file-${i}`}
-                  title={el.title || "Untitled File"}
-                  status={el.status || "personal"}
-                  date={el.date || "2025-05-25"}
-                />
-              ))
-          ) : (
-            <p className="text-gray-500 col-span-6">No Files</p>
-          )}
+          {/* Files Section */}
+          <div>
+            <div className="flex items-center justify-between mb-4">
+              <p className="text-h5 font-semibold">Files</p>
+              <span className="text-sm text-gray-500">
+                {data?.filter((el) => el.category === "File").length || 0} files
+              </span>
+            </div>
+            <div className="grid grid-cols-6 gap-3  pb-4 pr-2 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
+              {filteredData && filteredData.length > 0 ? (
+                filteredData
+                  .filter((el) => el.category === "File")
+                  .map((el, i) => (
+                    <CardFile
+                      key={`file-${i}`}
+                      title={el.title || "Untitled File"}
+                      status={el.status || "personal"}
+                      date={el.date || "2025-05-25"}
+                      type={el.type}
+                    />
+                  ))
+              ) : (
+                <p className="text-gray-500 col-span-6">No Files</p>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>
   );
 }
+
+
+
+// for icon search
+export const SearchIcon = (props) => {
+  return (
+    <svg
+      aria-hidden="true"
+      fill="none"
+      focusable="false"
+      height="1em"
+      role="presentation"
+      viewBox="0 0 24 24"
+      width="1em"
+      {...props}
+    >
+      <path
+        d="M11.5 21C16.7467 21 21 16.7467 21 11.5C21 6.25329 16.7467 2 11.5 2C6.25329 2 2 6.25329 2 11.5C2 16.7467 6.25329 21 11.5 21Z"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+      />
+      <path
+        d="M22 22L20 20"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+      />
+    </svg>
+  );
+};
