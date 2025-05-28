@@ -10,8 +10,10 @@ export default function RootLayout({ children }) {
   const isRoot = pathname === "/";
 
   return (
-    <div className="font-poppin max-w-[3456px] mx-auto">
-      <div className={isRoot ? "mx-0" : " mx-[35px] md:mx-[50px]"}>
+    <div className="font-poppin  mx-auto">
+      <div
+        className={isRoot ? "mx-0" : " lg:mx-[50px] max-w-screen-xl xl:mx-auto"}
+      >
         {/* Show landing header background only on root */}
         {isRoot && ""}
 

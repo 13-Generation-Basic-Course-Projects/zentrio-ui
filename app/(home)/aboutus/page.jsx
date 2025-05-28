@@ -1,3 +1,4 @@
+"use client";
 //useage : http://localhost:3000/aboutus
 import { Button } from "@/components/ui/button";
 import "../../../styles/roundText.css";
@@ -46,11 +47,11 @@ import {
 
 export default function AboutUs() {
   return (
-    <div className=" grid grid-cols-12 gap-4 p-4 min-h-screen ">
-      <div className="col-span-12 space-y-40 ">
-        <section className="relative flex justify-center items-center gap-4 h-[700px]">
+    <div className="  gap-4 p-4 min-h-screen ">
+      <div className=" ">
+        <section className="relative flex justify-center items-center gap-4 h-[700px]  ">
           <div className="grid grid-cols-2">
-            <div className="ml-2 imgBg1 flex items-start text-title text-center p-8">
+            <div className=" imgBg1 flex items-start text-title text-center p-8">
               <div className="z-10 text-left w-[90%] p-5 ">
                 <h1 className="text-h3 md:text-h2 lg:text-h1 font-bold mb-4">
                   We are from <br />
@@ -96,7 +97,7 @@ export default function AboutUs() {
               </div>
             </div>
 
-            <div className="imgBg2 flex items-start  text-title text-center p-8 ml-10">
+            <div className="imgBg2 flex items-start  text-title text-center p-8 ">
               <div className="z-10 border-2 rounded-large p-2  bg-bgColor/40 bg-blur backdrop-blur-sm text-left ml-10 mt-14 ">
                 <p className="text-caption text-blueActive">Our school</p>
                 <p className="text-h4 text-primary ">
@@ -195,85 +196,82 @@ export default function AboutUs() {
           </div>
         </section>
         {/* feature */}
-        <section className="grid grid-cols-1 sm:grid-cols-2 gap-4  ">
-          <div className="grid grid-cols-2 gap-6 relative items-center justify-center ">
-            <div className="imgBgStage p-16">
-              <div className="flex flex-row space-x-2 ">
-                <Image
-                  src={imgs1}
-                  width={80}
-                  height={80}
-                  className="object-contain"
-                  alt="img"
-                />
-                <p className="text-h4 text-primary uppercase font-semibold">
-                  4 Core Stages
-                </p>
-              </div>
-              <p className="text-h6 text-title/50 text-center mt-10">
-                Todo, Progress, Review, Completed
-              </p>
-            </div>
-            <div className="imgBgCalendar p-14 ">
-              <div className="flex flex-row space-x-2 ">
-                {" "}
-                <Image
-                  src={imgs2}
-                  width={80}
-                  height={80}
-                  className="object-contain"
-                  alt="img"
-                />
-                <p className="text-h4 text-primary uppercase font-semibold">
-                  Personal Calendar
-                </p>
-              </div>
-              <p className="text-h6 text-title/50 text-center mt-10">
-                manage daily tasks, deadlines, and project plans efficiently.
-              </p>
-            </div>
-            <div className="imgBgBell p-14 ">
-              <div className="flex flex-row space-x-2 ">
-                <Image
-                  src={bellNotification}
-                  width={80}
-                  height={80}
-                  className="object-contain"
-                  alt="img"
-                />
-                <p className="text-h4 text-primary uppercase font-semibold">
-                  Real-Time Alerts
-                </p>
-              </div>
-              <p className="text-h6 text-title/50 text-center mt-10">
-                Notifications on task activity
-              </p>
-            </div>
-            <div className="imgBgGoogle p-12">
-              <div className="flex flex-row space-x-2 ">
-                <Image
-                  src={google}
-                  width={80}
-                  height={80}
-                  className="object-contain"
-                  alt="img"
-                />
-                <p className="text-h4 text-primary uppercase font-semibold">
-                  Google Tools Integrated
-                </p>
-              </div>
-              <p className="text-h6 text-title/50 text-center mt-8">
-                Using Google Docs, Sheets, and Slides.
-              </p>
-            </div>
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-6 px-4 py-10 relative z-10">
+          {/* Grid of Feature Cards */}
+          <div className="grid grid-cols-2 gap-6 relative">
+            {[
+              {
+                title: "4 Core Stages",
+                desc: "Todo, Progress, Review, Completed",
+                img: imgs1,
+                circles: ["top-right", "bottom-right"],
+                bgClass: "imgBgStage",
+              },
+              {
+                title: "Personal Calendar",
+                desc: "Manage daily tasks, deadlines, and plans efficiently.",
+                img: imgs2,
+                circles: ["top-left", "bottom-left"],
+                bgClass: "imgBgCalendar",
+              },
+              {
+                title: "Real-Time Alerts",
+                desc: "Instant notifications on task activity.",
+                img: bellNotification,
+                circles: ["top-left", "bottom-left"],
+                bgClass: "imgBgBell",
+              },
+              {
+                title: "Google Tools Integrated",
+                desc: "Work with Docs, Sheets, and Slides directly.",
+                img: google,
+                circles: ["top-right", "bottom-right"],
+                bgClass: "imgBgGoogle",
+              },
+            ].map((card, index) => (
+              <div
+                key={index}
+                className={`relative p-8 rounded-2xl ${card.bgClass} overflow-hidden`}
+              >
+                {/* Decorative Circles (Transparent Only) */}
+                {card.circles.includes("top-right") && (
+                  <div className="absolute top-0 right-0 w-16 h-16 rounded-full translate-x-1/2 -translate-y-1/2 border border-white/10" />
+                )}
+                {card.circles.includes("bottom-right") && (
+                  <div className="absolute bottom-0 right-0 w-20 h-20 rounded-full translate-x-1/2 translate-y-1/2 border border-white/10" />
+                )}
+                {card.circles.includes("top-left") && (
+                  <div className="absolute top-0 left-0 w-16 h-16 rounded-full -translate-x-1/2 -translate-y-1/2 border border-white/10" />
+                )}
+                {card.circles.includes("bottom-left") && (
+                  <div className="absolute bottom-0 left-0 w-20 h-20 rounded-full -translate-x-1/2 translate-y-1/2 border border-white/10" />
+                )}
 
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="p-4">
-                <RoundText2 />
+                {/* Content */}
+                <div className="flex items-center space-x-4">
+                  <Image
+                    src={card.img}
+                    width={60}
+                    height={60}
+                    alt="icon"
+                    className="object-contain"
+                  />
+                  <h3 className="text-xl font-semibold uppercase text-gradient">
+                    {card.title}
+                  </h3>
+                </div>
+                <p className="mt-6 text-sm text-gradient">{card.desc}</p>
               </div>
+            ))}
+
+            {/* Center Circle Animation */}
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <RoundText2 />
             </div>
           </div>
-          <div className="relative p-6  h-auto flex items-center justify-center">
+
+          {/* Right Side Text Content */}
+          <div className="flex items-center justify-center px-4">
             <div className="flex flex-col justify-center items-start space-y-6 max-w-xl">
               <p className="text-h1 font-bold text-gradient text-left">
                 Effortless project management for teams.
@@ -285,6 +283,7 @@ export default function AboutUs() {
             </div>
           </div>
         </section>
+
         {/* team */}
         <section className="grid grid-cols-1 sm:grid-cols-2 gap-4 ">
           <div className="relative flex justify-center">

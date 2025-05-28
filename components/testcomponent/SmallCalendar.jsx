@@ -12,12 +12,13 @@ export default function SmallCalendar() {
   //   />
   // );
   return (
-    <Calendar
-      aria-label="Date"
-      className="bg-white"
-      pageBehavior="single"
-      firstDayOfWeek="sun"
-      classNames="w-full max-w-none"
-    />
+    <div className="w-full">
+      <Calendar
+        aria-label="Date"
+        className="bg-white h-[250px] min-h-0"
+        pageBehavior="single"
+        firstDayOfWeek="sun"
+      />
+    </div>
   );
 }

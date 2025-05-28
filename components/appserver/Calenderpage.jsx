@@ -50,7 +50,7 @@ const TaskCard = ({
                 event.start !== event.end &&
                 ` - ${formatDate(event.end)}`}
             </div>
-            <div className="space-y-2 max-h-40 overflow-y-auto">
+            <div className="space-y-2 max-h-40 overflow-y-auto scrollbar-hidden">
               {event.extendedProps.tasks?.map((task) => (
                 <div
                   key={task.id}
@@ -311,4 +311,4 @@ export default function MyCalendar() {
     </div>
   );
 }
-// aa
+//
