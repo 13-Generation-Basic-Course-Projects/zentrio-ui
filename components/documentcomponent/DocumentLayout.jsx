@@ -6,6 +6,7 @@ import React, { useState } from "react";
 import TestDocument from "../documentcomponent/TestDocument";
 import PublicDocument from "../documentcomponent/PublicDocument";
 import userProfile from "@/assets/profile.png";
+import ModalNotification from "../modal/noti/ModalNotification";
 export default function DocumentLayout({
   user,
   publicdocument,
@@ -57,13 +58,7 @@ export default function DocumentLayout({
             {/* Right side - Notification and Profile */}
             <div className="flex items-center gap-4">
               {/* Notification Icon */}
-              <button className="p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200">
-                <Image
-                  src={notification}
-                  className="size-5"
-                  alt="notification"
-                />
-              </button>
+              <ModalNotification />
 
               {/* Profile */}
               <Link href="/profile">

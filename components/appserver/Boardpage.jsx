@@ -10,6 +10,7 @@ import userProfile from "@/assets/profile.png";
 import ModalInviteMember from "../modal/ModalInviteMember";
 import StarBoard from "../button/StarBoard";
 import ModalCreateTask from "../modal/board/ModalCreateTask";
+import ModalNotification from "../modal/noti/ModalNotification";
 
 export default function SystemBoard({ user }) {
   const pathname = usePathname();
@@ -69,13 +70,7 @@ export default function SystemBoard({ user }) {
 
             {/* Right side - Notification and Profile */}
             <div className="flex items-center gap-4">
-              <button className="p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200">
-                <Image
-                  src={notification}
-                  className="size-5"
-                  alt="notification"
-                />
-              </button>
+              <ModalNotification />
 
               <Link href="/profile">
                 <div className="overflow-hidden rounded-full border-2 border-gray-200 hover:border-gray-300 shadow-sm transition-all duration-200 hover:shadow-md">
