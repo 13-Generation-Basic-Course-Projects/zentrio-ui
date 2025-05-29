@@ -220,26 +220,18 @@ export default function CardFolder({ title, status, date }) {
 //just make for icon file
 const icons = {
   pdf: "https://cdn-icons-png.flaticon.com/128/4726/4726010.png",
-  doc: "https://cdn-icons-png.flaticon.com/128/2991/2991108.png",
-  xls: "https://cdn-icons-png.flaticon.com/128/2504/2504768.png",
-  ppt: "https://cdn-icons-png.flaticon.com/128/2875/2875416.png",
-<<<<<<< HEAD
-  txt: "https://cdn-icons-png.flaticon.com/128/9034/9034470.png",
-  zip: "https://cdn-icons-png.flaticon.com/128/15331/15331982.png",
- 
+  docx: "https://cdn-icons-png.flaticon.com/128/2991/2991108.png",
+  xlsx: "https://cdn-icons-png.flaticon.com/128/2504/2504768.png",
+  pptx: "https://cdn-icons-png.flaticon.com/128/2875/2875416.png",
 };
-function FileIcon({ type = "default", size = 45 }) {
-  const src = icons[type.toLowerCase()] || icons.default;
-=======
-};
-function FileIcon({ type = "default", size = 45 }) {
-  let src = icons.doc;
->>>>>>> 84a2c9709b46866419662b97a8bdcec68d2aad2f
+function FileIcon({ type, size = 45 }) {
+  // Get the matching icon based on type, fallback to a default icon if not found
+  const src = icons[type] || icons.docx; // Fallback to 'docx' icon as default
 
   return (
     <img
       src={src}
-      alt={`${type} icon`}
+      alt={`${type || "folder"} icon`}
       width={size}
       height={size}
       className="object-contain"
@@ -268,11 +260,7 @@ export function CardFile({ title, status, date, type }) {
       <CardBody className="overflow-visible py-2 flex flex-col items-center space-y-2">
         <FileIcon type={type} />
         <p className="text-base font-semibold text-title/80 truncate text-center px-2">
-<<<<<<< HEAD
           {title} .{type}
-=======
-          {title} {type}
->>>>>>> 84a2c9709b46866419662b97a8bdcec68d2aad2f
         </p>
       </CardBody>
 

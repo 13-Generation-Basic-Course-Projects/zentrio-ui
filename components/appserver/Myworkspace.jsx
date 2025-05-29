@@ -13,6 +13,9 @@ export default function Myworkspace({ Workspaceid }) {
           {Array.from({ length: 5 * Workspaceid }).map((_, index) => (
             <CardBoard
               key={index}
+              role={"pm"}
+              workspaceId="123"
+              projectId="456"
               title={`hello ${Workspaceid}`}
               image={
                 Workspaceid % 2 == 0 ? "bg-board-green" : "bg-board-primary"

@@ -14,6 +14,9 @@ export default function Otherworkspace({ Workspaceid }) {
               <CardBoard
                 key={index}
                 title={`hello  other ${Workspaceid}`}
+                role={"tl"}
+                workspaceId="123"
+                projectId="456"
                 image={
                   Workspaceid % 2 == 0 ? "bg-board-green" : "bg-board-primary"
                 }

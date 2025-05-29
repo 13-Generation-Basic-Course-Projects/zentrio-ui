@@ -5,9 +5,12 @@ import Image from "next/image";
 import personal from "../../assets/personal.png";
 import MyDatePicker from "../date/Datepicker";
 import BredCrum from "../bredcrum/Bredcrum";
+import { documentData } from "@/data/docu/documentData";
 export default async function Privatedocument({ modal }) {
-  const data = await testSusupne();
-  console.log(data);
+  //const data = await testSusupne();
+  console.log(documentData);
+  //console.log(data);
+  const data = documentData;
 
   return (
     <div className="h-screen flex flex-col ">
@@ -29,14 +32,30 @@ export default async function Privatedocument({ modal }) {
         </div>
       </div>
       <div className="grid grid-cols-6 gap-3 overflow-y-auto scrollbar-hidden pb-40 pt-10">
-        {data.map((el, i) => (
-          <CardFile
-            key={i}
-            title={"nigga"}
-            status={"true"}
-            date={"2025-05-25"}
-          />
-        ))}
+        {data
+          .filter((el) => el.status === "personal")
+          .map((el, i) => {
+            if (el.category === "Folder" || el.type === "folder") {
+              return (
+                <CardFolder
+                  key={i}
+                  title={el.title}
+                  status={el.status}
+                  date={el.date}
+                />
+              );
+            } else {
+              return (
+                <CardFile
+                  key={i}
+                  title={el.title}
+                  status={el.status}
+                  date={el.date}
+                  type={el.type}
+                />
+              );
+            }
+          })}
       </div>
     </div>
   );
