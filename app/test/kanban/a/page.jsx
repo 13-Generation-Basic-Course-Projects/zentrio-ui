@@ -1,11 +1,12 @@
-import ModalNotification from "@/components/modal/noti/ModalNotification";
-import { Notification } from "@/components/notification/Notification";
+import ModalOptionDocument from "@/components/modal/docu/ModalOptionDocument";
+import ModalDelete from "@/components/modal/ModalDelete";
+
 import React from "react";
 
 export default function page() {
   return (
     <>
-      <ModalNotification />
+      <ModalDelete />
     </>
   );
 }

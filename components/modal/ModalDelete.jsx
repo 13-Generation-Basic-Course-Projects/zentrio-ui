@@ -1,3 +1,4 @@
+"use client";
 import {
   Modal,
   ModalContent,
@@ -8,8 +9,9 @@ import {
   useDisclosure,
 } from "@heroui/react";
 import { LeaveIcon } from "../icon/everyicon";
-import { IconpopupLeave } from "../icon/Iconpopup";
+import { IconpopupDelete, IconpopupLeave } from "../icon/Iconpopup";
 export default function ModalDelete({
+  title,
   massageTitle,
   massageBody,
   massageUndo,
@@ -21,11 +23,10 @@ export default function ModalDelete({
   return (
     <>
       <Button
-        // onPress={onOpen}
-        className="bg-transparent  p-2 flex items-center gap-2 cursor-pointer p-0 border-0"
+        onPress={onOpen}
+        className="bg-transparent  flex items-center gap-2 cursor-pointer p-0 !border-0"
       >
-        <LeaveIcon strokwidth={2} size={4} color={"red"} />
-        <span className="text-red-500 font-medium">Logout</span>
+        <span className=" font-medium">{title}</span>
       </Button>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="sm">
         <ModalContent className="flex  flex-col justify-center items-center">
@@ -33,7 +34,7 @@ export default function ModalDelete({
             <>
               <ModalHeader>
                 <div className="w-8 h-8 rounded-full bg-slate-orange flex justify-center items-center ">
-                  <IconpopupLeave />
+                  <IconpopupDelete />
                 </div>
               </ModalHeader>
               <ModalHeader>{massageTitle}</ModalHeader>

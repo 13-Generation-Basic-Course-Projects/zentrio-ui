@@ -5,7 +5,7 @@ import Link from "next/link";
 import React, { useState } from "react";
 import { usePathname } from "next/navigation";
 import KanbanBoard from "../kanban/Kanban";
-import GanttChart from "../testcomponent/Calender";
+import GanttChart from "../Gantt/GanttChart";
 import userProfile from "@/assets/profile.png";
 import ModalInviteMember from "../modal/ModalInviteMember";
 import StarBoard from "../button/StarBoard";
@@ -36,7 +36,7 @@ export default function SystemBoard({ user }) {
     },
     {
       key: "calendar",
-      title: "Calendar",
+      title: "Gantt Chart",
       content: <GanttChart />,
     },
   ];
