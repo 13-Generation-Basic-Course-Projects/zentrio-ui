@@ -131,7 +131,7 @@ export default function AboutUs() {
           </div>
 
           {/* Instructor */}
-          <div className="w-[583.8px] h-full shadow-sm scale-[1.2] rounded-xl p-10">
+          <div className="w-[583.8px] h-full scale-[1.2] rounded-xl p-10">
             <div className="grid grid-cols-2 grid-rows-4 gap-4 h-full w-full relative">
               <div className="absolute left-0 top-1/2 -translate-y-1/2 ml-0 z-10 scale-[0.8]">
                 <RoundText3 />
