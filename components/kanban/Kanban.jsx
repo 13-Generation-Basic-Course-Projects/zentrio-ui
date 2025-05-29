@@ -8,6 +8,7 @@ import UserAvater from "../useravatar/UserAvatar";
 import BredCrum from "../bredcrum/bredcrum";
 import { StackedUser } from "../useravatar/StackUser";
 import ModalCreateChecklist from "../modal/board/ModalCreateChecklist";
+import ModalDetailChecklist from "../modal/board/ModalDetailChecklist";
 
 export default function KanbanBoard({ modal }) {
   const [columns, setColumns] = useState(initialColumns);
@@ -427,7 +428,7 @@ export default function KanbanBoard({ modal }) {
                                 }
                                 onDragEnd={handleDragEnd}
                               >
-                                <CardCheckList
+                                <ModalDetailChecklist
                                   title="Hello"
                                   startDate={"25/05/25"}
                                   label={subtask.label}
@@ -477,7 +478,7 @@ export default function KanbanBoard({ modal }) {
 
                       {/* Create Subtask Button at Bottom of Card */}
                       {card.expanded && (
-                        <div className="px-3 pb-3 pt-1">
+                        <div className=" pb-3 pt-1">
                           <div className="w-full">
                             <ModalCreateChecklist
                               onSubmit={(subtaskData) =>

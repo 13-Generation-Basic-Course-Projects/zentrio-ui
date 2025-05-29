@@ -2,7 +2,7 @@
 
 import { Tabs, Tab, Card, CardBody } from "@heroui/react";
 import KanbanBoard from "../kanban/Kanban";
-import GanttChart from "../testcomponent/Calender";
+import GanttChart from "../Gantt/GanttChart";
 const tabItems = [
   {
     key: "photos",

@@ -11,22 +11,21 @@ import {
 import iconMember from "@/assets/memberSideBar.png";
 
 import Image from "next/image";
-
-export default function CardFolder({ title, status, date }) {
+import { icon } from "../icon/allicon";
+import ModalOptionDocument from "../modal/docu/ModalOptionDocument";
+//just make for icon file
+const icons = {
+  pdf: "https://cdn-icons-png.flaticon.com/128/4726/4726010.png",
+  docx: "https://cdn-icons-png.flaticon.com/128/2991/2991108.png",
+  xlsx: "https://cdn-icons-png.flaticon.com/128/2504/2504768.png",
+  pptx: "https://cdn-icons-png.flaticon.com/128/2875/2875416.png",
+};
+export function CardFolder({ title, status, date }) {
   return (
     <Card className="rounded-xl text-blue-400 cursor-pointer hover:bg-blue-50 transition sm:w-[160px] md:w-full h-[160px] shadow-md ">
       {/* Header */}
       <CardHeader className="pb-0 pt-2 px-4 flex justify-end">
-        <div className="hover:text-black text-gray-600">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-4 h-4"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-          >
-            <path d="M10 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4z" />
-          </svg>
-        </div>
+        <ModalOptionDocument />
       </CardHeader>
 
       {/* Body */}
@@ -171,16 +170,7 @@ export default function CardFolder({ title, status, date }) {
     </Card>
   );
 }
-  
 
-
-//just make for icon file
-const icons = {
-  pdf: "https://cdn-icons-png.flaticon.com/128/4726/4726010.png",
-  docx: "https://cdn-icons-png.flaticon.com/128/2991/2991108.png",
-  xlsx: "https://cdn-icons-png.flaticon.com/128/2504/2504768.png",
-  pptx: "https://cdn-icons-png.flaticon.com/128/2875/2875416.png",
-};
 function FileIcon({ type, size = 45 }) {
   // Get the matching icon based on type, fallback to a default icon if not found
   const src = icons[type] || icons.docx; // Fallback to 'docx' icon as default
@@ -201,16 +191,7 @@ export function CardFile({ title, status, date, type }) {
     <Card className="rounded-xl text-blue-400 cursor-pointer hover:bg-blue-50 transition sm:w-[160px] md:w-full h-[160px] shadow-md">
       {/* Header */}
       <CardHeader className="pb-0 pt-2 px-4 flex justify-end">
-        <div className="hover:text-black text-gray-600">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-4 h-4"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-          >
-            <path d="M10 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4z" />
-          </svg>
-        </div>
+        <ModalOptionDocument />
       </CardHeader>
 
       {/* Body */}

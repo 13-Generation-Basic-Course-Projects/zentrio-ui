@@ -80,8 +80,8 @@ export default function DashboardSidebar() {
     : items;
 
   return (
-    <Sidebar collapsible="icon" className="border-none">
-      <SidebarContent className="h-screen flex flex-col !border-0">
+    <Sidebar collapsible="icon" className="border-none  rounded-tr-xl">
+      <SidebarContent className="h-screen flex flex-col !border-0  rounded-tr-xl">
         <div className="p-4 !border-0">
           <Link href="/workspace">
             <Image src={logo} className="w-[168px] object-cover" alt="logo" />

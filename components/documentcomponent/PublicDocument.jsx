@@ -1,6 +1,6 @@
 import React from "react";
 import { testSusupne } from "@/service/test.service";
-import CardFolder, { CardFile } from "../card/CardDoc";
+import { CardFolder, CardFile } from "../card/CardDoc";
 import MyDatePicker from "../date/Datepicker";
 import publicIcon from "../../assets/public.png";
 import Image from "next/image";
