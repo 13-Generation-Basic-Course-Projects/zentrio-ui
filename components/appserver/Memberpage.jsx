@@ -173,16 +173,22 @@ export default function Memberpage() {
       {/* breadcrum */}
       <BredCrum board={"Hikko Design"} feature={"Members"} header={"Member"} />
       <div className="flex justify-between">
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 text-slate-500">
           {/* Filter Dropdown using HeroUI Select */}
           <Select
             placeholder="All"
             className="w-[200px] h-[30px]"
             size="sm"
-            startContent={<Funnel className="w-5 h-5 text-gray-500" />}
+            startContent={
+              <div className="flex items-center gap-2">
+                <Funnel className="w-5 h-5 text-slate-500 shrink-0" />
+              </div>
+            }
             variant="bordered"
           >
-            
+            <SelectItem key="all" value="all">
+              All
+            </SelectItem>
             <SelectItem key="week" value="week">
               Last week
             </SelectItem>
