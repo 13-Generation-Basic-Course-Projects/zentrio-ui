@@ -15,7 +15,7 @@ export default function CardTaskCalender({ tasks = [] }) {
   const data = [...tasks];
 
   return (
-    <Card className="py-4 rounded-large border shadow-small bg-white max-w-md mx-auto">
+    <Card className="py-4 rounded-large bg-white max-w-md mx-auto">
       <CardHeader className="pb-0 pt-2 px-6 flex-col items-start">
         <div className="flex items-center gap-3">
           <Image
