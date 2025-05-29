@@ -37,14 +37,14 @@ const myworkspaceItem = [
   {
     title: "My workspace 2",
     url: "/workspace/2",
-    color: "bg-pink-300",
+    color: "bg-orange-300",
     activeIcon: board,
     myworkspace: true,
   },
   {
     title: "My workspace 3",
     url: "/workspace/3",
-    color: "bg-pink-300",
+    color: "bg-green-300",
     activeIcon: board,
     myworkspace: false,
   },
@@ -60,7 +60,7 @@ const otherworkspaceItem = [
   {
     title: "OtherWorkspace 2",
     url: "/workspace/otherworkspace/2",
-    color: "bg-pink-300",
+    color: "bg-blue-300",
     activeIcon: board,
     myworkspace: true,
   },

@@ -14,7 +14,7 @@ export default function Otherworkspace({ Workspaceid }) {
             {Array.from({ length: 5 * Workspaceid }).map((_, index) => (
               <CardBoard
                 key={index}
-                title={`hello  other ${Workspaceid}`}
+                title={`Hikko  other ${Workspaceid}`}
                 role={"tl"}
                 workspaceId="123"
                 projectId="456"

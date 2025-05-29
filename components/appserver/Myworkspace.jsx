@@ -17,7 +17,7 @@ export default function Myworkspace({ Workspaceid }) {
               role={"pm"}
               workspaceId="123"
               projectId="456"
-              title={`hello ${Workspaceid}`}
+              title={`Hikko ${Workspaceid}`}
               image={
                 Workspaceid % 2 == 0 ? "bg-board-green" : "bg-board-primary"
               }
