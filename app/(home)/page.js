@@ -14,6 +14,7 @@ import shareImg from "@/assets/share.png";
 import Image from "next/image";
 import { Button } from "@heroui/react";
 import { NavbarLanding } from "@/components/layout/Navbar";
+import Link from "next/link";
 
 //useage : http://localhost:3000/
 
@@ -166,6 +167,7 @@ export default function Home() {
                 one place.
               </p>
             </div>
+            <Link href="/login">
             <Button className="text-body w-[168.06px] h-[50.06px] font-semibold tracking-wide sm:text-sm lg:text-body bg-primary text-white px-4 sm:px-6 py-2 sm:py-3 rounded-[8px]">
               <span>Get Started</span>
               <svg
@@ -181,6 +183,7 @@ export default function Home() {
                 />
               </svg>
             </Button>
+            </Link>
           </div>
         </div>
 

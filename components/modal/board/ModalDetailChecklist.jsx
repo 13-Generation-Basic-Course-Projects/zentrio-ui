@@ -53,7 +53,7 @@ export default function ModalDetailChecklist({  title,
     <>
       <Button
       onPress={onOpen}
-        className="h-full w-full p-0"   
+        className="h-full w-full p-0 shadow-sm"   
         fullWidth="true"
       >
     <div className="h-full w-full  max-w-none !p-0 bg-pink-300"> 

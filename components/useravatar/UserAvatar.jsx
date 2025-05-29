@@ -1,8 +1,13 @@
 "use client";
 import { Avatar } from "@heroui/avatar";
+import { User } from "@heroui/react";
 
 export default function UserAvatar({ image }) {
   return (
-    <Avatar src={image && "https://i.pravatar.cc/150?u=a042581f4e29026024d"} />
+    
+     <div
+      className="h-10 w-10 rounded-full bg-bgColor overflow-hidden">
+        <img  src={image} className="h-full object-cover" alt="image-teamleader" />
+      </div>
   );
 }
