@@ -12,7 +12,7 @@ export const NavbarLanding = () => {
   };
 
   return (
-    <div className="w-[] md:w-full h-[70px] bg-white shadow-md rounded-full mx-auto mt-[30px] px-4 sm:px-6 relative">
+    <div className="w-[] md:w-full h-[70px] bg-white shadow-sm rounded-full mx-auto mt-[30px] px-4 sm:px-6 relative">
       <div className="flex justify-between items-center h-full">
         <Link href="/">
           <Image

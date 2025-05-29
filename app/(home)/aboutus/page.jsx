@@ -37,6 +37,11 @@ import arrowdown from "@/public/image/arrow-down.png";
 import arrowright from "@/public/image/arrow-right.png";
 import "@/styles/box.css";
 
+import LogoHRD from "@/assets/about-us-image/LogoHRD.jpg"
+import TeacherAtHRD from '@/assets/about-us-image/TeacherAtHRD.jpg'
+import TeacherDara from '@/assets/about-us-image/TeacherDara.jpg'
+import TeacherNak from '@/assets/about-us-image/TeacherNak.jpg'
+
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -49,60 +54,53 @@ export default function AboutUs() {
   return (
     <div className="  gap-4 p-4 min-h-screen ">
       <div className=" ">
-        <section className="relative flex justify-center items-center gap-4 h-[700px]  ">
+        <section className="relative flex justify-center items-center gap-4 h-[740px]  ">
           <div className="grid grid-cols-2">
-            <div className=" imgBg1 flex items-start text-title text-center p-8">
-              <div className="z-10 text-left w-[90%] p-5 ">
-                <h1 className="text-h3 md:text-h2 lg:text-h1 font-bold mb-4">
-                  We are from <br />
-                  Korean Software HRD Center
-                </h1>
-                <p className="md:text-h6 lg:text-h4 mb-2 font-bold">
-                  13th Generation Student Basic Course.
-                </p>
-                <p className="md:text-h5 lg:text-h6 text-title/60 mb-20">
-                  We’re really confident with this project that can bring the
-                  best tool for software development.
-                </p>
+            <div className="imgBg1 flex items-start text-title text-center">
+              <div className="z-10 text-left w-[90%] p-5 flex flex-col gap-[95px] scale-[0.9] pl-8 pt-8">
+                <div className="flex flex-col gap-[30px]">
+                  <h1 className="text-h3 md:text-h2 lg:text-h1 font-bold mb-4">
+                    <span className="text-[64px]">We are from</span> <br />
+                    Korean Software HRD Center
+                  </h1>
+                  <div className="flex flex-col gap-[10px]">
+                    <p className="text-[24px] font-medium">
+                      13<sup>th</sup> Generation Student Basic Course.
+                    </p>
+                    <p className="text-[16px] text-description text-medium">
+                      We’re really confident with this project that can bring the
+                      best tool for software development.
+                    </p>
+                  </div>
+                </div>
                 <Button
-                  className="text-btn-sm text-[#FFFFFF] rounded-small"
+                  className="w-[168.06px] h-[50.06px] text-btn-sm text-[#FFFFFF] rounded-small"
                   type="button"
                 >
-                  Get Start
+                  <span className="font-semibold text-body tracking-wide">Get Started</span>
                   <span>
                     <svg
-                      viewBox="0 0 24 24"
+                      className="w-3 h-3 scale-[0.79]"
+                      viewBox="0 0 12 12"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
                     >
-                      <g id="SVGRepo_bgCarrier"></g>
-                      <g
-                        id="SVGRepo_tracerCarrier"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      ></g>
-                      <g id="SVGRepo_iconCarrier">
-                        <path
-                          fillRule="evenodd"
-                          clipRule="evenodd"
-                          d="M9 6.75C8.58579 6.75 8.25 6.41421 8.25 6C8.25 5.58579 8.58579 5.25 9 5.25H18C18.4142 5.25 18.75 5.58579 18.75 6V15C18.75 15.4142 18.4142 15.75 18 15.75C17.5858 15.75 17.25 15.4142 17.25 15V7.81066L6.53033 18.5303C6.23744 18.8232 5.76256 18.8232 5.46967 18.5303C5.17678 18.2374 5.17678 17.7626 5.46967 17.4697L16.1893 6.75H9Z"
-                          fill="#FFFFFF"
-                        ></path>
-                      </g>
+                      <path
+                        d="M11.3712 10.1838L11.3947 1.84828C11.3918 1.69313 11.3582 1.54026 11.296 1.39845C11.1772 1.11248 10.9502 0.885494 10.6643 0.766736C10.5225 0.70449 10.3696 0.67093 10.2144 0.667983L1.87888 0.691565C1.72344 0.692004 1.56943 0.723056 1.42566 0.782946C1.28188 0.842836 1.15115 0.930392 1.04093 1.04062C0.818322 1.26322 0.692765 1.56464 0.691877 1.87856C0.690988 2.19249 0.814843 2.4932 1.03619 2.71455C1.25754 2.9359 1.55825 3.05975 1.87218 3.05886L7.36534 3.03499L1.02075 9.37958C0.799048 9.60128 0.674002 9.90147 0.673118 10.2141C0.672233 10.5268 0.795583 10.8262 1.01603 11.0467C1.23648 11.2671 1.53596 11.3905 1.84861 11.3896C2.16125 11.3887 2.46144 11.2637 2.68314 11.042L9.02773 4.69738L9.00386 10.1905C9.00278 10.3462 9.03252 10.5003 9.09137 10.644C9.15022 10.7877 9.23702 10.9182 9.34675 11.028C9.45647 11.1377 9.58697 11.2245 9.73069 11.2833C9.87442 11.3422 10.0285 11.3719 10.1842 11.3708C10.3398 11.371 10.4941 11.3404 10.6381 11.2808C10.7822 11.2211 10.9132 11.1336 11.0235 11.0232C11.1339 10.9129 11.2214 10.7819 11.2811 10.6378C11.3407 10.4938 11.3714 10.3395 11.3712 10.1838Z"
+                        fill="white"
+                      />
                     </svg>
                   </span>
                 </Button>
               </div>
             </div>
 
-            <div className="imgBg2 flex items-start  text-title text-center p-8 ">
-              <div className="z-10 border-2 rounded-large p-2  bg-bgColor/40 bg-blur backdrop-blur-sm text-left ml-10 mt-14 ">
-                <p className="text-caption text-blueActive">Our school</p>
-                <p className="text-h4 text-primary ">
-                  Korean Software <br />
-                  HRD Center
+            <div className="imgBg2 flex items-start text-title text-center p-8">
+              <div className="z-10 border-2 rounded-large p-2  bg-bgColor/40 bg-blur backdrop-blur-md text-left ml-10 mt-14 pl-8 pr-14 flex flex-col gap-3">
+                <p className="text-body text-blueActive font-semibold tracking-wide">Our school</p>
+                <p className="text-primary flex flex-col">
+                  <span className="font-semibold text-h1">Korean Software</span>
+                  <span className="font-semibold text-h2">HRD Center</span>
                 </p>
               </div>
               <img
@@ -117,14 +115,14 @@ export default function AboutUs() {
           </div>
         </section>
 
-        <section className="grid grid-row-1 sm:grid-cols-2 gap-4">
+        <section className="grid grid-row-1 sm:grid-cols-2 gap-4 ">
           <div className="relative h-auto  overflow-hidden p-6 sm:p-10 flex  items-center right-0 justify-center ">
             <div className="flex flex-col justify-center space-y-6 max-w-xl right-1">
               <p className="text-h1 font-bold text-gradient text-left">
                 ZenTrio Founder
               </p>
 
-              <p className="text-base text-h4 leading-relaxed text-left">
+              <p className="text-base text-h4 leading-relaxed text-left w-[524px]">
                 Jump in and let’s see how ZenTrio can make your workday feel
                 lighter. Let’s simplify your projects and get stuff done
                 together.
@@ -132,65 +130,31 @@ export default function AboutUs() {
             </div>
           </div>
 
-          <div className="relative flex items-center min-h-screen px-10">
-            {/* RoundText2 Center-Left */}
-            <div className="absolute left-0 top-1/2 -translate-y-1/2 ml-5 z-10">
-              <RoundText3 />
-            </div>
-
-            {/* Content Row: Black Section + Instructor Cards */}
-            <div className="flex flex-row justify-between w-full">
-              {/* LEFT: Black Card Section */}
-              <div className="flex flex-col justify-center items-center space-y-5 p-5 rounded-lg">
-                <div className="card w-[300px] md:w-[320px]">
-                  <div className="box">
-                    <div className="imgBx">
-                      <Image
-                        src={ourInstructor}
-                        alt="Our Instructor"
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  </div>
-                  <div className="box">
-                    <div className="imgBx">
-                      <Image
-                        src={ksgh}
-                        alt="KSGH"
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  </div>
+          {/* Instructor */}
+          <div className="w-[583.8px] h-full  scale-[1.2] rounded-xl p-10">
+            <div className="grid grid-cols-2 grid-rows-4 gap-4 h-full w-full relative">
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 ml-0 z-10 scale-[0.8]">
+                <RoundText3 />
+              </div>
+              <div className="col-start-1 row-start-2 self-end place-self-end">
+                <Image src={TeacherAtHRD} alt="" className="w-44 h-fit object-cover rounded-2xl" />
+              </div>
+              <div className="row-span-2 col-start-2 row-start-1 self-end relative">
+                <Image src={TeacherNak} alt="" className="rounded-2xl h-[217px] w-fit mb-[12%]" />
+                <div className="absolute left-[-5%] bottom-[-5%] w-[242px] h-[83px] scale-[0.8] bg-bgColor/40 bg-blur backdrop-blur-sm rounded-[20px] flex flex-col justify-center items-center">
+                  <p className="text-center text-[24px] font-semibold text-bgColor">Kheng Sovannak</p>
+                  <p className="text-center text-[18px] text-primary">IT Instructor</p>
                 </div>
               </div>
-
-              {/* RIGHT: Instructor Cards */}
-              <div className="flex flex-col space-y-5 ml-10">
-                {/* Card 1 */}
-                <div className="relative w-full max-w-[300px] rounded-xl overflow-hidden shadow-lg">
-                  <Image
-                    alt="Teacher Nak"
-                    src={cherNak}
-                    className="object-cover w-full h-full"
-                  />
-                  <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 bg-white/20 backdrop-blur-md border border-white/30 rounded-xl flex flex-col items-center px-3 py-2 shadow-md w-[200px]">
-                    <div className="text-sm text-white">Kheng Sovannak</div>
-                    <div className="text-sm text-white">IT Instructor</div>
-                  </div>
+              <div className="row-span-2 col-start-2 row-start-3 relative">
+                <Image src={TeacherDara} alt="" className="rounded-3xl w-[218px] h-fit" />
+                <div className="absolute left-[13%] top-[30%] w-[152px] h-[83px] scale-[0.9] bg-bgColor/40 bg-blur backdrop-blur-sm rounded-[20px] flex flex-col justify-center items-center">
+                  <p className="text-center text-[24px] font-semibold text-bgColor">Tan Dara</p>
+                  <p className="text-center text-[18px] text-primary">IT Instructor</p>
                 </div>
-
-                {/* Card 2 */}
-                <div className="relative w-full max-w-[300px] h-[199px] rounded-xl overflow-hidden shadow-lg">
-                  <Image
-                    alt="Teacher Dara"
-                    src={cherDara}
-                    className="object-cover w-full h-full"
-                  />
-                  <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 bg-white/20 backdrop-blur-md border border-white/30 rounded-xl flex flex-col items-center px-3 py-2 shadow-md w-[200px]">
-                    <div className="text-sm text-white">Tan Dara</div>
-                    <div className="text-sm text-white">IT Instructor</div>
-                  </div>
-                </div>
+              </div>
+              <div className="col-start-1 row-start-3 place-items-end">
+                <Image src={LogoHRD} alt="" className="rounded-2xl w-44 h-fit object-cover shadow-md" />
               </div>
             </div>
           </div>

@@ -1,14 +1,12 @@
 import React from "react";
-import { testSusupne } from "@/service/test.service";
-import { CardFolder, CardFile } from "../card/CardDoc";
 import MyDatePicker from "../date/Datepicker";
 import publicIcon from "../../assets/public.png";
 import Image from "next/image";
 import BredCrum from "../bredcrum/Bredcrum";
 import { documentData } from "@/data/docu/documentData";
-export default async function PublicDocument({ modal }) {
-  // const data = await testSusupne();
-  // console.log(data);
+import CardFolder, { CardFile } from "../card/CardDoc";
+export default  function PublicDocument({ modal }) {
+
   const data = documentData;
   console.log(data);
   return (
@@ -16,8 +14,8 @@ export default async function PublicDocument({ modal }) {
       <div className="grid grid-cols-1 gap-3 ">
         <BredCrum
           board={"Hikko Design"}
-          feature={"Board"}
-          header={"Hikko Design"}
+          feature={"Document"}
+          header={"Document"}
           modal={modal}
         />
         <div className="flex items-center justify-center pb-5">

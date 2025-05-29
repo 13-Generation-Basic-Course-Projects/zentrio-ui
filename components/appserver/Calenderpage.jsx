@@ -86,8 +86,8 @@ export default function MyCalender({ tasks }) {
 
       <div className="grid grid-cols-12 gap-4 pt-6 h-full">
         {/* Calendar Scroll Section */}
-        <div className="col-span-9 h-full overflow-y-auto pr-2">
-          <div className="bg-pink-300 h-full">
+        <div className="col-span-9 h-full overflow-y-auto pr-2 scrollbar-hidden">
+          <div className=" h-full">
             <FullCalendar
               plugins={[
                 resourceTimelinePlugin,
