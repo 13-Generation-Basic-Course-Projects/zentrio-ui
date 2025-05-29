@@ -1,199 +1,4 @@
 .button1 {
-<<<<<<< HEAD
-    --button-size: 200px;
-    cursor: pointer;
-    border: none;
-    /* background: #FFFFFF; */
-    color: #0e0c0c;
-    width: var(--button-size);
-    height: var(--button-size);
-    border-radius: 50%;
-    overflow: visible;
-    position: relative;
-    display: grid;
-    place-content: center;
-    transition: background 300ms, transform 200ms;
-    font-weight: 600;
-    font-family: Arial, sans-serif;
-    font-size: 16px;
-}
-
-.button1__text {
-    position: absolute;
-    inset: 0;
-    animation: text-rotation 8s linear infinite;
-}
-
-.button1__text>span {
-    position: absolute;
-    transform: rotate(calc(12deg * var(--index)));
-    inset: 0px;
-    font-weight: 400;
-    font-size: 20px;
-    line-height: 1;
-    /* user-select: none; */
-    transform-origin: center center;
-}
-
-.button1__circle {
-    position: relative;
-    width: 24px;
-    height: 24px;
-    /* background: #fff; */
-    color: #000000;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    z-index: 10;
-}
-
-.button1:hover {
-    background: #fff;
-    transform: scale(1.05);
-}
-
-
-
-
-.button2 {
-    --button-size: 140px;
-    cursor: pointer;
-    border: none;
-    /* background: #FFFFFF; */
-    color: #0e0c0c;
-    width: var(--button-size);
-    height: var(--button-size);
-    border-radius: 50%;
-    overflow: visible;
-    position: relative;
-    display: grid;
-    place-content: center;
-    transition: background 300ms, transform 200ms;
-    font-weight: 600;
-    font-family: Arial, sans-serif;
-    font-size: 12px;
-}
-
-.button2__text {
-    position: absolute;
-    inset: 0;
-    animation: text-rotation 12s linear infinite;
-}
-
-.button2__text>span {
-    position: absolute;
-    transform: rotate(calc(12deg * var(--index)));
-    inset: 0px;
-    font-weight: 300;
-    font-size: 18px;
-    line-height: 1;
-    /* user-select: none; */
-    transform-origin: center center;
-}
-
-.button2__circle {
-    position: relative;
-    width: 24px;
-    height: 24px;
-    /* background: #fff; */
-    color: #000000;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    z-index: 10;
-}
-
-.button2:hover {
-    background: #fff;
-    transform: scale(1.05);
-}
-
-@keyframes text-rotation {
-    to {
-        rotate: 360deg;
-    }
-}
-
-
-
-
-.button3 {
-    --button-size: 140px;
-    cursor: pointer;
-    border: none;
-    background: #FFFFFF;
-    color: #0e0c0c;
-    width: var(--button-size);
-    height: var(--button-size);
-    border-radius: 50%;
-    overflow: visible;
-    position: relative;
-    display: grid;
-    place-content: center;
-    transition: background 300ms, transform 200ms;
-    font-weight: 600;
-    font-family: Arial, sans-serif;
-    font-size: 12px;
-}
-
-.button3__text {
-    position: absolute;
-    inset: 0;
-    animation: text-rotation 12s linear infinite;
-}
-
-.button3__text>span {
-    position: absolute;
-    transform: rotate(calc(12deg * var(--index)));
-    inset: 0px;
-    font-weight: 300;
-    font-size: 18px;
-    line-height: 1;
-    /* user-select: none; */
-    transform-origin: center center;
-}
-
-.button3__circle {
-    position: relative;
-    width: 24px;
-    height: 24px;
-    /* background: #fff; */
-    color: #000000;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    z-index: 10;
-}
-
-.button3:hover {
-    background: #fff;
-    transform: scale(1.05);
-}
-
-@keyframes text-rotation {
-    to {
-        rotate: 360deg;
-    }
-}
-
-
-
-
-/* SlideShow for image */
-.transform-image {
-    width: 400px;
-    height: 300px;
-    object-fit: contain;
-    animation-iteration-count: infinite;
-    animation-timing-function: ease-in-out;
-    animation-direction: alternate;
-=======
   --button-size: 200px;
   cursor: pointer;
   border: none;
@@ -378,53 +183,22 @@
   animation-iteration-count: infinite;
   animation-timing-function: ease-in-out;
   animation-direction: alternate;
->>>>>>> 1689331d87de19d72ad14babf449da83519871c4
 }
 
 /* Image 1: scale up and down */
 .image1 {
-<<<<<<< HEAD
-    animation-name: scaleUpDown;
-    animation-duration: 3s;
-=======
   animation-name: scaleUpDown;
   animation-duration: 3s;
->>>>>>> 1689331d87de19d72ad14babf449da83519871c4
 }
 
 /* Image 2: rotate left-right */
 .image2 {
-<<<<<<< HEAD
-    animation-name: rotateLeftRight;
-    animation-duration: 4s;
-=======
   animation-name: rotateLeftRight;
   animation-duration: 4s;
->>>>>>> 1689331d87de19d72ad14babf449da83519871c4
 }
 
 /* Image 3: scale down and rotate */
 .slideshow-container {
-<<<<<<< HEAD
-    position: relative;
-    width: 400px;
-    height: 300px;
-    margin: auto;
-    overflow: hidden;
-}
-
-.slide {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    opacity: 0;
-    animation-name: fadeinout;
-    animation-duration: 9s;
-    /* 3 images x 3 seconds */
-    animation-timing-function: ease-in-out;
-    animation-iteration-count: infinite;
-=======
   position: relative;
   width: 400px;
   height: 300px;
@@ -443,22 +217,10 @@
   /* 3 images x 3 seconds */
   animation-timing-function: ease-in-out;
   animation-iteration-count: infinite;
->>>>>>> 1689331d87de19d72ad14babf449da83519871c4
 }
 
 /* Control animation delay for each slide */
 .slide:nth-child(1) {
-<<<<<<< HEAD
-    animation-delay: 0s;
-}
-
-.slide:nth-child(2) {
-    animation-delay: 3s;
-}
-
-.slide:nth-child(3) {
-    animation-delay: 6s;
-=======
   animation-delay: 0s;
 }
 
@@ -468,33 +230,10 @@
 
 .slide:nth-child(3) {
   animation-delay: 6s;
->>>>>>> 1689331d87de19d72ad14babf449da83519871c4
 }
 
 /* Animation keyframes */
 @keyframes fadeinout {
-<<<<<<< HEAD
-    0% {
-        opacity: 0;
-    }
-
-    10% {
-        opacity: 1;
-    }
-
-    30% {
-        opacity: 1;
-    }
-
-    40% {
-        opacity: 0;
-    }
-
-    100% {
-        opacity: 0;
-    }
-}
-=======
   0% {
     opacity: 0;
   }
@@ -515,4 +254,3 @@
     opacity: 0;
   }
 }
->>>>>>> 1689331d87de19d72ad14babf449da83519871c4

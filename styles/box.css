@@ -103,18 +103,10 @@
   width: 100px;
 }
 
-<<<<<<< HEAD
-
-/* test card background image for aboutus */
-/* styles/globals.css or your specific CSS file */
-.imgBg1 {
-  background-image: url('/image/Rectangle_header1.png');
-=======
 /* test card background image for aboutus */
 /* styles/globals.css or your specific CSS file */
 .imgBg1 {
   background-image: url("/image/Rectangle_header1.png");
->>>>>>> 1689331d87de19d72ad14babf449da83519871c4
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -122,16 +114,9 @@
   max-width: 640px;
   aspect-ratio: 640 / 560;
   height: auto;
-<<<<<<< HEAD
-
-}
-.imgBg2 {
-  background-image: url('/image/Rectangle_header2.png');
-=======
 }
 .imgBg2 {
   background-image: url("/image/Rectangle_header2.png");
->>>>>>> 1689331d87de19d72ad14babf449da83519871c4
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -159,11 +144,7 @@
 /* for square */
 
 .imgBgStage {
-<<<<<<< HEAD
-  background-image: url('/image/square1.png');
-=======
   background-image: url("/image/square1.png");
->>>>>>> 1689331d87de19d72ad14babf449da83519871c4
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -175,11 +156,7 @@
   /* IMPORTANT for overlay positioning */
 }
 .imgBgCalendar {
-<<<<<<< HEAD
-  background-image: url('/image/square2.png');
-=======
   background-image: url("/image/square2.png");
->>>>>>> 1689331d87de19d72ad14babf449da83519871c4
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -190,13 +167,8 @@
   position: relative;
   /* IMPORTANT for overlay positioning */
 }
-<<<<<<< HEAD
-.imgBgBell{
-  background-image: url('/image/square3.png');
-=======
 .imgBgBell {
   background-image: url("/image/square3.png");
->>>>>>> 1689331d87de19d72ad14babf449da83519871c4
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -208,11 +180,7 @@
   /* IMPORTANT for overlay positioning */
 }
 .imgBgGoogle {
-<<<<<<< HEAD
-  background-image: url('/image/square4.png');
-=======
   background-image: url("/image/square4.png");
->>>>>>> 1689331d87de19d72ad14babf449da83519871c4
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
