@@ -57,10 +57,12 @@ module.exports = {
       // Gradient Color
       backgroundImage: {
         "custom-gradient": "linear-gradient(90deg, #59BAD5, #ABAAFF, #59BAD5)",
+
         "board-purple": "linear-gradient(135.8deg, #ffffff, #800080)",
         "board-orange": "linear-gradient(145.88deg, #ffffff, #ffbc6b, #ff8c00)",
         "board-green": "linear-gradient(138.29deg, #ffffff, #008000)",
         "board-red": "linear-gradient(138.66deg, #ff0000, #ffffff, #ff0000)",
+        "board-violet": "linear-gradient(138.66deg, #8A2BE2, #DA70D6, #8A2BE2)", //add new
         "board-primary":
           "linear-gradient(140.08deg, #59bad5, #ffffff, #59bad5)",
       },

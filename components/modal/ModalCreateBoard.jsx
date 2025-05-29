@@ -49,16 +49,25 @@ export default function ModalCreateBoard() {
   };
 
   const handleColorSelect = (color) => {
-    setSelectedOption(color);
+    setSelectedOption((prev) => (prev === color ? null : color));
     setShowColors(false);
     setDropdownOpen(false);
   };
-
+  
   const handleUploadSelect = () => {
     alert("Upload images clicked");
     setDropdownOpen(false);
   };
 
+
+  const colorOptions = [
+    { key: "red", label: "Red", className: "bg-board-red" },
+    { key: "blue", label: "Blue Sky", className: "bg-board-primary" },
+    { key: "green", label: "Green", className: "bg-board-green" },
+    { key: "purple", label: "Purple", className: "bg-board-purple" },
+    { key: "orange", label: "Orange", className: "bg-board-orange" },
+    { key: "violet", label: "Violet", className: "bg-board-violet" },
+  ];
   return (
     <>
       <Button
@@ -82,7 +91,7 @@ export default function ModalCreateBoard() {
         </Card>
       </Button>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="xl">
-        <ModalContent className="max-h-[90vh] overflow-y-auto">
+        <ModalContent className="max-h-[90vh] overflow-y-auto scrollbar-hidden">
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">
@@ -111,7 +120,7 @@ export default function ModalCreateBoard() {
                         className="text-title/50 text-caption bg-transparent w-full"
                       />
                     </div>
-                    {/* select option */}
+                    {/* select option  */}
                     <div className="flex flex-col items-start justify-center space-y-2">
                       <label className="text-label-sm">Cover</label>
 
@@ -121,25 +130,24 @@ export default function ModalCreateBoard() {
                           onClick={() => setDropdownOpen((open) => !open)}
                           type="button"
                         >
-                          {selectedOption &&
-                            ["Red", "Green", "Blue", "Yellow"].includes(
-                              selectedOption
-                            ) && (
-                              <div
-                                className={`w-4 h-4 rounded-full ${
-                                  selectedOption === "Red"
-                                    ? "bg-red-500"
-                                    : selectedOption === "Green"
-                                    ? "bg-green-500"
-                                    : selectedOption === "Blue"
-                                    ? "bg-blue-500"
-                                    : "bg-yellow-500"
-                                }`}
-                              ></div>
-                            )}
+                          {selectedOption && (
+                            <div
+                              className={`w-4 h-4 rounded-full ${
+                                colorOptions.find(
+                                  (color) => color.key === selectedOption
+                                )?.className || ""
+                              }`}
+                            />
+                          )}
+
                           <p className="text-caption-tiny text-title/50">
-                            {selectedOption ? selectedOption : "Select Cover"}
+                            {selectedOption
+                              ? colorOptions.find(
+                                  (color) => color.key === selectedOption
+                                )?.label || selectedOption
+                              : "Select Cover"}
                           </p>
+
                           <svg
                             width="14"
                             height="9"
@@ -169,7 +177,6 @@ export default function ModalCreateBoard() {
                               className="hidden"
                             />
 
-                            {/* Styled button */}
                             <label
                               htmlFor="fileUpload"
                               className="w-full px-2 py-2 flex justify-between items-center hover:bg-gray-100 cursor-pointer"
@@ -223,30 +230,22 @@ export default function ModalCreateBoard() {
                               </button>
 
                               {showColors && (
-                                <div className="pl-2">
-                                  {["Red", "Green", "Blue", "Yellow"].map(
-                                    (color) => (
-                                      <button
-                                        key={color}
-                                        onClick={() => handleColorSelect(color)}
-                                        className="flex items-center gap-2 py-1 px-2 w-full text-left hover:bg-gray-100 rounded"
-                                        type="button"
-                                      >
-                                        <div
-                                          className={`w-4 h-4 rounded-full ${
-                                            color === "Red"
-                                              ? "bg-red-500"
-                                              : color === "Green"
-                                              ? "bg-green-500"
-                                              : color === "Blue"
-                                              ? "bg-blue-500"
-                                              : "bg-yellow-500"
-                                          }`}
-                                        ></div>
-                                        <span>{color}</span>
-                                      </button>
-                                    )
-                                  )}
+                                <div className="pl-2 h-[100px] overflow-auto scrollbar-hidden">
+                                  {colorOptions.map((color) => (
+                                    <button
+                                      key={color.key}
+                                      onClick={() =>
+                                        handleColorSelect(color.key)
+                                      }
+                                      className="flex items-center gap-2 py-1 px-2 w-full text-left hover:bg-gray-100 rounded"
+                                      type="button"
+                                    >
+                                      <div
+                                        className={`w-4 h-4 rounded-full ${color.className}`}
+                                      />
+                                      <span>{color.label}</span>
+                                    </button>
+                                  ))}
                                 </div>
                               )}
                             </div>
