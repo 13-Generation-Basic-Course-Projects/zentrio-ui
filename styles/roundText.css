@@ -20,7 +20,7 @@
 .button1__text {
   position: absolute;
   inset: 0;
-  animation: text-rotation 8s linear infinite;
+  animation: text-rotation 12s linear infinite;
 }
 
 .button1__text > span {
@@ -144,10 +144,11 @@
   transform: rotate(calc(12deg * var(--index)));
   inset: 0px;
   font-weight: 300;
-  font-size: 18px;
-  line-height: 1;
+  font-size: 12px;
+  line-height: 5;
   /* user-select: none; */
   transform-origin: center center;
+  scale: 1.1;
 }
 
 .button3__circle {
