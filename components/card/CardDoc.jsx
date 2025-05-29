@@ -12,21 +12,15 @@ import iconMember from "@/assets/memberSideBar.png";
 
 import Image from "next/image";
 import { icon } from "../icon/allicon";
+import ModalOptionDocument from "../modal/docu/ModalOptionDocument";
 
 export default function CardFolder({ title, status, date }) {
   return (
     <Card className="rounded-xl text-blue-400 cursor-pointer hover:bg-blue-50 transition sm:w-[160px] md:w-full h-[160px] shadow-sm ">
       {/* Header */}
       <CardHeader className="pb-0 pt-2 px-4 flex justify-end">
-        <div className="hover:text-black text-gray-600">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-4 h-4"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-          >
-            <path d="M10 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4z" />
-          </svg>
+         <div className="hover:text-black text-gray-600">
+        <ModalOptionDocument />
         </div>
       </CardHeader>
 
@@ -201,14 +195,7 @@ export function CardFile({ title, status, date, type }) {
       {/* Header */}
       <CardHeader className="pb-0 pt-2 px-4 flex justify-end">
         <div className="hover:text-black text-gray-600">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-4 h-4"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-          >
-            <path d="M10 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4z" />
-          </svg>
+        <ModalOptionDocument />
         </div>
       </CardHeader>
 

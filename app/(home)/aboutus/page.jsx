@@ -1037,7 +1037,7 @@ export default function AboutUs() {
 
               {/* 7 */}
               <div className="col-span-1">
-                <div className="relative box-content w-[161px]  h-[374px]   rounded-full overflow-hidden group ">
+                <div className="relative box-content w-[161px]  h-[344px]   rounded-full overflow-hidden group ">
                   <Image
                     src={visa}
                     alt="Example"
@@ -1158,7 +1158,7 @@ export default function AboutUs() {
                 </div>
               </div>
               {/* 4 */}
-              <div className="relative box-content col-span-2 w-[230px] h-[150px] rounded-full rounded-br-none overflow-hidden group">
+              <div className="relative box-content col-span-2 w-[300px] h-[150px] rounded-full rounded-br-none overflow-hidden group">
                 <Image
                   src={leap}
                   alt="Example"

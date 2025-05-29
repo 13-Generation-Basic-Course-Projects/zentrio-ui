@@ -12,6 +12,7 @@ import iconMember from "@/assets/memberSideBar.png";
 import Image from "next/image";
 
 import { usePathname, useSearchParams } from "next/navigation";
+import ModalDelete from "../modal/ModalDelete";
 
 export default function CardBoard({ title, image, role }) {
   const pathname = usePathname();
@@ -27,7 +28,7 @@ export default function CardBoard({ title, image, role }) {
   const [favorited, setFavorited] = useState(false);
 
   return (
-    <Link href={`/dashboard/${workspaceId}/${projectId}/board?role=${role}`}>
+   
       <Card className="py-4 h-[340px] rounded-xl shadow-sm">
         {/* Header */}
         <CardHeader className="pb-0 pt-2 px-4 flex justify-between items-center">
@@ -50,6 +51,7 @@ export default function CardBoard({ title, image, role }) {
 
         {/* Body */}
         <CardBody className="overflow-visible py-2">
+           <Link href={`/dashboard/${workspaceId}/${projectId}/board?role=${role}`}>
           {image && image.startsWith("bg-") ? (
             <div
               className={`rounded-xl w-full h-32 bg-cover bg-center ${image}`}
@@ -62,6 +64,7 @@ export default function CardBoard({ title, image, role }) {
               className="object-cover rounded-xl w-full h-32"
             />
           )}
+          </Link>
         </CardBody>
 
         {/* Footer */}
@@ -76,13 +79,21 @@ export default function CardBoard({ title, image, role }) {
               />
               <p className="text-body-sm">13 Members</p>
             </div>
-            <div className="flex items-center text-progress-red p-3 gap-1">
-              <IconDelete />
-              <button className="hover:underline text-body-sm">Remove</button>
+            
+           
+                <div className="flex items-center text-progress-red py-5 gap-1">
+                  <IconDelete />
+                <ModalDelete  title="Remove"
+                  color="text-red-500"
+                  massageTitle="Delete this board?"
+                  massageBody="This action will remove the board."
+                  massageUndo="Cancel"
+                  massageDo="Delete" />
             </div>
+            
           </div>
         </CardFooter>
       </Card>
-    </Link>
+   
   );
 }

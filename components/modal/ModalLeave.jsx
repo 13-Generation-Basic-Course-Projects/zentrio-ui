@@ -46,10 +46,10 @@ export default function ModalLeave({
                   variant="light"
                   onPress={onClose}
                 >
-                  <p className="text-slate-blue">{massageUndo}</p>
+                  <p className="text-blue-500">{massageUndo}</p>
                 </Button>
                 <Button className="bg-slate-red" onPress={onClose}>
-                  <p className="text-red-300">{massageDo}</p>
+                  <p className="text-red-500">{massageDo}</p>
                 </Button>
               </ModalFooter>
             </>
