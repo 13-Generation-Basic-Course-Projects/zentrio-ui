@@ -43,12 +43,7 @@ export default function ModalInviteMember() {
         <Image src={member} alt="Member Icon" className="w-4 h-4" />
         Invite
       </Button>
-      <Modal
-        isOpen={isOpen}
-        onOpenChange={onOpenChange}
-        size="xl"
-        className="max-h-[750px]  overflow-y-auto scrollbar-hidden"
-      >
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="xl">
         <ModalContent className="py-5 px-4">
           {(onClose) => (
             <>
