@@ -1,13 +1,9 @@
-"use client";
+"use client"
 
-import { useState, useRef } from "react";
-import React from "react";
-import Image from "next/image";
-import iconSearch from "@/assets/search.png";
-import icon1 from "@/assets/icon1.png";
-import arrowdown from "@/assets/arrow-down.png";
-import member from "@/assets/memberSideBar.png";
-import ModalInviteMember from "../modal/ModalInviteMember";
+import { useState, useRef } from "react"
+import Image from "next/image"
+import arrowdown from "@/assets/arrow-down.png"
+import ModalInviteMember from "../modal/ModalInviteMember"
 import {
   Popover,
   PopoverTrigger,
@@ -20,8 +16,12 @@ import {
   Button,
   useDisclosure,
   useDraggable,
-} from "@heroui/react";
-import BredCrum from "../bredcrum/bredcrum";
+  Select,
+  SelectItem,
+  Input,
+} from "@heroui/react"
+import { Search, Funnel } from "lucide-react"
+import BredCrum from "../bredcrum/bredcrum"
 
 export default function Memberpage() {
   const initialMembers = [
@@ -32,8 +32,7 @@ export default function Memberpage() {
       email: "fongly@gmail.com",
       roleName: ["Team Manger", "Team Leader", "Member"],
       task: ["Back-End Dev", "UX/UI design", "Front-End Dev"],
-      profileImage:
-        "https://i.pinimg.com/736x/3a/5e/92/3a5e9212dde4454a96b1503943176d8c.jpg",
+      profileImage: "https://i.pinimg.com/736x/3a/5e/92/3a5e9212dde4454a96b1503943176d8c.jpg",
     },
     {
       memberId: "d0a09f3b-843d-4f7b-8bc6-e3cc45068f1c",
@@ -42,8 +41,7 @@ export default function Memberpage() {
       email: "chhengleap05@gmail.com",
       roleName: ["Team Leader", "Member"],
       task: ["Back-End Dev", "UX/UI design", "Front-End Dev"],
-      profileImage:
-        "https://i.pinimg.com/736x/72/5a/d7/725ad7a9f0edace87b3949e6202a3ae0.jpg",
+      profileImage: "https://i.pinimg.com/736x/72/5a/d7/725ad7a9f0edace87b3949e6202a3ae0.jpg",
     },
     {
       memberId: "d0c8552f-14b7-4b88-a764-f014786868c1",
@@ -52,8 +50,7 @@ export default function Memberpage() {
       email: "roskan213@gmail.com",
       roleName: ["Member"],
       task: ["Front-End Dev", "UX/UI design"],
-      profileImage:
-        "https://i.pinimg.com/736x/98/40/1a/98401adc9165a551483cd0b793b4a124.jpg",
+      profileImage: "https://i.pinimg.com/736x/98/40/1a/98401adc9165a551483cd0b793b4a124.jpg",
     },
     {
       memberId: "1a2b3c4d-0001-0001-0001-000000000001",
@@ -62,8 +59,7 @@ export default function Memberpage() {
       email: "visa32@gmail.com",
       roleName: ["Member"],
       task: ["Front-End dev", "UX/UI design"],
-      profileImage:
-        "https://i.pinimg.com/736x/2c/93/d0/2c93d058c8f2c7301c26126e71847c23.jpg",
+      profileImage: "https://i.pinimg.com/736x/2c/93/d0/2c93d058c8f2c7301c26126e71847c23.jpg",
     },
     {
       memberId: "1a2b3c4d-0002-0002-0002-000000000002",
@@ -72,8 +68,7 @@ export default function Memberpage() {
       email: "theara078@gmail.com",
       roleName: ["Team Leader", "Member"],
       task: ["Back-End Dev", "Presentor"],
-      profileImage:
-        "https://i.pinimg.com/736x/d7/1d/d0/d71dd0393476651ec883eb5ee6bb10ea.jpg",
+      profileImage: "https://i.pinimg.com/736x/d7/1d/d0/d71dd0393476651ec883eb5ee6bb10ea.jpg",
     },
     {
       memberId: "1a2b3c4d-0003-0003-0003-000000000003",
@@ -82,8 +77,7 @@ export default function Memberpage() {
       email: "fanau47@gmail.com",
       roleName: ["Team Manger", "Team Leader", "Member"],
       task: ["UX/UI design"],
-      profileImage:
-        "https://i.pinimg.com/736x/ae/7e/42/ae7e42961c6fb3ffd3c49b67cf544865.jpg",
+      profileImage: "https://i.pinimg.com/736x/ae/7e/42/ae7e42961c6fb3ffd3c49b67cf544865.jpg",
     },
     {
       memberId: "1a2b3c4d-0004-0004-0004-000000000004",
@@ -92,8 +86,7 @@ export default function Memberpage() {
       email: "cheaminh8@gmail.com",
       roleName: ["Member"],
       task: ["Front-End dev", "Backup Slide"],
-      profileImage:
-        "https://i.pinimg.com/736x/f4/1a/09/f41a0938785fc0ee5802e2df16b5487a.jpg",
+      profileImage: "https://i.pinimg.com/736x/f4/1a/09/f41a0938785fc0ee5802e2df16b5487a.jpg",
     },
     {
       memberId: "1a2b3c4d-0005-0005-0005-000000000005",
@@ -102,8 +95,7 @@ export default function Memberpage() {
       email: "davit96@gmail.com",
       roleName: ["Member"],
       task: ["Back-End Dev"],
-      profileImage:
-        "https://i.pinimg.com/736x/bb/87/18/bb87180897cb4cb694cd692966a0ab15.jpg",
+      profileImage: "https://i.pinimg.com/736x/bb/87/18/bb87180897cb4cb694cd692966a0ab15.jpg",
     },
     {
       memberId: "1a2b3c4d-0006-0006-0006-000000000006",
@@ -112,8 +104,7 @@ export default function Memberpage() {
       email: "senghun233@gmail.com",
       roleName: ["Member"],
       task: ["Front-End Dev"],
-      profileImage:
-        "https://i.pinimg.com/736x/b2/66/f7/b266f7c8ecb53960c5eaa19d2a40dc41.jpg",
+      profileImage: "https://i.pinimg.com/736x/b2/66/f7/b266f7c8ecb53960c5eaa19d2a40dc41.jpg",
     },
     {
       memberId: "1a2b3c4d-0006-0006-0006-000000000006",
@@ -122,8 +113,7 @@ export default function Memberpage() {
       email: "senghun233@gmail.com",
       roleName: ["Member"],
       task: ["Front-End Dev"],
-      profileImage:
-        "https://i.pinimg.com/736x/b2/66/f7/b266f7c8ecb53960c5eaa19d2a40dc41.jpg",
+      profileImage: "https://i.pinimg.com/736x/b2/66/f7/b266f7c8ecb53960c5eaa19d2a40dc41.jpg",
     },
     {
       memberId: "1a2b3c4d-0006-0006-0006-000000000006",
@@ -132,8 +122,7 @@ export default function Memberpage() {
       email: "senghun233@gmail.com",
       roleName: ["Member"],
       task: ["Front-End Dev"],
-      profileImage:
-        "https://i.pinimg.com/736x/b2/66/f7/b266f7c8ecb53960c5eaa19d2a40dc41.jpg",
+      profileImage: "https://i.pinimg.com/736x/b2/66/f7/b266f7c8ecb53960c5eaa19d2a40dc41.jpg",
     },
     {
       memberId: "1a2b3c4d-0006-0006-0006-000000000006",
@@ -142,8 +131,7 @@ export default function Memberpage() {
       email: "senghun233@gmail.com",
       roleName: ["Member"],
       task: ["Front-End Dev"],
-      profileImage:
-        "https://i.pinimg.com/736x/b2/66/f7/b266f7c8ecb53960c5eaa19d2a40dc41.jpg",
+      profileImage: "https://i.pinimg.com/736x/b2/66/f7/b266f7c8ecb53960c5eaa19d2a40dc41.jpg",
     },
     {
       memberId: "1a2b3c4d-0006-0006-0006-000000000006",
@@ -152,8 +140,7 @@ export default function Memberpage() {
       email: "senghun233@gmail.com",
       roleName: ["Member"],
       task: ["Front-End Dev"],
-      profileImage:
-        "https://i.pinimg.com/736x/b2/66/f7/b266f7c8ecb53960c5eaa19d2a40dc41.jpg",
+      profileImage: "https://i.pinimg.com/736x/b2/66/f7/b266f7c8ecb53960c5eaa19d2a40dc41.jpg",
     },
     {
       memberId: "1a2b3c4d-0006-0006-0006-000000000006",
@@ -162,55 +149,62 @@ export default function Memberpage() {
       email: "senghun233@gmail.com",
       roleName: ["Member"],
       task: ["Front-End Dev"],
-      profileImage:
-        "https://i.pinimg.com/736x/b2/66/f7/b266f7c8ecb53960c5eaa19d2a40dc41.jpg",
+      profileImage: "https://i.pinimg.com/736x/b2/66/f7/b266f7c8ecb53960c5eaa19d2a40dc41.jpg",
     },
-  ];
+  ]
 
-  const [members, setMembers] = useState(initialMembers);
+  const [members, setMembers] = useState(initialMembers)
 
-  const [openPopoverId, setOpenPopoverId] = useState(null);
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [selectedMemberId, setSelectedMemberId] = useState(null);
-  const targetRef = useRef(null);
+  const [openPopoverId, setOpenPopoverId] = useState(null)
+  const { isOpen, onOpen, onOpenChange } = useDisclosure()
+  const [selectedMemberId, setSelectedMemberId] = useState(null)
+  const targetRef = useRef(null)
   const { moveProps } = useDraggable({
     targetRef,
     canOverflow: true,
     isDisabled: !isOpen,
-  });
+  })
 
   const deleteMemberById = (id) => {
-    setMembers((prev) => prev.filter((m) => m.memberId !== id));
-  };
+    setMembers((prev) => prev.filter((m) => m.memberId !== id))
+  }
   return (
     <div className="p-4 ">
       {/* breadcrum */}
       <BredCrum board={"Hikko Design"} feature={"Members"} header={"Member"} />
       <div className="flex justify-between">
-        <div className="flex items-center w-[600px] h-[45px] border border-gray-200 rounded-[16px] shadow-sm overflow-hidden bg-white text-input text-title">
-          <div className="relative flex items-center gap-1 px-3 border-r border-gray-200">
-            <Image src={icon1} alt="Filter" className="w-[16px] h-[16px]" />
-            <select className="bg-transparent outline-none text-sm cursor-pointer appearance-none w-auto">
-              <option value="all">All</option>
-              <option value="week">Last week</option>
-              <option value="month">Last month</option>
-              <option value="year">Last year</option>
-            </select>
-            <Image
-              src={arrowdown}
-              alt="Dropdown arrow"
-              className="absolute right-2 w-[10px] h-[6px] pointer-events-none"
-            />
-          </div>
-          <div className="flex items-center px-2">
-            <Image src={iconSearch} alt="Search" />
-          </div>
-          <input
+        <div className="flex items-center gap-4">
+          {/* Filter Dropdown using HeroUI Select */}
+          <Select
+            placeholder="All"
+            className="w-[200px] h-[30px]"
+            size="sm"
+            startContent={<Funnel className="w-5 h-5 text-gray-500" />}
+            variant="bordered"
+          >
+            
+            <SelectItem key="week" value="week">
+              Last week
+            </SelectItem>
+            <SelectItem key="month" value="month">
+              Last month
+            </SelectItem>
+            <SelectItem key="year" value="year">
+              Last year
+            </SelectItem>
+          </Select>
+
+          {/* Search Input using HeroUI Input */}
+          <Input
             type="text"
             placeholder="Search"
-            className="flex-1 h-full px-2 bg-white text-gray-700 outline-none placeholder-gray-400"
+            className="w-[400px]"
+            size="sm"
+            startContent={<Search className="w-4 h-4 text-gray-500" />}
+            variant="bordered"
           />
         </div>
+
         {/* invite */}
         <ModalInviteMember />
       </div>
@@ -231,14 +225,11 @@ export default function Memberpage() {
             </thead>
             <tbody>
               {members.map((member, index) => (
-                <tr
-                  key={index}
-                  className={`${index % 2 !== 0 ? "bg-gray-100" : "bg-white"}`}
-                >
+                <tr key={index} className={`${index % 2 !== 0 ? "bg-gray-100" : "bg-white"}`}>
                   <td className="px-6 py-2">{index + 1}</td>
                   <td className="px-6 py-2 flex items-center gap-2">
                     <img
-                      src={member.profileImage}
+                      src={member.profileImage || "/placeholder.svg"}
                       alt={`${member.username}'s profile`}
                       className="rounded-full w-[35px] h-[35px] object-cover"
                     />
@@ -252,7 +243,7 @@ export default function Memberpage() {
                       {member.roleName.length > 1 && (
                         <Popover>
                           <PopoverTrigger className="cursor-pointer">
-                            <Image src={arrowdown} alt="More roles" />
+                            <Image src={arrowdown || "/placeholder.svg"} alt="More roles" />
                           </PopoverTrigger>
                           <PopoverContent className="text-h6 bg-white border shadow-lg p-4">
                             <div className="space-y-2">
@@ -271,7 +262,7 @@ export default function Memberpage() {
                       {member.task.length > 1 && (
                         <Popover>
                           <PopoverTrigger className="cursor-pointer">
-                            <Image src={arrowdown} alt="More tasks" />
+                            <Image src={arrowdown || "/placeholder.svg"} alt="More tasks" />
                           </PopoverTrigger>
                           <PopoverContent className="text-h6 bg-white border shadow-lg p-4">
                             <div className="space-y-2">
@@ -292,9 +283,7 @@ export default function Memberpage() {
                       placement="bottom"
                       isOpen={openPopoverId === member.memberId}
                       onOpenChange={() => {
-                        setOpenPopoverId((prev) =>
-                          prev === member.memberId ? null : member.memberId
-                        );
+                        setOpenPopoverId((prev) => (prev === member.memberId ? null : member.memberId))
                       }}
                     >
                       <PopoverTrigger className="px-6 py-4 cursor-pointer">
@@ -313,9 +302,9 @@ export default function Memberpage() {
                         <Button
                           className="w-full text-left text-red-600 hover:bg-red-100 bg-white"
                           onPress={() => {
-                            setSelectedMemberId(member.memberId);
-                            setOpenPopoverId(null); // Close popover
-                            onOpen(); // Open modal or confirmation
+                            setSelectedMemberId(member.memberId)
+                            setOpenPopoverId(null) // Close popover
+                            onOpen() // Open modal or confirmation
                           }}
                         >
                           <span>
@@ -332,7 +321,7 @@ export default function Memberpage() {
                                 stroke="currentColor"
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
-                                stroke-width="2"
+                                strokeWidth="2"
                                 d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"
                               />
                             </svg>
@@ -347,15 +336,8 @@ export default function Memberpage() {
             </tbody>
           </table>
           {/* Modal outside the table */}
-          <Modal
-            isOpen={isOpen}
-            onOpenChange={onOpenChange}
-            className="overflow-x-hidden h-auto"
-          >
-            <ModalContent
-              ref={targetRef}
-              className="flex flex-col justify-center items-center"
-            >
+          <Modal isOpen={isOpen} onOpenChange={onOpenChange} className="overflow-x-hidden h-auto">
+            <ModalContent ref={targetRef} className="flex flex-col justify-center items-center">
               {(onClose) => (
                 <>
                   <ModalHeader {...moveProps}></ModalHeader>
@@ -375,7 +357,7 @@ export default function Memberpage() {
                             stroke="currentColor"
                             strokeLinecap="round"
                             strokeLinejoin="round"
-                            stroke-width="2"
+                            strokeWidth="2"
                             d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"
                           />
                         </svg>
@@ -385,8 +367,7 @@ export default function Memberpage() {
                       <p className="w-auto whitespace-nowrap">
                         You want to delete{" "}
                         <span className="text-title font-semibold">
-                          {members.find((m) => m.memberId === selectedMemberId)
-                            ?.username || "this user"}
+                          {members.find((m) => m.memberId === selectedMemberId)?.username || "this user"}
                         </span>{" "}
                         from board.
                       </p>
@@ -405,9 +386,9 @@ export default function Memberpage() {
                       className="bg-progress-red/50 text-white hover:bg-bgColor hover:text-primary"
                       onPress={() => {
                         if (selectedMemberId?.id) {
-                          deleteMemberById(selectedMemberId.id);
+                          deleteMemberById(selectedMemberId.id)
                         }
-                        onClose();
+                        onClose()
                       }}
                     >
                       Yes, Delete
@@ -420,5 +401,5 @@ export default function Memberpage() {
         </div>
       </section>
     </div>
-  );
+  )
 }
