@@ -45,7 +45,7 @@ export default function MyCalendar({ tasks }) {
             <CardTaskCalender tasks={tasks} />
           </div>
           <div className=" w-full">
-            {/* <CardTCommentCalender tasks={tasks} / >*/}
+            <CardTCommentCalender tasks={tasks} / >
           </div>
         </div>
       </div>
