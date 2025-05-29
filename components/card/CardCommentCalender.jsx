@@ -57,7 +57,8 @@ export default function CardTCommentCalender() {
     },
   ]
   return (
-    <Card className="py-4 ">
+    <Card className="py-4 h-[500px] flex flex-col">
+      {/* Header */}
       <CardHeader className="pb-0 pt-2 px-6 flex-col items-start">
         <div className="flex items-center gap-2">
           <Image
@@ -68,42 +69,52 @@ export default function CardTCommentCalender() {
           <h1 className="text-title text-large font-semibold">All Comments</h1>
         </div>
       </CardHeader>
-      <CardBody className="overflow-y-auto py-3 px-4 space-y-3">
+
+      {/* Body: Scrollable comments */}
+      <CardBody className="py-3 px-4 space-y-3 overflow-y-auto flex-1">
         {comments.map((comment) => {
-          const user = users[comment.commented_by]
+          const user = users[comment.commented_by];
           return (
             <div
               key={comment.comment_id}
               className="flex items-start gap-3 p-5 rounded-large bg-slate-100 transition-colors"
             >
               {/* Avatar */}
-              <Image 
-                  // src={user?.avatar | "unknow"}
-                  src={profile}
-                  className="w-7 h-7 object-contain"
-                  alt={user?.name }
+              <Image
+                src={profile}
+                className="w-7 h-7 object-cover rounded-full"
+                alt={user?.name}
+                width={28}
+                height={28}
               />
 
               {/* Comment Content */}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between mb-1">
-                  <h3 className="font-semibold text-sm text-gray-900">{user?.name || "Unknown User"}</h3>
+                  <h3 className="font-semibold text-sm text-gray-900">
+                    {user?.name || "Unknown User"}
+                  </h3>
                   <button className="text-green-500 hover:text-green-600 transition-colors">
-                     <SquarePen size={15} />
+                    <SquarePen size={15} />
                   </button>
                 </div>
 
-                <p className="text-sm text-gray-600 mb-2 leading-relaxed">{comment.content}</p>
+                <p className="text-sm text-gray-600 mb-2 leading-relaxed">
+                  {comment.content}
+                </p>
 
                 <div className="flex items-center justify-end gap-1">
-                  <AlarmClock className="text-green-500 w-5 h-5"/>
-                  <span className="text-xs text-green-500 font-medium">{formatRelativeTime(comment.comment_date)}</span>
+                  <AlarmClock className="text-green-500 w-5 h-5" />
+                  <span className="text-xs text-green-500 font-medium">
+                    {formatRelativeTime(comment.comment_date)}
+                  </span>
                 </div>
               </div>
             </div>
-          )
+          );
         })}
       </CardBody>
     </Card>
+
   );
 }
