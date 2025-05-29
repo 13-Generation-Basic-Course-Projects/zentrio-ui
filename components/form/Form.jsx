@@ -6,7 +6,7 @@ import { useState } from 'react';
 import Google from '@/assets/googleIcon.png';
 import Image from 'next/image';
 import Link from 'next/link';
-import { MyInput } from '../ui/input';
+import { AuthInput } from '@/components/form/input';
 import { Eye, EyeOff } from "lucide-react";
 
 export const SignUpForm = () => {
@@ -72,7 +72,7 @@ export const SignUpForm = () => {
           <div className='gap-[50px] flex flex-col w-full'>
             <div className='gap-[20px] flex flex-col'>
               <div className='w-full'>
-                <MyInput
+                <AuthInput
                 key="outside"
                 type="text"
                 label="Username"
@@ -92,7 +92,7 @@ export const SignUpForm = () => {
               )} */}
               </div>
               <div>
-                <MyInput
+                <AuthInput
                 key="outside"
                 type="text"
                 labelPlacement="outside"
@@ -113,7 +113,7 @@ export const SignUpForm = () => {
               )} */}
               </div>
               <div className="relative">
-                <MyInput
+                <AuthInput
                 key="outside"
                 type={isVisible.confirm ? "password" : "text"}
                 label="Password"
@@ -146,7 +146,7 @@ export const SignUpForm = () => {
               )} */}
               </div>
               <div className="relative">
-              <MyInput
+              <AuthInput
                 key="outside"
                 type={isVisible.confirm2 ? "password" : "text"}
                 label="Confirm Password"
@@ -273,7 +273,7 @@ export const SigninForm = () => {
           </div>
           <div className='flex flex-col gap-[20px] w-full'>
             <div>
-              <MyInput
+              <AuthInput
                 key="outside"
                 type="text"
                 label="Email"
@@ -293,7 +293,7 @@ export const SigninForm = () => {
               )} */}
             </div>
             <div className="relative">
-              <MyInput
+              <AuthInput
                 key="outside"
                 type={isVisible.confirm ? "password" : "text"}
                 label="Password"
@@ -411,7 +411,7 @@ export const ForgetPass = () => {
             <div className='flex flex-col gap-4 w-full'>
               <div className='w-full'>
             <div>
-              <MyInput
+              <AuthInput
                 key="outside"
                 type="text"
                 label="Email"
@@ -509,7 +509,7 @@ export const SetNewPass = () => {
           </div>
           <div className='flex flex-col gap-[20px] w-full'>
           <div className="relative">
-          <MyInput
+          <AuthInput
             key="outside"
             type={isVisible.confirm ? "password" : "text"}
             label="Password"
@@ -535,7 +535,7 @@ export const SetNewPass = () => {
           />
             </div>
             <div className="relative">
-              <MyInput
+              <AuthInput
                 key="outside"
                 type={isVisible.confirm2 ? "password" : "text"}
                 label="Re-enter Password"
