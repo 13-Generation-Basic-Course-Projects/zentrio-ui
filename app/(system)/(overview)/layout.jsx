@@ -22,12 +22,15 @@ export default async function OverviewLayout({ children }) {
     <div className="h-screen flex flex-col overflow-y-hidden">
       <div className="flex-1 pt-0 flex flex-col overflow-hidden h-[100%] ">
         {/* Top section - fixed height */}
-        <div className="grid grid-cols-12    flex-shrink-0 ">
+        <div className="grid grid-cols-12 flex-shrink-0">
           <div className="col-span-9 flex flex-col p-2 pt-5">
             <CardWelcomeComponent />
           </div>
-          <div className="col-span-3  h-[250px] pt-5 ">
-            <SmallCalendar />
+
+          <div className="col-span-3 pt-5 flex justify-center">
+            <div className="w-full max-w-full p-3 mx-auto">
+              <SmallCalendar />
+            </div>
           </div>
         </div>
 
