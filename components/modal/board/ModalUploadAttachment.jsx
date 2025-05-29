@@ -44,7 +44,7 @@ const ModalUploadAttachment = ({ isOpen, onClose }) => {
     xlsx: "https://cdn-icons-png.flaticon.com/128/2504/2504768.png",
     pptx: "https://cdn-icons-png.flaticon.com/128/2875/2875416.png",
   };
-  function FileIcon({ type, size = 25 }) {
+  function FileIcon({ type, size = 20 }) {
     // Get the matching icon based on type, fallback to a default icon if not found
     const src = icons[type] || icons.docx; // Fallback to 'docx' icon as default
 
@@ -156,14 +156,14 @@ const ModalUploadAttachment = ({ isOpen, onClose }) => {
                 </div>
                 {/* data that have map */}
                 <div>
-                  <div className="border-1 rounded-large p-5 mt-6 h-[250px] overflow-auto scrollbar-hidden">
+                  <div className="border-1 rounded-large p-5 mt-6 h-[250px] overflow-auto scrollbar-hidden text-caption">
                     {data.map((item, index) => (
                       <div
                         key={index}
                         className={`flex flex-col mb-4 cursor-pointer ${
                           selectedFiles.some((f) => f.title === item.title)
-                            ? "bg-title/10 text-title/50"
-                            : "hover:bg-title/10 hover:text-title/50"
+                            ? "bg-title/10 text-primary/80 p-2 rounded-large"
+                            : "hover:bg-title/5 hover:text-title/50 p-2 rounded-large"
                         }`}
                         onClick={() => handleSelect(item)}
                       >
@@ -192,7 +192,7 @@ const ModalUploadAttachment = ({ isOpen, onClose }) => {
                           isClearable
                           value={link}
                           onChange={(e) => setLink(e.target.value)}
-                          onClear={() => setLink("")} 
+                          onClear={() => setLink("")}
                           classNames={{
                             base: "rounded-large border-2 bg-gray-100",
                             label: "text-black/50 dark:text-white/90",
@@ -205,7 +205,6 @@ const ModalUploadAttachment = ({ isOpen, onClose }) => {
                           }}
                           placeholder="Attach link here"
                           radius="lg"
-                          
                         />
                       </div>
                       <Button
