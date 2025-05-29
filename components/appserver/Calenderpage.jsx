@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import React, { useState } from "react";
 import FullCalendar from "@fullcalendar/react";
@@ -54,11 +54,14 @@ export default function MyCalender({ tasks }) {
 
   const renderEventContent = ({ event }) => {
     const { type, content } = event.extendedProps;
-    const baseStyle = "rounded border-2 px-2 font-bold text-green-600 bg-green-100";
+    const baseStyle =
+      "rounded border-2 px-2 font-bold text-green-600 bg-green-100";
 
     if (type === "task") {
       return (
-        <div className={`${baseStyle} h-[70px] text-[0.95rem] border-green-500`}>
+        <div
+          className={`${baseStyle} h-[70px] text-[0.95rem] border-green-500`}
+        >
           {content}
         </div>
       );
@@ -66,7 +69,9 @@ export default function MyCalender({ tasks }) {
 
     if (type === "comment") {
       return (
-        <div className={`${baseStyle} mt-1 h-[25px] text-[0.7rem] border-green-500`}>
+        <div
+          className={`${baseStyle} mt-1 h-[25px] text-[0.7rem] border-green-500`}
+        >
           {content}
         </div>
       );
@@ -87,7 +92,7 @@ export default function MyCalender({ tasks }) {
       <div className="grid grid-cols-12 gap-4 pt-6 h-full">
         {/* Calendar Scroll Section */}
         <div className="col-span-9 h-full overflow-y-auto pr-2 scrollbar-hidden">
-          <div className=" h-full">
+          <div className=" h-full  scrollbar-hidden ">
             <FullCalendar
               plugins={[
                 resourceTimelinePlugin,
@@ -110,7 +115,7 @@ export default function MyCalender({ tasks }) {
         </div>
 
         {/* Sidebar Scroll Section */}
-        <div className="col-span-3 h-full bg-transparent overflow-y-auto pl-2 flex flex-col gap-[20px]">
+        <div className="col-span-3 h-full overflow-y-auto scrollbar-hidden bg-transparent overflow-y-auto pl-2 flex flex-col gap-[20px]">
           <CardTaskCalender tasks={tasks} />
           <CardTCommentCalender tasks={tasks} />
         </div>

@@ -3,12 +3,20 @@ import React, { useState } from "react";
 import { Button } from "@heroui/react";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import logo from "../../public/image/Zentrio-Logo.png";
+
 export const NavbarLanding = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const pathname = usePathname();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  // Helper function to check if route is active
+  const isActiveRoute = (route) => {
+    return pathname === route;
   };
 
   return (
@@ -24,13 +32,28 @@ export const NavbarLanding = () => {
 
         {/* Desktop Navigation (hidden on mobile) */}
         <nav className="hidden md:flex justify-between items-center w-[250px] font-medium text-body-lg">
-          <Link href="/" className="hover:text-primary transition-all">
+          <Link 
+            href="/" 
+            className={`hover:text-primary transition-all ${
+              isActiveRoute('/') ? 'text-primary font-semibold' : ''
+            }`}
+          >
             Home
           </Link>
-          <Link href="/aboutus" className="hover:text-primary transition-all">
+          <Link 
+            href="/aboutus" 
+            className={`hover:text-primary transition-all ${
+              isActiveRoute('/aboutus') ? 'text-primary font-semibold' : ''
+            }`}
+          >
             About us
           </Link>
-          <Link href="/contact" className="hover:text-primary transition-all">
+          <Link 
+            href="/contact" 
+            className={`hover:text-primary transition-all ${
+              isActiveRoute('/contact') ? 'text-primary font-semibold' : ''
+            }`}
+          >
             Contact
           </Link>
         </nav>
@@ -80,13 +103,28 @@ export const NavbarLanding = () => {
       {isMenuOpen && (
         <div className="md:hidden flex flex-col items-center absolute top-full left-0 right-0 bg-white shadow-lg py-4 px-6 mt-2 z-50 rounded-b-xl">
           <nav className="flex flex-col items-center space-y-4 w-full">
-            <Link href="/" className="hover:text-primary transition-all">
+            <Link 
+              href="/" 
+              className={`hover:text-primary transition-all ${
+                isActiveRoute('/') ? 'text-primary font-semibold' : ''
+              }`}
+            >
               Home
             </Link>
-            <Link href="/aboutus" className="hover:text-primary transition-all">
+            <Link 
+              href="/aboutus" 
+              className={`hover:text-primary transition-all ${
+                isActiveRoute('/aboutus') ? 'text-primary font-semibold' : ''
+              }`}
+            >
               About us
             </Link>
-            <Link href="/contact" className="hover:text-primary transition-all">
+            <Link 
+              href="/contact" 
+              className={`hover:text-primary transition-all ${
+                isActiveRoute('/contact') ? 'text-primary font-semibold' : ''
+              }`}
+            >
               Contact
             </Link>
           </nav>

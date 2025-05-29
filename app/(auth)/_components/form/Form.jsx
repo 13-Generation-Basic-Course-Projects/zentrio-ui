@@ -579,14 +579,11 @@ export const SetNewPass = () => {
             </div>
           </div>
           <div className='w-full gap-[10px] flex flex-col'>
-            
+            <Link href="/login" className="capitalize">
             <Button  className="w-full max-w-none bg-primary text-white">
-              <Link href="/login" className="capitalize">
                 Save Password
-              </Link>
-            
             </Button>
-            
+            </Link>
           </div>
         </Form>
       </div>

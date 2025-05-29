@@ -77,8 +77,11 @@ export default function WorkSpaceSideBar() {
   const pathname = usePathname();
 
   return (
-    <Sidebar collapsible="icon" className="border-none  ">
-      <SidebarContent className="h-screen flex flex-col !border-0 ">
+    <Sidebar
+      collapsible="icon"
+      className="border-none rounded-tr-2xl bg-white  "
+    >
+      <SidebarContent className="h-screen flex flex-col !border-0  ">
         <div className="p-4 !border-0">
           <Link href="/">
             <Image src={logo} className="w-[168px] object-cover" alt="logo" />
@@ -109,20 +112,19 @@ export default function WorkSpaceSideBar() {
                     : "hover:bg-slate-100 text-gray-700"
                 } !border-0`}
                     >
-                      
-                        <div className="flex items-center gap-2 justify-between w-full">
-                          <span
-                            className={`${item.color} h-5 w-5 rounded-full`}
-                          ></span>
-                          <Link href={item.url}>
+                      <div className="flex items-center gap-2 justify-between w-full">
+                        <span
+                          className={`${item.color} h-5 w-5 rounded-full`}
+                        ></span>
+                        <Link href={item.url}>
                           <span className="flex-1 text-left sm:text-body-sm  truncate overflow-hidden whitespace-nowrap">
                             {item.title}
                           </span>
-                          </Link>
-                          <span>
-                            <ModalOptionWorkspace/>
-                          </span>
-                        </div>
+                        </Link>
+                        <span>
+                          <ModalOptionWorkspace />
+                        </span>
+                      </div>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 );
@@ -143,22 +145,19 @@ export default function WorkSpaceSideBar() {
                     : "hover:bg-slate-100 text-gray-700"
                 } !border-0`}
                     >
-                      
-                        <div className="flex items-center gap-2  justify-between w-full">
-                        
-                          <span
-                            className={`${item.color} h-5 w-5 rounded-full`}
-                          ></span>
-                          <Link href={item.url}>
+                      <div className="flex items-center gap-2  justify-between w-full">
+                        <span
+                          className={`${item.color} h-5 w-5 rounded-full`}
+                        ></span>
+                        <Link href={item.url}>
                           <span className="flex-1 text-left sm:text-body-sm truncate overflow-hidden whitespace-nowrap">
                             {item.title}
                           </span>
-                          </Link>
-                          <span>
-                            <ModalOptionWorkspace/>
-                          </span>
-                        </div>
-                      
+                        </Link>
+                        <span>
+                          <ModalOptionWorkspace />
+                        </span>
+                      </div>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 );
@@ -183,6 +182,7 @@ export default function WorkSpaceSideBar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      {/* Top-right pink blob for rounded corner */}
     </Sidebar>
   );
 }

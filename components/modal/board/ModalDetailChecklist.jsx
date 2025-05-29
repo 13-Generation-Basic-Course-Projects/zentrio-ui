@@ -18,6 +18,7 @@ import { IconAdd, StackedProfiles } from "../../icon/everyicon";
 import ModalUploadAttachment from "./ModalUploadAttachment";
 import { allAttachment } from "@/data/board/allAttachment";
 import { CardCheckList } from "@/components/card/CardChecklist";
+import Trash from "@/components/button/Trash";
 
 export default function ModalDetailChecklist({  title,
                                   startDate,
@@ -53,7 +54,7 @@ export default function ModalDetailChecklist({  title,
     <>
       <Button
       onPress={onOpen}
-        className="h-full w-full p-0"   
+        className="h-full w-full p-0 shadow-sm"   
         fullWidth="true"
       >
     <div className="h-full w-full  max-w-none !p-0 bg-pink-300"> 
@@ -133,7 +134,7 @@ export default function ModalDetailChecklist({  title,
                     <p className="text-title text-h6 underline font-normal">
                       Design the ux ui of mobile application
                     </p>
-                    <button className="bg-progress-red/20 rounded-full p-2 w-[50px] h-[50px] flex justify-center items-center border-title/20 border-1 hover:bg-[#FFF] hover:border-1 hover:border-primary">
+                    {/* <button className="bg-progress-red/20 rounded-full p-2 w-[50px] h-[50px] flex justify-center items-center border-title/20 border-1 hover:bg-[#FFF] hover:border-1 hover:border-primary">
                       <svg
                         width="20"
                         height="20"
@@ -146,7 +147,8 @@ export default function ModalDetailChecklist({  title,
                           fill="#FF4640"
                         />
                       </svg>
-                    </button>
+                    </button> */}
+                    <Trash/>
                   </div>
                   <div className="flex flex-wrap justify-between items-center mt-5">
                     <StackedProfiles />
