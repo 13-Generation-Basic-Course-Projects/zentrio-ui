@@ -20,15 +20,15 @@ export default function MyCalendar({ tasks }) {
 
   return (
     <>
-      <div className="p-4  ">
+      <div className="p-4  h-screen flex flex-col ">
         <BredCrum
           board={"Hikko Design"}
           feature={"Calender"}
           header={"Calender"}
         />
-
         <div className="p-4 max-w-full overflow-x-auto grid grid-cols-1 sm:grid-cols-4">
-          <div className="min-w-[300px] sm:min-w-full col-span-3">
+          {/* calender */}
+          <div className="min-w-[300px] sm:min-w-full col-span-3 overflow-y-auto scrollbar-hidden pb-40 pt-10">
             <FullCalendar
               plugins={[
                 dayGridPlugin,
@@ -48,11 +48,13 @@ export default function MyCalendar({ tasks }) {
             />
           </div>
           {/* display task */}
-          <div className="flex flex-col gap-5 p-4">
-            <div className=" w-full">
+          <div className="flex flex-col gap-5 p-4 overflow-y-auto scrollbar-hidden pb-40 pt-10">
+            <div className=" w-full ">
+              <CardTaskCalender tasks={tasks} />
+              <CardTaskCalender tasks={tasks} />
               <CardTaskCalender tasks={tasks} />
             </div>
-            <div className=" w-full">
+            <div className="flex flex-col  w-full overflow-y-auto scrollbar-hidden pb-40 pt-10">
               {/* <CardTCommentCalender tasks={tasks} / >*/}
             </div>
           </div>

@@ -10,7 +10,7 @@ export default async function Privatedocument({ modal }) {
   console.log(data);
 
   return (
-    <div className=" ">
+    <div className="h-screen flex flex-col ">
       <div className="grid grid-cols-1 gap-3 ">
         <BredCrum
           board={"Hikko Design"}
@@ -28,7 +28,7 @@ export default async function Privatedocument({ modal }) {
           <p className="">Personal</p>
         </div>
       </div>
-      <div className="grid grid-cols-6 gap-3">
+      <div className="grid grid-cols-6 gap-3 overflow-y-auto scrollbar-hidden pb-40 pt-10">
         {data.map((el, i) => (
           <CardFile
             key={i}
