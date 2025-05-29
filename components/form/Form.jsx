@@ -6,10 +6,26 @@ import { useState } from 'react';
 import Google from '@/assets/googleIcon.png';
 import Image from 'next/image';
 import Link from 'next/link';
+import { MyInput } from '../ui/input';
+import { Eye, EyeOff } from "lucide-react";
 
 export const SignUpForm = () => {
-  const [isVisible, setIsVisible] = useState(false);
-  const toggleVisibility = () => setIsVisible(!isVisible);
+  const [isVisible, setIsVisible] = useState({
+    current: false,
+    new: false,
+    confirm: false,
+    confirm2: false
+  });
+
+  const toggleVisibility = (field) => {
+    setIsVisible(prev => {
+      const newState = {
+        ...prev,
+        [field]: !prev[field]
+      };
+      return newState;
+    });
+  };
 
   const [formData, setFormData] = useState({
     username: '',
@@ -48,83 +64,119 @@ export const SignUpForm = () => {
   return (
     <div className='w-full h-screen flex items-center justify-center'>
       <div className='w-[1728px] h-[1117px] bg-bgColor flex items-center justify-center'>
-        <Form onSubmit={handleSubmit} className="space-y-4 w-[640px] h-fit bg-white px-[55px] py-[40px] rounded-[20px] shadow-lg gap-[50px]">
+        <Form onSubmit={handleSubmit} className="space-y-4 w-[640px] h-fit bg-gradient-to-br from-[#9BDBFD]/30 to-[#FFFFFF] px-[55px] py-[40px] rounded-[20px] shadow-lg gap-[50px]">
           <div>
             <p className='text-h1 text-primary'><span className='font-bold'>Sign up</span></p>
             <p className='text-body text-[#787486]'>Let’s get you all st up so you can access your personal account</p>
           </div>
           <div className='gap-[50px] flex flex-col w-full'>
-            <div className='gap-[15px] flex flex-col'>
+            <div className='gap-[20px] flex flex-col'>
               <div className='w-full'>
-                <label htmlFor="username" className="block font-medium text-gray-700">
-                  <span className="text-body">Username</span>
-                </label>
-                <Input
-                  id="username"
-                  name="username"
-                  value={formData.username}
-                  onChange={handleChange}
-                  placeholder="Username"
-                  variant="bordered"
-                  radius='sm'
-                  required
-                  className="w-full text-body-sm"
-                  size='lg'
-                />
+                <MyInput
+                key="outside"
+                type="text"
+                label="Username"
+                labelPlacement="outside"
+                placeholder="Username"
+                className="text-foreground"
+                // {...register("email", {
+                //   required: "Email cannot be empty.",
+                //   pattern: {
+                //     value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                //     message: "Invalid email address.",
+                //   },
+                // })}
+              />
+              {/* {errors?.email?.message && (
+                <MyErrorText label={errors?.email?.message} />
+              )} */}
               </div>
               <div>
-                <label htmlFor="email" className="block font-medium text-gray-700">
-                  <span className="text-body">Email</span>
-                </label>
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  placeholder="Email"
-                  required
-                  radius='sm'
-                  variant="bordered"
-                  className="w-full text-body-sm"
-                  size='lg'
-                />
+                <MyInput
+                key="outside"
+                type="text"
+                labelPlacement="outside"
+                label="Email"
+                labelPldefault-foregroundacement="outside"
+                placeholder="Email"
+                className="text-foreground"
+                // {...register("email", {
+                //   required: "Email cannot be empty.",
+                //   pattern: {
+                //     value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                //     message: "Invalid email address.",
+                //   },
+                // })}
+              />
+              {/* {errors?.email?.message && (
+                <MyErrorText label={errors?.email?.message} />
+              )} */}
               </div>
               <div className="relative">
-                <label htmlFor="password" className="block font-medium text-gray-700">
-                  <span className="text-body">Password</span>
-                </label>
-                <Input
-                  id="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  placeholder="Password"
-                  type={isVisible ? "text" : "password"}
-                  variant="bordered"
-                  radius='sm'
-                  required
-                  className="max-w-none text-body-sm"
-                  size='lg'
-                />
+                <MyInput
+                key="outside"
+                type={isVisible.confirm ? "password" : "text"}
+                label="Password"
+                labelPlacement="outside"
+                placeholder="Password"
+                className="text-foreground"
+                endContent={
+                  <button
+                    className="focus:outline-none"
+                    type="button"
+                    onClick={() => toggleVisibility('confirm')}
+                  >
+                    {isVisible.confirm ? (
+                      <EyeOff className="text-2xl text-primary pointer-events-none" />
+                    ) : (
+                      <Eye className="text-2xl text-primary pointer-events-none" />
+                    )}
+                  </button>
+                }
+                // {...register("email", {
+                //   required: "Email cannot be empty.",
+                //   pattern: {
+                //     value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                //     message: "Invalid email address.",
+                //   },
+                // })}
+              />
+              {/* {errors?.email?.message && (
+                <MyErrorText label={errors?.email?.message} />
+              )} */}
               </div>
               <div className="relative">
-              <label htmlFor="confirmpassword" className="block font-medium text-gray-700">
-                <span className="text-body">Confirm Password</span>
-              </label>
-                <Input
-                  id="confirmpassword"
-                  name="confirmPassword"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  placeholder="Confirm Password"
-                  type={isVisible ? "text" : "password"}
-                  variant="bordered"
-                  radius='sm'
-                  required
-                  className="max-w-none text-body-sm"
-                  size='lg'
-                />
+              <MyInput
+                key="outside"
+                type={isVisible.confirm2 ? "password" : "text"}
+                label="Confirm Password"
+                labelPlacement="outside"
+                placeholder="Confirm Password"
+                className="text-foreground"
+                endContent={
+                  <button
+                    className="focus:outline-none"
+                    type="button"
+                    onClick={() => toggleVisibility('confirm2')}
+                  >
+                    {isVisible.confirm2 ? (
+                      <EyeOff className="text-2xl text-primary pointer-events-none" />
+                    ) : (
+                      <Eye className="text-2xl text-primary pointer-events-none" />
+                    )}
+                  </button>
+                }
+                // {...register("email", {
+                //   required: "Email cannot be empty.",
+                //   pattern: {
+                //     value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                //     message: "Invalid email address.",
+                //   },
+                // })}
+              />
+              {/* {errors?.email?.message && (
+                <MyErrorText label={errors?.email?.message} />
+              )} */}
               </div>
               <div className='flex items-center gap-[25px]'>
                 <Checkbox
@@ -166,8 +218,23 @@ export const SignUpForm = () => {
 };
 
 export const SigninForm = () => {
-  const [isVisible, setIsVisible] = useState(false);
-  const toggleVisibility = () => setIsVisible(!isVisible);
+  const [isVisible, setIsVisible] = useState({
+    current: false,
+    new: false,
+    confirm: false
+  });
+
+  const toggleVisibility = (field) => {
+    console.log('Before toggle:', isVisible[field]); // Add this
+    setIsVisible(prev => {
+      const newState = {
+        ...prev,
+        [field]: !prev[field]
+      };
+      console.log('After toggle:', newState[field]); // Add this
+      return newState;
+    });
+  };
 
   const [formData, setFormData] = useState({
     email: '',
@@ -199,57 +266,64 @@ export const SigninForm = () => {
   return (
     <div className='w-full h-screen flex items-center justify-center'>
       <div className='w-[1728px] h-[1117px] bg-bgColor flex items-center justify-center'>
-        <Form onSubmit={handleSubmit} className="w-[640px] h-fit bg-white px-[55px] py-[40px] rounded-[20px] shadow-lg gap-[50px]">
+        <Form onSubmit={handleSubmit} className="w-[640px] h-fit bg-gradient-to-br from-[#9BDBFD]/30 to-[#FFFFFF] px-[55px] py-[40px] rounded-[20px] shadow-lg gap-[50px]">
           <div>
             <p className='text-h1 text-primary'><span className='font-bold'>Login in</span></p>
             <p className='text-body text-[#787486]'>Login to access your Zentrio account</p>
           </div>
-          <div className='flex flex-col gap-[15px] w-full'>
+          <div className='flex flex-col gap-[20px] w-full'>
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                value={formData.email}
-                onChange={handleChange}
+              <MyInput
+                key="outside"
+                type="text"
+                label="Email"
+                labelPlacement="outside"
                 placeholder="Email"
-                required
-                radius='sm'
-                variant="bordered"
-                className="w-full"
-                size='lg'
+                className="text-foreground"
+                // {...register("email", {
+                //   required: "Email cannot be empty.",
+                //   pattern: {
+                //     value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                //     message: "Invalid email address.",
+                //   },
+                // })}
               />
+              {/* {errors?.email?.message && (
+                <MyErrorText label={errors?.email?.message} />
+              )} */}
             </div>
             <div className="relative">
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
-              <Input
-                id="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
+              <MyInput
+                key="outside"
+                type={isVisible.confirm ? "password" : "text"}
+                label="Password"
+                labelPlacement="outside"
                 placeholder="Password"
-                type={isVisible ? "text" : "password"}
-                variant="bordered"
-                radius='sm'
-                required
-                className="w-full"
-                size='lg'
+                className="text-foreground"
                 endContent={
                   <button
-                    aria-label="toggle password visibility"
                     className="focus:outline-none"
                     type="button"
-                    onClick={toggleVisibility}
+                    onClick={() => toggleVisibility('confirm')}
                   >
-                    {isVisible ? (
-                      <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                    {isVisible.confirm ? (
+                      <EyeOff className="text-2xl text-primary pointer-events-none" />
                     ) : (
-                      <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                      <Eye className="text-2xl text-primary pointer-events-none" />
                     )}
                   </button>
                 }
+                // {...register("email", {
+                //   required: "Email cannot be empty.",
+                //   pattern: {
+                //     value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                //     message: "Invalid email address.",
+                //   },
+                // })}
               />
+              {/* {errors?.email?.message && (
+                <MyErrorText label={errors?.email?.message} />
+              )} */}
             </div>
             <div className="flex items-center justify-between">
               <div className='flex items-center gap-6'>
@@ -320,7 +394,7 @@ export const ForgetPass = () => {
   return (
     <div className='w-full h-screen flex items-center justify-center'>
       <div className='w-[1728px] h-[1117px] bg-bgColor flex items-center justify-center'>
-        <Form onSubmit={handleSubmit} className="w-[640px] h-fit bg-white px-[55px] py-[40px] rounded-[20px] shadow-lg gap-[50px]">
+        <Form onSubmit={handleSubmit} className="w-[640px] h-fit bg-gradient-to-br from-[#9BDBFD]/30 to-[#FFFFFF] px-[55px] py-[40px] rounded-[20px] shadow-lg gap-[50px]">
           <div>
               <Link href="#" className='flex items-center gap-3 pb-[5%] text-body-sm text-primary'>
                 <svg width="18" height="12" viewBox="0 0 18 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -336,20 +410,28 @@ export const ForgetPass = () => {
             </div>
             <div className='flex flex-col gap-4 w-full'>
               <div className='w-full'>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  placeholder="Email"
-                  required
-                  radius='sm'
-                  variant="bordered"
-                  className="w-full placeholder:text-input-placeholder text-input"
-                  size='lg'
-                />
+            <div>
+              <MyInput
+                key="outside"
+                type="text"
+                label="Email"
+                labelPlacement="outside"
+                placeholder="Email"
+                className="text-foreground"
+                
+                // {...register("email", {
+                //   required: "Email cannot be empty.",
+                //   pattern: {
+                //     value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                //     message: "Invalid email address.",
+                //   },
+                // })}
+              />
+              {/* {errors?.email?.message && (
+                <MyErrorText label={errors?.email?.message} />
+              )} */}
+            </div>
+
               </div>
             </div>
             <Button type="submit" className="w-full bg-primary text-white">
@@ -364,8 +446,22 @@ export const ForgetPass = () => {
 };
 
 export const SetNewPass = () => {
-  const [isVisible, setIsVisible] = useState(false);
-  const toggleVisibility = () => setIsVisible(!isVisible);
+  const [isVisible, setIsVisible] = useState({
+    current: false,
+    new: false,
+    confirm: false,
+    confirm2: false
+  });
+
+  const toggleVisibility = (field) => {
+    setIsVisible(prev => {
+      const newState = {
+        ...prev,
+        [field]: !prev[field]
+      };
+      return newState;
+    });
+  };
 
   const [formData, setFormData] = useState({
     email: '',
@@ -397,7 +493,7 @@ export const SetNewPass = () => {
   return (
     <div className='w-full h-screen flex items-center justify-center'>
       <div className='w-[1728px] h-[1117px] bg-bgColor flex items-center justify-center'>
-        <Form onSubmit={handleSubmit} className="w-[640px] h-fit bg-white px-[55px] py-[40px] rounded-[20px] shadow-lg gap-[50px]">
+        <Form onSubmit={handleSubmit} className="w-[640px] h-fit bg-gradient-to-br from-[#9BDBFD]/30 to-[#FFFFFF] px-[55px] py-[40px] rounded-[20px] shadow-lg gap-[50px]">
           <div>
             <Link href="#" className='flex items-center gap-3 pb-[5%] text-body-sm text-primary'>
               <svg width="18" height="12" viewBox="0 0 18 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -411,66 +507,65 @@ export const SetNewPass = () => {
               <p className='text-body text-[#787486]'>Your previous password has been reseted. Please set a new password for your account.</p>
             </div>
           </div>
-          <div className='flex flex-col gap-[15px] w-full'>
+          <div className='flex flex-col gap-[20px] w-full'>
           <div className="relative">
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
-              <Input
-                id="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                placeholder="Password"
-                type={isVisible ? "text" : "password"}
-                variant="bordered"
-                radius='sm'
-                required
-                className="w-full"
-                size='lg'
-                endContent={
-                  <button
-                    aria-label="toggle password visibility"
-                    className="focus:outline-none"
-                    type="button"
-                    onClick={toggleVisibility}
+          <MyInput
+            key="outside"
+            type={isVisible.confirm ? "password" : "text"}
+            label="Password"
+            labelPlacement="outside"
+            placeholder="Password"
+            className="text-foreground"
+            endContent={
+              <button
+                className="focus:outline-none"
+                type="button"
+                onClick={() => toggleVisibility('confirm')}
                   >
-                    {isVisible ? (
-                      <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                    {isVisible.confirm ? (
+                      <EyeOff className="text-2xl text-primary pointer-events-none" />
                     ) : (
-                      <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                      <Eye className="text-2xl text-primary pointer-events-none" />
                     )}
-                  </button>
-                }
-              />
+              </button>
+            }
+            // {...register("password", {
+            //   required: "Password cannot be empty.",
+            // })}
+          />
             </div>
             <div className="relative">
-              <label htmlFor="re-enter password" className="block text-sm font-medium text-gray-700">Re-enter Password</label>
-              <Input
-                id="re-enter password"
-                name="re-enter password"
-                value={formData.password}
-                onChange={handleChange}
-                placeholder="New Password"
-                type={isVisible ? "text" : "re-enter password"}
-                variant="bordered"
-                radius='sm'
-                required
-                className="w-full"
-                size='lg'
+              <MyInput
+                key="outside"
+                type={isVisible.confirm2 ? "password" : "text"}
+                label="Re-enter Password"
+                labelPlacement="outside"
+                placeholder="Re-enter Password"
+                className="text-foreground"
                 endContent={
                   <button
-                    aria-label="toggle re-enter password visibility"
                     className="focus:outline-none"
                     type="button"
-                    onClick={toggleVisibility}
+                    onClick={() => toggleVisibility('confirm2')}
                   >
-                    {isVisible ? (
-                      <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                    {isVisible.confirm2 ? (
+                      <EyeOff className="text-2xl text-primary pointer-events-none" />
                     ) : (
-                      <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                      <Eye className="text-2xl text-primary pointer-events-none" />
                     )}
                   </button>
                 }
+                // {...register("email", {
+                //   required: "Email cannot be empty.",
+                //   pattern: {
+                //     value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                //     message: "Invalid email address.",
+                //   },
+                // })}
               />
+              {/* {errors?.email?.message && (
+                <MyErrorText label={errors?.email?.message} />
+              )} */}
             </div>
           </div>
           <div className='w-full gap-[10px] flex flex-col'>
@@ -486,6 +581,7 @@ export const SetNewPass = () => {
 
 export const OtpForm = () => {
   const [otp, setOtp] = useState(Array(6).fill("")); // Initialize an array with 6 empty strings
+  const [otpError, setOtpError] = useState("");
   
     const handleChange = (value, index) => {
       if (value.length > 1) return; // Ensure only one character is entered
@@ -507,10 +603,11 @@ export const OtpForm = () => {
   
     const handleSubmit = (e) => {
       e.preventDefault();
-  
+
       const otpValue = otp.join(""); // Combine all values into a single string
-      if (otpValue.length !== 6) {
-        alert("Please enter the complete 6-digit OTP.");
+
+      if (otpValue.length !== 6 || otp.includes("")) {
+        setOtpError("Please enter the complete 6-digit OTP.");
         return;
       }
   
@@ -521,7 +618,7 @@ export const OtpForm = () => {
     return (
       <div className='w-full h-screen flex items-center justify-center'>
         <div className='w-[1728px] h-[1117px] bg-bgColor flex items-center justify-center'>
-          <Form onSubmit={handleSubmit} className="w-[640px] h-fit bg-white px-[55px] py-[40px] rounded-[20px] shadow-lg gap-[50px]">
+          <Form onSubmit={handleSubmit} className="w-[640px] h-fit bg-gradient-to-br from-[#9BDBFD]/30 to-[#FFFFFF] px-[55px] py-[40px] rounded-[20px] shadow-lg gap-[50px]">
             <div>
               <Link href="#" className='flex items-center gap-3 pb-[5%] text-body-sm text-primary'>
                 <svg width="18" height="12" viewBox="0 0 18 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -541,8 +638,8 @@ export const OtpForm = () => {
                 <input
                   key={index}
                   id={`otp-input-${index}`}
-                  type="text"
-                  value={value}
+                  type="number"
+                  value={otp[index]}
                   onChange={(e) => handleChange(e.target.value, index)}
                   onKeyDown={(e) => handleKeyDown(e, index)}
                   maxLength={1}
@@ -550,6 +647,9 @@ export const OtpForm = () => {
                 />
               ))}
             </div>
+            {otpError && (
+                <p className="text-red-500 text-sm mt-2">{otpError}</p>
+              )}
             </div>
             <div className='w-full gap-[10px] flex flex-col'>
               <Button type="submit" className="w-full bg-primary text-white">
@@ -565,7 +665,7 @@ export const OtpForm = () => {
         </div>
       </div>
     );
-  };
+};
 
 export const EyeSlashFilledIcon = (props) => {
   return (
