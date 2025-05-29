@@ -11,6 +11,8 @@ import ModalInviteMember from "../modal/ModalInviteMember";
 import StarBoard from "../button/StarBoard";
 import ModalCreateTask from "../modal/board/ModalCreateTask";
 import ModalNotification from "../modal/noti/ModalNotification";
+import ModalCreateGanttChart from "../modal/board/ModalCreateGanttChart";
+import ModalCreateGanttBar from "../modal/board/ModalCreateGanttBar";
 
 export default function SystemBoard({ user }) {
   const pathname = usePathname();
@@ -37,7 +39,7 @@ export default function SystemBoard({ user }) {
     {
       key: "calendar",
       title: "Gantt Chart",
-      content: <GanttChart />,
+      content: <GanttChart modal={[<ModalCreateGanttBar />]} />,
     },
   ];
 

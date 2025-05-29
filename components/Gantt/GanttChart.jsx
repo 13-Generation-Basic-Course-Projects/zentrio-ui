@@ -6,8 +6,9 @@ import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
 import interactionPlugin from "@fullcalendar/interaction";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import "@/styles/ganttchart.css";
+import BredCrum from "../bredcrum/Bredcrum";
 
-export default function GanttChart() {
+export default function GanttChart({ modal }) {
   const calendarRef = useRef(null);
 
   // Handle event drag and resize
@@ -200,7 +201,13 @@ export default function GanttChart() {
 
   return (
     <div className="flex flex-col h-screen">
-      <div className="flex-grow overflow-hidden">
+      <BredCrum
+        board={"Hikko Design"}
+        feature={"Gantt Chart"}
+        header={"Hikko Design"}
+        modal={modal}
+      />
+      <div className="flex-grow overflow-hidden pt-5">
         <FullCalendar
           ref={calendarRef}
           plugins={[resourceTimelinePlugin, dayGridPlugin, interactionPlugin]}
