@@ -1,6 +1,7 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import logo from "@/public/image/Zentrio-Logo.png";
 import {
@@ -18,63 +19,81 @@ import member from "../../assets/memberSideBar.png";
 import board from "../../assets/boardSideBar.png";
 import folder from "../../assets/folderSidBar.png";
 import report from "@/assets/report.png";
-import { LeaveIcon } from "../icon/everyicon";
+import ModalLeave from "../modal/ModalLeave";
+import LeaveButton from "../button/LeaveButton";
 
-const items = [
-  {
-    title: "Board",
-    url: "/dashboard/1/1/board",
-    icon: board,
-    activeIcon: board,
-  },
-  {
-    title: "Document",
-    url: "/dashboard/1/1/docu",
-    icon: folder,
-    activeIcon: folder,
-  },
-  {
-    title: "Calendar",
-    url: "/dashboard/1/1/calendar",
-    icon: calender,
-    activeIcon: calender,
-  },
-  {
-    title: "Members",
-    url: "/dashboard/1/1/member",
-    icon: member,
-    activeIcon: member,
-  },
-  {
-    title: "Reports",
-    url: "/dashboard/1/1/report",
-    icon: report,
-    activeIcon: report,
-  },
-  {
-    title: "nh test lg lg 1 auth",
-    url: "/test",
-    icon: report,
-    activeIcon: report,
-  },
-];
-
-export function SidebarTest() {
+export default function DashboardSidebar() {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const [role, setRole] = useState("pm"); // default fallback role
+
+  // On mount, set role once from URL
+  useEffect(() => {
+    const initialRole = searchParams.get("role");
+    if (initialRole) {
+      setRole(initialRole);
+    }
+  }, []);
+
+  const pathSegments = pathname.split("/");
+  const workspaceId = pathSegments[2] || "1";
+  const projectId = pathSegments[3] || "1";
+
+  const isTl = role === "tl";
+
+  const items = [
+    {
+      title: "Board",
+      url: `/dashboard/${workspaceId}/${projectId}/board?role=${role}`,
+      icon: board,
+      activeIcon: board,
+    },
+    {
+      title: "Document",
+      url: `/dashboard/${workspaceId}/${projectId}/docu?role=${role}`,
+      icon: folder,
+      activeIcon: folder,
+    },
+    {
+      title: "Calendar",
+      url: `/dashboard/${workspaceId}/${projectId}/calendar?role=${role}`,
+      icon: calender,
+      activeIcon: calender,
+    },
+    {
+      title: "Members",
+      url: `/dashboard/${workspaceId}/${projectId}/member?role=${role}`,
+      icon: member,
+      activeIcon: member,
+    },
+    {
+      title: "Reports",
+      url: `/dashboard/${workspaceId}/${projectId}/report?role=${role}`,
+      icon: report,
+      activeIcon: report,
+    },
+  ];
+
+  const filteredItems = isTl
+    ? items.filter((item) => item.title !== "Reports")
+    : items;
 
   return (
-    <Sidebar collapsible="icon" className="border-none  ">
-      <SidebarContent className="h-screen flex flex-col !border-0">
+    <Sidebar collapsible="icon" className="border-none  rounded-tr-xl">
+      <SidebarContent className="h-screen flex flex-col !border-0  rounded-tr-xl">
         <div className="p-4 !border-0">
-          <Image src={logo} className="w-[168px] object-cover" alt="logo" />
+          <Link href="/workspace">
+            <Image src={logo} className="w-[168px] object-cover" alt="logo" />
+          </Link>
         </div>
 
         <SidebarGroup className="flex-1 flex flex-col !border-0">
           <SidebarGroupContent className="flex-1 flex flex-col justify-between !border-0">
             {/* TOP MENU */}
             <SidebarMenu className="!border-0">
-              {items.map((item) => {
-                const isActive = pathname === item.url;
+              {filteredItems.map((item) => {
+                const isActive = pathname === item.url.split("?")[0]; // compare path only
                 return (
                   <SidebarMenuItem className="py-1 !border-0" key={item.title}>
                     <SidebarMenuButton
@@ -100,17 +119,22 @@ export function SidebarTest() {
               })}
             </SidebarMenu>
 
-            {/* BOTTOM LOGOUT */}
+            {/* LOGOUT */}
             <SidebarMenu className="!border-0">
               <SidebarMenuItem className="!border-0">
                 <SidebarMenuButton
                   asChild
                   tooltip="Logout"
-                  className="flex items-center gap-2 px-4 py-2 cursor-pointer pb-10 !border-0"
+                  className="flex items-center gap-2 px-4 cursor-pointer pb-10 !border-0"
                 >
                   <div>
-                    <LeaveIcon strokwidth={2} size={4} color={"red"} />
-                    <span className="text-red-500 font-medium">Logout</span>
+                    <ModalLeave
+                      massageTitle={"Are you sure?"}
+                      massageBody={"You want to leave this board “Zin two"}
+                      massageUndo={"No, cancel"}
+                      massageDo={"Yes, Leave"}
+                      action={[<LeaveButton key="leave-button" />]}
+                    />
                   </div>
                 </SidebarMenuButton>
               </SidebarMenuItem>

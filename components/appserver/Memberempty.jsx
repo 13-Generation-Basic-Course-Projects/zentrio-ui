@@ -1,14 +1,13 @@
-import iconSearch from "@/assets/search.png"
-import icon1 from "@/assets/icon1.png"
-import arrowdown from "@/assets/arrow-down.png";
-import member from "@/assets/memberSideBar.png";
-import empty from "@/public/image/emptyMember.png";
+// import iconSearch from "@/assets/search.png";
+// import icon1 from "@/assets/icon1.png";
+// import arrowdown from "@/assets/arrow-down.png";
+// import member from "@/assets/memberSideBar.png";
+import empty from "../../assets/emptyMember.png";
 import Image from "next/image";
-import { Button } from "../ui/button";
-
+import { Button } from "@heroui/react";
 export default function Memberempty() {
   return (
-    <div className="p-6 space-y-4">
+    <div className="p-4 ">
       <nav className="text-h6 text-[#94A3B8]">
         <ol className="flex space-x-2">
           <li>
@@ -37,7 +36,7 @@ export default function Memberempty() {
         <div className="flex items-center w-[600px] h-[45px] border border-gray-200 rounded-[16px] shadow-sm overflow-hidden bg-white text-input text-title">
           <div className="relative flex items-center gap-1 px-3 border-r border-gray-200">
             <div className="w-[16px] h-[16px]">
-              <Image src={icon1} alt="filter" />
+              {/* <Image src={icon1} alt="filter" /> */}
             </div>
 
             <select className="bg-transparent outline-none text-sm cursor-pointer appearance-none w-auto">
@@ -48,16 +47,16 @@ export default function Memberempty() {
             </select>
 
             <div className="absolute right-2 pointer-events-none w-[10px] h-[6px]">
-              <Image
+              {/* <Image
                 src={arrowdown}
                 alt="dropdown arrow"
                 className="w-full h-full"
-              />
+              /> */}
             </div>
           </div>
 
           <div className="flex items-center px-2 ">
-            <Image src={iconSearch} />
+            {/* <Image src={iconSearch} /> */}
           </div>
           <input
             type="text"
@@ -65,8 +64,11 @@ export default function Memberempty() {
             className="flex-1 h-full px-2 bg-white text-gray-700 outline-none placeholder-gray-400"
           />
         </div>
-        <Button className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-[8px] shadow-sm hover:bg-gray-100">
-          <Image src={member} alt="Member Icon" className="w-4 h-4" />
+        <Button
+          size="lg"
+          className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300  hover:bg-gray-100"
+        >
+          {/* <Image src={member} alt="Member Icon" className="w-4 h-4" /> */}
           invite
         </Button>
       </div>

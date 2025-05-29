@@ -19,6 +19,43 @@ export function LeaveIcon({ strokwidth, size, color }) {
   );
 }
 
+export function FaceIcon({ strokwidth, size, color }) {
+  return (
+    <>
+      <svg
+        width="22"
+        height="23"
+        viewBox="0 0 22 23"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        strokeWidth={strokwidth || 1.5}
+        stroke={color}
+        className={`size-${size} `}
+      >
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M0 11.5C0 5.42487 4.92487 0.5 11 0.5C17.0751 0.5 22 5.42487 22 11.5C22 17.5751 17.0751 22.5 11 22.5C4.92487 22.5 0 17.5751 0 11.5ZM11 2.33333C5.93739 2.33333 1.83333 6.43739 1.83333 11.5C1.83333 16.5626 5.93739 20.6667 11 20.6667C16.0626 20.6667 20.1667 16.5626 20.1667 11.5C20.1667 6.43739 16.0626 2.33333 11 2.33333Z"
+          fill="#FF4640"
+        />
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M6.46023 14.6899C6.79423 14.3094 7.37341 14.2717 7.75386 14.6057C9.63544 16.2576 12.7294 16.2576 14.611 14.6057C14.9915 14.2717 15.5706 14.3094 15.9046 14.6899C16.2386 15.0703 16.201 15.6495 15.8205 15.9835C13.247 18.2428 9.11786 18.2428 6.54434 15.9835C6.16389 15.6495 6.12623 15.0703 6.46023 14.6899Z"
+          fill="#FF4640"
+        />
+        <path
+          d="M8.61641 9.6666C8.61641 10.5779 7.87768 11.3166 6.96641 11.3166C6.05514 11.3166 5.31641 10.5779 5.31641 9.6666C5.31641 8.75533 6.05514 8.0166 6.96641 8.0166C7.87768 8.0166 8.61641 8.75533 8.61641 9.6666Z"
+          fill="#FF4640"
+        />
+        <path
+          d="M16.6828 9.6666C16.6828 10.5779 15.9441 11.3166 15.0328 11.3166C14.1215 11.3166 13.3828 10.5779 13.3828 9.6666C13.3828 8.75533 14.1215 8.0166 15.0328 8.0166C15.9441 8.0166 16.6828 8.75533 16.6828 9.6666Z"
+          fill="#FF4640"
+        />
+      </svg>
+    </>
+  );
+}
 export function StarIcon({ strokeWidth, size, color }) {
   return (
     <svg
@@ -147,5 +184,336 @@ export function ArrowLeftIcon() {
         />
       </svg>
     </>
+  );
+}
+// Solid Star Icon
+export function StarIconSolid({ className = "w-6 h-6" }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      strokeWidth={1.5}
+      className={`${className} text-yellow-400`}
+    >
+      <path
+        fillRule="evenodd"
+        d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345l2.125-5.111Z"
+        clipRule="evenodd"
+      />
+    </svg>
+  );
+}
+
+// Outline Star Icon
+export function StarIconOutline({ className = "w-6 h-6" }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={1.5}
+      stroke="currentColor"
+      className={`${className} `}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z"
+      />
+    </svg>
+  );
+}
+
+export function StackedProfiles() {
+  return (
+    <div className="flex items-center space-x-[-14px]">
+      <img
+        src="https://i.pinimg.com/736x/6f/a3/6a/6fa36aa2c367da06b2a4c8ae1cf9ee02.jpg"
+        alt="User 1"
+        className="w-8 h-8 rounded-full border-2 border-white shadow"
+      />
+      <img
+        src="https://i.pinimg.com/736x/24/da/2b/24da2becc842bf52b464a2dde81087b5.jpg"
+        alt="User 2"
+        className="w-8 h-8 rounded-full border-2 border-white shadow"
+      />
+      <img
+        src="https://i.pinimg.com/736x/62/aa/2f/62aa2f605b932349808c41c6fadd76b6.jpg"
+        alt="User 3"
+        className="w-8 h-8 rounded-full border-2 border-white shadow"
+      />
+      <img
+        src="https://i.pinimg.com/736x/b8/b4/d9/b8b4d9220922fffbd151103ef1c215f6.jpg"
+        alt="User 4"
+        className="w-8 h-8 rounded-full border-2 border-white shadow"
+      />
+      <div className="w-8 h-8 rounded-full bg-gray-300 text-btn-sm flex items-center justify-center border-2 border-white shadow">
+        +4
+      </div>
+    </div>
+  );
+}
+export function IconDelete({
+  className = "w-5 h-5 text-red-500 hover:text-red-700 cursor-pointer",
+}) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={2}
+      className={className}
+    >
+      {/* Trash bin lid */}
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M3 6h18M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"
+      />
+      {/* Trash bin body */}
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"
+      />
+      {/* Trash bin handles */}
+      <path strokeLinecap="round" strokeLinejoin="round" d="M10 11v6M14 11v6" />
+    </svg>
+  );
+}
+
+export function IconMap({ strokeWidth, color, size }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={strokeWidth || 1.5}
+      stroke={color}
+      className={`size-${size} `}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+      />
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"
+      />
+    </svg>
+  );
+}
+
+export function IconDate({ strokeWidth, color, size }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={strokeWidth || 1.5}
+      stroke={color}
+      className={`size-${size}`}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"
+      />
+    </svg>
+  );
+}
+
+export function IconReturnLeft({ strokeWidth, color, size }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={strokeWidth || 1.5}
+      stroke={color}
+      className={`size-${size}`}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3"
+      />
+    </svg>
+  );
+}
+
+export function IconEdit({ strokeWidth, color, size }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={strokeWidth || 1.5}
+      stroke={color || "currentColor"}
+      className={`size-${size}`}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+      />
+    </svg>
+  );
+}
+
+export function IconJob({ strokeWidth, size, color }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={strokeWidth || 1.5}
+      stroke={color || "currentColor"}
+      className={`size-${size}`}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 0 0 .75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 0 0-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0 1 12 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 0 1-.673-.38m0 0A2.18 2.18 0 0 1 3 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 0 1 3.413-.387m7.5 0V5.25A2.25 2.25 0 0 0 13.5 3h-3a2.25 2.25 0 0 0-2.25 2.25v.894m7.5 0a48.667 48.667 0 0 0-7.5 0M12 12.75h.008v.008H12v-.008Z"
+      />
+    </svg>
+  );
+}
+
+export function IconEllipsisVertical({ strokeWidth, size, color }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={strokeWidth || 1.5}
+      stroke={color || "currentColor"}
+      className={`size-${size}`}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z"
+      />
+    </svg>
+  );
+}
+
+export function IconUser({ strokeWidth, size, color }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={strokeWidth || 1.5}
+      stroke={color || "currentColor"}
+      className={`size-${size}`}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
+      />
+    </svg>
+  );
+}
+
+export function IconPhone({ strokeWidth, size, color }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={strokeWidth || 1.5}
+      stroke={color || "currentColor"}
+      className={`size-${size}`}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z"
+      />
+    </svg>
+  );
+}
+
+export function IconMail({ strokeWidth, size, color }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={strokeWidth || 1.5}
+      stroke={color || "currentColor"}
+      className={`size-${size}`}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"
+      />
+    </svg>
+  );
+}
+
+export function IconShield({ strokeWidth, size, color }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={strokeWidth || "1.5"}
+      stroke={color || "currentColor"}
+      className={`size-${size}`}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z"
+      />
+    </svg>
+  );
+}
+
+export function IconMemberSide({}) {
+  reutrn;
+}
+export function IconAdd({}) {
+  return (
+    <svg
+      width={17}
+      height={16}
+      viewBox="0 0 17 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M8.2159 5.55273V10.437"
+        stroke="white"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M10.6604 7.99489H5.77148"
+        stroke="white"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M11.3393 1.33398H5.09169C2.91391 1.33398 1.54883 2.87537 1.54883 5.05742V10.9439C1.54883 13.1259 2.90756 14.6673 5.09169 14.6673H11.3393C13.5234 14.6673 14.8822 13.1259 14.8822 10.9439V5.05742C14.8822 2.87537 13.5234 1.33398 11.3393 1.33398Z"
+        stroke="white"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
   );
 }

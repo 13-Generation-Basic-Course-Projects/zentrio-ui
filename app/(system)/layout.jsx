@@ -1,12 +1,13 @@
-import { Geist, Geist_Mono } from "next/font/google";
 import "../globals.css";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { SidebarTest } from "@/components/sidebar/SideBar";
+import { SidebarTest } from "@/components/sidebar/Sidebar";
 
 import { auth } from "../../auth";
 import { UserAvatar } from "@/components/testcomponent/Avatar";
-import NavbarAutherized from "@/components/layout/NavbarAutherized";
-
+import NavbarWrapper from "@/components/layout/NavbarWrapper";
+import { Suspense } from "react";
+import Loading from "../loading";
+import SidebarRenderer from "@/components/sidebar/SidebarRenderer";
 export const metadata = {
   title: "Zentrio | Task Mangement",
   description: "Welcome to Zentrio Cambodia",
@@ -18,15 +19,15 @@ export default async function SystemLayout({ children }) {
   const session = await auth();
   console.log("aaa", session?.user);
   return (
-    <SidebarProvider>
-      <SidebarTest />
-      <body className={" font-poppin  "}>
-        <SidebarTrigger className="sticky top-0" />
-        <div className="w-full ">
-          <NavbarAutherized user={session?.user} />
+    <SidebarProvider className=" ">
+      <SidebarRenderer />
+      <div className={" font-poppin h-screen overflow-hidden   w-full"}>
+        <SidebarTrigger className="fixed top-0   z-[30]" />
+        <div className="w-full  ">
+          <NavbarWrapper user={session?.user} />
           {children}
         </div>
-      </body>
+      </div>
     </SidebarProvider>
   );
 }

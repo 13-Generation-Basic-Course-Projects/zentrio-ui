@@ -28,3 +28,12 @@ export const getWorkspaceById = async (workspaceId) => {
 
   return filteredWorkspace[0];
 };
+
+const url = "https://fakestoreapi.com/products";
+export const testSusupne = async () => {
+  const res = await fetch(url);
+  //const res = await fetch(`${dashboardRoute.getWorkspace}`);
+
+  const data = await res.json();
+  return data;
+};
