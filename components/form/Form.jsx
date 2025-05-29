@@ -224,7 +224,7 @@ export const SigninForm = () => {
     confirm: false
   });
 
-  const toggleVisibility = (field) => {
+  const toggleVisiformbility = (field) => {
     console.log('Before toggle:', isVisible[field]); // Add this
     setIsVisible(prev => {
       const newState = {
