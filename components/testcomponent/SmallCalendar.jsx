@@ -15,7 +15,7 @@ export default function SmallCalendar() {
     <div className="w-full">
       <Calendar
         aria-label="Date"
-        className="bg-white h-[250px] min-h-0"
+        className="bg-white text-primary h-[250px] min-h-0"
         pageBehavior="single"
         firstDayOfWeek="sun"
       />

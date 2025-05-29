@@ -24,8 +24,8 @@ export default function Myworkspace({ Workspaceid }) {
           ))}
 
           {/* your hidden add new board card here */}
-          <div className="hidden flex flex-col items-center border-2 border-dashed border-blue-400 rounded-xl p-10 text-center text-blue-400 cursor-pointer hover:bg-blue-50 transition" />
-        </div>
+          <div className="hidden flex flex-col items-center border-2 border-d ashed border-blue-400 rounded-xl p-10 text-center text-blue-400 cursor-pointer hover:bg-blue-50 transition" />
+          </div>
       </div>
 
       {/* event - no scroll */}

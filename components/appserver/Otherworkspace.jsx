@@ -3,6 +3,7 @@ import React from "react";
 import SmallCalendar from "../testcomponent/SmallCalendar";
 import CardWelcomeComponent from "../card/CardWelcome";
 import CardBoard from "../card/CardBoard";
+import ChecklistCard from "../card/ChecklistCard";
 export default function Otherworkspace({ Workspaceid }) {
   return (
     <>
@@ -29,7 +30,9 @@ export default function Otherworkspace({ Workspaceid }) {
         </div>
 
         {/* event - no scroll */}
-        <div className="col-span-3 ">member</div>
+        <div className="col-span-3 p-4">
+            <ChecklistCard />
+        </div>
       </div>
     </>
   );

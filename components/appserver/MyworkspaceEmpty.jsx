@@ -1,6 +1,7 @@
 import SmallCalendar from "../testcomponent/SmallCalendar";
 import CardWelcomeComponent from "../card/CardWelcome";
 import CardBoardEmpty from "../card/CardBoardAdd";
+import CardMember from "../card/CardMember";
 
 export default function MyworkspaceEmpty() {
   return (
@@ -16,7 +17,9 @@ export default function MyworkspaceEmpty() {
       </div>
 
       {/* event - no scroll */}
-      <div className="col-span-3 ">member</div>
+      <div className="col-span-3 p-4">
+        <CardMember />
+      </div>
     </div>
   );
 }
