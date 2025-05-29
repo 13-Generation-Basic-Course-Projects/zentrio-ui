@@ -31,7 +31,7 @@ export default async function Privatedocument({ modal }) {
           <p className="">Personal</p>
         </div>
       </div>
-      <div className="grid grid-cols-6 gap-3 overflow-y-auto scrollbar-hidden pb-40 pt-10">
+      <div className="grid grid-cols-6 gap-3 overflow-y-auto scrollbar-hidden pb-40 px-5  pt-10">
         {data
           .filter((el) => el.status === "personal")
           .map((el, i) => {

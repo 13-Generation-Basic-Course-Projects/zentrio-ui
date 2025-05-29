@@ -31,7 +31,7 @@ export default async function PublicDocument({ modal }) {
         </div>
       </div>
 
-      <div className="grid grid-cols-6 gap-3 overflow-y-auto scrollbar-hidden pb-40 pt-10">
+      <div className="grid grid-cols-6 gap-3 overflow-y-auto scrollbar-hidden pb-40 px-5 pt-10">
         {data
           .filter((el) => el.status === "public")
           .map((el, i) => {

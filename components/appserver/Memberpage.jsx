@@ -22,6 +22,7 @@ import {
   useDraggable,
 } from "@heroui/react";
 import BredCrum from "../bredcrum/bredcrum";
+import Link from "next/link";
 
 export default function Memberpage() {
   const initialMembers = [
@@ -31,7 +32,7 @@ export default function Memberpage() {
       gender: "Male",
       email: "fongly@gmail.com",
       roleName: ["Team Manger", "Team Leader", "Member"],
-      task: ["Back-End Dev", "UX/UI design", "Front-End Dev"],
+      task: ["Back-End Dev", "UX/UI remotedevelopers.io design", "Front-End Dev"],
       profileImage:
         "https://i.pinimg.com/736x/3a/5e/92/3a5e9212dde4454a96b1503943176d8c.jpg",
     },
@@ -115,51 +116,42 @@ export default function Memberpage() {
       profileImage:
         "https://i.pinimg.com/736x/b2/66/f7/b266f7c8ecb53960c5eaa19d2a40dc41.jpg",
     },
+    // Removed duplicate "Senghun" entries and ensured unique memberId values
     {
-      memberId: "1a2b3c4d-0006-0006-0006-000000000006",
-      username: "Senghun",
+      memberId: "1a2b3c4d-0007-0007-0007-000000000007",
+      username: "Senghun2",
       gender: "Male",
-      email: "senghun233@gmail.com",
+      email: "senghun234@gmail.com",
       roleName: ["Member"],
       task: ["Front-End Dev"],
       profileImage:
         "https://i.pinimg.com/736x/b2/66/f7/b266f7c8ecb53960c5eaa19d2a40dc41.jpg",
     },
     {
-      memberId: "1a2b3c4d-0006-0006-0006-000000000006",
-      username: "Senghun",
+      memberId: "1a2b3c4d-0008-0008-0008-000000000008",
+      username: "Senghun3",
       gender: "Male",
-      email: "senghun233@gmail.com",
+      email: "senghun235@gmail.com",
       roleName: ["Member"],
       task: ["Front-End Dev"],
       profileImage:
         "https://i.pinimg.com/736x/b2/66/f7/b266f7c8ecb53960c5eaa19d2a40dc41.jpg",
     },
     {
-      memberId: "1a2b3c4d-0006-0006-0006-000000000006",
-      username: "Senghun",
+      memberId: "1a2b3c4d-0009-0009-0009-000000000009",
+      username: "Senghun4",
       gender: "Male",
-      email: "senghun233@gmail.com",
+      email: "senghun236@gmail.com",
       roleName: ["Member"],
       task: ["Front-End Dev"],
       profileImage:
         "https://i.pinimg.com/736x/b2/66/f7/b266f7c8ecb53960c5eaa19d2a40dc41.jpg",
     },
     {
-      memberId: "1a2b3c4d-0006-0006-0006-000000000006",
-      username: "Senghun",
+      memberId: "1a2b3c4d-0010-0010-0010-000000000010",
+      username: "Senghun5",
       gender: "Male",
-      email: "senghun233@gmail.com",
-      roleName: ["Member"],
-      task: ["Front-End Dev"],
-      profileImage:
-        "https://i.pinimg.com/736x/b2/66/f7/b266f7c8ecb53960c5eaa19d2a40dc41.jpg",
-    },
-    {
-      memberId: "1a2b3c4d-0006-0006-0006-000000000006",
-      username: "Senghun",
-      gender: "Male",
-      email: "senghun233@gmail.com",
+      email: "senghun237@gmail.com",
       roleName: ["Member"],
       task: ["Front-End Dev"],
       profileImage:
@@ -168,10 +160,11 @@ export default function Memberpage() {
   ];
 
   const [members, setMembers] = useState(initialMembers);
-
   const [openPopoverId, setOpenPopoverId] = useState(null);
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { isOpen, onOpen, onOpenChange } = useDisclosure(); // For delete modal
   const [selectedMemberId, setSelectedMemberId] = useState(null);
+  const { isOpen: isDetailsOpen, onOpen: onDetailsOpen, onOpenChange: onDetailsOpenChange } = useDisclosure(); // For details modal
+  const [selectedMember, setSelectedMember] = useState(null); // To store the member to display in details modal
   const targetRef = useRef(null);
   const { moveProps } = useDraggable({
     targetRef,
@@ -182,9 +175,15 @@ export default function Memberpage() {
   const deleteMemberById = (id) => {
     setMembers((prev) => prev.filter((m) => m.memberId !== id));
   };
+
+  const handleRowClick = (member) => {
+    setSelectedMember(member);
+    onDetailsOpen();
+  };
+
   return (
-    <div className="p-4 ">
-      {/* breadcrum */}
+    <div className="p-4">
+      {/* Breadcrumb */}
       <BredCrum board={"Hikko Design"} feature={"Members"} header={"Member"} />
       <div className="flex justify-between">
         <div className="flex items-center w-[600px] h-[45px] border border-gray-200 rounded-[16px] shadow-sm overflow-hidden bg-white text-input text-title">
@@ -211,14 +210,14 @@ export default function Memberpage() {
             className="flex-1 h-full px-2 bg-white text-gray-700 outline-none placeholder-gray-400"
           />
         </div>
-        {/* invite */}
+        {/* Invite */}
         <ModalInviteMember />
       </div>
 
       <section className="overflow-hidden">
-        <div className="relative  max-h-[500px] overflow-x-auto mt-10 scrollbar-hidden ">
-          <table className="w-full text-body-sm text-left text-title  overflow-y-auto">
-            <thead className=" text-[#64748B] bg-primary/20">
+        <div className="relative max-h-[500px] overflow-x-auto mt-10 scrollbar-hidden">
+          <table className="w-full text-body-sm text-left text-title overflow-y-auto">
+            <thead className="text-[#64748B] bg-primary/20">
               <tr>
                 <th className="px-6 py-3 rounded-s-lg">No.</th>
                 <th className="px-6 py-3">Member Name</th>
@@ -231,19 +230,36 @@ export default function Memberpage() {
             </thead>
             <tbody>
               {members.map((member, index) => (
+                
                 <tr
-                  key={index}
-                  className={`${index % 2 !== 0 ? "bg-gray-100" : "bg-white"}`}
+                  key={member.memberId} // Use unique memberId as key
+                  className={`${index % 2 !== 0 ? "bg-gray-100" : "bg-white"} cursor-pointer`}
+                  onClick={() => handleRowClick(member)} // Open details modal on row click
                 >
                   <td className="px-6 py-2">{index + 1}</td>
-                  <td className="px-6 py-2 flex items-center gap-2">
-                    <img
-                      src={member.profileImage}
-                      alt={`${member.username}'s profile`}
-                      className="rounded-full w-[35px] h-[35px] object-cover"
-                    />
-                    {member.username}
-                  </td>
+  <td className="px-6 py-2">
+    <Link
+      href={{
+        pathname: `/profile/${member.memberId}`,
+        query: {
+          name: member.username,
+          profileImage: member.profileImage,
+        },
+      }}
+      passHref
+    >
+      <div className="flex items-center gap-2 cursor-pointer hover:underline">
+        <img
+          src={member.profileImage}
+          alt={`${member.username}'s profile`}
+          className="rounded-full w-[35px] h-[35px] object-cover"
+        />
+        <span>{member.username}</span>
+      </div>
+    </Link>
+  </td>
+                  
+               
                   <td className="px-6 py-4">{member.gender}</td>
                   <td className="px-6 py-4">{member.email}</td>
                   <td className="px-6 py-4">
@@ -315,12 +331,12 @@ export default function Memberpage() {
                           onPress={() => {
                             setSelectedMemberId(member.memberId);
                             setOpenPopoverId(null); // Close popover
-                            onOpen(); // Open modal or confirmation
+                            onOpen(); // Open delete modal
                           }}
                         >
                           <span>
                             <svg
-                              class="text-progress-red/50 dark:text-white"
+                              className="text-progress-red/50 dark:text-white"
                               aria-hidden="true"
                               xmlns="http://www.w3.org/2000/svg"
                               width="20"
@@ -332,7 +348,7 @@ export default function Memberpage() {
                                 stroke="currentColor"
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
-                                stroke-width="2"
+                                strokeWidth="2"
                                 d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"
                               />
                             </svg>
@@ -343,10 +359,11 @@ export default function Memberpage() {
                     </Popover>
                   </td>
                 </tr>
+                
               ))}
             </tbody>
           </table>
-          {/* Modal outside the table */}
+          {/* Delete Confirmation Modal */}
           <Modal
             isOpen={isOpen}
             onOpenChange={onOpenChange}
@@ -363,7 +380,7 @@ export default function Memberpage() {
                     <div className="flex flex-col justify-center items-center space-y-4">
                       <div className="w-[100px] h-[100px] rounded-full bg-progress-red/20 items-center flex justify-center">
                         <svg
-                          class="text-progress-red/50 dark:text-white"
+                          className="text-progress-red/50 dark:text-white"
                           aria-hidden="true"
                           xmlns="http://www.w3.org/2000/svg"
                           width="80"
@@ -375,12 +392,11 @@ export default function Memberpage() {
                             stroke="currentColor"
                             strokeLinecap="round"
                             strokeLinejoin="round"
-                            stroke-width="2"
+                            strokeWidth="2"
                             d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"
                           />
                         </svg>
                       </div>
-
                       <p>Are you sure?</p>
                       <p className="w-auto whitespace-nowrap">
                         You want to delete{" "}
@@ -400,17 +416,63 @@ export default function Memberpage() {
                     >
                       No, Cancel
                     </Button>
-
                     <Button
                       className="bg-progress-red/50 text-white hover:bg-bgColor hover:text-primary"
                       onPress={() => {
-                        if (selectedMemberId?.id) {
-                          deleteMemberById(selectedMemberId.id);
-                        }
+                        deleteMemberById(selectedMemberId); // Fixed: Removed .id
                         onClose();
                       }}
                     >
                       Yes, Delete
+                    </Button>
+                  </ModalFooter>
+                </>
+              )}
+            </ModalContent>
+          </Modal>
+          {/* Member Details Modal */}
+          <Modal
+            isOpen={isDetailsOpen}
+            onOpenChange={onDetailsOpenChange}
+            className="overflow-x-hidden h-auto"
+          >
+            <ModalContent className="flex flex-col justify-center items-center">
+              {(onClose) => (
+                <>
+                  <ModalHeader>Member Details</ModalHeader>
+                  <ModalBody>
+                    {selectedMember && (
+                      <div className="flex flex-col items-center space-y-4">
+                        <img
+                          src={selectedMember.profileImage}
+                          alt={`${selectedMember.username}'s profile`}
+                          className="rounded-full w-[100px] h-[100px] object-cover"
+                        />
+                        <div className="text-center">
+                          <h3 className="text-lg font-semibold">{selectedMember.username}</h3>
+                          <p><strong>Gender:</strong> {selectedMember.gender}</p>
+                          <p><strong>Email:</strong> {selectedMember.email}</p>
+                          <p><strong>Roles:</strong> {selectedMember.roleName.join(", ")}</p>
+                          <p><strong>Tasks:</strong> {selectedMember.task.join(", ")}</p>
+                        </div>
+                      </div>
+                    )}
+                  </ModalBody>
+                  <ModalFooter>
+                    <Button
+                      variant="light"
+                      className="bg-primary/80 text-white hover:bg-bgColor hover:text-title"
+                      onPress={onClose}
+                    >
+                      Close
+                    </Button>
+                    <Button
+                      className="bg-primary/80 text-white hover:bg-bgColor hover:text-title"
+                      onPress={() => {
+                        window.location.href = `/profile/${selectedMember.memberId}`;
+                      }}
+                    >
+                      View Profile
                     </Button>
                   </ModalFooter>
                 </>

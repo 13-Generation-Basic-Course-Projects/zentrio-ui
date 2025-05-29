@@ -2,6 +2,7 @@ import SmallCalendar from "../testcomponent/SmallCalendar";
 import CardWelcomeComponent from "../card/CardWelcome";
 import CardBoardFavorite from "../card/CardBoardFavorite";
 import { boardbackground } from "../../data/boardbackground";
+import CardMember from "../card/CardMember";
 
 export default function MyFavoriteBoard() {
   return (
@@ -22,8 +23,10 @@ export default function MyFavoriteBoard() {
         </div>
       </div>
 
-      {/* event - no scroll */}
-      <div className="col-span-3 ">member</div>
+       {/* event - no scroll */}
+        <div className="col-span-3 p-2">
+          <CardMember />
+        </div>
     </div>
   );
 }
