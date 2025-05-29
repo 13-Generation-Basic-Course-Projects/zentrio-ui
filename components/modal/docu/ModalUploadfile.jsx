@@ -8,11 +8,13 @@ import {
   ModalBody,
   ModalFooter,
   Button,
-} from "@heroui/react"; // no useDisclosure needed here
+  useDisclosure,
+} from "@heroui/react";
 import uploadIcon from "@/assets/uploadicon.svg";
 import Image from "next/image";
 
-export default function ModalUploadFile({ isOpen, onClose }) {
+export default function ModalUploadFile() {
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [fileName, setFileName] = useState("");
   const inputRef = useRef(null);
 
@@ -27,28 +29,28 @@ export default function ModalUploadFile({ isOpen, onClose }) {
     inputRef.current?.click();
   };
 
-  const handleUpload = () => {
+  const handleUpload = (onClose) => {
     if (!fileName) return;
+    // Add actual upload logic here if needed
     console.log("Uploading:", fileName);
     setFileName("");
-    onClose(); // close modal from parent
+    onClose();
   };
 
   return (
     <>
-      {/* You can delete this Button if you open modal from a parent component */}
-      {/* <Button onPress={onOpen}>Open Modal</Button> */}
+      <Button onPress={onOpen}>Open Modal</Button>
 
-      <Modal isOpen={isOpen} onOpenChange={onClose}>
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>
-          {(onCloseModal) => (
+          {(onClose) => (
             <>
               <ModalHeader className="flex justify-center text-2xl font-bold">
-                
                 Upload
               </ModalHeader>
 
               <ModalBody>
+                {/* Upload Area */}
                 <div
                   className="border-2 border-dashed border-primary rounded-xl p-6 flex flex-col items-center text-center space-y-2 bg-blue-50 cursor-pointer hover:bg-blue-100 transition"
                   onClick={handleBrowseClick}
@@ -77,12 +79,12 @@ export default function ModalUploadFile({ isOpen, onClose }) {
                   />
                 </div>
 
+                {/* File Info Section */}
                 <div className="space-y-2 mt-4">
                   <label className="block text-title">Uploading</label>
                   <div className="w-full text-title/50 text-caption p-4 border rounded-medium border-gray-400 flex justify-between items-center cursor-pointer">
                     {fileName || "Choose your file"}
                     <div className="inline-block ml-2">
-                      {/* SVG icon remains unchanged */}
                       <svg
                         width="18"
                         height="20"
@@ -115,7 +117,7 @@ export default function ModalUploadFile({ isOpen, onClose }) {
                   className="w-full"
                   color="primary"
                   isDisabled={!fileName}
-                  onPress={handleUpload}
+                  onPress={() => handleUpload(onClose)}
                 >
                   Upload File
                 </Button>

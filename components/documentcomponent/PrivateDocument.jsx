@@ -5,9 +5,9 @@ import personal from "../../assets/personal.png";
 import MyDatePicker from "../date/Datepicker";
 import BredCrum from "../bredcrum/Bredcrum";
 import { documentData } from "@/data/docu/documentData";
-import CardFolder, { CardFile } from "../card/CardDoc";
-export default  function Privatedocument({ modal }) {
-  
+import ModalUploadFile from "../modal/docu/ModalUploadFile";
+export default async function Privatedocument({ modal }) {
+  //const data = await testSusupne();
   console.log(documentData);
   
   const data = documentData;
@@ -25,6 +25,7 @@ export default  function Privatedocument({ modal }) {
           <MyDatePicker />
         </div>
         {/* 1 */}
+        <ModalUploadFile />
 
         <div className="flex items-center gap-3">
           <Image src={personal} alt="personal" className="h-5 w-5" />
