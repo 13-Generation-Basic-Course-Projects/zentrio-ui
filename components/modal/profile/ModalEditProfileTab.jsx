@@ -300,7 +300,7 @@ export function ModalEditProfile() {
                       </p>
                     </div>
 
-                    <ul className="px-2 pt-2 space-y-3 mt-2 max-h-[400px] overflow-y-auto pr-2 pb-[200px]">
+                    <ul className="px-2 pt-2 space-y-3 mt-2 max-h-[400px] overflow-y-auto pr-2">
                       {boards.map((board, index) => (
                         <li
                           key={index}

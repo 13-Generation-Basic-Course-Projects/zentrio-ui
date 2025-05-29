@@ -6,6 +6,10 @@ import AchievmentTab from "../profilecomponent/AchievmentTab";
 import { ModalEditProfile } from "../modal/profile/ModalEditProfileTab";
 import { ModalEditAchievment } from "../modal/profile/ModalEditAchievment";
 
+import {
+  ModalEditProfile,
+} from "../modal/profile/ModalEditProfileTab";
+import { ModalEditAchievment } from "../modal/profile/ModalEditAchievment";
 export default function Profilepage() {
   return (
     <div>
