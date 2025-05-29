@@ -130,7 +130,7 @@ const filteredData = [...documentData]
           </div>
         </div>
 
-        <div className="w-full p-4 max-h-screen overflow-y-auto">
+        <div className="w-full p-4 max-h-screen overflow-y-auto scrollbar-hidden">
           {/* Folders Section */}
           <div className="mb-8">
             <div className="flex items-center justify-between mb-4">

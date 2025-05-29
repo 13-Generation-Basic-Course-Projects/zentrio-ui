@@ -137,7 +137,7 @@ export default function CardFolder({ title, status, date }) {
           ></path>
         </svg>
 
-        <p className="text-base font-semibold text-title/80 truncate text-center px-2">
+        <p className="text-base font-semibold text-title/80 truncate text-center px-2 ">
           {title}
         </p>
       </CardBody>
@@ -215,9 +215,11 @@ export function CardFile({ title, status, date, type }) {
       {/* Body */}
       <CardBody className="overflow-visible py-2 flex flex-col items-center space-y-2">
         <FileIcon type={type} />
-        <p className="text-base font-semibold text-title/80 truncate text-center px-2">
-          {title} .{type}
-        </p>
+        <div className="flex items-center w-full">
+          <p className="truncate text-base font-semibold text-title/80 text-center px-2">
+            {title} .{type}
+          </p>
+        </div>
       </CardBody>
 
       {/* Footer */}
