@@ -3,6 +3,7 @@ import CardWelcomeComponent from "../card/CardWelcome";
 import CardBoard from "../card/CardBoard";
 import CardBoardEmpty from "../card/CardBoardAdd";
 import { Link } from "lucide-react";
+import CardMember from "../card/CardMember";
 
 export default function Myworkspace({ Workspaceid }) {
   return (
@@ -29,7 +30,9 @@ export default function Myworkspace({ Workspaceid }) {
       </div>
 
       {/* event - no scroll */}
-      <div className="col-span-3 ">member</div>
+      <div className="col-span-3 p-4">
+        <CardMember />
+      </div>
     </div>
   );
 }

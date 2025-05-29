@@ -4,7 +4,7 @@ import { Card, CardHeader, CardBody, Button } from "@heroui/react"
 export default function CardMember({members = []}) {
   return (
     <div>
-      <Card className="w-full max-w-md mx-auto h-80">
+      <Card className="w-full max-w-md mx-auto h-[400px]">
       <CardHeader className="flex justify-between items-center px-6 py-4 pb-2">
         <h2 className="text-lg font-semibold text-title">Member</h2>
         <Button variant="light" size="md" className="text-body p-0 h-auto min-w-0">
