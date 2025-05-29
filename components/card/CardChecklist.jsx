@@ -14,7 +14,7 @@ export const CardCheckList = ({
 }) => {
   return (
     <div>
-      <Card className="py-4 rounded-xl cursor-pointer hover:bg-blue-50 transition ">
+      <Card className="py-4 rounded-xl cursor-pointer hover:bg-blue-50 transition shadow-sm w-full">
         {/* Header */}
         <CardHeader className="pb-0 pt-2 px-4 flex items-start flex-col">
           <p className="text-h6 font-semibold text-title truncate">{title}</p>
@@ -127,7 +127,7 @@ export const CardCheckList = ({
                 className="w-[16px] h-[16px]"
                 alt="Comments icon"
               />
-              <button className="text-body-sm/50 ">Date</button>
+              <p className="text-body-sm/50 ">Date</p>
             </div>
           </div>
         </CardFooter>
