@@ -9,6 +9,8 @@ import {
   StarIconSolid,
 } from "../icon/everyicon";
 import iconMember from "@/assets/memberSideBar.png";
+import CommentIcon from "@/assets/commentIcon.svg";
+import CalendarIcon from "@/assets/calendarSidebar.png";
 import Image from "next/image";
 
 import { usePathname, useSearchParams } from "next/navigation";
