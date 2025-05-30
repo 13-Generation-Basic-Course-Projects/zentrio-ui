@@ -5,7 +5,7 @@ import { teamLeader } from "@/data/board/teamleader";
 import { initialColumns } from "@/data/boardData";
 import { CardCheckList } from "../card/CardChecklist";
 import UserAvater from "../useravatar/UserAvatar";
-import BredCrum from "../bredcrum/bredcrum";
+import BredCrum from "../bredcrum/Bredcrum";
 import { StackedUser } from "../useravatar/StackUser";
 import ModalCreateChecklist from "../modal/board/ModalCreateChecklist";
 import ModalDetailChecklist from "../modal/board/ModalDetailChecklist";

@@ -2,7 +2,7 @@ import React from "react";
 
 import Image from "next/image";
 import personal from "../../assets/personal.png";
-import MyDatePicker from "../date/Datepicker";
+import MyDatePicker from "../date/DatePicker";
 import BredCrum from "../bredcrum/Bredcrum";
 import { documentData } from "@/data/docu/documentData";
 import CardFolder, { CardFile } from "../card/CardDoc";

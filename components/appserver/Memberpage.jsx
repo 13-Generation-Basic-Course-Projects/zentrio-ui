@@ -22,7 +22,7 @@ import {
   useDraggable,
   Pagination,
 } from "@heroui/react";
-import BredCrum from "../bredcrum/bredcrum";
+import BredCrum from "../bredcrum/Bredcrum";
 import Link from "next/link";
 import PopupAction from "../popup/PopupAction";
 import { IconpopupDelete } from "../icon/Iconpopup";

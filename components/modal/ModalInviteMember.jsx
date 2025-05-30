@@ -76,6 +76,7 @@ export default function ModalInviteMember() {
                         name="email"
                         placeholder="Enter email"
                         type="email"
+                        variant="ghost"
                         classNames={{
                           label: "text-label font-medium",
                           inputWrapper:
@@ -88,14 +89,20 @@ export default function ModalInviteMember() {
                       <Select
                         key={"inside"}
                         placeholder="Select role"
+                        variant="ghost"
                         popoverProps={{
-                          className: "w-[200px]", // Large width for dropdown menu
+                          className: "w-[200px] shadow-none",
                         }}
                       >
                         {roles.map((role) => (
-                          <SelectItem key={role.key}>{role.label}</SelectItem>
+                          <SelectItem
+                            key={role.key}
+                          >
+                            {role.label}
+                          </SelectItem>
                         ))}
                       </Select>
+
                     </div>
 
                     <Button

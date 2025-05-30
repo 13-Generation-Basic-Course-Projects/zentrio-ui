@@ -1,5 +1,5 @@
 import React from "react";
-import MyDatePicker from "../date/Datepicker";
+import MyDatePicker from "../date/DatePicker";
 import publicIcon from "../../assets/public.png";
 import Image from "next/image";
 import BredCrum from "../bredcrum/Bredcrum";
