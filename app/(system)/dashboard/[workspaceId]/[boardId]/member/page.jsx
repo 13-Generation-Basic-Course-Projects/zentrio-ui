@@ -9,10 +9,10 @@ import React from "react";
 export default function Member() {
   return (
     <>
-      <Memberpage />
+      {/* <Memberpage /> */}
       {/* <Memberempty /> */}
       {/* <DocuEmpty/> */}
-      {/* <ReportEmpty/> */}
+      <ReportEmpty/>
     </>
   );
 }
