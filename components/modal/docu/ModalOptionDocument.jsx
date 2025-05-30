@@ -154,7 +154,7 @@ export default function ModalOptionDocument() {
         </DropdownItem>
         <DropdownItem
           key="delete"
-          className="w-full hover:bg-default-100 mb-1"
+          className="w-full hover:bg-default-100 mb-1 "
           startContent={<DeleteDocumentIcon className={cn(iconClasses)} />}
         >
           <ModalDelete title={"Move to trash"} />

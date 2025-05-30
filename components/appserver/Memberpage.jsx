@@ -20,6 +20,7 @@ import {
   Button,
   useDisclosure,
   useDraggable,
+  Pagination,
 } from "@heroui/react";
 import BredCrum from "../bredcrum/bredcrum";
 import Link from "next/link";
@@ -179,8 +180,23 @@ export default function Memberpage() {
     setMembers((prev) => prev.filter((m) => m.memberId !== id));
   };
 
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const membersPerPage = 5;
+
+  // Calculate the data for the current page
+  const indexOfLastMember = currentPage * membersPerPage;
+  const indexOfFirstMember = indexOfLastMember - membersPerPage;
+  const currentMembers = members.slice(indexOfFirstMember, indexOfLastMember);
+
+  const totalPages = Math.ceil(members.length / membersPerPage);
+
+  function handlePageChange(pageNumber) {
+    setCurrentPage(pageNumber);
+  }
+
+
   return (
-    <div className="p-4">
+    <div className="p-4 ">
       {/* Breadcrumb */}
       <BredCrum board={"Hikko Design"} feature={"Members"} header={"Member"} />
       <div className="flex justify-between">
@@ -213,30 +229,38 @@ export default function Memberpage() {
       </div>
 
       <section className="overflow-hidden">
-        <div className="relative max-h-[500px] overflow-x-auto mt-10 scrollbar-hidden">
-          <table className="w-full text-body-sm text-left text-title overflow-y-auto">
-            <thead className="text-[#64748B] bg-primary/20">
+        <div className="relative min-h-[450px] mt-10 ">
+          <table className="w-full text-body-sm text-left text-title ">
+            <thead className="text-title/50 bg-primary/20 ">
               <tr>
-                <th className="px-6 py-3 rounded-s-lg">No.</th>
-                <th className="px-6 py-3">Member Name</th>
-                <th className="px-6 py-3">Gender</th>
-                <th className="px-6 py-3">Email</th>
-                <th className="px-6 py-3">Role</th>
-                <th className="px-6 py-3">Current Task</th>
-                <th className="px-6 py-3 rounded-e-lg"></th>
+                <th className="px-6 py-3 rounded-s-lg w-16">No.</th>
+                <th className="px-6 py-3 w-48">Member Name</th>
+                <th className="px-6 py-3 w-28">Gender</th>
+                <th className="px-6 py-3 w-60">Email</th>
+                <th className="px-6 py-3 w-48">Role</th>
+                <th className="px-6 py-3 w-48">Current Task</th>
+                <th className="px-6 py-3 rounded-e-lg w-16"></th>
               </tr>
             </thead>
+
             <tbody>
-              {members.map((member, index) => (
+              {currentMembers.map((member, index) => (
                 <tr
                   key={member.memberId}
                   className={`${
-                    index % 2 !== 0 ? "bg-gray-100" : "bg-white"
+                    (index + indexOfFirstMember) % 2 !== 0
+                      ? "bg-gray-100"
+                      : "bg-white"
                   } hover:bg-gray-50 transition-colors`}
                   onMouseEnter={() => setHoverPopoverId(member.memberId)}
                   onMouseLeave={() => setHoverPopoverId(null)}
                 >
-                  <td className="px-6 py-2">{index + 1}</td>
+                  {/* Index Number */}
+                  <td className="px-6 py-2">
+                    {index + 1 + (currentPage - 1) * membersPerPage}
+                  </td>
+
+                  {/* Username with Hover Popup */}
                   <td className="px-6 py-2 relative">
                     <Link
                       href={{
@@ -261,7 +285,7 @@ export default function Memberpage() {
                     {/* Hover Details Popup */}
                     {hoverPopoverId === member.memberId && (
                       <div className="absolute left-0 top-full mt-2 w-72 bg-white border border-gray-200 shadow-lg rounded-lg p-4 z-50">
-                        <div className="flex items-center space-x-3 mb-3">
+                        <div className="flex items-center space-x-3 mb-3 ">
                           <img
                             src={member.profileImage}
                             alt={`${member.username}'s profile`}
@@ -338,11 +362,16 @@ export default function Memberpage() {
                     )}
                   </td>
 
+                  {/* Gender */}
                   <td className="px-6 py-4">{member.gender}</td>
+
+                  {/* Email */}
                   <td className="px-6 py-4">{member.email}</td>
+
+                  {/* Roles Popover */}
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-4">
-                      {member.roleName[0]}
+                      <span>{member.roleName[0]}</span>
                       {member.roleName.length > 1 && (
                         <Popover>
                           <PopoverTrigger className="cursor-pointer">
@@ -359,9 +388,11 @@ export default function Memberpage() {
                       )}
                     </div>
                   </td>
+
+                  {/* Tasks Popover */}
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-4">
-                      {member.task[0]}
+                      <span>{member.task[0]}</span>
                       {member.task.length > 1 && (
                         <Popover>
                           <PopoverTrigger className="cursor-pointer">
@@ -378,60 +409,57 @@ export default function Memberpage() {
                       )}
                     </div>
                   </td>
-                  <td>
+
+                  {/* Action Popover */}
+                  <td className="px-6 py-4">
                     <Popover
                       showArrow
                       backdrop="opaque"
                       offset={10}
                       placement="bottom"
                       isOpen={openPopoverId === member.memberId}
-                      onOpenChange={() => {
+                      onOpenChange={() =>
                         setOpenPopoverId((prev) =>
                           prev === member.memberId ? null : member.memberId
-                        );
-                      }}
+                        )
+                      }
                     >
-                      <PopoverTrigger className="px-6 py-4 cursor-pointer">
-                        <div>
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="w-4 h-4 text-gray-600 hover:text-black"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                          >
-                            <path d="M10 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4z" />
-                          </svg>
-                        </div>
+                      <PopoverTrigger className="cursor-pointer">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="w-4 h-4 text-gray-600 hover:text-black"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path d="M10 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4z" />
+                        </svg>
                       </PopoverTrigger>
+
                       <PopoverContent className="w-[150px] p-2">
                         <Button
                           className="w-full text-left text-red-600 hover:bg-red-100 bg-white"
-                          onPress={() => {
+                          onClick={() => {
                             setSelectedMemberId(member.memberId);
                             setOpenPopoverId(null);
-                            onOpen();
+                            onOpen(); // Confirm delete action modal
                           }}
                         >
-                          <span>
+                          <div className="flex items-center gap-2">
                             <svg
-                              className="text-progress-red/50 dark:text-white"
-                              aria-hidden="true"
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="20"
-                              height="20"
+                              className="w-4 h-4"
                               fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
                               viewBox="0 0 24 24"
                             >
                               <path
-                                stroke="currentColor"
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"
+                                d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 011 1v3H9V4a1 1 0 011-1ZM6 7h12v13a1 1 0 01-1 1H7a1 1 0 01-1-1V7z"
                               />
                             </svg>
-                          </span>
-                          Delete
+                            Delete
+                          </div>
                         </Button>
                       </PopoverContent>
                     </Popover>
@@ -510,6 +538,44 @@ export default function Memberpage() {
           </Modal>
         </div>
       </section>
+      {/* Pagination Buttons */}
+      <div className="flex flex-col items-center justify-center gap-5 ">
+        <p className="text-small text-default-500 text-center">
+          {currentPage > totalPages
+            ? "Have show all"
+            : `Selected Page: ${currentPage}`}
+        </p>
+        <Pagination
+          color="secondary"
+          page={currentPage}
+          total={totalPages}
+          onChange={setCurrentPage}
+        />
+        <div className="flex gap-2">
+          <Button
+            color="secondary"
+            size="sm"
+            variant="flat"
+            onPress={() =>
+              setCurrentPage((prev) => (prev > 1 ? prev - 1 : prev))
+            }
+          >
+            Previous
+          </Button>
+          <Button
+            color="primary"
+            size="sm"
+            variant="flat"
+            onPress={() =>
+              setCurrentPage(
+                (prev) => (prev < totalPages ? prev + 1 : prev) // Stop incrementing beyond totalPages
+              )
+            }
+          >
+            Next
+          </Button>
+        </div>
+      </div>
     </div>
   );
 }

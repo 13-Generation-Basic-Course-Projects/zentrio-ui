@@ -25,7 +25,7 @@ export default function ModalDelete({
     <>
       <Button
         onPress={onOpen}
-        className="bg-transparent  flex items-center gap-2 cursor-pointer p-3 !border-0"
+        className="bg-transparent hover:text-progress-red  flex items-center gap-2 cursor-pointer p-3 !border-0"
       >
         <div className={`font-medium ${color} `}>{title}</div>
       </Button>

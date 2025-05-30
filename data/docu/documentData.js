@@ -1,5 +1,6 @@
 export const documentData = [
   {
+    id: 1,
     title: "Project Proposal",
     status: "personal",
     date: "2025-05-28",
@@ -7,6 +8,7 @@ export const documentData = [
     category: "File",
   },
   {
+    id: 2,
     title: "Research Paper",
     status: "personal",
     date: "2025-05-25",
@@ -14,6 +16,7 @@ export const documentData = [
     category: "File",
   },
   {
+    id: 3,
     title: "Meeting Notes",
     status: "public",
     date: "2025-05-20",
@@ -21,6 +24,7 @@ export const documentData = [
     category: "File",
   },
   {
+    id: 4,
     title: "Invoice #1023",
     status: "public",
     date: "2025-05-22",
@@ -28,6 +32,7 @@ export const documentData = [
     category: "File",
   },
   {
+    id: 5,
     title: "Marketing Plan",
     status: "public",
     date: "2025-05-18",
@@ -35,6 +40,7 @@ export const documentData = [
     category: "File",
   },
   {
+    id: 6,
     title: "John Doe's Folder",
     status: "public",
     date: "2025-05-15",
@@ -42,6 +48,7 @@ export const documentData = [
     category: "Folder",
   },
   {
+    id: 7,
     title: "Presentations",
     status: "personal",
     date: "2025-05-12",
@@ -49,6 +56,7 @@ export const documentData = [
     category: "Folder",
   },
   {
+    id: 8,
     title: "Contract Agreement",
     status: "personal",
     date: "2025-05-10",
@@ -56,6 +64,7 @@ export const documentData = [
     category: "File",
   },
   {
+    id: 9,
     title: "Budget Report",
     status: "public",
     date: "2025-05-08",
@@ -63,14 +72,15 @@ export const documentData = [
     category: "File",
   },
   {
+    id: 10,
     title: "Engineering Notes",
     status: "public",
     date: "2025-05-05",
     type: null,
     category: "Folder",
   },
-
   {
+    id: 11,
     title: "Sales Report Q2",
     status: "personal",
     date: "2025-05-01",
@@ -78,6 +88,7 @@ export const documentData = [
     category: "File",
   },
   {
+    id: 12,
     title: "Team Meeting Agenda",
     status: "public",
     date: "2025-04-28",
@@ -85,6 +96,7 @@ export const documentData = [
     category: "File",
   },
   {
+    id: 13,
     title: "Legal Contract",
     status: "personal",
     date: "2025-04-25",
@@ -92,6 +104,7 @@ export const documentData = [
     category: "File",
   },
   {
+    id: 14,
     title: "Product Launch",
     status: "public",
     date: "2025-04-22",
@@ -99,6 +112,7 @@ export const documentData = [
     category: "File",
   },
   {
+    id: 15,
     title: "UX Designs",
     status: "personal",
     date: "2025-04-20",
@@ -106,6 +120,7 @@ export const documentData = [
     category: "Folder",
   },
   {
+    id: 16,
     title: "Marketing Strategy",
     status: "public",
     date: "2025-04-18",
@@ -113,6 +128,7 @@ export const documentData = [
     category: "File",
   },
   {
+    id: 17,
     title: "Financial Summary",
     status: "personal",
     date: "2025-04-15",
@@ -120,6 +136,7 @@ export const documentData = [
     category: "File",
   },
   {
+    id: 18,
     title: "Meeting Minutes",
     status: "public",
     date: "2025-04-12",
@@ -127,6 +144,7 @@ export const documentData = [
     category: "File",
   },
   {
+    id: 19,
     title: "Team Photos",
     status: "personal",
     date: "2025-04-10",
@@ -134,14 +152,15 @@ export const documentData = [
     category: "Folder",
   },
   {
+    id: 20,
     title: "Q1 Results",
     status: "public",
     date: "2025-04-08",
     type: "pdf",
     category: "File",
   },
-
   {
+    id: 21,
     title: "Product Specs",
     status: "personal",
     date: "2025-04-06",
@@ -149,6 +168,7 @@ export const documentData = [
     category: "File",
   },
   {
+    id: 22,
     title: "Training Material",
     status: "public",
     date: "2025-04-04",
@@ -156,6 +176,7 @@ export const documentData = [
     category: "File",
   },
   {
+    id: 23,
     title: "Expense Report",
     status: "personal",
     date: "2025-04-02",
@@ -163,6 +184,7 @@ export const documentData = [
     category: "File",
   },
   {
+    id: 24,
     title: "QA Checklist",
     status: "public",
     date: "2025-03-30",
@@ -170,6 +192,7 @@ export const documentData = [
     category: "File",
   },
   {
+    id: 25,
     title: "Project Files",
     status: "personal",
     date: "2025-03-28",
@@ -177,6 +200,7 @@ export const documentData = [
     category: "Folder",
   },
   {
+    id: 26,
     title: "Invoice #1045",
     status: "public",
     date: "2025-03-25",
@@ -184,6 +208,7 @@ export const documentData = [
     category: "File",
   },
   {
+    id: 27,
     title: "Workshop Slides",
     status: "personal",
     date: "2025-03-22",
@@ -191,6 +216,7 @@ export const documentData = [
     category: "File",
   },
   {
+    id: 28,
     title: "Meeting Notes",
     status: "public",
     date: "2025-03-20",
@@ -198,6 +224,7 @@ export const documentData = [
     category: "File",
   },
   {
+    id: 29,
     title: "Financial Report",
     status: "personal",
     date: "2025-03-18",
@@ -205,14 +232,15 @@ export const documentData = [
     category: "File",
   },
   {
+    id: 30,
     title: "Design Assets",
     status: "public",
     date: "2025-03-15",
     type: null,
     category: "Folder",
   },
-
   {
+    id: 31,
     title: "Client Presentation",
     status: "personal",
     date: "2025-03-12",
@@ -220,6 +248,7 @@ export const documentData = [
     category: "File",
   },
   {
+    id: 32,
     title: "Annual Report",
     status: "public",
     date: "2025-03-10",
@@ -227,6 +256,7 @@ export const documentData = [
     category: "File",
   },
   {
+    id: 33,
     title: "Developer Guide",
     status: "personal",
     date: "2025-03-08",
@@ -234,6 +264,7 @@ export const documentData = [
     category: "File",
   },
   {
+    id: 34,
     title: "Project Budget",
     status: "public",
     date: "2025-03-06",
@@ -241,6 +272,7 @@ export const documentData = [
     category: "File",
   },
   {
+    id: 35,
     title: "Legal Documents",
     status: "personal",
     date: "2025-03-04",
@@ -248,6 +280,7 @@ export const documentData = [
     category: "Folder",
   },
   {
+    id: 36,
     title: "HR Policies",
     status: "public",
     date: "2025-03-02",
@@ -255,6 +288,7 @@ export const documentData = [
     category: "File",
   },
   {
+    id: 37,
     title: "Company Profile",
     status: "personal",
     date: "2025-02-28",
@@ -262,6 +296,7 @@ export const documentData = [
     category: "File",
   },
   {
+    id: 38,
     title: "Training Schedule",
     status: "public",
     date: "2025-02-26",
@@ -269,6 +304,7 @@ export const documentData = [
     category: "File",
   },
   {
+    id: 39,
     title: "Onboarding Guide",
     status: "personal",
     date: "2025-02-24",
@@ -276,6 +312,7 @@ export const documentData = [
     category: "File",
   },
   {
+    id: 40,
     title: "Archived Files",
     status: "public",
     date: "2025-02-22",

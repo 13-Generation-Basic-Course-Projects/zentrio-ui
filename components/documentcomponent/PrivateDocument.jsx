@@ -39,6 +39,7 @@ export default  function Privatedocument({ modal }) {
               return (
                 <CardFolder
                   key={i}
+                  id={el.id}
                   title={el.title}
                   status={el.status}
                   date={el.date}

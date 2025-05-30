@@ -58,16 +58,16 @@ export default function ModalInviteMember() {
                     <Image src={mailIcon} width={30} height={27} alt="Email" />
                   </div>
                   <div>
-                    <h2 className="text-h2 text-title mb-2">Member</h2>
-                    <p className="text-body text-description">
+                    <h2 className="text-h4 text-title mb-1">Member</h2>
+                    <p className="text-body-sm text-description">
                       Invite team members to collaborate
                     </p>
                   </div>
                 </div>
               </ModalHeader>
-              <ModalBody>
+              <ModalBody className="overflow-hidden text-title">
                 <form action="" className="space-y-2">
-                  <div className="text-h5 text-title">Adding Member</div>
+                  <div className="text-h6 ">Adding Member</div>
                   <div className="flex items-center gap-x-4">
                     <div className="grid grid-cols-[60%_40%] border border-gray-300 rounded-small px-4 py-2 bg-white w-full focus-within:ring-2 focus-within:ring-primary transition-all hover:bg-white">
                       <Input
@@ -99,7 +99,7 @@ export default function ModalInviteMember() {
                     </div>
 
                     <Button
-                      className="bg-slate-blue px-8 py-6"
+                      className="bg-slate-blue px-8 py-6 text-btn text-primary"
                       color="primary"
                       variant="bordered"
                       size="lg"
@@ -110,8 +110,8 @@ export default function ModalInviteMember() {
                   </div>
                 </form>
                 <div className="space-y-2 mb-5">
-                  <div className="text-h5 text-title">Existing Member</div>
-                  <ul className="px-2 pt-2 space-y-3 mt-2 max-h-[300px] overflow-y-auto pr-2">
+                  <div className="text-h6 text-title">Existing Member</div>
+                  <ul className="px-2 pt-2 space-y-3 mt-2 max-h-[260px] overflow-y-auto pr-2 scrollbar-hidden">
                     {members.map((member) => (
                       <li
                         key={member.id}
@@ -131,7 +131,7 @@ export default function ModalInviteMember() {
                           </div>
                         </div>
                         <div>
-                          <p className="text-sm text-description">
+                          <p className="text-caption text-description">
                             {member.role}
                           </p>
                         </div>
@@ -141,8 +141,8 @@ export default function ModalInviteMember() {
                 </div>
 
                 <div className="space-y-2">
-                  <div className="text-h5 text-title">New Member</div>
-                  <ul className="px-2 pt-2 space-y-3 mt-2 max-h-[200px] overflow-y-auto pr-2">
+                  <div className="text-h6 text-title">New Member</div>
+                  <ul className="px-2 pt-2 space-y-3 mt-2 max-h-[200px] overflow-y-auto pr-2 scrollbar-hidden">
                     {members.map((member) => (
                       <li
                         key={member.id}
@@ -162,7 +162,7 @@ export default function ModalInviteMember() {
                           </div>
                         </div>
                         <div>
-                          <p className="text-sm text-description">
+                          <p className="text-caption text-description">
                             {member.role}
                           </p>
                         </div>
