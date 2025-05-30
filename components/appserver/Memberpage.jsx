@@ -19,7 +19,8 @@ import {
 } from "@heroui/react";
 import BredCrum from "../bredcrum/bredcrum";
 import Link from "next/link";
-
+import { Select, SelectItem, Input } from "@heroui/react";
+import { Funnel, Search } from 'lucide-react';
 export default function Memberpage() {
   const initialMembers = [
     {
