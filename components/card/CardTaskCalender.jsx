@@ -12,10 +12,8 @@ const colorMap = [
 ];
 
 export default function CardTaskCalender({ tasks, onTaskClick }) {
-  const data = [...tasks];
-
   return (
-    <Card className="py-4 rounded-large bg-white  w-full mx-auto">
+    <Card className="py-4 rounded-large bg-white w-full mx-auto">
       <CardHeader className="pb-0 pt-2 px-6 flex-col items-start">
         <div className="flex items-center gap-3">
           <Image
@@ -26,27 +24,25 @@ export default function CardTaskCalender({ tasks, onTaskClick }) {
           <h1 className="text-title text-large font-semibold">Tasks</h1>
         </div>
       </CardHeader>
+
       <CardBody className="overflow-visible py-3 px-4 rounded-lg">
-        {data.length > 0 ? (
-          data.map((el, i) => {
-            // Cycle through colors based on index
-            const colorIndex = i % colorMap.length;
-            const color = colorMap[colorIndex];
+        {tasks.length > 0 ? (
+          tasks.map((el, i) => {
+            const color = colorMap[i % colorMap.length];
             return (
               <div
                 key={i}
                 onClick={() => {
                   if (el.start) {
-                    onTaskClick?.(new Date(el.start));
+                    onTaskClick?.(el.start, el.id);
                   }
                 }}
-                className="py-3 px-3 flex items-center justify-between gap-2 hover:bg-gray-100 rounded-xl  active:bg-gray-100 transition-colors"
+                className="py-3 px-3 flex items-center justify-between gap-2 hover:bg-gray-100 rounded-xl cursor-pointer active:bg-gray-100 transition-colors"
               >
                 <div className="flex items-center gap-3 flex-1 min-w-0">
                   <span
                     className={`w-4 h-4 rounded-full ${color.value} flex-shrink-0`}
-                    aria-label={`${color.count} indicator`}
-                  ></span>
+                  />
                   <span
                     className={`${color.textColor} font-medium text-large truncate`}
                   >
