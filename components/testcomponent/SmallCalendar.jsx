@@ -4,11 +4,12 @@ import { useState, useEffect } from "react";
 import { RangeCalendar } from "@heroui/calendar";
 
 export default function SmallCalendar() {
-  const [calendarWidth, setCalendarWidth] = useState(0);
+  const [calendarWidth, setCalendarWidth] = useState(320); // Default width
 
   useEffect(() => {
-    const handleResize = () => setCalendarWidth(window.innerWidth );
-    handleResize(); // Set initially
+    const handleResize = () =>
+      setCalendarWidth(Math.min(window.innerWidth - 40, 400)); // Max 400px
+    handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
@@ -16,14 +17,8 @@ export default function SmallCalendar() {
   return (
     <RangeCalendar
       className={`
-        h-[400px] overflow-auto scrollbar-hidden mx-auto
-        [&_.react-aria-CalendarCell]:text-caption
-        [&_.react-aria-CalendarCell]:p-2
-        [&_.react-aria-CalendarCell]:text-gray-700
-        [&_.react-aria-CalendarCell[data-selected='true']]:bg-blue-500
-        [&_.react-aria-CalendarCell[data-selected='true']]:text-white
-        [&_.react-aria-CalendarCell[data-selected='true']]:rounded-full
-        [&_.react-aria-CalendarCell]:hover:bg-gray-200
+        h-[320px] overflow-auto scrollbar-hidden mx-auto
+        
       `}
       style={{ width: `${calendarWidth}px` }}
       showMonthAndYearPickers
