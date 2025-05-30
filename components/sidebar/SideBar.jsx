@@ -12,6 +12,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarTrigger,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 import calender from "../../assets/calendarSideBar.png";
@@ -80,18 +81,19 @@ export default function DashboardSidebar() {
     : items;
 
   return (
-    <Sidebar collapsible="icon" className="border-none  rounded-tr-xl">
+    <Sidebar collapsible="icon" className="border-none  rounded-tr-3xl bg-white">
       <SidebarContent className="h-screen flex flex-col !border-0  rounded-tr-xl">
-        <div className="p-4 !border-0">
+        <div className="p-4 !border-0 flex justify-between items-center">
           <Link href="/workspace">
             <Image src={logo} className="w-[168px] object-cover" alt="logo" />
           </Link>
+          <SidebarTrigger  />
         </div>
-
+        
         <SidebarGroup className="flex-1 flex flex-col !border-0">
           <SidebarGroupContent className="flex-1 flex flex-col justify-between !border-0">
             {/* TOP MENU */}
-            <SidebarMenu className="!border-0">
+            {/* <SidebarMenu className="!border-0">
               {filteredItems.map((item) => {
                 const isActive = pathname === item.url.split("?")[0]; // compare path only
                 return (
@@ -115,6 +117,32 @@ export default function DashboardSidebar() {
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
+                );
+              })}
+            </SidebarMenu> */}
+            <SidebarMenu className="!border-0">
+              {filteredItems.map((item) => {
+                const isActive = pathname === item.url.split("?")[0]; // compare path only
+                return (
+                  <SidebarMenuButton
+                    asChild
+                    tooltip={item.title}
+                    className={`${
+                      isActive
+                        ? "bg-slate-blue text-primary hover:text-primary"
+                        : ""
+                    }`}
+                    style={{ borderRadius: "0.5rem" }} // 8px = rounded-lg
+                  >
+                    <Link href={item.url} style={{ borderRadius: "0.5rem" }}>
+                      <Image
+                        src={isActive ? item.activeIcon : item.icon}
+                        className="w-[18px] object-cover"
+                        alt={`${item.title} icon`}
+                      />
+                      <span>{item.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
                 );
               })}
             </SidebarMenu>

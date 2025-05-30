@@ -8,6 +8,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { AuthInput } from './input';
 import { Eye, EyeOff } from "lucide-react";
+import { doSocialLogin } from '@/action/auth';
+import GoogleLogin from '../LoginForm';
 
 export const SignUpForm = () => {
   const [isVisible, setIsVisible] = useState({
@@ -27,44 +29,44 @@ export const SignUpForm = () => {
     });
   };
 
-  const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    termsAccepted: false,
-  });
+  // const [formData, setFormData] = useState({
+  //   username: '',
+  //   email: '',
+  //   password: '',
+  //   confirmPassword: '',
+  //   termsAccepted: false,
+  // });
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === 'checkbox' ? checked : value,
-    });
-  };
+  // const handleChange = (e) => {
+  //   const { name, value, type, checked } = e.target;
+  //   setFormData({
+  //     ...formData,
+  //     [name]: type === 'checkbox' ? checked : value,
+  //   });
+  // };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
 
-    // Validation logic
-    if (formData.password !== formData.confirmPassword) {
-      alert("Passwords do not match!");
-      return;
-    }
+  //   // Validation logic
+  //   if (formData.password !== formData.confirmPassword) {
+  //     alert("Passwords do not match!");
+  //     return;
+  //   }
 
-    if (!formData.username || !formData.email || !formData.password || !formData.confirmPassword) {
-      alert("All fields are required!");
-      return;
-    }
+  //   if (!formData.username || !formData.email || !formData.password || !formData.confirmPassword) {
+  //     alert("All fields are required!");
+  //     return;
+  //   }
 
-    // Add form submission logic here
-    console.log('Form submitted:', formData);
-  };
+  //   // Add form submission logic here
+  //   console.log('Form submitted:', formData);
+  // };
 
   return (
     <div className='w-full h-screen flex items-center justify-center'>
-      <div className='w-[1728px] h-[1117px]  flex items-center justify-center '>
-        <Form onSubmit={handleSubmit} className="space-y-4 w-[640px] h-fit bg-signup-gradient   px-[55px] py-[40px] rounded-[20px] shadow-lg gap-[50px]">
+      <div className=" w-[580px] bg-signup-gradient  px-[55px] py-[40px] rounded-[20px] shadow-sm gap-[50px]">
+        <Form action="" >
           <div>
             <p className='text-h1 text-primary'><span className='font-bold'>Sign up</span></p>
             <p className='text-body text-[#787486]'>Let’s get you all st up so you can access your personal account</p>
@@ -182,8 +184,7 @@ export const SignUpForm = () => {
                 <Checkbox
                   label="I agree to all the Terms and Privacy Policies"
                   name="termsAccepted"
-                  checked={formData.termsAccepted}
-                  onChange={handleChange}
+                  
                   className='w-[12px]'
                   required
                 />
@@ -207,13 +208,14 @@ export const SignUpForm = () => {
                   <p className='text-body-sm text-[#787486]'>Or Sign up with</p>
                   <hr className="flex-grow border-t border-gray-300" />
                 </div>
-                <div className="flex justify-center mt-2">
-                  <Image src={Google} alt="Google Icon" className="w-24 h-24" />
-                </div>
+                
               </div>
             </div>
           </div>
         </Form>
+        <div className="flex justify-center">
+            <GoogleLogin/>
+        </div>
       </div>
     </div>
   );
@@ -267,10 +269,10 @@ export const SigninForm = () => {
 
   return (
     <div className='w-full h-screen flex items-center justify-center'>
-      <div className='w-[1728px] h-[1117px]  flex items-center justify-center'>
-        <Form onSubmit={handleSubmit} className="w-[540px] h-fit bg-login-gradient px-[55px] py-[40px] rounded-[20px] shadow-lg gap-[50px]">
+      <div className="w-[540px] h-fit bg-login-gradient px-[55px] py-[40px] rounded-[20px] shadow-sm gap-[50px]">
+        <Form action="" >
           <div>
-            <p className='text-h1 text-primary'><span className='font-bold'>Login in</span></p>
+            <p className='text-h1 text-primary'><span className='font-bold'>Login</span></p>
             <p className='text-body text-[#787486]'>Login to access your Zentrio account</p>
           </div>
           <div className='flex flex-col gap-[20px] w-full'>
@@ -358,12 +360,12 @@ export const SigninForm = () => {
                 <p className='text-body-sm text-[#787486]'>Or Login with</p>
                 <hr className="flex-grow border-t border-gray-300" />
               </div>
-              <div className="flex justify-center mt-2">
-                <Image src={Google} alt="Google Icon" className="w-24 h-24" />
-              </div>
             </div>
             </div>
         </Form>
+         <div className="flex justify-center">
+            <GoogleLogin/>
+        </div>
       </div>
     </div>
   );
@@ -398,9 +400,9 @@ export const ForgetPass = () => {
   return (
     <div className='w-full h-screen flex items-center justify-center'>
       <div className='w-[1728px] h-[1117px]  flex items-center justify-center'>
-        <Form onSubmit={handleSubmit} className="w-[640px] h-fit bg-gradient-to-br from-[#9BDBFD]/30 to-[#FFFFFF] px-[55px] py-[40px] rounded-[20px] shadow-lg gap-[50px]">
+        <Form onSubmit={handleSubmit} className="w-[640px] h-fit bg-forgot-gradient px-[55px] py-[40px] rounded-[20px] shadow-sm gap-[50px]">
           <div>
-              <Link href="#" className='flex items-center gap-3 pb-[5%] text-body-sm text-primary'>
+              <Link href="/login" className='flex items-center gap-3 pb-[5%] text-body-sm text-primary'>
                 <svg width="18" height="12" viewBox="0 0 18 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M2 6L17 5.99976" stroke="#59BAD5" strokeWidth="1.5"  strokeLinecap="round"   strokeLinejoin="round"/>
                   <path d="M6 1L1.70711 5.29289C1.37377 5.62623 1.20711 5.79289 1.20711 6C1.20711 6.20711 1.37377 6.37377 1.70711 6.70711L6 11" stroke="#59BAD5" strokeWidth="1.5"  strokeLinecap="round"   strokeLinejoin="round"/>
@@ -439,7 +441,7 @@ export const ForgetPass = () => {
               </div>
             </div>
             
-            <Button  className="w-full bg-primary text-white max-w-none">
+            <Button  className="w-full bg-primary text-white max-w-none border-none">
             <Link href="/setnewpassword" className="capitalize">
             <p className='text-h6'>
                 Submit
@@ -505,7 +507,7 @@ export const SetNewPass = () => {
       <div className='w-[1728px] h-[1117px]  flex items-center justify-center'>
         <Form onSubmit={handleSubmit} className="w-[640px] h-fit bg-gradient-to-br from-[#9BDBFD]/30 to-[#FFFFFF] px-[55px] py-[40px] rounded-[20px] shadow-lg gap-[50px]">
           <div>
-            <Link href="#" className='flex items-center gap-3 pb-[5%] text-body-sm text-primary'>
+            <Link href="/forgot-password" className='flex items-center gap-3 pb-[5%] text-body-sm text-primary'>
               <svg width="18" height="12" viewBox="0 0 18 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M2 6L17 5.99976" stroke="#59BAD5" strokeWidth="1.5"  strokeLinecap="round"   strokeLinejoin="round"/>
                 <path d="M6 1L1.70711 5.29289C1.37377 5.62623 1.20711 5.79289 1.20711 6C1.20711 6.20711 1.37377 6.37377 1.70711 6.70711L6 11" stroke="#59BAD5" strokeWidth="1.5"  strokeLinecap="round"   strokeLinejoin="round"/>
@@ -630,14 +632,14 @@ export const OtpForm = () => {
 
   return (
     <div className="w-full h-screen flex items-center justify-center">
-      <div className="w-[1728px] h-[1117px] flex items-center justify-center">
+      <div className="w-[1728px] h-[1117px]  flex items-center justify-center">
         <form
           onSubmit={handleSubmit}
-          className="w-[640px] h-fit bg-gradient-to-br from-[#9BDBFD]/30 to-[#FFFFFF] px-[55px] py-[40px] rounded-[20px] shadow-lg flex flex-col gap-[50px]"
+          className="w-[640px] h-fit bg-verify-gradient px-[55px] py-[40px] rounded-[20px] shadow-lg flex flex-col gap-[50px] shadow-sm"
         >
           <div>
             <Link
-              href="#"
+              href="/login"
               className="flex items-center gap-3 pb-[5%] text-body-sm text-primary"
             >
               <svg
