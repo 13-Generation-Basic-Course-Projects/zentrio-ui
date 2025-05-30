@@ -1,5 +1,7 @@
+import DocuEmpty from "@/components/appserver/DocumentEmpty";
 import Memberempty from "@/components/appserver/Memberempty";
 import Memberpage from "@/components/appserver/Memberpage";
+import ReportEmpty from "@/components/appserver/ReportEmpty";
 import React from "react";
 
 
@@ -9,6 +11,8 @@ export default function Member() {
     <>
       <Memberpage />
       {/* <Memberempty /> */}
+      {/* <DocuEmpty/> */}
+      {/* <ReportEmpty/> */}
     </>
   );
 }
