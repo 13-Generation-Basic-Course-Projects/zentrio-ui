@@ -16,14 +16,6 @@ export const teamLeader = [
     , {
         id:5,
         image: "https://i.ytimg.com/vi/K1iu1kXkVoA/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLCDwv06ud7IwE7hyyqWUQzVjAczpA"
-    },
-    {
-        id:6,
-        image: "https://i.insider.com/620c073416a6300018c92545?width=600&format=jpeg&auto=webp"
     }
-    ,
-    {
-        id:7,
-        image: "https://i.insider.com/620c073416a6300018c92545?width=600&format=jpeg&auto=webp"
-    }
+   
 ]

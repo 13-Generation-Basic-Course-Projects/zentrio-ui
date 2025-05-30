@@ -9,12 +9,14 @@ import BredCrum from "../bredcrum/bredcrum";
 import { StackedUser } from "../useravatar/StackUser";
 import ModalCreateChecklist from "../modal/board/ModalCreateChecklist";
 import ModalDetailChecklist from "../modal/board/ModalDetailChecklist";
+import CardDateChecklist from "../card/CardDateChecklist";
 
 export default function KanbanBoard({ modal }) {
   const [columns, setColumns] = useState(initialColumns);
   const [draggedItem, setDraggedItem] = useState(null);
   const [dragTarget, setDragTarget] = useState(null);
 
+  
   // Find card or subtask by ID
   const findItem = (itemId) => {
     for (const column of columns) {
@@ -371,7 +373,7 @@ export default function KanbanBoard({ modal }) {
                           <div className="flex items-center justify-between gap-2  ">
                             <UserAvater
                               image={
-                                "https://static.wikia.nocookie.net/youtube/images/5/53/Bro_Code.jpg/revision/latest?cb=20221016091948"
+                                "https://cdn.prod.website-files.com/5dd827bbc07b1656e06b16d8/623db0c2ec0384a4ffd2c4ab_mosh.jpeg"
                               }
                             />
                           </div>
@@ -477,7 +479,7 @@ export default function KanbanBoard({ modal }) {
                       {card.expanded && (
                         <div className=" pb-3 pt-1 px-3">
                           <div className="grid grid-cols-12">
-                            <div className="col-span-9">
+                            <div className="col-span-8 flex items-center">
                               <ModalCreateChecklist
                               onSubmit={(subtaskData) =>
                                 addSubtask(card.id, subtaskData)
@@ -485,6 +487,9 @@ export default function KanbanBoard({ modal }) {
                               buttonText="New checklist"
                               modalTitle="Create Checklist"
                             />
+                            </div>
+                            <div className="col-span-4 p-2">
+                              <CardDateChecklist date={"April 25"}/>
                             </div>
                           </div>
                         </div>

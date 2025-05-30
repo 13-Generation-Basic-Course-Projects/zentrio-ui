@@ -158,7 +158,6 @@ export default function DashboardSidebar() {
       title: "Document",
       url: `/dashboard/${workspaceId}/${projectId}/docu?role=${role}`,
       icon: folder,
-      // activeIcon: folder, // No SVG, uses image; no color change needed
       activeIcon: (active) => (
       <svg
         width={22}
@@ -331,26 +330,24 @@ export default function DashboardSidebar() {
                         isActive
                           ? "bg-slate-blue text-primary hover:text-primary "
                           : ""
-                      } py-5  px-0`}
+                      } py-5 px-0 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:!px-2`}
                       style={{ borderRadius: "0.5rem" }}
                     >
-                      <Link href={item.url} style={{ borderRadius: "0.5rem" }} className="" >
+                      <Link href={item.url} style={{ borderRadius: "0.5rem" }} className="flex items-center justify-start group-data-[collapsible=icon]:justify-center w-full">
                         {typeof item.activeIcon === "function" ? (
-                          <>
-                          <p >
-                            {item.activeIcon(isActive)}  
-                            {/* this one not center the bg when collape */}
-                          </p>
-                          </>
-
+                          <div className="flex items-center justify-center min-w-[22px]">
+                            {item.activeIcon(isActive)}
+                          </div>
                         ) : (
-                          <Image
-                            src={isActive ? item.activeIcon : item.icon}
-                            className="w-[18px] object-cover"
-                            alt={`${item.title} icon`}
-                          />
+                          <div className="flex items-center justify-center min-w-[22px]">
+                            <Image
+                              src={isActive ? item.activeIcon : item.icon}
+                              className="w-[18px] object-cover"
+                              alt={`${item.title} icon`}
+                            />
+                          </div>
                         )}
-                        <span className="pl-3">{item.title}</span>
+                        <span className="pl-3 group-data-[collapsible=icon]:hidden">{item.title}</span>
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -364,12 +361,12 @@ export default function DashboardSidebar() {
                 <SidebarMenuButton
                   asChild
                   tooltip="Logout"
-                  className="flex items-center gap-2 px-4 cursor-pointer pb-10 !border-0"
+                  className="flex items-center gap-2 px-4 cursor-pointer pb-10 !border-0 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:!px-2"
                 >
-                  <div>
+                  <div className="flex items-center justify-start group-data-[collapsible=icon]:justify-center w-full">
                     <ModalLeave
                       massageTitle={"Are you sure?"}
-                      massageBody={"You want to leave this board “Zin two"}
+                      massageBody={"You want to leave this board Zin two"}
                       massageUndo={"No, cancel"}
                       massageDo={"Yes, Leave"}
                       action={[<LeaveButton key="leave-button" />]}
