@@ -40,11 +40,7 @@ export default function OtherProfileLayout({ user, acheivment, profile, action ,
   return (
     <>
       <div className="w-full sticky top-0 z-[20] px-10 py-2">
-            <BredCrum
-                board={"Hikko Design"}
-                feature={"Members"}  
-                user={name}              
-              />
+        <BredCrum board={"Hikko Design"} feature={"Members"} user={name} />
         <div className="relative">
           <Image
             className="w-full rounded-xl"
@@ -56,6 +52,13 @@ export default function OtherProfileLayout({ user, acheivment, profile, action ,
             size="md"
             color="primary"
             variant="bordered"
+            onClick={() => {
+              if (window.history.length > 1) {
+                window.history.back(); // Go back if possible
+              } else {
+                window.location.href = "/dashboard"; // Fallback URL
+              }
+            }}
           >
             <IconReturnLeft strokeWidth={2} size={5} color={"currentColor"} />
             Go Back
@@ -110,7 +113,6 @@ export default function OtherProfileLayout({ user, acheivment, profile, action ,
               </button>
             ))}
           </div>
-       
         </div>
       </div>
 
