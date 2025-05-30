@@ -111,7 +111,7 @@ export default function ModalCreateTask({ input }) {
                       name="name"
                       placeholder="Name"
                       startContent={
-                        <span className="text-2xl p-1 border-r-1 border-gray-400 text-default-400 pointer-events-none flex-shrink-0">
+                        <span className=" text-2xl p-1 border-r-1 border-gray-400 text-default-400 pointer-events-none flex-shrink-0">
                           @
                         </span>
                       }

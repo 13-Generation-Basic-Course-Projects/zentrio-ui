@@ -32,7 +32,7 @@ export default async function OverviewLayout({ children }) {
         </div>
 
         {/* Children section - takes remaining height */}
-        <div className="overflow-hidden flex-1 min-h-0">{children}</div>
+        <div className="overflow-hidden flex-1 min-h-0 ">{children}</div>
       </div>
     </div>
   );

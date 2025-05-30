@@ -1,10 +1,10 @@
-import { Notification } from "@/components/notification/Notification";
+import AllDocument from "@/components/documentcomponent/AllDocument";
 import React from "react";
 
 export default function page() {
   return (
     <>
-      <Notification />
+      <AllDocument />
     </>
   );
 }

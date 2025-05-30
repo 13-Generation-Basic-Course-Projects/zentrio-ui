@@ -1,5 +1,22 @@
 import React from "react";
+import Image from "next/image";
+import ProfileLayout from "../profilecomponent/ProfileLayout";
+import ProfileTab from "../profilecomponent/ProfileTab";
+import AchievmentTab from "../profilecomponent/AchievmentTab";
+import { ModalEditProfile } from "../modal/profile/ModalEditProfileTab";
+import { ModalEditAchievment } from "../modal/profile/ModalEditAchievment";
+import OtherAchievmentTab from "../profilecomponent/OtherAchievmentTab";
+import OtherProfileLayout from "../profilecomponent/OtherProfileLayout";
+import OtherProfileTab from "../profilecomponent/OtherProfileTab";
 
-export default function OtherProfilepage() {
-  return <div></div>;
+export default function OtherUserProfile() {
+  return (
+    
+      <OtherProfileLayout
+      userName={"Jack Ma"}
+        profile={<OtherProfileTab/>}
+        acheivment={<OtherAchievmentTab />}
+      />
+    
+  );
 }

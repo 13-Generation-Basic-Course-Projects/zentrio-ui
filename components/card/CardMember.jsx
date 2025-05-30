@@ -1,7 +1,7 @@
 import React from 'react'
 import { Card, CardHeader, CardBody, Button } from "@heroui/react"
 
-export default function CardMember() {
+export default function CardMember({data}) {
   const members = [
     { name: "Alice Chan", role: "Project Manager" },
     { name: "Bob Sok", role: "Team Leader" },
@@ -14,7 +14,7 @@ export default function CardMember() {
 
   return (
     <div>
-      <Card className="w-full max-w-md mx-auto h-[400px]">
+      <Card className="w-full mx-auto shadow-sm h-[400px]">
         <CardHeader className="flex justify-between items-center px-6 py-4 pb-2">
           <h2 className="text-lg font-semibold text-title">Member</h2>
           <Button variant="light" size="md" className="text-body p-0 h-auto min-w-0">
@@ -22,8 +22,8 @@ export default function CardMember() {
           </Button>
         </CardHeader>
 
-        <CardBody className="px-6 py-4 overflow-y-auto max-h-[300px]">
-          {members.length === 0 ? (
+        <CardBody className="px-6 py-4 overflow-y-auto max-h-[300px] scrollbar-hidden">
+          {members.length === 0  || data == "null" ? (
             <div className="text-center">
               <p className="text-slate-500 text-sm">empty members</p>
             </div>

@@ -19,6 +19,7 @@ import { icon } from "../icon/allicon";
 import SaveWorkspace from "../button/SaveWorkspace";
 import ModalCreateWorkspace from "../modal/ModalCreateWorkspace";
 import ModalCreateBoard from "../modal/ModalCreateBoard";
+import ModalOptionWorkspace from "../modal/workspace/ModalOptionWorkspace";
 
 const randomColor = () =>
   Math.floor(Math.random() * 16777215)
@@ -108,17 +109,20 @@ export default function WorkSpaceSideBar() {
                     : "hover:bg-slate-100 text-gray-700"
                 } !border-0`}
                     >
-                      <Link href={item.url}>
+                      
                         <div className="flex items-center gap-2 justify-between w-full">
                           <span
                             className={`${item.color} h-5 w-5 rounded-full`}
                           ></span>
+                          <Link href={item.url}>
                           <span className="flex-1 text-left sm:text-body-sm  truncate overflow-hidden whitespace-nowrap">
                             {item.title}
                           </span>
-                          <span>{icon.threedotH}</span>
+                          </Link>
+                          <span>
+                            <ModalOptionWorkspace/>
+                          </span>
                         </div>
-                      </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 );
@@ -139,17 +143,22 @@ export default function WorkSpaceSideBar() {
                     : "hover:bg-slate-100 text-gray-700"
                 } !border-0`}
                     >
-                      <Link href={item.url}>
+                      
                         <div className="flex items-center gap-2  justify-between w-full">
+                        
                           <span
                             className={`${item.color} h-5 w-5 rounded-full`}
                           ></span>
+                          <Link href={item.url}>
                           <span className="flex-1 text-left sm:text-body-sm truncate overflow-hidden whitespace-nowrap">
                             {item.title}
                           </span>
-                          <span>{icon.threedotH}</span>
+                          </Link>
+                          <span>
+                            <ModalOptionWorkspace/>
+                          </span>
                         </div>
-                      </Link>
+                      
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 );

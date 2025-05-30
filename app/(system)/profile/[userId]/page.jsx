@@ -1,5 +1,9 @@
+import OtherUserProfile from "@/components/appserver/OtherProfilepage";
 import React from "react";
 
-export default function OtherUserProfile() {
-  return <div></div>;
+export default function MemberProfile() {
+  return (
+    <OtherUserProfile/>
+  )
+  ;
 }

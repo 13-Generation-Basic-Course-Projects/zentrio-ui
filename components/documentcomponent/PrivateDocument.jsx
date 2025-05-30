@@ -1,15 +1,15 @@
 import React from "react";
-import { testSusupne } from "@/service/test.service";
-import CardFolder, { CardFile } from "../card/CardDoc";
+
 import Image from "next/image";
 import personal from "../../assets/personal.png";
 import MyDatePicker from "../date/Datepicker";
 import BredCrum from "../bredcrum/Bredcrum";
 import { documentData } from "@/data/docu/documentData";
-export default async function Privatedocument({ modal }) {
-  //const data = await testSusupne();
+import CardFolder, { CardFile } from "../card/CardDoc";
+export default  function Privatedocument({ modal }) {
+  
   console.log(documentData);
-  //console.log(data);
+  
   const data = documentData;
 
   return (
@@ -17,8 +17,8 @@ export default async function Privatedocument({ modal }) {
       <div className="grid grid-cols-1 gap-3 ">
         <BredCrum
           board={"Hikko Design"}
-          feature={"Board"}
-          header={"Hikko Design"}
+          feature={"Document"}
+          header={"Document"}
           modal={modal}
         />
         <div className="flex items-center justify-center pb-5">
@@ -31,7 +31,7 @@ export default async function Privatedocument({ modal }) {
           <p className="">Personal</p>
         </div>
       </div>
-      <div className="grid grid-cols-6 gap-3 overflow-y-auto scrollbar-hidden pb-40 pt-10">
+      <div className="grid grid-cols-6 gap-3 overflow-y-auto scrollbar-hidden pb-40 px-5  pt-10">
         {data
           .filter((el) => el.status === "personal")
           .map((el, i) => {

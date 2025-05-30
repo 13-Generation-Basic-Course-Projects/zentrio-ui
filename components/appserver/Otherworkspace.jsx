@@ -3,14 +3,14 @@ import React from "react";
 import SmallCalendar from "../testcomponent/SmallCalendar";
 import CardWelcomeComponent from "../card/CardWelcome";
 import CardBoard from "../card/CardBoard";
-import ChecklistCard from "../card/ChecklistCard";
+import CardMember from "../card/CardMember";
 export default function Otherworkspace({ Workspaceid }) {
   return (
     <>
       <div className=" w-full grid grid-cols-12 h-full">
         {/* board - this one scrolls */}
         <div className="col-span-9  flex flex-col overflow-hidden p-3 min-h-0">
-          <div className="grid grid-cols-3 gap-3 scrollbar-hidden pr-2 pb-[200px] py-4 overflow-y-auto  flex-1 min-h-0">
+          <div className="grid grid-cols-3 gap-3 scrollbar-hidden px-2 pb-[200px] py-4 overflow-y-auto  flex-1 min-h-0">
             {Array.from({ length: 5 * Workspaceid }).map((_, index) => (
               <CardBoard
                 key={index}
@@ -30,8 +30,8 @@ export default function Otherworkspace({ Workspaceid }) {
         </div>
 
         {/* event - no scroll */}
-        <div className="col-span-3 p-4">
-            <ChecklistCard />
+        <div className="col-span-3 p-2">
+          <CardMember/>
         </div>
       </div>
     </>

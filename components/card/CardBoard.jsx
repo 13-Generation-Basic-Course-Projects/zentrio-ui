@@ -28,7 +28,7 @@ export default function CardBoard({ title, image, role }) {
 
   return (
     <Link href={`/dashboard/${workspaceId}/${projectId}/board?role=${role}`}>
-      <Card className="py-4 h-[340px] rounded-xl shadow-lg">
+      <Card className="py-4 h-[340px] rounded-xl shadow-sm">
         {/* Header */}
         <CardHeader className="pb-0 pt-2 px-4 flex justify-between items-center">
           <p className="text-body-sm font-semibold text-primary truncate">

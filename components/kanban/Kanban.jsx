@@ -1,13 +1,14 @@
 "use client";
 import { useState } from "react";
 import { Plus, ChevronDown, ChevronRight } from "lucide-react";
-
+import { teamLeader } from "@/data/board/teamleader";
 import { initialColumns } from "@/data/boardData";
 import { CardCheckList } from "../card/CardChecklist";
 import UserAvater from "../useravatar/UserAvatar";
 import BredCrum from "../bredcrum/bredcrum";
 import { StackedUser } from "../useravatar/StackUser";
 import ModalCreateChecklist from "../modal/board/ModalCreateChecklist";
+import ModalDetailChecklist from "../modal/board/ModalDetailChecklist";
 
 export default function KanbanBoard({ modal }) {
   const [columns, setColumns] = useState(initialColumns);
@@ -273,6 +274,10 @@ export default function KanbanBoard({ modal }) {
     setDragTarget(null);
   };
 
+
+  //
+
+
   return (
     <div className="w-full h-screen flex flex-col">
       <BredCrum
@@ -371,10 +376,10 @@ export default function KanbanBoard({ modal }) {
                               </div>
                             </div>
                           </div>
-                          <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-center justify-between gap-2  ">
                             <UserAvater
                               image={
-                                "https://is5-ssl.mzstatic.com/image/thumb/Purple124/v4/3d/32/20/3d322049-015a-0e3b-e512-583ac627d478/source/256x256bb.jpg"
+                                "https://cdn.prod.website-files.com/5dd827bbc07b1656e06b16d8/623db0c2ec0384a4ffd2c4ab_mosh.jpeg"
                               }
                             />
                           </div>
@@ -427,7 +432,7 @@ export default function KanbanBoard({ modal }) {
                                 }
                                 onDragEnd={handleDragEnd}
                               >
-                                <CardCheckList
+                                <ModalDetailChecklist
                                   title="Hello"
                                   startDate={"25/05/25"}
                                   label={subtask.label}
@@ -477,7 +482,7 @@ export default function KanbanBoard({ modal }) {
 
                       {/* Create Subtask Button at Bottom of Card */}
                       {card.expanded && (
-                        <div className="px-3 pb-3 pt-1">
+                        <div className=" pb-3 pt-1">
                           <div className="w-full">
                             <ModalCreateChecklist
                               onSubmit={(subtaskData) =>

@@ -6,25 +6,20 @@ import notification from "../../assets/notification.png";
 import Link from "next/link";
 import Tapp from "../taps/BoardTab";
 import userProfile from "@/assets/profile.png";
+import ModalNotification from "../modal/noti/ModalNotification";
 export function NavbarAuthorized({ user }) {
   console.log("pf", user);
   return (
     <>
       {/* Navbar */}
 
-      <div className="w-full sticky top-0 z-20  bg-bgColor flex justify-end items-center ">
+      <div className="w-full sticky top-0 z-20  bg-bgColor flex justify-end items-center  ">
         <header className="px-4 sm:px-6 lg:px-8 ">
           <div className="flex w-full h-16 items-center justify-end ">
             {/* Right side - Notification and Profile */}
             <div className="flex items-center gap-4">
               {/* Notification Icon */}
-              <button className="p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200">
-                <Image
-                  src={notification}
-                  className="size-5"
-                  alt="notification"
-                />
-              </button>
+              <ModalNotification />
 
               {/* Profile */}
               <Link href="/profile">
