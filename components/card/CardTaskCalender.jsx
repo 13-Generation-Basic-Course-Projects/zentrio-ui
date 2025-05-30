@@ -15,7 +15,7 @@ export default function CardTaskCalender({ tasks = [] }) {
   const data = [...tasks];
 
   return (
-    <Card className="py-4 rounded-large bg-white  w-full mx-auto">
+    <Card className="py-4 rounded-large   w-full mx-auto shadow-sm">
       <CardHeader className="pb-0 pt-2 px-6 flex-col items-start">
         <div className="flex items-center gap-3">
           <Image
@@ -43,7 +43,7 @@ export default function CardTaskCalender({ tasks = [] }) {
                     aria-label={`${color.count} indicator`}
                   ></span>
                   <span
-                    className={`${color.textColor} font-medium text-large truncate`}
+                    className={`${color.textColor} font-medium text-body-sm truncate`}
                   >
                     {el.title}
                   </span>

@@ -4,7 +4,7 @@ import backgroundImg from "@/assets/background.png";
 
 export default function CardWelcomeComponent() {
   return (
-    <div className="relative rounded-2xl mt-[-32px] mb-10 overflow-hidden">
+    <div className="relative rounded-2xl mt-[-32px]  mb-2 overflow-hidden">
       {/* Background Image */}
       <Image
         className="w-full"

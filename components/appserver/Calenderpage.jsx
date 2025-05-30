@@ -86,10 +86,9 @@ export default function MyCalender({ tasks }) {
         board="Hikko Design"
         feature="Calender"
         header="Calender"
-        modal={[<ModalCreateGanttBar key="modal" />]}
       />
 
-      <div className="grid grid-cols-12 gap-4 pt-6 h-full">
+      <div className="grid grid-cols-12 gap-2 pt-6 h-full">
         {/* Calendar Scroll Section */}
         <div className="col-span-9 h-full overflow-y-auto pr-2 scrollbar-hidden">
           <div className=" h-full  scrollbar-hidden ">
@@ -115,9 +114,10 @@ export default function MyCalender({ tasks }) {
         </div>
 
         {/* Sidebar Scroll Section */}
-        <div className="col-span-3 h-full overflow-y-auto scrollbar-hidden bg-transparent overflow-y-auto pl-2 flex flex-col gap-[20px]">
+        <div className="col-span-3 h-full overflow-y-auto scrollbar-hidden   overflow-y-auto p-2 flex flex-col gap-[10px]">
           <CardTaskCalender tasks={tasks} />
           <CardTCommentCalender tasks={tasks} />
+          
         </div>
       </div>
     </div>

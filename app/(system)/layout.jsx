@@ -20,7 +20,7 @@ export default async function SystemLayout({ children }) {
   const session = await auth();
   console.log("aaa", session?.user);
   return (
-    <SidebarProvider className=" ">
+    <SidebarProvider className="">
       <SidebarRenderer />
       <div className={" font-poppin h-screen overflow-hidden   w-full"}>
         <SidebarTrigger className="fixed top-0  z-[30]" />

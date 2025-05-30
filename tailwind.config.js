@@ -64,6 +64,9 @@ module.exports = {
         "board-violet": "linear-gradient(138.66deg, #8A2BE2, #DA70D6, #8A2BE2)", //add new
         "board-primary":
           "linear-gradient(140.08deg, #59bad5, #ffffff, #59bad5)",
+        'login-gradient': 'linear-gradient(-50deg, rgba(255, 255, 255, 0.5) 48%, rgba(155, 219, 253, 0.3) 50%)', 
+        'signup-gradient': 'linear-gradient(-55deg, rgba(255, 255, 255, 0.5) 48%, rgba(155, 219, 253, 0.3) 35%)', 
+        'verify-gradient': 'linear-gradient(-55deg, rgba(255, 255, 255, 0.5) 48%, rgba(155, 219, 253, 0.3) 35%)', 
       },
       borderRadius: {
         lg: "var(--radius)",

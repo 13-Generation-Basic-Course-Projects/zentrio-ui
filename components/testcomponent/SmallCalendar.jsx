@@ -4,20 +4,23 @@ import { Calendar } from "@heroui/calendar";
 import { parseDate } from "@internationalized/date";
 
 export default function SmallCalendar() {
-  // return (
-  //   <Calendar
-  //     aria-label="Date"
-  //     defaultValue={parseDate("2020-02-03")}
-  //     className="flex-1 w-full h-full text-primary text-sm rounded-xl shadow-md p-4"
-  //   />
-  // );
   return (
-    <div className="w-full">
+    <div className="w-full max-w-none mx-auto h-[50px] xl:h-[300px]">
       <Calendar
         aria-label="Date"
-        className="bg-white h-[250px] min-h-0"
+        className="bg-white"
         pageBehavior="single"
         firstDayOfWeek="sun"
+        classNames={{
+          base: "w-full  h-full min-h-none bg-yellow-400 flex flex-col",
+          content: "w-full",
+          headerWrapper: "w-full",
+          gridWrapper: "min-w-full",
+          grid: "min-w-full",
+          gridHeader: "w-full",
+          gridHeaderRow: "w-full px-0 xl:px-1 justify-between",
+          gridBodyRow: "w-full px-2 xl:px-4 justify-between",
+        }}
       />
     </div>
   );
