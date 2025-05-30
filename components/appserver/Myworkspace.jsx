@@ -29,10 +29,10 @@ export default function Myworkspace({ Workspaceid }) {
         </div>
       </div>
 
-       {/* event - no scroll */}
-        <div className="col-span-3 p-2 mt-2">
-          <CardMember/>
-        </div>
+      {/* event - no scroll */}
+      <div className="col-span-3 p-2">
+        <CardMember />
+      </div>
     </div>
   );
 }

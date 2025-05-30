@@ -72,7 +72,7 @@ export default function ModalCreateBoard() {
     <>
       <Button
         onPress={onOpen}
-        className="bg-transparent h-[340px]  "
+        className="bg-transparent h-[240px]  "
         fullWidth="true "
       >
         <Card className="bg-transparent w-full h-full  shadow-none border-none">
