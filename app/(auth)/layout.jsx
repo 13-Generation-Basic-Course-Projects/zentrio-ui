@@ -1,7 +1,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "../globals.css";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { SidebarTest } from "@/components/sidebar/Sidebar";
+import { SidebarTest } from "@/components/sidebar/SideBar";
 
 import { auth } from "../../auth";
 import { UserAvatar } from "@/components/testcomponent/Avatar";
