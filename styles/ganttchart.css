@@ -1,97 +1,31 @@
-.fc .fc-daygrid-day-events {
-  margin-top: -30px;
+.fc-header-toolbar {
+  background-color: #F3F7FB;
+  color: #444444;
+  padding: 12px 24px;
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border-radius: 16px 16px 0 0;
 }
 
-.fc .fc-daygrid-day-number {
-  /* padding-bottom: 20px; */
-  z-index: 100;
+.fc .fc-toolbar-title {
+  font-size: 20px;
+  color: #444444;
 }
 
-.fc .fc-h-event {
-  background-color: transparent;
-  border: 0px solid transparent;
+.fc .fc-button {
+  background-color: #F3F7FB;
+  color: #444444;
+  border-radius: 6px;
+  padding: 4px 12px;
+  font-size: 14px;
 }
 
-.fc-daygrid-day-frame .fc-scrollgrid-sync-inner {
-  border: 0px;
+.fc .fc-button:hover {
+  background-color: #F3F7FB;
+  color: #444444;
 }
 
-td .fc-day {
-  height: 130px;
-  padding-bottom: 10px;
-}
-
-.fc-daygrid-day-bg {
-  background-color: RED;
-}
-
-.fc-direction-ltr .fc-daygrid-event.fc-event-end,
-.fc-direction-rtl .fc-daygrid-event.fc-event-start {
-  margin-right: 0px;
-  margin-top: -2px;
-}
-
-.fc-direction-ltr .fc-daygrid-event.fc-event-start,
-.fc-direction-rtl .fc-daygrid-event.fc-event-end {
-  margin-left: 0px;
-  margin-top: -2px;
-}
-
-/* resourceAreaHeaderContent */
-.fc-header-toolbar div:nth-child(1) {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-
-.fc-scroller-harness {
-  height: 100% !important;
-}
-
-.fc-datagrid-header .fc-scrollgrid-sync-table {
-  height: 100% !important;
-}
-
-.fc-timeline-slot-frame {
-  height: 100% !important;
-  width: 100%;
-  /* margin-right: 20px; */
-  padding-right: 0px;
-}
-
-tbody tr {
-  height: 70px;
-}
-
-.fc .fc-timeline-slot-cushion {
-  padding: 4px 0px;
-  width: 100%;
-}
-
-.fc .fc-datagrid-header .fc-datagrid-cell-frame {
-  height: 70px !important;
-}
-
-.fc-timeline-slot-cushion .fc-scrollgrid-sync-inner {
-  width: 100%;
-}
-
-.fc-direction-ltr .fc-timeline-slot {
-  width: 70px;
-  height: 70px;
-}
-
-.fc-slot-past div {
-  height: 100px;
-}
-
-div.fc-timeline-event-harness {
-  margin-right: -2px;
-  padding-right: 0px;
-}
-
-a.fc-event {
-  height: 100%;
-  padding: 0px;
-  background-color: transparent !important;
+.fc .fc-button-primary:disabled {
+  background-color: #F3F7FB;
+  color: #444444;
 }

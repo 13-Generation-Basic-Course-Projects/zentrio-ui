@@ -5,8 +5,9 @@ import FullCalendar from "@fullcalendar/react";
 import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
 import interactionPlugin from "@fullcalendar/interaction";
 import dayGridPlugin from "@fullcalendar/daygrid";
-import "@/styles/ganttchart.css";
+import "../../styles/ganttchart.css";
 import BredCrum from "../bredcrum/Bredcrum";
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 export default function GanttChart({ modal }) {
   const calendarRef = useRef(null);
@@ -116,8 +117,8 @@ export default function GanttChart({ modal }) {
       id: "1",
       resourceId: "iconspace-1",
       title: "Meeting",
-      start: "2025-04-16T00:00:00",
-      end: "2025-04-20T23:59:59",
+      start: "2025-05-16T00:00:00",
+      end: "2025-05-20T23:59:59",
       color: "#DBF9CE",
       borderColor: "#34D399",
       extendedProps: {
@@ -128,8 +129,8 @@ export default function GanttChart({ modal }) {
       id: "2",
       resourceId: "iconspace-2",
       title: "Frontend",
-      start: "2025-04-21T00:00:00",
-      end: "2025-04-25T23:59:59",
+      start: "2025-05-21T00:00:00",
+      end: "2025-05-25T23:59:59",
       color: "#FFF8EF",
       borderColor: "#FB923C",
       extendedProps: {
@@ -140,8 +141,8 @@ export default function GanttChart({ modal }) {
       id: "3",
       resourceId: "iconspace-3",
       title: "UX Research",
-      start: "2025-04-23T00:00:00",
-      end: "2025-04-26T23:59:59",
+      start: "2025-05-23T00:00:00",
+      end: "2025-05-26T23:59:59",
       color: "#FFEFF0",
       borderColor: "#F87171",
       extendedProps: {
@@ -164,8 +165,8 @@ export default function GanttChart({ modal }) {
       id: "5",
       resourceId: "iconspace-5",
       title: "Web Team Progress Update",
-      start: "2025-04-28T00:00:00",
-      end: "2025-05-02T23:59:59",
+      start: "2025-05-28T00:00:00",
+      end: "2025-06-02T23:59:59",
       color: "#EFFCFF",
       borderColor: "#38BDF8",
       extendedProps: {
@@ -207,17 +208,56 @@ export default function GanttChart({ modal }) {
         header={"Hikko Design"}
         modal={modal}
       />
+      <div className="flex items-center justify-between bg-[#F3F7FB] px-6 py-3 rounded-t-[16px] mt-3">
+        {/* Month and Year */}
+        <div className="text-xl font-semibold text-gray-800">
+          {new Date().toLocaleDateString("en-US", {
+            month: "long",
+            year: "numeric",
+          })}
+        </div>
+
+        {/* Duration Range */}
+        <div className="text-sm text-gray-600 font-medium">
+          Duration: <span className="font-bold">April 16, 2025 - April 28, 2025</span>
+        </div>
+
+        {/* Navigation buttons (hook into calendarRef) */}
+        <div className="flex justify-center items-center space-x-2">
+          <button
+            className="text-title px-3 py-1 rounded hover:bg-gray-300"
+            onClick={() => calendarRef.current?.getApi().today()}
+          >
+            Today
+          </button>
+          <button
+            className="text-title px-3 py-1 rounded border hover:bg-gray-300"
+            onClick={() => calendarRef.current?.getApi().prev()}
+          >
+            <ChevronLeft />
+          </button>
+          <button
+            className="text-title px-3 py-1 rounded border hover:bg-gray-300"
+            onClick={() => calendarRef.current?.getApi().next()}
+          >
+            <ChevronRight />
+          </button>
+        </div>
+      </div>
+
       <div className="flex-grow overflow-y-auto pt-5 scrollbar-hidden">
         <FullCalendar
           ref={calendarRef}
           plugins={[resourceTimelinePlugin, dayGridPlugin, interactionPlugin]}
           initialView="resourceTimelineCustom"
-          headerToolbar={{
-            left: "title",
-            right: "today prev,next",
-          }}
+          // headerToolbar={{
+          //   left: "title",
+          //   center: "",
+          //   right: "today prev,next",
+          // }}
+          headerToolbar={false}
           slotMinWidth={80} // Ensure columns are wide enough
-          initialDate="2025-04-15" // Start in the middle of April
+          initialDate="2025-05-01" // Start in the middle of April
           editable={true}
           eventDrop={handleEventChange}
           eventResize={handleEventChange}
@@ -228,25 +268,50 @@ export default function GanttChart({ modal }) {
           }}
           slotLabelContent={(arg) => {
             const date = arg.date;
+            const today = new Date();
+            const isToday = 
+              date.getDate() === today.getDate() &&
+              date.getMonth() === today.getMonth() &&
+              date.getFullYear() === today.getFullYear();
+
             const weekday = date.toLocaleDateString("en-US", {
               weekday: "short",
             });
             const day = date.getDate();
 
             return (
-              <div style={{ textAlign: "center", width: "100%" }}>
-                <div style={{ fontSize: "0.8rem" }}>{weekday}</div>
-                <div style={{ fontWeight: "bold" }}>{day}</div>
+              // <div style={{ textAlign: "center", width: "100%" }}>
+              //   <div style={{ fontSize: "0.8rem" }}>{weekday}</div>
+              //   <div style={{ fontWeight: "bold" }}>{day}</div>
+              // </div>
+
+              <div style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                fontSize: "12px",
+                fontWeight: isToday ? "bold" : "normal",
+                color: isToday ? "#fff" : "#1f2937", // Tailwind's gray-800
+                backgroundColor: isToday ? "#59BAD5" : "#F3F3F3", // Tailwind blue-500
+                borderRadius: "8px",
+                padding: "4px 6px",
+                width: "40px",
+                height: "40px",
+                justifyContent: "center",
+                margin: "0 auto",
+              }}>
+                <div>{day}</div>
+                <div style={{ fontSize: "10px" }}>{weekday}</div>
               </div>
             );
           }}
           views={{
             resourceTimelineCustom: {
               type: "resourceTimeline",
-              duration: { days: 35 }, // Show 35 days to ensure full range
+              duration: { days: 60 }, // Show 35 days to ensure full range
               visibleRange: {
-                start: "2025-04-01",
-                end: "2025-05-01", // Extend past May 15 to ensure all dates show
+                start: "2025-05-01",
+                end: "2025-06-01", // Extend past May 15 to ensure all dates show
               },
               slotDuration: "24:00:00",
             },
