@@ -10,6 +10,8 @@ import {
   DropdownSection,
 } from "@heroui/react";
 import ModalDelete from "../ModalDelete";
+import PopupAction from "@/components/popup/PopupAction";
+import { IconpopupDelete } from "@/components/icon/Iconpopup";
 
 // icon components directly in the same file
 const AddNoteIcon = (props) => (
@@ -110,9 +112,9 @@ export default function ModalOptionDocument() {
     "text-xl text-default-500 pointer-events-none flex-shrink-0";
 
   return (
-    <Dropdown>
+    <Dropdown className="z-[10px]">
       <DropdownTrigger>
-        <Button variant="" className="p-0 min-w-0 h-auto w-auto">
+        <Button variant="" className="p-0 min-w-0 h-auto w-auto ">
           <div className="hover:text-black text-gray-600  px-2 py-1">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -128,7 +130,8 @@ export default function ModalOptionDocument() {
       <DropdownMenu
         aria-label="Dropdown menu with description"
         variant="faded"
-        className="w-full min-w-[200px]"
+        className="w-full min-w-[200px] "
+         closeOnSelect={false}
       >
         <DropdownItem
           key="new"
@@ -157,7 +160,16 @@ export default function ModalOptionDocument() {
           className="w-full hover:bg-default-100 mb-1"
           startContent={<DeleteDocumentIcon className={cn(iconClasses)} />}
         >
-          <ModalDelete title={"Move to trash"} />
+         <PopupAction
+            title={"Delete Folder"}
+            color={"text-red-600"}
+            massageTitle={"Are you sure?"}
+            massageBody={"You want to delete it."}
+            icon={<IconpopupDelete />}
+            bgcolor={"bg-slate-red"}
+            massageDo={"Yes, Delete"}
+            massageUndo={"No, Cancel"}
+          />
         </DropdownItem>
         <DropdownSection className="border-t-1 border-default-200 pt-1">
           <DropdownItem

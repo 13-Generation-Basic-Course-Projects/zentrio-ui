@@ -1,4 +1,6 @@
+import NextTopLoader from "nextjs-toploader";
 import "./globals.css";
+import { Provider } from "@radix-ui/react-tooltip";
 
 
 export const metadata = {
@@ -12,8 +14,15 @@ export const metadata = {
 export default function Layout({ children }) {
   return (
     <html lang="en">
-     
-      <body className={`font-poppin`}>{children}</body>
+     <body className={`font-poppin`}>
+        <NextTopLoader color="#70A973" />
+        {/* <NextUIProvider> */}
+          <Provider>{children}</Provider>
+        {/* </NextUIProvider> */}
+
+        {/* <Toaster position="top-center" reverseOrder={false} /> */}
+      </body>
+      
     </html>
   );
 }

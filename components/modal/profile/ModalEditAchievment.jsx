@@ -157,191 +157,207 @@ export function ModalEditAchievment() {
                 )}
 
                 {selectedTab === "Profile" && (
-                  <form action="" className="grid grid-cols-1 gap-4">
-                    <div>
-                      <label className="text-label font-medium flex items-center gap-x-2 mb-2">
-                        <IconUser strokeWidth={1} size={4} />
-                        Name <span className="text-red-500">*</span>
-                      </label>
-                      <Input
-                        isRequired
-                        errorMessage="Please input a valid name"
-                        labelPlacement="outside"
-                        name="name"
-                        placeholder="Input your name"
-                        type="text"
-                        classNames={{
-                          label: "text-label font-medium",
-                          inputWrapper: `
-                        bg-white 
-                        border
-                        border-gray-300
-                        focus:outline-none
-                        focus-within:ring-2 
-                        focus-within:ring-primary 
-                        rounded-small
-                        transition-all 
-                        hover:bg-white
-                        px-6
-                        py-6
-                      `,
-                          input: "text-black",
-                        }}
+                 <form action="" className="grid grid-cols-1 gap-4">
+                  <div>
+                    <label className="text-label font-medium flex items-center gap-x-2 mb-2">
+                      <IconUser strokeWidth={1} size={4} />
+                      Name <span className="text-red-500">*</span>
+                    </label>
+                    <Input
+                      isRequired
+                      errorMessage="Please input a valid name"
+                      labelPlacement="outside"
+                      name="name"
+                      placeholder="Input your name"
+                      type="text"
+                      classNames={{
+                        label: "text-label font-medium shadow-none",
+                        inputWrapper: `
+                      bg-white 
+                      border
+                      border-gray-300
+                      shadow-none         
+                      focus:shadow-none   
+                      focus:outline-none
+                      focus:ring-0        
+                      focus-within:shadow-none
+                      focus-within:ring-0
+                      rounded-small
+                      transition-all 
+                      hover:bg-white
+                      px-6
+                      py-6
+                    `,
+                        input: "text-black",
+                      }}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-label font-medium flex items-center gap-x-2 mb-2">
+                      <IconShield
+                        strokeWidth={1}
+                        size={4}
+                        color={"currentColor"}
                       />
-                    </div>
+                      Gender <span className="text-red-500">*</span>
+                    </label>
+                    <Select
+                      isRequired
+                      placeholder="Choose your gender"
+                      classNames={{
+                        trigger: `
+                      bg-white 
+                      text-black 
+                      border 
+                      border-gray-300 
+                      shadow-none         
+                      focus:shadow-none   
+                      focus:outline-none
+                      focus:ring-0        
+                      focus-within:shadow-none
+                      focus-within:ring-0
+                      rounded-small
+                      transition-all 
+                      hover:bg-white 
+                      px-6
+                      py-6
+                    `,
+                        value: "text-gray-500",
+                      }}
+                    >
+                      {gender.map((ganttBar) => (
+                        <SelectItem key={ganttBar.key}>
+                          {ganttBar.label}
+                        </SelectItem>
+                      ))}
+                    </Select>
+                  </div>
 
-                    <div>
-                      <label className="text-label font-medium flex items-center gap-x-2 mb-2">
-                        <IconShield
-                          strokeWidth={1}
-                          size={4}
-                          color={"currentColor"}
-                        />
-                        Gender <span className="text-red-500">*</span>
-                      </label>
-                      <Select
-                        isRequired
-                        placeholder="Choose your gender"
-                        classNames={{
-                          trigger: `
-                        bg-white 
-                        text-black 
-                        border 
-                        border-gray-300 
-                        focus:ring-2 
-                        focus:ring-primary
-                        rounded-small
-                        transition-all 
-                        hover:bg-white 
-                        px-6
-                        py-6
-                      `,
-                          value: "text-gray-500",
-                        }}
-                      >
-                        {gender.map((ganttBar) => (
-                          <SelectItem key={ganttBar.key}>
-                            {ganttBar.label}
-                          </SelectItem>
-                        ))}
-                      </Select>
-                    </div>
+                  <div>
+                    <label className="text-label font-medium flex items-center gap-x-2 mb-2">
+                      <IconJob strokeWidth={1} size={4} />
+                      Position <span className="text-red-500">*</span>
+                    </label>
+                    <Input
+                      isRequired
+                      errorMessage="Please input a valid position"
+                      labelPlacement="outside"
+                      name="position"
+                      placeholder="Input your position"
+                      type="text"
+                      classNames={{
+                        label: "text-label font-medium",
+                        inputWrapper: `
+                      bg-white 
+                      border
+                      border-gray-300
+                      shadow-none         
+                      focus:shadow-none   
+                      focus:outline-none
+                      focus:ring-0        
+                      focus-within:shadow-none
+                      focus-within:ring-0 
+                      rounded-small
+                      transition-all 
+                      hover:bg-white
+                      px-6
+                      py-6
+                    `,
+                        input: "text-black",
+                      }}
+                    />
+                  </div>
 
-                    <div>
-                      <label className="text-label font-medium flex items-center gap-x-2 mb-2">
-                        <IconJob strokeWidth={1} size={4} />
-                        Position <span className="text-red-500">*</span>
-                      </label>
-                      <Input
-                        isRequired
-                        errorMessage="Please input a valid position"
-                        labelPlacement="outside"
-                        name="position"
-                        placeholder="Input your position"
-                        type="text"
-                        classNames={{
-                          label: "text-label font-medium",
-                          inputWrapper: `
-                        bg-white 
-                        border
-                        border-gray-300
-                        focus:outline-none
-                        focus-within:ring-2 
-                        focus-within:ring-primary 
-                        rounded-small
-                        transition-all 
-                        hover:bg-white
-                        px-6
-                        py-6
-                      `,
-                          input: "text-black",
-                        }}
+                  <div>
+                    <label className="text-label font-medium flex items-center gap-x-2 mb-2">
+                      <IconMap
+                        strokeWidth={1}
+                        size={4}
+                        color={"currentColor"}
                       />
-                    </div>
+                      Location <span className="text-red-500">*</span>
+                    </label>
+                    <Input
+                      isRequired
+                      errorMessage="Please input a valid location"
+                      name="name"
+                      placeholder="Input your location"
+                      type="text"
+                      classNames={{
+                        label: "text-label font-medium",
+                        inputWrapper: `
+                      bg-white 
+                      border
+                      border-gray-300
+                      shadow-none         
+                      focus:shadow-none   
+                      focus:outline-none
+                      focus:ring-0        
+                      focus-within:shadow-none
+                      focus-within:ring-0 
+                      rounded-small
+                      transition-all 
+                      hover:bg-white
+                      px-6
+                      py-6
+                    `,
+                        input: "text-black",
+                      }}
+                    />
+                  </div>
 
-                    <div>
-                      <label className="text-label font-medium flex items-center gap-x-2 mb-2">
-                        <IconMap
-                          strokeWidth={1}
-                          size={4}
-                          color={"currentColor"}
-                        />
-                        Location <span className="text-red-500">*</span>
-                      </label>
-                      <Input
-                        isRequired
-                        errorMessage="Please input a valid location"
-                        name="name"
-                        placeholder="Input your location"
-                        type="text"
-                        classNames={{
-                          label: "text-label font-medium",
-                          inputWrapper: `
-                        bg-white 
-                        border
-                        border-gray-300
-                        focus:outline-none
-                        focus-within:ring-2 
-                        focus-within:ring-primary 
-                        rounded-small
-                        transition-all 
-                        hover:bg-white
-                        px-6
-                        py-6
-                      `,
-                          input: "text-black",
-                        }}
+                  <div>
+                    <label className="text-label font-medium flex items-center gap-x-2 mb-2">
+                      <IconPhone
+                        strokeWidth={1}
+                        size={4}
+                        color={"currentColor"}
                       />
-                    </div>
+                      Contact <span className="text-red-500">*</span>
+                    </label>
+                    <Input
+                      isRequired
+                      errorMessage="Please input a valid contact"
+                      name="contact"
+                      placeholder="Input your contact"
+                      type="tel"
+                      classNames={{
+                        label: "text-label font-medium",
+                        inputWrapper: `
+                      bg-white 
+                      border
+                      border-gray-300
+                      shadow-none         
+                      focus:shadow-none   
+                      focus:outline-none
+                      focus:ring-0        
+                      focus-within:shadow-none
+                      focus-within:ring-0
+                      rounded-small
+                      transition-all 
+                      hover:bg-white
+                      px-6
+                      py-6
+                    `,
+                        input: "text-black",
+                      }}
+                    />
+                  </div>
 
-                    <div>
-                      <label className="text-label font-medium flex items-center gap-x-2 mb-2">
-                        <IconPhone
-                          strokeWidth={1}
-                          size={4}
-                          color={"currentColor"}
-                        />
-                        Contact <span className="text-red-500">*</span>
-                      </label>
-                      <Input
-                        isRequired
-                        errorMessage="Please input a valid contact"
-                        name="contact"
-                        placeholder="Input your contact"
-                        type="tel"
-                        classNames={{
-                          label: "text-label font-medium",
-                          inputWrapper: `
-                        bg-white 
-                        border
-                        border-gray-300
-                        focus:outline-none
-                        focus-within:ring-2 
-                        focus-within:ring-primary 
-                        rounded-small
-                        transition-all 
-                        hover:bg-white
-                        px-6
-                        py-6
-                      `,
-                          input: "text-black",
-                        }}
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-3 pt-2">
-                      <Button
-                        className="bg-transparent border-1 border-bgColor"
-                        radius="full"
-                        onPress={onClose}
-                      >
-                        Cancel
-                      </Button>
-                      <Button color="primary" radius="full" onPress={onClose}>
-                        Save
-                      </Button>
-                    </div>
-                  </form>
+                  <div className="grid grid-cols-2 gap-3 pt-2">
+                    <Button
+                      className="bg-transparent border-1 border-bgColor"
+                      radius="full"
+                      onPress={onClose}
+                    >
+                      Cancel
+                    </Button>
+                    <Button color="primary" radius="full" onPress={onClose}>
+                      Save
+                    </Button>
+                  </div>
+                </form>
                 )}
               </ModalBody>
             </>

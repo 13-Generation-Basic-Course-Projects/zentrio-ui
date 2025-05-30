@@ -74,7 +74,7 @@ export default function ModalCreateChecklist({
                       Title <span className="text-progress-red">*</span>
                     </label>
                     <input
-                      className="border text-caption border-gray-300 rounded-small px-3 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
+                      className="border text-caption border-gray-300 rounded-small px-3 py-3 "
                       placeholder="Input your title"
                       value={formData.title}
                       onChange={(e) =>
@@ -91,7 +91,7 @@ export default function ModalCreateChecklist({
 
                     <input
                       type="date"
-                      className="border text-caption border-gray-300 rounded-small px-3 py-3 focus:outline-none focus:ring-2 focus:ring-primary w-full pr-12"
+                      className="border text-caption border-gray-300 rounded-small px-3 py-3  w-full pr-12"
                       placeholder="choose your date"
                       value={formData.duration}
                       onChange={(e) =>
@@ -147,7 +147,7 @@ export default function ModalCreateChecklist({
                       Description
                     </label>
                     <textarea
-                      className="border text-caption border-gray-300 rounded-small px-3 py-3 focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+                      className="border text-caption border-gray-300 rounded-small px-3 py-3  resize-none"
                       placeholder="Add a description (optional)"
                       rows={3}
                       value={formData.description}

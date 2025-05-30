@@ -59,9 +59,12 @@ export default function ModalCreateTask({ input }) {
                         bg-white 
                         border
                         border-gray-300
+                        shadow-none         
+                        focus:shadow-none  
                         focus:outline-none
-                        focus-within:ring-2 
-                        focus-within:ring-primary 
+                        focus:ring-0       
+                        focus-within:shadow-none
+                        focus-within:ring-0
                         rounded-small
                         transition-all 
                         hover:bg-white
@@ -88,9 +91,12 @@ export default function ModalCreateTask({ input }) {
                         bg-white 
                         border
                         border-gray-300
+                        shadow-none         
+                        focus:shadow-none  
                         focus:outline-none
-                        focus-within:ring-2 
-                        focus-within:ring-primary 
+                        focus:ring-0       
+                        focus-within:shadow-none
+                        focus-within:ring-0
                         rounded-small
                         transition-all 
                         hover:bg-white
@@ -122,9 +128,12 @@ export default function ModalCreateTask({ input }) {
                         bg-white 
                         border
                         border-gray-300
+                        shadow-none         
+                        focus:shadow-none  
                         focus:outline-none
-                        focus-within:ring-2 
-                        focus-within:ring-primary  
+                        focus:ring-0       
+                        focus-within:shadow-none
+                        focus-within:ring-0 
                         rounded-small
                         transition-all 
                         hover:bg-white 
@@ -148,8 +157,12 @@ export default function ModalCreateTask({ input }) {
                         text-black 
                         border 
                         border-gray-300 
-                        focus:ring-2 
-                        focus:ring-primary
+                       shadow-none         
+                        focus:shadow-none  
+                        focus:outline-none
+                        focus:ring-0       
+                        focus-within:shadow-none
+                        focus-within:ring-0 
                         rounded-small
                         transition-all 
                         hover:bg-white 
@@ -179,8 +192,12 @@ export default function ModalCreateTask({ input }) {
                         text-black 
                         border
                         border-gray-300
-                        focus-within:ring-2 
-                        focus-within:ring-primary
+                        shadow-none         
+                        focus:shadow-none  
+                        focus:outline-none
+                        focus:ring-0       
+                        focus-within:shadow-none
+                        focus-within:ring-0 
                         rounded-small
                         transition-all 
                         hover:bg-white

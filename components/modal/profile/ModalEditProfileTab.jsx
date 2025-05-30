@@ -113,14 +113,17 @@ export function ModalEditProfile() {
                         placeholder="Input your name"
                         type="text"
                         classNames={{
-                          label: "text-label font-medium",
+                          label: "text-label font-medium shadow-none",
                           inputWrapper: `
                         bg-white 
                         border
                         border-gray-300
+                        shadow-none         
+                        focus:shadow-none   
                         focus:outline-none
-                        focus-within:ring-2 
-                        focus-within:ring-primary 
+                        focus:ring-0        
+                        focus-within:shadow-none
+                        focus-within:ring-0
                         rounded-small
                         transition-all 
                         hover:bg-white
@@ -150,8 +153,12 @@ export function ModalEditProfile() {
                         text-black 
                         border 
                         border-gray-300 
-                        focus:ring-2 
-                        focus:ring-primary
+                        shadow-none         
+                        focus:shadow-none   
+                        focus:outline-none
+                        focus:ring-0        
+                        focus-within:shadow-none
+                        focus-within:ring-0
                         rounded-small
                         transition-all 
                         hover:bg-white 
@@ -187,9 +194,12 @@ export function ModalEditProfile() {
                         bg-white 
                         border
                         border-gray-300
+                        shadow-none         
+                        focus:shadow-none   
                         focus:outline-none
-                        focus-within:ring-2 
-                        focus-within:ring-primary 
+                        focus:ring-0        
+                        focus-within:shadow-none
+                        focus-within:ring-0 
                         rounded-small
                         transition-all 
                         hover:bg-white
@@ -222,9 +232,12 @@ export function ModalEditProfile() {
                         bg-white 
                         border
                         border-gray-300
+                        shadow-none         
+                        focus:shadow-none   
                         focus:outline-none
-                        focus-within:ring-2 
-                        focus-within:ring-primary 
+                        focus:ring-0        
+                        focus-within:shadow-none
+                        focus-within:ring-0 
                         rounded-small
                         transition-all 
                         hover:bg-white
@@ -257,9 +270,12 @@ export function ModalEditProfile() {
                         bg-white 
                         border
                         border-gray-300
+                        shadow-none         
+                        focus:shadow-none   
                         focus:outline-none
-                        focus-within:ring-2 
-                        focus-within:ring-primary 
+                        focus:ring-0        
+                        focus-within:shadow-none
+                        focus-within:ring-0
                         rounded-small
                         transition-all 
                         hover:bg-white

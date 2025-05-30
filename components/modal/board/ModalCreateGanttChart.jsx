@@ -40,7 +40,7 @@ export default function ModalCreateGanttChart({ input }) {
                       Title <span className="text-progress-red">*</span>
                     </label>
                     <input
-                      className="border text-caption border-gray-300 rounded-small px-3 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
+                      className="border text-caption border-gray-300 rounded-small px-3 py-3 "
                       placeholder="Input your title"
                       required
                     />

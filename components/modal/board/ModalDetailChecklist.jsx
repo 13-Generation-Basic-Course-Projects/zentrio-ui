@@ -19,6 +19,8 @@ import ModalUploadAttachment from "./ModalUploadAttachment";
 import { allAttachment } from "@/data/board/allAttachment";
 import { CardCheckList } from "@/components/card/CardChecklist";
 import Trash from "@/components/button/Trash";
+import PopupAction from "@/components/popup/PopupAction";
+import { IconpopupDelete } from "@/components/icon/Iconpopup";
 
 export default function ModalDetailChecklist({  title,
                                   startDate,
@@ -149,7 +151,20 @@ export default function ModalDetailChecklist({  title,
                         />
                       </svg>
                     </button> */}
-                    <Trash/>
+                    
+                     <PopupAction
+                      title={<Trash/>}
+                      color={"text-blue-600"}
+                      massageTitle={"Are you sure?"}
+                      massageBody={"You want to delete this checklist "}
+                      icon={<IconpopupDelete />}
+                      bgcolor={"bg-slate-red"}
+                      massageDo={"Yes, Delete"}
+                      massageUndo={"No, Cancel"}
+                    />
+                      
+                    
+                    
                   </div>
                   <div className="flex flex-wrap justify-between items-center mt-5">
                     <StackedProfiles />

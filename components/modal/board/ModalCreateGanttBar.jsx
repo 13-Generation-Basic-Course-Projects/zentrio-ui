@@ -56,7 +56,7 @@ export default function ModalCreateGanttBar({ input }) {
                       Title <span className="text-progress-red">*</span>
                     </label>
                     <input
-                      className="border text-caption border-gray-300 rounded-small px-3 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
+                      className="border text-caption border-gray-300 rounded-small px-3 py-3 "
                       placeholder="Input your title"
                       value={titleInput}
                       onChange={(e) => setTitleInput(e.target.value)}
@@ -70,7 +70,7 @@ export default function ModalCreateGanttBar({ input }) {
 
                     <input
                       type="date"
-                      className="border text-caption border-gray-300 rounded-small px-3 py-3 focus:outline-none focus:ring-2 focus:ring-primary w-full pr-12"
+                      className="border text-caption border-gray-300 rounded-small px-3 py-3  w-full pr-12"
                       placeholder="choose your date"
                       required
                       style={{
