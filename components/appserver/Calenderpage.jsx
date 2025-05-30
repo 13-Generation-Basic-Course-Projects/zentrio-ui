@@ -1,21 +1,24 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState, useRef } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
-import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
+import timeGridPlugin from "@fullcalendar/timegrid";
 
+// import BredCrum from "@/components/ui/BredCrum";
+import CardTaskCalender from "@/components/card/CardTaskCalender";
+import CardCommentCalender from "@/components/card/CardCommentCalender";
 import BredCrum from "../bredcrum/Bredcrum";
-import ModalCreateGanttBar from "../modal/board/ModalCreateGanttBar";
-import CardTaskCalender from "../card/CardTaskCalender";
-import CardTCommentCalender from "../card/CardCommentCalender";
 
-export default function MyCalender({ tasks }) {
-  const initialEvents = [
+export default function CalendarPage() {
+  const calendarRef = useRef(null);
+
+  const [tasks, setTasks] = useState([
     {
-      title: "Comment",
+      id: "1",
+      title: "Task",
       start: "2025-05-02",
       end: "2025-05-05",
       extendedProps: {
@@ -24,22 +27,22 @@ export default function MyCalender({ tasks }) {
       },
     },
     {
+      id: "2",
       title: "Comment",
       start: "2025-05-07",
       end: "2025-05-10",
       extendedProps: {
-        type: "task",
+        type: "comment",
         content: "Frontend",
       },
     },
-  ];
-
-  const [comments, setComments] = useState(initialEvents);
+  ]);
 
   const handleDateSelect = (info) => {
     const commentText = prompt("Enter your comment:");
     if (commentText) {
-      const newComment = {
+      const newTask = {
+        id: `${Date.now()}`,
         title: "Comment",
         start: info.startStr,
         end: info.endStr,
@@ -48,7 +51,7 @@ export default function MyCalender({ tasks }) {
           content: commentText,
         },
       };
-      setComments((prev) => [...prev, newComment]);
+      setTasks((prev) => [...prev, newTask]);
     }
   };
 
@@ -82,17 +85,14 @@ export default function MyCalender({ tasks }) {
 
   return (
     <div className="p-4 h-screen flex flex-col">
-      <BredCrum
-        board="Hikko Design"
-        feature="Calender"
-        header="Calender"
-      />
+      <BredCrum board="Hikko Design" feature="Calender" header="Calender" />
 
       <div className="grid grid-cols-12 gap-2 pt-6 h-full">
         {/* Calendar Scroll Section */}
         <div className="col-span-9 h-full overflow-y-auto pr-2 scrollbar-hidden">
-          <div className=" h-full  scrollbar-hidden ">
+          <div className="h-full scrollbar-hidden">
             <FullCalendar
+              ref={calendarRef}
               plugins={[
                 resourceTimelinePlugin,
                 dayGridPlugin,
@@ -107,7 +107,7 @@ export default function MyCalender({ tasks }) {
               initialView="dayGridMonth"
               selectable
               select={handleDateSelect}
-              events={comments}
+              events={tasks}
               eventContent={renderEventContent}
             />
           </div>
@@ -115,9 +115,8 @@ export default function MyCalender({ tasks }) {
 
         {/* Sidebar Scroll Section */}
         <div className="col-span-3 h-full scrollbar-hidden bg-transparent overflow-y-auto pl-2 flex flex-col gap-[20px]">
-          <CardTaskCalender tasks={tasks} />
-          <CardTCommentCalender tasks={tasks} />
-          
+          <CardTaskCalender tasks={tasks} calendarRef={calendarRef} />
+          <CardCommentCalender tasks={tasks} calendarRef={calendarRef} />
         </div>
       </div>
     </div>
