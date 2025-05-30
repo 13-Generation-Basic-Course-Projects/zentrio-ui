@@ -1,3 +1,11 @@
+the .env
+```
+NEXT_PUBLIC_BASE_URL=http://localhost:3000
+NEXTAUTH_SECRET=ImFrfhZR6YUhfvKneywtkSJfp858PorhoRsrP9Tr8X0=
+GOOGLE_CLIENT_ID=1005708183443-3bbv17uinqsa9oroaejqbn653qpf47u6.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=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
+
+```
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
