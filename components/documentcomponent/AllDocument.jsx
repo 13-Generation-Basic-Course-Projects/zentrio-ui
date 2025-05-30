@@ -49,13 +49,12 @@ const filteredData = [...documentData]
     <div className="h-full flex flex-col">
       <div className="grid grid-cols-1 gap-3">
         <div className="p-0">
-         <BredCrum
-        board={"Hikko Design"}
-        feature={"Document"}
-        header={"Document"}
-         modal={[<ModalCreateDocu />]}
-         />
-
+          <BredCrum
+            board={"Hikko Design"}
+            feature={"Document"}
+            header={"Document"}
+            modal={[<ModalCreateDocu />]}
+          />
         </div>
 
         <div className="flex items-center justify-between pb-5">
@@ -122,6 +121,7 @@ const filteredData = [...documentData]
                   .filter((el) => el.category === "Folder")
                   .map((el, i) => (
                     <CardFolder
+                      id={el.id}
                       key={`folder-${i}`}
                       title={el.title || "Untitled Folder"}
                       status={el.status || "personal"}
@@ -148,6 +148,7 @@ const filteredData = [...documentData]
                   .filter((el) => el.category === "File")
                   .map((el, i) => (
                     <CardFile
+                      id={el.id}
                       key={`file-${i}`}
                       title={el.title || "Untitled File"}
                       status={el.status || "personal"}

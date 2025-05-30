@@ -18,15 +18,15 @@ import Link from "next/link";
 
 export default function CardFolder({id, title, status, date }) {
   return (
-    <Link href={`/documentView/${id}`} className="block">
-      <Card className="rounded-xl text-blue-400 cursor-pointer hover:bg-blue-50 transition sm:w-[160px] md:w-full h-[160px] shadow-sm ">
-        {/* Header */}
-        <CardHeader className="pb-0 pt-2 px-4 flex justify-end">
-          <div className="hover:text-black text-gray-600">
-            <ModalOptionDocument />
-          </div>
-        </CardHeader>
+    <Card className="rounded-xl text-blue-400 cursor-pointer hover:bg-blue-50 transition sm:w-[160px] md:w-full h-[160px] shadow-sm ">
+      {/* Header */}
+      <CardHeader className="pb-0 pt-2 px-4 flex justify-end ">
+        <div className="hover:text-black text-gray-600 z-50">
+          <ModalOptionDocument />
+        </div>
+      </CardHeader>
 
+      <Link href={`/documentView/${id}`} className="block">
         {/* Body */}
         <CardBody className="overflow-visible py-2 flex flex-col items-center space-y-2">
           <svg
@@ -138,36 +138,36 @@ export default function CardFolder({id, title, status, date }) {
             {title}
           </p>
         </CardBody>
+      </Link>
 
-        {/* Footer */}
-        <CardFooter className="pt-2 px-4">
-          <div className="flex justify-between items-center w-full text-caption-tiny text-title/50">
-            <div className="flex items-center space-x-1 justify-center">
-              {status === "personal" ? (
-                <Image
-                  src="https://www.svgrepo.com/show/425663/profile-people-account.svg"
-                  alt="Person Icon"
-                  width={10}
-                  height={10}
-                  className="rounded-full"
-                />
-              ) : (
-                <Image
-                  src="https://www.svgrepo.com/show/116369/earth-globe-tool.svg"
-                  alt="Public Icon"
-                  width={10}
-                  height={10}
-                  className="rounded-full"
-                />
-              )}
-              <span>{status}</span>
-            </div>
-
-            <span>{date}</span>
+      {/* Footer */}
+      <CardFooter className="pt-2 px-4">
+        <div className="flex justify-between items-center w-full text-caption-tiny text-title/50">
+          <div className="flex items-center space-x-1 justify-center">
+            {status === "personal" ? (
+              <Image
+                src="https://www.svgrepo.com/show/425663/profile-people-account.svg"
+                alt="Person Icon"
+                width={10}
+                height={10}
+                className="rounded-full"
+              />
+            ) : (
+              <Image
+                src="https://www.svgrepo.com/show/116369/earth-globe-tool.svg"
+                alt="Public Icon"
+                width={10}
+                height={10}
+                className="rounded-full"
+              />
+            )}
+            <span>{status}</span>
           </div>
-        </CardFooter>
-      </Card>
-    </Link>
+
+          <span>{date}</span>
+        </div>
+      </CardFooter>
+    </Card>
   );
 }
 //just make for icon file
@@ -192,25 +192,26 @@ function FileIcon({ type, size = 45 }) {
   );
 }
 
-export function CardFile({ title, status, date, type }) {
+export function CardFile({id, title, status, date, type }) {
   return (
     <Card className="rounded-xl text-blue-400 cursor-pointer hover:bg-blue-50 transition sm:w-[160px] md:w-full h-[160px] shadow-sm">
       {/* Header */}
       <CardHeader className="pb-0 pt-2 px-4 flex justify-end">
         <div className="hover:text-black text-gray-600">
-        <ModalOptionDocument />
+          <ModalOptionDocument />
         </div>
       </CardHeader>
-
-      {/* Body */}
-      <CardBody className="overflow-visible py-2 flex flex-col items-center space-y-2">
-        <FileIcon type={type} />
-        <div className="flex items-center w-full">
-          <p className="truncate text-base font-semibold text-title/80 text-center px-2">
-            {title} .{type}
-          </p>
-        </div>
-      </CardBody>
+      <Link href={`/documentView/${id}`} className="block">
+        {/* Body */}
+        <CardBody className="overflow-visible py-2 flex flex-col items-center space-y-2">
+          <FileIcon type={type} />
+          <div className="flex items-center w-full">
+            <p className="truncate text-base font-semibold text-title/80 text-center px-2">
+              {title} .{type}
+            </p>
+          </div>
+        </CardBody>
+      </Link>
 
       {/* Footer */}
       <CardFooter className="pt-2 px-4">

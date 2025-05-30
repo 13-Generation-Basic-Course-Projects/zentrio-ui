@@ -37,6 +37,7 @@ export default  function PublicDocument({ modal }) {
               return (
                 <CardFolder
                   key={i}
+                  id={el.id}
                   title={el.title}
                   status={el.status}
                   date={el.date}
@@ -46,6 +47,7 @@ export default  function PublicDocument({ modal }) {
               return (
                 <CardFile
                   key={i}
+                  id={el.id}
                   title={el.title}
                   status={el.status}
                   date={el.date}

@@ -10,6 +10,8 @@ import {
   DropdownSection,
 } from "@heroui/react";
 import ModalDelete from "../ModalDelete";
+import ModalRename from "./ModalRename";
+import { useState } from "react";
 
 // icon components directly in the same file
 const AddNoteIcon = (props) => (
@@ -108,81 +110,98 @@ const ShareoDcumentIcon = (props) => (
 export default function ModalOptionDocument() {
   const iconClasses =
     "text-xl text-default-500 pointer-events-none flex-shrink-0";
+  const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
+
+  const handleRenameClick = () => {
+    setIsRenameModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsRenameModalOpen(false);
+  };
 
   return (
-    <Dropdown>
-      <DropdownTrigger>
-        <Button variant="" className="p-0 min-w-0 h-auto w-auto">
-          <div className="hover:text-black text-gray-600  px-2 py-1">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="w-4 h-4"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path d="M10 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4z" />
-            </svg>
-          </div>
-        </Button>
-      </DropdownTrigger>
-      <DropdownMenu
-        aria-label="Dropdown menu with description"
-        variant="faded"
-        className="w-full min-w-[200px]"
-      >
-        <DropdownItem
-          key="new"
-          className="w-full hover:bg-default-100 "
-          startContent={<AddNoteIcon className={iconClasses} />}
-        >
-          Download
-        </DropdownItem>
-        <DropdownItem
-          key="copy"
-          className="w-full hover:bg-default-100"
-          startContent={<CopyDocumentIcon className={iconClasses} />}
-        >
-          Rename
-        </DropdownItem>
-        <DropdownItem
-          key="edit"
-          className="w-full hover:bg-default-100"
-          showDivider
-          startContent={<EditDocumentIcon className={iconClasses} />}
-        >
-          Details
-        </DropdownItem>
-        <DropdownItem
-          key="delete"
-          className="w-full hover:bg-default-100 mb-1 "
-          startContent={<DeleteDocumentIcon className={cn(iconClasses)} />}
-        >
-          <ModalDelete title={"Move to trash"} />
-        </DropdownItem>
-        <DropdownSection className="border-t-1 border-default-200 pt-1">
-          <DropdownItem
-            key="share"
-            className="w-full hover:bg-default-100"
-            startContent={<ShareoDcumentIcon className={cn(iconClasses)} />}
-            endContent={
-              <svg
-                width="7"
-                height="12"
-                viewBox="0 0 7 12"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M0.645817 0.147077C0.840731 -0.0485327 1.15731 -0.0490966 1.35292 0.145817L6.83741 5.6108C7.05312 5.82574 7.05312 6.17505 6.83741 6.39L1.35292 11.855C1.15731 12.0499 0.840731 12.0493 0.645817 11.8537C0.450903 11.6581 0.451467 11.3415 0.647077 11.1466L5.81166 6.0004L0.647077 0.854183C0.451467 0.659268 0.450903 0.342687 0.645817 0.147077Z"
-                  fill="#424242"
-                />
-              </svg>
-            }
+    <>
+      <Dropdown>
+        <DropdownTrigger>
+          <Button
+            variant=""
+            className="p-0 min-w-0 h-auto w-auto z-50 hover:bg-white rounded-full"
           >
-            Share
+            <div className="hover:text-black text-gray-600  px-2 py-1">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-4 h-4"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path d="M10 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4z" />
+              </svg>
+            </div>
+          </Button>
+        </DropdownTrigger>
+        <DropdownMenu
+          aria-label="Dropdown menu with description"
+          variant="faded"
+          className="w-full min-w-[200px]"
+        >
+          <DropdownItem
+            key="new"
+            className="w-full hover:bg-default-100 "
+            startContent={<AddNoteIcon className={iconClasses} />}
+          >
+            Download
           </DropdownItem>
-        </DropdownSection>
-      </DropdownMenu>
-    </Dropdown>
+          <DropdownItem
+            key="copy"
+            className="w-full hover:bg-default-100"
+            startContent={<CopyDocumentIcon className={iconClasses} />}
+            onClick={handleRenameClick}
+          >
+            Rename
+          </DropdownItem>
+
+          <DropdownItem
+            key="edit"
+            className="w-full hover:bg-default-100"
+            showDivider
+            startContent={<EditDocumentIcon className={iconClasses} />}
+          >
+            Details
+          </DropdownItem>
+          <DropdownItem
+            key="delete"
+            className="w-full hover:bg-default-100 mb-1"
+            startContent={<DeleteDocumentIcon className={cn(iconClasses)} />}
+          >
+            <ModalDelete title={"Move to trash"} />
+          </DropdownItem>
+          <DropdownSection className="border-t-1 border-default-200 pt-1">
+            <DropdownItem
+              key="share"
+              className="w-full hover:bg-default-100"
+              startContent={<ShareoDcumentIcon className={cn(iconClasses)} />}
+              endContent={
+                <svg
+                  width="7"
+                  height="12"
+                  viewBox="0 0 7 12"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0.645817 0.147077C0.840731 -0.0485327 1.15731 -0.0490966 1.35292 0.145817L6.83741 5.6108C7.05312 5.82574 7.05312 6.17505 6.83741 6.39L1.35292 11.855C1.15731 12.0499 0.840731 12.0493 0.645817 11.8537C0.450903 11.6581 0.451467 11.3415 0.647077 11.1466L5.81166 6.0004L0.647077 0.854183C0.451467 0.659268 0.450903 0.342687 0.645817 0.147077Z"
+                    fill="#424242"
+                  />
+                </svg>
+              }
+            >
+              Share
+            </DropdownItem>
+          </DropdownSection>
+        </DropdownMenu>
+      </Dropdown>
+      <ModalRename isOpen={isRenameModalOpen} onClose={closeModal} />
+    </>
   );
 }
