@@ -5,14 +5,14 @@ import { parseDate } from "@internationalized/date";
 
 export default function SmallCalendar() {
   return (
-    <div className="w-full max-w-none mx-auto h-[50px] xl:h-[300px]">
+    <div className="w-full max-w-none mx-auto  h-[300px]">
       <Calendar
         aria-label="Date"
         className="bg-white"
         pageBehavior="single"
         firstDayOfWeek="sun"
         classNames={{
-          base: "w-full  h-full min-h-none bg-yellow-400 flex flex-col",
+          base: "w-full max-w-none  h-full min-h-none bg-yellow-400 flex flex-col",
           content: "w-full",
           headerWrapper: "w-full",
           gridWrapper: "min-w-full",

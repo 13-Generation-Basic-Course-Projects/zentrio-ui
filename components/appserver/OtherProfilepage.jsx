@@ -13,7 +13,7 @@ export default function OtherUserProfile() {
   return (
     
       <OtherProfileLayout
-      userName={"Jack Ma"}
+        userName={"Jack Ma"}
         profile={<OtherProfileTab/>}
         acheivment={<OtherAchievmentTab />}
       />

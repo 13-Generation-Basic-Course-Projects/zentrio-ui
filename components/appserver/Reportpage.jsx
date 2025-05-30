@@ -22,10 +22,10 @@ export default function Reportpage({ modal }) {
 
       {/* Content in Report */}
 
-      <div className="grid grid-cols-12 gap-2 mt-5">
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-6 mt-5 overflow-y-auto h-screen md:h-fit scrollbar-hidden">
         {/* layout at left */}
 
-        <div className="col-span-8 h-screen flex flex-col  ">
+        <div className="md:col-span-8 md:h-screen flex flex-col  ">
           <div className=" overflow-y-auto scrollbar-hidden pb-40">
             {/* Show number have in 4 Stage */}
             {/* Show number have in 4 Stage */}
@@ -100,7 +100,7 @@ export default function Reportpage({ modal }) {
         </div>
 
         {/* layout at right */}
-        <div className="col-span-4 space-y-10 h-screen flex flex-col ">
+        <div className="md:col-span-4 space-y-10 md:h-screen flex flex-col ">
           <div className=" flex flex-col  gap-2 overflow-y-auto scrollbar-hidden pb-[250px]">
             {/* Chart show amount member */}
             <div className="border-1 rounded-medium bg-[#FFFFFF] shadow-small p-4 flex flex-col ">
