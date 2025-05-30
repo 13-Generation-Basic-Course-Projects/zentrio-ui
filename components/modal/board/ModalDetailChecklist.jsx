@@ -22,6 +22,7 @@ import Trash from "@/components/button/Trash";
 
 export default function ModalDetailChecklist({  title,
                                   startDate,
+                                  status,
                                   label,
                                   comment,
                                   image,
@@ -58,7 +59,7 @@ export default function ModalDetailChecklist({  title,
         fullWidth="true"
       >
     <div className="h-full w-full  max-w-none !p-0 bg-pink-300"> 
-    <CardCheckList     title={title} startDate={startDate} comment ={comment} label={label} image={image} hideImage={hideImage}  />    
+    <CardCheckList   status={status}  title={title} startDate={startDate} comment ={comment} label={label} image={image} hideImage={hideImage}  />    
     </div>
       </Button>
       <Modal

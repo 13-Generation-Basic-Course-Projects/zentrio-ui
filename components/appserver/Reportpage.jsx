@@ -22,12 +22,12 @@ export default function Reportpage({ modal }) {
 
       {/* Content in Report */}
 
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-6 mt-5 overflow-y-auto h-screen md:h-fit scrollbar-hidden">
-        {/* layout at left */}
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mt-5 overflow-y-auto h-screen md:h-fit scrollbar-hidden">
+        
 
         <div className="md:col-span-8 md:h-screen flex flex-col  ">
-          <div className=" overflow-y-auto scrollbar-hidden pb-40">
-            {/* Show number have in 4 Stage */}
+          <div className=" overflow-y-auto scrollbar-hidden pb-40 p-2">
+            
             {/* Show number have in 4 Stage */}
             <div className="grid grid-cols-4 gap-2">
               {[
@@ -93,7 +93,7 @@ export default function Reportpage({ modal }) {
               <VerticalChartNoSSR />
             </div>
             {/* Show chart horizontal chart */}
-            <div className="mt-10">
+            <div className="mt-5">
               <HorizontalChart />
             </div>
           </div>
@@ -147,7 +147,7 @@ export default function Reportpage({ modal }) {
             </div>
 
             {/*For show version history */}
-            <div className="border-1 rounded-medium bg-[#FFFFFF] shadow-small p-4 flex flex-col ">
+            <div className="border-1 rounded-medium bg-[#FFFFFF] shadow-small p-4 flex flex-col h-[300px] ">
               <h1 className="flex items-center gap-2 text-h6 text-title font-semibold py-5">
                 <span className="inline-block w-5 h-5">
                   <svg
@@ -164,7 +164,7 @@ export default function Reportpage({ modal }) {
                 Version History
               </h1>
 
-              <div className="relative max-w-md max-h-auto">
+              <div className="relative  max-h-auto  overflow-y-auto scrollbar-hidden">
                 {/* Vertical connecting line - no z-index, behind content */}
                 <div className="absolute left-[20px] top-5 bottom-5 border-l border-gray-300"></div>
 
@@ -182,7 +182,6 @@ export default function Reportpage({ modal }) {
                       </p>
                     </div>
                   </div>
-
                   {/* Version 2 */}
                   <div className="flex items-start space-x-4">
                     <div className="flex-shrink-0 w-[40px] h-[30px] bg-primary text-white rounded-full flex items-center justify-center font-semibold text-caption">
@@ -195,7 +194,42 @@ export default function Reportpage({ modal }) {
                       </p>
                     </div>
                   </div>
-
+                  {/* Version 3 */}
+                  <div className="flex items-start space-x-4">
+                    <div className="flex-shrink-0 w-[40px] h-[30px] bg-primary text-white rounded-full flex items-center justify-center font-semibold text-caption">
+                      V3
+                    </div>
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-h6">ZenTrio Final Report</p>
+                      <p className="text-caption-tiny text-title/50">
+                        Ny Fong · 10 minutes ago
+                      </p>
+                    </div>
+                  </div>
+                  {/* Version 1 */}
+                  <div className="flex items-start space-x-4">
+                    <div className="flex-shrink-0 w-[40px] h-[30px] bg-primary text-white rounded-full flex items-center justify-center font-semibold text-caption">
+                      V1
+                    </div>
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-h6">ZenTrio Reporting Document</p>
+                      <p className="text-caption-tiny text-title/50">
+                        Ny Fong · 1 hour ago
+                      </p>
+                    </div>
+                  </div>
+                  {/* Version 2 */}
+                  <div className="flex items-start space-x-4">
+                    <div className="flex-shrink-0 w-[40px] h-[30px] bg-primary text-white rounded-full flex items-center justify-center font-semibold text-caption">
+                      V2
+                    </div>
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-h6">ZenTrio Final Report</p>
+                      <p className="text-caption-tiny text-title/50">
+                        Ny Fong · 10 minutes ago
+                      </p>
+                    </div>
+                  </div>
                   {/* Version 3 */}
                   <div className="flex items-start space-x-4">
                     <div className="flex-shrink-0 w-[40px] h-[30px] bg-primary text-white rounded-full flex items-center justify-center font-semibold text-caption">

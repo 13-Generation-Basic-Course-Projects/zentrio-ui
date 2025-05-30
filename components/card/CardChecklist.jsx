@@ -21,7 +21,7 @@ export const CardCheckList = ({
           <p className="text-caption font-semibold text-title/50 truncate mt-2">
             Start Date : {startDate}
           </p>
-          <div className="text-body-lg mt-4 flex flex-row items-center space-x-2">
+          <div className="text-body-sm mt-4 flex flex-row items-center space-x-2">
             <div>
               {status === "In Progress" && (
                 <svg

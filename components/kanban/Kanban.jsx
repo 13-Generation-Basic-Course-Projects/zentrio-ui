@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Plus, ChevronDown, ChevronRight } from "lucide-react";
+import { Plus, ChevronDown, ChevronRight, ChevronUp } from "lucide-react";
 import { teamLeader } from "@/data/board/teamleader";
 import { initialColumns } from "@/data/boardData";
 import { CardCheckList } from "../card/CardChecklist";
@@ -289,19 +289,19 @@ export default function KanbanBoard({ modal }) {
       <StackedUser />
       {/* Column Headers */}
       <div className=" pt-5 pb-2 grid grid-cols-4 gap-4">
-        <div className="mb-4 border-b-4 border-blue-500 pb-2 flex items-center gap-3">
-          <p className="text-2xl font-bold">To Do</p>
+        <div className="mb-4 border-b-4  pb-2  border-black flex items-center gap-3">
+          <p className="text-2xl font-semibold">TODO</p>
           <button className="px-3 py-1 text-sm rounded-full bg-transparent border-2 border-gray-300 shadow-sm">
             {columns.find((col) => col.id === "todo")?.cards.length || 0}
           </button>
         </div>
-        <div className="mb-4 border-b-4 border-yellow-500 pb-2 flex items-center gap-3">
+        <div className="mb-4 border-b-4 border-blue-500 pb-2 flex items-center gap-3">
           <p className="text-2xl font-bold">In Progress</p>
           <button className="px-3 py-1 text-sm rounded-full bg-transparent border-2 border-gray-300 shadow-sm">
             {columns.find((col) => col.id === "in-progress")?.cards.length || 0}
           </button>
         </div>
-        <div className="mb-4 border-b-4 border-purple-500 pb-2 flex items-center gap-3">
+        <div className="mb-4 border-b-4 border-[#FFB580] pb-2 flex items-center gap-3">
           <p className="text-2xl font-bold">Under Review</p>
           <button className="px-3 py-1 text-sm rounded-full bg-transparent border-2 border-gray-300 shadow-sm">
             {columns.find((col) => col.id === "under-review")?.cards.length ||
@@ -309,7 +309,7 @@ export default function KanbanBoard({ modal }) {
           </button>
         </div>
         <div className="mb-4 border-b-4 border-green-500 pb-2 flex items-center gap-3">
-          <p className="text-2xl font-bold">Done</p>
+          <p className="text-2xl font-bold">COMPLETED</p>
           <button className="px-3 py-1 text-sm rounded-full bg-transparent border-2 border-gray-300 shadow-sm">
             {columns.find((col) => col.id === "done")?.cards.length || 0}
           </button>
@@ -317,7 +317,7 @@ export default function KanbanBoard({ modal }) {
       </div>
 
       {/* Kanban Columns */}
-      <div className="   grid grid-cols-4  gap-1 h-full  ">
+      <div className="   grid grid-cols-4  gap-4 h-full  ">
         {columns.map((column) => (
           // parent
           <div
@@ -359,27 +359,19 @@ export default function KanbanBoard({ modal }) {
                       >
                         <div className="flex items-center justify-between px-3">
                           <div className="flex items-center gap-2">
-                            <button
-                              onClick={() => toggleTaskExpansion(card.id)}
-                              className="p-1 hover:bg-gray-100 rounded"
-                            >
-                              {card.expanded ? (
-                                <ChevronDown size={16} />
-                              ) : (
-                                <ChevronRight size={16} />
-                              )}
-                            </button>
+                          
                             <div>
-                              <div className="font-medium">{card.title}</div>
+                              {/* tam pet ah ng title key te */}
                               <div className="text-sm text-gray-600 sm:text-body-sm truncate max-w-[150px]">
                                 {card.description}
+
                               </div>
                             </div>
                           </div>
                           <div className="flex items-center justify-between gap-2  ">
                             <UserAvater
                               image={
-                                "https://cdn.prod.website-files.com/5dd827bbc07b1656e06b16d8/623db0c2ec0384a4ffd2c4ab_mosh.jpeg"
+                                "https://static.wikia.nocookie.net/youtube/images/5/53/Bro_Code.jpg/revision/latest?cb=20221016091948"
                               }
                             />
                           </div>
@@ -435,6 +427,7 @@ export default function KanbanBoard({ modal }) {
                                 <ModalDetailChecklist
                                   title="Hello"
                                   startDate={"25/05/25"}
+                                  status={"Overdue"}
                                   label={subtask.label}
                                   comment={subtask.comment}
                                   image={
@@ -482,19 +475,35 @@ export default function KanbanBoard({ modal }) {
 
                       {/* Create Subtask Button at Bottom of Card */}
                       {card.expanded && (
-                        <div className=" pb-3 pt-1">
-                          <div className="w-full">
-                            <ModalCreateChecklist
+                        <div className=" pb-3 pt-1 px-3">
+                          <div className="grid grid-cols-12">
+                            <div className="col-span-9">
+                              <ModalCreateChecklist
                               onSubmit={(subtaskData) =>
                                 addSubtask(card.id, subtaskData)
                               }
-                              buttonText="create new checklist"
+                              buttonText="New checklist"
                               modalTitle="Create Checklist"
                             />
+                            </div>
                           </div>
                         </div>
                       )}
+                        {/* collape */}
+                         <div className="flex items-center justify-center text-primary">
+                             <button
+                              onClick={() => toggleTaskExpansion(card.id)}
+                              className="p-1 hover:bg-gray-100 rounded"
+                            >
+                              {card.expanded ? (
+                                <ChevronUp size={26} />                                
+                              ) : (
+                                <ChevronDown size={26} />
+                              )}
+                            </button>
+                         </div>
                     </div>
+  
                   </div>
                 ))}
 

@@ -54,10 +54,10 @@ export default function ModalCreateChecklist({
     <>
       <Button
         onPress={onOpen}
-        className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-primary border border-gray-300 rounded-[8px] shadow-sm hover:bg-[#000] h-[50px]"
+        className="flex items-center gap-2 px-4 py-1 text-sm font-medium text-primary bg-slate-blue border border-blue-300 rounded-[8px] shadow-sm hover:bg-[#000] h-[30px]"
         fullWidth="true"
       >
-        <IconAdd />
+        <p className="px-2">+</p>
         {buttonText}
       </Button>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="xl">

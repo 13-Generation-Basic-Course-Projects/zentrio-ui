@@ -11,15 +11,14 @@ import notification from "../../../assets/notification.png";
 import ActiveIcon from "@/assets/profile.png";
 import Image from "next/image";
 import { useState } from "react";
-import ModalDelete from "../ModalDelete";
 
 export default function ModalNotification() {
   const [isActive, setIsActive] = useState(false);
   const [markAllRead, setMarkAllRead] = useState(false);
   const [showAll, setShowAll] = useState(false);
 
-  // Sample notifications data
-  const notifications = [
+  // Sample notifications data - moved to state so we can modify it
+  const [notifications, setNotifications] = useState([
     {
       id: 1,
       sender: "Seam Chiminh",
@@ -45,16 +44,27 @@ export default function ModalNotification() {
       date: `${i + 7} May`,
       read: false,
     })),
-  ];
+  ]);
 
   const markAllAsRead = () => {
     setIsActive(true);
     setMarkAllRead(true);
   };
 
+  // Delete notification function
+  const deleteNotification = (notificationId) => {
+    setNotifications(prev => prev.filter(notification => notification.id !== notificationId));
+  };
+
+  // Delete all notifications function
+  const deleteAllNotifications = () => {
+    setNotifications([]);
+  };
+
   const displayedNotifications = showAll
     ? notifications
     : notifications.slice(0, 3);
+
   return (
     <Dropdown className="p-0 bg-transparent">
       <DropdownTrigger>
@@ -65,22 +75,52 @@ export default function ModalNotification() {
           <Image src={notification} className="size-5" alt="notification" />
         </Button>
       </DropdownTrigger>
-      <DropdownMenu aria-label="Static Actions" className="p-0 bg-transparent">
+      <DropdownMenu  closeOnSelect={false} aria-label="Static Actions" className="p-0 bg-transparent">
         <DropdownItem
           key="delete"
           className="text-danger p-0 bg-transparent"
           color="danger"
         >
-          <div className="w-full  flex items-center justify-center ">
+          <div className="w-full flex items-center justify-center">
             <div className="w-[380px] h-fit bg-white shadow-sm rounded-[22px]">
               {/* Header */}
               <div className="flex items-center justify-between px-[15px] py-[20px] border-b-1 border-stroke">
                 <div className="h-fit">
                   <p className="text-[15px] text-title font-medium h-fit">
-                    Notification
+                    Notification ({notifications.length})
                   </p>
                 </div>
-                <div className="h-fit">
+                <div className="h-fit flex gap-2">
+                  {/* Delete all button */}
+                  {notifications.length > 0 && (
+                    <button 
+                      onClick={deleteAllNotifications}
+                      className="text-red-500 hover:text-red-700 transition-colors"
+                      title="Delete all notifications"
+                    >
+                      <svg
+                        width="17"
+                        height="20"
+                        viewBox="0 0 17 20"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M14.75 4.58325L14.2336 12.9375C14.1016 15.072 14.0356 16.1392 13.5006 16.9065C13.2361 17.2858 12.8955 17.606 12.5006 17.8466C11.7018 18.3333 10.6325 18.3333 8.49395 18.3333C6.3526 18.3333 5.28192 18.3333 4.48254 17.8457C4.08733 17.6046 3.74666 17.2839 3.48224 16.904C2.9474 16.1354 2.88288 15.0667 2.75384 12.9292L2.25 4.58325"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                        />
+                        <path
+                          d="M1 4.58341H16M11.8798 4.58341L11.3109 3.40985C10.933 2.6303 10.744 2.24052 10.4181 1.99742C10.3458 1.9435 10.2692 1.89553 10.1892 1.854C9.82826 1.66675 9.3951 1.66675 8.52877 1.66675C7.64069 1.66675 7.19665 1.66675 6.82974 1.86185C6.74842 1.90509 6.67082 1.95499 6.59774 2.01105C6.26803 2.264 6.08386 2.66804 5.7155 3.47613L5.21077 4.58341"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                        />
+                      </svg>
+                    </button>
+                  )}
+                  {/* Settings icon */}
                   <svg
                     width="17"
                     height="18"
@@ -132,92 +172,130 @@ export default function ModalNotification() {
 
               {/* Notification Items */}
               <div className="overflow-y-scroll h-[350px] scrollbar-hidden">
-                {displayedNotifications.map((notification) => (
-                  <div
-                    key={notification.id}
-                    className={`flex justify-between items-start ${
-                      markAllRead
-                        ? "bg-white"
-                        : notification.read
-                        ? "bg-white"
-                        : "bg-slate-blue-more"
-                    } py-[15px] px-[5px] border-b border-white`}
-                  >
-                    <div className="flex gap-[12px] pl-[12px]">
-                      <div>
-                        <Image
-                          src={ActiveIcon}
-                          alt="ActiveIcon"
-                          className="w-[40px] h-fit"
-                        />
-                      </div>
-                      <div className="flex flex-col gap-[3px]">
-                        <p className="text-[14px] text-title">
-                          {notification.sender}
-                        </p>
-                        <p className="text-[12px] text-description">
-                          {notification.message}
-                        </p>
-                        <p className="text-[12px] text-description">
-                          {notification.action}
-                        </p>
-                        <p className="text-[12px] text-description">
-                          {notification.date}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex flex-col items-center justify-center pr-[12px]">
-                      {!markAllRead && !notification.read && (
-                        <div className="w-[7px] h-[7px] rounded-full bg-primary mb-[7px]"></div>
-                      )}
-                      <button onClick={ModalDelete}>
-                        <svg
-                          width="17"
-                          height="20"
-                          viewBox="0 0 17 20"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M14.75 4.58325L14.2336 12.9375C14.1016 15.072 14.0356 16.1392 13.5006 16.9065C13.2361 17.2858 12.8955 17.606 12.5006 17.8466C11.7018 18.3333 10.6325 18.3333 8.49395 18.3333C6.3526 18.3333 5.28192 18.3333 4.48254 17.8457C4.08733 17.6046 3.74666 17.2839 3.48224 16.904C2.9474 16.1354 2.88288 15.0667 2.75384 12.9292L2.25 4.58325"
-                            stroke="#FF2D55"
-                            strokeWidth="1.5"
-                            strokeLinecap="round"
-                          />
-                          <path
-                            d="M1 4.58341H16M11.8798 4.58341L11.3109 3.40985C10.933 2.6303 10.744 2.24052 10.4181 1.99742C10.3458 1.9435 10.2692 1.89553 10.1892 1.854C9.82826 1.66675 9.3951 1.66675 8.52877 1.66675C7.64069 1.66675 7.19665 1.66675 6.82974 1.86185C6.74842 1.90509 6.67082 1.95499 6.59774 2.01105C6.26803 2.264 6.08386 2.66804 5.7155 3.47613L5.21077 4.58341"
-                            stroke="#FF2D55"
-                            strokeWidth="1.5"
-                            strokeLinecap="round"
-                          />
-                        </svg>
-                      </button>
-                    </div>
+                {notifications.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center h-full text-center p-4">
+                    <svg
+                      width="48"
+                      height="48"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="mb-3 text-gray-400"
+                    >
+                      <path
+                        d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M13.73 21a2 2 0 0 1-3.46 0"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                    <p className="text-gray-500 text-sm">No notifications</p>
                   </div>
-                ))}
+                ) : (
+                  displayedNotifications.map((notificationItem) => (
+                    <div
+                      key={notificationItem.id}
+                      className={`flex justify-between items-start ${
+                        markAllRead
+                          ? "bg-white"
+                          : notificationItem.read
+                          ? "bg-white"
+                          : "bg-slate-blue-more"
+                      } py-[15px] px-[5px] border-b border-white hover:bg-gray-50 transition-colors`}
+                    >
+                      <div className="flex gap-[12px] pl-[12px]">
+                        <div>
+                          <Image
+                            src={ActiveIcon}
+                            alt="ActiveIcon"
+                            className="w-[40px] h-fit"
+                          />
+                        </div>
+                        <div className="flex flex-col gap-[3px]">
+                          <p className="text-[14px] text-title">
+                            {notificationItem.sender}
+                          </p>
+                          <p className="text-[12px] text-description">
+                            {notificationItem.message}
+                          </p>
+                          <p className="text-[12px] text-description">
+                            {notificationItem.action}
+                          </p>
+                          <p className="text-[12px] text-description">
+                            {notificationItem.date}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex flex-col items-center justify-center pr-[12px]">
+                        {!markAllRead && !notificationItem.read && (
+                          <div className="w-[7px] h-[7px] rounded-full bg-primary mb-[7px]"></div>
+                        )}
+                        <button 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            deleteNotification(notificationItem.id);
+                          }}
+                          className="hover:scale-110 transition-transform text-red-500 hover:text-red-700"
+                          title="Delete notification"
+                        >
+                          <svg
+                            width="17"
+                            height="20"
+                            viewBox="0 0 17 20"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M14.75 4.58325L14.2336 12.9375C14.1016 15.072 14.0356 16.1392 13.5006 16.9065C13.2361 17.2858 12.8955 17.606 12.5006 17.8466C11.7018 18.3333 10.6325 18.3333 8.49395 18.3333C6.3526 18.3333 5.28192 18.3333 4.48254 17.8457C4.08733 17.6046 3.74666 17.2839 3.48224 16.904C2.9474 16.1354 2.88288 15.0667 2.75384 12.9292L2.25 4.58325"
+                              stroke="currentColor"
+                              strokeWidth="1.5"
+                              strokeLinecap="round"
+                            />
+                            <path
+                              d="M1 4.58341H16M11.8798 4.58341L11.3109 3.40985C10.933 2.6303 10.744 2.24052 10.4181 1.99742C10.3458 1.9435 10.2692 1.89553 10.1892 1.854C9.82826 1.66675 9.3951 1.66675 8.52877 1.66675C7.64069 1.66675 7.19665 1.66675 6.82974 1.86185C6.74842 1.90509 6.67082 1.95499 6.59774 2.01105C6.26803 2.264 6.08386 2.66804 5.7155 3.47613L5.21077 4.58341"
+                              stroke="currentColor"
+                              strokeWidth="1.5"
+                              strokeLinecap="round"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                )}
               </div>
 
               {/* Footer */}
               <div className="flex justify-between px-[15px] py-[20px] border-t-1 border-stroke">
                 {notifications.length > 3 && (
                   <p
-                    className="text-[12px] text-description cursor-pointer"
+                    className="text-[12px] text-description cursor-pointer hover:text-primary transition-colors"
                     onClick={() => setShowAll(!showAll)}
                   >
                     {showAll ? "Show Less" : "See All Notification"}
                   </p>
                 )}
                 {notifications.length <= 3 && <div></div>}
-                <p
-                  className={
-                    isActive
-                      ? `text-[12px] text-description cursor-pointer`
-                      : `text-[12px] text-primary cursor-pointer`
-                  }
-                  onClick={markAllAsRead}
-                >
-                  Mark All As Read
-                </p>
+                {notifications.length > 0 && (
+                  <p
+                    className={
+                      isActive
+                        ? `text-[12px] text-description cursor-pointer`
+                        : `text-[12px] text-primary cursor-pointer hover:text-blue-600 transition-colors`
+                    }
+                    onClick={markAllAsRead}
+                  >
+                    Mark All As Read
+                  </p>
+                )}
               </div>
             </div>
           </div>
