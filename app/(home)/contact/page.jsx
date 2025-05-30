@@ -15,7 +15,7 @@ import {
   Bell,
 } from "lucide-react";
 import { Button, Input, Textarea } from "@heroui/react";
-import Image from "next/image";
+// import Image from "next/image";
 import contact from "../../../assets/contact.png";
 import HumanSayHi from "@/assets/HumanSayHi.png";
 
