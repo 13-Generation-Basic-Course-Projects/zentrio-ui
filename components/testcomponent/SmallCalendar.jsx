@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { RangeCalendar } from "@heroui/calendar";
+import { Calendar } from "@heroui/calendar";
+import { parseDate } from "@internationalized/date";
 
 export default function SmallCalendar() {
   return (
