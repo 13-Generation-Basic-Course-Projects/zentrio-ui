@@ -9,9 +9,9 @@ const colorMap = [
   { count: 4, value: "bg-green-500", textColor: "text-green-500" },
   { count: 5, value: "bg-purple-500", textColor: "text-purple-500" },
   { count: 22, value: "bg-orange-500", textColor: "text-orange-500" },
-]
+];
 
-export default function CardTaskCalender({ tasks = [] }) {
+export default function CardTaskCalender({ tasks, onTaskClick }) {
   const data = [...tasks];
 
   return (
@@ -30,11 +30,16 @@ export default function CardTaskCalender({ tasks = [] }) {
         {data.length > 0 ? (
           data.map((el, i) => {
             // Cycle through colors based on index
-            const colorIndex = i % colorMap.length
-            const color = colorMap[colorIndex]
+            const colorIndex = i % colorMap.length;
+            const color = colorMap[colorIndex];
             return (
               <div
                 key={i}
+                onClick={() => {
+                  if (el.start) {
+                    onTaskClick?.(new Date(el.start));
+                  }
+                }}
                 className="py-3 px-3 flex items-center justify-between gap-2 hover:bg-gray-100 rounded-xl  active:bg-gray-100 transition-colors"
               >
                 <div className="flex items-center gap-3 flex-1 min-w-0">
@@ -42,11 +47,17 @@ export default function CardTaskCalender({ tasks = [] }) {
                     className={`w-4 h-4 rounded-full ${color.value} flex-shrink-0`}
                     aria-label={`${color.count} indicator`}
                   ></span>
-                  <span className={`${color.textColor} font-medium text-large truncate`}>{el.title}</span>
+                  <span
+                    className={`${color.textColor} font-medium text-large truncate`}
+                  >
+                    {el.title}
+                  </span>
                 </div>
-                <small className="text-title font-medium text-xs flex-shrink-0">{color.count}</small>
+                <small className="text-title font-medium text-xs flex-shrink-0">
+                  {color.count}
+                </small>
               </div>
-            )
+            );
           })
         ) : (
           <div className="text-title text-sm">No tasks available</div>
