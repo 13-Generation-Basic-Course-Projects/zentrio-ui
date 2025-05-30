@@ -34,18 +34,31 @@ export const gender = [
 export function ModalEditAchievment() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [selectedTab, setSelectedTab] = useState("Achievement");
+  const [selectedAchievements, setSelectedAchievements] = useState(new Set());
 
   const boards = [
-    { percent: 25, role: "Owner", color: "bg-progress-red" },
-    { percent: 50, role: "Team Leader", color: "bg-progress-orange" },
-    { percent: 75, role: "Owner", color: "bg-progress-blue" },
-    { percent: 90, role: "Owner", color: "bg-progress-green" },
-    { percent: 90, role: "Owner", color: "bg-progress-green" },
-    { percent: 90, role: "Owner", color: "bg-progress-green" },
-    { percent: 90, role: "Owner", color: "bg-progress-green" },
-    { percent: 90, role: "Owner", color: "bg-progress-green" },
-    { percent: 90, role: "Owner", color: "bg-progress-green" },
+    { id: 1, percent: 25, role: "Owner", color: "bg-progress-red", title: "Zentrio UI Design" },
+    { id: 2, percent: 50, role: "Team Leader", color: "bg-progress-orange", title: "Mobile App Development" },
+    { id: 3, percent: 75, role: "Owner", color: "bg-progress-blue", title: "Web Development" },
+    { id: 4, percent: 90, role: "Owner", color: "bg-progress-green", title: "API Integration" },
+    { id: 5, percent: 90, role: "Developer", color: "bg-progress-green", title: "Database Design" },
+    { id: 6, percent: 90, role: "Lead", color: "bg-progress-green", title: "Testing Framework" },
+    { id: 7, percent: 90, role: "Owner", color: "bg-progress-green", title: "DevOps Setup" },
+    { id: 8, percent: 90, role: "Manager", color: "bg-progress-green", title: "Project Management" },
+    { id: 9, percent: 90, role: "Owner", color: "bg-progress-green", title: "Code Review" },
   ];
+
+  const handleAchievementToggle = (achievementId) => {
+    setSelectedAchievements(prev => {
+      const newSelected = new Set(prev);
+      if (newSelected.has(achievementId)) {
+        newSelected.delete(achievementId);
+      } else {
+        newSelected.add(achievementId);
+      }
+      return newSelected;
+    });
+  };
 
   return (
     <>
@@ -103,42 +116,50 @@ export function ModalEditAchievment() {
                         <h2 className="text-h5 text-title font-medium">
                           Choose your achievement
                         </h2>
-                        <p className="text-sm text-description">1/2</p>
+                        <p className="text-sm text-description">{selectedAchievements.size}/{boards.length}</p>
                       </div>
                       <p className="text-sm text-description">
-                        Select a achievement to credit of your profile
+                        Select achievements to credit to your profile
                       </p>
                     </div>
 
                     <ul className="px-2 pt-2 space-y-3 mt-2 max-h-[400px] overflow-y-auto pr-2  pb-[200px]">
-                      {boards.map((board, index) => (
-                        <li
-                          key={index}
-                          className="flex justify-between items-center gap-4 border border-stroke outline-blue-500 outline px-2 py-3 rounded-xl"
-                        >
-                          <div className="flex items-center gap-3">
-                            <div
-                              className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold ${board.color}`}
-                            >
-                              D
+                      {boards.map((board) => {
+                        const isSelected = selectedAchievements.has(board.id);
+                        return (
+                          <li
+                            key={board.id}
+                            className={`flex justify-between items-center gap-4 border rounded-xl cursor-pointer transition-all duration-200 ${
+                              isSelected 
+                                ? 'border-blue-500 bg-blue-50 outline outline-1 outline-blue-500' 
+                                : 'border-stroke hover:border-gray-400'
+                            } px-2 py-3`}
+                            onClick={() => handleAchievementToggle(board.id)}
+                          >
+                            <div className="flex items-center gap-3">
+                              <div
+                                className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold ${board.color}`}
+                              >
+                                {board.title.charAt(0)}
+                              </div>
+                              <div>
+                                <p className="font-medium">{board.title}</p>
+                                <p className="text-body-sm text-description">
+                                  Role: {board.role}
+                                </p>
+                              </div>
                             </div>
-                            <div>
-                              <p className="font-medium">Zentrio UI Design</p>
-                              <p className="text-body-sm text-description">
-                                Role: {board.role}
-                              </p>
+                            <div className={`transition-opacity duration-200 ${isSelected ? 'opacity-100' : 'opacity-0'}`}>
+                              <Image
+                                src={correctIcon}
+                                width={18}
+                                height={14}
+                                alt="selected icon"
+                              />
                             </div>
-                          </div>
-                          <div>
-                            <Image
-                              src={correctIcon}
-                              width={18}
-                              height={14}
-                              alt="selected icon"
-                            />
-                          </div>
-                        </li>
-                      ))}
+                          </li>
+                        );
+                      })}
                     </ul>
 
                     <div className="grid grid-cols-2 gap-3 pt-2">
@@ -150,7 +171,7 @@ export function ModalEditAchievment() {
                         Cancel
                       </Button>
                       <Button color="primary" radius="full" onPress={onClose}>
-                        Save
+                        Save ({selectedAchievements.size})
                       </Button>
                     </div>
                   </form>

@@ -7,6 +7,7 @@ import {
   IconPhone,
   IconUser,
 } from "../icon/everyicon";
+import ProgressBar from "./ProgressBar";
 
 function ProfileDetailsCard() {
   return (
@@ -15,10 +16,7 @@ function ProfileDetailsCard() {
         <h3 className="text-md font-semibold mb-2">
           Overall Board Completeness
         </h3>
-        <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-          <div className="h-full bg-progress-blue w-[70%]"></div>
-        </div>
-        <p className="text-body text-right text-description mt-1">70%</p>
+        <ProgressBar/>
       </div>
 
       <div className="rounded-xl shadow bg-white">
@@ -27,7 +25,7 @@ function ProfileDetailsCard() {
         </h3>
         <div className="p-4 text-body-sm text-gray-700">
           {/* Personal Details Section */}
-          <div className="mb-4">
+          <div className="grid grid-cols-1 gap-3 pb-5">
             <p className="font-semibold text-description mb-2">
               Personal Details
             </p>
@@ -51,7 +49,7 @@ function ProfileDetailsCard() {
           </div>
 
           {/* Contacts Section */}
-          <div>
+          <div className="grid grid-cols-1 gap-3">
             <p className="font-semibold text-description mb-2">Contacts</p>
             <p className="flex items-center gap-2">
               <IconPhone strokeWidth={1.5} size={4} color={"currentColor"} />{" "}

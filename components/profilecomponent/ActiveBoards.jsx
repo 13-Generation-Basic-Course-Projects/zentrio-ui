@@ -1,6 +1,7 @@
 // ActiveBoards.jsx
 import React from "react";
 import { IconEllipsisVertical } from "../icon/everyicon";
+import ProgressBar from "./ProgressBar";
 
 export default function ActiveBoards() {
   const boards = [
@@ -31,8 +32,8 @@ export default function ActiveBoards() {
         </div>
         <ul className="p-4 space-y-3 mt-2">
           {boards.map((board, index) => (
-            <li key={index} className="flex justify-between items-center gap-4">
-              <div className="flex items-center gap-3">
+            <li key={index} className="grid grid-cols-12 items-center gap-4 ">
+              <div className="flex items-center gap-3  col-span-3">
                 <div
                   className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold ${board.color}`}
                 >
@@ -48,6 +49,10 @@ export default function ActiveBoards() {
                   </p>
                 </div>
               </div>
+              <div className="col-span-9"> 
+                <ProgressBar/>
+              </div>
+              
             </li>
           ))}
         </ul>
