@@ -162,7 +162,6 @@ export default function ModalOptionDocument() {
         >
          <PopupAction
             title={"Delete Folder"}
-            color={"text-red-600"}
             massageTitle={"Are you sure?"}
             massageBody={"You want to delete it."}
             icon={<IconpopupDelete />}

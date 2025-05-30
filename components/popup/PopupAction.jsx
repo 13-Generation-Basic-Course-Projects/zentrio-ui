@@ -44,7 +44,7 @@ export default function PopupAction({
               </ModalHeader>
               <ModalHeader>{massageTitle}</ModalHeader>
               <ModalBody>
-                <p>{massageBody}</p>
+                <p className="   text-center break-words text-balance">{massageBody}</p>
               </ModalBody>
               
               {massageDo || massageUndo != null 

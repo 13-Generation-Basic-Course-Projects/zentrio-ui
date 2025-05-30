@@ -22,6 +22,7 @@ import folder from "../../assets/folderSidBar.png";
 import report from "@/assets/report.png";
 import ModalLeave from "../modal/ModalLeave";
 import LeaveButton from "../button/LeaveButton";
+import PopupAction from "../popup/PopupAction";
 
 export default function DashboardSidebar() {
   const pathname = usePathname();
@@ -374,7 +375,7 @@ export default function DashboardSidebar() {
                   <div className="flex items-center justify-start group-data-[collapsible=icon]:justify-center w-full">
                     <ModalLeave
                       massageTitle={"Are you sure?"}
-                      massageBody={"You want to leave this board Zin two"}
+                      massageBody={"You want to leave this board "}
                       massageUndo={"No, cancel"}
                       massageDo={"Yes, Leave"}
                       action={[<LeaveButton key="leave-button" />]}

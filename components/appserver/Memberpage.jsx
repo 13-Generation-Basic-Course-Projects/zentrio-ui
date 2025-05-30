@@ -20,9 +20,13 @@ import {
   Button,
   useDisclosure,
   useDraggable,
+  Pagination,
 } from "@heroui/react";
 import BredCrum from "../bredcrum/bredcrum";
 import Link from "next/link";
+import PopupAction from "../popup/PopupAction";
+import { IconpopupDelete } from "../icon/Iconpopup";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 export default function Memberpage() {
   const initialMembers = [
@@ -120,7 +124,6 @@ export default function Memberpage() {
       profileImage:
         "https://i.pinimg.com/736x/b2/66/f7/b266f7c8ecb53960c5eaa19d2a40dc41.jpg",
     },
-    // Removed duplicate "Senghun" entries and ensured unique memberId values
     {
       memberId: "1a2b3c4d-0007-0007-0007-000000000007",
       username: "Senghun2",
@@ -165,7 +168,6 @@ export default function Memberpage() {
 
   const [members, setMembers] = useState(initialMembers);
   const [openPopoverId, setOpenPopoverId] = useState(null);
-  const [hoverPopoverId, setHoverPopoverId] = useState(null);
   const { isOpen, onOpen, onOpenChange } = useDisclosure(); // For delete modal
   const [selectedMemberId, setSelectedMemberId] = useState(null);
   const targetRef = useRef(null);
@@ -179,8 +181,22 @@ export default function Memberpage() {
     setMembers((prev) => prev.filter((m) => m.memberId !== id));
   };
 
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const membersPerPage = 5;
+
+  // Calculate the data for the current page
+  const indexOfLastMember = currentPage * membersPerPage;
+  const indexOfFirstMember = indexOfLastMember - membersPerPage;
+  const currentMembers = members.slice(indexOfFirstMember, indexOfLastMember);
+
+  const totalPages = Math.ceil(members.length / membersPerPage);
+
+  function handlePageChange(pageNumber) {
+    setCurrentPage(pageNumber);
+  }
+
   return (
-    <div className="p-4">
+    <div className="p-4 ">
       {/* Breadcrumb */}
       <BredCrum board={"Hikko Design"} feature={"Members"} header={"Member"} />
       <div className="flex justify-between">
@@ -213,31 +229,39 @@ export default function Memberpage() {
       </div>
 
       <section className="overflow-hidden">
-        <div className="relative max-h-[500px] overflow-x-auto mt-10 scrollbar-hidden">
-          <table className="w-full text-body-sm text-left text-title overflow-y-auto">
-            <thead className="text-[#64748B] bg-primary/20">
+        <div className="relative min-h-[450px] mt-10 ">
+          <table className="w-full text-body-sm text-left text-title ">
+            <thead className="text-title/50 bg-primary/20 ">
               <tr>
-                <th className="px-6 py-3 rounded-s-lg">No.</th>
-                <th className="px-6 py-3">Member Name</th>
-                <th className="px-6 py-3">Gender</th>
-                <th className="px-6 py-3">Email</th>
-                <th className="px-6 py-3">Role</th>
-                <th className="px-6 py-3">Current Task</th>
-                <th className="px-6 py-3 rounded-e-lg"></th>
+                <th className="px-6 py-3 rounded-s-lg w-16">No.</th>
+                <th className="px-6 py-3 w-48">Member Name</th>
+                <th className="px-6 py-3 w-28">Gender</th>
+                <th className="px-6 py-3 w-60">Email</th>
+                <th className="px-6 py-3 w-48">Role</th>
+                <th className="px-6 py-3 w-48">Current Task</th>
+                <th className="px-6 py-3 rounded-e-lg w-16"></th>
               </tr>
             </thead>
+
             <tbody>
-              {members.map((member, index) => (
+              {currentMembers.map((member, index) => (
                 <tr
                   key={member.memberId}
                   className={`${
-                    index % 2 !== 0 ? "bg-gray-100" : "bg-white"
-                  } hover:bg-gray-50 transition-colors`}
-                  onMouseEnter={() => setHoverPopoverId(member.memberId)}
-                  onMouseLeave={() => setHoverPopoverId(null)}
+                    (index + indexOfFirstMember) % 2 !== 0
+                      ? "bg-gray-50/50"
+                      : "bg-white"
+                  } hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 hover:shadow-md transition-all duration-300 ease-in-out group`}
                 >
-                  <td className="px-6 py-2">{index + 1}</td>
-                  <td className="px-6 py-2 relative">
+                  {/* Index Number */}
+                  <td className="px-6 py-4">
+                    <span className="font-medium text-gray-600 group-hover:text-blue-600 transition-colors duration-200">
+                      {index + 1 + (currentPage - 1) * membersPerPage}
+                    </span>
+                  </td>
+
+                  {/* Username with Modern Hover Effect */}
+                  <td className="px-6 py-4">
                     <Link
                       href={{
                         pathname: `/profile/${member.memberId}`,
@@ -248,110 +272,60 @@ export default function Memberpage() {
                       }}
                       passHref
                     >
-                      <div className="flex items-center gap-2 cursor-pointer hover:underline">
-                        <img
-                          src={member.profileImage}
-                          alt={`${member.username}'s profile`}
-                          className="rounded-full w-[35px] h-[35px] object-cover"
-                        />
-                        <span>{member.username}</span>
-                      </div>
-                    </Link>
-
-                    {/* Hover Details Popup */}
-                    {hoverPopoverId === member.memberId && (
-                      <div className="absolute left-0 top-full mt-2 w-72 bg-white border border-gray-200 shadow-lg rounded-lg p-4 z-50">
-                        <div className="flex items-center space-x-3 mb-3">
+                      <div className="flex items-center gap-3 cursor-pointer group/user">
+                        <div className="relative">
                           <img
                             src={member.profileImage}
                             alt={`${member.username}'s profile`}
-                            className="rounded-full w-[60px] h-[60px] object-cover"
+                            className="rounded-full w-[40px] h-[40px] object-cover ring-2 ring-transparent group-hover/user:ring-blue-300 group-hover/user:ring-offset-2 transition-all duration-300 transform group-hover/user:scale-110"
                           />
-                          <div>
-                            <h3 className="text-lg font-semibold text-gray-900">
-                              {member.username}
-                            </h3>
-                            <p className="text-sm text-gray-600">
-                              {member.email}
-                            </p>
-                          </div>
+                          <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-blue-400/20 to-purple-400/20 opacity-0 group-hover/user:opacity-100 transition-opacity duration-300"></div>
                         </div>
-
-                        <div className="space-y-2 text-sm">
-                          <div>
-                            <span className="font-medium text-gray-700">
-                              Gender:
-                            </span>
-                            <span className="ml-2 text-gray-600">
-                              {member.gender}
-                            </span>
-                          </div>
-
-                          <div>
-                            <span className="font-medium text-gray-700">
-                              Roles:
-                            </span>
-                            <div className="ml-2 flex flex-wrap gap-1 mt-1">
-                              {member.roleName.map((role, i) => (
-                                <span
-                                  key={i}
-                                  className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full"
-                                >
-                                  {role}
-                                </span>
-                              ))}
-                            </div>
-                          </div>
-
-                          <div>
-                            <span className="font-medium text-gray-700">
-                              Tasks:
-                            </span>
-                            <div className="ml-2 flex flex-wrap gap-1 mt-1">
-                              {member.task.map((task, i) => (
-                                <span
-                                  key={i}
-                                  className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full"
-                                >
-                                  {task}
-                                </span>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="mt-3 pt-3 border-t border-gray-200">
-                          <Link
-                            href={{
-                              pathname: `/profile/${member.memberId}`,
-                              query: {
-                                name: member.username,
-                                profileImage: member.profileImage,
-                              },
-                            }}
-                            className="text-blue-600 hover:text-blue-800 text-sm font-medium"
-                          >
-                            View Full Profile →
-                          </Link>
+                        <div className="flex flex-col">
+                          <span className="font-semibold text-gray-800 group-hover/user:text-blue-700 transition-colors duration-200">
+                            {member.username}
+                          </span>
+                          <span className="text-xs text-gray-500 group-hover/user:text-blue-500 transition-colors duration-200">
+                            Click to view profile
+                          </span>
                         </div>
                       </div>
-                    )}
+                    </Link>
                   </td>
 
-                  <td className="px-6 py-4">{member.gender}</td>
-                  <td className="px-6 py-4">{member.email}</td>
+                  {/* Gender */}
                   <td className="px-6 py-4">
-                    <div className="flex items-center gap-4">
-                      {member.roleName[0]}
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors duration-200">
+                      {member.gender}
+                    </span>
+                  </td>
+
+                  {/* Email */}
+                  <td className="px-6 py-4">
+                    <span className="text-gray-600 group-hover:text-gray-800 transition-colors duration-200">
+                      {member.email}
+                    </span>
+                  </td>
+
+                  {/* Roles Popover */}
+                  <td className="px-6 py-4 border-none">
+                    <div className="flex items-center gap-2">
+                      <span className="text-gray-700 group-hover:text-blue-700 transition-colors duration-200">
+                        {member.roleName[0]}
+                      </span>
                       {member.roleName.length > 1 && (
                         <Popover>
                           <PopoverTrigger className="cursor-pointer">
-                            <Image src={arrowdown} alt="More roles" />
+                            <div className="p-1 rounded-full hover:bg-blue-100 transition-colors duration-200">
+                              <ChevronUp/>
+                            </div>
                           </PopoverTrigger>
-                          <PopoverContent className="text-h6 bg-white border shadow-lg p-4">
+                          <PopoverContent className="text-h6 bg-white border shadow-lg p-4 rounded-lg">
                             <div className="space-y-2">
                               {member.roleName.map((role, i) => (
-                                <div key={i}>{role}</div>
+                                <div key={i} className="px-2 py-1 bg-blue-50 text-blue-700 rounded text-sm">
+                                  {role}
+                                </div>
                               ))}
                             </div>
                           </PopoverContent>
@@ -359,18 +333,26 @@ export default function Memberpage() {
                       )}
                     </div>
                   </td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-4">
-                      {member.task[0]}
+
+                  {/* Tasks Popover */}
+                  <td className="px-6 py-4 border-none">
+                    <div className="flex items-center gap-2 !border-none">
+                      <span className="text-gray-700 group-hover:text-green-700 transition-colors duration-200">
+                        {member.task[0]}
+                      </span>
                       {member.task.length > 1 && (
                         <Popover>
-                          <PopoverTrigger className="cursor-pointer">
-                            <Image src={arrowdown} alt="More tasks" />
+                          <PopoverTrigger className="cursor-pointer border-0">
+                            <div className="p-1 rounded-full hover:bg-green-100 transition-colors duration-200 border-none">
+                            <ChevronUp/>
+                            </div>
                           </PopoverTrigger>
-                          <PopoverContent className="text-h6 bg-white border shadow-lg p-4">
+                          <PopoverContent className="text-h6 bg-white border-0 p-4 rounded-lg">
                             <div className="space-y-2">
                               {member.task.map((task, i) => (
-                                <div key={i}>{task}</div>
+                                <div key={i} className="px-2 py-1 bg-green-50 text-green-700 rounded text-sm">
+                                  {task}
+                                </div>
                               ))}
                             </div>
                           </PopoverContent>
@@ -378,63 +360,27 @@ export default function Memberpage() {
                       )}
                     </div>
                   </td>
-                  <td>
-                    <Popover
-                      showArrow
-                      backdrop="opaque"
-                      offset={10}
-                      placement="bottom"
-                      isOpen={openPopoverId === member.memberId}
-                      onOpenChange={() => {
-                        setOpenPopoverId((prev) =>
-                          prev === member.memberId ? null : member.memberId
-                        );
-                      }}
-                    >
-                      <PopoverTrigger className="px-6 py-4 cursor-pointer">
-                        <div>
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="w-4 h-4 text-gray-600 hover:text-black"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                          >
-                            <path d="M10 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4z" />
-                          </svg>
-                        </div>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-[150px] p-2">
-                        <Button
-                          className="w-full text-left text-red-600 hover:bg-red-100 bg-white"
-                          onPress={() => {
-                            setSelectedMemberId(member.memberId);
-                            setOpenPopoverId(null);
-                            onOpen();
-                          }}
+
+                  {/* Action Popover */}
+                  <td className="px-6 py-4 ">
+                    <PopupAction
+                      title={
+                         <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="w-4 h-4"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
                         >
-                          <span>
-                            <svg
-                              className="text-progress-red/50 dark:text-white"
-                              aria-hidden="true"
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="20"
-                              height="20"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                stroke="currentColor"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"
-                              />
-                            </svg>
-                          </span>
-                          Delete
-                        </Button>
-                      </PopoverContent>
-                    </Popover>
+                          <path d="M10 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4z" />
+                        </svg>
+                      }
+                      massageTitle={"Are you sure?"}
+                      massageBody={`You want to delete ${member.username} from baord `}
+                      icon={<IconpopupDelete />}
+                      bgcolor={"bg-slate-red"}
+                      massageDo={"Yes, Delete"}
+                      massageUndo={"No, Cancel"}
+                    />
                   </td>
                 </tr>
               ))}
@@ -442,74 +388,62 @@ export default function Memberpage() {
           </table>
 
           {/* Delete Confirmation Modal */}
-          <Modal
-            isOpen={isOpen}
-            onOpenChange={onOpenChange}
-            className="overflow-x-hidden h-auto"
-          >
-            <ModalContent
-              ref={targetRef}
-              className="flex flex-col justify-center items-center"
-            >
-              {(onClose) => (
-                <>
-                  <ModalHeader {...moveProps}></ModalHeader>
-                  <ModalBody>
-                    <div className="flex flex-col justify-center items-center space-y-4">
-                      <div className="w-[100px] h-[100px] rounded-full bg-progress-red/20 items-center flex justify-center">
-                        <svg
-                          className="text-progress-red/50 dark:text-white"
-                          aria-hidden="true"
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="80"
-                          height="80"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            stroke="currentColor"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"
-                          />
-                        </svg>
-                      </div>
-                      <p>Are you sure?</p>
-                      <p className="w-auto whitespace-nowrap">
-                        You want to delete{" "}
-                        <span className="text-title font-semibold">
-                          {members.find((m) => m.memberId === selectedMemberId)
-                            ?.username || "this user"}
-                        </span>{" "}
-                        from board.
-                      </p>
-                    </div>
-                  </ModalBody>
-                  <ModalFooter>
-                    <Button
-                      variant="light"
-                      className="bg-primary/80 text-white hover:bg-bgColor hover:text-title"
-                      onPress={onClose}
-                    >
-                      No, Cancel
-                    </Button>
-                    <Button
-                      className="bg-progress-red/50 text-white hover:bg-bgColor hover:text-primary"
-                      onPress={() => {
-                        deleteMemberById(selectedMemberId);
-                        onClose();
-                      }}
-                    >
-                      Yes, Delete
-                    </Button>
-                  </ModalFooter>
-                </>
-              )}
-            </ModalContent>
-          </Modal>
+          
+          
         </div>
       </section>
+      
+      {/* Modern Pagination */}
+      <div className="flex flex-col items-center justify-center gap-6 mt-8">
+       
+        
+        <div className="flex items-center gap-4">
+          <Button
+            color="default"
+            variant="none"
+            size="sm"
+            className="px-4 py-2 font-medium hover:bg-gray-50 transition-colors duration-200"
+            isDisabled={currentPage <= 1}
+            onPress={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+          >
+            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            Previous
+          </Button>
+          
+          <Pagination
+            color="primary"
+            variant="none"
+            page={currentPage}
+            total={totalPages}
+            onChange={setCurrentPage}
+            className="gap-1"
+            classNames={{
+              wrapper: "gap-1 overflow-hidden h-8  border border-divider bg-content1 ",
+              item: "w-8 h-8 text-small rounded-md bg-transparent hover:bg-default-100 transition-colors duration-200",
+              cursor: "bg-primary text-white shadow-sm rounded-md font-medium",
+            }}
+            showControls={false}
+          />
+          
+          <Button
+            color="primary"
+            variant="none"
+            size="sm"
+            className="px-4 py-2  font-medium hover:bg-primary/90 hover:text-white transition-colors duration-200"
+            isDisabled={currentPage >= totalPages}
+            onPress={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+          >
+            Next
+            <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </Button>
+        </div>
+        
+        
+      </div>
     </div>
   );
 }

@@ -15,7 +15,7 @@ export default function Layout({ children }) {
   return (
     <html lang="en">
      <body className={`font-poppin`}>
-        <NextTopLoader color="#70A973" />
+        <NextTopLoader color="#59BAD5" />
         {/* <NextUIProvider> */}
           <Provider>{children}</Provider>
         {/* </NextUIProvider> */}
