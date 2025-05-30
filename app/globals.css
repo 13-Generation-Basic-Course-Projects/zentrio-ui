@@ -136,3 +136,16 @@ a.fc-event {
   padding: 0px;
   background-color: transparent !important;
 }
+
+
+@layer base {
+  :root {
+    --sidebar-primary: 198 56% 60%; /* #59BAD5 */
+    --sidebar-accent: 192 100% 97%; /* #EFFCFF */
+  }
+
+  .dark {
+    --sidebar-primary: 198 56% 60%; /* #59BAD5 */
+    --sidebar-accent: 192 100% 97%; /* #EFFCFF */
+  }
+}

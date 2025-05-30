@@ -1,5 +1,4 @@
 "use client";
-
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import logo from "@/public/image/Zentrio-Logo.png";
@@ -11,6 +10,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarTrigger,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 import board from "../../assets/boardSideBar.png";
@@ -82,10 +82,11 @@ export default function WorkSpaceSideBar() {
       className="border-none rounded-tr-2xl bg-white  "
     >
       <SidebarContent className="h-screen flex flex-col !border-0  ">
-        <div className="p-4 !border-0">
+        <div className="p-4 !border-0 flex justify-between items-center">
           <Link href="/">
-            <Image src={logo} className="w-[168px] object-cover" alt="logo" />
+            <Image src={logo} className="w-[118px] object-cover" alt="logo" />
           </Link>
+          <SidebarTrigger  />
         </div>
 
         <SidebarGroup className="flex flex-col flex-1 !border-0 px-5">
@@ -103,6 +104,7 @@ export default function WorkSpaceSideBar() {
                 return (
                   <SidebarMenuItem key={i} className="!border-0 p-0">
                     <SidebarMenuButton
+                    style={{ borderRadius: "0.5rem" }} 
                       asChild
                       tooltip={item.title}
                       className={`group flex w-full items-center justify-between  rounded-lg transition-colors duration-200  p-0
@@ -110,13 +112,13 @@ export default function WorkSpaceSideBar() {
                   isActive
                     ? "bg-slate-blue text-primary"
                     : "hover:bg-slate-100 text-gray-700"
-                } !border-0`}
+                }  rounded-lg`} 
                     >
                       <div className="flex items-center gap-2 justify-between w-full">
                         <span
                           className={`${item.color} h-5 w-5 rounded-full`}
                         ></span>
-                        <Link href={item.url}>
+                        <Link href={item.url} >
                           <span className="flex-1 text-left sm:text-body-sm  truncate overflow-hidden whitespace-nowrap">
                             {item.title}
                           </span>
@@ -136,6 +138,7 @@ export default function WorkSpaceSideBar() {
                 return (
                   <SidebarMenuItem key={i} className="!border-0 w-full  p-0">
                     <SidebarMenuButton
+                     style={{ borderRadius: "0.5rem" }} 
                       asChild
                       tooltip={item.title}
                       className={`group flex w-full items-center justify-between  p-0  rounded-lg transition-colors duration-200 

@@ -13,7 +13,7 @@ export function NavbarAuthorized({ user }) {
     <>
       {/* Navbar */}
 
-      <div className="w-full sticky top-0 z-20  bg-bgColor flex justify-end items-center  ">
+      <div className="w-full sticky top-0 z-20  bg-bgColor flex justify-end items-center  rounded-bl-3xl ">
         <header className="px-4 sm:px-6 lg:px-8 ">
           <div className="flex w-full h-16 items-center justify-end ">
             {/* Right side - Notification and Profile */}

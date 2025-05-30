@@ -80,13 +80,15 @@ export default function VerticalChart() {
   }, [activeChart]);
 
   return (
-    <div className="w-full p-4 bg-white rounded-xl shadow-md flex flex-row space-x-6">
+    <div className="w-full p-4 bg-white shadow-sm rounded-xl shadow-md flex flex-row space-x-6">
       {/* Left chart area */}
       <div className="flex-1">
         <div className="flex justify-between items-center mb-4">
-          <div className="text-sm text-gray-600">
-            <p>Detail</p>
-            Total task: <span className="font-semibold">{total}</span>
+          <div>
+            <p className="text-sm text-description">Detail</p>
+            <div className="text-h5 font-bold">
+              Total task: <span className="font-semibold">{total}</span>
+            </div>
           </div>
           <div className="flex gap-2 bg-title/5 p-2 rounded-small">
             <button
@@ -112,7 +114,14 @@ export default function VerticalChart() {
           </div>
         </div>
 
-        <BarChart width={600} height={350} data={chartData}>
+        <BarChart width={750} height={350} data={chartData}>
+          <defs>
+            <linearGradient id="barGradient" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stopColor="#FFFFFF" />
+              <stop offset="50%" stopColor="#59BAD5" />
+              <stop offset="100%" stopColor="#59BAD5" />
+            </linearGradient>
+          </defs>
           <CartesianGrid strokeDasharray="3 3" />
           <YAxis />
           <XAxis
@@ -169,7 +178,12 @@ export default function VerticalChart() {
             {chartData.map((entry, index) => (
               <Cell
                 key={`cell-${index}`}
-                fill={stageColors[entry.stage] || "#ccc"}
+                fill={
+                  activeChart === "monthly"
+                  ? "url(#barGradient)"
+                  : stageColors[entry.stage]
+                }
+                // fill={stageColors[entry.stage] || "#ccc"}
               />
             ))}
           </Bar>
@@ -178,10 +192,11 @@ export default function VerticalChart() {
 
       {/* Right side 4 stage container */}
       <div className="w-[25%] border-l-1 rounded flex justify-center items-center flex-col">
-        <p className="mb-2 font-semibold text-title text-caption bg-bgColor p-2 border-primary border-1 rounded-full">
+        <div className="relative mb-2 font-semibold text-primary text-caption bg-bgColor py-2.5 ps-11 pe-8 border-primary border-1 rounded-full flex items-center">
+          <div className="absolute left-5 w-3 h-3 bg-primary rounded-full"></div>
           All Category
-        </p>
-        <ul className="space-y-3 text-title/50 text-caption-tiny">
+        </div>
+        <ul className="space-y-3 text-title text-caption-tiny">
           {Object.entries(stageColors).map(([stage, color]) => (
             <li key={stage} className="flex items-center gap-2">
               <span

@@ -2,15 +2,15 @@
 import { TrendingUp } from "lucide-react";
 
 const data = [
-  { browser: "Todo", visitors: 275, color: "#4285F4" },
-  { browser: "In Progress", visitors: 200, color: "#00A1F1" },
-  { browser: "Under Review", visitors: 187, color: "#FF7139" },
-  { browser: "Done", visitors: 173, color: "#0078D7" },
+  { browser: "Todo", visitors: 270, color: "#64A9F6" },
+  { browser: "In Progress", visitors: 200, color: "#5FC381" },
+  { browser: "Under Review", visitors: 187, color: "#F59E0B" },
+  { browser: "Done", visitors: 173, color: "#64A9F6" },
 ];
 
 const maxVisitors = Math.max(...data.map((d) => d.visitors));
 const labelWidth = 120;
-const barHeight = 30;
+const barHeight = 15;
 const barGap = 16;
 const padding = 20;
 
@@ -20,14 +20,14 @@ export default function HorizontalChart() {
   const barAreaWidth = viewBoxWidth - labelWidth - padding * 2;
 
   return (
-    <div className="p-6 rounded-xl shadow-lg bg-white w-full max-w-5xl mx-auto">
+    <div className="p-6 rounded-xl shadow-sm bg-white w-full">
       <h2 className="text-xl font-semibold mb-3 text-gray-800 flex items-center gap-2">
         <TrendingUp className="w-5 h-5 text-blue-500" /> Total of Checklist
       </h2>
 
       <div className="relative w-full">
         <svg
-          className="w-full h-auto"
+          className="w-full h-auto "
           viewBox={`0 0 ${viewBoxWidth} ${totalHeight + 60}`}
           preserveAspectRatio="xMinYMin meet"
           role="img"

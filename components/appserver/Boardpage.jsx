@@ -150,8 +150,8 @@ export default function SystemBoard({ user }) {
   return (
     <>
       {/* Navbar */}
-      <div className="w-full sticky top-0 z-10 bg-bgColor">
-        <header className="px-4 sm:px-6 lg:px-8">
+      <div className="w-full sticky top-0 z-10 bg-bgColor rounded-bl-3xl">
+        <header className="px-4 sm:px-6 lg:px-8 ">
           <div className="flex w-full h-16 items-center justify-between">
             {/* Left side - Navigation Tabs */}
             <nav className="flex-1">
@@ -181,7 +181,7 @@ export default function SystemBoard({ user }) {
               <ModalNotification />
 
               <Link href="/profile">
-                <div className="overflow-hidden rounded-full border-2 border-gray-200 hover:border-gray-300 shadow-sm transition-all duration-200 hover:shadow-md">
+                <div className="overflow-hidden rounded-full border-2 border-gray-200 hover:border-gray-300 shadow-sm transition-all duration-200 hover:shadow-md ">
                   <span className="sr-only">Toggle dashboard menu</span>
                   {user?.image ? (
                     <img

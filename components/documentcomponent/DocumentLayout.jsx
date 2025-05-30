@@ -66,7 +66,7 @@ export default function DocumentLayout({ user }) {
   return (
     <>
       {/* Navbar */}
-      <div className="w-full sticky top-0 z-[20] bg-bgColor">
+      <div className="w-full sticky top-0 z-[20] bg-bgColor rounded-bl-3xl">
         <header className="px-4 sm:px-6 lg:px-8">
           <div className="flex w-full h-16 items-center justify-between">
             {/* Left side - Navigation Tabs */}

@@ -9,6 +9,7 @@ import { Suspense } from "react";
 import Loading from "../loading";
 import SidebarRenderer from "@/components/sidebar/SidebarRenderer";
 import { SideBarIcon } from "@/components/icon/everyicon";
+//import { LoadingBarContainer } from "react-top-loading-bar";
 export const metadata = {
   title: "Zentrio | Task Mangement",
   description: "Welcome to Zentrio Cambodia",
@@ -20,15 +21,17 @@ export default async function SystemLayout({ children }) {
   const session = await auth();
   console.log("aaa", session?.user);
   return (
-    <SidebarProvider className="">
+    // <LoadingBarContainer>
+    <SidebarProvider className="bg-bgColor">
       <SidebarRenderer />
-      <div className={" font-poppin h-screen overflow-hidden   w-full"}>
-        <SidebarTrigger className="fixed top-0  z-[30]" />
+      <div className={" font-poppin h-screen overflow-hidden  bg-white  w-full"}>
+        {/* <SidebarTrigger className="fixed top-0  z-[30]" /> */}
         <div className="w-full  ">
           <NavbarWrapper user={session?.user} />
           {children}
         </div>
       </div>
     </SidebarProvider>
+    // </LoadingBarContainer>
   );
 }
