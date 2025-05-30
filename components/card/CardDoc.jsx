@@ -166,7 +166,6 @@ export default function CardFolder({ title, status, date }) {
     </Card>
   );
 }
-
 //just make for icon file
 const icons = {
   pdf: "https://cdn-icons-png.flaticon.com/128/4726/4726010.png",

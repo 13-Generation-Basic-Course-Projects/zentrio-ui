@@ -63,8 +63,8 @@ export const SignUpForm = () => {
 
   return (
     <div className='w-full h-screen flex items-center justify-center'>
-      <div className='w-[1728px] h-[1117px]  flex items-center justify-center'>
-        <Form onSubmit={handleSubmit} className="space-y-4 w-[640px] h-fit bg-gradient-to-br from-[#9BDBFD]/30 to-[#FFFFFF] px-[55px] py-[40px] rounded-[20px] shadow-lg gap-[50px]">
+      <div className='w-[1728px] h-[1117px]  flex items-center justify-center '>
+        <Form onSubmit={handleSubmit} className="space-y-4 w-[640px] h-fit bg-signup-gradient   px-[55px] py-[40px] rounded-[20px] shadow-lg gap-[50px]">
           <div>
             <p className='text-h1 text-primary'><span className='font-bold'>Sign up</span></p>
             <p className='text-body text-[#787486]'>Let’s get you all st up so you can access your personal account</p>
@@ -194,11 +194,11 @@ export const SignUpForm = () => {
             </div>
             <div className='flex flex-col gap-[10px]'>
               <Link href="/verify" className="capitalize">
-              <Button className="w-full bg-primary text-bgColor max-w-none">
+              <Button className="w-full bg-primary text-bgColor max-w-none border-none">
                 <span className='text-h6'>Create account</span>
               </Button>
               </Link>
-              <p className="text-center text-body">
+              <p className="text-center text-body my-5">
                 Have Account? <Link href="/login" className="text-primary text-body">Sign in</Link>
               </p>
               <div className="text-center">
@@ -268,7 +268,7 @@ export const SigninForm = () => {
   return (
     <div className='w-full h-screen flex items-center justify-center'>
       <div className='w-[1728px] h-[1117px]  flex items-center justify-center'>
-        <Form onSubmit={handleSubmit} className="w-[640px] h-fit bg-gradient-to-br from-[#9BDBFD]/30 to-[#FFFFFF] px-[55px] py-[40px] rounded-[20px] shadow-lg gap-[50px]">
+        <Form onSubmit={handleSubmit} className="w-[540px] h-fit bg-login-gradient px-[55px] py-[40px] rounded-[20px] shadow-lg gap-[50px]">
           <div>
             <p className='text-h1 text-primary'><span className='font-bold'>Login in</span></p>
             <p className='text-body text-[#787486]'>Login to access your Zentrio account</p>
@@ -345,11 +345,11 @@ export const SigninForm = () => {
           </div>
           <div className='w-full gap-[10px] flex flex-col'>
             <Link href="/workspace" className="capitalize">
-            <Button  className="w-full max-w-none bg-primary text-white">
+            <Button  className="w-full max-w-none bg-primary text-white border-none">
               Login
             </Button>
             </Link>
-            <p className="text-center text-body">
+            <p className="text-center text-body my-5">
                   No Account? <Link href="/register" className="text-primary text-body">Sign up</Link>
             </p>
             <div className="text-center">

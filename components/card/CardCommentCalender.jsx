@@ -57,7 +57,7 @@ export default function CardTCommentCalender() {
     },
   ]
   return (
-    <Card className="py-4 h-[500px] flex flex-col">
+    <Card className="py-4 h-[500px] flex flex-col shadow-sm">
       {/* Header */}
       <CardHeader className="pb-0 pt-2 px-6 flex-col items-start">
         <div className="flex items-center gap-2">
@@ -99,13 +99,13 @@ export default function CardTCommentCalender() {
                   </button>
                 </div>
 
-                <p className="text-sm text-gray-600 mb-2 leading-relaxed">
+                <p className="text-body-sm text-gray-600 mb-2 leading-relaxed">
                   {comment.content}
                 </p>
 
-                <div className="flex items-center justify-end gap-1">
+                <div className="flex items-center text-body-sm justify-end gap-1">
                   <AlarmClock className="text-green-500 w-5 h-5" />
-                  <span className="text-xs text-green-500 font-medium">
+                  <span className=" text-green-500 font-medium">
                     {formatRelativeTime(comment.comment_date)}
                   </span>
                 </div>

@@ -19,23 +19,20 @@ export default async function OverviewLayout({ children }) {
   const session = await auth();
   console.log("aaa", session?.user);
   return (
-    <div className="h-screen flex flex-col overflow-y-hidden">
-      <div className="flex-1 pt-0 flex flex-col overflow-hidden h-[100%] ">
+    <div className="h-screen flex flex-col overflow-y-hidden ">
+      <div className="flex-1 pt-0 flex flex-col overflow-hidden h-[100%] px-2  ">
         {/* Top section - fixed height */}
-        <div className="grid grid-cols-12 flex-shrink-0">
+        <div className="grid grid-cols-12    flex-shrink-0 ">
           <div className="col-span-9 flex flex-col p-2 pt-5">
             <CardWelcomeComponent />
           </div>
-
-          <div className="col-span-3 pt-5 flex justify-center">
-            <div className="w-full max-w-full p-3 mx-auto">
-              <SmallCalendar />
-            </div>
+          <div className="col-span-3  h-[250px] pt-5 ">
+            <SmallCalendar />
           </div>
         </div>
 
         {/* Children section - takes remaining height */}
-        <div className="overflow-hidden flex-1 min-h-0 ">{children}</div>
+        <div className="overflow-hidden flex-1 min-h-0  ">{children}</div>
       </div>
     </div>
   );
