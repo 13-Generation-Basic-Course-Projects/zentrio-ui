@@ -114,7 +114,7 @@ export default function WorkSpaceSideBar() {
                     : "hover:bg-slate-100 text-gray-700"
                 }  rounded-lg`} 
                     >
-                      <div className="flex items-center gap-2 justify-between w-full">
+                      <div className="flex items-center gap-2 justify-start w-full">
                         <span
                           className={`${item.color} h-5 w-5 rounded-full`}
                         ></span>
@@ -123,9 +123,11 @@ export default function WorkSpaceSideBar() {
                             {item.title}
                           </span>
                         </Link>
-                        <span>
+                       <div>
+                         <span>
                           <ModalOptionWorkspace />
                         </span>
+                       </div>
                       </div>
                     </SidebarMenuButton>
                   </SidebarMenuItem>

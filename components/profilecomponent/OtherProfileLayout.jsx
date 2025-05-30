@@ -61,7 +61,13 @@ export default function OtherProfileLayout({ user, acheivment, profile, action ,
             size="md"
             color="primary"
             variant="bordered"
-            
+            onClick={() => {
+              if (window.history.length > 1) {
+                window.history.back(); // Go back if possible
+              } else {
+                window.location.href = "/dashboard"; // Fallback URL
+              }
+            }}
           >
             <IconReturnLeft strokeWidth={2} size={5} color={"currentColor"} />
             Go Back
