@@ -16,6 +16,7 @@ export default function ModalDelete({
   massageBody,
   massageUndo,
   massageDo,
+  color,
   action,
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -24,9 +25,9 @@ export default function ModalDelete({
     <>
       <Button
         onPress={onOpen}
-        className="bg-transparent  flex items-center gap-2 cursor-pointer p-0 !border-0"
+        className="bg-transparent  flex items-center gap-2 cursor-pointer p-3 !border-0"
       >
-        <span className=" font-medium">{title}</span>
+        <div className={`font-medium ${color} `}>{title}</div>
       </Button>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="sm">
         <ModalContent className="flex  flex-col justify-center items-center">
@@ -42,16 +43,23 @@ export default function ModalDelete({
                 <p>{massageBody}</p>
               </ModalBody>
               <ModalFooter>
-                <Button
-                  className="bg-slate-blue-more"
-                  variant="light"
-                  onPress={onClose}
-                >
-                  <p className="text-slate-blue">{massageUndo}</p>
-                </Button>
-                <Button className="bg-slate-red" onPress={onClose}>
-                  <p className="text-red-300">{massageDo}</p>
-                </Button>
+               <Button
+                className="bg-slate-blue-more text-white font-semibold"
+                variant="light"
+                onPress={onClose}
+              >
+                <p className="text-blue-500">{massageUndo}</p>
+
+              </Button>
+
+              <Button
+                className="bg-slate-red text-white font-semibold"
+                onPress={onClose}
+              >
+                <p className="text-red-500">{massageDo}</p>
+                
+              </Button>
+
               </ModalFooter>
             </>
           )}

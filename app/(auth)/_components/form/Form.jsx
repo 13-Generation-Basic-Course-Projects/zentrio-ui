@@ -1,21 +1,37 @@
 "use client";
 
-import { Input } from "@heroui/input";
-import { Button, Checkbox, Form, InputOtp } from "@heroui/react";
-import { useState } from "react";
-import Google from "@/assets/googleIcon.png";
-import Image from "next/image";
-import Link from "next/link";
+import { Input } from '@heroui/input';
+import { Button, Checkbox, Form, InputOtp } from '@heroui/react';
+import { useState } from 'react';
+import Google from '@/assets/googleIcon.png';
+import Image from 'next/image';
+import Link from 'next/link';
+import { AuthInput } from './input';
+import { Eye, EyeOff } from "lucide-react";
 
 export const SignUpForm = () => {
-  const [isVisible, setIsVisible] = useState(false);
-  const toggleVisibility = () => setIsVisible(!isVisible);
+  const [isVisible, setIsVisible] = useState({
+    current: false,
+    new: false,
+    confirm: false,
+    confirm2: false
+  });
+
+  const toggleVisibility = (field) => {
+    setIsVisible(prev => {
+      const newState = {
+        ...prev,
+        [field]: !prev[field]
+      };
+      return newState;
+    });
+  };
 
   const [formData, setFormData] = useState({
-    username: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
+    username: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
     termsAccepted: false,
   });
 
@@ -23,7 +39,7 @@ export const SignUpForm = () => {
     const { name, value, type, checked } = e.target;
     setFormData({
       ...formData,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: type === 'checkbox' ? checked : value,
     });
   };
 
@@ -36,159 +52,163 @@ export const SignUpForm = () => {
       return;
     }
 
-    if (
-      !formData.username ||
-      !formData.email ||
-      !formData.password ||
-      !formData.confirmPassword
-    ) {
+    if (!formData.username || !formData.email || !formData.password || !formData.confirmPassword) {
       alert("All fields are required!");
       return;
     }
 
     // Add form submission logic here
-    console.log("Form submitted:", formData);
+    console.log('Form submitted:', formData);
   };
 
   return (
-    <div className="w-full h-screen flex items-center justify-center">
-      <div className="w-[1728px] h-[917px]  flex items-center justify-center">
-        <Form
-          onSubmit={handleSubmit}
-          className="space-y-4 md:w-[640px] h-fit bg-white px-[45px] py-[40px] rounded-[20px] shadow-lg gap-[50px]"
-        >
+    <div className='w-full h-screen flex items-center justify-center'>
+      <div className='w-[1728px] h-[1117px]  flex items-center justify-center'>
+        <Form onSubmit={handleSubmit} className="space-y-4 w-[640px] h-fit bg-gradient-to-br from-[#9BDBFD]/30 to-[#FFFFFF] px-[55px] py-[40px] rounded-[20px] shadow-lg gap-[50px]">
           <div>
-            <p className="text-h1 text-primary">
-              <span className="font-bold">Sign up</span>
-            </p>
-            <p className="text-body text-[#787486]">
-              Let’s get you all st up so you can access your personal account
-            </p>
+            <p className='text-h1 text-primary'><span className='font-bold'>Sign up</span></p>
+            <p className='text-body text-[#787486]'>Let’s get you all st up so you can access your personal account</p>
           </div>
-          <div className="gap-[50px] flex flex-col w-full">
-            <div className="gap-[15px] flex flex-col">
-              <div className="w-full">
-                <label
-                  htmlFor="username"
-                  className="block font-medium text-gray-700"
-                >
-                  <span className="text-body">Username</span>
-                </label>
-                <Input
-                  id="username"
-                  name="username"
-                  value={formData.username}
-                  onChange={handleChange}
-                  placeholder="Username"
-                  variant="bordered"
-                  radius="sm"
-                  required
-                  className="w-full text-body-sm"
-                  size="lg"
-                />
+          <div className='gap-[50px] flex flex-col w-full'>
+            <div className='gap-[20px] flex flex-col'>
+              <div className='w-full'>
+                <AuthInput
+                key="outside"
+                type="text"
+                label="Username"
+                labelPlacement="outside"
+                placeholder="Username"
+                className="text-foreground"
+                // {...register("email", {
+                //   required: "Email cannot be empty.",
+                //   pattern: {
+                //     value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                //     message: "Invalid email address.",
+                //   },
+                // })}
+              />
+              {/* {errors?.email?.message && (
+                <MyErrorText label={errors?.email?.message} />
+              )} */}
               </div>
               <div>
-                <label
-                  htmlFor="email"
-                  className="block font-medium text-gray-700"
-                >
-                  <span className="text-body">Email</span>
-                </label>
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  placeholder="Email"
-                  required
-                  radius="sm"
-                  variant="bordered"
-                  className="w-full text-body-sm"
-                  size="lg"
-                />
+                <AuthInput
+                key="outside"
+                type="text"
+                labelPlacement="outside"
+                label="Email"
+                labelPldefault-foregroundacement="outside"
+                placeholder="Email"
+                className="text-foreground"
+                // {...register("email", {
+                //   required: "Email cannot be empty.",
+                //   pattern: {
+                //     value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                //     message: "Invalid email address.",
+                //   },
+                // })}
+              />
+              {/* {errors?.email?.message && (
+                <MyErrorText label={errors?.email?.message} />
+              )} */}
               </div>
               <div className="relative">
-                <label
-                  htmlFor="password"
-                  className="block font-medium text-gray-700"
-                >
-                  <span className="text-body">Password</span>
-                </label>
-                <Input
-                  id="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  placeholder="Password"
-                  type={isVisible ? "text" : "password"}
-                  variant="bordered"
-                  radius="sm"
-                  required
-                  className="max-w-none text-body-sm"
-                  size="lg"
-                />
+                <AuthInput
+                key="outside"
+                type={isVisible.confirm ? "password" : "text"}
+                label="Password"
+                labelPlacement="outside"
+                placeholder="Password"
+                className="text-foreground"
+                endContent={
+                  <button
+                     className="focus:outline-none bg-transparent border-none" 
+                    type="button"
+                    onClick={() => toggleVisibility('confirm')}
+                  >
+                    {isVisible.confirm ? (
+                      <EyeOff className="text-2xl text-primary pointer-events-none" />
+                    ) : (
+                      <Eye className="text-2xl text-primary pointer-events-none" />
+                    )}
+                  </button>
+                }
+                // {...register("email", {
+                //   required: "Email cannot be empty.",
+                //   pattern: {
+                //     value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                //     message: "Invalid email address.",
+                //   },
+                // })}
+              />
+              {/* {errors?.email?.message && (
+                <MyErrorText label={errors?.email?.message} />
+              )} */}
               </div>
               <div className="relative">
-                <label
-                  htmlFor="confirmpassword"
-                  className="block font-medium text-gray-700"
-                >
-                  <span className="text-body">Confirm Password</span>
-                </label>
-                <Input
-                  id="confirmpassword"
-                  name="confirmPassword"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  placeholder="Confirm Password"
-                  type={isVisible ? "text" : "password"}
-                  variant="bordered"
-                  radius="sm"
-                  required
-                  className="max-w-none text-body-sm"
-                  size="lg"
-                />
+              <AuthInput
+                key="outside"
+                type={isVisible.confirm2 ? "password" : "text"}
+                label="Confirm Password"
+                labelPlacement="outside"
+                placeholder="Confirm Password"
+                className="text-foreground"
+                endContent={
+                  <button
+                     className="focus:outline-none bg-transparent border-none" 
+                    type="button"
+                    onClick={() => toggleVisibility('confirm2')}
+                  >
+                    {isVisible.confirm2 ? (
+                      <EyeOff className="text-2xl text-primary pointer-events-none" />
+                    ) : (
+                      <Eye className="text-2xl text-primary pointer-events-none" />
+                    )}
+                  </button>
+                }
+                // {...register("email", {
+                //   required: "Email cannot be empty.",
+                //   pattern: {
+                //     value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                //     message: "Invalid email address.",
+                //   },
+                // })}
+              />
+              {/* {errors?.email?.message && (
+                <MyErrorText label={errors?.email?.message} />
+              )} */}
               </div>
-              <div className="flex items-center gap-[25px]">
+              <div className='flex items-center gap-[25px]'>
                 <Checkbox
                   label="I agree to all the Terms and Privacy Policies"
                   name="termsAccepted"
                   checked={formData.termsAccepted}
                   onChange={handleChange}
-                  className="w-[12px]"
+                  className='w-[12px]'
                   required
                 />
-                <span className="text-[#787486] text-body-sm">
-                  I agree to all the <span className="text-primary">Terms</span>{" "}
-                  and <span className="text-primary">Privacy Policies</span>
+                <span className='text-[#787486] text-body-sm'>
+                  I agree to all the <span className="text-primary">Terms</span> and <span className="text-primary">Privacy Policies</span>
                 </span>
               </div>
             </div>
-            <div className="flex flex-col gap-[10px]">
-              <Button className="w-full bg-primary text-white normal-case min-w-0 max-w-none  border-none">
-                <Link href="/verify">Create account</Link>
+            <div className='flex flex-col gap-[10px]'>
+              <Link href="/verify" className="capitalize">
+              <Button className="w-full bg-primary text-bgColor max-w-none">
+                <span className='text-h6'>Create account</span>
               </Button>
+              </Link>
               <p className="text-center text-body">
-                Have an account?{" "}
-                <Link href="/login" className="text-primary text-body">
-                  Sign in
-                </Link>
+                Have Account? <Link href="/login" className="text-primary text-body">Sign in</Link>
               </p>
               <div className="text-center">
                 <div className="flex items-center gap-2">
                   <hr className="flex-grow border-t border-gray-300" />
-                  <p className="text-body-sm text-[#787486]">Or sign up with</p>
+                  <p className='text-body-sm text-[#787486]'>Or Sign up with</p>
                   <hr className="flex-grow border-t border-gray-300" />
                 </div>
-
-                {/* logo */}
                 <div className="flex justify-center mt-2">
-                  <Image
-                    src={Google}
-                    alt="Google Icon"
-                    className="w-24 h-24 object-contain"
-                  />
+                  <Image src={Google} alt="Google Icon" className="w-24 h-24" />
                 </div>
               </div>
             </div>
@@ -200,12 +220,27 @@ export const SignUpForm = () => {
 };
 
 export const SigninForm = () => {
-  const [isVisible, setIsVisible] = useState(false);
-  const toggleVisibility = () => setIsVisible(!isVisible);
+  const [isVisible, setIsVisible] = useState({
+    current: false,
+    new: false,
+    confirm: false
+  });
+
+  const toggleVisibility = (field) => {
+    console.log('Before toggle:', isVisible[field]); // Add this
+    setIsVisible(prev => {
+      const newState = {
+        ...prev,
+        [field]: !prev[field]
+      };
+      console.log('After toggle:', newState[field]); // Add this
+      return newState;
+    });
+  };
 
   const [formData, setFormData] = useState({
-    email: "",
-    password: "",
+    email: '',
+    password: '',
     rememberMe: false,
   });
 
@@ -213,97 +248,87 @@ export const SigninForm = () => {
     const { name, value, type, checked } = e.target;
     setFormData({
       ...formData,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: type === 'checkbox' ? checked : value,
     });
   };
 
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
-  //   // Validation logic
-  //   if (!formData.email || !formData.password) {
-  //     alert("Email and Password are required!");
-  //     return;
-  //   }
+    // Validation logic
+    if (!formData.email || !formData.password) {
+      alert("Email and Password are required!");
+      return;
+    }
 
-  //   // Add form submission logic here
-  //   console.log("Form submitted:", formData);
-  // };
+    // Add form submission logic here
+    console.log('Form submitted:', formData);
+  };
 
   return (
-    <div className="w-full h-screen flex items-center justify-center">
-      <div className="w-[1728px] h-[1117px] flex items-center justify-center">
-        <Form
-          // onSubmit={handleSubmit}
-          className="w-[640px] h-fit bg-white px-[55px] py-[40px] rounded-[20px] shadow-lg gap-[50px]"
-        >
+    <div className='w-full h-screen flex items-center justify-center'>
+      <div className='w-[1728px] h-[1117px]  flex items-center justify-center'>
+        <Form onSubmit={handleSubmit} className="w-[640px] h-fit bg-gradient-to-br from-[#9BDBFD]/30 to-[#FFFFFF] px-[55px] py-[40px] rounded-[20px] shadow-lg gap-[50px]">
           <div>
-            <p className="text-h1 text-primary">
-              <span className="font-bold">Login</span>
-            </p>
-            <p className="text-body text-[#787486]">
-              Login to access your Zentrio account
-            </p>
+            <p className='text-h1 text-primary'><span className='font-bold'>Login in</span></p>
+            <p className='text-body text-[#787486]'>Login to access your Zentrio account</p>
           </div>
-          <div className="flex flex-col gap-[15px] w-full">
+          <div className='flex flex-col gap-[20px] w-full'>
             <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Email
-              </label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                value={formData.email}
-                onChange={handleChange}
+              <AuthInput
+                key="outside"
+                type="text"
+                label="Email"
+                labelPlacement="outside"
                 placeholder="Email"
-                required
-                radius="sm"
-                variant="bordered"
-                className="w-full"
-                size="lg"
+                className="text-foreground"
+                // {...register("email", {
+                //   required: "Email cannot be empty.",
+                //   pattern: {
+                //     value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                //     message: "Invalid email address.",
+                //   },
+                // })}
               />
+              {/* {errors?.email?.message && (
+                <MyErrorText label={errors?.email?.message} />
+              )} */}
             </div>
             <div className="relative">
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Password
-              </label>
-              <Input
-                id="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
+              <AuthInput
+                key="outside"
+                type={isVisible.confirm ? "password" : "text"}
+                label="Password"
+                labelPlacement="outside"
                 placeholder="Password"
-                type={isVisible ? "text" : "password"}
-                variant="bordered"
-                radius="sm"
-                required
-                className="w-full"
-                size="lg"
+                className="text-foreground"
                 endContent={
                   <button
-                    aria-label="toggle password visibility "
-                    className=" border-none"
+                     className="focus:outline-none bg-transparent border-none" 
                     type="button"
-                    onClick={toggleVisibility}
+                    onClick={() => toggleVisibility('confirm')}
                   >
-                    {isVisible ? (
-                      <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none " />
+                    {isVisible.confirm ? (
+                      <EyeOff className="text-2xl text-primary  pointer-events-none" />
                     ) : (
-                      <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                      <Eye className="text-2xl text-primary pointer-events-none" />
                     )}
                   </button>
                 }
+                // {...register("email", {
+                //   required: "Email cannot be empty.",
+                //   pattern: {
+                //     value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                //     message: "Invalid email address.",
+                //   },
+                // })}
               />
+              {/* {errors?.email?.message && (
+                <MyErrorText label={errors?.email?.message} />
+              )} */}
             </div>
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-6">
+              <div className='flex items-center gap-6'>
                 <Checkbox
                   label="Remember Me"
                   name="rememberMe"
@@ -311,40 +336,33 @@ export const SigninForm = () => {
                   onChange={handleChange}
                   className="text-sm w-[12px]"
                 />
-                <p className="text-description">Remember me</p>
+                <p className='text-description'>Remember me</p>
               </div>
               <Link href="/forgot-password" className="text-sm text-danger">
                 Forgot Password?
               </Link>
             </div>
           </div>
-          <div className="w-full gap-[10px] flex flex-col">
-            <Link href="/workspace" className="text-white text-body">
-              <Button className="w-full bg-primary text-white normal-case min-w-0 max-w-none  border-none">
-                Login
-              </Button>
+          <div className='w-full gap-[10px] flex flex-col'>
+            <Link href="/workspace" className="capitalize">
+            <Button  className="w-full max-w-none bg-primary text-white">
+              Login
+            </Button>
             </Link>
             <p className="text-center text-body">
-              No Account ?{" "}
-              <Link href="/register" className="text-primary text-body">
-                Sign up
-              </Link>
+                  No Account? <Link href="/register" className="text-primary text-body">Sign up</Link>
             </p>
             <div className="text-center">
               <div className="flex items-center gap-2">
                 <hr className="flex-grow border-t border-gray-300" />
-                <p className="text-body-sm text-[#787486]">Or sign up with</p>
+                <p className='text-body-sm text-[#787486]'>Or Login with</p>
                 <hr className="flex-grow border-t border-gray-300" />
               </div>
               <div className="flex justify-center mt-2">
-                <Image
-                  src={Google}
-                  alt="Google Icon"
-                  className="w-24 h-24 object-contain"
-                />
+                <Image src={Google} alt="Google Icon" className="w-24 h-24" />
               </div>
             </div>
-          </div>
+            </div>
         </Form>
       </div>
     </div>
@@ -353,7 +371,7 @@ export const SigninForm = () => {
 
 export const ForgetPass = () => {
   const [formData, setFormData] = useState({
-    email: "",
+    email: '',
   });
 
   const handleChange = (e) => {
@@ -374,81 +392,63 @@ export const ForgetPass = () => {
     }
 
     // Add form submission logic here
-    console.log("Password reset request submitted for:", formData.email);
+    console.log('Password reset request submitted for:', formData.email);
   };
 
   return (
-    <div className="w-full h-screen flex items-center justify-center">
-      <div className="w-[1728px] h-[1117px] bg-bgColor flex items-center justify-center">
-        <Form
-          onSubmit={handleSubmit}
-          className="w-[640px] h-fit bg-white px-[55px] py-[40px] rounded-[20px] shadow-lg gap-[50px]"
-        >
+    <div className='w-full h-screen flex items-center justify-center'>
+      <div className='w-[1728px] h-[1117px]  flex items-center justify-center'>
+        <Form onSubmit={handleSubmit} className="w-[640px] h-fit bg-gradient-to-br from-[#9BDBFD]/30 to-[#FFFFFF] px-[55px] py-[40px] rounded-[20px] shadow-lg gap-[50px]">
           <div>
-            <Link
-              href="#"
-              className="flex items-center gap-3 pb-[5%] text-body-sm text-primary"
-            >
-              <svg
-                width="18"
-                height="12"
-                viewBox="0 0 18 12"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M2 6L17 5.99976"
-                  stroke="#59BAD5"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M6 1L1.70711 5.29289C1.37377 5.62623 1.20711 5.79289 1.20711 6C1.20711 6.20711 1.37377 6.37377 1.70711 6.70711L6 11"
-                  stroke="#59BAD5"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              <p>Back to Login</p>
-            </Link>
-            <div className="flex flex-col gap-4">
-              <p className="text-h1 text-primary">
-                <span className="font-bold">Forgot Password</span>
-              </p>
-              <p className="text-body text-[#787486]">
-                Don’t worry, happens to all of us. Enter your email below to
-                recover your password
-              </p>
+              <Link href="#" className='flex items-center gap-3 pb-[5%] text-body-sm text-primary'>
+                <svg width="18" height="12" viewBox="0 0 18 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M2 6L17 5.99976" stroke="#59BAD5" strokeWidth="1.5"  strokeLinecap="round"   strokeLinejoin="round"/>
+                  <path d="M6 1L1.70711 5.29289C1.37377 5.62623 1.20711 5.79289 1.20711 6C1.20711 6.20711 1.37377 6.37377 1.70711 6.70711L6 11" stroke="#59BAD5" strokeWidth="1.5"  strokeLinecap="round"   strokeLinejoin="round"/>
+                </svg>
+                <p>Back to Login</p>
+              </Link>
+              <div className='flex flex-col gap-4'>
+                <p className='text-h1 text-primary'><span className='font-bold'>Forgot Password</span></p>
+                <p className='text-body text-[#787486]'>Don’t worry, happens to all of us. Enter your email below to recover your password</p>
+              </div>
             </div>
-          </div>
-          <div className="flex flex-col gap-4 w-full">
-            <div className="w-full">
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Email
-              </label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                value={formData.email}
-                onChange={handleChange}
+            <div className='flex flex-col gap-4 w-full'>
+              <div className='w-full'>
+            <div>
+              <AuthInput
+                key="outside"
+                type="text"
+                label="Email"
+                labelPlacement="outside"
                 placeholder="Email"
-                required
-                radius="sm"
-                variant="bordered"
-                className="w-full placeholder:text-input-placeholder text-input"
-                size="lg"
+                className="text-foreground"
+                
+                // {...register("email", {
+                //   required: "Email cannot be empty.",
+                //   pattern: {
+                //     value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                //     message: "Invalid email address.",
+                //   },
+                // })}
               />
+              {/* {errors?.email?.message && (
+                <MyErrorText label={errors?.email?.message} />
+              )} */}
             </div>
-          </div>
-          <Button type="submit" className="w-full bg-primary text-white">
-            <p className="text-h6">Submit</p>
-          </Button>
+
+              </div>
+            </div>
+            
+            <Button  className="w-full bg-primary text-white max-w-none">
+            <Link href="/setnewpassword" className="capitalize">
+            <p className='text-h6'>
+                Submit
+              </p>
+            </Link>
+              
+              
+            </Button>
+            
         </Form>
       </div>
     </div>
@@ -456,12 +456,26 @@ export const ForgetPass = () => {
 };
 
 export const SetNewPass = () => {
-  const [isVisible, setIsVisible] = useState(false);
-  const toggleVisibility = () => setIsVisible(!isVisible);
+  const [isVisible, setIsVisible] = useState({
+    current: false,
+    new: false,
+    confirm: false,
+    confirm2: false
+  });
+
+  const toggleVisibility = (field) => {
+    setIsVisible(prev => {
+      const newState = {
+        ...prev,
+        [field]: !prev[field]
+      };
+      return newState;
+    });
+  };
 
   const [formData, setFormData] = useState({
-    email: "",
-    password: "",
+    email: '',
+    password: '',
     rememberMe: false,
   });
 
@@ -469,7 +483,7 @@ export const SetNewPass = () => {
     const { name, value, type, checked } = e.target;
     setFormData({
       ...formData,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: type === 'checkbox' ? checked : value,
     });
   };
 
@@ -483,131 +497,93 @@ export const SetNewPass = () => {
     }
 
     // Add form submission logic here
-    console.log("Form submitted:", formData);
+    console.log('Form submitted:', formData);
   };
 
   return (
-    <div className="w-full h-screen flex items-center justify-center">
-      <div className="w-[1728px] h-[1117px]  flex items-center justify-center">
-        <Form
-          onSubmit={handleSubmit}
-          className="w-[640px] h-fit bg-white px-[55px] py-[40px] rounded-[20px] shadow-lg gap-[50px]"
-        >
+    <div className='w-full h-screen flex items-center justify-center'>
+      <div className='w-[1728px] h-[1117px]  flex items-center justify-center'>
+        <Form onSubmit={handleSubmit} className="w-[640px] h-fit bg-gradient-to-br from-[#9BDBFD]/30 to-[#FFFFFF] px-[55px] py-[40px] rounded-[20px] shadow-lg gap-[50px]">
           <div>
-            <Link
-              href="#"
-              className="flex items-center gap-3 pb-[5%] text-body-sm text-primary"
-            >
-              <svg
-                width="18"
-                height="12"
-                viewBox="0 0 18 12"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M2 6L17 5.99976"
-                  stroke="#59BAD5"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M6 1L1.70711 5.29289C1.37377 5.62623 1.20711 5.79289 1.20711 6C1.20711 6.20711 1.37377 6.37377 1.70711 6.70711L6 11"
-                  stroke="#59BAD5"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
+            <Link href="#" className='flex items-center gap-3 pb-[5%] text-body-sm text-primary'>
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M2 6L17 5.99976" stroke="#59BAD5" strokeWidth="1.5"  strokeLinecap="round"   strokeLinejoin="round"/>
+                <path d="M6 1L1.70711 5.29289C1.37377 5.62623 1.20711 5.79289 1.20711 6C1.20711 6.20711 1.37377 6.37377 1.70711 6.70711L6 11" stroke="#59BAD5" strokeWidth="1.5"  strokeLinecap="round"   strokeLinejoin="round"/>
               </svg>
               <p>Back to Email</p>
             </Link>
-            <div className="flex flex-col gap-4">
-              <p className="text-h1 text-primary">
-                <span className="font-bold">Set a password</span>
-              </p>
-              <p className="text-body text-[#787486]">
-                Your previous password has been reseted. Please set a new
-                password for your account.
-              </p>
+            <div className='flex flex-col gap-4'>
+              <p className='text-h1 text-primary'><span className='font-bold'>Set a password</span></p>
+              <p className='text-body text-[#787486]'>Your previous password has been reseted. Please set a new password for your account.</p>
             </div>
           </div>
-          <div className="flex flex-col gap-[15px] w-full">
+          <div className='flex flex-col gap-[20px] w-full'>
+          <div className="relative">
+          <AuthInput
+            key="outside"
+            type={isVisible.confirm ? "password" : "text"}
+            label="Password"
+            labelPlacement="outside"
+            placeholder="Password"
+            className="text-foreground"
+            endContent={
+              <button
+                 className="focus:outline-none bg-transparent border-none" 
+                type="button"
+                onClick={() => toggleVisibility('confirm')}
+                  >
+                    {isVisible.confirm ? (
+                      <EyeOff className="text-2xl text-primary pointer-events-none" />
+                    ) : (
+                      <Eye className="text-2xl text-primary pointer-events-none" />
+                    )}
+              </button>
+            }
+            // {...register("password", {
+            //   required: "Password cannot be empty.",
+            // })}
+          />
+            </div>
             <div className="relative">
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Password
-              </label>
-              <Input
-                id="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                placeholder="Password"
-                type={isVisible ? "text" : "password"}
-                variant="bordered"
-                radius="sm"
-                required
-                className="w-full"
-                size="lg"
+              <AuthInput
+                key="outside"
+                type={isVisible.confirm2 ? "password" : "text"}
+                label="Re-enter Password"
+                labelPlacement="outside"
+                placeholder="Re-enter Password"
+                className="text-foreground"
                 endContent={
                   <button
-                    aria-label="toggle password visibility"
-                    className="focus:outline-none"
+                     className="focus:outline-none bg-transparent border-none" 
                     type="button"
-                    onClick={toggleVisibility}
+                    onClick={() => toggleVisibility('confirm2')}
                   >
-                    {isVisible ? (
-                      <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                    {isVisible.confirm2 ? (
+                      <EyeOff className="text-2xl text-primary pointer-events-none" />
                     ) : (
-                      <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                      <Eye className="text-2xl text-primary pointer-events-none" />
                     )}
                   </button>
                 }
+                // {...register("email", {
+                //   required: "Email cannot be empty.",
+                //   pattern: {
+                //     value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                //     message: "Invalid email address.",
+                //   },
+                // })}
               />
-            </div>
-            <div className="relative">
-              <label
-                htmlFor="re-enter password"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Re-enter Password
-              </label>
-              <Input
-                id="re-enter password"
-                name="re-enter password"
-                value={formData.password}
-                onChange={handleChange}
-                placeholder="New Password"
-                type={isVisible ? "text" : "re-enter password"}
-                variant="bordered"
-                radius="sm"
-                required
-                className="w-full"
-                size="lg"
-                endContent={
-                  <button
-                    aria-label="toggle re-enter password visibility"
-                    className="focus:outline-none"
-                    type="button"
-                    onClick={toggleVisibility}
-                  >
-                    {isVisible ? (
-                      <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
-                    ) : (
-                      <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
-                    )}
-                  </button>
-                }
-              />
+              {/* {errors?.email?.message && (
+                <MyErrorText label={errors?.email?.message} />
+              )} */}
             </div>
           </div>
-          <div className="w-full gap-[10px] flex flex-col">
-            <Button type="submit" className="w-full bg-primary text-white">
-              Sign in
+          <div className='w-full gap-[10px] flex flex-col'>
+            <Link href="/login" className="capitalize">
+            <Button  className="w-full max-w-none bg-primary text-white">
+                Save Password
             </Button>
+            </Link>
           </div>
         </Form>
       </div>
@@ -617,9 +593,11 @@ export const SetNewPass = () => {
 
 export const OtpForm = () => {
   const [otp, setOtp] = useState(Array(6).fill("")); // Initialize an array with 6 empty strings
+  const [otpError, setOtpError] = useState("");
 
   const handleChange = (value, index) => {
-    if (value.length > 1) return; // Ensure only one character is entered
+    // Allow only a single digit (0-9)
+    if (!/^[0-9]?$/.test(value)) return; // Restrict to one digit or empty
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
@@ -640,8 +618,9 @@ export const OtpForm = () => {
     e.preventDefault();
 
     const otpValue = otp.join(""); // Combine all values into a single string
-    if (otpValue.length !== 6) {
-      alert("Please enter the complete 6-digit OTP.");
+
+    if (otpValue.length !== 6 || otp.includes("")) {
+      setOtpError("Please enter the complete 6-digit OTP.");
       return;
     }
 
@@ -651,10 +630,10 @@ export const OtpForm = () => {
 
   return (
     <div className="w-full h-screen flex items-center justify-center">
-      <div className="w-[1728px] h-[1117px]  flex items-center justify-center">
-        <Form
+      <div className="w-[1728px] h-[1117px] flex items-center justify-center">
+        <form
           onSubmit={handleSubmit}
-          className="w-[640px] h-fit bg-white px-[55px] py-[40px] rounded-[20px] shadow-lg gap-[50px]"
+          className="w-[640px] h-fit bg-gradient-to-br from-[#9BDBFD]/30 to-[#FFFFFF] px-[55px] py-[40px] rounded-[20px] shadow-lg flex flex-col gap-[50px]"
         >
           <div>
             <Link
@@ -700,8 +679,10 @@ export const OtpForm = () => {
                 <input
                   key={index}
                   id={`otp-input-${index}`}
-                  type="text"
-                  value={value}
+                  type="text" // Changed from "number" to "text"
+                  inputMode="numeric" // Optimize for numeric keyboard on mobile
+                  pattern="[0-9]*" // Restrict to digits
+                  value={otp[index]}
                   onChange={(e) => handleChange(e.target.value, index)}
                   onKeyDown={(e) => handleKeyDown(e, index)}
                   maxLength={1}
@@ -709,20 +690,29 @@ export const OtpForm = () => {
                 />
               ))}
             </div>
+            {otpError && (
+              <p className="text-red-500 text-sm mt-2">{otpError}</p>
+            )}
           </div>
-          <div className="w-full gap-[10px] flex flex-col">
-            <Button className="w-full bg-primary text-white max-w-none">
-              <Link href="/login" className="text-white text-body">
-                Submit
-              </Link>
+          <div className="w-full flex flex-col gap-[10px]">
+            
+            <Link href="/login" className="capitalize" >
+            <Button
+              // type="submit"
+              className="w-full max-w-none bg-primary text-white"
+            >
+              
+              Submit
+              
             </Button>
+            </Link>
           </div>
           <div className="w-full">
             <p className="font-bold text-description text-center">
               <span className="text-body">Send Code again : 03:12</span>
             </p>
           </div>
-        </Form>
+        </form>
       </div>
     </div>
   );

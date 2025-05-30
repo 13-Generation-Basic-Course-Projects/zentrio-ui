@@ -8,6 +8,7 @@ import NavbarWrapper from "@/components/layout/NavbarWrapper";
 import { Suspense } from "react";
 import Loading from "../loading";
 import SidebarRenderer from "@/components/sidebar/SidebarRenderer";
+import { SideBarIcon } from "@/components/icon/everyicon";
 export const metadata = {
   title: "Zentrio | Task Mangement",
   description: "Welcome to Zentrio Cambodia",
@@ -22,7 +23,7 @@ export default async function SystemLayout({ children }) {
     <SidebarProvider className=" ">
       <SidebarRenderer />
       <div className={" font-poppin h-screen overflow-hidden   w-full"}>
-        <SidebarTrigger className="fixed top-0   z-[30]" />
+        <SidebarTrigger className="fixed top-0  z-[30]" />
         <div className="w-full  ">
           <NavbarWrapper user={session?.user} />
           {children}

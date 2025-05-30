@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { Plus, ChevronDown, ChevronRight } from "lucide-react";
-
+import { teamLeader } from "@/data/board/teamleader";
 import { initialColumns } from "@/data/boardData";
 import { CardCheckList } from "../card/CardChecklist";
 import UserAvater from "../useravatar/UserAvatar";
@@ -274,6 +274,10 @@ export default function KanbanBoard({ modal }) {
     setDragTarget(null);
   };
 
+
+  //
+
+
   return (
     <div className="w-full h-screen flex flex-col">
       <BredCrum
@@ -372,10 +376,10 @@ export default function KanbanBoard({ modal }) {
                               </div>
                             </div>
                           </div>
-                          <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-center justify-between gap-2  ">
                             <UserAvater
                               image={
-                                "https://is5-ssl.mzstatic.com/image/thumb/Purple124/v4/3d/32/20/3d322049-015a-0e3b-e512-583ac627d478/source/256x256bb.jpg"
+                                "https://cdn.prod.website-files.com/5dd827bbc07b1656e06b16d8/623db0c2ec0384a4ffd2c4ab_mosh.jpeg"
                               }
                             />
                           </div>

@@ -1,8 +1,8 @@
 import React from "react";
 
-export default function BredCrum({ board, feature, header, modal }) {
+export default function BredCrum({ board, feature,user, header, modal }) {
   return (
-    <div className="p-0">
+<>    
       <nav className="text-h6 text-[#94A3B8]">
         <ol className="flex space-x-2">
           <li>
@@ -20,6 +20,12 @@ export default function BredCrum({ board, feature, header, modal }) {
           <li>
             <a href="#" className="hover:text-blueActive">
               {feature}
+            </a>
+          </li>
+          <li>/</li>
+          <li>
+            <a href="#" className="hover:text-blueActive">
+              {user}
             </a>
           </li>
         </ol>
@@ -40,6 +46,6 @@ export default function BredCrum({ board, feature, header, modal }) {
             ))}
         </div>
       </div>
-    </div>
+</>
   );
 }

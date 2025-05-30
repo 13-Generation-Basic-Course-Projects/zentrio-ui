@@ -19,6 +19,7 @@ import { icon } from "../icon/allicon";
 import SaveWorkspace from "../button/SaveWorkspace";
 import ModalCreateWorkspace from "../modal/ModalCreateWorkspace";
 import ModalCreateBoard from "../modal/ModalCreateBoard";
+import ModalOptionWorkspace from "../modal/workspace/ModalOptionWorkspace";
 
 const randomColor = () =>
   Math.floor(Math.random() * 16777215)
@@ -36,14 +37,14 @@ const myworkspaceItem = [
   {
     title: "My workspace 2",
     url: "/workspace/2",
-    color: "bg-pink-300",
+    color: "bg-orange-300",
     activeIcon: board,
     myworkspace: true,
   },
   {
     title: "My workspace 3",
     url: "/workspace/3",
-    color: "bg-pink-300",
+    color: "bg-green-300",
     activeIcon: board,
     myworkspace: false,
   },
@@ -59,7 +60,7 @@ const otherworkspaceItem = [
   {
     title: "OtherWorkspace 2",
     url: "/workspace/otherworkspace/2",
-    color: "bg-pink-300",
+    color: "bg-blue-300",
     activeIcon: board,
     myworkspace: true,
   },
@@ -76,8 +77,11 @@ export default function WorkSpaceSideBar() {
   const pathname = usePathname();
 
   return (
-    <Sidebar collapsible="icon" className="border-none  ">
-      <SidebarContent className="h-screen flex flex-col !border-0 ">
+    <Sidebar
+      collapsible="icon"
+      className="border-none rounded-tr-2xl bg-white  "
+    >
+      <SidebarContent className="h-screen flex flex-col !border-0  ">
         <div className="p-4 !border-0">
           <Link href="/">
             <Image src={logo} className="w-[168px] object-cover" alt="logo" />
@@ -108,17 +112,19 @@ export default function WorkSpaceSideBar() {
                     : "hover:bg-slate-100 text-gray-700"
                 } !border-0`}
                     >
-                      <Link href={item.url}>
-                        <div className="flex items-center gap-2 justify-between w-full">
-                          <span
-                            className={`${item.color} h-5 w-5 rounded-full`}
-                          ></span>
+                      <div className="flex items-center gap-2 justify-between w-full">
+                        <span
+                          className={`${item.color} h-5 w-5 rounded-full`}
+                        ></span>
+                        <Link href={item.url}>
                           <span className="flex-1 text-left sm:text-body-sm  truncate overflow-hidden whitespace-nowrap">
                             {item.title}
                           </span>
-                          <span>{icon.threedotH}</span>
-                        </div>
-                      </Link>
+                        </Link>
+                        <span>
+                          <ModalOptionWorkspace />
+                        </span>
+                      </div>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 );
@@ -139,17 +145,19 @@ export default function WorkSpaceSideBar() {
                     : "hover:bg-slate-100 text-gray-700"
                 } !border-0`}
                     >
-                      <Link href={item.url}>
-                        <div className="flex items-center gap-2  justify-between w-full">
-                          <span
-                            className={`${item.color} h-5 w-5 rounded-full`}
-                          ></span>
+                      <div className="flex items-center gap-2  justify-between w-full">
+                        <span
+                          className={`${item.color} h-5 w-5 rounded-full`}
+                        ></span>
+                        <Link href={item.url}>
                           <span className="flex-1 text-left sm:text-body-sm truncate overflow-hidden whitespace-nowrap">
                             {item.title}
                           </span>
-                          <span>{icon.threedotH}</span>
-                        </div>
-                      </Link>
+                        </Link>
+                        <span>
+                          <ModalOptionWorkspace />
+                        </span>
+                      </div>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 );
@@ -174,6 +182,7 @@ export default function WorkSpaceSideBar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      {/* Top-right pink blob for rounded corner */}
     </Sidebar>
   );
 }

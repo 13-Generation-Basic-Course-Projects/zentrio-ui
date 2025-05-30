@@ -207,7 +207,7 @@ export default function GanttChart({ modal }) {
         header={"Hikko Design"}
         modal={modal}
       />
-      <div className="flex-grow overflow-hidden pt-5">
+      <div className="flex-grow overflow-y-auto pt-5 scrollbar-hidden">
         <FullCalendar
           ref={calendarRef}
           plugins={[resourceTimelinePlugin, dayGridPlugin, interactionPlugin]}
