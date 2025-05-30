@@ -7,7 +7,7 @@ import slideIcon from "@/public/image/slide.svg";
 import chartIcon from "@/public/image/chart.svg";
 import kanbanIcon from "@/public/image/kanban.svg";
 import fourStateImg from "@/public/image/kanban.png";
-import calendarImg from "@/assets/calendarlanding.svg";
+import calendarImg from "@/assets/calendar.png";
 import ganttChartImg from "@/assets/ganttchartlanding.svg";
 import daigramImg from "@/assets/diagramlanding.svg";
 import shareImg from "@/assets/share.png";
@@ -15,6 +15,8 @@ import Image from "next/image";
 import { Button } from "@heroui/react";
 import { NavbarLanding } from "@/components/layout/Navbar";
 import Link from "next/link";
+import "animate.css";
+import AnimatedSection from "@/components/appserver/animation/AnimatedSection";
 
 //useage : http://localhost:3000/
 
@@ -44,7 +46,7 @@ export default function Home() {
         <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-40 ">
           <div className="relative w-full h-full max-w-screen-xl xl:mx-auto">
             {/* Top Left */}
-            <div className="hidden sm:flex absolute top-[25%] left-[9%] items-center gap-2 bg-white bg-opacity-90 backdrop-blur-md shadow-md px-5 py-3 rounded-full z-30 max-w-screen-xl xl:mx-auto">
+            <div className="animate__animated animate__fadeInDown animate__slow hidden sm:flex absolute top-[25%] left-[9%] items-center gap-2 bg-white bg-opacity-90 backdrop-blur-md shadow-md px-5 py-3 rounded-full z-30 max-w-screen-xl xl:mx-auto">
               <span className="text-sm text-primary font-medium flex items-center gap-1 relative">
                 <Image
                   className="mx-2"
@@ -66,7 +68,7 @@ export default function Home() {
             </div>
 
             {/* Top Right */}
-            <div className="hidden sm:flex absolute top-[35%] right-[6%] items-center gap-2 bg-white bg-opacity-90 backdrop-blur-md shadow-md px-5 py-3 rounded-full z-30">
+            <div className="animate__animated animate__fadeInUp animate__slow hidden sm:flex absolute top-[35%] right-[6%] items-center gap-2 bg-white bg-opacity-90 backdrop-blur-md shadow-md px-5 py-3 rounded-full z-30">
               <span className="text-sm text-primary font-medium flex items-center gap-1">
                 <Image
                   className="mx-2"
@@ -87,7 +89,7 @@ export default function Home() {
             </div>
 
             {/* Bottom Left */}
-            <div className="hidden sm:flex absolute top-[70%] left-[10%] items-center gap-2 bg-white bg-opacity-90 backdrop-blur-md shadow-md px-5 py-3 rounded-full z-30">
+            <div className="animate__animated animate__fadeInDown animate__slow hidden sm:flex absolute top-[70%] left-[10%] items-center gap-2 bg-white bg-opacity-90 backdrop-blur-md shadow-md px-5 py-3 rounded-full z-30">
               <span className="text-sm text-primary font-medium flex items-center gap-1">
                 <Image
                   className="mx-2"
@@ -108,7 +110,7 @@ export default function Home() {
             </div>
 
             {/* Bottom Right */}
-            <div className="hidden sm:flex absolute top-[70%] right-[10%] items-center gap-2 bg-white bg-opacity-90 backdrop-blur-md shadow-md px-5 py-3 rounded-full z-30 ">
+            <div className="animate__animated animate__fadeInUp animate__slow hidden sm:flex absolute top-[70%] right-[10%] items-center gap-2 bg-white bg-opacity-90 backdrop-blur-md shadow-md px-5 py-3 rounded-full z-30 ">
               <span className="text-sm text-primary font-medium flex items-center gap-1 relative">
                 <Image
                   className="mx-2"
@@ -168,21 +170,21 @@ export default function Home() {
               </p>
             </div>
             <Link href="/login">
-            <Button className="text-body w-[168.06px] h-[50.06px] font-semibold tracking-wide sm:text-sm lg:text-body bg-primary text-white px-4 sm:px-6 py-2 sm:py-3 rounded-[8px]">
-              <span>Get Started</span>
-              <svg
-                width="11"
-                height="10"
-                viewBox="0 0 12 11"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M11.3572 9.63111L11.3808 1.29555C11.3779 1.1404 11.3443 0.987528 11.2821 0.845712C11.1633 0.559741 10.9363 0.33276 10.6504 0.214002C10.5085 0.151756 10.3557 0.118196 10.2005 0.115248L1.86496 0.13883C1.70952 0.13927 1.55552 0.170321 1.41174 0.230212C1.26797 0.290102 1.13723 0.377658 1.02701 0.487881C0.804406 0.710487 0.678849 1.01191 0.677961 1.32583C0.677072 1.63975 0.800927 1.94046 1.02228 2.16181C1.24363 2.38316 1.54434 2.50702 1.85826 2.50613L7.35142 2.48225L1.00683 8.82684C0.785132 9.04854 0.660086 9.34873 0.659202 9.66138C0.658317 9.97402 0.781667 10.2735 1.00211 10.494C1.22256 10.7144 1.52205 10.8378 1.83469 10.8369C2.14734 10.836 2.44753 10.7109 2.66923 10.4892L9.01382 4.14465L8.98994 9.63781C8.98886 9.79343 9.01861 9.94755 9.07746 10.0913C9.13631 10.235 9.2231 10.3655 9.33283 10.4752C9.44256 10.5849 9.57305 10.6717 9.71678 10.7306C9.8605 10.7894 10.0146 10.8192 10.1702 10.8181C10.3259 10.8183 10.4801 10.7877 10.6242 10.728C10.7683 10.6684 10.8993 10.5808 11.0096 10.4705C11.12 10.3601 11.2075 10.2291 11.2672 10.0851C11.3268 9.94102 11.3574 9.78673 11.3572 9.63111Z"
-                  fill="white"
-                />
-              </svg>
-            </Button>
+              <Button className="text-body w-[168.06px] h-[50.06px] font-semibold tracking-wide sm:text-sm lg:text-body bg-primary text-white px-4 sm:px-6 py-2 sm:py-3 rounded-[8px]">
+                <span>Get Started</span>
+                <svg
+                  width="11"
+                  height="10"
+                  viewBox="0 0 12 11"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M11.3572 9.63111L11.3808 1.29555C11.3779 1.1404 11.3443 0.987528 11.2821 0.845712C11.1633 0.559741 10.9363 0.33276 10.6504 0.214002C10.5085 0.151756 10.3557 0.118196 10.2005 0.115248L1.86496 0.13883C1.70952 0.13927 1.55552 0.170321 1.41174 0.230212C1.26797 0.290102 1.13723 0.377658 1.02701 0.487881C0.804406 0.710487 0.678849 1.01191 0.677961 1.32583C0.677072 1.63975 0.800927 1.94046 1.02228 2.16181C1.24363 2.38316 1.54434 2.50702 1.85826 2.50613L7.35142 2.48225L1.00683 8.82684C0.785132 9.04854 0.660086 9.34873 0.659202 9.66138C0.658317 9.97402 0.781667 10.2735 1.00211 10.494C1.22256 10.7144 1.52205 10.8378 1.83469 10.8369C2.14734 10.836 2.44753 10.7109 2.66923 10.4892L9.01382 4.14465L8.98994 9.63781C8.98886 9.79343 9.01861 9.94755 9.07746 10.0913C9.13631 10.235 9.2231 10.3655 9.33283 10.4752C9.44256 10.5849 9.57305 10.6717 9.71678 10.7306C9.8605 10.7894 10.0146 10.8192 10.1702 10.8181C10.3259 10.8183 10.4801 10.7877 10.6242 10.728C10.7683 10.6684 10.8993 10.5808 11.0096 10.4705C11.12 10.3601 11.2075 10.2291 11.2672 10.0851C11.3268 9.94102 11.3574 9.78673 11.3572 9.63111Z"
+                    fill="white"
+                  />
+                </svg>
+              </Button>
             </Link>
           </div>
         </div>
@@ -243,77 +245,88 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="mt-16">
-          <div className="grid grid-cols-1 gap-y-6 md:gap-4 items-center sm:grid-cols-1 md:grid-cols-2">
-            <div>
-              <h2 className="text-h4 sm:text-h3 lg:text-h2 font-semibold">
-                Organize, Prioritize,{" "}
-                <span className="bg-gradient-to-r from-[#59BAD5] via-[#ABAAFF] to-[#59BAD5] bg-clip-text text-transparent">
-                  Achieve Goals
-                </span>
-              </h2>
-              <p className="text-body-xs sm:text-body-sm lg:text-body-md text-description">
-                Streamline your workflow with powerful, intuitive tools that
-                ensure every team member stays organized, aligned, and focused
-                on their tasks.
-              </p>
+        <AnimatedSection animation="animate__fadeInLeft">
+          <section className="mt-16">
+            <div className="grid grid-cols-1 gap-y-6 md:gap-4 items-center sm:grid-cols-1 md:grid-cols-2">
+              <div>
+                <h2 className="text-h4 sm:text-h3 lg:text-h2 font-semibold">
+                  Organize, Prioritize,{" "}
+                  <span className="bg-gradient-to-r from-[#59BAD5] via-[#ABAAFF] to-[#59BAD5] bg-clip-text text-transparent">
+                    Achieve Goals
+                  </span>
+                </h2>
+                <p className="text-body-xs sm:text-body-sm lg:text-body-md text-description">
+                  Streamline your workflow with powerful, intuitive tools that
+                  ensure every team member stays organized, aligned, and focused
+                  on their tasks.
+                </p>
+              </div>
+              <div>
+                <Image
+                  alt="four states"
+                  src={fourStateImg}
+                  className="w-full"
+                />
+              </div>
             </div>
-            <div>
-              <Image alt="four states" src={fourStateImg} className="w-full" />
-            </div>
-          </div>
-        </section>
+          </section>
+        </AnimatedSection>
 
-        <section className="mt-16">
-          <div className="grid grid-cols-1 gap-y-6 md:gap-x-6 items-center sm:grid-cols-1 md:grid-cols-2">
-            {/* Text appears first on mobile (default), second on md */}
-            <div className="order-2 sm:order-1">
-              <Image alt="four states" src={calendarImg} className="" />
+        <AnimatedSection animation="animate__fadeInRight">
+          <section className="mt-16">
+            <div className="grid grid-cols-1 gap-y-6 md:gap-x-6 items-center sm:grid-cols-1 md:grid-cols-2">
+              {/* Text appears first on mobile (default), second on md */}
+              <div className="order-2 sm:order-1">
+                <Image alt="four states" src={calendarImg} className="" />
+              </div>
+              <div className="order-1 sm:order-2  md:pl-5">
+                <h2 className="text-h4 sm:text-h3 lg:text-h2 font-semibold">
+                  <span className="bg-gradient-to-r from-[#59BAD5] via-[#ABAAFF] to-[#59BAD5] bg-clip-text text-transparent">
+                    Effortless,
+                  </span>
+                  Real-Time Connectivity
+                </h2>
+                <p className="text-description">
+                  Experience smooth, real-time communication and collaboration
+                  with <br /> your team. Stay connected effortlessly and keep
+                  projects moving
+                  <br />
+                  forward without delay.
+                </p>
+              </div>
             </div>
-            <div className="order-1 sm:order-2  md:pl-5">
-              <h2 className="text-h4 sm:text-h3 lg:text-h2 font-semibold">
-                <span className="bg-gradient-to-r from-[#59BAD5] via-[#ABAAFF] to-[#59BAD5] bg-clip-text text-transparent">
-                  Effortless,
-                </span>
-                Real-Time Connectivity
-              </h2>
-              <p className="text-description">
-                Experience smooth, real-time communication and collaboration
-                with <br /> your team. Stay connected effortlessly and keep
-                projects moving
-                <br />
-                forward without delay.
-              </p>
-            </div>
-          </div>
-        </section>
+          </section>
+        </AnimatedSection>
 
-        <section className="mt-16">
-          <div className="grid grid-cols-1 gap-y-6 md:gap-x-6 items-center sm:grid-cols-1 md:grid-cols-2">
-            <div>
-              <h2 className="text-h4 sm:text-h3 lg:text-h2 font-semibold">
-                <span className="bg-gradient-to-r from-[#59BAD5] via-[#ABAAFF] to-[#59BAD5] bg-clip-text text-transparent">
-                  Visualizing,
-                </span>
-                Your Time-Line
-              </h2>
-              <p className="text-description">
-                Streamline your workflow with powerful, intuitive tools <br />{" "}
-                that ensure every team member stays organized, aligned, <br />{" "}
-                and focused on their tasks.
-              </p>
+        <AnimatedSection animation="animate__fadeInLeft">
+          <section className="mt-16">
+            <div className="grid grid-cols-1 gap-y-6 md:gap-x-6 items-center sm:grid-cols-1 md:grid-cols-2">
+              <div>
+                <h2 className="text-h4 sm:text-h3 lg:text-h2 font-semibold">
+                  <span className="bg-gradient-to-r from-[#59BAD5] via-[#ABAAFF] to-[#59BAD5] bg-clip-text text-transparent">
+                    Visualizing,
+                  </span>
+                  Your Time-Line
+                </h2>
+                <p className="text-description">
+                  Streamline your workflow with powerful, intuitive tools <br />{" "}
+                  that ensure every team member stays organized, aligned, <br />{" "}
+                  and focused on their tasks.
+                </p>
+              </div>
+              <div className="">
+                <Image
+                  alt="four states"
+                  className="w-full "
+                  src={ganttChartImg}
+                />
+              </div>
             </div>
-            <div className="">
-              <Image
-                alt="four states"
-                className="w-full "
-                src={ganttChartImg}
-              />
-            </div>
-          </div>
-        </section>
+          </section>
+        </AnimatedSection>
 
-        <section className="mt-16">
+        <AnimatedSection animation="animate__zoomIn">
+          <section className="mt-16">
           <div className="grid grid-cols-1 gap-y-6 items-center justify-items-center">
             <div className="text-center">
               <h2 className="text-h2 font-semibold">
@@ -333,6 +346,7 @@ export default function Home() {
             </div>
           </div>
         </section>
+        </AnimatedSection>
       </div>
     </div>
   );
