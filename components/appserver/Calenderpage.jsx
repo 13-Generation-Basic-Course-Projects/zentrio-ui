@@ -115,7 +115,7 @@ export default function MyCalender({ tasks }) {
         </div>
 
         {/* Sidebar Scroll Section */}
-        <div className="col-span-3 h-full overflow-y-auto scrollbar-hidden bg-transparent overflow-y-auto pl-2 flex flex-col gap-[20px]">
+        <div className="col-span-3 h-full overflow-y-auto scrollbar-hidden bg-transparent  pl-2 flex flex-col gap-[20px]">
           <CardTaskCalender tasks={tasks} />
           <CardTCommentCalender tasks={tasks} />
         </div>
