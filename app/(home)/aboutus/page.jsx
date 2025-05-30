@@ -468,7 +468,7 @@ export default function AboutUs() {
                       <rect width="32" height="32" fill="white" transform="translate(408 203.24)" />
                     </clipPath>
                   </defs>
-                </svg>
+              </svg>
               </div>
               <p className="text-h1 font-bold text-gradient text-left">
                 “ ZenTrio turns management into progress. “
