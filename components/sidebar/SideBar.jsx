@@ -72,7 +72,7 @@ export default function DashboardSidebar() {
       icon: calender,
       activeIcon: (active) => (
         <svg
-           width={22}
+          width={22}
           height={22}
           viewBox="0 0 20 20"
           fill="none"
@@ -155,44 +155,41 @@ export default function DashboardSidebar() {
         </svg>
       ),
     },
-     {
+    {
       title: "Document",
       url: `/dashboard/${workspaceId}/${projectId}/docu?role=${role}`,
       icon: folder,
       activeIcon: (active) => (
-     <svg
-  width={22}
-  height={22}
-  viewBox="0 0 22 22"
-  fill="none"
-  xmlns="http://www.w3.org/2000/svg"
->
-  <path
-    d="M0.992188 7.08951V14.4119C0.992188 15.4646 1.40563 16.4742 2.14156 17.2186C2.87748 17.963 3.87562 18.3812 4.91638 18.3812H8.84057H10.4922M0.992188 7.08951V5.47698C0.992188 4.68744 1.30227 3.93023 1.85421 3.37194C2.40616 2.81365 3.15476 2.5 3.93533 2.5H6.78037C7.10247 2.49994 7.42143 2.56406 7.71904 2.68869C8.01665 2.81332 8.28707 2.99603 8.51486 3.22638L10.0669 4.79624M0.992188 7.08951H6.78429C7.1064 7.08957 7.42536 7.02546 7.72297 6.90082C8.02057 6.77619 8.29099 6.59348 8.51878 6.36313L10.0669 4.79624M19.1416 8.76555C19.1416 7.71283 18.7281 6.70322 17.9922 5.95883C17.2563 5.21444 16.2581 4.79624 15.2174 4.79624H10.0669"
-    stroke={active ? "#59BAD5" : "black"}
-    strokeWidth="1.5"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  />
-  <path
-    d="M17.0078 11.002C18.1145 11.002 19.0078 11.8953 19.0078 13.002C19.0078 14.1086 18.1145 15.002 17.0078 15.002C15.9011 15.002 15.0078 14.1086 15.0078 13.002C15.0078 11.8953 15.9011 11.002 17.0078 11.002Z"
-    stroke={active ? "#59BAD5" : "black"}
-    strokeWidth="1.3"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  />
-  <path
-    d="M21.0078 18.3C21.0078 17.7 19.2935 16.5 17.0078 16.5C14.7221 16.5 13.0078 17.7 13.0078 18.3C13.0078 18.3 13.0078 19.5 17.0078 19.5C21.0078 19.5 21.0078 18.3 21.0078 18.3Z"
-    stroke={active ? "#59BAD5" : "black"}
-    strokeWidth="1.3"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  />
-</svg>
-
-
-
-    ),
+        <svg
+          width={22}
+          height={22}
+          viewBox="0 0 22 22"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M0.992188 7.08951V14.4119C0.992188 15.4646 1.40563 16.4742 2.14156 17.2186C2.87748 17.963 3.87562 18.3812 4.91638 18.3812H8.84057H10.4922M0.992188 7.08951V5.47698C0.992188 4.68744 1.30227 3.93023 1.85421 3.37194C2.40616 2.81365 3.15476 2.5 3.93533 2.5H6.78037C7.10247 2.49994 7.42143 2.56406 7.71904 2.68869C8.01665 2.81332 8.28707 2.99603 8.51486 3.22638L10.0669 4.79624M0.992188 7.08951H6.78429C7.1064 7.08957 7.42536 7.02546 7.72297 6.90082C8.02057 6.77619 8.29099 6.59348 8.51878 6.36313L10.0669 4.79624M19.1416 8.76555C19.1416 7.71283 18.7281 6.70322 17.9922 5.95883C17.2563 5.21444 16.2581 4.79624 15.2174 4.79624H10.0669"
+            stroke={active ? "#59BAD5" : "black"}
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M17.0078 11.002C18.1145 11.002 19.0078 11.8953 19.0078 13.002C19.0078 14.1086 18.1145 15.002 17.0078 15.002C15.9011 15.002 15.0078 14.1086 15.0078 13.002C15.0078 11.8953 15.9011 11.002 17.0078 11.002Z"
+            stroke={active ? "#59BAD5" : "black"}
+            strokeWidth="1.3"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M21.0078 18.3C21.0078 17.7 19.2935 16.5 17.0078 16.5C14.7221 16.5 13.0078 17.7 13.0078 18.3C13.0078 18.3 13.0078 19.5 17.0078 19.5C21.0078 19.5 21.0078 18.3 21.0078 18.3Z"
+            stroke={active ? "#59BAD5" : "black"}
+            strokeWidth="1.3"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      ),
     },
     {
       title: "Members",
@@ -201,7 +198,7 @@ export default function DashboardSidebar() {
       activeIcon: (active) => (
         <svg
           width={22}
-        height={22}
+          height={22}
           viewBox="0 0 20 20"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -243,8 +240,8 @@ export default function DashboardSidebar() {
       icon: report,
       activeIcon: (active) => (
         <svg
-         width={22}
-        height={22}
+          width={22}
+          height={22}
           viewBox="0 0 20 20"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -342,7 +339,11 @@ export default function DashboardSidebar() {
                       } py-5 px-3 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:!px-5 group-data-[collapsible=icon]:!py-5`}
                       style={{ borderRadius: "0.5rem" }}
                     >
-                      <Link href={item.url} style={{ borderRadius: "0.5rem" }} className="flex items-center justify-start group-data-[collapsible=icon]:justify-center w-full">
+                      <Link
+                        href={item.url}
+                        style={{ borderRadius: "0.5rem" }}
+                        className="flex items-center justify-start group-data-[collapsible=icon]:justify-center w-full"
+                      >
                         {typeof item.activeIcon === "function" ? (
                           <div className="flex items-center justify-center min-w-[22px]">
                             {item.activeIcon(isActive)}
@@ -356,7 +357,9 @@ export default function DashboardSidebar() {
                             />
                           </div>
                         )}
-                        <span className="pl-3 group-data-[collapsible=icon]:hidden">{item.title}</span>
+                        <span className="pl-3 group-data-[collapsible=icon]:hidden">
+                          {item.title}
+                        </span>
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -367,12 +370,16 @@ export default function DashboardSidebar() {
             {/* LOGOUT */}
             <SidebarMenu className="!border-0">
               <SidebarMenuItem className="!border-0">
-                <SidebarMenuButton
-                  asChild
-                  tooltip="Logout"
-                  className="flex items-center gap-2 px-4 cursor-pointer pb-10 !border-0 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:!px-2"
-                >
-                  <div className="flex items-center justify-start group-data-[collapsible=icon]:justify-center w-full">
+              <SidebarMenuButton
+                    asChild
+                    tooltip="Logout"
+                    className="flex items-center gap-2 px-4 cursor-pointer pb-10 
+                              !border-0 !bg-transparent hover:!bg-transparent focus:!bg-transparent active:!bg-transparent
+                              group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:!px-2"
+                  >
+                    <div className="flex items-center justify-start w-full 
+                                    group-data-[collapsible=icon]:justify-center 
+                                    !bg-transparent hover:!bg-transparent">
                     <ModalLeave
                       massageTitle={"Are you sure?"}
                       massageBody={"You want to leave this board "}

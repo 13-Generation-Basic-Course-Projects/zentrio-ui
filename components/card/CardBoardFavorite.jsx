@@ -11,13 +11,14 @@ import {
 import iconMember from "@/assets/memberSideBar.png";
 
 import Image from "next/image";
+import ModalDelete from "../modal/ModalDelete";
 
 export default function CardBoardFavorite({ title, image }) {
   const [favorited, setFavorited] = useState(false);
   console.log("ssss", image);
   return (
-    <Link href="/dashboard/1/1/board">
-      <Card className="py-4  h-[300px] rounded-xl shadow-sm  ">
+    
+      <Card className="py-4  h-[340px] rounded-xl shadow-sm  ">
         {/* Header */}
         <CardHeader className="pb-0 pt-2 px-4 flex justify-between items-center">
           <p className="text-body-sm font-semibold text-primary truncate">
@@ -39,6 +40,7 @@ export default function CardBoardFavorite({ title, image }) {
 
         {/* Body */}
         <CardBody className="overflow-visible py-2">
+          <Link href="/dashboard/1/1/board">
           {image && image.startsWith("bg-") ? (
             <div
               className={`rounded-xl w-full h-24 bg-cover bg-center ${image}`}
@@ -51,6 +53,7 @@ export default function CardBoardFavorite({ title, image }) {
               className="object-cover rounded-xl w-full h-24"
             />
           )}
+          </Link>
         </CardBody>
 
         {/* Footer */}
@@ -66,13 +69,19 @@ export default function CardBoardFavorite({ title, image }) {
               />
               <p className="text-body-sm"> 13 Members</p>
             </div>
-            <div className="flex flex-row justify-center items-center  text-progress-red p-3">
+            
+        <div className="flex items-center text-progress-red py-5 gap-1">
               <IconDelete />
-              <button className="hover:underline text-body-sm ">Remove</button>
-            </div>
+            <ModalDelete  title="Remove"
+              color="text-red-500"
+              massageTitle="Delete this board?"
+              massageBody="This action will remove the board."
+              massageUndo="Cancel"
+              massageDo="Delete" />
+        </div>
           </div>
         </CardFooter>
       </Card>
-    </Link>
+    
   );
 }

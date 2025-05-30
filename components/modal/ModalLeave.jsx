@@ -22,8 +22,9 @@ export default function ModalLeave({
     <>
       <Button
         onPress={onOpen}
-        
         className="bg-transparent  flex items-center gap-2 cursor-pointer p-0 !border-0"
+         disableRipple={true}
+        disableAnimation
       >
         <LeaveIcon strokwidth={2} size={4} color={"red"} />
         <span className="text-red-500 font-medium">Logout</span>

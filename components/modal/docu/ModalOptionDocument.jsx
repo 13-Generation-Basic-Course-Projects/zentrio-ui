@@ -12,6 +12,7 @@ import {
 import ModalDelete from "../ModalDelete";
 import PopupAction from "@/components/popup/PopupAction";
 import { IconpopupDelete } from "@/components/icon/Iconpopup";
+import ModalRenameFileOrFolder from "./ModalRenameDocu";
 
 // icon components directly in the same file
 const AddNoteIcon = (props) => (
@@ -131,7 +132,7 @@ export default function ModalOptionDocument() {
         aria-label="Dropdown menu with description"
         variant="faded"
         className="w-full min-w-[200px] "
-         closeOnSelect={false}
+        closeOnSelect={false}
       >
         <DropdownItem
           key="new"
@@ -145,7 +146,7 @@ export default function ModalOptionDocument() {
           className="w-full hover:bg-default-100"
           startContent={<CopyDocumentIcon className={iconClasses} />}
         >
-          Rename
+          <ModalRenameFileOrFolder />
         </DropdownItem>
         <DropdownItem
           key="edit"
@@ -160,7 +161,7 @@ export default function ModalOptionDocument() {
           className="w-full hover:bg-default-100 mb-1"
           startContent={<DeleteDocumentIcon className={cn(iconClasses)} />}
         >
-         <PopupAction
+          <PopupAction
             title={"Delete Folder"}
             massageTitle={"Are you sure?"}
             massageBody={"You want to delete it."}

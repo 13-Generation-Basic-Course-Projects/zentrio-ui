@@ -50,7 +50,8 @@ export default function ActiveBoards() {
                 </div>
               </div>
               <div className="col-span-9"> 
-                <ProgressBar/>
+                
+                <ProgressBar percent={board.percent} color={board.color}/>
               </div>
               
             </li>

@@ -81,7 +81,7 @@ export default function CardBoard({ title, image, role }) {
             </div>
             
            
-                <div className="flex items-center text-progress-red py-5 gap-1">
+           <div className="flex items-center text-progress-red py-5 gap-1">
                   <IconDelete />
                 <ModalDelete  title="Remove"
                   color="text-red-500"
