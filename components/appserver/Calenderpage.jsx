@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import React, { useState } from "react";
 import FullCalendar from "@fullcalendar/react";
@@ -11,6 +11,7 @@ import BredCrum from "../bredcrum/Bredcrum";
 import ModalCreateGanttBar from "../modal/board/ModalCreateGanttBar";
 import CardTaskCalender from "../card/CardTaskCalender";
 import CardTCommentCalender from "../card/CardCommentCalender";
+import { MessageCircleMore, ClipboardList } from "lucide-react";
 
 export default function MyCalender({ tasks }) {
   const initialEvents = [
@@ -36,6 +37,7 @@ export default function MyCalender({ tasks }) {
 
   const [comments, setComments] = useState(initialEvents);
 
+  // handle add a comment
   const handleDateSelect = (info) => {
     const commentText = prompt("Enter your comment:");
     if (commentText) {
@@ -54,20 +56,45 @@ export default function MyCalender({ tasks }) {
 
   const renderEventContent = ({ event }) => {
     const { type, content } = event.extendedProps;
-    const baseStyle = "rounded border-2 px-2 font-bold text-green-600 bg-green-100";
+    const baseStyle =
+      "rounded border-2 px-2 font-bold text-green-600 bg-green-100";
+    // Format date
+    const formatDate = (dateStr) => {
+      const date = new Date(dateStr);
+      return date.toLocaleDateString("en-GB", {
+        day: "numeric",
+        month: "short",
+      });
+    };
 
+    const formattedDate = `${formatDate(event.start)} - ${formatDate(
+      event.end
+    )}`;
+
+    // card task
     if (type === "task") {
       return (
-        <div className={`${baseStyle} h-[70px] text-[0.95rem] border-green-500`}>
-          {content}
+        <div
+          className={`${baseStyle} h-[70px] text-[0.95rem] border-green-500 p-1 flex flex-col`}
+        >
+          <div className="text-[0.65rem] font-medium text-green-600 bg-green-300 w-fit px-2 py-[2px] rounded">
+            {formattedDate}
+          </div>
+          <div className="flex items-center gap-1">
+            <ClipboardList className="w-4 h-4" />
+            <span>{content}</span>
+          </div>
         </div>
       );
     }
-
+    // card comment
     if (type === "comment") {
       return (
-        <div className={`${baseStyle} mt-1 h-[25px] text-[0.7rem] border-green-500`}>
-          {content}
+        <div
+          className={`${baseStyle} mt-2 h-[30px] text-[0.7rem] flex items-center gap-1 border-green-500`}
+        >
+          <span>Comment</span>
+          <MessageCircleMore className="w-4 h-4" />
         </div>
       );
     }
@@ -76,7 +103,7 @@ export default function MyCalender({ tasks }) {
   };
 
   return (
-    <div className="p-4 h-screen flex flex-col">
+    <div className="p-4 h-screen flex flex-col overflow-hidden">
       <BredCrum
         board="Hikko Design"
         feature="Calender"
@@ -84,10 +111,10 @@ export default function MyCalender({ tasks }) {
         modal={[<ModalCreateGanttBar key="modal" />]}
       />
 
-      <div className="grid grid-cols-12 gap-4 pt-6 h-full">
+      <div className="grid grid-cols-12 gap-4 h-full">
         {/* Calendar Scroll Section */}
-        <div className="col-span-9 h-full overflow-y-auto pr-2 scrollbar-hidden">
-          <div className=" h-full">
+        <div className="col-span-9 h-full overflow-hidden pr-2">
+          <div className="h-full flex flex-col">
             <FullCalendar
               plugins={[
                 resourceTimelinePlugin,
@@ -105,6 +132,7 @@ export default function MyCalender({ tasks }) {
               select={handleDateSelect}
               events={comments}
               eventContent={renderEventContent}
+              height="auto"
             />
           </div>
         </div>
