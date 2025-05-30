@@ -13,7 +13,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
-import calender from "../../assets/calendarSideBar.png";
+import calender from "../../assets/calendarSidebar.png";
 import member from "../../assets/memberSideBar.png";
 import board from "../../assets/boardSideBar.png";
 import folder from "../../assets/folderSidBar.png";

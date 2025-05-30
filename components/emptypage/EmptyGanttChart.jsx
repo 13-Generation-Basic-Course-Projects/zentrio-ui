@@ -1,9 +1,5 @@
 import { Button } from "@heroui/react";
 import React from "react";
-import Gantt from "@/assets/emptyGanttBar/Gantt.png";
-import Human from "@/assets/emptyGanttBar/Human.png";
-import Clock3D from "@/assets/emptyKanbanPage/Clock3D.png";
-import Image from "next/image";
 
 export function EmptyGanttChart() {
   return (
