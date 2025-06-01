@@ -5,8 +5,7 @@ import Image from "next/image";
 import BredCrum from "../bredcrum/Bredcrum";
 import { documentData } from "@/data/docu/documentData";
 import CardFolder, { CardFile } from "../card/CardDoc";
-export default  function PublicDocument({ modal }) {
-
+export default function PublicDocument({ modal }) {
   const data = documentData;
   console.log(data);
   return (
