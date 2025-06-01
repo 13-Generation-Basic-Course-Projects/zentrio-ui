@@ -1,379 +1,8 @@
 "use client";
 
-import { Input } from '@heroui/input';
-import { Button, Checkbox, Form, InputOtp } from '@heroui/react';
-import { useState } from 'react';
-import Google from '@/assets/googleIcon.png';
-import Image from 'next/image';
-import Link from 'next/link';
-import { AuthInput } from './input';
-import { Eye, EyeOff } from "lucide-react";
-import { doSocialLogin } from '@/action/auth';
-import GoogleLogin from '../LoginForm';
-
-export const SignUpForm = () => {
-  const [isVisible, setIsVisible] = useState({
-    current: false,
-    new: false,
-    confirm: false,
-    confirm2: false
-  });
-
-  const toggleVisibility = (field) => {
-    setIsVisible(prev => {
-      const newState = {
-        ...prev,
-        [field]: !prev[field]
-      };
-      return newState;
-    });
-  };
-
-  // const [formData, setFormData] = useState({
-  //   username: '',
-  //   email: '',
-  //   password: '',
-  //   confirmPassword: '',
-  //   termsAccepted: false,
-  // });
-
-  // const handleChange = (e) => {
-  //   const { name, value, type, checked } = e.target;
-  //   setFormData({
-  //     ...formData,
-  //     [name]: type === 'checkbox' ? checked : value,
-  //   });
-  // };
-
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-
-  //   // Validation logic
-  //   if (formData.password !== formData.confirmPassword) {
-  //     alert("Passwords do not match!");
-  //     return;
-  //   }
-
-  //   if (!formData.username || !formData.email || !formData.password || !formData.confirmPassword) {
-  //     alert("All fields are required!");
-  //     return;
-  //   }
-
-  //   // Add form submission logic here
-  //   console.log('Form submitted:', formData);
-  // };
-
-  return (
-    <div className='w-full h-screen flex items-center justify-center'>
-      <div className=" w-[580px] bg-signup-gradient  px-[55px] py-[40px] rounded-[20px] shadow-sm gap-[50px]">
-        <Form action="" >
-          <div>
-            <p className='text-h1 text-primary'><span className='font-bold'>Sign up</span></p>
-            <p className='text-body text-[#787486]'>Let’s get you all st up so you can access your personal account</p>
-          </div>
-          <div className='gap-[50px] flex flex-col w-full'>
-            <div className='gap-[20px] flex flex-col'>
-              <div className='w-full'>
-                <AuthInput
-                key="outside"
-                type="text"
-                label="Username"
-                labelPlacement="outside"
-                placeholder="Username"
-                className="text-foreground"
-                // {...register("email", {
-                //   required: "Email cannot be empty.",
-                //   pattern: {
-                //     value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-                //     message: "Invalid email address.",
-                //   },
-                // })}
-              />
-              {/* {errors?.email?.message && (
-                <MyErrorText label={errors?.email?.message} />
-              )} */}
-              </div>
-              <div>
-                <AuthInput
-                key="outside"
-                type="text"
-                labelPlacement="outside"
-                label="Email"
-                labelPldefault-foregroundacement="outside"
-                placeholder="Email"
-                className="text-foreground"
-                // {...register("email", {
-                //   required: "Email cannot be empty.",
-                //   pattern: {
-                //     value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-                //     message: "Invalid email address.",
-                //   },
-                // })}
-              />
-              {/* {errors?.email?.message && (
-                <MyErrorText label={errors?.email?.message} />
-              )} */}
-              </div>
-              <div className="relative">
-                <AuthInput
-                key="outside"
-                type={isVisible.confirm ? "password" : "text"}
-                label="Password"
-                labelPlacement="outside"
-                placeholder="Password"
-                className="text-foreground"
-                endContent={
-                  <button
-                     className="focus:outline-none bg-transparent border-none" 
-                    type="button"
-                    onClick={() => toggleVisibility('confirm')}
-                  >
-                    {isVisible.confirm ? (
-                      <EyeOff className="text-2xl text-primary pointer-events-none" />
-                    ) : (
-                      <Eye className="text-2xl text-primary pointer-events-none" />
-                    )}
-                  </button>
-                }
-                // {...register("email", {
-                //   required: "Email cannot be empty.",
-                //   pattern: {
-                //     value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-                //     message: "Invalid email address.",
-                //   },
-                // })}
-              />
-              {/* {errors?.email?.message && (
-                <MyErrorText label={errors?.email?.message} />
-              )} */}
-              </div>
-              <div className="relative">
-              <AuthInput
-                key="outside"
-                type={isVisible.confirm2 ? "password" : "text"}
-                label="Confirm Password"
-                labelPlacement="outside"
-                placeholder="Confirm Password"
-                className="text-foreground"
-                endContent={
-                  <button
-                     className="focus:outline-none bg-transparent border-none" 
-                    type="button"
-                    onClick={() => toggleVisibility('confirm2')}
-                  >
-                    {isVisible.confirm2 ? (
-                      <EyeOff className="text-2xl text-primary pointer-events-none" />
-                    ) : (
-                      <Eye className="text-2xl text-primary pointer-events-none" />
-                    )}
-                  </button>
-                }
-                // {...register("email", {
-                //   required: "Email cannot be empty.",
-                //   pattern: {
-                //     value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-                //     message: "Invalid email address.",
-                //   },
-                // })}
-              />
-              {/* {errors?.email?.message && (
-                <MyErrorText label={errors?.email?.message} />
-              )} */}
-              </div>
-              <div className='flex items-center gap-[25px]'>
-                <Checkbox
-                  label="I agree to all the Terms and Privacy Policies"
-                  name="termsAccepted"
-                  
-                  className='w-[12px]'
-                  required
-                />
-                <span className='text-[#787486] text-body-sm'>
-                  I agree to all the <span className="text-primary">Terms</span> and <span className="text-primary">Privacy Policies</span>
-                </span>
-              </div>
-            </div>
-            <div className='flex flex-col gap-[10px]'>
-              <Link href="/verify" className="capitalize">
-              <Button className="w-full bg-primary text-bgColor max-w-none border-none">
-                <span className='text-h6'>Create account</span>
-              </Button>
-              </Link>
-              <p className="text-center text-body my-5">
-                Have Account? <Link href="/login" className="text-primary text-body">Sign in</Link>
-              </p>
-              <div className="text-center">
-                <div className="flex items-center gap-2">
-                  <hr className="flex-grow border-t border-gray-300" />
-                  <p className='text-body-sm text-[#787486]'>Or Sign up with</p>
-                  <hr className="flex-grow border-t border-gray-300" />
-                </div>
-                
-              </div>
-            </div>
-          </div>
-        </Form>
-        <div className="flex justify-center">
-            <GoogleLogin/>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export const SigninForm = () => {
-  const [isVisible, setIsVisible] = useState({
-    current: false,
-    new: false,
-    confirm: false
-  });
-
-  const toggleVisibility = (field) => {
-    console.log('Before toggle:', isVisible[field]); // Add this
-    setIsVisible(prev => {
-      const newState = {
-        ...prev,
-        [field]: !prev[field]
-      };
-      console.log('After toggle:', newState[field]); // Add this
-      return newState;
-    });
-  };
-
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    rememberMe: false,
-  });
-
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === 'checkbox' ? checked : value,
-    });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    // Validation logic
-    if (!formData.email || !formData.password) {
-      alert("Email and Password are required!");
-      return;
-    }
-
-    // Add form submission logic here
-    console.log('Form submitted:', formData);
-  };
-
-  return (
-    <div className='w-full h-screen flex items-center justify-center'>
-      <div className="w-[540px] h-fit bg-login-gradient px-[55px] py-[40px] rounded-[20px] shadow-sm gap-[50px]">
-        <Form action="" >
-          <div>
-            <p className='text-h1 text-primary'><span className='font-bold'>Login</span></p>
-            <p className='text-body text-[#787486]'>Login to access your Zentrio account</p>
-          </div>
-          <div className='flex flex-col gap-[20px] w-full'>
-            <div>
-              <AuthInput
-                key="outside"
-                type="text"
-                label="Email"
-                labelPlacement="outside"
-                placeholder="Email"
-                className="text-foreground"
-                // {...register("email", {
-                //   required: "Email cannot be empty.",
-                //   pattern: {
-                //     value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-                //     message: "Invalid email address.",
-                //   },
-                // })}
-              />
-              {/* {errors?.email?.message && (
-                <MyErrorText label={errors?.email?.message} />
-              )} */}
-            </div>
-            <div className="relative">
-              <AuthInput
-                key="outside"
-                type={isVisible.confirm ? "password" : "text"}
-                label="Password"
-                labelPlacement="outside"
-                placeholder="Password"
-                className="text-foreground"
-                endContent={
-                  <button
-                     className="focus:outline-none bg-transparent border-none" 
-                    type="button"
-                    onClick={() => toggleVisibility('confirm')}
-                  >
-                    {isVisible.confirm ? (
-                      <EyeOff className="text-2xl text-primary  pointer-events-none" />
-                    ) : (
-                      <Eye className="text-2xl text-primary pointer-events-none" />
-                    )}
-                  </button>
-                }
-                // {...register("email", {
-                //   required: "Email cannot be empty.",
-                //   pattern: {
-                //     value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-                //     message: "Invalid email address.",
-                //   },
-                // })}
-              />
-              {/* {errors?.email?.message && (
-                <MyErrorText label={errors?.email?.message} />
-              )} */}
-            </div>
-            <div className="flex items-center justify-between">
-              <div className='flex items-center gap-6'>
-                <Checkbox
-                  label="Remember Me"
-                  name="rememberMe"
-                  checked={formData.rememberMe}
-                  onChange={handleChange}
-                  className="text-sm w-[12px]"
-                />
-                <p className='text-description'>Remember me</p>
-              </div>
-              <Link href="/forgot-password" className="text-sm text-danger">
-                Forgot Password?
-              </Link>
-            </div>
-          </div>
-          <div className='w-full gap-[10px] flex flex-col'>
-            <Link href="/workspace" className="capitalize">
-            <Button  className="w-full max-w-none bg-primary text-white border-none">
-              Login
-            </Button>
-            </Link>
-            <p className="text-center text-body my-5">
-                  No Account? <Link href="/register" className="text-primary text-body">Sign up</Link>
-            </p>
-            <div className="text-center">
-              <div className="flex items-center gap-2">
-                <hr className="flex-grow border-t border-gray-300" />
-                <p className='text-body-sm text-[#787486]'>Or Login with</p>
-                <hr className="flex-grow border-t border-gray-300" />
-              </div>
-            </div>
-            </div>
-        </Form>
-         <div className="flex justify-center">
-            <GoogleLogin/>
-        </div>
-      </div>
-    </div>
-  );
-};
-
 export const ForgetPass = () => {
   const [formData, setFormData] = useState({
-    email: '',
+    email: "",
   });
 
   const handleChange = (e) => {
@@ -394,248 +23,15 @@ export const ForgetPass = () => {
     }
 
     // Add form submission logic here
-    console.log('Password reset request submitted for:', formData.email);
-  };
-
-  return (
-    <div className='w-full h-screen flex items-center justify-center'>
-      <div className='w-[1728px] h-[1117px]  flex items-center justify-center'>
-        <Form onSubmit={handleSubmit} className="w-[640px] h-fit bg-forgot-gradient px-[55px] py-[40px] rounded-[20px] shadow-sm gap-[50px]">
-          <div>
-              <Link href="/login" className='flex items-center gap-3 pb-[5%] text-body-sm text-primary'>
-                <svg width="18" height="12" viewBox="0 0 18 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M2 6L17 5.99976" stroke="#59BAD5" strokeWidth="1.5"  strokeLinecap="round"   strokeLinejoin="round"/>
-                  <path d="M6 1L1.70711 5.29289C1.37377 5.62623 1.20711 5.79289 1.20711 6C1.20711 6.20711 1.37377 6.37377 1.70711 6.70711L6 11" stroke="#59BAD5" strokeWidth="1.5"  strokeLinecap="round"   strokeLinejoin="round"/>
-                </svg>
-                <p>Back to Login</p>
-              </Link>
-              <div className='flex flex-col gap-4'>
-                <p className='text-h1 text-primary'><span className='font-bold'>Forgot Password</span></p>
-                <p className='text-body text-[#787486]'>Don’t worry, happens to all of us. Enter your email below to recover your password</p>
-              </div>
-            </div>
-            <div className='flex flex-col gap-4 w-full'>
-              <div className='w-full'>
-            <div>
-              <AuthInput
-                key="outside"
-                type="text"
-                label="Email"
-                labelPlacement="outside"
-                placeholder="Email"
-                className="text-foreground"
-                
-                // {...register("email", {
-                //   required: "Email cannot be empty.",
-                //   pattern: {
-                //     value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-                //     message: "Invalid email address.",
-                //   },
-                // })}
-              />
-              {/* {errors?.email?.message && (
-                <MyErrorText label={errors?.email?.message} />
-              )} */}
-            </div>
-
-              </div>
-            </div>
-            
-            <Button  className="w-full bg-primary text-white max-w-none border-none">
-            <Link href="/setnewpassword" className="capitalize">
-            <p className='text-h6'>
-                Submit
-              </p>
-            </Link>
-              
-              
-            </Button>
-            
-        </Form>
-      </div>
-    </div>
-  );
-};
-
-export const SetNewPass = () => {
-  const [isVisible, setIsVisible] = useState({
-    current: false,
-    new: false,
-    confirm: false,
-    confirm2: false
-  });
-
-  const toggleVisibility = (field) => {
-    setIsVisible(prev => {
-      const newState = {
-        ...prev,
-        [field]: !prev[field]
-      };
-      return newState;
-    });
-  };
-
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    rememberMe: false,
-  });
-
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === 'checkbox' ? checked : value,
-    });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    // Validation logic
-    if (!formData.email || !formData.password) {
-      alert("Email and Password are required!");
-      return;
-    }
-
-    // Add form submission logic here
-    console.log('Form submitted:', formData);
-  };
-
-  return (
-    <div className='w-full h-screen flex items-center justify-center'>
-      <div className='w-[1728px] h-[1117px]  flex items-center justify-center'>
-        <Form onSubmit={handleSubmit} className="w-[640px] h-fit bg-gradient-to-br from-[#9BDBFD]/30 to-[#FFFFFF] px-[55px] py-[40px] rounded-[20px] shadow-lg gap-[50px]">
-          <div>
-            <Link href="/forgot-password" className='flex items-center gap-3 pb-[5%] text-body-sm text-primary'>
-              <svg width="18" height="12" viewBox="0 0 18 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M2 6L17 5.99976" stroke="#59BAD5" strokeWidth="1.5"  strokeLinecap="round"   strokeLinejoin="round"/>
-                <path d="M6 1L1.70711 5.29289C1.37377 5.62623 1.20711 5.79289 1.20711 6C1.20711 6.20711 1.37377 6.37377 1.70711 6.70711L6 11" stroke="#59BAD5" strokeWidth="1.5"  strokeLinecap="round"   strokeLinejoin="round"/>
-              </svg>
-              <p>Back to Email</p>
-            </Link>
-            <div className='flex flex-col gap-4'>
-              <p className='text-h1 text-primary'><span className='font-bold'>Set a password</span></p>
-              <p className='text-body text-[#787486]'>Your previous password has been reseted. Please set a new password for your account.</p>
-            </div>
-          </div>
-          <div className='flex flex-col gap-[20px] w-full'>
-          <div className="relative">
-          <AuthInput
-            key="outside"
-            type={isVisible.confirm ? "password" : "text"}
-            label="Password"
-            labelPlacement="outside"
-            placeholder="Password"
-            className="text-foreground"
-            endContent={
-              <button
-                 className="focus:outline-none bg-transparent border-none" 
-                type="button"
-                onClick={() => toggleVisibility('confirm')}
-                  >
-                    {isVisible.confirm ? (
-                      <EyeOff className="text-2xl text-primary pointer-events-none" />
-                    ) : (
-                      <Eye className="text-2xl text-primary pointer-events-none" />
-                    )}
-              </button>
-            }
-            // {...register("password", {
-            //   required: "Password cannot be empty.",
-            // })}
-          />
-            </div>
-            <div className="relative">
-              <AuthInput
-                key="outside"
-                type={isVisible.confirm2 ? "password" : "text"}
-                label="Re-enter Password"
-                labelPlacement="outside"
-                placeholder="Re-enter Password"
-                className="text-foreground"
-                endContent={
-                  <button
-                     className="focus:outline-none bg-transparent border-none" 
-                    type="button"
-                    onClick={() => toggleVisibility('confirm2')}
-                  >
-                    {isVisible.confirm2 ? (
-                      <EyeOff className="text-2xl text-primary pointer-events-none" />
-                    ) : (
-                      <Eye className="text-2xl text-primary pointer-events-none" />
-                    )}
-                  </button>
-                }
-                // {...register("email", {
-                //   required: "Email cannot be empty.",
-                //   pattern: {
-                //     value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-                //     message: "Invalid email address.",
-                //   },
-                // })}
-              />
-              {/* {errors?.email?.message && (
-                <MyErrorText label={errors?.email?.message} />
-              )} */}
-            </div>
-          </div>
-          <div className='w-full gap-[10px] flex flex-col'>
-            <Link href="/login" className="capitalize">
-            <Button  className="w-full max-w-none bg-primary text-white">
-                Save Password
-            </Button>
-            </Link>
-          </div>
-        </Form>
-      </div>
-    </div>
-  );
-};
-
-export const OtpForm = () => {
-  const [otp, setOtp] = useState(Array(6).fill("")); // Initialize an array with 6 empty strings
-  const [otpError, setOtpError] = useState("");
-
-  const handleChange = (value, index) => {
-    // Allow only a single digit (0-9)
-    if (!/^[0-9]?$/.test(value)) return; // Restrict to one digit or empty
-    const newOtp = [...otp];
-    newOtp[index] = value;
-    setOtp(newOtp);
-
-    // Automatically focus the next input
-    if (value && index < 5) {
-      document.getElementById(`otp-input-${index + 1}`).focus();
-    }
-  };
-
-  const handleKeyDown = (e, index) => {
-    if (e.key === "Backspace" && !otp[index] && index > 0) {
-      document.getElementById(`otp-input-${index - 1}`).focus();
-    }
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    const otpValue = otp.join(""); // Combine all values into a single string
-
-    if (otpValue.length !== 6 || otp.includes("")) {
-      setOtpError("Please enter the complete 6-digit OTP.");
-      return;
-    }
-
-    // Add form submission logic here
-    console.log("OTP submitted:", otpValue);
+    console.log("Password reset request submitted for:", formData.email);
   };
 
   return (
     <div className="w-full h-screen flex items-center justify-center">
       <div className="w-[1728px] h-[1117px]  flex items-center justify-center">
-        <form
+        <Form
           onSubmit={handleSubmit}
-          className="w-[640px] h-fit bg-verify-gradient px-[55px] py-[40px] rounded-[20px] shadow-lg flex flex-col gap-[50px] shadow-sm"
+          className="w-[640px] h-fit bg-forgot-gradient px-[55px] py-[40px] rounded-[20px] shadow-sm gap-[50px]"
         >
           <div>
             <Link
@@ -664,57 +60,215 @@ export const OtpForm = () => {
                   strokeLinejoin="round"
                 />
               </svg>
-              <p>Back to Sign in</p>
+              <p>Back to Login</p>
             </Link>
             <div className="flex flex-col gap-4">
-              <p className="text-h2 text-primary">
-                <span className="font-bold">Please check your email</span>
+              <p className="text-h1 text-primary">
+                <span className="font-bold">Forgot Password</span>
               </p>
-              <p className="text-body text-primary">
-                We’ve sent a code to helloworld@gmail.com
+              <p className="text-body text-[#787486]">
+                Don’t worry, happens to all of us. Enter your email below to
+                recover your password
               </p>
             </div>
           </div>
-          <div className="flex flex-col gap-[15px] w-full">
-            <div className="flex w-full justify-between">
-              {otp.map((value, index) => (
-                <input
-                  key={index}
-                  id={`otp-input-${index}`}
-                  type="text" // Changed from "number" to "text"
-                  inputMode="numeric" // Optimize for numeric keyboard on mobile
-                  pattern="[0-9]*" // Restrict to digits
-                  value={otp[index]}
-                  onChange={(e) => handleChange(e.target.value, index)}
-                  onKeyDown={(e) => handleKeyDown(e, index)}
-                  maxLength={1}
-                  className="rounded-[15px] w-16 h-16 text-center border-[1.5px] border-primary focus:outline-none focus:ring-2 focus:ring-primary text-primary font-semibold text-body"
+          <div className="flex flex-col gap-4 w-full">
+            <div className="w-full">
+              <div>
+                <AuthInput
+                  key="outside"
+                  type="text"
+                  label="Email"
+                  labelPlacement="outside"
+                  placeholder="Email"
+                  className="text-foreground"
+
+                  // {...register("email", {
+                  //   required: "Email cannot be empty.",
+                  //   pattern: {
+                  //     value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                  //     message: "Invalid email address.",
+                  //   },
+                  // })}
                 />
-              ))}
+                {/* {errors?.email?.message && (
+                <MyErrorText label={errors?.email?.message} />
+              )} */}
+              </div>
             </div>
-            {otpError && (
-              <p className="text-red-500 text-sm mt-2">{otpError}</p>
-            )}
           </div>
-          <div className="w-full flex flex-col gap-[10px]">
-            
-            <Link href="/login" className="capitalize" >
-            <Button
-              // type="submit"
-              className="w-full max-w-none bg-primary text-white"
+
+          <Button className="w-full bg-primary text-white max-w-none border-none">
+            <Link href="/setnewpassword" className="capitalize">
+              <p className="text-h6">Submit</p>
+            </Link>
+          </Button>
+        </Form>
+      </div>
+    </div>
+  );
+};
+
+export const SetNewPass = () => {
+  const [isVisible, setIsVisible] = useState({
+    current: false,
+    new: false,
+    confirm: false,
+    confirm2: false,
+  });
+
+  const toggleVisibility = (field) => {
+    setIsVisible((prev) => {
+      const newState = {
+        ...prev,
+        [field]: !prev[field],
+      };
+      return newState;
+    });
+  };
+
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+    rememberMe: false,
+  });
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData({
+      ...formData,
+      [name]: type === "checkbox" ? checked : value,
+    });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // Validation logic
+    if (!formData.email || !formData.password) {
+      alert("Email and Password are required!");
+      return;
+    }
+
+    // Add form submission logic here
+    console.log("Form submitted:", formData);
+  };
+
+  return (
+    <div className="w-full h-screen flex items-center justify-center">
+      <div className="w-[1728px] h-[1117px]  flex items-center justify-center">
+        <Form
+          onSubmit={handleSubmit}
+          className="w-[640px] h-fit bg-gradient-to-br from-[#9BDBFD]/30 to-[#FFFFFF] px-[55px] py-[40px] rounded-[20px] shadow-lg gap-[50px]"
+        >
+          <div>
+            <Link
+              href="/forgot-password"
+              className="flex items-center gap-3 pb-[5%] text-body-sm text-primary"
             >
-              
-              Submit
-              
-            </Button>
+              <svg
+                width="18"
+                height="12"
+                viewBox="0 0 18 12"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M2 6L17 5.99976"
+                  stroke="#59BAD5"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M6 1L1.70711 5.29289C1.37377 5.62623 1.20711 5.79289 1.20711 6C1.20711 6.20711 1.37377 6.37377 1.70711 6.70711L6 11"
+                  stroke="#59BAD5"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              <p>Back to Email</p>
+            </Link>
+            <div className="flex flex-col gap-4">
+              <p className="text-h1 text-primary">
+                <span className="font-bold">Set a password</span>
+              </p>
+              <p className="text-body text-[#787486]">
+                Your previous password has been reseted. Please set a new
+                password for your account.
+              </p>
+            </div>
+          </div>
+          <div className="flex flex-col gap-[20px] w-full">
+            <div className="relative">
+              <AuthInput
+                key="outside"
+                type={isVisible.confirm ? "password" : "text"}
+                label="Password"
+                labelPlacement="outside"
+                placeholder="Password"
+                className="text-foreground"
+                endContent={
+                  <button
+                    className="focus:outline-none bg-transparent border-none"
+                    type="button"
+                    onClick={() => toggleVisibility("confirm")}
+                  >
+                    {isVisible.confirm ? (
+                      <EyeOff className="text-2xl text-primary pointer-events-none" />
+                    ) : (
+                      <Eye className="text-2xl text-primary pointer-events-none" />
+                    )}
+                  </button>
+                }
+                // {...register("password", {
+                //   required: "Password cannot be empty.",
+                // })}
+              />
+            </div>
+            <div className="relative">
+              <AuthInput
+                key="outside"
+                type={isVisible.confirm2 ? "password" : "text"}
+                label="Re-enter Password"
+                labelPlacement="outside"
+                placeholder="Re-enter Password"
+                className="text-foreground"
+                endContent={
+                  <button
+                    className="focus:outline-none bg-transparent border-none"
+                    type="button"
+                    onClick={() => toggleVisibility("confirm2")}
+                  >
+                    {isVisible.confirm2 ? (
+                      <EyeOff className="text-2xl text-primary pointer-events-none" />
+                    ) : (
+                      <Eye className="text-2xl text-primary pointer-events-none" />
+                    )}
+                  </button>
+                }
+                // {...register("email", {
+                //   required: "Email cannot be empty.",
+                //   pattern: {
+                //     value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                //     message: "Invalid email address.",
+                //   },
+                // })}
+              />
+              {/* {errors?.email?.message && (
+                <MyErrorText label={errors?.email?.message} />
+              )} */}
+            </div>
+          </div>
+          <div className="w-full gap-[10px] flex flex-col">
+            <Link href="/login" className="capitalize">
+              <Button className="w-full max-w-none bg-primary text-white">
+                Save Password
+              </Button>
             </Link>
           </div>
-          <div className="w-full">
-            <p className="font-bold text-description text-center">
-              <span className="text-body">Send Code again : 03:12</span>
-            </p>
-          </div>
-        </form>
+        </Form>
       </div>
     </div>
   );

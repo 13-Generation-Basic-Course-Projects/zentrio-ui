@@ -1,3 +1,3 @@
 export const apiConfig = {
-  baseUrl: process.env.NEXT_PUBLIC_BASE_URL,
+  baseUrl: ` http://35.187.228.225:9090/api/v1`,
 };

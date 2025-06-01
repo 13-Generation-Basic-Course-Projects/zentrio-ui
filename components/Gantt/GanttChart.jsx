@@ -7,7 +7,7 @@ import interactionPlugin from "@fullcalendar/interaction";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import "../../styles/ganttchart.css";
 import BredCrum from "../bredcrum/Bredcrum";
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export default function GanttChart({ modal }) {
   const calendarRef = useRef(null);
@@ -219,7 +219,8 @@ export default function GanttChart({ modal }) {
 
         {/* Duration Range */}
         <div className="text-sm text-gray-600 font-medium">
-          Duration: <span className="font-bold">April 16, 2025 - April 28, 2025</span>
+          Duration:{" "}
+          <span className="font-bold">April 16, 2025 - April 28, 2025</span>
         </div>
 
         {/* Navigation buttons (hook into calendarRef) */}
@@ -269,7 +270,7 @@ export default function GanttChart({ modal }) {
           slotLabelContent={(arg) => {
             const date = arg.date;
             const today = new Date();
-            const isToday = 
+            const isToday =
               date.getDate() === today.getDate() &&
               date.getMonth() === today.getMonth() &&
               date.getFullYear() === today.getFullYear();
@@ -285,21 +286,23 @@ export default function GanttChart({ modal }) {
               //   <div style={{ fontWeight: "bold" }}>{day}</div>
               // </div>
 
-              <div style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                fontSize: "12px",
-                fontWeight: isToday ? "bold" : "normal",
-                color: isToday ? "#fff" : "#1f2937", // Tailwind's gray-800
-                backgroundColor: isToday ? "#59BAD5" : "#F3F3F3", // Tailwind blue-500
-                borderRadius: "8px",
-                padding: "4px 6px",
-                width: "40px",
-                height: "40px",
-                justifyContent: "center",
-                margin: "0 auto",
-              }}>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  fontSize: "12px",
+                  fontWeight: isToday ? "bold" : "normal",
+                  color: isToday ? "#fff" : "#1f2937", // Tailwind's gray-800
+                  backgroundColor: isToday ? "#59BAD5" : "#F3F3F3", // Tailwind blue-500
+                  borderRadius: "8px",
+                  padding: "4px 6px",
+                  width: "40px",
+                  height: "40px",
+                  justifyContent: "center",
+                  margin: "0 auto",
+                }}
+              >
                 <div>{day}</div>
                 <div style={{ fontSize: "10px" }}>{weekday}</div>
               </div>

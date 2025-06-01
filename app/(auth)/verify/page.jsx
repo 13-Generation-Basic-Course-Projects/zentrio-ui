@@ -1,7 +1,7 @@
 import React from "react";
 
 import { BackgroundAuthentication } from "@/components/background/Background";
-import { OtpForm } from "../_components/form/Form";
+import { OtpForm } from "../_components/form/OtpForm";
 export default function VerifyOTP() {
   return (
     <>

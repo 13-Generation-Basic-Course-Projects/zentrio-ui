@@ -1,6 +1,7 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-
+import { loginZentrioService } from "./service/auth.service";
+import Credentials from "next-auth/providers/credentials";
 export const {
   handlers: { GET, POST },
   auth,
@@ -11,6 +12,20 @@ export const {
     strategy: "jwt",
   },
   providers: [
+    Credentials({
+      credentials: {
+        email: {},
+        password: {},
+      },
+      authorize: async (credentials) => {
+        const { email, password } = credentials;
+        const res = await loginZentrioService({ email, password });
+        if (res?.status !== "OK") {
+          return null;
+        }
+        return res;
+      },
+    }),
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
@@ -36,12 +51,10 @@ export const {
       }
       return token;
     },
-    async session({ session, token }) {
-      // add tokens to session
-      session.accessToken = token.accessToken;
-      session.refreshToken = token.refreshToken;
-      session.idToken = token.idToken;
-      return session;
+    async session(props) {
+      const { token } = props;
+      console.log(token);
+      return token.token.user;
     },
   },
   strategy: "jwt",

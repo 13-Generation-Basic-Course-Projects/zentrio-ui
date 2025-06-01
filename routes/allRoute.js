@@ -6,5 +6,5 @@ export const dashboardRoute = {
 };
 
 export const boardRoute = {
-  getBoardByDashBoardId: (id) => `${apiConfig.baseUrl}/api/board/${id}`, // get bord in spacific workspace
+  getTaskByBoardId: (id) => `${apiConfig.baseUrl}/api/task/${id}`, // get bord in spacific workspace
 };

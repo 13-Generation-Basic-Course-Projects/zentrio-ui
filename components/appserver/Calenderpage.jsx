@@ -185,24 +185,23 @@ export default function MyCalender({ tasks }) {
       {/* Full 12-col grid */}
       <div className="grid grid-cols-12 gap-4 h-full">
         <div className="col-span-9 max-h-[700px]  pr-2">
-        <div className="h-full overflow-y-auto scrollbar-hidden">
+          <div className="h-full overflow-y-auto scrollbar-hidden">
             <FullCalendar
-            ref={calendarRef}
-            plugins={[
-              resourceTimelinePlugin,
-              dayGridPlugin,
-              interactionPlugin,
-              timeGridPlugin,
-            ]}
-            headerToolbar={false}
-            initialView="dayGridMonth"
-            events={events}
-            eventContent={renderEventContent}
-            datesSet={(arg) => setCurrentTitle(arg.view.title)}
-            height="auto"
-          />
-        </div>
-
+              ref={calendarRef}
+              plugins={[
+                resourceTimelinePlugin,
+                dayGridPlugin,
+                interactionPlugin,
+                timeGridPlugin,
+              ]}
+              headerToolbar={false}
+              initialView="dayGridMonth"
+              events={events}
+              eventContent={renderEventContent}
+              datesSet={(arg) => setCurrentTitle(arg.view.title)}
+              height="auto"
+            />
+          </div>
         </div>
 
         <div className="col-span-3 h-full overflow-y-auto pl-2 flex flex-col gap-5">

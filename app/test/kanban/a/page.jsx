@@ -1,11 +1,11 @@
-import AllDocument from "@/components/documentcomponent/AllDocument";
-import Parent from "@/components/scrollbar/HorizontalBarScroll";
+import { WelcomeDocumentPage } from "@/components/appserver/EmptyDocumentPage";
+import { EmptyKanban } from "@/components/appserver/EmptyKanban";
 import React from "react";
 
 export default function page() {
   return (
     <>
-      <Parent />
+     <EmptyKanban/>
     </>
   );
 }
