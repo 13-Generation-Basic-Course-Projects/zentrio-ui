@@ -1,11 +1,14 @@
 "use server";
 import { signIn, signOut } from "@/auth";
 import {
+  loginZentrioCredentailService,
   loginZentrioService,
   otpZentrioService,
   registerZentrioService,
 } from "../service/auth.service";
 import { useAuthStore } from "../lib/store";
+import { redirect } from "next/navigation";
+
 //google login
 export async function doSocialLogin(formData) {
   const action = formData.get("action");
@@ -16,15 +19,24 @@ export async function doLogout() {
   await signOut({ redirectTo: "/" });
 }
 
-//creadentain zentrio
+//creadentail zentrio
 
 /*
  * login
  */
-export async function zentrioLoginAction(formData) {
-  const { email, password } = formData; // destructure directly
 
-  await loginZentrioService(email, password);
+export async function zentrioLoginCredentailAction(email, password) {
+  try {
+    await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+    });
+  } catch (e) {
+    redirect("/login");
+  }
+
+  redirect("/workspace");
 }
 
 /*
@@ -32,7 +44,8 @@ export async function zentrioLoginAction(formData) {
  */
 export async function zentrioRegisterAction(data) {
   const { username, gender, email, password, profileImage } = data;
-  console.log("🧠 Incoming data to action:", data);
+
+  getEmail = data.email; //defalut
   await registerZentrioService({
     username,
     gender,
@@ -40,14 +53,15 @@ export async function zentrioRegisterAction(data) {
     password,
     profileImage,
   });
+  return { email };
 }
 
 /*
  * otp
  */
-export async function zentrioOtpAction(data) {
-  const { otp, email } = data;
 
-  console.log("🧠 Incoming data to action:", data, email); // now this will show the actual email
-  await otpZentrioService({ email, otp });
+export async function zentrioOtpAction(data) {
+  const { email, otp } = data; // Destructure both email and otp from data
+  //console.log("🧠 Incoming data to action:", { email, otp }); // Log the actual data
+  await otpZentrioService({ email, otp }); // Pass email and otp to the service
 }

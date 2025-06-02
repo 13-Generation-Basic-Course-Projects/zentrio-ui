@@ -14,14 +14,11 @@ import { registerSchema } from "../../../../lib/schemas/registerSchema";
 import {
   zentrioRegister,
   zentrioRegisterAction,
-} from "../../../../action/auth";
+} from "../../../../action/auth.action";
 import { useAuthStore } from "../../../../lib/store";
+import { redirect } from "next/navigation";
 export const SignUpForm = () => {
-  const registeredEmail = useAuthStore((state) => state.registeredEmail);
-  const setRegisteredEmail = useAuthStore((state) => state.setRegisteredEmail);
-  const clearRegisteredEmail = useAuthStore(
-    (state) => state.clearRegisteredEmail
-  );
+  const setEmail = useAuthStore((state) => state.setEmail);
 
   const [isVisible, setIsVisible] = useState({
     password: false,
@@ -35,7 +32,6 @@ export const SignUpForm = () => {
     }));
   };
 
-  // 2️⃣ useForm + resolver
   const {
     register,
     handleSubmit,
@@ -45,11 +41,18 @@ export const SignUpForm = () => {
   });
 
   const onSubmit = async (data) => {
-    await zentrioRegisterAction(data);
-    // Store email in Zustand
-    setRegisteredEmail(data.email);
-    console.log("✅ Form Submitted:", data);
-    console.log("📧 Saved email to Zustand:", data.email);
+    const result = await zentrioRegisterAction(data);
+    console.log("Stored email:", result.email);
+    if (result?.email) {
+      localStorage.setItem("userEmail", result.email);
+      // or use Zustand here
+      setEmail(result.email);
+    }
+    setEmail(result.email);
+    if (success) {
+      redirect;
+    }
+    return { success: true, email: result.email }; // Return to indicate success
   };
 
   return (

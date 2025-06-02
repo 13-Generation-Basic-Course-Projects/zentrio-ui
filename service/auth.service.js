@@ -30,7 +30,7 @@ export const registerZentrioService = async ({
     const data = await res.json();
     console.log("📥 Backend responded with:", data);
     if (res?.status === 201 || res?.success) {
-      redirect("/verify");
+      redirect(`/verify?email=${email}`);
     }
     return data;
   } catch (error) {
@@ -51,14 +51,12 @@ export const loginZentrioService = async (email, password) => {
     console.log(err);
   }
 };
-
 /*
- * otp
+ * login credentails
  */
-export const otpZentrioService = async ({ email, otp }) => {
-  console.log("email", email);
-  const url = authRoute.otpUserRoute();
+export const loginZentrioCredentailService = async ({ email, password }) => {
   try {
+    const url = authRoute.loginUserRoute();
     const res = await fetch(url, {
       method: "POST",
       headers: {
@@ -66,16 +64,80 @@ export const otpZentrioService = async ({ email, otp }) => {
       },
       body: JSON.stringify({
         email,
-        otp: otp,
+        password,
       }),
     });
     const data = await res.json();
     console.log("📥 Backend responded with:", data);
-    if (res?.status === 201 || res?.success) {
+    console.log("BBBBB", data?.payload?.token);
+    if (data?.status === "OK") {
+      // redirect(`/workspace`);
+      console.log("apple kdet");
+      return data;
+    }
+    return data;
+  } catch (error) {
+    console.error(" Failed to create board:", error.message);
+    throw error;
+  }
+};
+
+/*
+ * otp
+ */
+export const otpZentrioService = async ({ email, otp }) => {
+  console.log("email:", email, "otp:", otp);
+  const type = " VERIFY";
+  try {
+    // Get endpoint URL from your route builder
+    const url = `${authRoute.otpUserRoute()}?email=${email}&otp=${otp}&type=${type}`;
+
+    console.log(url);
+
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = await res.json();
+    console.log("📥 Backend responded with:", data);
+    if (res?.status === 200 || res?.success) {
+      redirect(`/login`);
+    }
+    return data;
+  } catch (error) {
+    console.error(" Failed to create board:", error.message);
+    throw error; // Re-throw if you want to handle it higher up
+  }
+};
+/*
+ * resend otp
+ */
+export const resendOtpZentrioService = async ({ email, otp }) => {
+  console.log("email:", email, "otp:", otp);
+  //const url = authRoute.otpUserRoute();
+  const urlResendOTP = authRoute.resendOtpUserRoute();
+  console.log("OTP API URL:", url);
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, otp, type: "VERIFY" }),
+    });
+    const data = await res.json();
+    console.log("Backend response status:", res.status, "data:", data);
+    if (res.status === 201 || data?.success) {
       redirect("/workspace");
+      return { success: true };
+    } else {
+      console.error("OTP verification failed:", data);
+      return { success: false, error: data.message || "Invalid OTP" };
     }
   } catch (err) {
-    // show error message to user
-    console.log(err);
+    console.error("OTP request error:", err);
+    return { success: false, error: "Failed to verify OTP. Please try again." };
   }
 };
