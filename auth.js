@@ -23,12 +23,9 @@ export const {
       authorize: async (credentials) => {
         const { email, password } = credentials;
         const res = await loginZentrioCredentailService({ email, password });
+        const data = await res.json();
         if (res?.success === true && res?.status === "OK") {
-          return {
-            id: email, // or res.payload.userId if available
-            email: email,
-            token: res.payload?.token,
-          };
+          data.payload;
         }
         return res;
       },
