@@ -21,6 +21,12 @@ import CardTCommentCalender from "../card/CardCommentCalender";
 export default function MyCalender({ tasks }) {
   const calendarRef = useRef(null);
   const [currentTitle, setCurrentTitle] = useState("");
+  const [events, setEvents] = useState([]);
+
+  const [showCommentForm, setShowCommentForm] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedTaskId, setSelectedTaskId] = useState("");
+  const [commentText, setCommentText] = useState("");
 
   const colorList = [
     {
@@ -79,7 +85,9 @@ export default function MyCalender({ tasks }) {
       });
   }, [tasks]);
 
-  const [events, setEvents] = useState([]);
+  React.useEffect(() => {
+    setEvents(mappedTasks);
+  }, [mappedTasks]);
 
   const handleTaskClick = (dateStr, taskId) => {
     const task = mappedTasks.find((t) => t.id === taskId);
@@ -87,6 +95,11 @@ export default function MyCalender({ tasks }) {
       setEvents([task]);
       calendarRef.current?.getApi().gotoDate(dateStr);
     }
+  };
+
+  const handleDateClick = (info) => {
+    setSelectedDate(info.dateStr);
+    setShowCommentForm(true);
   };
 
   const renderEventContent = ({ event }) => {
@@ -130,7 +143,7 @@ export default function MyCalender({ tasks }) {
         <div
           className={`${baseStyle} mt-2 h-[30px] text-[0.7rem] flex items-center gap-1 border-green-500`}
         >
-          <span>comment</span>
+          <span>Comment</span>
           <MessageCircleMore className="w-4 h-4" />
         </div>
       );
@@ -152,9 +165,8 @@ export default function MyCalender({ tasks }) {
 
   return (
     <div className="p-4 h-screen flex flex-col overflow-hidden">
-      <BredCrum board="Hikko Design" feature="Calender" header="Calender" />
+      <BredCrum board="Hikko Design" feature="Calendar" header="Calendar" />
 
-      {/* Move header outside the grid */}
       <div className="flex space-x-[500px] items-center mt-4 px-2 mb-6">
         <button
           onClick={() => handleDateNav("today")}
@@ -182,9 +194,8 @@ export default function MyCalender({ tasks }) {
         </div>
       </div>
 
-      {/* Full 12-col grid */}
       <div className="grid grid-cols-12 gap-4 h-full">
-        <div className="col-span-9 max-h-[700px]  pr-2">
+        <div className="col-span-9 max-h-[700px] pr-2">
           <div className="h-full overflow-y-auto scrollbar-hidden">
             <FullCalendar
               ref={calendarRef}
@@ -200,6 +211,7 @@ export default function MyCalender({ tasks }) {
               eventContent={renderEventContent}
               datesSet={(arg) => setCurrentTitle(arg.view.title)}
               height="auto"
+              dateClick={handleDateClick}
             />
           </div>
         </div>
@@ -212,6 +224,86 @@ export default function MyCalender({ tasks }) {
           <CardTCommentCalender tasks={tasks} />
         </div>
       </div>
+
+      {showCommentForm && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-md w-96 space-y-4">
+            <h3 className="text-lg font-semibold">Add Comment</h3>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Select Task
+              </label>
+              <select
+                className="w-full border border-gray-300 rounded px-3 py-2"
+                value={selectedTaskId}
+                onChange={(e) => setSelectedTaskId(e.target.value)}
+              >
+                <option value="">-- Choose Task --</option>
+                {mappedTasks.map((task) => (
+                  <option key={task.id} value={task.id}>
+                    {task.title}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Comment
+              </label>
+              <textarea
+                className="w-full border border-gray-300 rounded px-3 py-2"
+                rows={3}
+                value={commentText}
+                onChange={(e) => setCommentText(e.target.value)}
+              />
+            </div>
+
+            <div className="flex justify-end gap-2">
+              <button
+                className="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400"
+                onClick={() => {
+                  setShowCommentForm(false);
+                  setSelectedTaskId("");
+                  setCommentText("");
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
+                onClick={() => {
+                  if (!selectedTaskId || !commentText) {
+                    alert("Please select a task and write a comment.");
+                    return;
+                  }
+
+                  const task = mappedTasks.find((t) => t.id === selectedTaskId);
+                  const commentEvent = {
+                    id: `comment-${Date.now()}`,
+                    title: "Comment",
+                    start: selectedDate,
+                    end: selectedDate,
+                    extendedProps: {
+                      type: "comment",
+                      content: commentText,
+                      color: task.extendedProps.color,
+                      taskId: task.id,
+                    },
+                  };
+
+                  setEvents((prev) => [...prev, commentEvent]);
+                  setShowCommentForm(false);
+                  setSelectedTaskId("");
+                  setCommentText("");
+                }}
+              >
+                Add Comment
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
