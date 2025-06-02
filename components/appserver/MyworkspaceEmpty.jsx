@@ -18,11 +18,10 @@ export default function MyworkspaceEmpty() {
         </div>
       </div>
 
-      
-        {/* event - no scroll */}
-        <div className="col-span-3 p-2">
-          <CardMember data={"null"}/>
-        </div>
+      {/* event - no scroll */}
+      <div className="col-span-3 p-2">
+        <CardMember data={"null"} />
+      </div>
     </div>
   );
 }

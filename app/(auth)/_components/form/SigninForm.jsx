@@ -10,10 +10,9 @@ import Link from "next/link";
 
 import { AuthInput } from "./input";
 import GoogleLogin from "../LoginForm";
-import signIn from "../LoginForm";
+import { signIn } from "../../../../auth";
 import { loginSchema } from "../../../../lib/schemas/loginSchema";
-
-import { zentrioLoginAction } from "../../../../action/auth";
+import { zentrioLoginCredentailAction } from "../../../../action/auth.action";
 
 export const SigninForm = () => {
   // Only need "confirm" for password visibility in this form, right?
@@ -28,17 +27,19 @@ export const SigninForm = () => {
     resolver: zodResolver(loginSchema),
   });
 
-  // Submit handler: just console log for now, but replace with your login logic
-  const onSubmit = (data) => {
-    signIn("credentials", {
-      redirect: "/verify",
-      email: data.email,
-      password: data.password,
-    });
-  };
+  const onSubmit = async (data) => {
+    const result = await zentrioLoginCredentailAction(
+      data.email,
+      data.password
+    );
 
-  // Checkbox state managed by React Hook Form, no need for separate state
-  // So no handleChange needed here — let RHF handle it
+    console.log("Login result:", result);
+
+    if (result?.ok) {
+      // Success - redirect to workspace
+      router.push("/workspace");
+    }
+  };
 
   return (
     <div className="w-full h-screen flex items-center justify-center">

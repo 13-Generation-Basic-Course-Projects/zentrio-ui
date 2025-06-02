@@ -1,22 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@heroui/react";
 import Link from "next/link";
 import { otpSchema } from "../../../../lib/schemas/otpSchema";
-import { zentrioOtpAction } from "../../../../action/auth";
+import { zentrioOtpAction } from "../../../../action/auth.action";
 import { useAuthStore } from "../../../../lib/store";
 
 // Zod schema for OTP
 
-export const OtpForm = () => {
+export const OtpForm = ({ emailProp }) => {
   const [otpValues, setOtpValues] = useState(Array(6).fill(""));
 
   const registeredEmail = useAuthStore((state) => state.registeredEmail);
-
+  console.log("adsdasdasdasdasd", emailProp);
   const {
     register,
     handleSubmit,
@@ -49,11 +49,8 @@ export const OtpForm = () => {
     }
   };
 
-  const onSubmit = (data) => {
-    console.log("Submitted OTP:", data.otp);
-    zentrioOtpAction({ otp: data.otp, email: registeredEmail });
-
-    // Add your logic here (API call etc)
+  const onSubmit = async (data) => {
+    await zentrioOtpAction({ otp: data.otp, email: emailProp });
   };
 
   return (
@@ -97,7 +94,8 @@ export const OtpForm = () => {
                 Please check your email
               </p>
               <p className="text-body text-primary">
-                We’ve sent a code to helloworld@gmail.com
+                We’ve sent a code to <span> </span>
+                {emailProp}.
               </p>
             </div>
           </div>
@@ -123,7 +121,8 @@ export const OtpForm = () => {
               <p className="text-red-500 text-sm mt-2">{errors.otp.message}</p>
             )}
           </div>
-
+          {/* <Input id="username" className="col-span-3" /> */}
+          <input type="hidden" id="email" name="email" />
           <div className="w-full flex flex-col gap-[10px]">
             <Button
               type="submit"
