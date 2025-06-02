@@ -6,10 +6,9 @@ import MyDatePicker from "../date/Datepicker";
 import BredCrum from "../bredcrum/Bredcrum";
 import { documentData } from "@/data/docu/documentData";
 import CardFolder, { CardFile } from "../card/CardDoc";
-export default  function Privatedocument({ modal }) {
-  
+export default function Privatedocument({ modal }) {
   console.log(documentData);
-  
+
   const data = documentData;
 
   return (
