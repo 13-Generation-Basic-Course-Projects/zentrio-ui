@@ -50,7 +50,7 @@ export default function DashboardSidebar() {
     {
       title: "Board",
       url: `/dashboard/${workspaceId}/${projectId}/board?role=${role}`,
-      icon: board,
+
       activeIcon: (active) => (
         <svg
           width={22}
@@ -71,7 +71,7 @@ export default function DashboardSidebar() {
     {
       title: "Calendar",
       url: `/dashboard/${workspaceId}/${projectId}/calendar?role=${role}`,
-      icon: calender,
+
       activeIcon: (active) => (
         <svg
           width={22}
@@ -160,7 +160,7 @@ export default function DashboardSidebar() {
     {
       title: "Document",
       url: `/dashboard/${workspaceId}/${projectId}/docu?role=${role}`,
-      icon: folder,
+
       activeIcon: (active) => (
         <svg
           width={22}
@@ -196,7 +196,7 @@ export default function DashboardSidebar() {
     {
       title: "Members",
       url: `/dashboard/${workspaceId}/${projectId}/member?role=${role}`,
-      icon: member,
+
       activeIcon: (active) => (
         <svg
           width={22}
@@ -239,7 +239,7 @@ export default function DashboardSidebar() {
     {
       title: "Reports",
       url: `/dashboard/${workspaceId}/${projectId}/report?role=${role}`,
-      icon: report,
+
       activeIcon: (active) => (
         <svg
           width={22}
@@ -336,7 +336,7 @@ export default function DashboardSidebar() {
             >
               <path
                 fillRule="evenodd"
-                clipRule="evenodd"
+                clipule="evenodd"
                 d="M5.96522 5.52079C5.12183 5.52079 4.31298 5.85583 3.71662 6.45219C3.12025 7.04856 2.78522 7.8574 2.78522 8.70079V19.2992C2.78522 20.1426 3.12025 20.9514 3.71662 21.5478C4.31298 22.1442 5.12183 22.4792 5.96522 22.4792H7.71842V5.52079H5.96522ZM5.96522 3.40039C4.55978 3.40039 3.21191 3.9587 2.21812 4.95249C1.22432 5.94628 0.666016 7.29416 0.666016 8.69959V19.2992C0.665858 19.9952 0.80281 20.6844 1.06905 21.3275C1.33529 21.9705 1.7256 22.5549 2.21769 23.0471C2.70978 23.5393 3.29402 23.9297 3.93702 24.1961C4.58003 24.4625 5.26921 24.5996 5.96522 24.5996H19.3668C20.0629 24.5996 20.7522 24.4624 21.3953 24.196C22.0384 23.9295 22.6227 23.539 23.1148 23.0466C23.6069 22.5543 23.9972 21.9698 24.2633 21.3266C24.5295 20.6834 24.6663 19.9941 24.666 19.298V8.69959C24.666 7.29416 24.1077 5.94628 23.1139 4.95249C22.1201 3.9587 20.7723 3.40039 19.3668 3.40039H5.96522ZM9.83882 5.52079V22.4792H19.3668C20.2102 22.4792 21.019 22.1442 21.6154 21.5478C22.2118 20.9514 22.5468 20.1426 22.5468 19.2992V8.69959C22.5468 7.8562 22.2118 7.04736 21.6154 6.45099C21.019 5.85463 20.2102 5.51959 19.3668 5.51959H9.83882V5.52079Z"
                 fill="#59BAD5"
               />

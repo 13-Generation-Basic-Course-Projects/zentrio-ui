@@ -1,4 +1,4 @@
-import { doSocialLogin } from ".././../../auth";
+import { doSocialLogin } from "../../../action/auth.action";
 import Google from "../../../assets/googleIcon.png";
 import Image from "next/image";
 import "@/styles/login.css";

@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import BredCrum from "../bredcrum/Bredcrum";
+import BredCrum from "../bredcrum/MyBredcrum";
 import HorizontalChart from "../chart/horizontalChart";
 // import VerticalChart from "../chart/VerticalChart";
 import dynamic from "next/dynamic";
@@ -22,11 +22,8 @@ export default function Reportpage({ modal }) {
 
       {/* Content in Report */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mt-5 overflow-y-auto h-screen md:h-fit scrollbar-hidden">
-        
-
         <div className="md:col-span-8 md:h-screen flex flex-col  ">
           <div className=" overflow-y-auto scrollbar-hidden pb-40 p-2">
-            
             {/* Show number have in 4 Stage */}
             <div className="grid grid-cols-4 gap-2">
               {[

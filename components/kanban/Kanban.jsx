@@ -5,7 +5,7 @@ import { teamLeader } from "@/data/board/teamleader";
 import { initialColumns } from "@/data/boardData";
 import { CardCheckList } from "../card/CardChecklist";
 import UserAvater from "../useravatar/UserAvatar";
-import BredCrum from "../bredcrum/bredcrum";
+import BredCrum from "../bredcrum/MyBredcrum";
 import { StackedUser } from "../useravatar/StackUser";
 import ModalCreateChecklist from "../modal/board/ModalCreateChecklist";
 import ModalDetailChecklist from "../modal/board/ModalDetailChecklist";
@@ -16,7 +16,6 @@ export default function KanbanBoard({ modal }) {
   const [draggedItem, setDraggedItem] = useState(null);
   const [dragTarget, setDragTarget] = useState(null);
 
-  
   // Find card or subtask by ID
   const findItem = (itemId) => {
     for (const column of columns) {
@@ -276,9 +275,7 @@ export default function KanbanBoard({ modal }) {
     setDragTarget(null);
   };
 
-
   //
-
 
   return (
     <div className="w-full h-screen flex flex-col">
@@ -361,12 +358,10 @@ export default function KanbanBoard({ modal }) {
                       >
                         <div className="flex items-center justify-between px-3">
                           <div className="flex items-center gap-2">
-                          
                             <div>
                               {/* tam pet ah ng title key te */}
                               <div className="text-sm text-gray-600 sm:text-body-sm truncate max-w-[150px]">
                                 {card.description}
-
                               </div>
                             </div>
                           </div>
@@ -481,34 +476,33 @@ export default function KanbanBoard({ modal }) {
                           <div className="grid grid-cols-12">
                             <div className="col-span-8 flex items-center">
                               <ModalCreateChecklist
-                              onSubmit={(subtaskData) =>
-                                addSubtask(card.id, subtaskData)
-                              }
-                              buttonText="New checklist"
-                              modalTitle="Create Checklist"
-                            />
+                                onSubmit={(subtaskData) =>
+                                  addSubtask(card.id, subtaskData)
+                                }
+                                buttonText="New checklist"
+                                modalTitle="Create Checklist"
+                              />
                             </div>
                             <div className="col-span-4 p-2">
-                              <CardDateChecklist date={"April 25"}/>
+                              <CardDateChecklist date={"April 25"} />
                             </div>
                           </div>
                         </div>
                       )}
-                        {/* collape */}
-                         <div className="flex items-center justify-center text-primary">
-                             <button
-                              onClick={() => toggleTaskExpansion(card.id)}
-                              className="p-1 hover:bg-gray-100 rounded"
-                            >
-                              {card.expanded ? (
-                                <ChevronUp size={26} />                                
-                              ) : (
-                                <ChevronDown size={26} />
-                              )}
-                            </button>
-                         </div>
+                      {/* collape */}
+                      <div className="flex items-center justify-center text-primary">
+                        <button
+                          onClick={() => toggleTaskExpansion(card.id)}
+                          className="p-1 hover:bg-gray-100 rounded"
+                        >
+                          {card.expanded ? (
+                            <ChevronUp size={26} />
+                          ) : (
+                            <ChevronDown size={26} />
+                          )}
+                        </button>
+                      </div>
                     </div>
-  
                   </div>
                 ))}
 
