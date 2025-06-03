@@ -23,11 +23,20 @@ export const {
       authorize: async (credentials) => {
         const { email, password } = credentials;
         const res = await loginZentrioCredentailService({ email, password });
-        const data = await res.json();
-        if (res?.success === true && res?.status === "OK") {
-          data.payload;
+        if (res?.success == false) {
+          return null;
         }
         return res;
+        // try {
+        //   const res = await loginZentrioCredentailService({ email, password });
+        //   if (!res?.success) {
+        //     return null;
+        //   }
+        //   return res;
+        // } catch (err) {
+        //   console.error("Login error:", err);
+        //   return null;
+        // }
       },
     }),
     GoogleProvider({
@@ -45,19 +54,18 @@ export const {
     }),
   ],
   callbacks: {
-    async jwt({ token, account }) {
-      // only on first sign-in
-      // console.log(account, token);
-      if (account) {
-        token.accessToken = account.access_token;
-        token.refreshToken = account.refresh_token;
-        token.idToken = account.id_token;
-      }
+    async jwt(token) {
+      // if (account) {
+      //   token.accessToken = account.access_token;
+      //   token.refreshToken = account.refresh_token;
+      //   token.idToken = account.id_token;
+      // }
+
       return token;
     },
     async session(props) {
       const { token } = props;
-      console.log(token);
+      console.log("this is  the token", token);
       return token;
     },
   },

@@ -62,22 +62,15 @@ export const loginZentrioCredentailService = async ({ email, password }) => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        email,
-        password,
-      }),
+      body: JSON.stringify({ email, password }),
     });
     const data = await res.json();
     console.log("📥 Backend responded with:", data);
     console.log("BBBBB", data?.payload?.token);
-    if (data?.status === "OK") {
-      redirect(`/workspace`);
-      console.log("apple kdet");
-      return data;
-    }
-    return data;
+
+    return data; // just return the data, don’t redirect here
   } catch (error) {
-    console.error(" Failed to create board:", error.message);
+    console.error("Login service error:", error.message);
     throw error;
   }
 };
