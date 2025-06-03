@@ -27,7 +27,7 @@ export async function doLogout() {
 
 export async function zentrioLoginCredentailAction(email, password) {
   try {
-    await signIn("credentials", {
+    const result = await signIn("credentials", {
       email,
       password,
       redirect: false,
@@ -62,6 +62,5 @@ export async function zentrioRegisterAction(data) {
 
 export async function zentrioOtpAction(data) {
   const { email, otp } = data; // Destructure both email and otp from data
-  //console.log("🧠 Incoming data to action:", { email, otp }); // Log the actual data
   await otpZentrioService({ email, otp }); // Pass email and otp to the service
 }

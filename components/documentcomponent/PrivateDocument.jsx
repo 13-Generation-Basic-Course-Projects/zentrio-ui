@@ -3,7 +3,7 @@ import React from "react";
 import Image from "next/image";
 import personal from "../../assets/personal.png";
 import MyDatePicker from "../date/Datepicker";
-import BredCrum from "../bredcrum/Bredcrum";
+import BredCrum from "../bredcrum/MyBredcrum";
 import { documentData } from "@/data/docu/documentData";
 import CardFolder, { CardFile } from "../card/CardDoc";
 export default function Privatedocument({ modal }) {

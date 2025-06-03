@@ -35,7 +35,7 @@ export const SigninForm = () => {
 
     console.log("Login result:", result);
 
-    if (result?.ok) {
+    if (result?.success) {
       // Success - redirect to workspace
       router.push("/workspace");
     }
