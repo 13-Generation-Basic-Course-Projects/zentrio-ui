@@ -9,6 +9,7 @@ import { workSpaceRouteGroup } from "../routes/workspaceRoute";
 //import auth
 
 import { auth } from "../auth";
+import { testRouteGroup } from "@/routes/testRoute";
 
 export const getWorkspace = async () => {
   const url = `${dashboardRoute.getWorkspace}`;
@@ -46,14 +47,28 @@ export const testSusupne = async () => {
 };
 
 /*
- * retrive token
- */
-
-export const myToken = async () => {
-  const token = await auth();
-  return token;
-};
-
-/*
  * test
  */
+export const testFetchService = async ({ zentrioToken }) => {
+  try {
+    const url = testRouteGroup.getTaskAllUser();
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${zentrioToken}`,
+      },
+      //  body: JSON.stringify({ email, password }),
+    });
+    const data = await res.json();
+    console.log("📥 Backend responded with:", data);
+
+    return data; // just return the data, don’t redirect here
+  } catch (error) {
+    console.error("Login service error:", error.message);
+    throw error;
+  }
+
+  // const url = testRouteGroup.getTaskAllUser();
+  // console.log("this is url", url);
+};
