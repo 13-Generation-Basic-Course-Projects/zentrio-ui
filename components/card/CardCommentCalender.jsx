@@ -7,10 +7,10 @@ import { SquarePen, AlarmClock } from "lucide-react";
 // mock data user
 const users = [
   {
-    user_id: "a1b2c3d4-e5f6-7890-abcd-1234567890ab",
+    user_id: "u-1",
     username: "senghun123",
     email: "hoeumsenghun88@example.com",
-    password: "hashed_pw_1", // obviously hashed irl
+    password: "hashed_pw_1", // hashed
     profile_image: "https://i.pravatar.cc/150?u=user1",
     created_at: "2025-05-10T09:00:00Z",
     updated_at: "2025-05-12T14:30:00Z",
@@ -18,7 +18,7 @@ const users = [
     is_reset: false,
   },
   {
-    user_id: "b2a5a1cb-4de2-4b8e-b84e-613e5bd96dbe",
+    user_id: "u-2",
     username: "visajetlaor",
     email: "visa22@example.com",
     password: "hashed_pw_2",
@@ -29,7 +29,7 @@ const users = [
     is_reset: false,
   },
   {
-    user_id: "c3efbe9d-781b-4c2b-85b0-0f9a1e4b9e03",
+    user_id: "u-3",
     username: "kdeypesith",
     email: "kdeypesith420@example.com",
     password: "hashed_pw_3",
@@ -65,27 +65,27 @@ const formatRelativeTime = (dateString) => {
 export default function CardTCommentCalender() {
   const feedback = [
     {
-      feedback_id: "feed1111-aaaa-bbbb-cccc-ddddeeeeffff",
+      feedback_id: "f-1",
       created_at: "2025-05-01T10:30:00Z",
       comment:
-        "Great job on the initial design. Just tweak the navbar spacing.",
-      task_id: "t0011223-aabb-ccdd-eeff-112233445566",
-      feedback_by: "a1b2c3d4-e5f6-7890-abcd-1234567890ab", // matches user
+        "Great job on the inittial design. Just tweak the navbar spacing.",
+      task_id: "t-1",
+      feedback_by: "u-1",
     },
     {
-      feedback_id: "feed2222-bbbb-cccc-dddd-eeeeffff1111",
+      feedback_id: "f-2",
       created_at: "2025-05-03T15:45:00Z",
       comment:
         "API response times are fast, but consider better error handling.",
-      task_id: "t0099887-ffee-ddcc-bbaa-667788990011",
-      feedback_by: "b2a5a1cb-4de2-4b8e-b84e-613e5bd96dbe", // matches user
+      task_id: "t-2",
+      feedback_by: "u-2",
     },
     {
-      feedback_id: "feed3333-cccc-dddd-eeee-ffff00001111",
+      feedback_id: "f-3",
       created_at: "2025-05-05T12:15:00Z",
       comment: "Testing coverage is solid. Add edge cases for user roles.",
-      task_id: "t0077665-a1b2-c3d4-e5f6-778899001122",
-      feedback_by: "c3efbe9d-781b-4c2b-85b0-0f9a1e4b9e03", // matches user
+      task_id: "t-3",
+      feedback_by: "u-3",
     },
   ];
 
