@@ -24,7 +24,9 @@ export default async function SystemLayout({ children }) {
     // <LoadingBarContainer>
     <SidebarProvider className="bg-bgColor">
       <SidebarRenderer />
-      <div className={" font-poppin h-screen overflow-hidden  bg-white  w-full"}>
+      <div
+        className={" font-poppin h-screen overflow-hidden  bg-white  w-full"}
+      >
         {/* <SidebarTrigger className="fixed top-0  z-[30]" /> */}
         <div className="w-full  ">
           <NavbarWrapper user={session?.user} />

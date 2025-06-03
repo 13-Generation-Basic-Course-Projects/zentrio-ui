@@ -6,7 +6,7 @@ import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
 import interactionPlugin from "@fullcalendar/interaction";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import "../../styles/ganttchart.css";
-import BredCrum from "../bredcrum/Bredcrum";
+import BredCrum from "../bredcrum/MyBredcrum";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export default function GanttChart({ modal }) {
