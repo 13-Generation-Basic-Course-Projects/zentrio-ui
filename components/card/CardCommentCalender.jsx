@@ -2,62 +2,95 @@ import { Card, CardHeader, CardBody } from "@heroui/react";
 import Image from "next/image";
 import commentlogo from "../../assets/Comment.png";
 import profile from "../../public/image/minh.png";
-import { SquarePen, AlarmClock } from 'lucide-react';
+import { SquarePen, AlarmClock } from "lucide-react";
 
 // mock data user
-const users = {
-  "a1b2c3d4-e5f6-7890-abcd-1234567890ab": { name: "Fong", avatar: "https://i.pinimg.com/736x/e6/a9/8a/e6a98a257565d829009a1c1735ee1589.jpg" },
-  "b2a5a1cb-4de2-4b8e-b84e-613e5bd96dbe": { name: "Visa", avatar: "https://i.pinimg.com/736x/b2/5c/9e/b25c9ef93482fe428f1df4dbe4ae60a1.jpg" },
-  "c3efbe9d-781b-4c2b-85b0-0f9a1e4b9e03": { name: "Skan", avatar: "https://i.pinimg.com/736x/ed/f0/2d/edf02dd0f05b7c249f35d3680f306497.jpg" },
-}
+const users = [
+  {
+    user_id: "a1b2c3d4-e5f6-7890-abcd-1234567890ab",
+    username: "senghun123",
+    email: "hoeumsenghun88@example.com",
+    password: "hashed_pw_1", // obviously hashed irl
+    profile_image: "https://i.pravatar.cc/150?u=user1",
+    created_at: "2025-05-10T09:00:00Z",
+    updated_at: "2025-05-12T14:30:00Z",
+    is_verified: false,
+    is_reset: false,
+  },
+  {
+    user_id: "b2a5a1cb-4de2-4b8e-b84e-613e5bd96dbe",
+    username: "visajetlaor",
+    email: "visa22@example.com",
+    password: "hashed_pw_2",
+    profile_image: "https://i.pravatar.cc/150?u=user2",
+    created_at: "2025-05-09T11:15:00Z",
+    updated_at: "2025-05-14T08:45:00Z",
+    is_verified: false,
+    is_reset: false,
+  },
+  {
+    user_id: "c3efbe9d-781b-4c2b-85b0-0f9a1e4b9e03",
+    username: "kdeypesith",
+    email: "kdeypesith420@example.com",
+    password: "hashed_pw_3",
+    profile_image: "https://i.pravatar.cc/150?u=user3",
+    created_at: "2025-05-08T16:20:00Z",
+    updated_at: "2025-05-13T12:10:00Z",
+    is_verified: false,
+    is_reset: false,
+  },
+];
 
 // function fomart date
 const formatRelativeTime = (dateString) => {
-  const commentDate = new Date(dateString)
-  const now = new Date()
-  const diffInMs = now.getTime() - commentDate.getTime()
-  const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60))
-  const diffInDays = Math.floor(diffInHours / 24)
+  const commentDate = new Date(dateString);
+  const now = new Date();
+  const diffInMs = now.getTime() - commentDate.getTime();
+  const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
+  const diffInDays = Math.floor(diffInHours / 24);
 
   if (diffInHours < 24) {
-    return `${diffInHours} hours ago`
+    return `${diffInHours} hours ago`;
   } else if (diffInDays === 1) {
-    return "1 day ago"
+    return "1 day ago";
   } else {
     return commentDate.toLocaleDateString("en-GB", {
       day: "2-digit",
       month: "short",
       year: "numeric",
-    })
+    });
   }
-}
+};
 
 export default function CardTCommentCalender() {
-  const comments = [
+  const feedback = [
     {
-      comment_id: "c1d2e3f4-5678-9abc-def0-1234567890ab",
-      content: "This task needs some updates, please review.",
-      comment_date: "2025-05-10 14:23",
-      checklist_id: "chk001-a1b2-c3d4-e5f6-123456789abc",
-      commented_by: "a1b2c3d4-e5f6-7890-abcd-1234567890ab",
+      feedback_id: "feed1111-aaaa-bbbb-cccc-ddddeeeeffff",
+      created_at: "2025-05-01T10:30:00Z",
+      comment:
+        "Great job on the initial design. Just tweak the navbar spacing.",
+      task_id: "t0011223-aabb-ccdd-eeff-112233445566",
+      feedback_by: "a1b2c3d4-e5f6-7890-abcd-1234567890ab", // matches user
     },
     {
-      comment_id: "d2e3f4g5-6789-abcd-ef01-2345678901bc",
-      content: "Checked and approved the checklist items.",
-      comment_date: "2025-05-11 09:45",
-      checklist_id: "chk002-b2c3-d4e5-f6a7-23456789bcde",
-      commented_by: "b2a5a1cb-4de2-4b8e-b84e-613e5bd96dbe",
+      feedback_id: "feed2222-bbbb-cccc-dddd-eeeeffff1111",
+      created_at: "2025-05-03T15:45:00Z",
+      comment:
+        "API response times are fast, but consider better error handling.",
+      task_id: "t0099887-ffee-ddcc-bbaa-667788990011",
+      feedback_by: "b2a5a1cb-4de2-4b8e-b84e-613e5bd96dbe", // matches user
     },
     {
-      comment_id: "e3f4g5h6-789a-bcde-f012-3456789012cd",
-      content: "Let's add a few more checkpoints here.",
-      comment_date: "2025-05-12 16:30",
-      checklist_id: "chk003-c3d4-e5f6-a7b8-3456789cdef0",
-      commented_by: "c3efbe9d-781b-4c2b-85b0-0f9a1e4b9e03",
+      feedback_id: "feed3333-cccc-dddd-eeee-ffff00001111",
+      created_at: "2025-05-05T12:15:00Z",
+      comment: "Testing coverage is solid. Add edge cases for user roles.",
+      task_id: "t0077665-a1b2-c3d4-e5f6-778899001122",
+      feedback_by: "c3efbe9d-781b-4c2b-85b0-0f9a1e4b9e03", // matches user
     },
-  ]
+  ];
+
   return (
-    <Card className="py-4 h-[500px] flex flex-col shadow-sm">
+    <Card className="py-4 h-[500px] flex flex-col">
       {/* Header */}
       <CardHeader className="pb-0 pt-2 px-6 flex-col items-start">
         <div className="flex items-center gap-2">
@@ -71,19 +104,19 @@ export default function CardTCommentCalender() {
       </CardHeader>
 
       {/* Body: Scrollable comments */}
-      <CardBody className="py-3 px-4 space-y-3 overflow-y-auto flex-1 scrollbar-hidden">
-        {comments.map((comment) => {
-          const user = users[comment.commented_by];
+      <CardBody className="py-3 px-4 space-y-3 overflow-y-auto flex-1">
+        {feedback.map((fb) => {
+          const user = users.find((u) => u.user_id === fb.feedback_by);
           return (
             <div
-              key={comment.comment_id}
+              key={fb.feedback_id}
               className="flex items-start gap-3 p-5 rounded-large bg-slate-100 transition-colors"
             >
               {/* Avatar */}
               <Image
-                src={profile}
+                src={user?.profile_image || profile}
                 className="w-7 h-7 object-cover rounded-full"
-                alt={user?.name}
+                alt={user?.username || "User"}
                 width={28}
                 height={28}
               />
@@ -92,21 +125,21 @@ export default function CardTCommentCalender() {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between mb-1">
                   <h3 className="font-semibold text-sm text-gray-900">
-                    {user?.name || "Unknown User"}
+                    {user?.username || "Unknown User"}
                   </h3>
                   <button className="text-green-500 hover:text-green-600 transition-colors">
                     <SquarePen size={15} />
                   </button>
                 </div>
 
-                <p className="text-body-sm text-gray-600 mb-2 leading-relaxed">
-                  {comment.content}
+                <p className="text-sm text-gray-600 mb-2 leading-relaxed">
+                  {fb.comment}
                 </p>
 
-                <div className="flex items-center text-body-sm justify-end gap-1">
+                <div className="flex items-center justify-end gap-1">
                   <AlarmClock className="text-green-500 w-5 h-5" />
-                  <span className=" text-green-500 font-medium">
-                    {formatRelativeTime(comment.comment_date)}
+                  <span className="text-xs text-green-500 font-medium">
+                    {formatRelativeTime(fb.created_at)}
                   </span>
                 </div>
               </div>
@@ -115,6 +148,5 @@ export default function CardTCommentCalender() {
         })}
       </CardBody>
     </Card>
-
   );
 }
