@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Button, Checkbox, Form } from "@heroui/react";
@@ -15,6 +16,8 @@ import { loginSchema } from "../../../../lib/schemas/loginSchema";
 import { zentrioLoginCredentailAction } from "../../../../action/auth.action";
 
 export const SigninForm = () => {
+  const router = useRouter();
+
   // Only need "confirm" for password visibility in this form, right?
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
@@ -28,15 +31,8 @@ export const SigninForm = () => {
   });
 
   const onSubmit = async (data) => {
-    const result = await zentrioLoginCredentailAction(
-      data.email,
-      data.password
-    );
-
-    console.log("Login result:", result);
-
+    const result = await zentrioLoginCredentailAction(data);
     if (result?.success) {
-      // Success - redirect to workspace
       router.push("/workspace");
     }
   };
