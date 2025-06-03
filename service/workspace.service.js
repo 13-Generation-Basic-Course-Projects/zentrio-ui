@@ -3,9 +3,9 @@
 import { workspaceRoute } from "@/routes/workspaceRoute";
 
 /*
- *for create workspace -> createWorkspace: `${apiConfig.baseUrl}/api/v1/workspaces`,
+ *for service create workspace  -> createWorkspace: `${apiConfig.baseUrl}/api/v1/workspaces`,
  */
-export const createWorkspace = async (title, description, yourToken) => {
+export const createWorkspaceService = async (title, description, yourToken) => {
   try {
     const url = workspaceRoute.createWorkspace;
     const res = await fetch(url, {
@@ -36,9 +36,9 @@ export const createWorkspace = async (title, description, yourToken) => {
 };
 
 /*
- *for Get all workspaces -> getAllWorkspaces: `${apiConfig.baseUrl}/api/v1/workspaces`,
+ *for service Get all workspaces -> getAllWorkspaces: `${apiConfig.baseUrl}/api/v1/workspaces`,
  */
-export const getAllWorkspaces = async (yourToken) => {
+export const getAllWorkspacesService = async (yourToken) => {
   try {
     const url = workspaceRoute.getAllWorkspaces();
 
@@ -64,9 +64,9 @@ export const getAllWorkspaces = async (yourToken) => {
 };
 
 /*
- *for  Get workspace by id -> getWorkspaceById: (id) => `${apiConfig.baseUrl}/api/v1/workspaces/${id}`,
+ *for service Get workspace by id -> getWorkspaceById: (id) => `${apiConfig.baseUrl}/api/v1/workspaces/${id}`,
  */
-export const getWorkspaceById = async (id, yourToken) => {
+export const getWorkspaceByIdService = async (id, yourToken) => {
   try {
     const url = workspaceRoute.getWorkspaceById(id);
 
@@ -92,9 +92,9 @@ export const getWorkspaceById = async (id, yourToken) => {
 };
 
 /*
- *for  Delete workspace by id -> deleteWorkspaceById: (id) => `${apiConfig.baseUrl}/api/v1/workspaces/${id}`,
+ *for service Delete workspace by id -> deleteWorkspaceById: (id) => `${apiConfig.baseUrl}/api/v1/workspaces/${id}`,
  */
-export const deleteWorkspaceById = async (id, yourToken) => {
+export const deleteWorkspaceByIdService = async (id, yourToken) => {
   try {
     const url = workspaceRoute.deleteWorkspaceById(id);
 
@@ -121,9 +121,9 @@ export const deleteWorkspaceById = async (id, yourToken) => {
 };
 
 /*
- * for Update workspace by id -> updateWorkspaceById: (id) => `${apiConfig.baseUrl}/api/v1/workspaces/${id}`,
+ * for service Update workspace by id -> updateWorkspaceById: (id) => `${apiConfig.baseUrl}/api/v1/workspaces/${id}`,
  */
-export const updateWorkspaceById = async (
+export const updateWorkspaceByIdService = async (
   id,
   title,
   description,
@@ -135,6 +135,7 @@ export const updateWorkspaceById = async (
     const res = await fetch(url, {
       method: "PUT",
       headers: {
+        Accept: "*/*",
         "Content-Type": "application/json",
         Authorization: `Bearer ${yourToken}`,
       },
@@ -157,9 +158,9 @@ export const updateWorkspaceById = async (
 };
 
 /*
- *  for Get all workspaces by user -> getWorkspacesByUser: `${apiConfig.baseUrl}/api/v1/workspaces/users`,
+ *  for service Get all workspaces by user -> getWorkspacesByUser: `${apiConfig.baseUrl}/api/v1/workspaces/users`,
  */
-export const getWorkspacesByUser = async (users, yourToken) => {
+export const getWorkspacesByUserService = async (users, yourToken) => {
   try {
     const url = workspaceRoute.getWorkspacesByUser;
 
@@ -186,9 +187,9 @@ export const getWorkspacesByUser = async (users, yourToken) => {
 };
 
 /*
- * for Get workspaces by workspace id for user -> getWorkspacesByUser: `${apiConfig.baseUrl}/api/v1/workspaces/users`,
+ * for service Get workspaces by workspace id for user -> getWorkspacesByUser: `${apiConfig.baseUrl}/api/v1/workspaces/users`,
  */
-export const getWorkspacesByUserId = async (userId, yourToken) => {
+export const getWorkspacesByUserIdService = async (userId, yourToken) => {
   try {
     const url = workspaceRoute.getWorkspacesByUserId(userId);
 
@@ -214,11 +215,11 @@ export const getWorkspacesByUserId = async (userId, yourToken) => {
 };
 
 /*
- * for Get workspaces by title -> getWorkspacesByTitle: (title) =>
+ * for serivce Get workspaces by title -> getWorkspacesByTitle: (title) =>
  *  `${apiConfig.baseUrl}/api/v1/workspaces/title/${title}`,
  */
 
-export const getWorkspacesByTitle = async (title, yourToken) => {
+export const getWorkspacesByTitleService = async (title, yourToken) => {
   try {
     const url = workspaceRoute.getWorkspacesByTitle(title);
 
