@@ -1,61 +1,64 @@
-"use client"
+"use client";
 
-import BredCrum from "../bredcrum/Bredcrum";
+import BredCrum from "../bredcrum/MyBredcrum";
 import MyDatePicker from "../date/DatePicker";
 import CardFolder, { CardFile } from "../card/CardDoc";
 import ModalCreateDocu from "../modal/docu/ModalCreateDocu";
 import { documentData } from "@/data/docu/documentData";
 import { Input } from "@heroui/input";
-import { Autocomplete, AutocompleteItem, Select, SelectItem } from "@heroui/react";
+import {
+  Autocomplete,
+  AutocompleteItem,
+  Select,
+  SelectItem,
+} from "@heroui/react";
 import { useState } from "react";
 
 export default function AllDocument() {
   const data = documentData;
   console.log("Received data in all:", data);
 
-  
-const [sortOrder, setSortOrder] = useState("asc");
-const [searchTerm, setSearchTerm] = useState("");
-const sortOptions = [
-  { key: "asc", label: "A-Z" },
-  { key: "desc", label: "Z-A" },
-];
-const myFilter = (textValue, inputValue) => {
-  if (inputValue.length === 0) {
-    return true;
-  }
-
-  textValue = textValue.normalize("NFC").toLowerCase();
-  inputValue = inputValue.normalize("NFC").toLowerCase();
-
-  return textValue.startsWith(inputValue);
-};
-
-// Sort and filter documentData
-const filteredData = [...documentData]
-  .filter((item) => {
-    // Filter by title or other fields if you want
-    return myFilter(item.title, searchTerm);
-  })
-  .sort((a, b) => {
-    if (sortOrder === "asc") {
-      return a.title.localeCompare(b.title);
-    } else {
-      return b.title.localeCompare(a.title);
+  const [sortOrder, setSortOrder] = useState("asc");
+  const [searchTerm, setSearchTerm] = useState("");
+  const sortOptions = [
+    { key: "asc", label: "A-Z" },
+    { key: "desc", label: "Z-A" },
+  ];
+  const myFilter = (textValue, inputValue) => {
+    if (inputValue.length === 0) {
+      return true;
     }
-  });
+
+    textValue = textValue.normalize("NFC").toLowerCase();
+    inputValue = inputValue.normalize("NFC").toLowerCase();
+
+    return textValue.startsWith(inputValue);
+  };
+
+  // Sort and filter documentData
+  const filteredData = [...documentData]
+    .filter((item) => {
+      // Filter by title or other fields if you want
+      return myFilter(item.title, searchTerm);
+    })
+    .sort((a, b) => {
+      if (sortOrder === "asc") {
+        return a.title.localeCompare(b.title);
+      } else {
+        return b.title.localeCompare(a.title);
+      }
+    });
 
   return (
     <div className="h-full flex flex-col">
       <div className="grid grid-cols-1 gap-3">
         <div className="p-0">
-         <BredCrum
-        board={"Hikko Design"}
-        feature={"Document"}
-        header={"Document"}
-         modal={[<ModalCreateDocu />]}
-         />
-
+          <BredCrum
+            board={"Hikko Design"}
+            feature={"Document"}
+            header={"Document"}
+            modal={[<ModalCreateDocu />]}
+          />
         </div>
 
         <div className="flex items-center justify-between pb-5">
@@ -165,8 +168,6 @@ const filteredData = [...documentData]
     </div>
   );
 }
-
-
 
 // for icon search
 export const SearchIcon = (props) => {

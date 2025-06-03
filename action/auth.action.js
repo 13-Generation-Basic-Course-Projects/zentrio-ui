@@ -24,19 +24,28 @@ export async function doLogout() {
 /*
  * login
  */
-
-export async function zentrioLoginCredentailAction(email, password) {
+export async function zentrioLoginCredentailAction(data) {
   try {
-    await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-    });
-  } catch (e) {
-    redirect("/login");
+    const { email, password } = data;
+    const res = await loginZentrioCredentailService({ email, password });
+    console.log("7777777", res);
+    if (res?.success) {
+      try {
+        const { email, password } = data;
+        await signIn("credentials", {
+          email,
+          password,
+          redirect: false,
+        });
+      } catch (e) {
+        console.log("err at login creadentail", e);
+      }
+      return res;
+    }
+  } catch (error) {
+    console.log("Login error:", error);
+    return { ok: false, error: "Server error" };
   }
-
-  redirect("/workspace");
 }
 
 /*
@@ -45,7 +54,6 @@ export async function zentrioLoginCredentailAction(email, password) {
 export async function zentrioRegisterAction(data) {
   const { username, gender, email, password, profileImage } = data;
 
-  getEmail = data.email; //defalut
   await registerZentrioService({
     username,
     gender,
@@ -62,6 +70,5 @@ export async function zentrioRegisterAction(data) {
 
 export async function zentrioOtpAction(data) {
   const { email, otp } = data; // Destructure both email and otp from data
-  //console.log("🧠 Incoming data to action:", { email, otp }); // Log the actual data
   await otpZentrioService({ email, otp }); // Pass email and otp to the service
 }

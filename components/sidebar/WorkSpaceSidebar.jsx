@@ -14,7 +14,6 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
-import board from "../../assets/boardSideBar.png";
 import { LeaveIcon } from "../icon/everyicon";
 import { icon } from "../icon/allicon";
 import SaveWorkspace from "../button/SaveWorkspace";
@@ -27,49 +26,49 @@ const randomColor = () =>
     .toString(16)
     .padStart(6, "0");
 
-// const myworkspaceItem = [
-//   {
-//     title: "My Empty workspace",
-//     url: "/workspace",
-//     color: "bg-pink-300",
-//     activeIcon: board,
-//     myworkspace: true,
-//   },
-//   {
-//     title: "My workspace 2",
-//     url: "/workspace/2",
-//     color: "bg-orange-300",
-//     activeIcon: board,
-//     myworkspace: true,
-//   },
-//   {
-//     title: "My workspace 3",
-//     url: "/workspace/3",
-//     color: "bg-green-300",
-//     activeIcon: board,
-//     myworkspace: false,
-//   },
-// ];
+const myworkspaceItem = [
+  {
+    title: "My Empty workspace",
+    url: "/workspace",
+    color: "bg-pink-300",
+
+    myworkspace: true,
+  },
+  {
+    title: "My workspace 2",
+    url: "/workspace/2",
+    color: "bg-orange-300",
+
+    myworkspace: true,
+  },
+  {
+    title: "My workspace 3",
+    url: "/workspace/3",
+    color: "bg-green-300",
+
+    myworkspace: false,
+  },
+];
 const otherworkspaceItem = [
   {
     title: "OtherWorkspace 1",
     url: "/workspace/otherworkspace/1",
     color: "bg-pink-300",
-    activeIcon: board,
+
     myworkspace: true,
   },
   {
     title: "OtherWorkspace 2",
     url: "/workspace/otherworkspace/2",
     color: "bg-blue-300",
-    activeIcon: board,
+
     myworkspace: true,
   },
   {
     title: "OtherWorkspace 3",
     url: "/workspace/otherworkspace/3",
     color: "bg-pink-300",
-    activeIcon: board,
+
     myworkspace: false,
   },
 ];

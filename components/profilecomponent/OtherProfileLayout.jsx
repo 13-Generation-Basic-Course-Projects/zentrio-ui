@@ -15,16 +15,22 @@ import {
 } from "../icon/everyicon";
 import { useSearchParams } from "next/navigation";
 import ButtonEditprofile from "../modal/profile/ModalEditProfileTab";
-import BredCrum from "../bredcrum/Bredcrum";
+import BredCrum from "../bredcrum/MyBredcrum";
 
-export default function OtherProfileLayout({ user, acheivment, profile, action ,userName}) {
+export default function OtherProfileLayout({
+  user,
+  acheivment,
+  profile,
+  action,
+  userName,
+}) {
   const searchParams = useSearchParams();
   const name = searchParams.get("name");
   const profileImage = searchParams.get("profileImage");
-  
+
   //
   const back = searchParams.get("from") || "/"; // Fallback to home
-  
+
   const tabItems = [
     {
       key: "profile",
@@ -44,18 +50,14 @@ export default function OtherProfileLayout({ user, acheivment, profile, action ,
   return (
     <>
       <div className="w-full sticky top-0 z-[20] px-10 py-2">
-            <BredCrum
-                board={"Hikko Design"}
-                feature={"Members"}  
-                user={name}              
-              />
+        <BredCrum board={"Hikko Design"} feature={"Members"} user={name} />
         <div className="relative">
           <Image
             className="w-full rounded-xl"
             src={coverProfile}
             alt="cover profile"
           />
-        
+
           <Button
             className="absolute top-2 left-0"
             size="md"
@@ -72,7 +74,6 @@ export default function OtherProfileLayout({ user, acheivment, profile, action ,
             <IconReturnLeft strokeWidth={2} size={5} color={"currentColor"} />
             Go Back
           </Button>
-         
 
           <div className="absolute bottom-[-60px] left-1/2 -translate-x-1/2 w-28 h-28 rounded-full border-2 border-desc p-0.5 group cursor-pointer bg-white shadow overflow-hidden">
             <img
@@ -123,7 +124,6 @@ export default function OtherProfileLayout({ user, acheivment, profile, action ,
               </button>
             ))}
           </div>
-       
         </div>
       </div>
 
