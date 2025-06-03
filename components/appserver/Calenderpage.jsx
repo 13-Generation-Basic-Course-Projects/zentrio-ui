@@ -21,13 +21,8 @@ import CardTCommentCalender from "../card/CardCommentCalender";
 export default function MyCalender({ tasks }) {
   const calendarRef = useRef(null);
   const [currentTitle, setCurrentTitle] = useState("");
-  const [events, setEvents] = useState([]);
 
-  const [showCommentForm, setShowCommentForm] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [selectedTaskId, setSelectedTaskId] = useState("");
-  const [commentText, setCommentText] = useState("");
-
+  // color random
   const colorList = [
     {
       bg: "bg-red-500",
@@ -61,6 +56,7 @@ export default function MyCalender({ tasks }) {
     },
   ];
 
+  // map task to calendar
   const mappedTasks = useMemo(() => {
     const uniqueIds = new Set();
     return tasks
@@ -85,9 +81,7 @@ export default function MyCalender({ tasks }) {
       });
   }, [tasks]);
 
-  React.useEffect(() => {
-    setEvents(mappedTasks);
-  }, [mappedTasks]);
+  const [events, setEvents] = useState([]);
 
   const handleTaskClick = (dateStr, taskId) => {
     const task = mappedTasks.find((t) => t.id === taskId);
@@ -97,17 +91,14 @@ export default function MyCalender({ tasks }) {
     }
   };
 
-  const handleDateClick = (info) => {
-    setSelectedDate(info.dateStr);
-    setShowCommentForm(true);
-  };
-
+  // custom card task on calendar
   const renderEventContent = ({ event }) => {
     const { type, content, color } = event.extendedProps;
-    const baseStyle = `rounded border-2 px-2 font-bold ${
-      color?.text || "text-green-600"
-    } ${color?.light || "bg-green-100"}`;
+    const baseStyle = `rounded border-2 font-bold gap-1 ${
+      color?.text
+    } ${color?.light}`;
 
+    // custom fomart date
     const formatDate = (dateStr) => {
       const date = new Date(dateStr);
       return date.toLocaleDateString("en-GB", {
@@ -115,19 +106,19 @@ export default function MyCalender({ tasks }) {
         month: "short",
       });
     };
-
     const formattedDate = `${formatDate(event.start)} - ${formatDate(
       event.end
     )}`;
 
+    //custom card task on calendar
     if (type === "task") {
       return (
         <div
-          className={`${baseStyle} h-[70px] text-[0.9rem] ${
-            color?.border || "border-green-500"
+          className={`${baseStyle} h-[90px] text-[0.95rem] ${
+            color?.border
           } p-1 flex flex-col`}
         >
-          <div className="text-[0.65rem] font-medium bg-opacity-80 bg-white w-fit px-2 py-[2px] rounded">
+          <div className="text-[0.70rem] font-bold bg-opacity-80 bg-white w-fit px-2 py-[2px] rounded">
             {formattedDate}
           </div>
           <div className="flex items-center gap-1">
@@ -138,12 +129,13 @@ export default function MyCalender({ tasks }) {
       );
     }
 
+    // custom card comment on calendar
     if (type === "comment") {
       return (
         <div
-          className={`${baseStyle} mt-2 h-[30px] text-[0.7rem] flex items-center gap-1 border-green-500`}
+          className={`${baseStyle} mt-2 h-[30px] text-[0.7rem] flex items-center gap-1`}
         >
-          <span>Comment</span>
+          <span>comment</span>
           <MessageCircleMore className="w-4 h-4" />
         </div>
       );
@@ -152,6 +144,7 @@ export default function MyCalender({ tasks }) {
     return null;
   };
 
+  // handle btn calendar pagination
   const handleDateNav = (action) => {
     const calendarApi = calendarRef.current?.getApi();
     if (!calendarApi) return;
@@ -165,8 +158,9 @@ export default function MyCalender({ tasks }) {
 
   return (
     <div className="p-4 h-screen flex flex-col overflow-hidden">
-      <BredCrum board="Hikko Design" feature="Calendar" header="Calendar" />
+      <BredCrum board="Hikko Design" feature="Calender" header="Calender" />
 
+      {/* custom header calendar */}
       <div className="flex space-x-[500px] items-center mt-4 px-2 mb-6">
         <button
           onClick={() => handleDateNav("today")}
@@ -194,26 +188,24 @@ export default function MyCalender({ tasks }) {
         </div>
       </div>
 
+      {/* FullCalendar 12-col grid */}
       <div className="grid grid-cols-12 gap-4 h-full">
-        <div className="col-span-9 max-h-[700px] pr-2">
-          <div className="h-full overflow-y-auto scrollbar-hidden">
-            <FullCalendar
-              ref={calendarRef}
-              plugins={[
-                resourceTimelinePlugin,
-                dayGridPlugin,
-                interactionPlugin,
-                timeGridPlugin,
-              ]}
-              headerToolbar={false}
-              initialView="dayGridMonth"
-              events={events}
-              eventContent={renderEventContent}
-              datesSet={(arg) => setCurrentTitle(arg.view.title)}
-              height="auto"
-              dateClick={handleDateClick}
-            />
-          </div>
+        <div className="col-span-9 h-full overflow-hidden pr-2">
+          <FullCalendar
+            ref={calendarRef}
+            plugins={[
+              resourceTimelinePlugin,
+              dayGridPlugin,
+              interactionPlugin,
+              timeGridPlugin,
+            ]}
+            headerToolbar={false}
+            initialView="dayGridMonth"
+            events={events}
+            eventContent={renderEventContent}
+            datesSet={(arg) => setCurrentTitle(arg.view.title)}
+            height="auto"
+          />
         </div>
 
         <div className="col-span-3 h-full overflow-y-auto pl-2 flex flex-col gap-5">
