@@ -2,7 +2,7 @@
 
 import React from "react";
 import BredCrum from "../bredcrum/MyBredcrum";
-import HorizontalChart from "../chart/horizontalChart";
+import HorizontalChart from "../chart/HorizontalChart";
 // import VerticalChart from "../chart/VerticalChart";
 import dynamic from "next/dynamic";
 
