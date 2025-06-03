@@ -21,7 +21,6 @@ export default function Reportpage({ modal }) {
       />
 
       {/* Content in Report */}
-
       <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mt-5 overflow-y-auto h-screen md:h-fit scrollbar-hidden">
         
 
