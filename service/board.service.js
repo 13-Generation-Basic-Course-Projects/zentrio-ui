@@ -6,7 +6,7 @@ import { boardRoute } from "@/routes/boardRoute";
  * 1. for Get board by ID -> getBoardById: (id) => `${apiConfig.baseUrl}/boards/${id}`,
  */
 
-export const getBoardById = async (id, yourToken) => {
+export const getBoardByIdService = async (id, yourToken) => {
   try {
     const url = boardRoute.getBoardById(id);
 
@@ -34,7 +34,7 @@ export const getBoardById = async (id, yourToken) => {
 /*
  * 2. Update board by board Id and workspace id
  */
-export const updateBoardById = async (
+export const updateBoardByIdService = async (
   id,
   title,
   description,
@@ -71,7 +71,7 @@ export const updateBoardById = async (
 /*
  * 3. Updated favourite of board by id
  */
-export const updateFavBoardById = async (id, isFavourite, yourToken) => {
+export const updateFavBoardByIdService = async (id, isFavourite, yourToken) => {
   try {
     const url = boardRoute.updateFavBoardById(id);
 
@@ -101,7 +101,7 @@ export const updateFavBoardById = async (id, isFavourite, yourToken) => {
 /*
  * 4. Get all boards
  */
-export const getAllBoards = async (yourToken) => {
+export const getAllBoardsService = async (yourToken) => {
   try {
     const url = boardRoute.updateFavBoardById();
 
@@ -130,7 +130,7 @@ export const getAllBoards = async (yourToken) => {
 /*
  * 5. Create new board by workspace id
  */
-export const createBoard = async (
+export const createBoardService = async (
   title,
   description,
   cover,
@@ -166,7 +166,7 @@ export const createBoard = async (
 /*
  * 6. Invite users to board
  */
-export const inviteUserToBoard = async (id, email, roleName, yourToken) => {
+export const inviteUserToBoardService = async (id, email, roleName, yourToken) => {
   try {
     const url = boardRoute.inviteUserToBoard(id);
 
@@ -199,7 +199,7 @@ export const inviteUserToBoard = async (id, email, roleName, yourToken) => {
 /*
  * 7. Upload cover by board id
  */
-export const uploadBoardCover = async (id, file, yourToken) => {
+export const uploadBoardCoverService = async (id, file, yourToken) => {
   try {
     const url = boardRoute.uploadBoardCover(id);
 
@@ -232,7 +232,7 @@ export const uploadBoardCover = async (id, file, yourToken) => {
 /*
  * 8. Assigned users role to board
  */
-export const assignUserRole = async (
+export const assignUserRoleService = async (
   id,
   assigneeId,
   roleName,
@@ -275,7 +275,7 @@ export const assignUserRole = async (
 /*
  * 9. Get board by id with current user id
  */
-export const getBoardsByUserId = async (id, yourToken) => {
+export const getBoardsByUserIdService = async (id, yourToken) => {
   try {
     const url = boardRoute.getBoardsByUserId(id);
 
@@ -307,7 +307,7 @@ export const getBoardsByUserId = async (id, yourToken) => {
 /*
  * 10. Get board with members
  */
-export const getBoardMembers = async (userid, yourToken) => {
+export const getBoardMembersService = async (userid, yourToken) => {
   try {
     const url = boardRoute.getBoardMembers(userid);
 
@@ -337,7 +337,7 @@ export const getBoardMembers = async (userid, yourToken) => {
  * 11. Accept board invitation : acceptBoardInvite: (id) =>
      `${apiConfig.baseUrl}/boards/${id}/invitations/accept`,
  */
-export const acceptBoardInvite = async (id, email, roleName, yourToken) => {
+export const acceptBoardInviteService = async (id, email, roleName, yourToken) => {
   try {
     // Optional: validate roleName
     const validRoles = ["ROLE_LEADER", "ROLE_MEMBER"];
@@ -373,7 +373,7 @@ export const acceptBoardInvite = async (id, email, roleName, yourToken) => {
 /*
  * 12. Get cover board by board id
  */
-export const getBoardCover = async (id, filename, yourToken) => {
+export const getBoardCoverService = async (id, filename, yourToken) => {
   try {
     const url = boardRoute.getBoardCover(id, filename);
 
@@ -398,7 +398,7 @@ export const getBoardCover = async (id, filename, yourToken) => {
 /*
  * 13. Get all boards by workspace id
  */
-export const getBoardsByWorkspaceId = async (workspaceId, yourToken) => {
+export const getBoardsByWorkspaceIdService = async (workspaceId, yourToken) => {
   try {
     const url = boardRoute.getBoardsByWorkspaceId(workspaceId);
 
@@ -424,7 +424,7 @@ export const getBoardsByWorkspaceId = async (workspaceId, yourToken) => {
 /*
  * 14. Get board by title
  */
-export const getBoardByTitle = async (title, yourToken) => {
+export const getBoardByTitleService = async (title, yourToken) => {
   try {
     const url = boardRoute.getBoardByTitle(title);
 
@@ -450,7 +450,7 @@ export const getBoardByTitle = async (title, yourToken) => {
 /*
  * 15. Get all board for current user
  */
-export const getBoardsForCurrentUser = async (yourToken) => {
+export const getBoardsForCurrentUserService = async (yourToken) => {
   try {
     const url = boardRoute.getBoardsForCurrentUser;
 
@@ -476,7 +476,7 @@ export const getBoardsForCurrentUser = async (yourToken) => {
 /*
  * 16. Deleted board by id and workspace id
  */
-export const deleteBoard = async (id, workspaceId, yourToken) => {
+export const deleteBoardService = async (id, workspaceId, yourToken) => {
   try {
     const url = boardRoute.deleteBoard(id, workspaceId);
 

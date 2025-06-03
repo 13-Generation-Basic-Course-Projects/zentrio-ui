@@ -3,7 +3,7 @@
 import { workspaceRoute } from "@/routes/workspaceRoute";
 
 /*
- *for service create workspace  -> createWorkspace: `${apiConfig.baseUrl}/api/v1/workspaces`,
+ *1. for service create workspace  -> createWorkspace: `${apiConfig.baseUrl}/api/v1/workspaces`,
  */
 export const createWorkspaceService = async (title, description, yourToken) => {
   try {
@@ -36,15 +36,17 @@ export const createWorkspaceService = async (title, description, yourToken) => {
 };
 
 /*
- *for service Get all workspaces -> getAllWorkspaces: `${apiConfig.baseUrl}/api/v1/workspaces`,
+ *2. for service Get all workspaces -> getAllWorkspaces: `${apiConfig.baseUrl}/api/v1/workspaces`,
  */
 export const getAllWorkspacesService = async (yourToken) => {
+ 
   try {
     const url = workspaceRoute.getAllWorkspaces();
 
     const res = await fetch(url, {
       headers: {
         Authorization: `Bearer ${yourToken}`,
+        // "Content-Type": "application/json",
       },
     });
 
@@ -64,7 +66,7 @@ export const getAllWorkspacesService = async (yourToken) => {
 };
 
 /*
- *for service Get workspace by id -> getWorkspaceById: (id) => `${apiConfig.baseUrl}/api/v1/workspaces/${id}`,
+ *3. for service Get workspace by id -> getWorkspaceById: (id) => `${apiConfig.baseUrl}/api/v1/workspaces/${id}`,
  */
 export const getWorkspaceByIdService = async (id, yourToken) => {
   try {
@@ -92,7 +94,7 @@ export const getWorkspaceByIdService = async (id, yourToken) => {
 };
 
 /*
- *for service Delete workspace by id -> deleteWorkspaceById: (id) => `${apiConfig.baseUrl}/api/v1/workspaces/${id}`,
+ * 4. for service Delete workspace by id -> deleteWorkspaceById: (id) => `${apiConfig.baseUrl}/api/v1/workspaces/${id}`,
  */
 export const deleteWorkspaceByIdService = async (id, yourToken) => {
   try {
@@ -121,7 +123,7 @@ export const deleteWorkspaceByIdService = async (id, yourToken) => {
 };
 
 /*
- * for service Update workspace by id -> updateWorkspaceById: (id) => `${apiConfig.baseUrl}/api/v1/workspaces/${id}`,
+ * 5. for service Update workspace by id -> updateWorkspaceById: (id) => `${apiConfig.baseUrl}/api/v1/workspaces/${id}`,
  */
 export const updateWorkspaceByIdService = async (
   id,
@@ -158,11 +160,11 @@ export const updateWorkspaceByIdService = async (
 };
 
 /*
- *  for service Get all workspaces by user -> getWorkspacesByUser: `${apiConfig.baseUrl}/api/v1/workspaces/users`,
+ * 6. for service Get all workspaces by user -> getWorkspacesByUser: `${apiConfig.baseUrl}/api/v1/workspaces/users`,
  */
 export const getWorkspacesByUserService = async (users, yourToken) => {
   try {
-    const url = workspaceRoute.getWorkspacesByUser;
+    const url = workspaceRoute.getWorkspacesByUser(users);
 
     const res = await fetch(url, {
       headers: {
@@ -187,7 +189,7 @@ export const getWorkspacesByUserService = async (users, yourToken) => {
 };
 
 /*
- * for service Get workspaces by workspace id for user -> getWorkspacesByUser: `${apiConfig.baseUrl}/api/v1/workspaces/users`,
+ * 7. for service Get workspaces by workspace id for user -> getWorkspacesByUser: `${apiConfig.baseUrl}/api/v1/workspaces/users`,
  */
 export const getWorkspacesByUserIdService = async (userId, yourToken) => {
   try {
@@ -215,7 +217,7 @@ export const getWorkspacesByUserIdService = async (userId, yourToken) => {
 };
 
 /*
- * for serivce Get workspaces by title -> getWorkspacesByTitle: (title) =>
+ * 8. for serivce Get workspaces by title -> getWorkspacesByTitle: (title) =>
  *  `${apiConfig.baseUrl}/api/v1/workspaces/title/${title}`,
  */
 

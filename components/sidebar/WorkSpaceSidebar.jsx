@@ -27,29 +27,29 @@ const randomColor = () =>
     .toString(16)
     .padStart(6, "0");
 
-const myworkspaceItem = [
-  {
-    title: "My Empty workspace",
-    url: "/workspace",
-    color: "bg-pink-300",
-    activeIcon: board,
-    myworkspace: true,
-  },
-  {
-    title: "My workspace 2",
-    url: "/workspace/2",
-    color: "bg-orange-300",
-    activeIcon: board,
-    myworkspace: true,
-  },
-  {
-    title: "My workspace 3",
-    url: "/workspace/3",
-    color: "bg-green-300",
-    activeIcon: board,
-    myworkspace: false,
-  },
-];
+// const myworkspaceItem = [
+//   {
+//     title: "My Empty workspace",
+//     url: "/workspace",
+//     color: "bg-pink-300",
+//     activeIcon: board,
+//     myworkspace: true,
+//   },
+//   {
+//     title: "My workspace 2",
+//     url: "/workspace/2",
+//     color: "bg-orange-300",
+//     activeIcon: board,
+//     myworkspace: true,
+//   },
+//   {
+//     title: "My workspace 3",
+//     url: "/workspace/3",
+//     color: "bg-green-300",
+//     activeIcon: board,
+//     myworkspace: false,
+//   },
+// ];
 const otherworkspaceItem = [
   {
     title: "OtherWorkspace 1",
@@ -74,7 +74,7 @@ const otherworkspaceItem = [
   },
 ];
 
-export default function WorkSpaceSideBar() {
+export default function WorkSpaceSideBar({ allWorkspace }) {
   const pathname = usePathname();
   const { toggleSidebar } = useSidebar();
   return (
@@ -120,41 +120,46 @@ export default function WorkSpaceSideBar() {
                 <p className="  text-body-sm  font-extrabold">My Workspace</p>
                 <ModalCreateWorkspace />
               </div>
-              {myworkspaceItem.map((item, i) => {
-                const isActive = pathname === item.url;
-                return (
-                  <SidebarMenuItem key={i} className="!border-0 p-0">
-                    <SidebarMenuButton
-                      style={{ borderRadius: "0.5rem" }}
-                      asChild
-                      tooltip={item.title}
-                      className={`group flex w-full items-center justify-between  rounded-lg transition-colors duration-200  p-0
-                ${
-                  isActive
-                    ? "bg-slate-blue text-primary"
-                    : "hover:bg-slate-100 text-gray-700"
-                }  rounded-lg`}
-                    >
-                      <div className="flex items-center gap-2 justify-start w-full">
-                        <span
-                          className={`${item.color} h-5 w-5 rounded-full`}
-                        ></span>
-                        <Link href={item.url}>
-                          <span className="flex-1 text-left sm:text-body-sm  truncate overflow-hidden whitespace-nowrap">
-                            {item.title}
-                          </span>
-                        </Link>
+              {Array.isArray(allWorkspace?.payload) ? (
+                allWorkspace.payload.map((item, i) => {
+                  const isActive = pathname === item.url;
 
-                        <div>
-                          <span>
+                  return (
+                    <SidebarMenuItem key={i} className="!border-0 p-0">
+                      <SidebarMenuButton
+                        style={{ borderRadius: "0.5rem" }}
+                        asChild
+                        tooltip={item.title}
+                        className={`group flex w-full items-center justify-between rounded-lg transition-colors duration-200 p-0
+            ${
+              isActive
+                ? "bg-slate-blue text-primary"
+                : "hover:bg-slate-100 text-gray-700"
+            }`}
+                      >
+                        <div className="flex items-center gap-2 justify-start w-full">
+                          <span
+                            className={`${item.color} h-5 w-5 rounded-full`}
+                          ></span>
+                          <Link href={item.url}>
+                            <span className="flex-1 text-left sm:text-body-sm truncate overflow-hidden whitespace-nowrap">
+                              {item.title}
+                            </span>
+                          </Link>
+                          <div>
                             <ModalOptionWorkspace />
-                          </span>
+                          </div>
                         </div>
-                      </div>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                );
-              })}
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  );
+                })
+              ) : (
+                <div className="text-sm text-gray-400 px-2">
+                  No workspaces found.
+                </div>
+              )}
+
               {/* 2 */}
               <p className="text-body-sm  font-extrabold">Other Workspace</p>
               {otherworkspaceItem.map((item, i) => {
