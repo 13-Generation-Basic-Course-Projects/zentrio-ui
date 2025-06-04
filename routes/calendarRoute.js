@@ -1,7 +1,7 @@
 import { apiConfig } from "@/constant/baseurl";
 
 
-export const calenderRoute = {
+export const calenderRouteGroup = {
     getNotebyId: (id) => `${apiConfig.baseUrl}/calendars/${id}`,
     getNotebyTaskId: (id) => `${apiConfig.baseUrl}/caledars/tasks/${id}`,
     getTaskbyBoardId: (id) =>`${apiConfig.baseUrl}/calendars/boards/${id}`,
