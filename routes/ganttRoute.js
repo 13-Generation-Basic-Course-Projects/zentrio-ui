@@ -6,6 +6,8 @@ export const ganttRouteGroup = {
   //get
   getGanttChartForCurrentUser: (ganttChartId, boardId) =>
     `${apiConfig.baseUrl}/gantt-charts/${ganttChartId}/boards/${boardId}`, //Get gantt chart by ID with current boards
+  getGanttChartByBoardId: (boardId) =>
+    `${apiConfig.baseUrl}/gantt-charts/boards/${boardId}`, //Get gantt chart by specific boards ID
 
   //update
 

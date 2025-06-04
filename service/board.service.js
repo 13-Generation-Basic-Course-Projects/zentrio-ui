@@ -37,7 +37,7 @@ export const getTaskByBoardIdAndGanttBarIdService = async ({
 /*
  * getCheckListByTaskId in side board feature or stage
  */
-export const getCheckListByTaskId = async ({ taskId, token }) => {
+export const getCheckListByTaskIdService = async ({ taskId, token }) => {
   try {
     console.log("from service ", token);
     const url = checklistRouteGroup.getCheckListByTaskId(taskId);

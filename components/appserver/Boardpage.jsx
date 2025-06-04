@@ -14,7 +14,7 @@ import ModalNotification from "../modal/noti/ModalNotification";
 import ModalCreateGanttChart from "../modal/board/ModalCreateGanttChart";
 import ModalCreateGanttBar from "../modal/board/ModalCreateGanttBar";
 
-export default function SystemBoard({ user, tasks }) {
+export default function SystemBoard({ user, tasks, ganttbar }) {
   const pathname = usePathname();
   const segments = pathname.split("/");
   const workspaceId = segments[2]; // gets workspaceId from URL like /dashboard/otherworkspace/2/board
@@ -141,7 +141,9 @@ export default function SystemBoard({ user, tasks }) {
         </svg>
       ),
 
-      content: <GanttChart modal={[<ModalCreateGanttBar />]} />,
+      content: (
+        <GanttChart modal={[<ModalCreateGanttBar />]} ganttbar={ganttbar} />
+      ),
     },
   ];
 
