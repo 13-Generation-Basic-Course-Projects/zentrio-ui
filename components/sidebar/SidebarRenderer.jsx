@@ -4,7 +4,13 @@ import { usePathname } from "next/navigation";
 import WorkSpaceSideBar from "./WorkSpaceSidebar";
 import DashbaordSideBar from "./SideBar";
 
-export default function SidebarRenderer({allWorkspace}) {
+export default function SidebarRenderer({
+  workspaceData,
+  workspaceUsersData,
+  createWorkspace,
+  deleteWorkspace,
+  updateNameWorkspace,
+}) {
   const pathname = usePathname();
 
   if (pathname.startsWith("/dashboard")) {
@@ -12,7 +18,15 @@ export default function SidebarRenderer({allWorkspace}) {
   }
 
   if (pathname.startsWith("/workspace")) {
-    return <WorkSpaceSideBar allWorkspace = {allWorkspace} />;
+    return (
+      <WorkSpaceSideBar
+        workspaceData={workspaceData}
+        workspaceUsersData={workspaceUsersData}
+        createWorkspace={createWorkspace}
+        deleteWorkspace={deleteWorkspace}
+        updateNameWorkspace={updateNameWorkspace}
+      />
+    );
   }
   // Show sidebar on /profile/... but NOT exactly /profile
   if (pathname.startsWith("/profile/")) {

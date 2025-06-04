@@ -9,8 +9,11 @@ import {
   useDisclosure,
 } from "@heroui/react";
 
-export default function ModalRenameFileOrFolder() {
+
+/* rename foc in document */
+export  function ModalRenameFileOrFolder() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  
   return (
     <>
       <Button
