@@ -8,6 +8,7 @@ import {
 } from "../service/auth.service";
 import { useAuthStore } from "../lib/store";
 import { redirect } from "next/navigation";
+import clsx from "clsx";
 
 //google login
 export async function doSocialLogin(formData) {
@@ -45,7 +46,8 @@ export async function zentrioLoginCredentailAction(email, password) {
 export async function zentrioRegisterAction(data) {
   const { username, gender, email, password, profileImage } = data;
 
-  getEmail = data.email; //defalut
+  // getEmail = email; //defalut
+  console.log("email", email);
   await registerZentrioService({
     username,
     gender,

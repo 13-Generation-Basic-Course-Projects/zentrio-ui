@@ -69,11 +69,9 @@ export const loginZentrioCredentailService = async ({ email, password }) => {
     });
     const data = await res.json();
     console.log("📥 Backend responded with:", data);
-    console.log("BBBBB", data?.payload?.token);
     if (data?.status === "OK") {
+      console.log("status:", data.status);
       redirect(`/workspace`);
-      console.log("apple kdet");
-      return data;
     }
     return data;
   } catch (error) {

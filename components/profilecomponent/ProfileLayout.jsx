@@ -14,7 +14,8 @@ import {
 } from "../icon/everyicon";
 import ButtonEditprofile from "../modal/profile/ModalEditProfileTab";
 
-export default function ProfileLayout({ user, acheivment, profile, action }) {
+export default function ProfileLayout({ user, acheivment, profile, action, profileDetails }) {
+  const profileData = profileDetails?.payload.user || {};
   const tabItems = [
     {
       key: "profile",
@@ -65,18 +66,20 @@ export default function ProfileLayout({ user, acheivment, profile, action }) {
               } else {
                 window.location.href = "/dashboard"; // Fallback URL
               }
-            }}
-          >
+            }}>
             <IconReturnLeft strokeWidth={2} size={5} color={"currentColor"} />
             Go Back
           </Button>
 
           <div className="absolute bottom-[-60px] left-1/2 -translate-x-1/2 w-28 h-28 rounded-full border-2 border-desc p-0.5 group cursor-pointer bg-white shadow overflow-hidden">
             <Image
-              className="rounded-full w-full h-full object-cover"
-              src={userProfile}
+              className="rounded-full object-cover"
+              src={profileData?.profileImage || userProfile}
               alt="user profile"
+              width={112}
+              height={112}
             />
+
             <div className="absolute top-20 inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
               <Camera className="text-white w-3 h-3" />
             </div>
@@ -84,7 +87,7 @@ export default function ProfileLayout({ user, acheivment, profile, action }) {
         </div>
 
         <div className="text-center mt-16">
-          <h1 className="text-h4 font-bold">Skan</h1>
+          <h1 className="text-h4 font-bold">{profileData?.username || " "}</h1>
           <div className="flex justify-center gap-6 text-sm text-gray-600 mt-2">
             <p className="flex items-center gap-1">
               <IconJob strokeWidth={1} size={5} color={"currentColor"} />
@@ -96,7 +99,9 @@ export default function ProfileLayout({ user, acheivment, profile, action }) {
             </p>
             <p className="flex items-center gap-1">
               <IconDate strokeWidth={1} size={5} color={"currentColor"} />
-              Started 07-May-2025
+              {profileData.createdAt
+                ? profileData.createdAt.split("T")[0]
+                : " "}
             </p>
           </div>
         </div>
@@ -111,8 +116,7 @@ export default function ProfileLayout({ user, acheivment, profile, action }) {
                   activeTab === tab.key
                     ? "text-blue-500"
                     : "text-muted hover:text-gray-700"
-                }`}
-              >
+                }`}>
                 {tab.title}
                 {activeTab === tab.key && (
                   <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-500"></div>

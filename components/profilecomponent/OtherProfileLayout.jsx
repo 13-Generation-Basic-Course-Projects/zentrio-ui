@@ -13,7 +13,7 @@ import {
   IconMap,
   IconReturnLeft,
 } from "../icon/everyicon";
-import { useSearchParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import ButtonEditprofile from "../modal/profile/ModalEditProfileTab";
 import BredCrum from "../bredcrum/MyBredcrum";
 
@@ -25,8 +25,13 @@ export default function OtherProfileLayout({
   userName,
 }) {
   const searchParams = useSearchParams();
+  const param = useParams();
   const name = searchParams.get("name");
+
   const profileImage = searchParams.get("profileImage");
+  const userId = param.id;
+  console.log("userId", userId);
+
 
   //
   const back = searchParams.get("from") || "/"; // Fallback to home

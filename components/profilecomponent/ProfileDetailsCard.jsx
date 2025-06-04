@@ -9,17 +9,18 @@ import {
 } from "../icon/everyicon";
 import ProgressBar from "./ProgressBar";
 
-function ProfileDetailsCard() {
+function ProfileDetailsCard({ achievements }) {
+  const user = achievements?.payload.user || {};
   return (
     <div className="flex flex-col gap-2">
-      <div className="p-4 rounded-xl shadow bg-white">
+      <div className="p-4 rounded-xl shadow-small bg-white">
         <h3 className="text-md font-semibold mb-2">
           Overall Board Completeness
         </h3>
-        <ProgressBar/>
+        <ProgressBar />
       </div>
 
-      <div className="rounded-xl shadow bg-white">
+      <div className="rounded-xl shadow-small bg-white">
         <h3 className="px-4 text-body font-semibold py-4 border-b-1 border-stroke">
           Profile Details
         </h3>
@@ -30,10 +31,10 @@ function ProfileDetailsCard() {
               Personal Details
             </p>
             <p className="flex items-center gap-2">
-              <IconUser strokeWidth={1.5} size={4} /> Skan
+              <IconUser strokeWidth={1.5} size={4} /> {user?.username || "No username provided"}
             </p>
             <p className="flex items-center gap-2">
-              <Shield className="w-4 h-4" /> Male
+              <Shield className="w-4 h-4" /> {user?.gender === "RATHER_NOT_TO_SAY" ? "Other" : " "}
             </p>
             <p className="flex items-center gap-2">
               <IconJob strokeWidth={1.5} size={4} /> Front-end Developer
@@ -44,7 +45,7 @@ function ProfileDetailsCard() {
             </p>
             <p className="flex items-center gap-2">
               <IconDate strokeWidth={1.5} size={4} color={"currentColor"} />{" "}
-              Started 07-May-2025
+              {user?.createdAt?.split("T")[0] || "No date provided"}
             </p>
           </div>
 
@@ -57,7 +58,7 @@ function ProfileDetailsCard() {
             </p>
             <p className="flex items-center gap-2">
               <IconMail strokeWidth={1.5} size={4} color={"currentColor"} />{" "}
-              zentrio@gmail.com
+              {user?.email || "No email provided"}
             </p>
           </div>
         </div>

@@ -9,13 +9,13 @@ import OtherAchievmentTab from "../profilecomponent/OtherAchievmentTab";
 import OtherProfileLayout from "../profilecomponent/OtherProfileLayout";
 import OtherProfileTab from "../profilecomponent/OtherProfileTab";
 
-export default function OtherUserProfile() {
+export default function OtherUserProfile({ otherAchievement }) {
   return (
     
-      <OtherProfileLayout
+      <OtherProfileLayout otherAchievement={otherAchievement}
         userName={"Jack Ma"}
         profile={<OtherProfileTab/>}
-        acheivment={<OtherAchievmentTab />}
+        acheivment={<OtherAchievmentTab otherAchievement={otherAchievement} />}
       />
     
   );

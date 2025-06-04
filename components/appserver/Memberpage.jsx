@@ -28,7 +28,9 @@ import PopupAction from "../popup/PopupAction";
 import { IconpopupDelete } from "../icon/Iconpopup";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
-export default function Memberpage() {
+export default function Memberpage({ memberData }) {
+  const memberList = memberData?.payload || [];
+  console.log("memberList", memberList);
   const initialMembers = [
     {
       memberId: "24a8a3b8-2ad0-4dbc-a6b8-15362b1dfa1f",
@@ -244,9 +246,9 @@ export default function Memberpage() {
             </thead>
 
             <tbody>
-              {currentMembers.map((member, index) => (
+              {memberList.map((member, index) => (
                 <tr
-                  key={member.memberId}
+                  key={member.userId}
                   className={`${
                     (index + indexOfFirstMember) % 2 !== 0
                       ? "bg-gray-50/50"
@@ -264,7 +266,7 @@ export default function Memberpage() {
                   <td className="px-6 py-4">
                     <Link
                       href={{
-                        pathname: `/profile/${member.memberId}`,
+                        pathname: `/profile/${member.userId}`,
                         query: {
                           name: member.username,
                           profileImage: member.profileImage,
@@ -311,9 +313,12 @@ export default function Memberpage() {
                   <td className="px-6 py-4 border-none">
                     <div className="flex items-center gap-2">
                       <span className="text-gray-700 group-hover:text-blue-700 transition-colors duration-200">
-                        {member.roleName[0]}
+                         {member.roles?.[0] === "ROLE_MANAGER"
+                          ? "Manager" : member.roles?.[0] === "ROLE_LEADER"
+                          ? "Leader" : member.roles?.[0] === "ROLE_MEMBER"
+                          ? "Member" : member.roles?.[0]}
                       </span>
-                      {member.roleName.length > 1 && (
+                      {member.roles?.length > 1 && (
                         <Popover>
                           <PopoverTrigger className="cursor-pointer">
                             <div className="p-1 rounded-full hover:bg-blue-100 transition-colors duration-200">
@@ -322,12 +327,12 @@ export default function Memberpage() {
                           </PopoverTrigger>
                           <PopoverContent className="text-h6 bg-white border shadow-lg p-4 rounded-lg">
                             <div className="space-y-2">
-                              {member.roleName.map((role, i) => (
+                              {member.roles.map((role, i) => (
                                 <div
                                   key={i}
                                   className="px-2 py-1 bg-blue-50 text-blue-700 rounded text-sm"
                                 >
-                                  {role}
+                                  {role === "ROLE_MANAGER"? "Manager" : role === "ROLE_LEADER" ? "Leader" : role === "ROLE_MEMBER" ? "Member" : role}
                                 </div>
                               ))}
                             </div>
@@ -341,7 +346,7 @@ export default function Memberpage() {
                   <td className="px-6 py-4 border-none">
                     <div className="flex items-center gap-2 !border-none">
                       <span className="text-gray-700 group-hover:text-green-700 transition-colors duration-200">
-                        {member.task[0]}
+                        {member?.tasks[0]}
                       </span>
                       {member.task.length > 1 && (
                         <Popover>

@@ -37,19 +37,73 @@ export function ModalEditProfile() {
   const [selectedAchievements, setSelectedAchievements] = useState(new Set());
 
   const boards = [
-    { id: 1, percent: 25, role: "Owner", color: "bg-progress-red", title: "Zentrio UI Design" },
-    { id: 2, percent: 50, role: "Team Leader", color: "bg-progress-orange", title: "Mobile App Development" },
-    { id: 3, percent: 75, role: "Owner", color: "bg-progress-blue", title: "Web Development" },
-    { id: 4, percent: 90, role: "Owner", color: "bg-progress-green", title: "API Integration" },
-    { id: 5, percent: 90, role: "Developer", color: "bg-progress-green", title: "Database Design" },
-    { id: 6, percent: 90, role: "Lead", color: "bg-progress-green", title: "Testing Framework" },
-    { id: 7, percent: 90, role: "Owner", color: "bg-progress-green", title: "DevOps Setup" },
-    { id: 8, percent: 90, role: "Manager", color: "bg-progress-green", title: "Project Management" },
-    { id: 9, percent: 90, role: "Owner", color: "bg-progress-green", title: "Code Review" },
+    {
+      id: 1,
+      percent: 25,
+      role: "Owner",
+      color: "bg-progress-red",
+      title: "Zentrio UI Design",
+    },
+    {
+      id: 2,
+      percent: 50,
+      role: "Team Leader",
+      color: "bg-progress-orange",
+      title: "Mobile App Development",
+    },
+    {
+      id: 3,
+      percent: 75,
+      role: "Owner",
+      color: "bg-progress-blue",
+      title: "Web Development",
+    },
+    {
+      id: 4,
+      percent: 90,
+      role: "Owner",
+      color: "bg-progress-green",
+      title: "API Integration",
+    },
+    {
+      id: 5,
+      percent: 90,
+      role: "Developer",
+      color: "bg-progress-green",
+      title: "Database Design",
+    },
+    {
+      id: 6,
+      percent: 90,
+      role: "Lead",
+      color: "bg-progress-green",
+      title: "Testing Framework",
+    },
+    {
+      id: 7,
+      percent: 90,
+      role: "Owner",
+      color: "bg-progress-green",
+      title: "DevOps Setup",
+    },
+    {
+      id: 8,
+      percent: 90,
+      role: "Manager",
+      color: "bg-progress-green",
+      title: "Project Management",
+    },
+    {
+      id: 9,
+      percent: 90,
+      role: "Owner",
+      color: "bg-progress-green",
+      title: "Code Review",
+    },
   ];
 
   const handleAchievementToggle = (achievementId) => {
-    setSelectedAchievements(prev => {
+    setSelectedAchievements((prev) => {
       const newSelected = new Set(prev);
       if (newSelected.has(achievementId)) {
         newSelected.delete(achievementId);
@@ -64,7 +118,7 @@ export function ModalEditProfile() {
     <>
       <Button color="primary" onPress={onOpen}>
         <IconEdit strokeWidth={1.5} size={5} color={"currentColor"} /> Edit
-        Achievment
+        Profile
       </Button>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="lg">
         <ModalContent>
@@ -87,8 +141,7 @@ export function ModalEditProfile() {
                       tab: "max-w-fit px-0 h-12",
                       tabContent: "group-data-[selected=true]:text-blue-500",
                     }}
-                    variant="underlined"
-                  >
+                    variant="underlined">
                     <Tab
                       key="Profile"
                       title={
@@ -116,7 +169,9 @@ export function ModalEditProfile() {
                         <h2 className="text-h5 text-title font-medium">
                           Choose your achievement
                         </h2>
-                        <p className="text-sm text-description">{selectedAchievements.size}/{boards.length}</p>
+                        <p className="text-sm text-description">
+                          {selectedAchievements.size}/{boards.length}
+                        </p>
                       </div>
                       <p className="text-sm text-description">
                         Select achievements to credit to your profile
@@ -130,16 +185,14 @@ export function ModalEditProfile() {
                           <li
                             key={board.id}
                             className={`flex justify-between items-center gap-4 border rounded-xl cursor-pointer transition-all duration-200 ${
-                              isSelected 
-                                ? 'border-blue-500 bg-blue-50 outline outline-1 outline-blue-500' 
-                                : 'border-stroke hover:border-gray-400'
+                              isSelected
+                                ? "border-blue-500 bg-blue-50 outline outline-1 outline-blue-500"
+                                : "border-stroke hover:border-gray-400"
                             } px-2 py-3`}
-                            onClick={() => handleAchievementToggle(board.id)}
-                          >
+                            onClick={() => handleAchievementToggle(board.id)}>
                             <div className="flex items-center gap-3">
                               <div
-                                className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold ${board.color}`}
-                              >
+                                className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold ${board.color}`}>
                                 {board.title.charAt(0)}
                               </div>
                               <div>
@@ -149,7 +202,10 @@ export function ModalEditProfile() {
                                 </p>
                               </div>
                             </div>
-                            <div className={`transition-opacity duration-200 ${isSelected ? 'opacity-100' : 'opacity-0'}`}>
+                            <div
+                              className={`transition-opacity duration-200 ${
+                                isSelected ? "opacity-100" : "opacity-0"
+                              }`}>
                               <Image
                                 src={correctIcon}
                                 width={18}
@@ -166,8 +222,7 @@ export function ModalEditProfile() {
                       <Button
                         className="bg-transparent border-1 border-bgColor"
                         radius="full"
-                        onPress={onClose}
-                      >
+                        onPress={onClose}>
                         Cancel
                       </Button>
                       <Button color="primary" radius="full" onPress={onClose}>
@@ -178,22 +233,22 @@ export function ModalEditProfile() {
                 )}
 
                 {selectedTab === "Profile" && (
-                 <form action="" className="grid grid-cols-1 gap-4">
-                  <div>
-                    <label className="text-label font-medium flex items-center gap-x-2 mb-2">
-                      <IconUser strokeWidth={1} size={4} />
-                      Name <span className="text-red-500">*</span>
-                    </label>
-                    <Input
-                      isRequired
-                      errorMessage="Please input a valid name"
-                      labelPlacement="outside"
-                      name="name"
-                      placeholder="Input your name"
-                      type="text"
-                      classNames={{
-                        label: "text-label font-medium shadow-none",
-                        inputWrapper: `
+                  <form action="" className="grid grid-cols-1 gap-4">
+                    <div>
+                      <label className="text-label font-medium flex items-center gap-x-2 mb-2">
+                        <IconUser strokeWidth={1} size={4} />
+                        Name <span className="text-red-500">*</span>
+                      </label>
+                      <Input
+                        isRequired
+                        errorMessage="Please input a valid name"
+                        labelPlacement="outside"
+                        name="name"
+                        placeholder="Input your name"
+                        type="text"
+                        classNames={{
+                          label: "text-label font-medium shadow-none",
+                          inputWrapper: `
                       bg-white 
                       border
                       border-gray-300
@@ -209,25 +264,25 @@ export function ModalEditProfile() {
                       px-6
                       py-6
                     `,
-                        input: "text-black",
-                      }}
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-label font-medium flex items-center gap-x-2 mb-2">
-                      <IconShield
-                        strokeWidth={1}
-                        size={4}
-                        color={"currentColor"}
+                          input: "text-black",
+                        }}
                       />
-                      Gender <span className="text-red-500">*</span>
-                    </label>
-                    <Select
-                      isRequired
-                      placeholder="Choose your gender"
-                      classNames={{
-                        trigger: `
+                    </div>
+
+                    <div>
+                      <label className="text-label font-medium flex items-center gap-x-2 mb-2">
+                        <IconShield
+                          strokeWidth={1}
+                          size={4}
+                          color={"currentColor"}
+                        />
+                        Gender <span className="text-red-500">*</span>
+                      </label>
+                      <Select
+                        isRequired
+                        placeholder="Choose your gender"
+                        classNames={{
+                          trigger: `
                       bg-white 
                       text-black 
                       border 
@@ -244,32 +299,31 @@ export function ModalEditProfile() {
                       px-6
                       py-6
                     `,
-                        value: "text-gray-500",
-                      }}
-                    >
-                      {gender.map((ganttBar) => (
-                        <SelectItem key={ganttBar.key}>
-                          {ganttBar.label}
-                        </SelectItem>
-                      ))}
-                    </Select>
-                  </div>
+                          value: "text-gray-500",
+                        }}>
+                        {gender.map((ganttBar) => (
+                          <SelectItem key={ganttBar.key}>
+                            {ganttBar.label}
+                          </SelectItem>
+                        ))}
+                      </Select>
+                    </div>
 
-                  <div>
-                    <label className="text-label font-medium flex items-center gap-x-2 mb-2">
-                      <IconJob strokeWidth={1} size={4} />
-                      Position <span className="text-red-500">*</span>
-                    </label>
-                    <Input
-                      isRequired
-                      errorMessage="Please input a valid position"
-                      labelPlacement="outside"
-                      name="position"
-                      placeholder="Input your position"
-                      type="text"
-                      classNames={{
-                        label: "text-label font-medium",
-                        inputWrapper: `
+                    <div>
+                      <label className="text-label font-medium flex items-center gap-x-2 mb-2">
+                        <IconJob strokeWidth={1} size={4} />
+                        Position <span className="text-red-500">*</span>
+                      </label>
+                      <Input
+                        isRequired
+                        errorMessage="Please input a valid position"
+                        labelPlacement="outside"
+                        name="position"
+                        placeholder="Input your position"
+                        type="text"
+                        classNames={{
+                          label: "text-label font-medium",
+                          inputWrapper: `
                       bg-white 
                       border
                       border-gray-300
@@ -285,29 +339,29 @@ export function ModalEditProfile() {
                       px-6
                       py-6
                     `,
-                        input: "text-black",
-                      }}
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-label font-medium flex items-center gap-x-2 mb-2">
-                      <IconMap
-                        strokeWidth={1}
-                        size={4}
-                        color={"currentColor"}
+                          input: "text-black",
+                        }}
                       />
-                      Location <span className="text-red-500">*</span>
-                    </label>
-                    <Input
-                      isRequired
-                      errorMessage="Please input a valid location"
-                      name="name"
-                      placeholder="Input your location"
-                      type="text"
-                      classNames={{
-                        label: "text-label font-medium",
-                        inputWrapper: `
+                    </div>
+
+                    <div>
+                      <label className="text-label font-medium flex items-center gap-x-2 mb-2">
+                        <IconMap
+                          strokeWidth={1}
+                          size={4}
+                          color={"currentColor"}
+                        />
+                        Location <span className="text-red-500">*</span>
+                      </label>
+                      <Input
+                        isRequired
+                        errorMessage="Please input a valid location"
+                        name="name"
+                        placeholder="Input your location"
+                        type="text"
+                        classNames={{
+                          label: "text-label font-medium",
+                          inputWrapper: `
                       bg-white 
                       border
                       border-gray-300
@@ -323,29 +377,29 @@ export function ModalEditProfile() {
                       px-6
                       py-6
                     `,
-                        input: "text-black",
-                      }}
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-label font-medium flex items-center gap-x-2 mb-2">
-                      <IconPhone
-                        strokeWidth={1}
-                        size={4}
-                        color={"currentColor"}
+                          input: "text-black",
+                        }}
                       />
-                      Contact <span className="text-red-500">*</span>
-                    </label>
-                    <Input
-                      isRequired
-                      errorMessage="Please input a valid contact"
-                      name="contact"
-                      placeholder="Input your contact"
-                      type="tel"
-                      classNames={{
-                        label: "text-label font-medium",
-                        inputWrapper: `
+                    </div>
+
+                    <div>
+                      <label className="text-label font-medium flex items-center gap-x-2 mb-2">
+                        <IconPhone
+                          strokeWidth={1}
+                          size={4}
+                          color={"currentColor"}
+                        />
+                        Contact <span className="text-red-500">*</span>
+                      </label>
+                      <Input
+                        isRequired
+                        errorMessage="Please input a valid contact"
+                        name="contact"
+                        placeholder="Input your contact"
+                        type="tel"
+                        classNames={{
+                          label: "text-label font-medium",
+                          inputWrapper: `
                       bg-white 
                       border
                       border-gray-300
@@ -361,24 +415,23 @@ export function ModalEditProfile() {
                       px-6
                       py-6
                     `,
-                        input: "text-black",
-                      }}
-                    />
-                  </div>
+                          input: "text-black",
+                        }}
+                      />
+                    </div>
 
-                  <div className="grid grid-cols-2 gap-3 pt-2">
-                    <Button
-                      className="bg-transparent border-1 border-bgColor"
-                      radius="full"
-                      onPress={onClose}
-                    >
-                      Cancel
-                    </Button>
-                    <Button color="primary" radius="full" onPress={onClose}>
-                      Save
-                    </Button>
-                  </div>
-                </form>
+                    <div className="grid grid-cols-2 gap-3 pt-2">
+                      <Button
+                        className="bg-transparent border-1 border-bgColor"
+                        radius="full"
+                        onPress={onClose}>
+                        Cancel
+                      </Button>
+                      <Button color="primary" radius="full" onPress={onClose}>
+                        Save
+                      </Button>
+                    </div>
+                  </form>
                 )}
               </ModalBody>
             </>
