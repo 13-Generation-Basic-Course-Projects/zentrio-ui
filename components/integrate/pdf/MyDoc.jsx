@@ -232,7 +232,7 @@ const MyDocument = () => (
         <View style={styles.container1}>
           {/* Title */}
           <View style={styles.titleBox1}>
-            <Text style={styles.titleText1}>
+            <Text style={styles.titleText1} className="text-right">
               PROJECT{"\n"}REPORT FOR{"\n"}INVESTORES
             </Text>
           </View>

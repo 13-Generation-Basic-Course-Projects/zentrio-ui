@@ -1,4 +1,5 @@
-import Reportpage from "@/components/appserver/Reportpage";
+import CustomePDF from "@/components/integrate/pdf/CustomePDF";
+import PDFPreview from "@/components/integrate/pdf/PreviewPDF";
 import React from "react";
 // import { testAction } from "../../../../action/test.action";
 // import TestFetch from "@/components/testcomponent/TestFetch";
@@ -8,7 +9,7 @@ export default async function page() {
   return (
     <div>
       {/* <TestFetch dataProp={getTest} /> */}
-      <Reportpage />
+      <CustomePDF />
     </div>
   );
 }
