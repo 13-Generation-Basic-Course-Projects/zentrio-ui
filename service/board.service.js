@@ -1,43 +1,59 @@
 ///service/board.service.js
 "use server";
-import { boardRoute } from "@/routes/boardRoute";
+import { boardRouteGroup } from "@/routes/boardRoute";
+import { checklistRouteGroup } from "@/routes/checklistRoute";
 
-export const createBoardById = async (id, name, cover, urlParam, yourToken) => {
+/*
+ * getTaskByBoardIdAndGanttBarIdService in side board feature or stage
+ */
+export const getTaskByBoardIdAndGanttBarIdService = async ({
+  boardId,
+  ganttbarId,
+  token,
+}) => {
   try {
-    // Get endpoint URL from your route builder
-    const url = boardRoute.createBoardById(
-      id,
-      name,
-      cover,
-      urlParam,
-      yourToken
+    console.log("from service ", token);
+    const url = boardRouteGroup.getTaskByBoardAndGanttBarId(
+      boardId,
+      ganttbarId
     );
-
     const res = await fetch(url, {
-      method: "POST",
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${yourToken}`,
+        Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({
-        id,
-        name,
-        cover,
-        url: urlParam,
-      }),
     });
-
-    if (!res.ok) {
-      const errorData = await res.json();
-      throw new Error(
-        errorData.message || `Request failed with status ${res.status}`
-      );
-    }
-
     const data = await res.json();
-    return data;
+    console.log("📥 Backend responded with:", data);
+
+    return data; // just return the data, don’t redirect here
   } catch (error) {
-    console.error("❌ Failed to create board:", error.message);
-    throw error; // Re-throw if you want to handle it higher up
+    console.error("Login service error:", error.message);
+    throw error;
+  }
+};
+
+/*
+ * getCheckListByTaskId in side board feature or stage
+ */
+export const getCheckListByTaskId = async ({ taskId, token }) => {
+  try {
+    console.log("from service ", token);
+    const url = checklistRouteGroup.getCheckListByTaskId(taskId);
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await res.json();
+    console.log("📥 Backend responded with:", data);
+
+    return data; // just return the data, don’t redirect here
+  } catch (error) {
+    console.error("Login service error:", error.message);
+    throw error;
   }
 };

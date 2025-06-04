@@ -16,14 +16,14 @@ export const testSusupne = async () => {
 /*
  * test
  */
-export const testFetchService = async ({ zentrioToken }) => {
+export const testFetchService = async ({ token }) => {
   try {
     const url = testRouteGroup.getTaskAllUser();
     const res = await fetch(url, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${zentrioToken}`,
+        Authorization: `Bearer ${token}`,
       },
       //  body: JSON.stringify({ email, password }),
     });
@@ -35,7 +35,4 @@ export const testFetchService = async ({ zentrioToken }) => {
     console.error("Login service error:", error.message);
     throw error;
   }
-
-  // const url = testRouteGroup.getTaskAllUser();
-  // console.log("this is url", url);
 };
