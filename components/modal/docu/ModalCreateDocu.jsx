@@ -125,6 +125,7 @@ export default function ModalCreateDocu() {
       <ModalCreateFolder
         isOpen={isCreateFolderOpen}
         onClose={() => setIsCreateFolderOpen(false)}
+        boardId="d0d17acc-ca1e-4e3c-9fbf-1c1ab47607fe"
       />
 
       <ModalUploadFile
