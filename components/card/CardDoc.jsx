@@ -13,10 +13,12 @@ import iconMember from "@/assets/memberSideBar.png";
 import Image from "next/image";
 import { icon } from "../icon/allicon";
 import ModalOptionDocument from "../modal/docu/ModalOptionDocument";
+import Link from "next/link";
 
-export default function CardFolder({ title, status, date }) {
+export default function CardFolder({ title, status, date, link }) {
   return (
-    <Card className="rounded-xl text-blue-400 cursor-pointer hover:bg-blue-50 transition sm:w-[160px] md:w-full h-[160px] shadow-sm ">
+    <Link href={link || ""} target="-blank">
+      <Card className="rounded-xl text-blue-400 cursor-pointer hover:bg-blue-50 transition sm:w-[160px] md:w-full h-[160px] shadow-sm ">
       {/* Header */}
       <CardHeader className="pb-0 pt-2 px-4 flex justify-end">
         <div className="hover:text-black text-gray-600">
@@ -24,7 +26,7 @@ export default function CardFolder({ title, status, date }) {
         </div>
       </CardHeader>
       <CardBody>
-        <ModalFolderList title={title} />
+        <ModalFolderList link={link} title={title} />
       </CardBody>
 
       {/* Body */}
@@ -57,6 +59,7 @@ export default function CardFolder({ title, status, date }) {
         </div>
       </CardFooter>
     </Card>
+    </Link>
   );
 }
 //just make for icon file
@@ -81,7 +84,7 @@ function FileIcon({ type, size = 45 }) {
   );
 }
 
-export function CardFile({ title, status, date, type }) {
+export function CardFile({ title, status, date, type, link }) {
   return (
     <Card className="rounded-xl text-blue-400 cursor-pointer hover:bg-blue-50 transition sm:w-[160px] md:w-full h-[160px] shadow-sm">
       {/* Header */}
@@ -92,15 +95,16 @@ export function CardFile({ title, status, date, type }) {
       </CardHeader>
 
       {/* Body */}
-      <CardBody className="overflow-visible py-2 flex flex-col items-center space-y-2">
-        <FileIcon type={type} />
-        <div className="flex items-center w-full">
-          <p className="truncate text-base font-semibold text-title/80 text-center px-2">
-            {title} .{type}
-          </p>
-        </div>
-      </CardBody>
-
+      <Link href={link || ""} target="_blank">
+        <CardBody className="overflow-visible py-2 flex flex-col items-center space-y-2">
+          <FileIcon type={type} />
+          <div className="flex items-center justify-center w-full">
+            <p className="truncate text-base font-semibold text-title/80 text-center px-2">
+              {title}.{type}
+            </p>
+          </div>
+        </CardBody>
+      </Link>
       {/* Footer */}
       <CardFooter className="pt-2 px-4">
         <div className="flex justify-between items-center w-full text-[10px] text-title/50">

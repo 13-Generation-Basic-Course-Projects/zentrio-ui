@@ -7,7 +7,7 @@ import BredCrum from "../bredcrum/MyBredcrum";
 import { documentData } from "@/data/docu/documentData";
 import CardFolder, { CardFile } from "../card/CardDoc";
 import { Autocomplete, AutocompleteItem, Input } from "@heroui/react";
-export default function PublicDocument({ modal }) {
+export default function PublicDocument({ modal, documents }) {
   const data = documentData;
 
   const [sortOrder, setSortOrder] = useState("asc");

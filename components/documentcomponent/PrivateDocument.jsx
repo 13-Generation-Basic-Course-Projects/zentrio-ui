@@ -5,11 +5,9 @@ import MyDatePicker from "../date/Datepicker";
 import BredCrum from "../bredcrum/MyBredcrum";
 import { documentData } from "@/data/docu/documentData";
 import CardFolder, { CardFile } from "../card/CardDoc";
-import { Autocomplete, AutocompleteItem, Input } from "@heroui/react";
-export default function Privatedocument({ modal }) {
-  console.log(documentData);
-
-  const data = documentData;
+import { Autocomplete, AutocompleteItem, Input, link } from "@heroui/react";
+export default function Privatedocument({ modal, documents }) {
+  const data = documents || [];
 
   const [sortOrder, setSortOrder] = useState("asc");
   const [searchTerm, setSearchTerm] = useState("");
@@ -28,19 +26,41 @@ export default function Privatedocument({ modal }) {
     return textValue.startsWith(inputValue);
   };
 
-  const filteredData = [...documentData]
-    .filter((item) => {
-      const isPersonal = item.status === "personal";
-      const matchesSearch = myFilter(item.title, searchTerm);
-      return isPersonal && matchesSearch;
-    })
-    .sort((a, b) => {
-      if (sortOrder === "asc") {
-        return a.title.localeCompare(b.title);
-      } else {
-        return b.title.localeCompare(a.title);
-      }
-    });
+  const transformedData = data.payload.map((doc) => {
+    const docType = doc.documentType || "";
+    const isGoogleDoc = docType.includes("google-apps.document");
+    const isGoogleSheet = docType.includes("google-apps.spreadsheet");
+    const isGoogleSlide = docType.includes("google-apps.presentation");
+    const isFolder =
+      !docType || (!isGoogleDoc && !isGoogleSheet && !isGoogleSlide);
+
+    return {
+      title: doc.description || "Untitled",
+      status: doc._private ? "private" : "personal",
+      date: new Date(doc.creationDate).toISOString().split("T")[0],
+      type: isGoogleDoc
+        ? "docx"
+        : isGoogleSheet
+        ? "xlsx"
+        : isGoogleSlide
+        ? "pptx"
+        : "folder",
+      category: isFolder ? "Folder" : "File",
+      link: doc.drive_url || null,
+    };
+  });
+
+  const filteredData = transformedData
+  .filter((doc) =>
+    doc.title.toLowerCase().includes(searchTerm.toLowerCase())
+  )
+  .sort((a, b) => {
+    if (sortOrder === "asc") {
+      return a.title.localeCompare(b.title);
+    } else {
+      return b.title.localeCompare(a.title);
+    }
+  });
 
   return (
     <div className="h-screen flex flex-col">
@@ -81,6 +101,7 @@ export default function Privatedocument({ modal }) {
           <div className="w-[340px] rounded-2xl flex justify-center items-center  text-white ">
             <Input
               isClearable
+              onValueChange={(val) => setSearchTerm(val)}
               classNames={{
                 label: "text-black/50 dark:text-white/90",
                 input: [
@@ -106,7 +127,8 @@ export default function Privatedocument({ modal }) {
           <div className="flex items-center justify-between mb-4">
             <p className="text-h5 font-semibold">Folders</p>
             <span className="text-sm text-gray-500">
-              {data?.filter((el) => el.category === "Folder").length || 0}{" "}
+              {filteredData?.filter((el) => el.category === "Folder").length ||
+                0}{" "}
               folders
             </span>
           </div>
@@ -133,7 +155,8 @@ export default function Privatedocument({ modal }) {
           <div className="flex items-center justify-between mb-4">
             <p className="text-h5 font-semibold">Files</p>
             <span className="text-sm text-gray-500">
-              {data?.filter((el) => el.category === "File").length || 0} files
+              {filteredData?.filter((el) => el.category === "File").length || 0}{" "}
+              files
             </span>
           </div>
           <div className="grid grid-cols-6 gap-3  pb-4 pr-2 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
@@ -147,6 +170,7 @@ export default function Privatedocument({ modal }) {
                     status={el.status || "personal"}
                     date={el.date || "2025-05-25"}
                     type={el.type}
+                    link={el.link}
                   />
                 ))
             ) : (
