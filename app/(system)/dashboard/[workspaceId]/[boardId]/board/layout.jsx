@@ -2,6 +2,7 @@ import SystemBoard from "@/components/appserver/Boardpage";
 import { auth } from "@/auth";
 import {
   getCheckListByTaskIdAction,
+  getMemberByBoardIdAction,
   getTaskByBoardIdAndGanttBarIdAction,
 } from "@/action/board.action";
 import {
@@ -38,19 +39,30 @@ export default async function BoardLayout({ children }) {
   });
 
   /*
-   *get for gantt char feature
+   *get for checklist
    */
-  const checklistBoardId = await getCheckListByTaskIdAction({
-    taskId: "f5d4b728-77fc-4cc4-a1fd-cb2f55371212",
-  });
+  const checklistPromises = tasks?.payload.map((task) =>
+    getCheckListByTaskIdAction({ taskId: task.taskId })
+  );
 
-  console.log("fetch -----", tasks);
+  //  resolve all checklistBoardId promises
+  const checklistbyTaskIds = await Promise.all(checklistPromises); //get checklist from task
+
+  /*
+   * get all  memeber  specific boardId
+   */
+  const allMemberInBoard = await getMemberByBoardIdAction({
+    boardId: "feb6d22e-b2d6-4105-b3ad-663c7148c337",
+  });
+  console.log("✅ allMemberInBoard Board IDs:", allMemberInBoard);
   return (
     <div>
       <SystemBoard
         user={session?.user}
         tasks={tasks}
         ganttbar={ganttBarByGanttChartId}
+        checklistbyTaskIds={checklistbyTaskIds}
+        allMemberInBoard={allMemberInBoard}
       />
       <main> {children}</main>
     </div>

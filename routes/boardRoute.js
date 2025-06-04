@@ -6,6 +6,9 @@ export const boardRouteGroup = {
   getTaskByBoardAndGanttBarId: (boardId, ganttbarId) =>
     `${apiConfig.baseUrl}/tasks/boards/${boardId}/gantt-bars/${ganttbarId}`, //Get all task by specific board ID with gantt bar ID
 
+  getMemberByBoardId: (boardId) =>
+    `${apiConfig.baseUrl}/boards/${boardId}/members`, //get all  memeber  specific boardId
+
   //post
   assignUserRoleToBoard: () => `${apiConfig.baseUrl}/boards/assign`,
   inviteUserToBoard: (boardId) =>

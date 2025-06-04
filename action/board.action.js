@@ -2,6 +2,7 @@
 import { Token } from "@/constant/token";
 import {
   getCheckListByTaskIdService,
+  getMemberByBoardIdService,
   getTaskByBoardIdAndGanttBarIdService,
 } from "@/service/board.service";
 
@@ -33,6 +34,20 @@ export const getCheckListByTaskIdAction = async ({ taskId }) => {
   console.log(token);
   const result = await getCheckListByTaskIdService({
     taskId,
+    token,
+  });
+  return result;
+};
+
+/*
+ * get all  memeber  specific boardId
+ */
+export const getMemberByBoardIdAction = async ({ boardId }) => {
+  const userToken = await Token();
+  const token = userToken.Credential;
+  console.log(token);
+  const result = await getMemberByBoardIdService({
+    boardId,
     token,
   });
   return result;

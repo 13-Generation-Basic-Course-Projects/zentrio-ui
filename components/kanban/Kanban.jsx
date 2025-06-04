@@ -4,14 +4,7 @@ import React, { useState, useEffect } from "react";
 import { StackedUser } from "../useravatar/StackUser";
 import BredCrum from "../bredcrum/MyBredcrum";
 import ModalDetailChecklist from "../modal/board/ModalDetailChecklist";
-import {
-  Plus,
-  ChevronDown,
-  ChevronRight,
-  ChevronUp,
-  MessageSquare,
-  Paperclip,
-} from "lucide-react";
+import { ChevronDown, ChevronUp, MessageSquare, Paperclip } from "lucide-react";
 import CardDateChecklist from "../card/CardDateChecklist";
 import ModalCreateChecklist from "../modal/board/ModalCreateChecklist";
 
@@ -24,8 +17,36 @@ const UserAvater = ({ image }) => (
   />
 );
 
+// Function to get checklists for a specific task
+const getChecklistsForTask = (taskId, checklistbyTaskIds) => {
+  if (!checklistbyTaskIds || !Array.isArray(checklistbyTaskIds)) {
+    return [];
+  }
+
+  // Find the response object that contains checklists for this taskId
+  for (const response of checklistbyTaskIds) {
+    if (
+      response.success &&
+      response.payload &&
+      Array.isArray(response.payload)
+    ) {
+      // Check if any checklist in this payload belongs to the taskId
+      const taskChecklists = response.payload.filter(
+        (checklist) => checklist.taskId === taskId
+      );
+      if (taskChecklists.length > 0) {
+        // Sort by checklistOrder
+        return taskChecklists.sort(
+          (a, b) => a.checklistOrder - b.checklistOrder
+        );
+      }
+    }
+  }
+  return [];
+};
+
 // Function to transform API data into columns format
-const transformApiToColumns = (apiData) => {
+const transformApiToColumns = (apiData, checklistbyTaskIds) => {
   // Initialize columns
   const columns = [
     { id: "todo", title: "TODO", cards: [] },
@@ -55,6 +76,12 @@ const transformApiToColumns = (apiData) => {
       duration = `${diffDays} day${diffDays !== 1 ? "s" : ""}`;
     }
 
+    // Get checklists for this task
+    const taskChecklists = getChecklistsForTask(
+      task.taskId,
+      checklistbyTaskIds
+    );
+
     const card = {
       id: task.taskId,
       title: task.title,
@@ -65,8 +92,10 @@ const transformApiToColumns = (apiData) => {
       duration: duration,
       order: task.taskOrder,
       expanded: false, // Default
-      subtasks: [], // API doesn't provide; set default
+      checklists: taskChecklists, // Use actual checklists instead of subtasks
       assignees: [task.creator.imageUrl], // Use creator's image URL
+      startedAt: task.startedAt,
+      finishedAt: task.finishedAt,
     };
 
     const column = columns.find((col) => col.id === columnId);
@@ -83,7 +112,12 @@ const transformApiToColumns = (apiData) => {
   return columns;
 };
 
-export default function KanbanBoard({ modal, tasks }) {
+export default function KanbanBoard({
+  modal,
+  tasks,
+  checklistbyTaskIds,
+  allMemberInBoard,
+}) {
   const [columns, setColumns] = useState([]);
   const [draggedItem, setDraggedItem] = useState(null);
   const [hoverInfo, setHoverInfo] = useState(null);
@@ -92,38 +126,46 @@ export default function KanbanBoard({ modal, tasks }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // show all checklist
+  console.log("the one show all checklist in kanban", checklistbyTaskIds);
+
   // Fetch and transform API data
   useEffect(() => {
     const fetchTasks = async () => {
-      try {
-        setLoading(true);
-        // Replace with your actual API endpoint
-        const response = await fetch("/api/tasks"); // Adjust URL as needed
-        if (!response.ok) {
-          throw new Error("Failed to fetch tasks");
-        }
-        const apiData = await response.json();
-        const transformedColumns = transformApiToColumns(apiData);
-        setColumns(transformedColumns);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
+      // try {
+      //   setLoading(true);
+      //   // Replace with your actual API endpoint
+      //   const response = await fetch("/api/tasks");
+      //   if (!response.ok) {
+      //     throw new Error("Failed to fetch tasks");
+      //   }
+      //   const apiData = await response.json();
+      //   const transformedColumns = transformApiToColumns(
+      //     apiData,
+      //     checklistbyTaskIds
+      //   );
+      //   setColumns(transformedColumns);
+      // } catch (err) {
+      //   setError(err.message);
+      // } finally {
+      //   setLoading(false);
+      // }
     };
 
     // If tasks prop is provided (for testing), use it; otherwise, fetch
     if (tasks?.payload) {
-      const transformedColumns = transformApiToColumns(tasks.payload);
+      const transformedColumns = transformApiToColumns(
+        tasks.payload,
+        checklistbyTaskIds
+      );
       setColumns(transformedColumns);
       setLoading(false);
     } else {
       fetchTasks();
     }
-  }, [tasks]);
+  }, [tasks, JSON.stringify(checklistbyTaskIds)]);
 
-  // Rest of your existing functions (unchanged)
-  const findSubtaskDetails = (subtaskId) => {
+  const findChecklistDetails = (checklistId) => {
     for (let colIndex = 0; colIndex < columns.length; colIndex++) {
       const column = columns[colIndex];
       for (
@@ -132,18 +174,18 @@ export default function KanbanBoard({ modal, tasks }) {
         cardIndex++
       ) {
         const card = column.cards[cardIndex];
-        if (card.subtasks) {
+        if (card.checklists) {
           for (
-            let subtaskIndex = 0;
-            subtaskIndex < card.subtasks.length;
-            subtaskIndex++
+            let checklistIndex = 0;
+            checklistIndex < card.checklists.length;
+            checklistIndex++
           ) {
-            const subtask = card.subtasks[subtaskIndex];
-            if (subtask.id === subtaskId) {
+            const checklist = card.checklists[checklistIndex];
+            if (checklist.checklistId === checklistId) {
               return {
                 columnId: column.id,
                 cardId: card.id,
-                subtaskIndex: subtaskIndex,
+                checklistIndex: checklistIndex,
               };
             }
           }
@@ -164,9 +206,9 @@ export default function KanbanBoard({ modal, tasks }) {
     );
   };
 
-  const addSubtask = (cardId, subtaskData) => {
-    if (!subtaskData?.description?.trim()) return;
-    const newSubtaskId = `${cardId}-subtask-${Date.now()}`;
+  const addChecklist = (cardId, checklistData) => {
+    if (!checklistData?.description?.trim()) return;
+    const newChecklistId = `${cardId}-checklist-${Date.now()}`;
     setColumns((prev) =>
       prev.map((column) => ({
         ...column,
@@ -174,17 +216,24 @@ export default function KanbanBoard({ modal, tasks }) {
           card.id === cardId
             ? {
                 ...card,
-                subtasks: [
-                  ...(card.subtasks || []),
+                checklists: [
+                  ...(card.checklists || []),
                   {
-                    id: newSubtaskId,
-                    title: `Subtask ${(card.subtasks || []).length + 1}`,
-                    description: subtaskData.description,
-                    duration: subtaskData.duration || null,
-                    label: subtaskData.label || null,
-                    comment: 0,
-                    order: (card.subtasks || []).length,
-                    completed: false,
+                    checklistId: newChecklistId,
+                    title:
+                      checklistData.title ||
+                      `Checklist ${(card.checklists || []).length + 1}`,
+                    description: checklistData.description,
+                    status: "PENDING",
+                    cover: null,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
+                    checklistOrder: (card.checklists || []).length + 1,
+                    startedAt: checklistData.startedAt || null,
+                    finishedAt: checklistData.finishedAt || null,
+                    taskId: cardId,
+                    createdBy: "current-user-id", // Replace with actual user ID
+                    members: [],
                   },
                 ],
                 expanded: true,
@@ -197,29 +246,7 @@ export default function KanbanBoard({ modal, tasks }) {
     setNewSubtaskCardId(null);
   };
 
-  const toggleSubtaskComplete = (subtaskId) => {
-    const details = findSubtaskDetails(subtaskId);
-    if (!details) return;
-    const { columnId, cardId, subtaskIndex } = details;
-
-    setColumns((prev) => {
-      const newCols = JSON.parse(JSON.stringify(prev));
-      const targetCol = newCols.find((col) => col.id === columnId);
-      const targetCard = targetCol?.cards.find((card) => card.id === cardId);
-
-      if (
-        targetCard &&
-        targetCard.subtasks &&
-        targetCard.subtasks[subtaskIndex]
-      ) {
-        targetCard.subtasks[subtaskIndex].completed =
-          !targetCard.subtasks[subtaskIndex].completed;
-      }
-      return newCols;
-    });
-  };
-
-  // Drag-and-drop handlers (unchanged)
+  // Drag-and-drop handlers (updated for checklists)
   const handleDragStart = (e, item) => {
     e.stopPropagation();
     setDraggedItem(item);
@@ -256,13 +283,13 @@ export default function KanbanBoard({ modal, tasks }) {
 
     if (!draggedItem) return;
 
-    if (draggedItem.type === "card" && targetInfo.type === "subtask") {
+    if (draggedItem.type === "card" && targetInfo.type === "checklist") {
       e.dataTransfer.dropEffect = "none";
       setHoverInfo(null);
       return;
     }
     if (
-      draggedItem.type === "subtask" &&
+      draggedItem.type === "checklist" &&
       targetInfo.type === "card" &&
       targetInfo.isDropZone
     ) {
@@ -271,8 +298,8 @@ export default function KanbanBoard({ modal, tasks }) {
       return;
     }
     if (
-      draggedItem.type === "subtask" &&
-      targetInfo.type === "subtask" &&
+      draggedItem.type === "checklist" &&
+      targetInfo.type === "checklist" &&
       draggedItem.sourceCardId !== targetInfo.targetCardId
     ) {
       e.dataTransfer.dropEffect = "none";
@@ -316,8 +343,8 @@ export default function KanbanBoard({ modal, tasks }) {
         ? columns.find((c) => c.id === targetColumnId)?.cards[targetIndex]?.id
         : columns
             .find((c) => c.id === targetColumnId)
-            ?.cards.find((c) => c.id === targetCardId)?.subtasks[targetIndex]
-            ?.id)
+            ?.cards.find((c) => c.id === targetCardId)?.checklists[targetIndex]
+            ?.checklistId)
     ) {
       handleDragEnd(e);
       return;
@@ -346,15 +373,17 @@ export default function KanbanBoard({ modal, tasks }) {
       );
       if (
         !sourceCard ||
-        !sourceCard.subtasks ||
+        !sourceCard.checklists ||
         sourceIndex < 0 ||
-        sourceIndex >= sourceCard.subtasks.length
+        sourceIndex >= sourceCard.checklists.length
       ) {
-        console.error("Source subtask index invalid or card/subtasks missing");
+        console.error(
+          "Source checklist index invalid or card/checklists missing"
+        );
         handleDragEnd(e);
         return;
       }
-      itemToMove = sourceCard.subtasks.splice(sourceIndex, 1)[0];
+      itemToMove = sourceCard.checklists.splice(sourceIndex, 1)[0];
     }
 
     if (!itemToMove) {
@@ -375,16 +404,19 @@ export default function KanbanBoard({ modal, tasks }) {
         const maxIndex = targetCol.cards.length;
         const insertIndex = Math.max(0, Math.min(targetIndex, maxIndex));
         targetCol.cards.splice(insertIndex, 0, itemToMove);
-      } else if (draggedType === "subtask" && dropTargetType === "subtask") {
+      } else if (
+        draggedType === "checklist" &&
+        dropTargetType === "checklist"
+      ) {
         const targetCard = targetCol.cards.find(
           (card) => card.id === targetCardId
         );
         if (!targetCard)
-          throw new Error("Target card for subtask drop not found");
-        if (!targetCard.subtasks) targetCard.subtasks = [];
-        const maxIndex = targetCard.subtasks.length;
+          throw new Error("Target card for checklist drop not found");
+        if (!targetCard.checklists) targetCard.checklists = [];
+        const maxIndex = targetCard.checklists.length;
         const insertIndex = Math.max(0, Math.min(targetIndex, maxIndex));
-        targetCard.subtasks.splice(insertIndex, 0, itemToMove);
+        targetCard.checklists.splice(insertIndex, 0, itemToMove);
         targetCard.expanded = true;
       } else {
         console.warn("Invalid drop combination detected in handleDrop");
@@ -395,9 +427,9 @@ export default function KanbanBoard({ modal, tasks }) {
       newColumns.forEach((column) => {
         column.cards.forEach((card, index) => {
           card.order = index;
-          if (card.subtasks) {
-            card.subtasks.forEach((subtask, subIndex) => {
-              subtask.order = subIndex;
+          if (card.checklists) {
+            card.checklists.forEach((checklist, checkIndex) => {
+              checklist.checklistOrder = checkIndex + 1;
             });
           }
         });
@@ -408,19 +440,21 @@ export default function KanbanBoard({ modal, tasks }) {
       // Optionally, update the backend with the new column/stage
       if (draggedType === "card") {
         const taskId = itemToMove.id;
-        const newStage = Object.keys({
+        const stageMap = {
           done: "COMPLETED",
           "under-review": "UNDER_REVIEW",
           "in-progress": "IN_PROGRESS",
           todo: "TODO",
-        }).find((key) => key === targetColumnId);
+        };
+        const newStage = stageMap[targetColumnId];
+        //will update use enpoint to update the task order
         if (newStage) {
           // Update backend (example)
-          fetch(`/api/tasks/${taskId}`, {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ stage: newStage }),
-          }).catch((err) => console.error("Failed to update task stage:", err));
+          // fetch(`/api/tasks/${taskId}`, {
+          //   method: "PATCH",
+          //   headers: { "Content-Type": "application/json" },
+          //   body: JSON.stringify({ stage: newStage }),
+          // }).catch((err) => console.error("Failed to update task stage:", err));
         }
       }
     } catch (error) {
@@ -454,7 +488,7 @@ export default function KanbanBoard({ modal, tasks }) {
         header={"Hikko Design"}
         modal={modal}
       />
-      <StackedUser />
+      <StackedUser image={allMemberInBoard} />
       {/* Column Headers */}
       <div className="pt-5 pb-2 grid grid-cols-4 gap-4">
         {(columns || []).map((column) => (
@@ -498,8 +532,8 @@ export default function KanbanBoard({ modal, tasks }) {
                   hoverInfo?.type === "card" &&
                   hoverInfo?.targetColumnId === column.id &&
                   hoverInfo?.targetIndex === cardIndex;
-                const isSubtaskHoverTargetCard =
-                  hoverInfo?.type === "subtask" &&
+                const isChecklistHoverTargetCard =
+                  hoverInfo?.type === "checklist" &&
                   hoverInfo?.targetCardId === card.id;
 
                 return (
@@ -526,7 +560,9 @@ export default function KanbanBoard({ modal, tasks }) {
                     />
                     <div
                       className={`shadow-sm rounded-xl overflow-hidden transition-all duration-300 ease-in-out ${
-                        isSubtaskHoverTargetCard ? "ring-2 ring-green-300" : ""
+                        isChecklistHoverTargetCard
+                          ? "ring-2 ring-green-300"
+                          : ""
                       }`}
                       style={{
                         opacity: isCardDragging ? 0.5 : 1,
@@ -587,30 +623,33 @@ export default function KanbanBoard({ modal, tasks }) {
                             handleDragOver(e, {
                               targetColumnId: column.id,
                               targetCardId: card.id,
-                              targetIndex: (card.subtasks || []).length,
-                              type: "subtask",
+                              targetIndex: (card.checklists || []).length,
+                              type: "checklist",
                             })
                           }
                           onDrop={handleDrop}
                         >
-                          {(card.subtasks || []).map(
-                            (subtask, subtaskIndex) => {
-                              const isSubtaskDragging =
-                                draggedItem?.id === subtask.id;
-                              const isSubtaskHoverMakeSpace =
-                                hoverInfo?.type === "subtask" &&
+                          {(card.checklists || []).map(
+                            (checklist, checklistIndex) => {
+                              const isChecklistDragging =
+                                draggedItem?.id === checklist.checklistId;
+                              const isChecklistHoverMakeSpace =
+                                hoverInfo?.type === "checklist" &&
                                 hoverInfo?.targetCardId === card.id &&
-                                hoverInfo?.targetIndex === subtaskIndex;
-                              const isSubtaskDropZoneHovered =
-                                hoverInfo?.type === "subtask" &&
+                                hoverInfo?.targetIndex === checklistIndex;
+                              const isChecklistDropZoneHovered =
+                                hoverInfo?.type === "checklist" &&
                                 hoverInfo?.targetCardId === card.id &&
-                                hoverInfo?.targetIndex === subtaskIndex;
+                                hoverInfo?.targetIndex === checklistIndex;
 
                               return (
-                                <div key={subtask.id} id={subtask.id}>
+                                <div
+                                  key={checklist.checklistId}
+                                  id={checklist.checklistId}
+                                >
                                   <div
                                     className={`h-1 w-full transition-all duration-200 ease-in-out rounded ${
-                                      isSubtaskDropZoneHovered
+                                      isChecklistDropZoneHovered
                                         ? "bg-green-200 h-6 border-2 border-dashed border-green-500"
                                         : ""
                                     }`}
@@ -618,8 +657,8 @@ export default function KanbanBoard({ modal, tasks }) {
                                       handleDragOver(e, {
                                         targetColumnId: column.id,
                                         targetCardId: card.id,
-                                        targetIndex: subtaskIndex,
-                                        type: "subtask",
+                                        targetIndex: checklistIndex,
+                                        type: "checklist",
                                       })
                                     }
                                     onDrop={handleDrop}
@@ -627,40 +666,47 @@ export default function KanbanBoard({ modal, tasks }) {
                                   <div
                                     className={`mb-1 cursor-grab active:cursor-grabbing bg-white transition-all duration-200 ease-in-out rounded-xl shadow-sm`}
                                     style={{
-                                      opacity: isSubtaskDragging ? 0.5 : 1,
-                                      transform: isSubtaskDragging
+                                      opacity: isChecklistDragging ? 0.5 : 1,
+                                      transform: isChecklistDragging
                                         ? "scale(1.05)"
-                                        : isSubtaskHoverMakeSpace
+                                        : isChecklistHoverMakeSpace
                                         ? "translateY(4px)"
                                         : "none",
                                     }}
                                     draggable
                                     onDragStart={(e) =>
                                       handleDragStart(e, {
-                                        id: subtask.id,
-                                        type: "subtask",
+                                        id: checklist.checklistId,
+                                        type: "checklist",
                                         sourceColumnId: column.id,
                                         sourceCardId: card.id,
-                                        sourceIndex: subtaskIndex,
+                                        sourceIndex: checklistIndex,
                                       })
                                     }
                                     onDragEnd={handleDragEnd}
                                   >
                                     <ModalDetailChecklist
-                                      title={subtask.title}
+                                      title={checklist.title}
                                       startDate={
-                                        card.startedAt
+                                        checklist.startedAt
                                           ? new Date(
-                                              card.startedAt
+                                              checklist.startedAt
                                             ).toLocaleDateString()
                                           : "N/A"
                                       }
-                                      status={
-                                        subtask.completed
-                                          ? "Completed"
-                                          : "Pending"
+                                      status={checklist.status}
+                                      image={
+                                        checklist.members &&
+                                        checklist.members.length > 0
+                                          ? checklist.members[0].imageUrl
+                                          : card.assignees[0] || ""
                                       }
-                                      image={card.assignees[0] || ""}
+                                      description={checklist.description}
+                                      checklistId={checklist.checklistId}
+                                      members={checklist.members || []}
+                                      createdAt={checklist.createdAt}
+                                      updatedAt={checklist.updatedAt}
+                                      finishedAt={checklist.finishedAt}
                                     />
                                   </div>
                                 </div>
@@ -669,10 +715,10 @@ export default function KanbanBoard({ modal, tasks }) {
                           )}
                           <div
                             className={`h-1 w-full transition-all duration-200 ease-in-out rounded ${
-                              hoverInfo?.type === "subtask" &&
+                              hoverInfo?.type === "checklist" &&
                               hoverInfo?.targetCardId === card.id &&
                               hoverInfo?.targetIndex ===
-                                (card.subtasks || []).length
+                                (card.checklists || []).length
                                 ? "bg-green-200 h-6 border-2 border-dashed border-green-500"
                                 : ""
                             }`}
@@ -680,8 +726,8 @@ export default function KanbanBoard({ modal, tasks }) {
                               handleDragOver(e, {
                                 targetColumnId: column.id,
                                 targetCardId: card.id,
-                                targetIndex: (card.subtasks || []).length,
-                                type: "subtask",
+                                targetIndex: (card.checklists || []).length,
+                                type: "checklist",
                               })
                             }
                             onDrop={handleDrop}
@@ -690,8 +736,8 @@ export default function KanbanBoard({ modal, tasks }) {
                             <div className="grid grid-cols-12">
                               <div className="col-span-8 flex items-center">
                                 <ModalCreateChecklist
-                                  onSubmit={(subtaskData) =>
-                                    addSubtask(card.id, subtaskData)
+                                  onSubmit={(checklistData) =>
+                                    addChecklist(card.id, checklistData)
                                   }
                                   buttonText="New checklist"
                                   modalTitle="Create Checklist"

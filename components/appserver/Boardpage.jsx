@@ -14,7 +14,13 @@ import ModalNotification from "../modal/noti/ModalNotification";
 import ModalCreateGanttChart from "../modal/board/ModalCreateGanttChart";
 import ModalCreateGanttBar from "../modal/board/ModalCreateGanttBar";
 
-export default function SystemBoard({ user, tasks, ganttbar }) {
+export default function SystemBoard({
+  user,
+  tasks,
+  ganttbar,
+  checklistbyTaskIds,
+  allMemberInBoard,
+}) {
   const pathname = usePathname();
   const segments = pathname.split("/");
   const workspaceId = segments[2]; // gets workspaceId from URL like /dashboard/otherworkspace/2/board
@@ -52,7 +58,14 @@ export default function SystemBoard({ user, tasks, ganttbar }) {
           />
         </svg>
       ),
-      content: <KanbanBoard modal={modalComponents} tasks={tasks} />,
+      content: (
+        <KanbanBoard
+          modal={modalComponents}
+          tasks={tasks}
+          checklistbyTaskIds={checklistbyTaskIds}
+          allMemberInBoard={allMemberInBoard}
+        />
+      ),
     },
     {
       key: "calendar",
