@@ -1,7 +1,13 @@
+import Laptop from "@/assets/intergrating/laptop.png";
+import Image from "next/image";
+import GanttChart from "@/assets/calendarlanding.svg";
+
 const CustomePDF = () => {
   return (
     <>
-      <PageOne />
+      <div className="w-full h-full bg-slate-blue">
+        <PageFour />
+      </div>
     </>
   );
 };
@@ -118,7 +124,380 @@ export const PageNumber = ({ num }) => {
   );
 };
 
+export const BoardTable = () => {
+  return (
+    <>
+      <div className="w-full h-[70px] bg-slate-green">
+        <div className="w-full h-full border-1 border-black rounded-[5px]">
+          <table className="w-full text-center text-[12px] bg-primary">
+            <thead className="h-7">
+              <tr className="h-full font-bold text-white border-b-1 border-black">
+                <th className="w-[120px]">Board Name</th>
+                <th className="w-[120px] border-x-1 border-black">Task</th>
+                <th className="w-[120px] border-r-1 border-black">Version</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody className="h-[40px]">
+              <tr className="h-full bg-white">
+                <td>Hikko Design</td>
+                <td className="border-x-1 border-black">08</td>
+                <td className="border-r-1 border-black">02</td>
+                <td>18/05/2025</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </>
+  );
+};
+
+export const StageTable = () => {
+  return (
+    <>
+      <div className="border-1 rounded-[5px] border-black">
+        <table className="text-[12px] w-full text-left">
+          <thead className="h-[26px] bg-primary text-white border-b-1 border-black">
+            <tr className="h-full">
+              <th className="pl-[27px]">Stage</th>
+              <th className="pl-[27px] border-x-1 border-black">Tasks</th>
+              <th className="pl-[27px]">Checklists</th>
+            </tr>
+          </thead>
+          <tbody className="bg-white">
+            <tr className="h-[32px] border-b-1 border-black">
+              <td className="stage-name pl-[27px]">To Do</td>
+              <td className="pl-[27px] border-x-1 border-black">10 tasks</td>
+              <td className="pl-[27px]">10 checklists</td>
+            </tr>
+            <tr className="h-[32px] border-b-1 border-black">
+              <td className="stage-name pl-[27px]">Progress</td>
+              <td className="pl-[27px] border-x-1 border-black">8 tasks</td>
+              <td className="pl-[27px]">5 checklists</td>
+            </tr>
+            <tr className="h-[32px] border-b-1 border-black">
+              <td className="stage-name pl-[27px]">Under Review</td>
+              <td className="pl-[27px] border-x-1 border-black">5 tasks</td>
+              <td className="pl-[27px]">7 checklists</td>
+            </tr>
+            <tr className="h-[32px]">
+              <td className="stage-name pl-[27px]">Completed</td>
+              <td className="pl-[27px] border-x-1 border-black">3 tasks</td>
+              <td className="pl-[27px]">6 checklists</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </>
+  );
+};
+
+export const TodoTable = () => {
+  return (
+    <>
+      <div className="w-full h-[70px] bg-slate-green">
+        <div className="w-full h-full">
+          <table className="w-full text-left text-[12px] bg-primary">
+            <thead className="h-7">
+              <tr className="h-full font-bold text-white border-b-1 border-black">
+                <th className="w-[220px] pl-[27px]">Task Title</th>
+                <th className="pl-[27px] border-x-1 border-black">Lead</th>
+                <th className=" pl-[27px] border-r-1 border-black">
+                  Subtask Count
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr className="h-full bg-white border-b-1 border-black">
+                <td className="h-[28px] pl-[27px]">Setup project repo</td>
+                <td className="h-[28px] pl-[27px] border-x-1 border-black">
+                  Alice
+                </td>
+                <td className="h-[28px] pl-[27px] border-black">1</td>
+              </tr>
+              <tr className="h-full bg-white border-b-1 border-black">
+                <td className="h-[28px] pl-[27px]">Design UI</td>
+                <td className="h-[28px] pl-[27px] border-x-1 border-black">
+                  Bob
+                </td>
+                <td className="h-[28px] pl-[27px] border-black">2</td>
+              </tr>
+              <tr className="h-full bg-white border-b-1 border-black">
+                <td className="h-[28px] pl-[27px]">API Development</td>
+                <td className="h-[28px] pl-[27px] border-x-1 border-black">
+                  Charlie
+                </td>
+                <td className="h-[28px] pl-[27px] border-black">1</td>
+              </tr>
+              <tr className="h-full bg-white">
+                <td className="h-[28px] pl-[27px]">Requirement gathering</td>
+                <td className="h-[28px] pl-[27px] border-x-1 border-black">
+                  David
+                </td>
+                <td className="h-[28px] pl-[27px] border-black">1</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </>
+  );
+};
+
+export const UnderReview = () => {
+  return (
+    <>
+      <div className="w-full max-w-[920px] rounded-[5px] overflow-hidden text-[12px]">
+        <table className="w-full text-left text-sm border-collapse">
+          <thead classname="h-7">
+            <tr className="bg-[#54c0d6] text-white font-bold">
+              <th className="pl-[27px] w-[33%] border border-black">
+                Task Title
+              </th>
+              <th className="pl-[27px] w-[33%] border border-black">
+                Lead
+              </th>
+              <th className="pl-[27px] w-[33%] border border-black">
+                Subtask Count
+              </th>
+            </tr>
+          </thead>
+          <tbody className="text-[#003b4a]">
+            <tr className="bg-white h-[32px]">
+              <td className="pl-[27px] border border-black">Setup CI/CD</td>
+              <td className="pl-[27px] border border-black">Bob</td>
+              <td className="pl-[27px] border border-black">2</td>
+            </tr>
+            <tr className="bg-white h-[32px]">
+              <td className="pl-[27px] border border-black">
+                Frontend Dev
+              </td>
+              <td className="pl-[27px] border border-black">Alice</td>
+              <td className="pl-[27px] border border-black">1</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </>
+  );
+};
+
+export const Progress = () => {
+  return (
+    <>
+      <div className="w-full max-w-[920px] rounded-[5px] overflow-hidden text-[12px]">
+        <table className="w-full text-left text-sm border-collapse">
+          <thead className="h-7">
+            <tr className="bg-[#54c0d6] text-white font-bold">
+              <th className="pl-[27px] w-[33%] border border-black">
+                Task Title
+              </th>
+              <th className="pl-[27px] w-[33%] border border-black">
+                Lead
+              </th>
+              <th className="pl-[27px] w-[33%] border border-black">
+                Subtask Count
+              </th>
+            </tr>
+          </thead>
+          <tbody className="text-[#003b4a]">
+            <tr className="bg-white h-[32px]">
+              <td className="pl-[27px] border border-black">QA Testing</td>
+              <td className="pl-[27px] border border-black">Charlie</td>
+              <td className="pl-[27px] border border-black">2</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </>
+  );
+};
+
+export const Done = () => {
+  return (
+    <>
+      <div className="w-full max-w-[920px] rounded-[5px] overflow-hidden text-[12px]">
+        <table className="w-full text-left text-sm border-collapse">
+          <thead className="h-7">
+            <tr className="bg-[#54c0d6] text-white font-bold">
+              <th className="pl-[27px] w-[33%] border border-black">
+                Task Title
+              </th>
+              <th className="pl-[27px] w-[33%] border border-black">
+                Lead
+              </th>
+              <th className="pl-[27px] w-[33%] border border-black">
+                Subtask Count
+              </th>
+            </tr>
+          </thead>
+          <tbody className="text-[#003b4a]">
+            <tr className="bg-white h-[32px]">
+              <td className="pl-[27px] border border-black">
+                Backend Deployment
+              </td>
+              <td className="pl-[27px] border border-black">David</td>
+              <td className="pl-[27px] border border-black">1</td>
+            </tr>
+            <tr className="bg-white h-[32px]">
+              <td className="pl-[27px] border border-black">
+                Documentation
+              </td>
+              <td className="pl-[27px] border border-black">Alice</td>
+              <td className="pl-[27px] border border-black">1</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </>
+  );
+};
+
+export const Subtasks = () => {
+  return (
+    <>
+      <div className="w-full max-w-[920px] rounded-[5px] overflow-hidden text-[12px] mx-auto">
+        <table className="w-full text-center border-collapse">
+          <thead className="h-7">
+            <tr className="font-normal">
+              <th className="w-[105px] border border-black bg-[#54c0d6] text-white">
+                Task Title
+              </th>
+              <th className="border border-black bg-white">
+                Backend Deployment
+              </th>
+              <th className="border border-black bg-white">
+                Documentation
+              </th>
+            </tr>
+          </thead>
+          <tbody className="text-[#003b4a]">
+            <tr className="bg-white h-[32px]">
+              <td className="w-[105px] border border-black bg-[#54c0d6] text-white font-bold">
+                Subtask Title
+              </td>
+              <td className="border border-black">Deploy to server</td>
+              <td className="border border-black">Final review</td>
+            </tr>
+            <tr className="bg-white h-[32px]">
+              <td className="w-[105px] border border-black bg-[#54c0d6] text-white font-bold">
+                Members
+              </td>
+              <td className="border border-black">David</td>
+              <td className="border border-black">Alice</td>
+            </tr>
+            <tr className="bg-white h-[32px]">
+              <td className="w-[105px] border border-black bg-[#54c0d6] text-white font-bold">
+                Attachments
+              </td>
+              <td className="border border-black text-blue-600">
+                deploy_guide.pdf , env_var.env
+              </td>
+              <td className="border border-black text-blue-600">
+                docs_final.md
+              </td>
+            </tr>
+            <tr className="bg-white h-[32px]">
+              <td className="w-[105px] border border-black bg-[#54c0d6] text-white font-bold">
+                Comments
+              </td>
+              <td className="border border-black">1 comment</td>
+              <td className="border border-black">0 comment</td>
+            </tr>
+            <tr className="bg-white h-[32px]">
+              <td className="w-[105px] border border-black bg-[#54c0d6] text-white font-bold">
+                Start Date
+              </td>
+              <td className="border border-black">2025-05-03</td>
+              <td className="border border-black">2025-05-01</td>
+            </tr>
+            <tr className="bg-white h-[32px]">
+              <td className="w-[105px] border border-black bg-[#54c0d6] text-white font-bold">
+                End Date
+              </td>
+              <td className="border border-black">2025-05-04</td>
+              <td className="border border-black">2025-05-02</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </>
+  );
+};
+
+export const MonthlyTask = () => {
+  return(<>
+
+  </>)
+}
+
 export const PageOne = () => {
+  return (
+    <>
+      <div className="w-full h-screen flex justify-center items-center">
+        {/* Copy from this */}
+        <div className="bg-white w-[595px] h-[842px] relative">
+          <HeaderPage />
+          <div>
+            <div className="w-full flex flex-col justify-between items-center absolute bottom-[7.5%] h-[640px]">
+              <div className="w-[485px]">
+                {/* Write code here */}
+                <div className="h-[30%]">
+                  <BoardTable />
+                </div>
+                <div className="bg-gradient-to-r from-[#59BAD5] via-[#ABAAFF] to-[#59BAD5] bg-clip-text h-full">
+                  <div className="h-[75%]">
+                    <div>
+                      <p className="text-[16px]">
+                        I.&nbsp;&nbsp;Gantt Bar in{" "}
+                        <span className="text-transparent">Hikko Design</span>
+                      </p>
+                      <div className="flex justify-center items-center relative">
+                        <div className="absolute w-[255px] h-[168px] mt-[45%]">
+                          <Image
+                            src={GanttChart}
+                            alt=""
+                            className="w-full h-full"
+                          />
+                        </div>
+                        <div className="absolute top-[90%]">
+                          <Image
+                            src={Laptop}
+                            alt=""
+                            className="w-[335px] h-[228px]"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex flex-col">
+                    <p className="text-[16px] pb-3">
+                      II.&nbsp;&nbsp;Stages Information
+                    </p>
+                    <p className="text-[12px] pl-5">
+                      This section provides a structured overview of the
+                      project’s workflow distribution across four stages: To Do,
+                      Progress, Under Review, and Completed.
+                    </p>
+                    <div className="w-full h-[174px] flex justify-center items-end">
+                      <div className="bg-slate-red w-[403px] h-[85%]">
+                        <StageTable />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <PageNumber num={1} />
+        </div>
+      </div>
+    </>
+  );
+};
+
+export const PageTwo = () => {
   return (
     <>
       <div className="w-full h-screen flex justify-center items-center bg-slate-blue">
@@ -126,14 +505,123 @@ export const PageOne = () => {
         <div className="bg-white w-[595px] h-[842px] relative">
           <HeaderPage />
           <div>
-            {/* Write code here */}
-            
+            <div className="w-full flex flex-col justify-between items-center absolute bottom-[7.5%] h-[680px]">
+              <div className="w-[500px]">
+                {/* Write code here */}
+                <div className="h-[580px] flex flex-col justify-between">
+                  <div className="pb-[5%]">
+                    <p className="text-body font-medium">
+                      III.&nbsp;&nbsp;To Do Information
+                    </p>
+                    <div className="w-full h-[174px] flex items-end">
+                      <div className="w-full h-[85%] border-1 border-black rounded-[5px]">
+                        <TodoTable />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="pb-[5%]">
+                    <p className="text-body font-medium">
+                      IV.&nbsp;&nbsp;Under Review information
+                    </p>
+                    <div className="w-full h-[154px] flex items-end">
+                      <div className="w-full h-[85%]">
+                        <UnderReview />
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-body font-medium">
+                      V.&nbsp;&nbsp;Progress information
+                    </p>
+                    <div className="w-full h-[154px] flex items-end">
+                      <div className="w-full h-[85%]">
+                        <Progress />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          <PageNumber num={1}/>
+          <PageNumber num={2} />
         </div>
       </div>
     </>
   );
 };
 
-export const Table = () => {};
+export const PageThree = () => {
+  return (
+    <>
+      <div className="w-full h-screen flex justify-center items-center bg-slate-blue">
+        {/* Copy from this */}
+        <div className="bg-white w-[595px] h-[842px] relative">
+          <HeaderPage />
+          <div>
+            <div className="w-full flex flex-col justify-between items-center absolute bottom-[7.5%] h-[680px]">
+              <div className="w-[500px]">
+                {/* Write code here */}
+                <div className="h-full flex flex-col justify-between">
+                  <div className="pb-[5%]">
+                    <p className="text-body font-medium">
+                      VI.&nbsp;&nbsp;Stage : Done
+                    </p>
+                    <div className="w-full h-[154px] flex items-end">
+                      <div className="w-full h-[85%]">
+                        <Done />
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-body font-medium">
+                      VII.&nbsp;&nbsp;Subtasks
+                    </p>
+                    <div className="w-full h-[154px] flex items-end">
+                      <div className="w-full h-[85%]">
+                        <Subtasks />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <PageNumber num={3} />
+        </div>
+      </div>
+    </>
+  );
+};
+
+export const PageFour = () => {
+  return (
+    <>
+      <div className="w-full h-screen flex justify-center items-center bg-slate-blue">
+        {/* Copy from this */}
+        <div className="bg-white w-[595px] h-[842px] relative">
+          <HeaderPage />
+          <div>
+            <div className="w-full flex flex-col justify-between items-center absolute bottom-[7.5%] h-[680px]">
+              <div className="w-[500px]">
+                {/* Write code here */}
+                <div className="h-full flex flex-col justify-between">
+                  <div>
+                    <p className="text-body font-medium">
+                      VIII.&nbsp;&nbsp;Monthly Task information
+                    </p>
+                    <div className="w-full h-[154px] flex items-end">
+                      <div className="w-full h-[85%] bg-slate-red">
+                        <MonthlyTask />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <PageNumber num={4} />
+        </div>
+      </div>
+    </>
+  );
+};
