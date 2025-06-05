@@ -11,7 +11,7 @@ import ModalNotification from "../modal/noti/ModalNotification";
 import AllDocument from "./AllDocument";
 import ModalCreateDocu from "../modal/docu/ModalCreateDocu";
 
-export default function DocumentLayout({ user, documents }) {
+export default function DocumentLayout({ user, documents, tokenFromGoogle }) {
   const [activeTab, setActiveTab] = useState(null);
 
   const tabItems = [
@@ -120,7 +120,7 @@ export default function DocumentLayout({ user, documents }) {
         <div className="mx-auto">
           {activeTab === "kanban" && <PrivateDocument documents={documents} modal={[<ModalCreateDocu />]} />}
           {activeTab === "calendar" && <PublicDocument documents={documents} modal={[<ModalCreateDocu />]} />}
-          {activeTab === null && <AllDocument documents={documents} />}
+          {activeTab === null && <AllDocument documents={documents}  tokenFromGoogle={tokenFromGoogle}/>}
         </div>
       </main>
     </>

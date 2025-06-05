@@ -13,8 +13,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { folderSchema } from "@/lib/schemas/documentSchema";
 import { createFolderAction } from "@/action/document.action";
 
-export default function ModalCreateFolder({ isOpen, onClose, boardId }) {
-  const tokenFromGoogle = "ya29.a0AW4XtxiIRM0q6UxU1kQs0kkNkvhpcayVWTTivdBmUoxvDd0LS6rjsulQ3plI1oUuhGmcwcFjErPaq-v5OfItAulHCNe0hx89l2yg4qhNG-HhItuPFRQml0MdAV2ah_0zhlOPQtadJxXC0RVU60vBldU4dxSVLxHMSQUxdr--ZwaCgYKARsSARcSFQHGX2MiKQXjrFY9su2UHVnFgnH_iw0177";
+export default function ModalCreateFolder({ isOpen, onClose, boardId , tokenFromGoogle}) {
+  // const tokenFromGoogle = "ya29.a0AW4XtxhF89j9oUbKXiYmLiX3SKTPho4FfXIBourQ-UVriH7NUJ3cX939dlQXHL4HghzsMZnJGEJIhVxJw5Z5tQJK-G8IvDktKdEmfcCbYC9P3oKx4T1Mp71wAxkTk7uHc_0KRi1k7STtz88I_YxF-Y8ian9nG9oSjGuJ1WRBdwaCgYKAYkSARcSFQHGX2Mi_SHJY5zB2cR4FX_y5qsbyw0177";
 
   const {
     register,
@@ -40,6 +40,8 @@ export default function ModalCreateFolder({ isOpen, onClose, boardId }) {
       
       reset();
       onClose();
+
+      window.location.reload();
     } catch (error) {
       console.error("Error creating folder:", error);
     }

@@ -10,8 +10,9 @@ import {
 import { IconAdd } from "../../icon/everyicon";
 import ModalCreateFolder from "./ModalCreateFolder";
 import ModalUploadFile from "./ModalUploadfile";
+import { createDocumentByUploadAction } from "@/action/document.action";
 
-export default function ModalCreateDocu() {
+export default function ModalCreateDocu( {boardId,     tokenFromGoogle} ) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isCreateFolderOpen, setIsCreateFolderOpen] = useState(false);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
@@ -125,12 +126,16 @@ export default function ModalCreateDocu() {
       <ModalCreateFolder
         isOpen={isCreateFolderOpen}
         onClose={() => setIsCreateFolderOpen(false)}
-        boardId="d0d17acc-ca1e-4e3c-9fbf-1c1ab47607fe"
+        boardId={boardId || "d0d17acc-ca1e-4e3c-9fbf-1c1ab47607fe"}
+        tokenFromGoogle={tokenFromGoogle}
       />
 
       <ModalUploadFile
         isOpen={isUploadModalOpen}
         onClose={() => setIsUploadModalOpen(false)}
+        boardId={boardId || "d0d17acc-ca1e-4e3c-9fbf-1c1ab47607fe"}
+        uploadDocument={createDocumentByUploadAction}
+            tokenFromGoogle={tokenFromGoogle}
       />
     </>
   );

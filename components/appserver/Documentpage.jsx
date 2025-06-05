@@ -3,17 +3,19 @@ import Privatedocument from "../documentcomponent/PrivateDocument";
 import PublicDocument from "../documentcomponent/PublicDocument";
 import ModalCreateDocu from "../modal/docu/ModalCreateDocu";
 
-export default function DocumentAutherize({ user, documents }) {
+export default function DocumentAutherize({ user, documents, boardId, tokenFromGoogle }) {
   return (
     <>
       <DocumentLayout
         user={user}
         documents={documents}
+        boardId={boardId}
+        tokenFromGoogle={tokenFromGoogle}
         privatedocument={
-          <Privatedocument title="Private" modal={[<ModalCreateDocu />]} />
+          <Privatedocument title="Private" modal={[<ModalCreateDocu key="private-modal" boardId={boardId} />]} />
         }
         publicdocument={
-          <PublicDocument title="Public" modal={[<ModalCreateDocu />]} />
+          <PublicDocument title="Public" modal={[<ModalCreateDocu key="public-modal" boardId={boardId} />]} />
         }
       />
     </>
