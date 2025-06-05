@@ -1,7 +1,7 @@
 "use server"
 
 import { Token } from "@/constant/token";
-import { getTaskbyBoardIdService, getNotebyTaskIdService } from "@/service/calendar.service";
+import { getTaskbyBoardIdService, getNotebyTaskIdService, updateNoteByIdService } from "@/service/calendar.service";
 
 
 export const calendarAction = async () => {
@@ -22,4 +22,28 @@ export const calendarNoteAction = async () => {
 
     const result = await getNotebyTaskIdService({ taskId, zentrioToken });
     return result;
+}
+
+export const calendarUpdateNoteAction = async ({ noteId, noted, startDate, tillDate, taskId }) => {
+    console.log("testing: ")
+    const userToken = await Token();
+   
+    const zentrioToken = userToken.Credential;
+
+    console.log("Token before update:", startDate);
+
+    if (!zentrioToken) throw new Error("Token missing!");
+
+    const result = await updateNoteByIdService({
+        noteId,
+        noted,
+        startDate,
+        tillDate,
+        taskId,
+        zentrioToken,
+    });
+
+    
+
+  return result;
 }

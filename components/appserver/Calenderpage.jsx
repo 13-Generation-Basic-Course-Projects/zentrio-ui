@@ -154,7 +154,6 @@ export default function MyCalender({ tasks, note }) {
 
   //   setCurrentTitle(calendarApi.view.title);
   // };
-
   return (
     <div className="p-4 h-screen flex flex-col overflow-hidden">
       
