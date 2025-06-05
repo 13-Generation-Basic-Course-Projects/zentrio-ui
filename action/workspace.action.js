@@ -3,9 +3,12 @@
 import { Token } from "@/constant/token";
 import { RenameSchema } from "@/lib/schemas/workspaceSchema";
 import {
+  createBoardService,
   createWorkspaceService,
+  deleteBoardService,
   deleteWorkspaceByIdService,
   getAllWorkspacesService,
+  getBoardsByWorkspaceIdService,
   getWorkspacesByUserService,
   updateWorkspaceByIdService,
 } from "@/service/workspace.service";
@@ -42,12 +45,12 @@ export const getAllWorkspaceAction = async () => {
   const userToken = await Token();
   const token = userToken.Credential;
   const result = await getAllWorkspacesService({ token });
-  
+
   return result;
 };
 
 /*
- * 4. for service Delete workspace by id -> deleteWorkspaceById: (id) => `${apiConfig.baseUrl}/api/v1/workspaces/${id}`,
+ * 4. for service Delete workspace by id -> deleteWorkspaceById: (id) => `${apiConfig.baseUrl}/workspaces/${id}`,
  */
 export const deleteWorkspaceByIdAction = async (id) => {
   const userToken = await Token();
@@ -93,5 +96,59 @@ export const getAllWorkspaceForUserAction = async () => {
   const userToken = await Token();
   const token = userToken.Credential;
   const result = await getWorkspacesByUserService({ token });
+  return result;
+};
+
+
+
+/* Action in workspace for board */
+/*
+ * 13. Get all boards by workspace id
+ */
+export const getAllBoardBywWorkspaceIdAction = async (workspaceId) => {
+  const userToken = await Token();
+  const token = userToken.Credential;
+  console.log("workspace id in board action: ", workspaceId);
+  const result = await getBoardsByWorkspaceIdService({workspaceId, token });
+  return result;
+};
+
+/*
+ * 5. Create new board by workspace id
+ */
+export const createBoardAction = async (payload = {}) => {
+  console.log("Payload  board received:", payload);
+  const { title, description, cover, workspaceId } = payload;
+
+  if (!title || !description) {
+    throw new Error("title and description are required");
+  }
+
+  const userToken = await Token();
+  const token = userToken.Credential;
+  const result = await createBoardService({
+    title,
+    description,
+    cover,
+    workspaceId,
+    token,
+  });
+
+  revalidateTag("boards");
+  return result;
+};
+
+/*
+ * 16. Deleted board by id and workspace id
+ */
+export const deleteBoardAction = async (id, workspaceId) => {
+  const userToken = await Token();
+  const token = userToken.Credential;
+  console.log("Delete board id action : ", id);
+  console.log("workspaceId board id action : ", workspaceId);
+  const result = await deleteBoardService({ id,workspaceId, token });
+
+  // revalidate tag related to workspaces
+  revalidateTag("boards");
   return result;
 };

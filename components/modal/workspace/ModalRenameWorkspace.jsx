@@ -15,7 +15,6 @@ export default function ModalRenameWorkspace({
   isOpen,
   onClose,
   workspaceId,
-  currentTitle,
   updateNameWorkspace, // async function passed as prop: (id, { title }) => ...
 }) {
   const {
@@ -25,7 +24,6 @@ export default function ModalRenameWorkspace({
     reset,
   } = useForm({
     resolver: zodResolver(RenameSchema),
-    defaultValues: { title: currentTitle },
   });
 
   const [isPending, startTransition] = useTransition();
@@ -59,7 +57,7 @@ export default function ModalRenameWorkspace({
                   <input
                     {...register("title")}
                     className="border text-caption border-gray-300 rounded-small px-3 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
-                    placeholder={currentTitle}
+                    placeholder="Rename title"
                   />
                   {errors.title && (
                     <p className="text-sm text-red-500">

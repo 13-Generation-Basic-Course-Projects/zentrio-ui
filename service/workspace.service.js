@@ -1,6 +1,6 @@
 /* service/workspace.service.js */
 "use server";
-import { workspaceRouteGroup } from "@/routes/workspaceRoute";
+import { boardRouteGroup, workspaceRouteGroup } from "@/routes/workspaceRoute";
 
 /*
  *1. for service create workspace  -> createWorkspace: `${apiConfig.baseUrl}/api/v1/workspaces`,
@@ -17,7 +17,7 @@ export const createWorkspaceService = async ({title, description, token}) => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({
+      body: JSON.stringify( {
         title,
         description,
       }),
@@ -399,17 +399,20 @@ export const getAllBoardsService = async (token) => {
 /*
  * 5. Create new board by workspace id
  */
-export const createBoardService = async (
+export const createBoardService = async ({
   title,
   description,
   cover,
   workspaceId,
-  token
+  token}
 ) => {
   try {
     const url = boardRouteGroup.createBoard();
 
     const res = await fetch(url, {
+      next: {
+        tags: ["workspaces"], // ✅ Will be revalidated by revalidateTag()
+      },
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -667,11 +670,17 @@ export const getBoardCoverService = async (id, filename, token) => {
 /*
  * 13. Get all boards by workspace id
  */
-export const getBoardsByWorkspaceIdService = async (workspaceId, token) => {
+export const getBoardsByWorkspaceIdService = async ({ workspaceId, token }) => {
+  if (!workspaceId) {
+    throw new Error("Workspace ID is required.");
+  }
+
   try {
     const url = boardRouteGroup.getBoardsByWorkspaceId(workspaceId);
+    console.log("🌐 Fetching boards from:", url);
 
     const res = await fetch(url, {
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -684,10 +693,11 @@ export const getBoardsByWorkspaceIdService = async (workspaceId, token) => {
 
     return await res.json();
   } catch (error) {
-    console.error("❌ Failed to get boards by workspace ID:", error.message);
+    console.error("❌ Failed to get boards by workspace ID:", error);
     throw error;
   }
 };
+
 
 
 /*
@@ -745,7 +755,7 @@ export const getBoardsForCurrentUserService = async (token) => {
 /*
  * 16. Deleted board by id and workspace id
  */
-export const deleteBoardService = async (id, workspaceId, token) => {
+export const deleteBoardService = async ({id, workspaceId, token}) => {
   try {
     const url = boardRouteGroup.deleteBoard(id, workspaceId);
 
@@ -755,6 +765,8 @@ export const deleteBoardService = async (id, workspaceId, token) => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
+      next: { tags: ["boards"] },
+      body: JSON.stringify({ id, workspaceId }),
     });
 
     if (!res.ok) {

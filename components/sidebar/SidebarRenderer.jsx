@@ -10,6 +10,7 @@ export default function SidebarRenderer({
   createWorkspace,
   deleteWorkspace,
   updateNameWorkspace,
+  getBoardByWorkspaceId,
 }) {
   const pathname = usePathname();
 
@@ -25,6 +26,7 @@ export default function SidebarRenderer({
         createWorkspace={createWorkspace}
         deleteWorkspace={deleteWorkspace}
         updateNameWorkspace={updateNameWorkspace}
+        getBoardByWorkspaceId={getBoardByWorkspaceId}
       />
     );
   }
