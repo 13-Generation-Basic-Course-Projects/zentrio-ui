@@ -15,8 +15,8 @@ export const workspaceRouteGroup = {
 
  
 export const boardRouteGroup = {
-  getBoardById: (id) => `${apiConfig.baseUrl}/boards/${id}`, // Get board by ID
-  updateBoardById: (id) => `${apiConfig.baseUrl}/boards/${id}`, // Update board by board ID and workspace id
+  getBoardById: (boardId) => `${apiConfig.baseUrl}/boards/${boardId}`, // Get board by ID
+  updateBoardById: (boardId) => `${apiConfig.baseUrl}/boards/${boardId}`, // Update board by board ID and workspace id
   updateFavBoardById: (id) => `${apiConfig.baseUrl}/boards/${id}/favourite`, // Toggle favorite (updated favorite of board by id)
   getAllBoards: `${apiConfig.baseUrl}/boards`, // Get all boards
   createBoard: () => `${apiConfig.baseUrl}/boards`, // Create new board by workspace id

@@ -1,5 +1,5 @@
 
-import { createBoardAction, deleteBoardAction, getAllBoardBywWorkspaceIdAction } from "@/action/workspace.action";
+import { createBoardAction, deleteBoardAction, getAllBoardBywWorkspaceIdAction, getBoardByIdAction, updateBoardByIdAction } from "@/action/workspace.action";
 import Myworkspace from "@/components/appserver/Myworkspace";
 import React from "react";
 
@@ -22,6 +22,8 @@ export default async function WorkspaceSpcific({ params }) {
         getBoardByWorkspaceId={getBoardByWorkspaceId}
         createBoardAction={createBoardAction}
         deleteBoardAction={deleteBoardAction}
+        updateNameBoardAction={updateBoardByIdAction}
+        getBoardByIdAction={getBoardByIdAction}
       />
       ;
     </>

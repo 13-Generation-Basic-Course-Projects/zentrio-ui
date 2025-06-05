@@ -5,7 +5,7 @@ import { boardRouteGroup, workspaceRouteGroup } from "@/routes/workspaceRoute";
 /*
  *1. for service create workspace  -> createWorkspace: `${apiConfig.baseUrl}/api/v1/workspaces`,
  */
-export const createWorkspaceService = async ({title, description, token}) => {
+export const createWorkspaceService = async ({ title, description, token }) => {
   try {
     const url = workspaceRouteGroup.createWorkspace();
     const res = await fetch(url, {
@@ -17,7 +17,7 @@ export const createWorkspaceService = async ({title, description, token}) => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify( {
+      body: JSON.stringify({
         title,
         description,
       }),
@@ -101,7 +101,7 @@ export const getWorkspaceByIdService = async (id, token) => {
 /*
  * 4. for service Delete workspace by id -> deleteWorkspaceById: (id) => `${apiConfig.baseUrl}/api/v1/workspaces/${id}`,
  */
-export const deleteWorkspaceByIdService = async ({id, token}) => {
+export const deleteWorkspaceByIdService = async ({ id, token }) => {
   console.log("Delete id service : ", id);
   try {
     const url = workspaceRouteGroup.deleteWorkspaceById(id);
@@ -129,13 +129,7 @@ export const deleteWorkspaceByIdService = async ({id, token}) => {
     console.error("❌ Failed to delete workspace by id:", error.message);
     throw error;
   }
-    
-    
 };
-
-
-
-
 
 /*
  * 5. for service Update workspace by id -> updateWorkspaceById: (id) => `${apiConfig.baseUrl}/workspaces/${id}`,
@@ -268,21 +262,24 @@ export const getWorkspacesByTitleService = async (title, token) => {
   }
 };
 
-
 /* for create board in workspace */
 
 /*
  * 1. for Get board by ID -> getBoardById: (id) => `${apiConfig.baseUrl}/boards/${id}`,
  */
 
-export const getBoardByIdService = async (id, token) => {
+export const getBoardByIdService = async ({boardId, token}) => {
   try {
-    const url = boardRouteGroup.getBoardById(id);
+    const url = boardRouteGroup.getBoardById(boardId);
 
     const res = await fetch(url, {
+      method: "GET", // explicitly set method
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
+      },
+      next: {
+        tags: ["boards"],
       },
     });
 
@@ -303,38 +300,45 @@ export const getBoardByIdService = async (id, token) => {
 /*
  * 2. Update board by board Id and workspace id
  */
-export const updateBoardByIdService = async (
-  id,
+export const updateBoardByIdService = async ({
+  boardId,
   title,
   description,
   cover,
   workspaceId,
-  token
-) => {
-  try {
-    const url = boardRouteGroup.updateBoardById(id);
+  token,
+}) => {
+  console.log("🔁 Sending update payload in service:", {
+    title,
+    description,
+    cover,
+    workspaceId,
+  });
+  
+  const url = boardRouteGroup.updateBoardById(boardId);
 
-    const res = await fetch(url, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ title, description, cover, workspaceId }),
-    });
+  const res = await fetch(url, {
+    method: "PUT", // or PATCH depending on your API
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      title,
+      description,
+      cover,
+      workspaceId,
+    }),
+  });
 
-    if (!res.ok) {
-      const errorData = await res.json();
-      throw new Error(
-        errorData.message || `Request failed with status ${res.status}`
-      );
-    }
-
-    return await res.json();
-  } catch (error) {
-    console.error("❌ Failed to update board:", error.message);
-    throw error;
+  if (!res.ok) {
+    const errorData = await res.json();
+    throw new Error(
+      errorData.message || `Request failed with status ${res.status}`
+    );
   }
+
+  return await res.json();
 };
 
 /*
@@ -404,8 +408,8 @@ export const createBoardService = async ({
   description,
   cover,
   workspaceId,
-  token}
-) => {
+  token,
+}) => {
   try {
     const url = boardRouteGroup.createBoard();
 
@@ -666,7 +670,6 @@ export const getBoardCoverService = async (id, filename, token) => {
   }
 };
 
-
 /*
  * 13. Get all boards by workspace id
  */
@@ -698,8 +701,6 @@ export const getBoardsByWorkspaceIdService = async ({ workspaceId, token }) => {
   }
 };
 
-
-
 /*
  * 14. Get board by title
  */
@@ -724,7 +725,6 @@ export const getBoardByTitleService = async (title, token) => {
     throw error;
   }
 };
-
 
 /*
  * 15. Get all board for current user
@@ -751,11 +751,10 @@ export const getBoardsForCurrentUserService = async (token) => {
   }
 };
 
-
 /*
  * 16. Deleted board by id and workspace id
  */
-export const deleteBoardService = async ({id, workspaceId, token}) => {
+export const deleteBoardService = async ({ id, workspaceId, token }) => {
   try {
     const url = boardRouteGroup.deleteBoard(id, workspaceId);
 

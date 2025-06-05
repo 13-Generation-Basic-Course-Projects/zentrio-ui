@@ -21,6 +21,8 @@ export default function Myworkspace({
   getBoardByWorkspaceId,
   createBoardAction,
   deleteBoardAction,
+  updateNameBoardAction,
+  getBoardByIdAction,
 }) {
   console.log("Workspace id in myworkspace: ", Workspaceid);
 
@@ -51,6 +53,8 @@ export default function Myworkspace({
                       title={board.title}
                       image={colorClass}
                       deleteBoardAction={deleteBoardAction}
+                      updateNameBoardAction={updateNameBoardAction}
+                      getBoardByIdAction={getBoardByIdAction}
                     />
                   );
                 })}
@@ -62,7 +66,7 @@ export default function Myworkspace({
               />
             </>
           ) : (
-            <div >
+            <div>
               <CardBoardEmpty
                 Workspaceid={Workspaceid}
                 createBoardAction={createBoardAction}
