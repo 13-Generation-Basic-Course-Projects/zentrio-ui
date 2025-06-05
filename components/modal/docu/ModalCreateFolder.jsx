@@ -14,7 +14,8 @@ import { folderSchema } from "@/lib/schemas/documentSchema";
 import { createFolderAction } from "@/action/document.action";
 
 export default function ModalCreateFolder({ isOpen, onClose, boardId }) {
-  const tokenFromGoogle = "ya29.a0AW4XtxiIRM0q6UxU1kQs0kkNkvhpcayVWTTivdBmUoxvDd0LS6rjsulQ3plI1oUuhGmcwcFjErPaq-v5OfItAulHCNe0hx89l2yg4qhNG-HhItuPFRQml0MdAV2ah_0zhlOPQtadJxXC0RVU60vBldU4dxSVLxHMSQUxdr--ZwaCgYKARsSARcSFQHGX2MiKQXjrFY9su2UHVnFgnH_iw0177";
+  const tokenFromGoogle =
+    "ya29.a0AW4XtxgUuq4O4vwtyxOtytaZNbgEozsG4mOQnWiOubjukdGFy0qnJOTPizUnOcIcgL47e5Ms2PWTQSV5WVZ0NuHrfnCO_yW8J0dD3gM5V0YtnfhE4K1Zu5liZYMTygmlMGgv8VgsNrkDktf6Js6QNMUqgPQDpiSpohYzo9aFaCgYKASESARYSFQHGX2MiXlJ9YMUMSmMXDxf7SDNAmw0175";
 
   const {
     register,
@@ -37,7 +38,6 @@ export default function ModalCreateFolder({ isOpen, onClose, boardId }) {
       const createdFolder = await createFolderAction(payload);
       console.log("Folder Created:", createdFolder);
 
-      
       reset();
       onClose();
     } catch (error) {

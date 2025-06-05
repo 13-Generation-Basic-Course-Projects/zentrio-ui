@@ -3,7 +3,9 @@
 import { documentRouteGroup } from "@/routes/documentRoute";
 import { headers } from "next/headers";
 
-// GET document by ID
+/*
+ * get document by ID
+ */
 export const fetchDocumentService = async (id, token) => {
   const res = await fetch(documentRouteGroup.getDocumentById(id), {
     method: "GET",
@@ -20,7 +22,9 @@ export const fetchDocumentService = async (id, token) => {
   return res.json();
 };
 
-// GET public documents by board
+/*
+ * get public documents by board
+ */
 export const fetchPublicDocumentsService = async (boardId, token) => {
   const res = await fetch(
     documentRouteGroup.getPublicDocumentsByBoard(boardId),
@@ -40,7 +44,9 @@ export const fetchPublicDocumentsService = async (boardId, token) => {
   return res.json();
 };
 
-// GET documents by board
+/*
+ * get documents by board
+ */
 export const fetchDocumentsByBoardService = async (boardId, token) => {
   const res = await fetch(
     documentRouteGroup.getAllDocumentsByBoard(boardId), // URL only
@@ -60,7 +66,10 @@ export const fetchDocumentsByBoardService = async (boardId, token) => {
   return res.json();
 };
 
-// DELETE document by ID
+/*
+ * delete document by ID
+ */
+
 export const deleteDocumentService = async (id, token) => {
   const res = await fetch(documentRouteGroup.deleteDocumentById(id), {
     method: "DELETE",
@@ -77,7 +86,10 @@ export const deleteDocumentService = async (id, token) => {
   return res.json();
 };
 
-// POST (create) new document
+/*
+ * (create) new document
+ */
+
 export const createDocumentService = async (data, token) => {
   const res = await fetch(documentRouteGroup.createDocument(), {
     method: "POST",

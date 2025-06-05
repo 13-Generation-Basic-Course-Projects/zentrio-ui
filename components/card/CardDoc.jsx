@@ -17,8 +17,7 @@ import Link from "next/link";
 
 export default function CardFolder({ title, status, date, link }) {
   return (
-    <Link href={link || ""} target="-blank">
-      <Card className="rounded-xl text-blue-400 cursor-pointer hover:bg-blue-50 transition sm:w-[160px] md:w-full h-[160px] shadow-sm ">
+    <Card className="rounded-xl text-blue-400 cursor-pointer hover:bg-blue-50 transition sm:w-[160px] md:w-full h-[160px] shadow-sm ">
       {/* Header */}
       <CardHeader className="pb-0 pt-2 px-4 flex justify-end">
         <div className="hover:text-black text-gray-600">
@@ -26,7 +25,7 @@ export default function CardFolder({ title, status, date, link }) {
         </div>
       </CardHeader>
       <CardBody>
-        <ModalFolderList link={link} title={title} />
+        <ModalFolderList link={link} title={title} href={link} />
       </CardBody>
 
       {/* Body */}
@@ -59,7 +58,6 @@ export default function CardFolder({ title, status, date, link }) {
         </div>
       </CardFooter>
     </Card>
-    </Link>
   );
 }
 //just make for icon file

@@ -10,7 +10,7 @@ import {
 import { IconFolder } from "../../icon/everyicon";
 import { CardFile } from "../../card/CardDoc";
 import { documentData } from "@/data/docu/documentData";
-export default function ModalFolderList({ title }) {
+export default function ModalFolderList({ title, href }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const data = documentData;
   return (

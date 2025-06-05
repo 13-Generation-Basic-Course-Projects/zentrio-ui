@@ -119,7 +119,7 @@ export default function Privatedocument({ modal, documents }) {
         </div>
         {/* 1 */}
       </div>
-      <div className="w-full  max-h-screen overflow-y-auto scrollbar-hidden  pb-[300px] px-5  pt-10">
+      <div className="w-full  max-h-screen overflow-y-auto scrollbar-hidden  pb-[300px] px-5  pt-10 ">
         {/* Folders Section */}
         <div className="mb-8 ">
           <div className="flex items-center justify-between mb-4">

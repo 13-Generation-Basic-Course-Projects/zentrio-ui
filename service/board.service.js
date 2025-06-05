@@ -81,3 +81,32 @@ export const getMemberByBoardIdService = async ({ boardId, token }) => {
     throw error;
   }
 };
+/*
+ * invite member to baord
+ */
+export const inviteMemberToBoardService = async ({ boardId, data, token }) => {
+  try {
+    console.log("from service", { boardId, data, token });
+    const url = boardRouteGroup.inviteUserToBoard(boardId);
+    const res = await fetch(url, {
+      method: "POST", // Changed to POST to send invite data
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(data), // Send the array of invites
+    });
+    const result = await res.json();
+    console.log("📥 Backend responded with:", result);
+
+    // Ensure the response has a consistent structure
+    return {
+      success: res.ok,
+      data: result.data || null,
+      error: res.ok ? null : result.error || "Failed to send invites",
+    };
+  } catch (error) {
+    console.error("Invite service error:", error.message);
+    return { success: false, error: error.message };
+  }
+};

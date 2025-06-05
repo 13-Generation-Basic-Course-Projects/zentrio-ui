@@ -55,6 +55,7 @@ export default async function BoardLayout({ children }) {
     boardId: "feb6d22e-b2d6-4105-b3ad-663c7148c337",
   });
   console.log("✅ allMemberInBoard Board IDs:", allMemberInBoard);
+  const boardId = "feb6d22e-b2d6-4105-b3ad-663c7148c337";
   return (
     <div>
       <SystemBoard
@@ -63,6 +64,7 @@ export default async function BoardLayout({ children }) {
         ganttbar={ganttBarByGanttChartId}
         checklistbyTaskIds={checklistbyTaskIds}
         allMemberInBoard={allMemberInBoard}
+        boardId={boardId}
       />
       <main> {children}</main>
     </div>

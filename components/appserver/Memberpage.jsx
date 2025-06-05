@@ -28,7 +28,7 @@ import PopupAction from "../popup/PopupAction";
 import { IconpopupDelete } from "../icon/Iconpopup";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
-export default function Memberpage() {
+export default function Memberpage({ boardId }) {
   const initialMembers = [
     {
       memberId: "24a8a3b8-2ad0-4dbc-a6b8-15362b1dfa1f",
@@ -225,7 +225,7 @@ export default function Memberpage() {
           />
         </div>
         {/* Invite */}
-        <ModalInviteMember />
+        <ModalInviteMember boardId={boardId} />
       </div>
 
       <section className="overflow-hidden">

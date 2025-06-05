@@ -4,6 +4,7 @@ import {
   getCheckListByTaskIdService,
   getMemberByBoardIdService,
   getTaskByBoardIdAndGanttBarIdService,
+  inviteMemberToBoardService,
 } from "@/service/board.service";
 
 console.log("test actions must create folders");
@@ -51,4 +52,26 @@ export const getMemberByBoardIdAction = async ({ boardId }) => {
     token,
   });
   return result;
+};
+
+/*
+ * get all  memeber  specific boardId
+ */
+export const inviteMemberToBoardAction = async ({ boardId, data }) => {
+  try {
+    const userToken = await Token();
+    const token = userToken.Credential;
+    console.log("Token retrieved:", token);
+
+    const result = await inviteMemberToBoardService({
+      boardId,
+      data,
+      token,
+    });
+
+    return result; // { success: boolean, data?: any, error?: string }
+  } catch (error) {
+    console.error("Invite action error:", error.message);
+    return { success: false, error: error.message };
+  }
 };

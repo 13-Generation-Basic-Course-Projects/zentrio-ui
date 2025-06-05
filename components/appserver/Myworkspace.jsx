@@ -7,6 +7,7 @@ import CardMember from "../card/CardMember";
 import Bar from "../bredcrum/Bar";
 
 export default function Myworkspace({ Workspaceid }) {
+  console.log("----", Workspaceid);
   return (
     <div className=" w-full grid grid-cols-12 h-full">
       {/* board - this one scrolls */}

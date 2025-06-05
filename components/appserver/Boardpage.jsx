@@ -20,6 +20,7 @@ export default function SystemBoard({
   ganttbar,
   checklistbyTaskIds,
   allMemberInBoard,
+  boardId,
 }) {
   const pathname = usePathname();
   const segments = pathname.split("/");
@@ -31,7 +32,7 @@ export default function SystemBoard({
   const modalComponents = [
     <ModalCreateTask key="create-task" />,
     workspaceId !== "otherworkspace" && (
-      <ModalInviteMember key="invite-member" />
+      <ModalInviteMember key="invite-member" boardId={boardId} />
     ),
     <StarBoard key="star-board" />,
   ].filter(Boolean);

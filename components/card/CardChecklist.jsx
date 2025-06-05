@@ -1,6 +1,10 @@
 //-> Card for in Checklist
 import { Card, CardHeader, CardBody, CardFooter } from "@heroui/card";
-import { IconDelete, StackedProfiles } from "../icon/everyicon";
+import {
+  IconDelete,
+  StackedProfileChecklist,
+  StackedProfiles,
+} from "../icon/everyicon";
 import CalendarIcon from "@/assets/calendarSidebar.png";
 import CommentIcon from "@/assets/CommentIcon.svg";
 import Image from "next/image";
@@ -11,6 +15,7 @@ export const CardCheckList = ({
   image,
   label,
   comment,
+  member,
 }) => {
   return (
     <div>
@@ -106,7 +111,7 @@ export const CardCheckList = ({
           <div className="bg-primary/50 p-2 text-label rounded-small text-blueActive ">
             {label}
           </div>
-          <StackedProfiles />
+          <StackedProfileChecklist member={member} />
         </div>
 
         <div className="border-b m-4 items-center border-2"></div>

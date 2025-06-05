@@ -686,6 +686,7 @@ export default function KanbanBoard({
                                     onDragEnd={handleDragEnd}
                                   >
                                     <ModalDetailChecklist
+                                      taskTitle={card.title}
                                       title={checklist.title}
                                       startDate={
                                         checklist.startedAt
@@ -707,6 +708,7 @@ export default function KanbanBoard({
                                       createdAt={checklist.createdAt}
                                       updatedAt={checklist.updatedAt}
                                       finishedAt={checklist.finishedAt}
+                                      member={checklist.members}
                                     />
                                   </div>
                                 </div>
