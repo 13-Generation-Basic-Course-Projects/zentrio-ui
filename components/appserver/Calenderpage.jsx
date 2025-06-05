@@ -17,7 +17,7 @@ import BredCrum from "../bredcrum/MyBredcrum";
 import CardTaskCalender from "../card/CardTaskCalender";
 import CardTCommentCalender from "../card/CardCommentCalender";
 
-export default function MyCalender({ tasks }) {
+export default function MyCalender({ tasks, note }) {
   // const calendarRef = useRef(null);
   // const [currentTitle, setCurrentTitle] = useState("");
 
@@ -214,7 +214,7 @@ export default function MyCalender({ tasks }) {
             // onTaskClick={(dateStr, taskId) => handleTaskClick(dateStr, taskId)}
           />
           {/* <CardTCommentCalender tasks={tasks} /> */}
-          <CardTCommentCalender />
+          <CardTCommentCalender note={note} />
         </div>
       </div>
     </div>

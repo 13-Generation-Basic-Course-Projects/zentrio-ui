@@ -15,3 +15,17 @@ export const getTaskbyBoardIdService = async ({ boardId, zentrioToken }) => {
     console.log("task:",data);
     return data;
 };
+
+export const getNotebyTaskIdService = async ({ taskId, zentrioToken }) => {
+    const url= calenderRouteGroup.getNotebyTaskId(taskId);
+    const res = await fetch(url, {
+        method: "GET",
+        headers: {
+            "accept": "*/*",
+            Authorization: `Bearer ${zentrioToken}`,
+        },
+    });
+    const data =await res.json();
+    console.log("note:",data);
+    return data;
+}

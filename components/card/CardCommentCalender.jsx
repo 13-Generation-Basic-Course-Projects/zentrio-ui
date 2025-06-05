@@ -62,7 +62,8 @@ import { SquarePen, AlarmClock } from "lucide-react";
 //   }
 // };
 
-export default function CardTCommentCalender() {
+export default function CardTCommentCalender({ note }) {
+  console.log("this is note : ",note);
   // const feedback = [
   //   {
   //     feedback_id: "f-1",
@@ -149,9 +150,10 @@ export default function CardTCommentCalender() {
       </CardBody> */}
 
       <CardBody className="py-3 px-4 space-y-3 overflow-y-auto flex-1">
-            <div className="flex items-start gap-3 p-5 rounded-large bg-slate-100 transition-colors"> 
+            {note?.payload.map((data, index) => (
+              <div key={index} className="flex items-start gap-3 p-5 rounded-large bg-slate-100 transition-colors"> 
               <Image
-                src={profile}
+                src={data.uerId?.userProfile || profile}
                 className="w-7 h-7 object-cover rounded-full"
                 alt="profile"
                 width={28}
@@ -160,7 +162,7 @@ export default function CardTCommentCalender() {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between mb-1">
                   <h3 className="font-semibold text-sm text-gray-900">
-                    Senghun
+                    {data.uerId?.username || "senhun"}
                   </h3>
                   <button className="text-green-500 hover:text-green-600 transition-colors">
                     <SquarePen size={15} />
@@ -168,17 +170,22 @@ export default function CardTCommentCalender() {
                 </div>
 
                 <p className="text-sm text-gray-600 mb-2 leading-relaxed">
-                  wowowowowowowowowowowowo
+                  {data.noted}
                 </p>
 
                 <div className="flex items-center justify-end gap-1">
                   <AlarmClock className="text-green-500 w-5 h-5" />
                   <span className="text-xs text-green-500 font-medium">
-                    12 May 2025
+                    {new Date(data.notedAt).toLocaleDateString('en-GB', {
+                      day: '2-digit',
+                      month: 'short',
+                      year: 'numeric'
+                    })}
                   </span>
                 </div>
               </div>
             </div>
+            ))}
       </CardBody>
     </Card>
   );
