@@ -35,7 +35,7 @@ export default function CardTaskCalender({ tasks }) {
             </div>
             {/* Display created date as example */}
             <small className="text-title font-medium text-xs flex-shrink-0">
-              0
+              {task.taskOrder || "0"}
             </small>
           </div>
         ))}
