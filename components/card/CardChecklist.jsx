@@ -16,6 +16,7 @@ export const CardCheckList = ({
   label,
   comment,
   member,
+  id,
 }) => {
   return (
     <div>

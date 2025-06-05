@@ -51,7 +51,7 @@ const getInitial = (str) => {
   return str.charAt(0).toUpperCase();
 };
 
-export default function ModalInviteMember({ boardId }) {
+export default function ModalInviteMember({ boardId, allMemberInBoard }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [newMembers, setNewMembers] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
@@ -132,7 +132,7 @@ export default function ModalInviteMember({ boardId }) {
   const removeNewMember = (id) => {
     setNewMembers((prev) => prev.filter((member) => member.id !== id));
   };
-
+  console.log("log in invite memeber", allMemberInBoard);
   return (
     <div className="relative">
       <Button
@@ -275,26 +275,27 @@ export default function ModalInviteMember({ boardId }) {
                 <div className="space-y-2 mb-2">
                   <div className="text-h6 text-title">Existing Members</div>
                   <ul className="px-2 pt-2 space-y-3 mt-2 max-h-[260px] overflow-y-auto pr-2 scrollbar-hidden">
-                    {members.map((member) => (
+                    {allMemberInBoard?.payload.map((member, index) => (
                       <li
-                        key={member.id}
+                        key={index}
                         className="flex justify-between items-center gap-4 px-2 py-3 rounded-xl"
                       >
                         <div className="flex items-center gap-3">
-                          <div
-                            className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold ${member.color}`}
-                          >
-                            {getInitial(member.name)}
-                          </div>
+                          <img
+                            src={member?.profileImage}
+                            alt={member?.username}
+                            className="w-10 h-10 rounded-full object-cover"
+                          />
                           <div>
-                            <p className="font-medium">{member.name}</p>
+                            <p className="font-medium">{member?.username}</p>
                             <p className="text-body-sm text-description">
-                              Role: {member.role}
+                              Roles: {member?.roles.join(", ")}
                             </p>
                           </div>
                         </div>
                         <p className="text-caption text-description">
-                          {member.role}
+                          {member.roles[0]}{" "}
+                          {/* or display all roles if you want */}
                         </p>
                       </li>
                     ))}

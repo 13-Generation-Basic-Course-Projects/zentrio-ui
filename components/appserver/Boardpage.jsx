@@ -32,7 +32,11 @@ export default function SystemBoard({
   const modalComponents = [
     <ModalCreateTask key="create-task" />,
     workspaceId !== "otherworkspace" && (
-      <ModalInviteMember key="invite-member" boardId={boardId} />
+      <ModalInviteMember
+        key="invite-member"
+        boardId={boardId}
+        allMemberInBoard={allMemberInBoard}
+      />
     ),
     <StarBoard key="star-board" />,
   ].filter(Boolean);

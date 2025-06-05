@@ -27,6 +27,7 @@ import PopupAction from "@/components/popup/PopupAction";
 import { IconpopupDelete } from "@/components/icon/Iconpopup";
 
 export default function ModalDetailChecklist({
+  id,
   taskTitle,
   title,
   startDate,
@@ -61,6 +62,15 @@ export default function ModalDetailChecklist({
     ); // Default icon
   };
   console.log("member", member);
+
+  console.log("id", id);
+
+  const fetchComment = async (id) => {
+    const result = await getCommentByCheckListIdAction(id);
+    return result;
+  };
+  // console.log("log comment", fetchComment);
+
   return (
     <>
       <Button
@@ -78,6 +88,7 @@ export default function ModalDetailChecklist({
             image={image}
             hideImage={hideImage}
             member={member}
+            id={id}
           />
         </div>
       </Button>

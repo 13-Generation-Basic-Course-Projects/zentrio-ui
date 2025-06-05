@@ -8,6 +8,8 @@ export const boardRouteGroup = {
 
   getMemberByBoardId: (boardId) =>
     `${apiConfig.baseUrl}/boards/${boardId}/members`, //get all  memeber  specific boardId
+  getCommentByCheckListId: (checkListId) =>
+    `${apiConfig.baseUrl}/comment/checklists/${checkListId}`,
 
   //post
   assignUserRoleToBoard: () => `${apiConfig.baseUrl}/boards/assign`,

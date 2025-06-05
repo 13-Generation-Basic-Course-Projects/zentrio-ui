@@ -110,3 +110,34 @@ export const inviteMemberToBoardService = async ({ boardId, data, token }) => {
     return { success: false, error: error.message };
   }
 };
+
+/*
+ * get comment by checklist
+ */
+export const getCommentByCheckListIdService = async ({
+  checkListId,
+  token,
+}) => {
+  try {
+    const url = boardRouteGroup.getCommentByCheckListId(checkListId);
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const result = await res.json();
+    console.log("📥 Backend responded with:", result);
+
+    // Ensure the response has a consistent structure
+    return {
+      success: res.ok,
+      data: result.data || null,
+      error: res.ok ? null : result.error || "Failed to send invites",
+    };
+  } catch (error) {
+    console.error("Invite service error:", error.message);
+    return { success: false, error: error.message };
+  }
+};

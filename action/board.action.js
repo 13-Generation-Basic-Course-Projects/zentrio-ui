@@ -2,6 +2,7 @@
 import { Token } from "@/constant/token";
 import {
   getCheckListByTaskIdService,
+  getCommentByCheckListIdService,
   getMemberByBoardIdService,
   getTaskByBoardIdAndGanttBarIdService,
   inviteMemberToBoardService,
@@ -74,4 +75,17 @@ export const inviteMemberToBoardAction = async ({ boardId, data }) => {
     console.error("Invite action error:", error.message);
     return { success: false, error: error.message };
   }
+};
+/*
+ * get all  comment by CheckList Id
+ */
+export const getCommentByCheckListIdAction = async ({ checkListId }) => {
+  const userToken = await Token();
+  const token = userToken.Credential;
+  console.log(token);
+  const result = await getCommentByCheckListIdService({
+    checkListId,
+    token,
+  });
+  return result;
 };
