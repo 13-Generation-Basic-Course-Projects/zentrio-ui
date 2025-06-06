@@ -12,7 +12,7 @@ export const documentRouteGroup = {
     `${apiConfig.baseUrl}/documents/public-document/${id}`,
 
   // Create operations
-  createDocument: () => `${apiConfig.baseUrl}/documents`,
+  xwxcreateDocument: () => `${apiConfig.baseUrl}/documents`,
   shareDocuments: () => `${apiConfig.baseUrl}/documents/share-document`,
   uploadDocumentToBoard: (boardId) =>
     `${apiConfig.baseUrl}/documents/boards/${boardId}`,

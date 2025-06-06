@@ -65,12 +65,7 @@ export default function ModalDetailChecklist({
 
   console.log("id", id);
 
-  const fetchComment = async (id) => {
-    const result = await getCommentByCheckListIdAction(id);
-    return result;
-  };
-  // console.log("log comment", fetchComment);
-
+  console.log("0000", comment);
   return (
     <>
       <Button
@@ -352,6 +347,7 @@ export default function ModalDetailChecklist({
                         </div>
                       </div>
 
+                      {/* comment */}
                       <div className="space-y-1">
                         <p className="flex items-center gap-2">
                           <img

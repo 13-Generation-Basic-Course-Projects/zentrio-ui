@@ -14,7 +14,6 @@ export const checklistRouteGroup = {
   updateStatusById: (id) => `${apiConfig.baseUrl}/checklists/${id}/status`, //enum
 
   //post
-
   createCheckListByTaskId: () => `${apiConfig.baseUrl}/checklists`,
   uploadCoverOfChecklistByCheckListId: (id) =>
     `${apiConfig.baseUrl}/checklists/${id}/cover`,

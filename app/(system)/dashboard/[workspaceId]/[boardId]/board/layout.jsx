@@ -2,6 +2,7 @@ import SystemBoard from "@/components/appserver/Boardpage";
 import { auth } from "@/auth";
 import {
   getCheckListByTaskIdAction,
+  getCommentByCheckListIdAction,
   getMemberByBoardIdAction,
   getTaskByBoardIdAndGanttBarIdAction,
 } from "@/action/board.action";
@@ -53,6 +54,13 @@ export default async function BoardLayout({ children }) {
   const allMemberInBoard = await getMemberByBoardIdAction({
     boardId: "feb6d22e-b2d6-4105-b3ad-663c7148c337",
   });
+  /*
+   * get comment in checklist
+   */
+  const commentInChecklist = async (id) => {
+    if (!id) return null; // or handle error
+    return await getCommentByCheckListIdAction(id);
+  };
 
   console.log("✅ allMemberInBoard Board IDs:", allMemberInBoard);
   const boardId = "feb6d22e-b2d6-4105-b3ad-663c7148c337";
