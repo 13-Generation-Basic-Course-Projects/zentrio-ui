@@ -36,6 +36,9 @@ export default function Reportpage({ modal, report }) {
     }
   }, [report]);
 
+  const maximum = report?.payload?.version;
+  const allVersion = Array.from({ length: maximum }, (_, i) => i + 1);
+
   return (
     <>
       <div className="p-5">
@@ -217,17 +220,17 @@ export default function Reportpage({ modal, report }) {
                 </span>
                 Version History
               </h1>
-
               <div className="relative  max-h-auto  overflow-y-auto scrollbar-hidden">
                 {/* Vertical connecting line - no z-index, behind content */}
-                <div className="absolute left-[20px] top-5 bottom-5 border-l border-gray-300"></div>
+                <div className="absolute h-full left-[20px] top-5 bottom-5 border-l border-gray-300"></div>
 
                 {/* Content with z-index to be on top */}
                 <div className="flex flex-col space-y-8 relative z-10">
                   {/* Version 1 */}
-                  <div className="flex items-start space-x-4">
+                  {allVersion.map((item, index)=>(
+                    <div className="flex items-start space-x-4" key={index}>
                     <div className="flex-shrink-0 w-[40px] h-[30px] bg-primary text-white rounded-full flex items-center justify-center font-semibold text-caption">
-                      V1
+                      {item}
                     </div>
                     <div className="flex flex-col space-y-1">
                       <p className="text-h6">ZenTrio Reporting Document</p>
@@ -236,66 +239,7 @@ export default function Reportpage({ modal, report }) {
                       </p>
                     </div>
                   </div>
-                  {/* Version 2 */}
-                  <div className="flex items-start space-x-4">
-                    <div className="flex-shrink-0 w-[40px] h-[30px] bg-primary text-white rounded-full flex items-center justify-center font-semibold text-caption">
-                      V2
-                    </div>
-                    <div className="flex flex-col space-y-1">
-                      <p className="text-h6">ZenTrio Final Report</p>
-                      <p className="text-caption-tiny text-title/50">
-                        Ny Fong · 10 minutes ago
-                      </p>
-                    </div>
-                  </div>
-                  {/* Version 3 */}
-                  <div className="flex items-start space-x-4">
-                    <div className="flex-shrink-0 w-[40px] h-[30px] bg-primary text-white rounded-full flex items-center justify-center font-semibold text-caption">
-                      V3
-                    </div>
-                    <div className="flex flex-col space-y-1">
-                      <p className="text-h6">ZenTrio Final Report</p>
-                      <p className="text-caption-tiny text-title/50">
-                        Ny Fong · 10 minutes ago
-                      </p>
-                    </div>
-                  </div>
-                  {/* Version 1 */}
-                  <div className="flex items-start space-x-4">
-                    <div className="flex-shrink-0 w-[40px] h-[30px] bg-primary text-white rounded-full flex items-center justify-center font-semibold text-caption">
-                      V1
-                    </div>
-                    <div className="flex flex-col space-y-1">
-                      <p className="text-h6">ZenTrio Reporting Document</p>
-                      <p className="text-caption-tiny text-title/50">
-                        Ny Fong · 1 hour ago
-                      </p>
-                    </div>
-                  </div>
-                  {/* Version 2 */}
-                  <div className="flex items-start space-x-4">
-                    <div className="flex-shrink-0 w-[40px] h-[30px] bg-primary text-white rounded-full flex items-center justify-center font-semibold text-caption">
-                      V2
-                    </div>
-                    <div className="flex flex-col space-y-1">
-                      <p className="text-h6">ZenTrio Final Report</p>
-                      <p className="text-caption-tiny text-title/50">
-                        Ny Fong · 10 minutes ago
-                      </p>
-                    </div>
-                  </div>
-                  {/* Version 3 */}
-                  <div className="flex items-start space-x-4">
-                    <div className="flex-shrink-0 w-[40px] h-[30px] bg-primary text-white rounded-full flex items-center justify-center font-semibold text-caption">
-                      V3
-                    </div>
-                    <div className="flex flex-col space-y-1">
-                      <p className="text-h6">ZenTrio Final Report</p>
-                      <p className="text-caption-tiny text-title/50">
-                        Ny Fong · 10 minutes ago
-                      </p>
-                    </div>
-                  </div>
+                  ))}
                 </div>
               </div>
             </div>
