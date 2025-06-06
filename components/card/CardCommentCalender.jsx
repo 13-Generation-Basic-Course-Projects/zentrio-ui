@@ -63,11 +63,6 @@ export default function CardTCommentCalender({ note, selectedTaskId, taskColorMa
               {selectedTaskId ? "Task Comments" : "All Comments"}
             </h1>
           </div>
-          {/* {selectedTaskId && (
-            <p className="text-xs text-gray-500 mt-1">
-              Showing comments for selected task
-            </p>
-          )} */}
         </CardHeader>
 
         <CardBody className="py-3 px-4 space-y-3 overflow-y-auto flex-1">
