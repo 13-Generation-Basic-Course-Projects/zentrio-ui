@@ -1,3 +1,5 @@
+"use server"
+
 import { reportRouteGroup } from "@/routes/reportRoute"
 
 export const reportService = async ({ boardId, zentrioToken } = {}) => {
