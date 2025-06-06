@@ -19,14 +19,19 @@ export const getDocumentsByBoardAction = async (boardId) => {
   return documents;
 };
 
+// Get file by folder id
 export const getFileByFolderIdAction = async (accessToken, folderId) => {
   const userToken = await Token();
   const token = userToken.Credential;
 
-  const files = await getFileByFolderIdService(accessToken, folderId, token);
+  const files = await getFileByFolderIdService({
+    accessToken,
+    folderId,
+    token,
+  });
 
   return files;
-}
+};
 
 // Create
 export const createFolderAction = async (data) => {

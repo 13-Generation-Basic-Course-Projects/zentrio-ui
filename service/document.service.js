@@ -1,7 +1,6 @@
 "use server";
 
 import { documentRouteGroup } from "@/routes/documentRoute";
-import { headers } from "next/headers";
 
 // GET document by ID
 export const fetchDocumentService = async (id, token) => {
@@ -61,7 +60,11 @@ export const fetchDocumentsByBoardService = async (boardId, token) => {
 };
 
 // GET File by folder id
-export const getFileByFolderIdService = async ({accessToken, folderId, token}) => {
+export const getFileByFolderIdService = async ({
+  accessToken,
+  folderId,
+  token,
+}) => {
   try {
     const res = await fetch(
       documentRouteGroup.getFileByFolderId(folderId, accessToken),
@@ -76,12 +79,12 @@ export const getFileByFolderIdService = async ({accessToken, folderId, token}) =
     const data = await res.json();
     console.log("📥 Backend responded with:", data);
 
-    return data; 
+    return data;
   } catch (error) {
     console.error("Login service error:", error.message);
     throw error;
   }
-}
+};
 
 // DELETE document by ID
 export const deleteDocumentService = async ({

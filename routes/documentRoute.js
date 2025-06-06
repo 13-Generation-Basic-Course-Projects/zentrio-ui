@@ -23,5 +23,5 @@ deleteDocumentById: (id, accessToken) =>
   getDocumentByName: (boardId, name) => `${apiConfig.baseUrl}/documents/boards/${boardId}/document/${name}`,
 
   getFileByFolderId: (folderId, accessToken) =>
-    `http://35.187.228.225:9090/api/files/${folderId}?accessToken=${accessToken}`,
+    `http://35.187.228.225:9090/api/files/getFileBy-FolderID?accessToken=${accessToken}&folderId=${folderId}`,
 }
