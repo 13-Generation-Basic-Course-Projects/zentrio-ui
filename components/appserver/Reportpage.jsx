@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import BredCrum from "../bredcrum/MyBredcrum";
 import HorizontalChart from "../chart/HorizontalChart";
 // import VerticalChart from "../chart/VerticalChart";
@@ -10,9 +10,35 @@ const VerticalChartNoSSR = dynamic(() => import("../chart/VerticalChart"), {
   ssr: false,
 });
 
-export default function Reportpage({ modal }) {
+export default function Reportpage({ modal, report }) {
+  const [amtpm, setAmtPm] = useState();
+  const [amttl, setAmttl] = useState();
+  const [amtM, setAmtM] = useState();
+
+  // this use to count amount of project manager, team leader, member
+  useEffect(() => {
+    if (report?.payload?.allMembers) {
+      // Reset values first
+      setAmtPm(0);
+      setAmttl(0);
+      setAmtM(0);
+
+      // Process each member
+      report.payload.allMembers.forEach((item) => {
+        if (item.roleName === "ROLE_MANAGER") {
+          setAmtM(item.total);
+        } else if (item.roleName === "ROLE_LEADER") {
+          setAmttl(item.total);
+        } else if (item.roleName === "ROLE_MEMBER") {
+          setAmtPm(item.total);
+        }
+      });
+    }
+  }, [report]);
+
   return (
-    <div className="p-5">
+    <>
+      <div className="p-5">
       <BredCrum
         board={"Hikoko Design"}
         feature={"Reports"}
@@ -26,44 +52,56 @@ export default function Reportpage({ modal }) {
           <div className=" overflow-y-auto scrollbar-hidden pb-40 p-2">
             {/* Show number have in 4 Stage */}
             <div className="grid grid-cols-4 gap-2">
-              {[
-                {
-                  title: "Todo",
-                  count: 3,
-                  color: "text-primary",
-                  iconFill: "#59BAD5",
-                  bg: "bg-primary/20",
-                },
-                {
-                  title: "On Progress",
-                  count: 3,
-                  color: "text-progress-purple/90",
-                  iconFill: "#A855F7",
-                  bg: "bg-progress-purple/20",
-                },
-                {
-                  title: "Under Review",
-                  count: 3,
-                  color: "text-progress-red/90",
-                  iconFill: "#F87171",
-                  bg: "bg-progress-red/20",
-                },
-                {
-                  title: "Done",
-                  count: 3,
-                  color: "text-progress-green/90",
-                  iconFill: "#4ADE80",
-                  bg: "bg-progress-green/20",
-                },
-              ].map((item, idx) => (
+              {report?.payload?.allTasks?.map((item, index) => (
                 <div
-                  key={idx}
-                  className={`${item.bg} rounded-medium p-5 ${item.color} text-h6 font-semibold`}
+                  key={index}
+                  className={`
+                      rounded-medium p-5 text-h6 font-semibold
+                      ${
+                        item?.task == "TO DO" 
+                          ? 
+                        `text-primary bg-primary/20` 
+                          : 
+                            item?.task == "IN_PROGRESS" 
+                              ? 
+                            `text-progress-purple/90 bg-progress-purple/20`  
+                              : 
+                                item?.task == "UNDER_REVIEW" 
+                                  ? 
+                                  `text-progress-red/90 bg-progress-red/20` 
+                                  : 
+                                    item?.task == "COMPLETED" 
+                                      ? 
+                                      `text-progress-green/90 bg-progress-green/20`
+                                      :     
+                                      ``
+                      }
+                    `}
                 >
                   <div className="flex flex-col space-y-2">
-                    <p>{item.title}</p>
+                    <p>
+                      {
+                        item?.task == "TO DO" 
+                          ? 
+                        "To Do"  
+                          : 
+                            item?.task == "IN_PROGRESS" 
+                              ? 
+                            "On Progress"  
+                              : 
+                                item?.task == "UNDER_REVIEW" 
+                                  ? 
+                                  "Under Review"  
+                                  : 
+                                    item?.task == "COMPLETED" 
+                                      ? 
+                                      "Done"  
+                                      :     
+                                      <div></div>    
+                      }
+                    </p>
                     <div className="flex justify-between items-center">
-                      <p>{item.count}</p>
+                      <p>{item.total}</p>
                       <p className="flex items-center gap-1 text-h6">
                         Task
                         <svg
@@ -75,7 +113,27 @@ export default function Reportpage({ modal }) {
                         >
                           <path
                             d="M5.03508 10.7313L8.79491 6.97146L7.83 6.00655L5.01844 8.8181L3.62098 7.42064L2.67271 8.36892L5.03508 10.7313ZM1.74107 13.3931C1.37507 13.3931 1.06186 13.2629 0.801445 13.0025C0.541029 12.7421 0.4106 12.4286 0.410156 12.0622V1.4149C0.410156 1.0489 0.540586 0.735688 0.801445 0.475273C1.0623 0.214858 1.37551 0.084428 1.74107 0.0839844H7.06472L11.0575 4.07672V12.0622C11.0575 12.4282 10.9273 12.7416 10.6668 13.0025C10.4064 13.2634 10.093 13.3936 9.72655 13.3931H1.74107ZM6.39927 4.74218H9.72655L6.39927 1.4149V4.74218Z"
-                            fill={item.iconFill}
+                            fill={`
+                                ${
+                                  item?.task == "TO DO" 
+                                ? 
+                              `#59BAD5` 
+                                : 
+                                  item?.task == "IN_PROGRESS" 
+                                    ? 
+                                  `#A855F7`  
+                                    : 
+                                      item?.task == "UNDER_REVIEW" 
+                                        ? 
+                                        `#F87171` 
+                                        : 
+                                          item?.task == "COMPLETED" 
+                                            ? 
+                                            `#4ADE80`
+                                            :     
+                                            ``
+                                }
+                              `}
                           />
                         </svg>
                       </p>
@@ -107,7 +165,7 @@ export default function Reportpage({ modal }) {
               <div className="relative w-[200px] h-[200px] mx-auto">
                 {/* Big Blue Circle */}
                 <div className="absolute w-[160px] h-[160px] bg-blue-500 rounded-full border-3 border-bgColor flex items-center justify-center">
-                  <p className="text-h3 text-white font-semibold">15</p>
+                  <p className="text-h3 text-white font-semibold">{amtM}</p>
                 </div>
 
                 {/* Medium Purple Circle */}
@@ -115,7 +173,7 @@ export default function Reportpage({ modal }) {
                   className="absolute w-[100px] h-[100px] bg-purple-500 rounded-full border-3 border-bgColor flex items-center justify-center"
                   style={{ top: "20px", left: "120px" }}
                 >
-                  <p className="text-h5 text-white font-semibold">5</p>
+                  <p className="text-h5 text-white font-semibold">{amttl}</p>
                 </div>
 
                 {/* Small Black Circle */}
@@ -123,7 +181,7 @@ export default function Reportpage({ modal }) {
                   className="absolute w-[80px] h-[80px] bg-black rounded-full border-3 border-bgColor flex items-center justify-center"
                   style={{ top: "80px", left: "110px" }}
                 >
-                  <p className="text-h6 text-white font-semibold">1</p>
+                  <p className="text-h6 text-white font-semibold">{amtpm}</p>
                 </div>
               </div>
               <div className="flex justify-between text-title/50 text-caption items-center">
@@ -245,5 +303,6 @@ export default function Reportpage({ modal }) {
         </div>
       </div>
     </div>
+    </>
   );
 }
