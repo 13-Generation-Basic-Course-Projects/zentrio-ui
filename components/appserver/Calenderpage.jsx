@@ -23,6 +23,7 @@ export default function MyCalender({ tasks, note }) {
 
   const calendarRef = useRef(null);
   const [currentTitle, setCurrentTitle] = useState("");
+  const [selectedTaskId, setSelectedTaskId] = useState(null);
 
   // color random
   const colorList = [
@@ -58,6 +59,23 @@ export default function MyCalender({ tasks, note }) {
     },
   ];
 
+  // Create task color mapping for consistency
+  const taskColorMap = useMemo(() => {
+    const taskList = Array.isArray(tasks?.payload) ? tasks.payload : [];
+    const uniqueIds = new Set();
+    const filteredTasks = taskList.filter((task) => {
+      if (uniqueIds.has(task.taskId)) return false;
+      uniqueIds.add(task.taskId);
+      return true;
+    });
+
+    const colorMap = {};
+    filteredTasks.forEach((task, index) => {
+      colorMap[task.taskId] = colorList[index % colorList.length];
+    });
+    return colorMap;
+  }, [tasks]);
+
   // map task to calendar
   const mappedTasks = useMemo(() => {
     const taskList = Array.isArray(tasks?.payload) ? tasks.payload : [];
@@ -69,8 +87,8 @@ export default function MyCalender({ tasks, note }) {
         uniqueIds.add(task.taskId);
         return true;
       })
-      .map((task, index) => {
-        const color = colorList[index % colorList.length];
+      .map((task) => {
+        const color = taskColorMap[task.taskId];
         return {
           id: task.taskId,
           title: task.title,
@@ -80,19 +98,59 @@ export default function MyCalender({ tasks, note }) {
             type: "task",
             content: task.description,
             color,
+            taskData: task,
           },
         };
       });
-  }, [tasks]);
+  }, [tasks, taskColorMap]);
 
-  const [events, setEvents] = useState(mappedTasks);
+  // Map comments to calendar events - show only one "Comment" event per task that has comments
+  const mappedComments = useMemo(() => {
+    if (!note?.payload || !selectedTaskId) return [];
+    
+    const taskComments = note.payload.filter(comment => comment.taskId === selectedTaskId);
+    
+    if (taskComments.length === 0) return [];
+    
+    // Show only one "Comment" event for the task
+    const firstComment = taskComments[0];
+    const taskColor = taskColorMap[selectedTaskId];
+    
+    return [{
+      id: `comment-${selectedTaskId}`,
+      title: "Comment",
+      start: firstComment.notedAt,
+      end: firstComment.tillDate || firstComment.notedAt,
+      extendedProps: {
+        type: "comment",
+        content: "Comment",
+        color: taskColor,
+        commentCount: taskComments.length,
+      },
+    }];
+  }, [note, selectedTaskId, taskColorMap]);
 
-  const handleTaskClick = (dateStr, taskId) => {
+  // Filter events based on selected task
+  const filteredEvents = useMemo(() => {
+    if (!selectedTaskId) return [];
+    
+    const selectedTask = mappedTasks.filter(task => task.id === selectedTaskId);
+    return [...selectedTask, ...mappedComments];
+  }, [mappedTasks, mappedComments, selectedTaskId]);
+
+  const handleTaskClick = (taskId) => {
+    console.log("Task clicked:", taskId);
+    setSelectedTaskId(taskId);
+    
+    // Navigate to the task date
     const task = mappedTasks.find((t) => t.id === taskId);
     if (task) {
-      setEvents([task]);
-      calendarRef.current?.getApi().gotoDate(dateStr);
+      calendarRef.current?.getApi().gotoDate(task.start);
     }
+  };
+
+  const handleShowAllTasks = () => {
+    setSelectedTaskId(null);
   };
 
   const renderEventContent = ({ event }) => {
@@ -129,10 +187,10 @@ export default function MyCalender({ tasks, note }) {
     if (type === "comment") {
       return (
         <div
-          className={`${baseStyle} mt-2 h-[30px] text-[0.7rem] flex items-center gap-1`}
+          className={`${baseStyle} mt-2 h-[40px] text-[0.75rem] ${color?.border} p-1 flex items-center gap-1`}
         >
-          <span>comment</span>
           <MessageCircleMore className="w-4 h-4" />
+          <span className="truncate">Comment</span>
         </div>
       );
     }
@@ -160,13 +218,15 @@ export default function MyCalender({ tasks, note }) {
           <BredCrum board="Hikko Design" feature="Calender" header="Calender" />
 
           {/* custom header calendar */}
-          <div className="flex space-x-[500px] items-center mt-4 px-2 mb-6">
-            <button
-              onClick={() => handleDateNav("today")}
-              className="rounded-full px-4 py-1 shadow-sm bg-white text-gray-600 font-medium border border-gray-200 hover:bg-gray-50 transition"
-            >
-              Today
-            </button>
+          <div className="flex justify-between items-center mt-4 px-2 mb-6">
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => handleDateNav("today")}
+                className="rounded-full px-4 py-1 shadow-sm bg-white text-gray-600 font-medium border border-gray-200 hover:bg-gray-50 transition"
+              >
+                Today
+              </button>
+            </div>
 
             <div className="flex items-center gap-4">
               <button
@@ -197,7 +257,7 @@ export default function MyCalender({ tasks, note }) {
             ]}
             headerToolbar={false}
             initialView="dayGridMonth"
-            events={events}
+            events={filteredEvents}
             eventContent={renderEventContent}
             datesSet={(arg) => setCurrentTitle(arg.view.title)}
             height="auto"
@@ -205,8 +265,17 @@ export default function MyCalender({ tasks, note }) {
         </div>
 
         <div className="col-span-3 h-full overflow-y-auto p-2 flex flex-col gap-4">
-          <CardTaskCalender tasks={tasks} onTaskClick={handleTaskClick} />
-          <CardTCommentCalender note={note} />
+          <CardTaskCalender 
+            tasks={tasks} 
+            onTaskClick={handleTaskClick} 
+            taskColorMap={taskColorMap}
+            selectedTaskId={selectedTaskId}
+          />
+          <CardTCommentCalender 
+            note={note} 
+            selectedTaskId={selectedTaskId}
+            taskColorMap={taskColorMap}
+          />
         </div>
       </div>
     </div>

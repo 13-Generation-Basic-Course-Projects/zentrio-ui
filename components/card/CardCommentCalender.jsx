@@ -6,8 +6,7 @@ import profile from "../../public/image/minh.png";
 import { SquarePen, AlarmClock } from "lucide-react";
 import { calendarUpdateNoteAction } from "@/action/calendar.action";
 
-
-export default function CardTCommentCalender({ note }) {
+export default function CardTCommentCalender({ note, selectedTaskId, taskColorMap }) {
   console.log("this is note : ", note);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -22,17 +21,12 @@ export default function CardTCommentCalender({ note }) {
     setIsModalOpen(true);
   };
 
-  
-  
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!selectedNote) return;
 
-
-
     try {
-      console.log("Hellooooo",selectedNote)
+      console.log("Hellooooo", selectedNote);
       const result = await calendarUpdateNoteAction({
         noteId: selectedNote.calendarId,
         noted: editedNoteText,
@@ -49,6 +43,11 @@ export default function CardTCommentCalender({ note }) {
     }
   };
 
+  // Filter comments based on selected task
+  const filteredComments = selectedTaskId 
+    ? note?.payload.filter(comment => comment.taskId === selectedTaskId) || []
+    : note?.payload || [];
+
   return (
     <>
       <Card className="py-4 h-[400px] flex flex-col rounded-large shadow-sm">
@@ -61,52 +60,81 @@ export default function CardTCommentCalender({ note }) {
               alt="comment-icon"
             />
             <h1 className="text-title text-large font-semibold">
-              All Comments
+              {selectedTaskId ? "Task Comments" : "All Comments"}
             </h1>
           </div>
+          {/* {selectedTaskId && (
+            <p className="text-xs text-gray-500 mt-1">
+              Showing comments for selected task
+            </p>
+          )} */}
         </CardHeader>
 
         <CardBody className="py-3 px-4 space-y-3 overflow-y-auto flex-1">
-          {note?.payload.map((data, index) => (
-            <div
-              key={index}
-              className="flex items-start gap-3 p-5 rounded-large bg-slate-100 transition-colors"
-            >
-              <Image
-                src={data.userId?.userProfile || profile}
-                className="w-7 h-7 object-cover rounded-full"
-                alt="profile"
-                width={28}
-                height={28}
-              />
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between mb-1">
-                  <h3 className="font-semibold text-sm text-gray-900">
-                    {data.userId?.username || "Kdey Pesith"}
-                  </h3>
-                  <button className="text-green-500 hover:text-green-600 transition-colors">
-                    <SquarePen
-                      size={15}
-                      onClick={() => handleClickNote(data)}
-                    />
-                  </button>
-                </div>
-                <p className="text-sm text-gray-600 mb-2 leading-relaxed">
-                  {data.noted}
-                </p>
-                <div className="flex items-center justify-end gap-1">
-                  <AlarmClock className="text-green-500 w-5 h-5" />
-                  <span className="text-xs text-green-500 font-medium">
-                    {new Date(data.notedAt).toLocaleDateString("en-GB", {
-                      day: "2-digit",
-                      month: "short",
-                      year: "numeric",
-                    })}
-                  </span>
-                </div>
-              </div>
+          {filteredComments.length === 0 ? (
+            <div className="flex items-center justify-center h-full text-gray-500">
+              <p className="text-sm">
+                {selectedTaskId ? "No comments for this task" : "No comments available"}
+              </p>
             </div>
-          ))}
+          ) : (
+            filteredComments.map((data, index) => {
+              const commentColor = taskColorMap[data.taskId];
+              
+              return (
+                <div
+                  key={index}
+                  className="flex items-start gap-3 p-5 rounded-large bg-slate-100 transition-colors"
+                >
+                  <Image
+                    src={data.userId?.userProfile || profile}
+                    className="w-7 h-7 object-cover rounded-full"
+                    alt="profile"
+                    width={28}
+                    height={28}
+                  />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between mb-1">
+                      <h3 className="font-semibold text-sm text-gray-900">
+                        {data.userId?.username || "Kdey Pesith"}
+                      </h3>
+                      <button className={`transition-colors ${
+                        selectedTaskId && commentColor 
+                          ? `${commentColor.text} hover:opacity-70` 
+                          : 'text-green-500 hover:text-green-600'
+                      }`}>
+                        <SquarePen
+                          size={15}
+                          onClick={() => handleClickNote(data)}
+                        />
+                      </button>
+                    </div>
+                    <p className="text-sm text-gray-600 mb-2 leading-relaxed">
+                      {data.noted}
+                    </p>
+                    <div className="flex items-center justify-end gap-1">
+                      <AlarmClock className={`w-5 h-5 transition-colors ${
+                        selectedTaskId && commentColor 
+                          ? commentColor.text 
+                          : 'text-green-500'
+                      }`} />
+                      <span className={`text-xs font-medium transition-colors ${
+                        selectedTaskId && commentColor 
+                          ? commentColor.text 
+                          : 'text-green-500'
+                      }`}>
+                        {new Date(data.notedAt).toLocaleDateString("en-GB", {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                        })}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })
+          )}
         </CardBody>
       </Card>
 
