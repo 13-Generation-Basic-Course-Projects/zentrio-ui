@@ -29,9 +29,7 @@ export default function CardTCommentCalender({ note }) {
     e.preventDefault();
     if (!selectedNote) return;
 
-    // const token = localStorage.getItem("authjs.session-token");
-    
-    // console.log("Testing koko: ",token)
+
 
     try {
       console.log("Hellooooo",selectedNote)
@@ -41,7 +39,6 @@ export default function CardTCommentCalender({ note }) {
         startDate: selectedNote.notedAt,
         tillDate: selectedNote.tillDate,
         taskId: selectedNote.taskId
-        // zentrioToken: token,
       });
 
       console.log("Note updated successfully:", result);
