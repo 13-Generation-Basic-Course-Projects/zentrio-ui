@@ -344,17 +344,24 @@ export const updateBoardByIdService = async ({
 /*
  * 3. Updated favourite of board by id
  */
-export const updateFavBoardByIdService = async (id, isFavourite, token) => {
-  try {
-    const url = boardRouteGroup.updateFavBoardById(id);
+export const updateFavBoardByIdService = async ({
+  boardId,
+  isFavourite,
+  token,
+}) => {
+  const url = `${boardRouteGroup.updateFavBoardById(
+    boardId
+  )}?isFavourite=${isFavourite}`;
 
+  console.log("🔐 Using token in service:", token);
+  console.log("🌐 Final request URL:", url);
+
+  try {
     const res = await fetch(url, {
       method: "PUT",
       headers: {
-        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ id, isFavourite }),
     });
 
     if (!res.ok) {
@@ -371,12 +378,13 @@ export const updateFavBoardByIdService = async (id, isFavourite, token) => {
   }
 };
 
+
 /*
  * 4. Get all boards
  */
-export const getAllBoardsService = async (token) => {
+export const getAllBoardsService = async ({token}) => {
   try {
-    const url = boardRouteGroup.updateFavBoardById();
+    const url = boardRouteGroup.getAllBoards();
 
     const res = await fetch(url, {
       method: "GET",

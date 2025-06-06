@@ -7,11 +7,13 @@ import {
   createWorkspaceService,
   deleteBoardService,
   deleteWorkspaceByIdService,
+  getAllBoardsService,
   getAllWorkspacesService,
   getBoardByIdService,
   getBoardsByWorkspaceIdService,
   getWorkspacesByUserService,
   updateBoardByIdService,
+  updateFavBoardByIdService,
   updateWorkspaceByIdService,
 } from "@/service/workspace.service";
 import { revalidateTag } from "next/cache";
@@ -152,13 +154,40 @@ export const updateBoardByIdAction = async (boardId, payload = {}) => {
 
 
 /*
- * 13. Get all boards by workspace id
+ * 3. Updated favourite of board by id
  */
-export const getAllBoardBywWorkspaceIdAction = async (workspaceId) => {
+export const updateFavBoardByIdAction = async ({boardId, isFavourite}) => {
+  console.log("🔁 Sending update favorite payload in action:", {
+    boardId,
+    isFavourite,
+  });
+
+  if (!boardId) throw new Error("Board ID is required");
+
   const userToken = await Token();
   const token = userToken.Credential;
-  console.log("workspace id in board action: ", workspaceId);
-  const result = await getBoardsByWorkspaceIdService({ workspaceId, token });
+
+  console.log("🔐 Using token in action:", token);
+
+  const result = await updateFavBoardByIdService({
+    boardId,
+    isFavourite,
+    token,
+  });
+
+  revalidateTag("boards");
+  return result;
+};
+
+
+/*
+ * 4. Get all boards
+ */
+export const getAllBoardsAction = async () => {
+  const userToken = await Token();
+  const token = userToken.Credential;
+  const result = await getAllBoardsService({ token });
+
   return result;
 };
 
@@ -186,6 +215,20 @@ export const createBoardAction = async (payload = {}) => {
   revalidateTag("boards");
   return result;
 };
+
+
+/*
+ * 13. Get all boards by workspace id
+ */
+export const getAllBoardBywWorkspaceIdAction = async (workspaceId) => {
+  const userToken = await Token();
+  const token = userToken.Credential;
+  console.log("workspace id in board action: ", workspaceId);
+  const result = await getBoardsByWorkspaceIdService({ workspaceId, token });
+  return result;
+};
+
+
 
 /*
  * 16. Deleted board by id and workspace id

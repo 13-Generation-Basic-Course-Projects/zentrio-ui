@@ -190,11 +190,7 @@ export default function ModalOptionWorkspace({
         onClose={() => setDeleteModalOpen(false)}
         messageTitle={
           <>
-            Are you sure you want to delete{" "}
-            <span className="text-red-500 font-semibold ml-2 mr-2">
-              "{workspaceTitle}"
-            </span>
-            ?
+            Are you sure?
           </>
         }
         messageBody={`Deleting "${workspaceTitle}" cannot be undone.`}

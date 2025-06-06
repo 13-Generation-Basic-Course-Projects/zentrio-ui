@@ -21,6 +21,8 @@ export default function CardBoard({
   boardId,
   updateNameBoardAction,
   getBoardByIdAction,
+  updateFavAction,
+  isFavourite,
 }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -31,7 +33,7 @@ export default function CardBoard({
   const projectId = pathSegments[3] || "defaultProject";
 
   const userRole = role || searchParams.get("role") || "pm";
-  const [favorited, setFavorited] = useState(false);
+  const [favorited, setFavorited] = useState(isFavourite);
 
   /* State for delete confirmation modal */
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
@@ -102,10 +104,24 @@ export default function CardBoard({
 
         {/* Favorite (star) toggle button */}
         <button
-          onClick={(e) => {
+          onClick={async (e) => {
             e.preventDefault();
             e.stopPropagation();
-            setFavorited(!favorited);
+
+            const newFavoriteStatus = !favorited;
+            setFavorited(newFavoriteStatus); // Optimistic UI
+
+            try {
+              await updateFavAction({
+                boardId,
+                isFavourite: newFavoriteStatus,
+              });
+
+              console.log(`✅ Favorite status updated to ${newFavoriteStatus}`);
+            } catch (error) {
+              console.error("❌ Failed to update favorite status:", error);
+              setFavorited(!newFavoriteStatus); // Revert if error
+            }
           }}
           className="text-yellow-500 hover:text-yellow-600 p-3"
           aria-label="Toggle favorite"

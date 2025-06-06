@@ -117,10 +117,10 @@ export default function ModalCreateBoard({ createBoardAction, Workspaceid }) {
     <>
       <Button
         onPress={onOpen}
-        className="bg-transparent h-[340px]  "
+        className="bg-transparent h-[340px] !p-0 "
         fullWidth="true "
       >
-        <Card className="bg-transparent w-[340px] h-full  shadow-none border-none">
+        <Card className="bg-transparent w-full h-full  shadow-none border-none">
           {/* Body */}
 
           <div className="flex items-center justify-center h-full bg-transparent">

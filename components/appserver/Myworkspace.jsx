@@ -23,6 +23,7 @@ export default function Myworkspace({
   deleteBoardAction,
   updateNameBoardAction,
   getBoardByIdAction,
+  updateFavAction,
 }) {
   console.log("Workspace id in myworkspace: ", Workspaceid);
 
@@ -31,7 +32,7 @@ export default function Myworkspace({
       {/* board - scrollable */}
       <div className="col-span-9 flex flex-col overflow-hidden p-3 min-h-0">
         <Bar title={"My Boards"} btn={"see all"} />
-        <div className="grid grid-cols-3 gap-3 scrollbar-hidden px-2 pb-[200px] py-4 overflow-y-auto flex-1 min-h-0">
+        <div className="grid grid-cols-3 gap-3 scrollbar-hidden px-2 pb-[200px] py-4 overflow-y-auto flex-1 min-h-0 ">
           {getBoardByWorkspaceId.payload.length > 0 ? (
             <>
               {getBoardByWorkspaceId.payload
@@ -52,13 +53,14 @@ export default function Myworkspace({
                       // projectId={board.boardId}
                       title={board.title}
                       image={colorClass}
+                      isFavourite={board.isFavourite}
                       deleteBoardAction={deleteBoardAction}
                       updateNameBoardAction={updateNameBoardAction}
                       getBoardByIdAction={getBoardByIdAction}
+                      updateFavAction={updateFavAction}
                     />
                   );
                 })}
-
               {/* Add new board card */}
               <CardBoardEmpty
                 Workspaceid={Workspaceid}
@@ -66,12 +68,12 @@ export default function Myworkspace({
               />
             </>
           ) : (
-            <div>
+            
               <CardBoardEmpty
                 Workspaceid={Workspaceid}
                 createBoardAction={createBoardAction}
               />
-            </div>
+            
           )}
         </div>
       </div>

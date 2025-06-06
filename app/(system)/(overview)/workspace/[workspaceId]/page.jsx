@@ -1,5 +1,5 @@
 
-import { createBoardAction, deleteBoardAction, getAllBoardBywWorkspaceIdAction, getBoardByIdAction, updateBoardByIdAction } from "@/action/workspace.action";
+import { createBoardAction, deleteBoardAction, getAllBoardBywWorkspaceIdAction, getBoardByIdAction, updateBoardByIdAction, updateFavBoardByIdAction } from "@/action/workspace.action";
 import Myworkspace from "@/components/appserver/Myworkspace";
 import React from "react";
 
@@ -8,7 +8,7 @@ import React from "react";
 export default async function WorkspaceSpcific({ params }) {
   const workspaceId = params.workspaceId;
   
-  /* call board action for create new board in workspace */
+
   /* 
   * call board for get all board by workspace id 
   */
@@ -24,6 +24,7 @@ export default async function WorkspaceSpcific({ params }) {
         deleteBoardAction={deleteBoardAction}
         updateNameBoardAction={updateBoardByIdAction}
         getBoardByIdAction={getBoardByIdAction}
+        updateFavAction = {updateFavBoardByIdAction}
       />
       ;
     </>
