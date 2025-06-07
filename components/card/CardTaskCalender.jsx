@@ -3,9 +3,14 @@ import tasklogo from "../../assets/task.png";
 
 import { Card, CardHeader, CardBody } from "@heroui/react";
 
-export default function CardTaskCalender({ tasks, onTaskClick, taskColorMap, selectedTaskId }) {
+export default function CardTaskCalender({
+  tasks,
+  onTaskClick,
+  taskColorMap,
+  selectedTaskId,
+}) {
   console.log("this is tasks :", tasks);
-  
+
   const handleTaskClick = (task) => {
     if (onTaskClick) {
       onTaskClick(task.taskId);
@@ -29,23 +34,27 @@ export default function CardTaskCalender({ tasks, onTaskClick, taskColorMap, sel
         {tasks?.payload.map((task, index) => {
           const taskColor = taskColorMap[task.taskId];
           const isSelected = selectedTaskId === task.taskId;
-          
+
           return (
             <div
               key={index}
               onClick={() => handleTaskClick(task)}
               className={`py-3 px-3 flex items-center justify-between gap-2 rounded-xl cursor-pointer transition-colors ${
-                isSelected 
-                  ? 'bg-gray-200'
-                  : 'hover:bg-gray-100 active:bg-gray-100'
+                isSelected
+                  ? "bg-gray-200"
+                  : "hover:bg-gray-100 active:bg-gray-100"
               }`}
             >
               <div className="flex items-center gap-3 flex-1 min-w-0">
-                <span 
-                  className={`w-4 h-4 rounded-full ${taskColor?.bg || 'bg-blue-500'} flex-shrink-0`} 
+                <span
+                  className={`w-4 h-4 rounded-full ${
+                    taskColor?.bg || "bg-blue-500"
+                  } flex-shrink-0`}
                 />
-                <span 
-                  className={`${taskColor?.text || 'text-blue-500'} font-medium text-large truncate`}
+                <span
+                  className={`${
+                    taskColor?.text || "text-blue-500"
+                  } font-medium text-large truncate`}
                 >
                   {task.title}
                 </span>

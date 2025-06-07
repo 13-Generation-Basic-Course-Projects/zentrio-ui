@@ -30,17 +30,17 @@ export default async function BoardLayout({ children, params }) {
     /*
      * get task board feature with error handling
      */
-    let tasks = [];
-    try {
-      const tasksResponse = await getTaskByBoardIdAndGanttBarIdAction({
-        boardId: "feb6d22e-b2d6-4105-b3ad-663c7148c337",
-        ganttbarId: "58b7f94e-186b-4d2e-b9f6-13f581b6a226",
-      });
-      tasks = tasksResponse?.payload || FALLBACK_ARRAY;
-    } catch (error) {
-      console.error("Error fetching tasks:", error);
-      tasks = FALLBACK_ARRAY;
-    }
+    // let tasks = [];
+    // try {
+    //   const tasksResponse = await getTaskByBoardIdAndGanttBarIdAction({
+    //     boardId: boardId,
+    //     ganttbarId: "58b7f94e-186b-4d2e-b9f6-13f581b6a226",
+    //   });
+    //   tasks = tasksResponse?.payload || FALLBACK_ARRAY;
+    // } catch (error) {
+    //   console.error("Error fetching tasks:", error);
+    //   tasks = FALLBACK_ARRAY;
+    // }
 
     /*
      * get for gantt bar feature with error handling
