@@ -26,9 +26,6 @@ export const boardRouteGroup = {
   assignUserRole: `${apiConfig.baseUrl}/boards/assign`, // Assign role to user in board
 
   getBoardsByUserId: (userId) => `${apiConfig.baseUrl}/boards/${userId}/users`, // Get boards by user ID
-  getBoardMembers: (id) => `${apiConfig.baseUrl}/boards/${id}/members`, // Get board members
-  acceptBoardInvite: (id) =>
-    `${apiConfig.baseUrl}/boards/${id}/invitations/accept`, // Accept invite
   getBoardCover: (id, filename) =>
     `${apiConfig.baseUrl}/boards/${id}/cover/${filename}`, // Get board cover image
   getBoardsByWorkspaceId: (workspaceId) =>

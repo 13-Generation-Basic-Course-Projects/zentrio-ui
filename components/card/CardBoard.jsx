@@ -30,7 +30,8 @@ export default function CardBoard({
   /* Extract workspaceId and projectId from the current URL */
   const pathSegments = pathname.split("/");
   const workspaceId = pathSegments[2] || "defaultWorkspace";
-  const projectId = pathSegments[3] || "defaultProject";
+  // const projectId = pathSegments[3] || "defaultProject";
+  const boardIdFromURL = pathSegments[3] || boardId; // defaultProject
 
   const userRole = role || searchParams.get("role") || "pm";
   const [favorited, setFavorited] = useState(isFavourite);
@@ -133,18 +134,26 @@ export default function CardBoard({
       {/* Card Body: background image or placeholder */}
       <CardBody className="overflow-visible py-2">
         <Link
-          href={`/dashboard/${workspaceId}/${projectId}/board?role=${role}`}
+          href={`/dashboard/${workspaceId}/${boardIdFromURL}/board?role=${role}`}
         >
-          {image && image.startsWith("bg-") ? (
-            <div
-              className={`rounded-xl w-full h-32 bg-cover bg-center ${image}`}
-              aria-label={`Card background for ${title}`}
-            />
-          ) : image ? (
+          {image?.startsWith("data:image") ? (
             <img
               src={image}
-              alt={`Card background for ${title}`}
-              className="object-cover rounded-xl w-full h-32"
+              alt="Board Cover"
+              className="w-full h-32 object-cover rounded-lg"
+            />
+          ) : image ? (
+            <div
+              className={`w-full h-32 rounded-lg ${
+                {
+                  red: "bg-board-red",
+                  blue: "bg-board-primary",
+                  green: "bg-board-green",
+                  purple: "bg-board-purple",
+                  orange: "bg-board-orange",
+                  violet: "bg-board-violet",
+                }[image] || "bg-gray-300"
+              }`}
             />
           ) : (
             <div

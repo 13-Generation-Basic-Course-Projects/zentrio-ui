@@ -588,71 +588,7 @@ export const getBoardsByUserIdService = async (id, token) => {
   }
 };
 
-/*
- * 10. Get board with members
- */
-export const getBoardMembersService = async (userid, token) => {
-  try {
-    const url = boardRouteGroup.getBoardMembers(userid);
 
-    const res = await fetch(url, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (!res.ok) {
-      const errorData = await res.json();
-      throw new Error(
-        errorData.message || `Request failed with status ${res.status}`
-      );
-    }
-
-    return await res.json();
-  } catch (error) {
-    console.error("❌ Failed to get board with members:", error.message);
-    throw error;
-  }
-};
-
-/*
- * 11. Accept board invitation : acceptBoardInvite: (id) =>
-     `${apiConfig.baseUrl}/boards/${id}/invitations/accept`,
- */
-export const acceptBoardInviteService = async (id, email, roleName, token) => {
-  try {
-    // Optional: validate roleName
-    const validRoles = ["ROLE_LEADER", "ROLE_MEMBER"];
-    if (!validRoles.includes(roleName)) {
-      throw new Error(`Invalid roleName: ${roleName}`);
-    }
-
-    const url = boardRouteGroup.acceptInviteBoardById(id);
-
-    const res = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ email, roleName }),
-    });
-
-    if (!res.ok) {
-      const errorData = await res.json();
-      throw new Error(
-        errorData.message || `Request failed with status ${res.status}`
-      );
-    }
-
-    return await res.json();
-  } catch (error) {
-    console.error("❌ Failed to accept board invitation:", error.message);
-    throw error;
-  }
-};
 
 /*
  * 12. Get cover board by board id

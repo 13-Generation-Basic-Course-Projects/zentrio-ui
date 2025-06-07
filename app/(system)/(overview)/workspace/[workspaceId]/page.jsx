@@ -6,7 +6,7 @@ import React from "react";
 
 
 export default async function WorkspaceSpcific({ params }) {
-  const workspaceId = params.workspaceId;
+  const workspaceId = await(params).workspaceId;
   
 
   /* 

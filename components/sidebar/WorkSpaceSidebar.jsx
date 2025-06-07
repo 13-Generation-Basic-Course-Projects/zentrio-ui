@@ -10,42 +10,15 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
-import board from "../../assets/boardSideBar.png";
 import { LeaveIcon } from "../icon/everyicon";
-import { icon } from "../icon/allicon";
 import SaveWorkspace from "../button/SaveWorkspace";
 import ModalCreateWorkspace from "../modal/ModalCreateWorkspace";
-import ModalCreateBoard from "../modal/ModalCreateBoard";
 import ModalOptionWorkspace from "../modal/workspace/ModalOptionWorkspace";
 import { Button } from "@heroui/react";
-import { useMemo } from "react";
-
-//   {
-//     title: "My Empty workspace",
-//     url: "/workspace",
-//     color: "bg-pink-300",
-//     activeIcon: board,
-//     myworkspace: true,
-//   },
-//   {
-//     title: "My workspace 2",
-//     url: "/workspace/2",
-//     color: "bg-orange-300",
-//     activeIcon: board,
-//     myworkspace: true,
-//   },
-//   {
-//     title: "My workspace 3",
-//     url: "/workspace/3",
-//     color: "bg-green-300",
-//     activeIcon: board,
-//     myworkspace: false,
-//   },
-// ];
+import { useState } from "react";
 
 export default function WorkSpaceSideBar({
   workspaceData,
@@ -56,6 +29,7 @@ export default function WorkSpaceSideBar({
 }) {
   const pathname = usePathname();
   const { toggleSidebar } = useSidebar();
+  const [selectedId, setSelectedId] = useState("");
 
   return (
     <Sidebar
@@ -151,6 +125,8 @@ export default function WorkSpaceSideBar({
                               workspaceId={item?.workspaceId}
                               deleteWorkspace={deleteWorkspace}
                               updateNameWorkspace={updateNameWorkspace}
+                              selectedId={selectedId}
+                              setSelectedId={setSelectedId}
                             />
                           </div>
                         </SidebarMenuButton>
@@ -162,59 +138,62 @@ export default function WorkSpaceSideBar({
               <p className="text-body-sm  font-extrabold">Other Workspace</p>
               {Array.isArray(workspaceUsersData.payload) &&
                 workspaceUsersData.payload
-                .slice() // create a copy to avoid mutating original array
-                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // sort by createdAt descending
-                .map((item, i) => {
-                  const isActive = pathname.includes(item?.workspaceId);
-                  return (
-                    <SidebarMenuItem key={i} className="!border-0 w-full p-0">
-                      <SidebarMenuButton
-                        style={{ borderRadius: "0.5rem" }}
-                        asChild
-                        tooltip={item.title}
-                        className={`group flex w-full items-center justify-between p-0 rounded-lg transition-colors duration-200 
+                  .slice() // create a copy to avoid mutating original array
+                  .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // sort by createdAt descending
+                  .map((item, i) => {
+                    const isActive = pathname.includes(item?.workspaceId);
+                    return (
+                      <SidebarMenuItem key={i} className="!border-0 w-full p-0">
+                        <SidebarMenuButton
+                          style={{ borderRadius: "0.5rem" }}
+                          asChild
+                          tooltip={item.title}
+                          className={`group flex w-full items-center justify-between p-0 rounded-lg transition-colors duration-200 
             ${
               isActive
                 ? "bg-slate-blue text-primary"
                 : "hover:bg-slate-100 text-gray-700"
             }`}
-                      >
-                        <div className="flex items-center justify-between w-full gap-2">
-                          {/* Left: Color dot + Title */}
-                          <div className="flex items-center gap-2 overflow-hidden flex-1">
-                            <span
-                              style={{ backgroundColor: "#59BAD5" }}
-                              className="h-5 w-5 rounded-full flex-shrink-0"
-                            />
+                        >
+                          <div className="flex items-center justify-between w-full gap-2">
+                            {/* Left: Color dot + Title */}
+                            <div className="flex items-center gap-2 overflow-hidden flex-1">
+                              <span
+                                style={{ backgroundColor: "#59BAD5" }}
+                                className="h-5 w-5 rounded-full flex-shrink-0"
+                              />
 
-                            {item?.workspaceId ? (
-                              <Link
-                                href={`/workspace/${item.workspaceId}`}
-                                className="truncate text-left sm:text-body-sm text-gray-800 flex-1"
-                              >
-                                {item?.title || "Untitled Workspace"}
-                              </Link>
-                            ) : (
-                              <span className="truncate text-left sm:text-body-sm text-gray-800 flex-1">
-                                {item?.title || "Invalid Workspace"}
+                              {item?.workspaceId ? (
+                                <Link
+                                  href={`/workspace/${item.workspaceId}`}
+                                  className="truncate text-left sm:text-body-sm text-gray-800 flex-1"
+                                >
+                                  {item?.title || "Untitled Workspace"}
+                                </Link>
+                              ) : (
+                                <span className="truncate text-left sm:text-body-sm text-gray-800 flex-1">
+                                  {item?.title || "Invalid Workspace"}
+                                </span>
+                              )}
+                            </div>
+                            {/* Right: Option menu */}
+                            {item && (
+                              <span>
+                                <ModalOptionWorkspace
+                                  workspaceUserTitle={item.title}
+                                  workspaceUserId={item.workspaceId}
+                                  deleteUserWorkspace={deleteWorkspace}
+                                  updateNameUserWorkspace={updateNameWorkspace}
+                                  selectedId={selectedId}
+                                  setSelectedId={setSelectedId}
+                                />
                               </span>
                             )}
                           </div>
-
-                          {/* Right: Option menu */}
-                          <span>
-                            <ModalOptionWorkspace
-                              workspaceTitle={item?.title}
-                              workspaceId={item?.workspaceId}
-                              deleteWorkspace={deleteWorkspace}
-                              updateNameWorkspace={updateNameWorkspace}
-                            />
-                          </span>
-                        </div>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  );
-                })}
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    );
+                  })}
             </SidebarMenu>
 
             {/* LOGOUT (Shown conditionally with hidden class removed if needed) */}
