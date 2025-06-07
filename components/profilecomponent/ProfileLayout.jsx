@@ -2,7 +2,6 @@
 import Image from "next/image";
 import React, { useState } from "react";
 import coverProfile from "@/assets/coverprofile.png";
-import userProfile from "@/assets/profile.png";
 import { Button } from "@heroui/react";
 import { Camera } from "lucide-react";
 import {
@@ -12,9 +11,16 @@ import {
   IconMap,
   IconReturnLeft,
 } from "../icon/everyicon";
-import ButtonEditprofile from "../modal/profile/ModalEditProfileTab";
+import { getUploadProfileImageAction } from "@/action/profile.action";
 
-export default function ProfileLayout({ user, acheivment, profile, action }) {
+export default function ProfileLayout({
+  user,
+  acheivment,
+  profile,
+  action,
+  currentUserProfile,
+}) {
+  const data = currentUserProfile?.payload?.user || {};
   const tabItems = [
     {
       key: "profile",
@@ -45,6 +51,16 @@ export default function ProfileLayout({ user, acheivment, profile, action }) {
     return [];
   };
 
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const handleImageChange = async (e) => {
+    try {
+      const response = await getUploadProfileImageAction();
+      console.log("Upload response", response);
+    } catch (err) {
+      console.error("upload failed", err);
+    }
+  };
+
   return (
     <>
       <div className="w-full sticky top-0 z-[20] px-10 py-2">
@@ -65,38 +81,61 @@ export default function ProfileLayout({ user, acheivment, profile, action }) {
               } else {
                 window.location.href = "/dashboard"; // Fallback URL
               }
-            }}
-          >
+            }}>
             <IconReturnLeft strokeWidth={2} size={5} color={"currentColor"} />
             Go Back
           </Button>
 
           <div className="absolute bottom-[-60px] left-1/2 -translate-x-1/2 w-28 h-28 rounded-full border-2 border-desc p-0.5 group cursor-pointer bg-white shadow overflow-hidden">
-            <Image
-              className="rounded-full w-full h-full object-cover"
-              src={userProfile}
-              alt="user profile"
+            <img
+              className="rounded-full object-cover"
+              src={
+                data?.profileImage
+                  ? data.profileImage
+                  : data?.gender === "MALE" || data?.profileImage === "string"
+                  ? "https://i.pinimg.com/736x/3e/9f/08/3e9f085ce52735854f9f2d4742f86659.jpg"
+                  : "https://i.pinimg.com/736x/3e/9f/08/3e9f085ce52735854f9f2d4742f86659.jpg"
+              }
+              alt=" "
+              width={112}
+              height={112}
             />
+
             <div className="absolute top-20 inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-              <Camera className="text-white w-3 h-3" />
+              <label className="cursor-pointer flex items-center gap-2">
+                <Camera className="text-white w-4 h-4" />
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="hidden"
+                />
+              </label>
+              {previewUrl && (
+                <img
+                  src={previewUrl}
+                  alt="Preview"
+                  className="mt-4 w-32 h-32 object-cover rounded-full border"
+                />
+              )}
             </div>
           </div>
         </div>
 
         <div className="text-center mt-16">
-          <h1 className="text-h4 font-bold">Skan</h1>
+          <h1 className="text-h4 font-bold">{data?.username || "N/A"}</h1>
           <div className="flex justify-center gap-6 text-sm text-gray-600 mt-2">
             <p className="flex items-center gap-1">
               <IconJob strokeWidth={1} size={5} color={"currentColor"} />
-              Front-end Developer
+              {data?.position || "N/A"}
             </p>
             <p className="flex items-center gap-1">
-              <IconMap strokeWidth={1} size={5} color={"currentColor"} /> Phnom
-              Penh
+              <IconMap strokeWidth={1} size={5} color={"currentColor"} />{" "}
+              {data?.location || "N/A"}
             </p>
             <p className="flex items-center gap-1">
               <IconDate strokeWidth={1} size={5} color={"currentColor"} />
-              Started 07-May-2025
+              {data.createdAt ? data.createdAt.split("T")[0] : " "}
             </p>
           </div>
         </div>
@@ -111,8 +150,7 @@ export default function ProfileLayout({ user, acheivment, profile, action }) {
                   activeTab === tab.key
                     ? "text-blue-500"
                     : "text-muted hover:text-gray-700"
-                }`}
-              >
+                }`}>
                 {tab.title}
                 {activeTab === tab.key && (
                   <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-500"></div>

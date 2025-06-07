@@ -19,7 +19,6 @@ export const metadata = {
 
 export default async function SystemLayout({ children }) {
   const session = await auth();
-  console.log("aaa", session?.user);
   return (
     // <LoadingBarContainer>
     <SidebarProvider className="bg-bgColor">
