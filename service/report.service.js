@@ -2,7 +2,8 @@
 
 import { reportRouteGroup } from "@/routes/reportRoute"
 
-export const reportService = async ({ boardId, zentrioToken } = {}) => {
+// get report from board
+export const getReportService = async ({ boardId, zentrioToken } = {}) => {
     const url = reportRouteGroup.getReportByBoardId(boardId);
     const res = await fetch(url, {
         method: "GET",

@@ -1,9 +1,9 @@
 import { Token } from "@/constant/token"
-import { reportService } from "@/service/report.service"
+import { getReportService } from "@/service/report.service"
 
-export const reportAction = async ({ boardId }) => {
+export const getReportAction = async ({ boardId }) => {
     const userToken = await Token();
     const zentrioToken = userToken.Credential;
-    const result = await reportService({ boardId, zentrioToken });
+    const result = await getReportService({ boardId, zentrioToken });
     return result;
 }
