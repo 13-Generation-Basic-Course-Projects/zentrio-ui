@@ -369,7 +369,7 @@ export default function GanttChart({ modal, ganttbar }) {
       <BredCrum
         board={"Project Dashboard"} // Example: Make dynamic if needed
         feature={"Gantt Chart"}
-        header={"Task Schedule"} // Example: Make dynamic if needed
+        header={"Gantt Chart"} // Example: Make dynamic if needed
         modal={modal}
       />
       <div className="flex items-center justify-between bg-[#F3F7FB] px-6 py-3 rounded-t-[16px] mt-3 border-b border-gray-200">

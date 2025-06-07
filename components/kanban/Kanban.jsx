@@ -7,6 +7,7 @@ import ModalDetailChecklist from "../modal/board/ModalDetailChecklist";
 import { ChevronDown, ChevronUp, MessageSquare, Paperclip } from "lucide-react";
 import CardDateChecklist from "../card/CardDateChecklist";
 import ModalCreateChecklist from "../modal/board/ModalCreateChecklist";
+import { EmptyKanban } from "../appserver/EmptyKanban";
 
 // Placeholder component (unchanged)
 const UserAvater = ({ image }) => (
@@ -117,6 +118,7 @@ export default function KanbanBoard({
   tasks,
   checklistbyTaskIds,
   allMemberInBoard,
+  test,
 }) {
   const [columns, setColumns] = useState([]);
   const [draggedItem, setDraggedItem] = useState(null);
@@ -127,7 +129,8 @@ export default function KanbanBoard({
   const [error, setError] = useState(null);
 
   // show all checklist
-  console.log("the one show all checklist in kanban", checklistbyTaskIds);
+
+  // console.log("the one show all checklist in kanban", checklistbyTaskIds);
 
   // Fetch and transform API data
   useEffect(() => {
@@ -505,225 +508,120 @@ export default function KanbanBoard({
         ))}
       </div>
       {/* Kanban Columns */}
-      <div className="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 p-2 overflow-hidden">
-        {(columns || []).map((column) => (
-          <div
-            key={column.id}
-            className="flex flex-col min-h-0 w-full rounded-lg p-1 h-full px-2 py-5"
-            onDragOver={(e) =>
-              handleDragOver(e, {
-                targetColumnId: column.id,
-                targetIndex: (column.cards || []).length,
-                type: "card",
-                isDropZone: true,
-              })
-            }
-            onDrop={handleDrop}
-          >
-            <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-hidden pr-1 pb-[300px]">
-              {(column.cards || []).map((card, cardIndex) => {
-                const isCardDragging = draggedItem?.id === card.id;
-                const isCardHoverMakeSpace =
-                  hoverInfo?.type === "card" &&
-                  hoverInfo?.targetColumnId === column.id &&
-                  hoverInfo?.targetIndex === cardIndex;
-                const isCardDropZoneHovered =
-                  hoverInfo?.type === "card" &&
-                  hoverInfo?.targetColumnId === column.id &&
-                  hoverInfo?.targetIndex === cardIndex;
-                const isChecklistHoverTargetCard =
-                  hoverInfo?.type === "checklist" &&
-                  hoverInfo?.targetCardId === card.id;
+      {tasks.length > 0 ? (
+        <div className="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 p-2 overflow-hidden">
+          {(columns || []).map((column) => (
+            <div
+              key={column.id}
+              className="flex flex-col min-h-0 w-full rounded-lg p-1 h-full px-2 py-5"
+              onDragOver={(e) =>
+                handleDragOver(e, {
+                  targetColumnId: column.id,
+                  targetIndex: (column.cards || []).length,
+                  type: "card",
+                  isDropZone: true,
+                })
+              }
+              onDrop={handleDrop}
+            >
+              <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-hidden pr-1 pb-[300px]">
+                {(column.cards || []).map((card, cardIndex) => {
+                  const isCardDragging = draggedItem?.id === card.id;
+                  const isCardHoverMakeSpace =
+                    hoverInfo?.type === "card" &&
+                    hoverInfo?.targetColumnId === column.id &&
+                    hoverInfo?.targetIndex === cardIndex;
+                  const isCardDropZoneHovered =
+                    hoverInfo?.type === "card" &&
+                    hoverInfo?.targetColumnId === column.id &&
+                    hoverInfo?.targetIndex === cardIndex;
+                  const isChecklistHoverTargetCard =
+                    hoverInfo?.type === "checklist" &&
+                    hoverInfo?.targetCardId === card.id;
 
-                return (
-                  <div
-                    key={card.id}
-                    id={card.id}
-                    className="mb-3 bg-white rounded-xl px-2"
-                  >
+                  return (
                     <div
-                      className={`h-2 w-full transition-all duration-300 ease-in-out rounded ${
-                        isCardDropZoneHovered
-                          ? "bg-blue-200 h-8 border-2 border-dashed border-blue-500"
-                          : ""
-                      }`}
-                      onDragOver={(e) =>
-                        handleDragOver(e, {
-                          targetColumnId: column.id,
-                          targetIndex: cardIndex,
-                          type: "card",
-                          isDropZone: true,
-                        })
-                      }
-                      onDrop={handleDrop}
-                    />
-                    <div
-                      className={`shadow-sm rounded-xl overflow-hidden transition-all duration-300 ease-in-out ${
-                        isChecklistHoverTargetCard
-                          ? "ring-2 ring-green-300"
-                          : ""
-                      }`}
-                      style={{
-                        opacity: isCardDragging ? 0.5 : 1,
-                        transform: isCardDragging
-                          ? "rotate(2deg) scale(1.05)"
-                          : isCardHoverMakeSpace
-                          ? "translateY(8px)"
-                          : "none",
-                      }}
-                      draggable
-                      onDragStart={(e) =>
-                        handleDragStart(e, {
-                          id: card.id,
-                          type: "card",
-                          sourceColumnId: column.id,
-                          sourceIndex: cardIndex,
-                        })
-                      }
-                      onDragEnd={handleDragEnd}
+                      key={card.id}
+                      id={card.id}
+                      className="mb-3 bg-white rounded-xl px-2"
                     >
-                      <div className="p-3 cursor-grab active:cursor-grabbing">
-                        <div className="flex items-center justify-between">
-                          <div className="flex-1 min-w-0 mr-2">
-                            <p
-                              className="text-sm font-medium text-gray-800 truncate"
-                              title={card.title}
-                            >
-                              {card.title}
-                            </p>
+                      <div
+                        className={`h-2 w-full transition-all duration-300 ease-in-out rounded ${
+                          isCardDropZoneHovered
+                            ? "bg-blue-200 h-8 border-2 border-dashed border-blue-500"
+                            : ""
+                        }`}
+                        onDragOver={(e) =>
+                          handleDragOver(e, {
+                            targetColumnId: column.id,
+                            targetIndex: cardIndex,
+                            type: "card",
+                            isDropZone: true,
+                          })
+                        }
+                        onDrop={handleDrop}
+                      />
+                      <div
+                        className={`shadow-sm rounded-xl overflow-hidden transition-all duration-300 ease-in-out ${
+                          isChecklistHoverTargetCard
+                            ? "ring-2 ring-green-300"
+                            : ""
+                        }`}
+                        style={{
+                          opacity: isCardDragging ? 0.5 : 1,
+                          transform: isCardDragging
+                            ? "rotate(2deg) scale(1.05)"
+                            : isCardHoverMakeSpace
+                            ? "translateY(8px)"
+                            : "none",
+                        }}
+                        draggable
+                        onDragStart={(e) =>
+                          handleDragStart(e, {
+                            id: card.id,
+                            type: "card",
+                            sourceColumnId: column.id,
+                            sourceIndex: cardIndex,
+                          })
+                        }
+                        onDragEnd={handleDragEnd}
+                      >
+                        <div className="p-3 cursor-grab active:cursor-grabbing">
+                          <div className="flex items-center justify-between">
+                            <div className="flex-1 min-w-0 mr-2">
+                              <p
+                                className="text-sm font-medium text-gray-800 truncate"
+                                title={card.title}
+                              >
+                                {card.title}
+                              </p>
+                            </div>
+                            <div className="flex items-center flex-shrink-0">
+                              <div className="flex -space-x-2 mr-2">
+                                {(card.assignees || []).map((assignee, idx) => (
+                                  <UserAvater key={idx} image={assignee} />
+                                ))}
+                              </div>
+                            </div>
                           </div>
-                          <div className="flex items-center flex-shrink-0">
-                            <div className="flex -space-x-2 mr-2">
-                              {(card.assignees || []).map((assignee, idx) => (
-                                <UserAvater key={idx} image={assignee} />
-                              ))}
+                          <div className="flex items-center justify-between text-xs text-gray-500 mt-2">
+                            <div className="flex items-center gap-3">
+                              {card.comment > 0 && (
+                                <span className="flex items-center gap-1">
+                                  <MessageSquare size={12} /> {card.comment}
+                                </span>
+                              )}
+                              {card.attachment > 0 && (
+                                <span className="flex items-center gap-1">
+                                  <Paperclip size={12} /> {card.attachment}
+                                </span>
+                              )}
                             </div>
                           </div>
                         </div>
-                        <div className="flex items-center justify-between text-xs text-gray-500 mt-2">
-                          <div className="flex items-center gap-3">
-                            {card.comment > 0 && (
-                              <span className="flex items-center gap-1">
-                                <MessageSquare size={12} /> {card.comment}
-                              </span>
-                            )}
-                            {card.attachment > 0 && (
-                              <span className="flex items-center gap-1">
-                                <Paperclip size={12} /> {card.attachment}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                      {card.expanded && (
-                        <div
-                          className="p-2"
-                          onDragOver={(e) =>
-                            handleDragOver(e, {
-                              targetColumnId: column.id,
-                              targetCardId: card.id,
-                              targetIndex: (card.checklists || []).length,
-                              type: "checklist",
-                            })
-                          }
-                          onDrop={handleDrop}
-                        >
-                          {(card.checklists || []).map(
-                            (checklist, checklistIndex) => {
-                              const isChecklistDragging =
-                                draggedItem?.id === checklist.checklistId;
-                              const isChecklistHoverMakeSpace =
-                                hoverInfo?.type === "checklist" &&
-                                hoverInfo?.targetCardId === card.id &&
-                                hoverInfo?.targetIndex === checklistIndex;
-                              const isChecklistDropZoneHovered =
-                                hoverInfo?.type === "checklist" &&
-                                hoverInfo?.targetCardId === card.id &&
-                                hoverInfo?.targetIndex === checklistIndex;
-
-                              return (
-                                <div
-                                  key={checklist.checklistId}
-                                  id={checklist.checklistId}
-                                >
-                                  <div
-                                    className={`h-1 w-full transition-all duration-200 ease-in-out rounded ${
-                                      isChecklistDropZoneHovered
-                                        ? "bg-green-200 h-6 border-2 border-dashed border-green-500"
-                                        : ""
-                                    }`}
-                                    onDragOver={(e) =>
-                                      handleDragOver(e, {
-                                        targetColumnId: column.id,
-                                        targetCardId: card.id,
-                                        targetIndex: checklistIndex,
-                                        type: "checklist",
-                                      })
-                                    }
-                                    onDrop={handleDrop}
-                                  />
-                                  <div
-                                    className={`mb-1 cursor-grab active:cursor-grabbing bg-white transition-all duration-200 ease-in-out rounded-xl shadow-sm`}
-                                    style={{
-                                      opacity: isChecklistDragging ? 0.5 : 1,
-                                      transform: isChecklistDragging
-                                        ? "scale(1.05)"
-                                        : isChecklistHoverMakeSpace
-                                        ? "translateY(4px)"
-                                        : "none",
-                                    }}
-                                    draggable
-                                    onDragStart={(e) =>
-                                      handleDragStart(e, {
-                                        id: checklist.checklistId,
-                                        type: "checklist",
-                                        sourceColumnId: column.id,
-                                        sourceCardId: card.id,
-                                        sourceIndex: checklistIndex,
-                                      })
-                                    }
-                                    onDragEnd={handleDragEnd}
-                                  >
-                                    <ModalDetailChecklist
-                                      id={checklist?.checklistId}
-                                      taskTitle={card.title}
-                                      title={checklist.title}
-                                      startDate={
-                                        checklist.startedAt
-                                          ? new Date(
-                                              checklist.startedAt
-                                            ).toLocaleDateString()
-                                          : "N/A"
-                                      }
-                                      status={checklist.status}
-                                      image={
-                                        checklist.members &&
-                                        checklist.members.length > 0
-                                          ? checklist.members[0].imageUrl
-                                          : card.assignees[0] || ""
-                                      }
-                                      description={checklist.description}
-                                      checklistId={checklist.checklistId}
-                                      members={checklist.members || []}
-                                      createdAt={checklist.createdAt}
-                                      updatedAt={checklist.updatedAt}
-                                      finishedAt={checklist.finishedAt}
-                                      member={checklist.members}
-                                    />
-                                  </div>
-                                </div>
-                              );
-                            }
-                          )}
+                        {card.expanded && (
                           <div
-                            className={`h-1 w-full transition-all duration-200 ease-in-out rounded ${
-                              hoverInfo?.type === "checklist" &&
-                              hoverInfo?.targetCardId === card.id &&
-                              hoverInfo?.targetIndex ===
-                                (card.checklists || []).length
-                                ? "bg-green-200 h-6 border-2 border-dashed border-green-500"
-                                : ""
-                            }`}
+                            className="p-2"
                             onDragOver={(e) =>
                               handleDragOver(e, {
                                 targetColumnId: column.id,
@@ -733,71 +631,180 @@ export default function KanbanBoard({
                               })
                             }
                             onDrop={handleDrop}
-                          />
-                          <div className="pb-3 pt-1 px-3">
-                            <div className="grid grid-cols-12">
-                              <div className="col-span-8 flex items-center">
-                                <ModalCreateChecklist
-                                  onSubmit={(checklistData) =>
-                                    addChecklist(card.id, checklistData)
-                                  }
-                                  buttonText="New checklist"
-                                  modalTitle="Create Checklist"
-                                />
-                              </div>
-                              <div className="col-span-4 p-2">
-                                <CardDateChecklist
-                                  date={
-                                    card.startedAt
-                                      ? new Date(
-                                          card.startedAt
-                                        ).toLocaleDateString()
-                                      : "N/A"
-                                  }
-                                />
+                          >
+                            {(card.checklists || []).map(
+                              (checklist, checklistIndex) => {
+                                const isChecklistDragging =
+                                  draggedItem?.id === checklist.checklistId;
+                                const isChecklistHoverMakeSpace =
+                                  hoverInfo?.type === "checklist" &&
+                                  hoverInfo?.targetCardId === card.id &&
+                                  hoverInfo?.targetIndex === checklistIndex;
+                                const isChecklistDropZoneHovered =
+                                  hoverInfo?.type === "checklist" &&
+                                  hoverInfo?.targetCardId === card.id &&
+                                  hoverInfo?.targetIndex === checklistIndex;
+
+                                return (
+                                  <div
+                                    key={checklist.checklistId}
+                                    id={checklist.checklistId}
+                                  >
+                                    <div
+                                      className={`h-1 w-full transition-all duration-200 ease-in-out rounded ${
+                                        isChecklistDropZoneHovered
+                                          ? "bg-green-200 h-6 border-2 border-dashed border-green-500"
+                                          : ""
+                                      }`}
+                                      onDragOver={(e) =>
+                                        handleDragOver(e, {
+                                          targetColumnId: column.id,
+                                          targetCardId: card.id,
+                                          targetIndex: checklistIndex,
+                                          type: "checklist",
+                                        })
+                                      }
+                                      onDrop={handleDrop}
+                                    />
+                                    <div
+                                      className={`mb-1 cursor-grab active:cursor-grabbing bg-white transition-all duration-200 ease-in-out rounded-xl shadow-sm`}
+                                      style={{
+                                        opacity: isChecklistDragging ? 0.5 : 1,
+                                        transform: isChecklistDragging
+                                          ? "scale(1.05)"
+                                          : isChecklistHoverMakeSpace
+                                          ? "translateY(4px)"
+                                          : "none",
+                                      }}
+                                      draggable
+                                      onDragStart={(e) =>
+                                        handleDragStart(e, {
+                                          id: checklist.checklistId,
+                                          type: "checklist",
+                                          sourceColumnId: column.id,
+                                          sourceCardId: card.id,
+                                          sourceIndex: checklistIndex,
+                                        })
+                                      }
+                                      onDragEnd={handleDragEnd}
+                                    >
+                                      <ModalDetailChecklist
+                                        id={checklist?.checklistId}
+                                        taskTitle={card.title}
+                                        title={checklist.title}
+                                        startDate={
+                                          checklist.startedAt
+                                            ? new Date(
+                                                checklist.startedAt
+                                              ).toLocaleDateString()
+                                            : "N/A"
+                                        }
+                                        status={checklist.status}
+                                        image={
+                                          checklist.members &&
+                                          checklist.members.length > 0
+                                            ? checklist.members[0].imageUrl
+                                            : card.assignees[0] || ""
+                                        }
+                                        description={checklist.description}
+                                        checklistId={checklist.checklistId}
+                                        members={checklist.members || []}
+                                        createdAt={checklist.createdAt}
+                                        updatedAt={checklist.updatedAt}
+                                        finishedAt={checklist.finishedAt}
+                                        member={checklist.members}
+                                      />
+                                    </div>
+                                  </div>
+                                );
+                              }
+                            )}
+                            <div
+                              className={`h-1 w-full transition-all duration-200 ease-in-out rounded ${
+                                hoverInfo?.type === "checklist" &&
+                                hoverInfo?.targetCardId === card.id &&
+                                hoverInfo?.targetIndex ===
+                                  (card.checklists || []).length
+                                  ? "bg-green-200 h-6 border-2 border-dashed border-green-500"
+                                  : ""
+                              }`}
+                              onDragOver={(e) =>
+                                handleDragOver(e, {
+                                  targetColumnId: column.id,
+                                  targetCardId: card.id,
+                                  targetIndex: (card.checklists || []).length,
+                                  type: "checklist",
+                                })
+                              }
+                              onDrop={handleDrop}
+                            />
+                            <div className="pb-3 pt-1 px-3">
+                              <div className="grid grid-cols-12">
+                                <div className="col-span-8 flex items-center">
+                                  <ModalCreateChecklist
+                                    onSubmit={(checklistData) =>
+                                      addChecklist(card.id, checklistData)
+                                    }
+                                    buttonText="New checklist"
+                                    modalTitle="Create Checklist"
+                                  />
+                                </div>
+                                <div className="col-span-4 p-2">
+                                  <CardDateChecklist
+                                    date={
+                                      card.startedAt
+                                        ? new Date(
+                                            card.startedAt
+                                          ).toLocaleDateString()
+                                        : "N/A"
+                                    }
+                                  />
+                                </div>
                               </div>
                             </div>
                           </div>
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex items-center justify-center">
-                      <button
-                        onClick={() => toggleTaskExpansion(card.id)}
-                        className="text-gray-400 hover:text-gray-600 p-1 rounded hover:bg-gray-100"
-                      >
-                        {card.expanded ? (
-                          <ChevronUp size={16} />
-                        ) : (
-                          <ChevronDown size={16} />
                         )}
-                      </button>
+                      </div>
+                      <div className="flex items-center justify-center">
+                        <button
+                          onClick={() => toggleTaskExpansion(card.id)}
+                          className="text-gray-400 hover:text-gray-600 p-1 rounded hover:bg-gray-100"
+                        >
+                          {card.expanded ? (
+                            <ChevronUp size={16} />
+                          ) : (
+                            <ChevronDown size={16} />
+                          )}
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
-              <div
-                className={`min-h-[10px] w-full transition-all duration-300 ease-in-out rounded ${
-                  hoverInfo?.type === "card" &&
-                  hoverInfo?.targetColumnId === column.id &&
-                  hoverInfo?.targetIndex === (column.cards || []).length
-                    ? "bg-blue-100 border-2 border-dashed border-blue-400 py-4"
-                    : ""
-                }`}
-                onDragOver={(e) =>
-                  handleDragOver(e, {
-                    targetColumnId: column.id,
-                    targetIndex: (column.cards || []).length,
-                    type: "card",
-                    isDropZone: true,
-                  })
-                }
-                onDrop={handleDrop}
-              />
+                  );
+                })}
+                <div
+                  className={`min-h-[10px] w-full transition-all duration-300 ease-in-out rounded ${
+                    hoverInfo?.type === "card" &&
+                    hoverInfo?.targetColumnId === column.id &&
+                    hoverInfo?.targetIndex === (column.cards || []).length
+                      ? "bg-blue-100 border-2 border-dashed border-blue-400 py-4"
+                      : ""
+                  }`}
+                  onDragOver={(e) =>
+                    handleDragOver(e, {
+                      targetColumnId: column.id,
+                      targetIndex: (column.cards || []).length,
+                      type: "card",
+                      isDropZone: true,
+                    })
+                  }
+                  onDrop={handleDrop}
+                />
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      ) : (
+        <EmptyKanban />
+      )}
     </div>
   );
 }

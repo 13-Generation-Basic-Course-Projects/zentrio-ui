@@ -13,7 +13,7 @@ export const getTaskByBoardIdAndGanttBarIdService = async ({
   token,
 }) => {
   try {
-    console.log("from service ", token);
+    //console.log("from service ", token);
     const url = boardRouteGroup.getTaskByBoardAndGanttBarId(
       boardId,
       ganttbarId
@@ -40,7 +40,7 @@ export const getTaskByBoardIdAndGanttBarIdService = async ({
  */
 export const getCheckListByTaskIdService = async ({ taskId, token }) => {
   try {
-    console.log("from service ", token);
+    //console.log("from service ", token);
     const url = checklistRouteGroup.getCheckListByTaskId(taskId);
     const res = await fetch(url, {
       method: "GET",
@@ -64,7 +64,7 @@ export const getCheckListByTaskIdService = async ({ taskId, token }) => {
  */
 export const getMemberByBoardIdService = async ({ boardId, token }) => {
   try {
-    console.log("from service ", token);
+    //console.log("from service ", token);
     const url = boardRouteGroup.getMemberByBoardId(boardId);
     const res = await fetch(url, {
       method: "GET",
@@ -150,7 +150,7 @@ export const getAllGanttBarByGanttChartIDService = async ({
   token,
 }) => {
   try {
-    console.log("from service ", token);
+    //console.log("from service ", token);
     const url = ganttRouteGroup.getAllGanttBarByGanttChartID(ganttChartId);
     const res = await fetch(url, {
       method: "GET",

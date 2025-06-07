@@ -19,7 +19,7 @@ export const getTaskByBoardIdAndGanttBarIdAction = async ({
 }) => {
   const userToken = await Token();
   const token = userToken.Credential;
-  console.log(token);
+  //console.log(token);
   const result = await getTaskByBoardIdAndGanttBarIdService({
     boardId,
     ganttbarId,
@@ -34,7 +34,7 @@ export const getTaskByBoardIdAndGanttBarIdAction = async ({
 export const getCheckListByTaskIdAction = async ({ taskId }) => {
   const userToken = await Token();
   const token = userToken.Credential;
-  console.log(token);
+  //console.log(token);
   const result = await getCheckListByTaskIdService({
     taskId,
     token,
@@ -48,7 +48,7 @@ export const getCheckListByTaskIdAction = async ({ taskId }) => {
 export const getMemberByBoardIdAction = async ({ boardId }) => {
   const userToken = await Token();
   const token = userToken.Credential;
-  console.log(token);
+  //console.log(token);
   const result = await getMemberByBoardIdService({
     boardId,
     token,
@@ -63,7 +63,7 @@ export const inviteMemberToBoardAction = async ({ boardId, data }) => {
   try {
     const userToken = await Token();
     const token = userToken.Credential;
-    console.log("Token retrieved:", token);
+    //console.log("Token retrieved:", token);
 
     const result = await inviteMemberToBoardService({
       boardId,
@@ -83,7 +83,7 @@ export const inviteMemberToBoardAction = async ({ boardId, data }) => {
 export const getCommentByCheckListIdAction = async ({ checkListId }) => {
   const userToken = await Token();
   const token = userToken.Credential;
-  console.log(token);
+  //console.log(token);
   const result = await getCommentByCheckListIdService({
     checkListId,
     token,
@@ -96,7 +96,7 @@ export const getCommentByCheckListIdAction = async ({ checkListId }) => {
 export const getAllGanttBarByGanttChartIDAction = async ({ ganttChartId }) => {
   const userToken = await Token();
   const token = userToken.Credential;
-  console.log(token);
+  //console.log(token);
   const result = await getAllGanttBarByGanttChartIDService({
     ganttChartId,
     token,

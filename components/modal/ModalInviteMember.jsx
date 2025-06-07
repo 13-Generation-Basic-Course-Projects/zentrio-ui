@@ -74,7 +74,7 @@ export default function ModalInviteMember({ boardId, allMemberInBoard }) {
   });
 
   // const boardId = "feb6d22e-b2d6-4105-b3ad-663c7148c337";
-  console.log("+++log boardId", boardId);
+  //console.log("+++log boardId", boardId);
   // Watch form values to determine button text and state
   const watchedEmail = watch("email");
   const watchedRole = watch("role");
@@ -132,7 +132,7 @@ export default function ModalInviteMember({ boardId, allMemberInBoard }) {
   const removeNewMember = (id) => {
     setNewMembers((prev) => prev.filter((member) => member.id !== id));
   };
-  console.log("log in invite memeber", allMemberInBoard);
+  //console.log("log in invite memeber", allMemberInBoard);
   return (
     <div className="relative">
       <Button
