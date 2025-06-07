@@ -1,11 +1,16 @@
 "use client";
 
-import React, { useRef, useState, useMemo } from "react";
+import BredCrum from "../bredcrum/MyBredcrum";
+import CardTaskCalender from "../card/CardTaskCalender";
+import CardTCommentCalender from "../card/CardCommentCalender";
+
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
+
+import { useRef, useState, useMemo } from "react";
 import {
   ChevronLeft,
   ChevronRight,
@@ -13,16 +18,21 @@ import {
   ClipboardList,
 } from "lucide-react";
 
-import BredCrum from "../bredcrum/MyBredcrum";
-import ModalCreateGanttBar from "../modal/board/ModalCreateGanttBar";
-import CardTaskCalender from "../card/CardTaskCalender";
-import CardTCommentCalender from "../card/CardCommentCalender";
+export default function MyCalender({ tasks, note }) {
+  console.log("duma tasks", tasks);
 
-export default function MyCalender({ tasks }) {
   const calendarRef = useRef(null);
   const [currentTitle, setCurrentTitle] = useState("");
+  const [selectedTaskId, setSelectedTaskId] = useState(null);
 
+  // color random
   const colorList = [
+    {
+      bg: "bg-blue-500",
+      text: "text-blue-500",
+      light: "bg-blue-100",
+      border: "border-blue-500",
+    },
     {
       bg: "bg-red-500",
       text: "text-red-500",
@@ -30,10 +40,10 @@ export default function MyCalender({ tasks }) {
       border: "border-red-500",
     },
     {
-      bg: "bg-blue-500",
-      text: "text-blue-500",
-      light: "bg-blue-100",
-      border: "border-blue-500",
+      bg: "bg-orange-500",
+      text: "text-orange-500",
+      light: "bg-orange-100",
+      border: "border-orange-500",
     },
     {
       bg: "bg-green-500",
@@ -47,53 +57,105 @@ export default function MyCalender({ tasks }) {
       light: "bg-purple-100",
       border: "border-purple-500",
     },
-    {
-      bg: "bg-orange-500",
-      text: "text-orange-500",
-      light: "bg-orange-100",
-      border: "border-orange-500",
-    },
   ];
 
-  const mappedTasks = useMemo(() => {
+  // Create task color mapping for consistency
+  const taskColorMap = useMemo(() => {
+    const taskList = Array.isArray(tasks?.payload) ? tasks.payload : [];
     const uniqueIds = new Set();
-    return tasks
+    const filteredTasks = taskList.filter((task) => {
+      if (uniqueIds.has(task.taskId)) return false;
+      uniqueIds.add(task.taskId);
+      return true;
+    });
+
+    const colorMap = {};
+    filteredTasks.forEach((task, index) => {
+      colorMap[task.taskId] = colorList[index % colorList.length];
+    });
+    return colorMap;
+  }, [tasks]);
+
+  // map task to calendar
+  const mappedTasks = useMemo(() => {
+    const taskList = Array.isArray(tasks?.payload) ? tasks.payload : [];
+
+    const uniqueIds = new Set();
+    return taskList
       .filter((task) => {
-        if (uniqueIds.has(task.task_id)) return false;
-        uniqueIds.add(task.task_id);
+        if (uniqueIds.has(task.taskId)) return false;
+        uniqueIds.add(task.taskId);
         return true;
       })
-      .map((task, index) => {
-        const color = colorList[index % colorList.length];
+      .map((task) => {
+        const color = taskColorMap[task.taskId];
         return {
-          id: task.task_id,
+          id: task.taskId,
           title: task.title,
-          start: task.created_at,
-          end: task.finished_at ?? task.created_at,
+          start: task.startedAt || task.createdAt,
+          end: task.finishedAt || task.createdAt,
           extendedProps: {
             type: "task",
             content: task.description,
             color,
+            taskData: task,
           },
         };
       });
-  }, [tasks]);
+  }, [tasks, taskColorMap]);
 
-  const [events, setEvents] = useState([]);
+  // Map comments to calendar events - show only one "Comment" event per task that has comments
+  const mappedComments = useMemo(() => {
+    if (!note?.payload || !selectedTaskId) return [];
+    
+    const taskComments = note.payload.filter(comment => comment.taskId === selectedTaskId);
+    
+    if (taskComments.length === 0) return [];
+    
+    // Show only one "Comment" event for the task
+    const firstComment = taskComments[0];
+    const taskColor = taskColorMap[selectedTaskId];
+    
+    return [{
+      id: `comment-${selectedTaskId}`,
+      title: "Comment",
+      start: firstComment.notedAt,
+      end: firstComment.tillDate || firstComment.notedAt,
+      extendedProps: {
+        type: "comment",
+        content: "Comment",
+        color: taskColor,
+        commentCount: taskComments.length,
+      },
+    }];
+  }, [note, selectedTaskId, taskColorMap]);
 
-  const handleTaskClick = (dateStr, taskId) => {
+  // Filter events based on selected task
+  const filteredEvents = useMemo(() => {
+    if (!selectedTaskId) return [];
+    
+    const selectedTask = mappedTasks.filter(task => task.id === selectedTaskId);
+    return [...selectedTask, ...mappedComments];
+  }, [mappedTasks, mappedComments, selectedTaskId]);
+
+  const handleTaskClick = (taskId) => {
+    console.log("Task clicked:", taskId);
+    setSelectedTaskId(taskId);
+    
+    // Navigate to the task date
     const task = mappedTasks.find((t) => t.id === taskId);
     if (task) {
-      setEvents([task]);
-      calendarRef.current?.getApi().gotoDate(dateStr);
+      calendarRef.current?.getApi().gotoDate(task.start);
     }
+  };
+
+  const handleShowAllTasks = () => {
+    setSelectedTaskId(null);
   };
 
   const renderEventContent = ({ event }) => {
     const { type, content, color } = event.extendedProps;
-    const baseStyle = `rounded border-2 px-2 font-bold ${
-      color?.text || "text-green-600"
-    } ${color?.light || "bg-green-100"}`;
+    const baseStyle = `rounded border-2 font-bold gap-1 ${color?.text} ${color?.light}`;
 
     const formatDate = (dateStr) => {
       const date = new Date(dateStr);
@@ -102,7 +164,6 @@ export default function MyCalender({ tasks }) {
         month: "short",
       });
     };
-
     const formattedDate = `${formatDate(event.start)} - ${formatDate(
       event.end
     )}`;
@@ -110,11 +171,9 @@ export default function MyCalender({ tasks }) {
     if (type === "task") {
       return (
         <div
-          className={`${baseStyle} h-[70px] text-[0.9rem] ${
-            color?.border || "border-green-500"
-          } p-1 flex flex-col`}
+          className={`${baseStyle} h-[90px] text-[0.95rem] ${color?.border} p-1 flex flex-col`}
         >
-          <div className="text-[0.65rem] font-medium bg-opacity-80 bg-white w-fit px-2 py-[2px] rounded">
+          <div className="text-[0.70rem] font-bold bg-opacity-80 bg-white w-fit px-2 py-[2px] rounded">
             {formattedDate}
           </div>
           <div className="flex items-center gap-1">
@@ -128,10 +187,10 @@ export default function MyCalender({ tasks }) {
     if (type === "comment") {
       return (
         <div
-          className={`${baseStyle} mt-2 h-[30px] text-[0.7rem] flex items-center gap-1 border-green-500`}
+          className={`${baseStyle} mt-2 h-[40px] text-[0.75rem] ${color?.border} p-1 flex items-center gap-1`}
         >
-          <span>comment</span>
           <MessageCircleMore className="w-4 h-4" />
+          <span className="truncate">Comment</span>
         </div>
       );
     }
@@ -139,6 +198,7 @@ export default function MyCalender({ tasks }) {
     return null;
   };
 
+  // handle action custom header calendar
   const handleDateNav = (action) => {
     const calendarApi = calendarRef.current?.getApi();
     if (!calendarApi) return;
@@ -152,64 +212,70 @@ export default function MyCalender({ tasks }) {
 
   return (
     <div className="p-4 h-screen flex flex-col overflow-hidden">
-      <BredCrum board="Hikko Design" feature="Calender" header="Calender" />
-
-      {/* Move header outside the grid */}
-      <div className="flex space-x-[500px] items-center mt-4 px-2 mb-6">
-        <button
-          onClick={() => handleDateNav("today")}
-          className="rounded-full px-4 py-1 shadow-sm bg-white text-gray-600 font-medium border border-gray-200 hover:bg-gray-50 transition"
-        >
-          Today
-        </button>
-
-        <div className="flex items-center gap-4">
-          <button
-            onClick={() => handleDateNav("prev")}
-            className="rounded-full p-2 shadow-sm bg-white text-gray-500 hover:bg-gray-100 transition"
-          >
-            <ChevronLeft className="w-4 h-4" />
-          </button>
-          <h2 className="text-lg font-semibold text-gray-600">
-            {currentTitle}
-          </h2>
-          <button
-            onClick={() => handleDateNav("next")}
-            className="rounded-full p-2 shadow-sm bg-white text-gray-500 hover:bg-gray-100 transition"
-          >
-            <ChevronRight className="w-4 h-4" />
-          </button>
-        </div>
-      </div>
-
-      {/* Full 12-col grid */}
+      {/* FullCalendar 12-col grid */}
       <div className="grid grid-cols-12 gap-4 h-full">
-        <div className="col-span-9 max-h-[700px]  pr-2">
-          <div className="h-full overflow-y-auto scrollbar-hidden">
-            <FullCalendar
-              ref={calendarRef}
-              plugins={[
-                resourceTimelinePlugin,
-                dayGridPlugin,
-                interactionPlugin,
-                timeGridPlugin,
-              ]}
-              headerToolbar={false}
-              initialView="dayGridMonth"
-              events={events}
-              eventContent={renderEventContent}
-              datesSet={(arg) => setCurrentTitle(arg.view.title)}
-              height="auto"
-            />
+        <div className="col-span-9 h-full overflow-hidden">
+          <BredCrum board="Hikko Design" feature="Calender" header="Calender" />
+
+          {/* custom header calendar */}
+          <div className="flex justify-between items-center mt-4 px-2 mb-6">
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => handleDateNav("today")}
+                className="rounded-full px-4 py-1 shadow-sm bg-white text-gray-600 font-medium border border-gray-200 hover:bg-gray-50 transition"
+              >
+                Today
+              </button>
+            </div>
+
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => handleDateNav("prev")}
+                className="rounded-full p-2 shadow-sm bg-white text-gray-500 hover:bg-gray-100 transition"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+              <h2 className="text-lg font-semibold text-gray-600">
+                {currentTitle}
+              </h2>
+              <button
+                onClick={() => handleDateNav("next")}
+                className="rounded-full p-2 shadow-sm bg-white text-gray-500 hover:bg-gray-100 transition"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
           </div>
+
+          <FullCalendar
+            ref={calendarRef}
+            plugins={[
+              resourceTimelinePlugin,
+              dayGridPlugin,
+              interactionPlugin,
+              timeGridPlugin,
+            ]}
+            headerToolbar={false}
+            initialView="dayGridMonth"
+            events={filteredEvents}
+            eventContent={renderEventContent}
+            datesSet={(arg) => setCurrentTitle(arg.view.title)}
+            height="auto"
+          />
         </div>
 
-        <div className="col-span-3 h-full overflow-y-auto pl-2 flex flex-col gap-5">
-          <CardTaskCalender
-            tasks={mappedTasks}
-            onTaskClick={(dateStr, taskId) => handleTaskClick(dateStr, taskId)}
+        <div className="col-span-3 h-full overflow-y-auto p-2 flex flex-col gap-4">
+          <CardTaskCalender 
+            tasks={tasks} 
+            onTaskClick={handleTaskClick} 
+            taskColorMap={taskColorMap}
+            selectedTaskId={selectedTaskId}
           />
-          <CardTCommentCalender tasks={tasks} />
+          <CardTCommentCalender 
+            note={note} 
+            selectedTaskId={selectedTaskId}
+            taskColorMap={taskColorMap}
+          />
         </div>
       </div>
     </div>
