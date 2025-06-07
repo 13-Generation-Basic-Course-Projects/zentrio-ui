@@ -15,19 +15,34 @@ import { icon } from "../icon/allicon";
 import ModalOptionDocument from "../modal/docu/ModalOptionDocument";
 import Link from "next/link";
 
-export default function CardFolder({ title, status, date, link }) {
+export default function CardFolder({
+  title,
+  status,
+  date,
+  link,
+  documentId,
+  folderId,
+  tokenFromGoogle,
+}) {
   return (
     <Card className="rounded-xl text-blue-400 cursor-pointer hover:bg-blue-50 transition sm:w-[160px] md:w-full h-[160px] shadow-sm ">
       {/* Header */}
       <CardHeader className="pb-0 pt-2 px-4 flex justify-end">
         <div className="hover:text-black text-gray-600">
-          <ModalOptionDocument />
+          <ModalOptionDocument
+            documentId={documentId}
+            accessToken={tokenFromGoogle}
+          />
         </div>
       </CardHeader>
       <CardBody>
-        <ModalFolderList link={link} title={title} href={link} />
+        <ModalFolderList
+          folderId={folderId}
+          accessToken={tokenFromGoogle}
+          link={link}
+          title={title}
+        />
       </CardBody>
-
       {/* Body */}
 
       {/* Footer */}
@@ -82,13 +97,24 @@ function FileIcon({ type, size = 45 }) {
   );
 }
 
-export function CardFile({ title, status, date, type, link }) {
+export function CardFile({
+  title,
+  status,
+  date,
+  type,
+  link,
+  documentId,
+  tokenFromGoogle,
+}) {
   return (
     <Card className="rounded-xl text-blue-400 cursor-pointer hover:bg-blue-50 transition sm:w-[160px] md:w-full h-[160px] shadow-sm">
       {/* Header */}
       <CardHeader className="pb-0 pt-2 px-4 flex justify-end">
         <div className="hover:text-black text-gray-600">
-          <ModalOptionDocument />
+          <ModalOptionDocument
+            documentId={documentId}
+            accessToken={tokenFromGoogle}
+          />
         </div>
       </CardHeader>
 

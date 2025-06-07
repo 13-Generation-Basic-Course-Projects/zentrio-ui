@@ -12,7 +12,9 @@ import {
 import ModalDelete from "../ModalDelete";
 import PopupAction from "@/components/popup/PopupAction";
 import { IconpopupDelete } from "@/components/icon/Iconpopup";
-import ModalRenameFileOrFolder from "./ModalRenameDocu";
+import { ModalRenameFileOrFolder } from "./ModalRenameDocu";
+import { deleteDocumentAction } from "@/action/document.action";
+import { useRouter } from "next/navigation";
 
 // icon components directly in the same file
 const AddNoteIcon = (props) => (
@@ -108,7 +110,7 @@ const ShareoDcumentIcon = (props) => (
   </svg>
 );
 
-export default function ModalOptionDocument() {
+export default function ModalOptionDocument({ documentId, accessToken }) {
   const iconClasses =
     "text-xl text-default-500 pointer-events-none flex-shrink-0";
 
@@ -168,6 +170,8 @@ export default function ModalOptionDocument() {
             icon={<IconpopupDelete />}
             bgcolor={"bg-slate-red"}
             massageDo={"Yes, Delete"}
+            documentId={documentId}
+            accessToken={accessToken}
             massageUndo={"No, Cancel"}
           />
         </DropdownItem>

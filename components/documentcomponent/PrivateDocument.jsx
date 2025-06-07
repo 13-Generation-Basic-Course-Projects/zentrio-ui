@@ -37,6 +37,7 @@ export default function Privatedocument({ modal, documents }) {
     return {
       title: doc.description || "Untitled",
       status: doc._private ? "private" : "personal",
+      id: doc.documentId,
       date: new Date(doc.creationDate).toISOString().split("T")[0],
       type: isGoogleDoc
         ? "docx"
@@ -169,6 +170,7 @@ export default function Privatedocument({ modal, documents }) {
                     date={el.date || "2025-05-25"}
                     type={el.type}
                     link={el.link}
+                    documentId={el.id}
                   />
                 ))
             ) : (

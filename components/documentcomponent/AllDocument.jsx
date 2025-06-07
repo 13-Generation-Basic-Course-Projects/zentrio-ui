@@ -13,9 +13,10 @@ import {
 } from "@heroui/react";
 import { useState } from "react";
 
-export default function AllDocument({ documents }) {
+export default function AllDocument({ boardId, documents, tokenFromGoogle }) {
   // const data = documentData;
   const data = documents || [];
+  console.log("document in all document", documents);
 
   const [sortOrder, setSortOrder] = useState("asc");
   const [searchTerm, setSearchTerm] = useState("");
@@ -45,6 +46,8 @@ export default function AllDocument({ documents }) {
     return {
       title: doc.description || "Untitled",
       status: doc._private ? "private" : "personal",
+      id: doc.documentId,
+      folderId: doc.folderId,
       date: new Date(doc.creationDate).toISOString().split("T")[0],
       type: isGoogleDoc
         ? "docx"
@@ -76,7 +79,12 @@ export default function AllDocument({ documents }) {
             board={"Hikko Design"}
             feature={"Document"}
             header={"Document"}
-            modal={[<ModalCreateDocu />]}
+            modal={[
+              <ModalCreateDocu
+                tokenFromGoogle={tokenFromGoogle}
+                boardId={boardId}
+              />,
+            ]}
           />
         </div>
 
@@ -151,6 +159,9 @@ export default function AllDocument({ documents }) {
                       status={el.status || "personal"}
                       date={el.date || "2025-05-25"}
                       link={el?.link}
+                      documentId={el?.id}
+                      folderId={el?.folderId}
+                      tokenFromGoogle={tokenFromGoogle}
                     />
                   ))
               ) : (
@@ -180,6 +191,8 @@ export default function AllDocument({ documents }) {
                       date={el.date}
                       type={el.type}
                       link={el.link}
+                      documentId={el?.id}
+                      tokenFromGoogle={tokenFromGoogle}
                     />
                   ))
               ) : (

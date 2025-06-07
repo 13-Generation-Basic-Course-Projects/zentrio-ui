@@ -11,7 +11,12 @@ import ModalNotification from "../modal/noti/ModalNotification";
 import AllDocument from "./AllDocument";
 import ModalCreateDocu from "../modal/docu/ModalCreateDocu";
 
-export default function DocumentLayout({ user, documents }) {
+export default function DocumentLayout({
+  user,
+  documents,
+  tokenFromGoogle,
+  boardId,
+}) {
   const [activeTab, setActiveTab] = useState(null);
 
   const tabItems = [
@@ -126,16 +131,22 @@ export default function DocumentLayout({ user, documents }) {
           {activeTab === "kanban" && (
             <PrivateDocument
               documents={documents}
-              modal={[<ModalCreateDocu />]}
+              modal={[<ModalCreateDocu boardId={boardId} />]}
             />
           )}
           {activeTab === "calendar" && (
             <PublicDocument
               documents={documents}
-              modal={[<ModalCreateDocu />]}
+              modal={[<ModalCreateDocu boardId={boardId} />]}
             />
           )}
-          {activeTab === null && <AllDocument documents={documents} />}
+          {activeTab === null && (
+            <AllDocument
+              documents={documents}
+              tokenFromGoogle={tokenFromGoogle}
+              boardId={boardId}
+            />
+          )}
         </div>
       </main>
     </>
