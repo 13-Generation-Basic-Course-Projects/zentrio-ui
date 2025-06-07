@@ -13,6 +13,8 @@ import {
 import { IconFolder } from "../../icon/everyicon";
 import { CardFile } from "../../card/CardDoc";
 import { getFileByFolderIdAction } from "@/action/document.action";
+import NoFilesFound from "./NoFilesFound";
+import ModalCreateDocu from "./ModalCreateDocu";
 
 export default function ModalFolderList({ title, folderId, accessToken }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -87,7 +89,8 @@ export default function ModalFolderList({ title, folderId, accessToken }) {
                 ) : error ? (
                   <p className="text-red-500">{error}</p>
                 ) : data.length === 0 ? (
-                  <p>No files found</p>
+                  // <p>No files found</p>
+                  <NoFilesFound />
                 ) : (
                   <div className="grid grid-cols-4 gap-4 overflow-y-auto scrollbar-hidden pb-[250px] p-2">
                     {data.map((el, i) => {
@@ -115,11 +118,12 @@ export default function ModalFolderList({ title, folderId, accessToken }) {
                     })}
                   </div>
                 )}
+                <ModalCreateDocu />
               </ModalBody>
               <ModalFooter>
-                <Button color="danger" variant="light" onPress={onClose}>
+                {/* <Button color="danger" variant="light" onPress={onClose}>
                   Close
-                </Button>
+                </Button> */}
               </ModalFooter>
             </>
           )}
