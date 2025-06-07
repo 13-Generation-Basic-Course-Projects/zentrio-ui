@@ -168,3 +168,34 @@ export const getAllGanttBarByGanttChartIDService = async ({
     throw error;
   }
 };
+
+/*
+ * create task by boardId and Gantt chart id
+ */
+export const createTaskByBoardIdAndGanttChartIdService = async ({
+  boardId,
+  ganttChartId,
+  data,
+  token,
+}) => {
+  console.log("taskkk");
+  try {
+    console.log("from service", { boardId, data, token });
+    const url = boardRouteGroup.createTaskByBoardIdAndGanttBarId();
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    });
+    const result = await res.json();
+    console.log("📥 Backend responded with:", result);
+
+    return data;
+  } catch (error) {
+    console.error("bug", error.message);
+    throw error;
+  }
+};

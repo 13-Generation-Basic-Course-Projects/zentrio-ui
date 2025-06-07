@@ -189,6 +189,9 @@ export default async function BoardLayout({ children, params }) {
             Array.isArray(allMemberInBoard) ? allMemberInBoard : FALLBACK_ARRAY
           }
           boardId={boardId || FALLBACK_STRING}
+          ganttChartId={
+            ganttchartByBoardId.payload.ganttChartId || FALLBACK_STRING
+          }
         />
         <main>{children}</main>
       </div>
@@ -205,6 +208,7 @@ export default async function BoardLayout({ children, params }) {
           checklistbyTaskIds={FALLBACK_ARRAY}
           allMemberInBoard={FALLBACK_ARRAY}
           boardId={FALLBACK_STRING}
+          ganttChartId={FALLBACK_STRING}
         />
         <main>{children}</main>
       </div>

@@ -1,6 +1,7 @@
 "use server";
 import { Token } from "@/constant/token";
 import {
+  createTaskByBoardIdAndGanttChartIdService,
   getAllGanttBarByGanttChartIDService,
   getCheckListByTaskIdService,
   getCommentByCheckListIdService,
@@ -102,4 +103,34 @@ export const getAllGanttBarByGanttChartIDAction = async ({ ganttChartId }) => {
     token,
   });
   return result;
+};
+/*
+ * createTask boardid and gantchartid
+ */
+// action
+export const createTaskByBoardIdAndGanttChartIdAction = async (
+  data,
+  boardId,
+  ganttChartId
+) => {
+  try {
+    const userToken = await Token();
+    const token = userToken?.Credential;
+    if (!token) {
+      throw new Error("No authentication token found");
+    }
+    console.log("Token retrieved:", token);
+    console.log("data create form", data);
+    const result = await createTaskByBoardIdAndGanttChartIdService({
+      boardId,
+      ganttChartId,
+      data,
+      token,
+    });
+
+    return { success: true, data: result };
+  } catch (error) {
+    console.error("Create task action error:", error.message);
+    return { success: false, error: error.message };
+  }
 };

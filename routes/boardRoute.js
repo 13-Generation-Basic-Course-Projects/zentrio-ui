@@ -16,6 +16,8 @@ export const boardRouteGroup = {
   inviteUserToBoard: (boardId) =>
     `${apiConfig.baseUrl}/boards/${boardId}/users/invite`,
 
+  createTaskByBoardIdAndGanttBarId: () => `${apiConfig.baseUrl}/tasks`, // Created task with boards ID and gantt bars ID
+
   //put
   updateBoardFavorite: (boardId) =>
     `${apiConfig.baseUrl}/boards/${boardId}/favourite`, //enum

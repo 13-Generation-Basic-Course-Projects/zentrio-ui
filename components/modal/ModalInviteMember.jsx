@@ -132,7 +132,7 @@ export default function ModalInviteMember({ boardId, allMemberInBoard }) {
   const removeNewMember = (id) => {
     setNewMembers((prev) => prev.filter((member) => member.id !== id));
   };
-  //console.log("log in invite memeber", allMemberInBoard);
+  console.log("log in invite memeber", allMemberInBoard);
   return (
     <div className="relative">
       <Button
@@ -275,7 +275,7 @@ export default function ModalInviteMember({ boardId, allMemberInBoard }) {
                 <div className="space-y-2 mb-2">
                   <div className="text-h6 text-title">Existing Members</div>
                   <ul className="px-2 pt-2 space-y-3 mt-2 max-h-[260px] overflow-y-auto pr-2 scrollbar-hidden">
-                    {allMemberInBoard?.payload.map((member, index) => (
+                    {allMemberInBoard?.map((member, index) => (
                       <li
                         key={index}
                         className="flex justify-between items-center gap-4 px-2 py-3 rounded-xl"

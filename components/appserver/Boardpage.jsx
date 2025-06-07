@@ -21,6 +21,7 @@ export default function SystemBoard({
   checklistbyTaskIds,
   allMemberInBoard,
   boardId,
+  ganttChartId,
 }) {
   const pathname = usePathname();
   const segments = pathname.split("/");
@@ -30,7 +31,12 @@ export default function SystemBoard({
 
   // Conditionally add ModalInviteMember only if workspaceId is NOT 'otherworkspace'
   const modalComponents = [
-    <ModalCreateTask key="create-task" />,
+    <ModalCreateTask
+      key="create-task"
+      boardId={boardId}
+      ganttChartId={ganttChartId}
+      ganttbar={ganttbar}
+    />,
     workspaceId !== "otherworkspace" && (
       <ModalInviteMember
         key="invite-member"
