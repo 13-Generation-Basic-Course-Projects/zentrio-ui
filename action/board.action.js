@@ -1,6 +1,7 @@
 "use server";
 import { Token } from "@/constant/token";
 import {
+  getAllGanttBarByGanttChartIDService,
   getCheckListByTaskIdService,
   getCommentByCheckListIdService,
   getMemberByBoardIdService,
@@ -85,6 +86,19 @@ export const getCommentByCheckListIdAction = async ({ checkListId }) => {
   console.log(token);
   const result = await getCommentByCheckListIdService({
     checkListId,
+    token,
+  });
+  return result;
+};
+/*
+ * get all  gannt chart
+ */
+export const getAllGanttBarByGanttChartIDAction = async ({ ganttChartId }) => {
+  const userToken = await Token();
+  const token = userToken.Credential;
+  console.log(token);
+  const result = await getAllGanttBarByGanttChartIDService({
+    ganttChartId,
     token,
   });
   return result;

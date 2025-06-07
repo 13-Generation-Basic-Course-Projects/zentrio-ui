@@ -9,6 +9,7 @@ import { Suspense } from "react";
 import Loading from "../loading";
 import SidebarRenderer from "@/components/sidebar/SidebarRenderer";
 import { SideBarIcon } from "@/components/icon/everyicon";
+import { createWorkspaceAction, deleteWorkspaceByIdAction, getAllBoardBywWorkspaceIdAction, getAllWorkspaceAction, getAllWorkspaceForUserAction, updateWorkspaceByIdAction } from "@/action/workspace.action";
 //import { LoadingBarContainer } from "react-top-loading-bar";
 export const metadata = {
   title: "Zentrio | Task Mangement",
@@ -20,10 +21,24 @@ export const metadata = {
 export default async function SystemLayout({ children }) {
   const session = await auth();
   console.log("aaa", session?.user);
+
+ /*  call action get all workspace */
+  const workspaceData = await getAllWorkspaceAction();
+ /*  call action get all workspace for users */
+  const workspaceUsersData = await getAllWorkspaceForUserAction();
+ 
+
   return (
     // <LoadingBarContainer>
     <SidebarProvider className="bg-bgColor">
-      <SidebarRenderer />
+      <SidebarRenderer
+        workspaceData={workspaceData}
+        workspaceUsersData={workspaceUsersData}
+        createWorkspace={createWorkspaceAction}
+        deleteWorkspace={deleteWorkspaceByIdAction}
+        updateNameWorkspace={updateWorkspaceByIdAction}
+        getBoardByWorkspaceId={getAllBoardBywWorkspaceIdAction}
+      />
       <div
         className={" font-poppin h-screen overflow-hidden  bg-white  w-full"}
       >

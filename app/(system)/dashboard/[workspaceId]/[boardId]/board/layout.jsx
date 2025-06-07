@@ -1,6 +1,7 @@
 import SystemBoard from "@/components/appserver/Boardpage";
 import { auth } from "@/auth";
 import {
+  getAllGanttBarByGanttChartIDAction,
   getCheckListByTaskIdAction,
   getCommentByCheckListIdAction,
   getMemberByBoardIdAction,
@@ -11,7 +12,12 @@ import {
   getGanttBarByGanttChartIdAction,
   getGanttChartByBoardIdAction,
 } from "@/action/gantt.action";
-export default async function BoardLayout({ children }) {
+export default async function BoardLayout({ children, params }) {
+  /*
+   * get prop id
+   */
+  const boardId = params.boardId;
+
   const session = await auth();
   /*
    *get task board  feature
@@ -29,24 +35,14 @@ export default async function BoardLayout({ children }) {
    *get for gantt chart by boardId
    */
   const ganttchartByBoardId = await getGanttChartByBoardIdAction({
-    boardId: "feb6d22e-b2d6-4105-b3ad-663c7148c337",
+    boardId: boardId,
   });
   /*
    *get for gantt chart by boardId
    */
   const ganttBarByGanttChartId = await getGanttBarByGanttChartIdAction({
-    ganttChartId: "66404c78-08cb-45a3-ae8e-88944ab56ec4",
+    ganttChartId: ganttchartByBoardId,
   });
-
-  /*
-   *get for checklist
-   */
-  const checklistPromises = tasks?.payload.map((task) =>
-    getCheckListByTaskIdAction({ taskId: task.taskId })
-  );
-
-  //  resolve all checklistBoardId promises
-  const checklistbyTaskIds = await Promise.all(checklistPromises); //get checklist from task
 
   /*
    * get all  memeber  specific boardId
@@ -55,21 +51,51 @@ export default async function BoardLayout({ children }) {
     boardId: "feb6d22e-b2d6-4105-b3ad-663c7148c337",
   });
   /*
-   * get comment in checklist
+   * get all gant bar
    */
-  const commentInChecklist = async (id) => {
-    if (!id) return null; // or handle error
-    return await getCommentByCheckListIdAction(id);
-  };
+
+  const allGanttBar = await getAllGanttBarByGanttChartIDAction({
+    ganttChartId: ganttchartByBoardId?.payload?.ganttChartId,
+  });
+  const ganttBars = allGanttBar.payload;
+
+  console.log("test all gannt bars", allGanttBar);
+
+  console.log("old task demo", tasks);
 
   console.log("✅ allMemberInBoard Board IDs:", allMemberInBoard);
-  const boardId = "feb6d22e-b2d6-4105-b3ad-663c7148c337";
+
+  // Assuming your API response is stored in a variable called 'ganttBarsResponse'
+  const ganttBarIds = ganttBars.map((item) => item.ganttBarId);
+
+  // Now use these IDs to get tasks for each ganttBar
+  const allTasks = [];
+
+  for (const ganttBarId of ganttBarIds) {
+    const tasks = await getTaskByBoardIdAndGanttBarIdAction({
+      boardId: "feb6d22e-b2d6-4105-b3ad-663c7148c337",
+      ganttbarId: ganttBarId,
+    });
+
+    // Add tasks to the collection (assuming tasks.payload contains the task array)
+    if (tasks.payload && tasks.payload.length > 0) {
+      allTasks.push(...tasks.payload);
+    }
+  }
+  /*
+   *get for checklist
+   */
+  const checklistPromises = allTasks.map((task) =>
+    getCheckListByTaskIdAction({ taskId: task.taskId })
+  );
+  //  resolve all checklistBoardId promises
+  const checklistbyTaskIds = await Promise.all(checklistPromises); //get checklist from task
 
   return (
     <div>
       <SystemBoard
         user={session?.user}
-        tasks={tasks}
+        tasks={allTasks}
         ganttbar={ganttBarByGanttChartId}
         checklistbyTaskIds={checklistbyTaskIds}
         allMemberInBoard={allMemberInBoard}

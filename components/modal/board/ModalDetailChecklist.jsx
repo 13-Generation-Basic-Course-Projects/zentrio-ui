@@ -33,7 +33,7 @@ export default function ModalDetailChecklist({
   startDate,
   status,
   label,
-  comment,
+
   description,
   image,
   member,
@@ -65,7 +65,6 @@ export default function ModalDetailChecklist({
 
   console.log("id", id);
 
-  console.log("0000", comment);
   return (
     <>
       <Button
@@ -78,7 +77,7 @@ export default function ModalDetailChecklist({
             status={status}
             title={title}
             startDate={startDate}
-            comment={comment}
+            comment={"static comment"}
             label={label}
             image={image}
             hideImage={hideImage}
@@ -360,8 +359,9 @@ export default function ModalDetailChecklist({
 
                         <div className="ml-8 text-title/50 text-caption flex flex-col space-y-1">
                           <p>
-                            Discussed project timeline and identified key
-                            milestones.
+                            {
+                              "Static  Discussed project timeline and identified key milestones."
+                            }
                           </p>
                           <div className="flex justify-end">
                             <div className="flex flex-col items-end bg-progress-green/20 rounded-full p-2">

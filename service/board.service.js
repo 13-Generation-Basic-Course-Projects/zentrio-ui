@@ -2,6 +2,7 @@
 "use server";
 import { boardRouteGroup } from "@/routes/boardRoute";
 import { checklistRouteGroup } from "@/routes/checklistRoute";
+import { ganttRouteGroup } from "@/routes/ganttRoute";
 
 /*
  * getTaskByBoardIdAndGanttBarIdService in side board feature or stage
@@ -29,7 +30,7 @@ export const getTaskByBoardIdAndGanttBarIdService = async ({
 
     return data; // just return the data, don’t redirect here
   } catch (error) {
-    console.error("Login service error:", error.message);
+    console.error("bug", error.message);
     throw error;
   }
 };
@@ -53,7 +54,7 @@ export const getCheckListByTaskIdService = async ({ taskId, token }) => {
 
     return data; // just return the data, don’t redirect here
   } catch (error) {
-    console.error("Login service error:", error.message);
+    console.error("bug", error.message);
     throw error;
   }
 };
@@ -77,7 +78,7 @@ export const getMemberByBoardIdService = async ({ boardId, token }) => {
 
     return data; // just return the data, don’t redirect here
   } catch (error) {
-    console.error("Login service error:", error.message);
+    console.error("bug", error.message);
     throw error;
   }
 };
@@ -139,5 +140,31 @@ export const getCommentByCheckListIdService = async ({
   } catch (error) {
     console.error("Invite service error:", error.message);
     return { success: false, error: error.message };
+  }
+};
+/*
+ * get all ganttchart
+ */
+export const getAllGanttBarByGanttChartIDService = async ({
+  ganttChartId,
+  token,
+}) => {
+  try {
+    console.log("from service ", token);
+    const url = ganttRouteGroup.getAllGanttBarByGanttChartID(ganttChartId);
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await res.json();
+    console.log("📥 Backend responded with:", data);
+
+    return data; // just return the data, don’t redirect here
+  } catch (error) {
+    console.error("bug", error.message);
+    throw error;
   }
 };

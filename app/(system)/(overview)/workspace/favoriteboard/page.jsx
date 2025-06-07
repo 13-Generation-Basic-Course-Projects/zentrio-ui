@@ -1,9 +1,14 @@
+import { getAllBoardsAction, updateFavBoardByIdAction } from "@/action/workspace.action";
 import MyFavoriteBoard from "@/components/appserver/FavoriteBoard";
 
-import React from "react";
+export default async function WorkspaceArea() {
+  const getAllBoard = await getAllBoardsAction();
+  console.log("Get all board in WorkspaceArea: ", getAllBoard);
 
-//useage route : http://localhost:3000/workspace/favoriteboard
-
-export default function WorkspaceArea() {
-  return <MyFavoriteBoard />;
+  return (
+    <MyFavoriteBoard
+      getAllBoard={getAllBoard}
+      updateFavAction={updateFavBoardByIdAction}
+    />
+  );
 }

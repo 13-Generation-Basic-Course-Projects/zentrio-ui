@@ -153,9 +153,9 @@ export default function KanbanBoard({
     };
 
     // If tasks prop is provided (for testing), use it; otherwise, fetch
-    if (tasks?.payload) {
+    if (tasks) {
       const transformedColumns = transformApiToColumns(
-        tasks.payload,
+        tasks,
         checklistbyTaskIds
       );
       setColumns(transformedColumns);

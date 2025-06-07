@@ -72,6 +72,7 @@ const formatFaceTitle = (face) => {
 
 export default function GanttChart({ modal, ganttbar }) {
   const calendarRef = useRef(null);
+  console.log("log gant bar again ", ganttbar);
 
   // Use useMemo to process ganttbar data only when it changes
   const { resources, events, dynamicFaceMap } = useMemo(() => {
