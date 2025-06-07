@@ -6,7 +6,7 @@ const CustomePDF = () => {
   return (
     <>
       <div className="w-full h-full bg-slate-blue">
-        <PageFour />
+        <PDFPreviewer />
       </div>
     </>
   );
@@ -250,14 +250,12 @@ export const UnderReview = () => {
     <>
       <div className="w-full max-w-[920px] rounded-[5px] overflow-hidden text-[12px]">
         <table className="w-full text-left text-sm border-collapse">
-          <thead classname="h-7">
+          <thead className="h-7">
             <tr className="bg-[#54c0d6] text-white font-bold">
               <th className="pl-[27px] w-[33%] border border-black">
                 Task Title
               </th>
-              <th className="pl-[27px] w-[33%] border border-black">
-                Lead
-              </th>
+              <th className="pl-[27px] w-[33%] border border-black">Lead</th>
               <th className="pl-[27px] w-[33%] border border-black">
                 Subtask Count
               </th>
@@ -270,9 +268,7 @@ export const UnderReview = () => {
               <td className="pl-[27px] border border-black">2</td>
             </tr>
             <tr className="bg-white h-[32px]">
-              <td className="pl-[27px] border border-black">
-                Frontend Dev
-              </td>
+              <td className="pl-[27px] border border-black">Frontend Dev</td>
               <td className="pl-[27px] border border-black">Alice</td>
               <td className="pl-[27px] border border-black">1</td>
             </tr>
@@ -293,9 +289,7 @@ export const Progress = () => {
               <th className="pl-[27px] w-[33%] border border-black">
                 Task Title
               </th>
-              <th className="pl-[27px] w-[33%] border border-black">
-                Lead
-              </th>
+              <th className="pl-[27px] w-[33%] border border-black">Lead</th>
               <th className="pl-[27px] w-[33%] border border-black">
                 Subtask Count
               </th>
@@ -324,9 +318,7 @@ export const Done = () => {
               <th className="pl-[27px] w-[33%] border border-black">
                 Task Title
               </th>
-              <th className="pl-[27px] w-[33%] border border-black">
-                Lead
-              </th>
+              <th className="pl-[27px] w-[33%] border border-black">Lead</th>
               <th className="pl-[27px] w-[33%] border border-black">
                 Subtask Count
               </th>
@@ -341,9 +333,7 @@ export const Done = () => {
               <td className="pl-[27px] border border-black">1</td>
             </tr>
             <tr className="bg-white h-[32px]">
-              <td className="pl-[27px] border border-black">
-                Documentation
-              </td>
+              <td className="pl-[27px] border border-black">Documentation</td>
               <td className="pl-[27px] border border-black">Alice</td>
               <td className="pl-[27px] border border-black">1</td>
             </tr>
@@ -367,9 +357,7 @@ export const Subtasks = () => {
               <th className="border border-black bg-white">
                 Backend Deployment
               </th>
-              <th className="border border-black bg-white">
-                Documentation
-              </th>
+              <th className="border border-black bg-white">Documentation</th>
             </tr>
           </thead>
           <tbody className="text-[#003b4a]">
@@ -427,10 +415,121 @@ export const Subtasks = () => {
 };
 
 export const MonthlyTask = () => {
-  return(<>
-
-  </>)
-}
+  return (
+    <>
+      <div className="w-full h-full border-1 border-black rounded-[5px]">
+        <table className="w-full">
+          <thead className="w-full">
+            <tr className="text-[10px] w-full bg-primary text-white font-bold">
+              <th className="h-[32px] w-[96px] text-left pl-[5%]">Month</th>
+              <th className="border-x-1 border-black text-left pl-[5%] w-[76px]">
+                Task
+              </th>
+              <th className="w-[96px] text-left pl-[5%]">Subtask</th>
+              <th className="w-[96px] text-left pl-[5%] border-x-1 border-black">
+                Completed
+              </th>
+              <th className="w-[96px] text-left pl-[5%]">Version</th>
+            </tr>
+          </thead>
+          <tbody className="w-full text-[12px] bg-white">
+            <tr className="h-[32px] border-b-1 border-black">
+              <td className="pl-[5%] border-r-1 border-black">January</td>
+              <td className="pl-[5%] border-r-1 border-black">4</td>
+              <td className="pl-[5%] border-r-1 border-black">6</td>
+              <td className="pl-[5%] border-r-1 border-black">72%</td>
+              <td className="pl-[5%]">v1</td>
+            </tr>
+            <tr className="h-[32px] border-b-1 border-black">
+              <td className="pl-[5%] border-r-1 border-black">February</td>
+              <td className="pl-[5%] border-r-1 border-black">5</td>
+              <td className="pl-[5%] border-r-1 border-black">8</td>
+              <td className="pl-[5%] border-r-1 border-black">78%</td>
+              <td className="pl-[5%]">v1</td>
+            </tr>
+            <tr className="h-[32px] border-b-1 border-black">
+              <td className="pl-[5%] border-r-1 border-black">March</td>
+              <td className="pl-[5%] border-r-1 border-black">6</td>
+              <td className="pl-[5%] border-r-1 border-black">9</td>
+              <td className="pl-[5%] border-r-1 border-black">80%</td>
+              <td className="pl-[5%]">v1</td>
+            </tr>
+            <tr className="h-[32px] border-b-1 border-black">
+              <td className="pl-[5%] border-r-1 border-black">April</td>
+              <td className="pl-[5%] border-r-1 border-black">7</td>
+              <td className="pl-[5%] border-r-1 border-black">11</td>
+              <td className="pl-[5%] border-r-1 border-black">83%</td>
+              <td className="pl-[5%]">v1</td>
+            </tr>
+            <tr className="h-[32px] border-b-1 border-black">
+              <td className="pl-[5%] border-r-1 border-black">May</td>
+              <td className="pl-[5%] border-r-1 border-black">8</td>
+              <td className="pl-[5%] border-r-1 border-black">13</td>
+              <td className="pl-[5%] border-r-1 border-black">85%</td>
+              <td className="pl-[5%]">v1</td>
+            </tr>
+            <tr className="h-[32px] border-b-1 border-black">
+              <td className="pl-[5%] border-r-1 border-black">June</td>
+              <td className="pl-[5%] border-r-1 border-black">9</td>
+              <td className="pl-[5%] border-r-1 border-black">14</td>
+              <td className="pl-[5%] border-r-1 border-black">88%</td>
+              <td className="pl-[5%]">v1</td>
+            </tr>
+            <tr className="h-[32px] border-b-1 border-black">
+              <td className="pl-[5%] border-r-1 border-black">July</td>
+              <td className="pl-[5%] border-r-1 border-black">10</td>
+              <td className="pl-[5%] border-r-1 border-black">16</td>
+              <td className="pl-[5%] border-r-1 border-black">90%</td>
+              <td className="pl-[5%]">v1</td>
+            </tr>
+            <tr className="h-[32px] border-b-1 border-black">
+              <td className="pl-[5%] border-r-1 border-black">August</td>
+              <td className="pl-[5%] border-r-1 border-black">9</td>
+              <td className="pl-[5%] border-r-1 border-black">15</td>
+              <td className="pl-[5%] border-r-1 border-black">89%</td>
+              <td className="pl-[5%]">v1</td>
+            </tr>
+            <tr className="h-[32px] border-b-1 border-black">
+              <td className="pl-[5%] border-r-1 border-black">September</td>
+              <td className="pl-[5%] border-r-1 border-black">8</td>
+              <td className="pl-[5%] border-r-1 border-black">13</td>
+              <td className="pl-[5%] border-r-1 border-black">87%</td>
+              <td className="pl-[5%]">v1</td>
+            </tr>
+            <tr className="h-[32px] border-b-1 border-black">
+              <td className="pl-[5%] border-r-1 border-black">October</td>
+              <td className="pl-[5%] border-r-1 border-black">7</td>
+              <td className="pl-[5%] border-r-1 border-black">12</td>
+              <td className="pl-[5%] border-r-1 border-black">86%</td>
+              <td className="pl-[5%]">v1</td>
+            </tr>
+            <tr className="h-[32px] border-b-1 border-black">
+              <td className="pl-[5%] border-r-1 border-black">November</td>
+              <td className="pl-[5%] border-r-1 border-black">6</td>
+              <td className="pl-[5%] border-r-1 border-black">10</td>
+              <td className="pl-[5%] border-r-1 border-black">84%</td>
+              <td className="pl-[5%]">v1</td>
+            </tr>
+            <tr className="h-[32px] border-b-1 border-black">
+              <td className="pl-[5%] border-r-1 border-black">December</td>
+              <td className="pl-[5%] border-r-1 border-black">5</td>
+              <td className="pl-[5%] border-r-1 border-black">9</td>
+              <td className="pl-[5%] border-r-1 border-black">82%</td>
+              <td className="pl-[5%]">v1</td>
+            </tr>
+            <tr className="h-[32px]">
+              <td className="pl-[5%] border-r-1 border-black">Total</td>
+              <td className="pl-[5%] border-r-1 border-black">84</td>
+              <td className="pl-[5%] border-r-1 border-black">136</td>
+              <td className="pl-[5%] border-r-1 border-black">84% avg</td>
+              <td className="pl-[5%]">v1</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </>
+  );
+};
 
 export const PageOne = () => {
   return (
@@ -609,8 +708,8 @@ export const PageFour = () => {
                     <p className="text-body font-medium">
                       VIII.&nbsp;&nbsp;Monthly Task information
                     </p>
-                    <div className="w-full h-[154px] flex items-end">
-                      <div className="w-full h-[85%] bg-slate-red">
+                    <div className="w-full h-full flex items-end">
+                      <div className="w-full h-auto bg-slate-red">
                         <MonthlyTask />
                       </div>
                     </div>
@@ -625,3 +724,23 @@ export const PageFour = () => {
     </>
   );
 };
+
+export const PDFPreviewer = () => {
+  return(<>
+    <div className="w-full h-screen">
+      <div className="h-[5%] bg-[#323639]"></div>
+      <div className="w-full h-[95%] flex">
+        <div className="w-[15%] bg-title flex justify-center overflow-y-scroll">
+          <div className="grid grid-cols-1 grid-rows-5 gap-[17.5%] w-[65%] h-auto py-[10%]">
+              <div className="bg-slate-blue w-full h-[194px]">1</div>
+              <div className="bg-slate-green w-full h-[194px]">2</div>
+              <div className="bg-slate-orange w-full h-[194px]">3</div>
+              <div className="bg-blue-100 w-full h-[194px]">4</div>
+              <div className="bg-green-100 w-full h-[194px]">5</div>
+          </div>
+        </div>
+        <div className="w-[85%]"></div>
+      </div>
+    </div>
+  </>)
+}
