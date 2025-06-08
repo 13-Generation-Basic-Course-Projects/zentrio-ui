@@ -380,7 +380,9 @@ export default function GanttChart({ modal, ganttbar, ganttChartName }) {
       <BredCrum
         board={"Project Dashboard"} // Example: Make dynamic if needed
         feature={"Gantt Chart"}
-        header={ganttChartName ?? "Gantt Chart"} // Example: Make dynamic if needed
+        header={
+          ganttChartName != "No data available" ? ganttChartName : "Gantt Chart"
+        } // Example: Make dynamic if needed
         modal={modal}
       />
       <div className="flex items-center justify-between bg-[#F3F7FB] px-6 py-3 rounded-t-[16px] mt-3 border-b border-gray-200">
@@ -516,11 +518,11 @@ export default function GanttChart({ modal, ganttbar, ganttChartName }) {
           <div className="absolute inset-0 flex justify-center items-center bg-white bg-opacity-70 z-10">
             <div className="text-center">
               <div className="text-lg font-medium text-gray-600 mb-2">
-                No tasks scheduled
+                {ganttChartName != "No data available"
+                  ? ganttChartName
+                  : "please create Gantt Chart first"}
               </div>
-              <div className="text-sm text-gray-500">
-                Add tasks to see them on the timeline
-              </div>
+              <div className="text-sm text-gray-500">No tasks scheduled</div>
             </div>
           </div>
         )}

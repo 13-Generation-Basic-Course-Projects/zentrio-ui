@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, CardHeader, CardBody, CardFooter } from "@heroui/card";
 import {
   IconDelete,
@@ -12,6 +12,8 @@ import iconMember from "@/assets/memberSideBar.png";
 import Image from "next/image";
 import { usePathname, useSearchParams } from "next/navigation";
 import ModalDelete from "../modal/ModalDelete";
+import { StackedUser } from "../useravatar/StackUser";
+import { getMemberByBoardIdAction } from "@/action/board.action";
 
 export default function CardBoard({
   title,
@@ -69,7 +71,30 @@ export default function CardBoard({
 
     setEditing(false); // Hide input after update
   };
+  // fong
+  const [members, setMembers] = useState([]); // State to store members
+  const [loading, setLoading] = useState(true); // State for loading
+  const [error, setError] = useState(null); // State for error handling
+  /* Fetch members when component mounts or boardId changes */
+  useEffect(() => {
+    const fetchMembers = async () => {
+      try {
+        setLoading(true);
+        const membersResponse = await getMemberByBoardIdAction({ boardId });
+        const allMemberInBoard = membersResponse?.payload || [];
+        setMembers(allMemberInBoard);
+      } catch (err) {
+        console.error("❌ Failed to fetch members:", err);
+        setError("Failed to load members");
+        setMembers([]); // Fallback to empty array
+      } finally {
+        setLoading(false);
+      }
+    };
 
+    fetchMembers();
+  }, [boardId]);
+  console.log("member", members);
   return (
     <Card className="py-4 h-[340px] rounded-xl shadow-sm">
       {/* Card Header: shows editable title and favorite button */}
@@ -155,7 +180,7 @@ export default function CardBoard({
 
       {/* Card Footer: member count and delete button */}
       <CardFooter className="pt-2 px-4 flex flex-col items-start space-y-4">
-        <StackedProfiles />
+        <StackedUser image={members} />
         <div className="flex w-full justify-between text-sm text-gray-600">
           {/* Members icon and text */}
           <div className="flex items-center gap-1">
