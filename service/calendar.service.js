@@ -98,7 +98,7 @@ export const createNoteInCalendarService = async ({
   token,
 }) => {
   try {
-    const url = calenderRouteGroup.craeteNoteInCalendar();
+    const url = calenderRouteGroup.createNoteInCalendar();
 
     const res = await fetch(url, {
       method: "POST",
