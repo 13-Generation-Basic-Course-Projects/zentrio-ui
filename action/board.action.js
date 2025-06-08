@@ -134,3 +134,27 @@ export const createTaskByBoardIdAndGanttChartIdAction = async (
     return { success: false, error: error.message };
   }
 };
+/*
+ * create gantt chart by board id
+ */
+export const createGanttChartByBoardIdAction = async (data, boardId) => {
+  try {
+    const userToken = await Token();
+    const token = userToken?.Credential;
+    if (!token) {
+      throw new Error("No authentication token found");
+    }
+    console.log("boardId:", boardId);
+    console.log("data create form", data);
+    const result = await createTaskByBoardIdAndGanttChartIdService({
+      boardId,
+      data,
+      token,
+    });
+
+    return { success: true, data: result };
+  } catch (error) {
+    console.error("Create task action error:", error.message);
+    return { success: false, error: error.message };
+  }
+};

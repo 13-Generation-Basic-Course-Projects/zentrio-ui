@@ -13,6 +13,18 @@ import {
   getGanttChartByBoardIdAction,
 } from "@/action/gantt.action";
 
+// Utility function to fetch ganttChartId
+async function fetchGanttChartId(boardId) {
+  const FALLBACK_STRING = "No data available";
+  try {
+    const ganttchartByBoardId = await getGanttChartByBoardIdAction({ boardId });
+    return ganttchartByBoardId?.payload?.ganttChartId || FALLBACK_STRING;
+  } catch (error) {
+    console.error("Error fetching gantt chart by board ID:", error);
+    return FALLBACK_STRING;
+  }
+}
+
 export default async function BoardLayout({ children, params }) {
   // Fallback values
   const FALLBACK_STRING = "No data available";
@@ -21,29 +33,19 @@ export default async function BoardLayout({ children, params }) {
 
   try {
     /*
-     * get prop id with fallback
+     * Get prop id with fallback
      */
     const boardId = params?.boardId || FALLBACK_STRING;
-
     const session = await auth();
 
     /*
-     * get task board feature with error handling
+     * Get ganttChartId using the utility function
      */
-    // let tasks = [];
-    // try {
-    //   const tasksResponse = await getTaskByBoardIdAndGanttBarIdAction({
-    //     boardId: boardId,
-    //     ganttbarId: "58b7f94e-186b-4d2e-b9f6-13f581b6a226",
-    //   });
-    //   tasks = tasksResponse?.payload || FALLBACK_ARRAY;
-    // } catch (error) {
-    //   console.error("Error fetching tasks:", error);
-    //   tasks = FALLBACK_ARRAY;
-    // }
+    const ganttChartId = await fetchGanttChartId(boardId);
+    console.log("test gant chart id", ganttChartId); // Log inside BoardLayout
 
     /*
-     * get for gantt bar feature with error handling
+     * Get for gantt bar feature with error handling
      */
     let ganttbar = FALLBACK_OBJECT;
     try {
@@ -54,26 +56,23 @@ export default async function BoardLayout({ children, params }) {
     }
 
     /*
-     * get for gantt chart by boardId with error handling
+     * Get for gantt chart by boardId with error handling
      */
     let ganttchartByBoardId = null;
     try {
-      ganttchartByBoardId = await getGanttChartByBoardIdAction({
-        boardId: boardId,
-      });
+      ganttchartByBoardId = await getGanttChartByBoardIdAction({ boardId });
     } catch (error) {
       console.error("Error fetching gantt chart by board ID:", error);
     }
 
     /*
-     * get for gantt chart by boardId with safe access
+     * Get for gantt bar by ganttChartId with safe access
      */
     let ganttBarByGanttChartId = FALLBACK_OBJECT;
     try {
-      // Check if ganttchartByBoardId exists and has payload with ganttChartId
-      if (ganttchartByBoardId?.payload?.ganttChartId) {
+      if (ganttChartId !== FALLBACK_STRING) {
         const ganttBarResponse = await getGanttBarByGanttChartIdAction({
-          ganttChartId: ganttchartByBoardId.payload.ganttChartId,
+          ganttChartId,
         });
         ganttBarByGanttChartId = ganttBarResponse || FALLBACK_OBJECT;
       } else {
@@ -84,26 +83,24 @@ export default async function BoardLayout({ children, params }) {
     }
 
     /*
-     * get all member specific boardId with error handling
+     * Get all members for specific boardId with error handling
      */
     let allMemberInBoard = FALLBACK_ARRAY;
     try {
-      const membersResponse = await getMemberByBoardIdAction({
-        boardId: boardId, // Use the boardId from params
-      });
+      const membersResponse = await getMemberByBoardIdAction({ boardId });
       allMemberInBoard = membersResponse?.payload || FALLBACK_ARRAY;
     } catch (error) {
       console.error("Error fetching members:", error);
     }
 
     /*
-     * get all gantt bar with safe access
+     * Get all gantt bars with safe access
      */
     let allGanttBar = { payload: FALLBACK_ARRAY };
     try {
-      if (ganttchartByBoardId?.payload?.ganttChartId) {
+      if (ganttChartId !== FALLBACK_STRING) {
         allGanttBar = await getAllGanttBarByGanttChartIDAction({
-          ganttChartId: ganttchartByBoardId.payload.ganttChartId,
+          ganttChartId,
         });
       }
     } catch (error) {
@@ -112,27 +109,23 @@ export default async function BoardLayout({ children, params }) {
 
     const ganttBars = allGanttBar?.payload || FALLBACK_ARRAY;
 
-    /* console.log("test all gantt bars", allGanttBar);
-    console.log("old task demo", tasks);
-    console.log("✅ allMemberInBoard Board IDs:", allMemberInBoard);
-    */
-
-    // Safe extraction of gantt bar IDs
+    /*
+     * Safe extraction of gantt bar IDs
+     */
     const ganttBarIds = Array.isArray(ganttBars)
       ? ganttBars.map((item) => item?.ganttBarId).filter(Boolean)
       : [];
 
-    // Now use these IDs to get tasks for each ganttBar with error handling
+    /*
+     * Get tasks for each ganttBar with error handling
+     */
     const allTasks = [];
-
     for (const ganttBarId of ganttBarIds) {
       try {
         const tasksResponse = await getTaskByBoardIdAndGanttBarIdAction({
-          boardId: boardId, // Use the boardId from params
+          boardId,
           ganttbarId: ganttBarId,
         });
-
-        // Add tasks to the collection with safe access
         const taskPayload = tasksResponse?.payload;
         if (Array.isArray(taskPayload) && taskPayload.length > 0) {
           allTasks.push(...taskPayload);
@@ -146,7 +139,7 @@ export default async function BoardLayout({ children, params }) {
     }
 
     /*
-     * get for checklist with error handling
+     * Get checklists with error handling
      */
     let checklistbyTaskIds = FALLBACK_ARRAY;
     try {
@@ -165,8 +158,6 @@ export default async function BoardLayout({ children, params }) {
             return null;
           }
         });
-
-        // Resolve all checklist promises and filter out null values
         const resolvedChecklists = await Promise.all(checklistPromises);
         checklistbyTaskIds = resolvedChecklists.filter(Boolean);
       }
@@ -189,16 +180,12 @@ export default async function BoardLayout({ children, params }) {
             Array.isArray(allMemberInBoard) ? allMemberInBoard : FALLBACK_ARRAY
           }
           boardId={boardId || FALLBACK_STRING}
-          ganttChartId={
-            ganttchartByBoardId.payload.ganttChartId || FALLBACK_STRING
-          }
         />
         <main>{children}</main>
       </div>
     );
   } catch (error) {
     console.error("Critical error in BoardLayout:", error);
-    // Return fallback component in case of critical error
     return (
       <div>
         <SystemBoard
@@ -208,7 +195,6 @@ export default async function BoardLayout({ children, params }) {
           checklistbyTaskIds={FALLBACK_ARRAY}
           allMemberInBoard={FALLBACK_ARRAY}
           boardId={FALLBACK_STRING}
-          ganttChartId={FALLBACK_STRING}
         />
         <main>{children}</main>
       </div>

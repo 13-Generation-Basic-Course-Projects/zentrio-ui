@@ -29,6 +29,8 @@ export default function SystemBoard({
 
   const [activeTab, setActiveTab] = useState("kanban");
 
+  console.log("board id for passing prop", ganttChartId);
+
   // Conditionally add ModalInviteMember only if workspaceId is NOT 'otherworkspace'
   const modalComponents = [
     <ModalCreateTask
@@ -165,8 +167,27 @@ export default function SystemBoard({
         </svg>
       ),
 
-      content: (
-        <GanttChart modal={[<ModalCreateGanttBar />]} ganttbar={ganttbar} />
+      content: ganttChartId ? (
+        <GanttChart
+          modal={[
+            <ModalCreateGanttChart
+              key="create-gantt-chart"
+              boardId={boardId}
+            />,
+          ]}
+          ganttbar={ganttbar}
+        />
+      ) : (
+        <GanttChart
+          modal={[
+            <ModalCreateGanttBar
+              key="create-gantt-bar"
+              boardId={boardId}
+              ganttChartId={ganttChartId}
+            />,
+          ]}
+          ganttbar={ganttbar}
+        />
       ),
     },
   ];
