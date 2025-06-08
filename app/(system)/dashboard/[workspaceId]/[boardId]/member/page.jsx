@@ -1,7 +1,7 @@
 import Memberpage from "@/components/appserver/Memberpage";
 import React from "react";
 import Memberempty from "@/components/appserver/Memberempty";
-import { getBoardMemberAction, getTaskByBoardIdAction } from "@/action/member.action";
+import { deleteMemberFromBoardAction, getBoardMemberAction, getTaskByBoardIdAction } from "@/action/member.action";
 
 //useage route : http://localhost:3000/dashboard/1/1/member
 export default async function Member({ params }) {
@@ -14,7 +14,9 @@ export default async function Member({ params }) {
 
   return (
     <Memberpage
+    boardId={boardId}
       boardMember={boardMember}
+      deleteMemberAction ={deleteMemberFromBoardAction}
     />
   );
 }

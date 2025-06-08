@@ -37,4 +37,40 @@ export const getBoardMembersService = async ({boardId, token }) => {
   }
 };
 
+/*
+ * Delete member from board service
+ * deleteMemberInBoard: (boardId, userId) =>
+ *   `${apiConfig.baseUrl}/boards/${boardId}/users/${userId}`,
+ */
+export const deleteMemberFromBoardService = async ({
+  boardId,
+  userId,
+  token,
+}) => {
+  console.log("Token in delete member service", token);
+  console.log("BoardId in delete member service", boardId);
+  console.log("UserID in delete member service", userId);
+  try {
+     const url = memberRouteGroup.deleteMemberInBoard(boardId, userId);
+ 
+     const res = await fetch(url, {
+       method: "DELETE",
+       headers: {
+         "Content-Type": "application/json",
+         Authorization: `Bearer ${token}`,
+       },
+       next: { tags: ["members"] },
+      //  body: JSON.stringify({ boardId, userId }),
+     });
+ 
+     if (!res.ok) {
+       throw new Error(`Failed to delete member: ${res.status}`);
+     }
+ 
+     return await res.json();
+   } catch (error) {
+     console.error("❌ Failed to delete member:", error.message);
+     throw error;
+   }
+};
 

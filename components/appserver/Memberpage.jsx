@@ -6,17 +6,11 @@ import Image from "next/image";
 import iconSearch from "@/assets/search.png";
 import icon1 from "@/assets/icon1.png";
 import arrowdown from "@/assets/arrow-down.png";
-import member from "@/assets/memberSideBar.png";
 import ModalInviteMember from "../modal/ModalInviteMember";
 import {
   Popover,
   PopoverTrigger,
   PopoverContent,
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
   Button,
   useDisclosure,
   useDraggable,
@@ -24,12 +18,14 @@ import {
 } from "@heroui/react";
 import BredCrum from "../bredcrum/MyBredcrum";
 import Link from "next/link";
-import PopupAction from "../popup/PopupAction";
-import { IconpopupDelete } from "../icon/Iconpopup";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronUp } from "lucide-react";
 import ModalDelete from "../modal/ModalDelete";
 
-export default function Memberpage({boardMember}) {
+export default function Memberpage({
+  boardId,
+  boardMember,
+  deleteMemberAction,
+}) {
   const [members, setMembers] = useState(
     Array.isArray(boardMember) ? boardMember : []
   ); //call from props
@@ -46,6 +42,7 @@ export default function Memberpage({boardMember}) {
   const [selectedUserId, setSelectedUserId] = useState(null);
 
   const openModal = (id) => {
+    console.log("Opening modal for userId:", id);
     setSelectedUserId(id);
     setIsModalOpen(true);
   };
@@ -84,7 +81,6 @@ export default function Memberpage({boardMember}) {
 
     return false;
   });
-  
 
   // Pagination calculations use filteredMembers instead of all members
   const [currentPage, setCurrentPage] = useState(1);
@@ -107,6 +103,8 @@ export default function Memberpage({boardMember}) {
   /* use for animation on icon arrow */
   const [makeOpen, setMakeOpen] = useState(false);
   const [openPopoverId, setOpenPopoverId] = useState(null);
+
+  const userId = selectedUserId;
 
   return (
     <div className="p-4 ">
@@ -314,24 +312,32 @@ export default function Memberpage({boardMember}) {
                     >
                       <path d="M10 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4z" />
                     </svg>
-
-                    <ModalDelete
-                      isOpen={isModalOpen}
-                      onClose={closeModal}
-                      messageTitle="Are you sure?"
-                      messageBody={`Do you want to delete ${member.username} from the board?`}
-                      messageUndo="No, Cancel"
-                      messageDo="Yes, Delete"
-                      action={() => {
-                        deleteMemberById(selectedUserId);
-                        closeModal();
-                      }}
-                    />
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
+          {/* Render ModalDelete once */}
+          {isModalOpen && selectedUserId && (
+            <ModalDelete
+           
+              isOpen={isModalOpen}
+              onClose={closeModal}
+              messageTitle="Are you sure?"
+              messageBody={`Do you want to delete ${
+                members.find((m) => m.userId === selectedUserId)?.username ||
+                "this member"
+              } from the board?`}
+              messageUndo="No, Cancel"
+              messageDo="Yes, Delete"
+              action={async () => {
+                // Assuming token is available here or passed as prop (otherwise remove)
+                await deleteMemberAction(boardId, userId);
+                console.log("Delete confirmed!");
+                closeModal(); 
+              }}
+            />
+          )}
         </div>
       </section>
 

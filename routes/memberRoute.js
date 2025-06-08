@@ -6,5 +6,8 @@ export const memberRouteGroup = {
     `${apiConfig.baseUrl}/boards/${id}/invitations/accept`, // Accept invite
   getBoardMembers: (boardId) =>
     `${apiConfig.baseUrl}/boards/${boardId}/members`, // Get board members
+
+  deleteMemberInBoard: (boardId, userId) =>
+    `${apiConfig.baseUrl}/boards/${boardId}/users/${userId}`,
 };
 
