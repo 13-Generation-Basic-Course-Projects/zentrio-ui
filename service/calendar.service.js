@@ -2,61 +2,169 @@
 
 import { calenderRouteGroup } from "@/routes/calendarRoute";
 
-export const getTaskbyBoardIdService = async ({ boardId, zentrioToken }) => {
-    const url = calenderRouteGroup.getTaskbyBoardId(boardId);
+/*
+* Get calendar by board id and user id
+*/
+export const getCalendarByBoardIdAndUserIdService = async ({ boardId, token }) => {
+    try {
+        const url = calenderRouteGroup.getCalendarByBoardIdAndUserId(boardId);
+
+        const res = await fetch(url, {
+            method: "GET",
+            headers: {
+                "accept": "*/*",
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
+        }
+
+        const data = await res.json();
+        console.log("getCalendarByBoardIdAndUserId:", data);
+        return data;
+    } catch (error) {
+        console.error("Error fetching calendar data:", error.message);
+        throw error;
+    }
+};
+
+/*
+* Get all notes from calendar by current user
+*/
+export const getAllNotesFromCalendarByCurrentUserService = async ({ taskId, token }) => {
+    try {
+        const url = calenderRouteGroup.getAllNotesFromCalendarByCurrentUser(taskId);
+
+        const res = await fetch(url, {
+            method: "GET",
+            headers: {
+                "accept": "*/*",
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
+        }
+
+        const data = await res.json();
+        console.log("getAllNotesFromCalendarByCurrentUser:", data);
+        return data;
+    } catch (error) {
+        console.error("Error fetching notes from calendar:", error.message);
+        throw error;
+    }
+};
+
+/*
+* Get note in calendar
+*/
+export const getNoteInCalendarService = async ({ calendarId, token }) => {
+  try {
+    const url = calenderRouteGroup.getNoteInCalendar(calendarId);
+
     const res = await fetch(url, {
-        method: "GET",
-        headers: {
-            "accept": "*/*",
-            Authorization: `Bearer ${zentrioToken}`,
-        },
+      method: "GET",
+      headers: {
+        "accept": "*/*",
+        Authorization: `Bearer ${token}`,
+      },
     });
+
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+
     const data = await res.json();
-    // console.log("task:",data);
+    console.log("getNoteInCalendar:", data);
     return data;
+  } catch (error) {
+    console.error("Error fetching note in Calendar:", error.message);
+    throw error;
+  }
 };
 
-export const getNotebyTaskIdService = async ({ taskId, zentrioToken }) => {
-    const url= calenderRouteGroup.getNotebyTaskId(taskId);
+
+/*
+* Create note in calendar
+*/
+export const createNoteInCalendarService = async ({
+  noted,
+  startDate,
+  tillDate,
+  taskId,
+  token,
+}) => {
+  try {
+    const url = calenderRouteGroup.craeteNoteInCalendar();
+
     const res = await fetch(url, {
-        method: "GET",
-        headers: {
-            "accept": "*/*",
-            Authorization: `Bearer ${zentrioToken}`,
-        },
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        noted,
+        startDate,
+        tillDate,
+        taskId,
+      }),
     });
-    const data =await res.json();
-    // console.log("note:",data);
+
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+
+    const data = await res.json();
+    console.log("createNoteInCalendar:", data);
     return data;
+  } catch (error) {
+    console.error("Error creating note in calendar:", error.message);
+    throw error;
+  }
 };
 
-export const updateNoteByIdService = async ({ noteId, noted, startDate, tillDate, taskId, zentrioToken }) => {
-    console.log("update service")
-  const url = calenderRouteGroup.updateNoteById(noteId);
 
-  console.log("Sending token:",startDate);
+/*
+* Update note by id from calendar
+*/
+export const updateNoteByIdFromCalendarService = async ({ 
+  calendarId,
+  noted,
+  startDate,
+  tillDate,
+  taskId,
+  token
+}) => {
+  try {
+    const url = calenderRouteGroup.updateNoteByIdFromCalendar(calendarId);
 
+    const res = await fetch(url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        noted,
+        startDate,
+        tillDate,
+        taskId,
+      }),
+    });
 
-  console.log("Authorization header:", `Bearer ${zentrioToken}`);
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
 
-  console.log("URL ", url)
-
-  const res = await fetch(url, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${zentrioToken}`,
-    },
-    body: JSON.stringify({
-      noted,
-      startDate,
-      tillDate,
-      taskId,
-    }),
-  });
-  
-  const data = await res.json();
-
-  console.log("Testing heloo: ",data)
-  return data;
+    const data = await res.json();
+    console.log("updateNoteByIdFromCalendar:", data);
+    return data;
+  } catch (error) {
+    console.error("Error updating note by ID from calendar:", error.message);
+    throw error;
+  }
 };

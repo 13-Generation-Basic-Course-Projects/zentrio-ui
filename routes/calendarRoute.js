@@ -8,7 +8,7 @@ export const calenderRouteGroup = {
     getAllNotesFromCalendarByCurrentUser: (taskId) => `${apiConfig.baseUrl}/calendars/tasks/${taskId}`, // Get all notes from calendar by current user
     getNoteInCalendar: (calendarId) => `${apiConfig.baseUrl}/calendars/${calendarId}`, // Get note in calendar
     // Post
-    craeteNoteInCalendar : () => `${apiConfig.baseUrl}/calendars/tasks`, // Create note in calendar
+    createNoteInCalendar : () => `${apiConfig.baseUrl}/calendars/tasks`, // Create note in calendar
     // Put
     updateNoteByIdFromCalendar: (calendarId) => `${apiConfig.baseUrl}/calendars/${calendarId}`, // Update note by id from calendar
     // Delete
