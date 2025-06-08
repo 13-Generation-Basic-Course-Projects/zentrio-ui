@@ -7,7 +7,7 @@ import Link from "next/link";
 import Tapp from "../taps/BoardTab";
 import userProfile from "@/assets/profile.png";
 import ModalNotification from "../modal/noti/ModalNotification";
-export function NavbarAuthorized({ user }) {
+export function NavbarAuthorized({ user, notification }) {
   console.log("pf", user);
   return (
     <>
@@ -19,7 +19,7 @@ export function NavbarAuthorized({ user }) {
             {/* Right side - Notification and Profile */}
             <div className="flex items-center gap-4">
               {/* Notification Icon */}
-              <ModalNotification />
+              <ModalNotification notificationData={notification} />
 
               {/* Profile */}
               <Link href="/profile">

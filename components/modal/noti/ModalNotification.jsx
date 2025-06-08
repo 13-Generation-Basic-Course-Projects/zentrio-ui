@@ -12,7 +12,7 @@ import ActiveIcon from "@/assets/profile.png";
 import Image from "next/image";
 import { useState } from "react";
 
-export default function ModalNotification() {
+export default function ModalNotification({notificationData}) {
   const [isActive, setIsActive] = useState(false);
   const [markAllRead, setMarkAllRead] = useState(false);
   const [showAll, setShowAll] = useState(false);
@@ -65,6 +65,8 @@ export default function ModalNotification() {
     ? notifications
     : notifications.slice(0, 3);
 
+  
+  console.log("notification in component", notificationData);
   return (
     <Dropdown className="p-0 bg-transparent">
       <DropdownTrigger>
@@ -200,9 +202,9 @@ export default function ModalNotification() {
                     <p className="text-gray-500 text-sm">No notifications</p>
                   </div>
                 ) : (
-                  displayedNotifications.map((notificationItem) => (
+                  notificationData.map((notificationItem) => (
                     <div
-                      key={notificationItem.id}
+                      key={notificationItem.notificationId}
                       className={`flex justify-between items-start ${
                         markAllRead
                           ? "bg-white"
@@ -221,16 +223,16 @@ export default function ModalNotification() {
                         </div>
                         <div className="flex flex-col gap-[3px]">
                           <p className="text-[14px] text-title">
-                            {notificationItem.sender}
+                            {notificationItem.content}
                           </p>
                           <p className="text-[12px] text-description">
-                            {notificationItem.message}
+                            {notificationItem.type}
                           </p>
                           <p className="text-[12px] text-description">
-                            {notificationItem.action}
+                            {notificationItem.isRead}
                           </p>
                           <p className="text-[12px] text-description">
-                            {notificationItem.date}
+                            {notificationItem.createdAt.split("T")[0]}
                           </p>
                         </div>
                       </div>

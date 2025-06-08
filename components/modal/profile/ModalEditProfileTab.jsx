@@ -29,6 +29,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { profileSchema } from "@/lib/schemas/editprofileSchema";
 import { updateAchievementAction, updateUserProfileAction } from "@/action/profile.action";
 import { Controller } from "react-hook-form";
+import { sendNotificationForAllUserAction, sendNotificationToUserIdAction } from "@/action/notification.action";
 
 export const gender = [
   { key: "male", label: "Male" },
@@ -189,13 +190,18 @@ export function ModalEditProfile({ currentUserProfile }) {
 
     try {
       const response = await updateAchievementAction(payload); // API call with correct structure
-      if (response) {
-        onOpenChange(false);
-      }
-
+      onOpenChange(false);
+      await sendNotificationToUserIdAction({
+        senderId: "c892d319-90c7-4890-ba95-73c6962afb06",
+        receiverId: "0366b3f6-9922-4f1c-8d91-c74b0cf8edab",
+        taskId: "2267948e-2016-44cf-9de9-fff512ee429d",
+        data: "Task is Completed !"
+      });
+      
     } catch (error) {
       console.error("Error saving achievements:", error);
     }
+
   };    
 
   return (

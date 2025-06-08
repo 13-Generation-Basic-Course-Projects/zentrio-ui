@@ -9,6 +9,7 @@ import { Suspense } from "react";
 import Loading from "../loading";
 import SidebarRenderer from "@/components/sidebar/SidebarRenderer";
 import { SideBarIcon } from "@/components/icon/everyicon";
+import { getNotificationForUserIdAction } from "@/action/notification.action";
 //import { LoadingBarContainer } from "react-top-loading-bar";
 export const metadata = {
   title: "Zentrio | Task Mangement",
@@ -19,6 +20,9 @@ export const metadata = {
 
 export default async function SystemLayout({ children }) {
   const session = await auth();
+
+  const userId = "0366b3f6-9922-4f1c-8d91-c74b0cf8edab";
+  const notification = await getNotificationForUserIdAction(userId);
   return (
     // <LoadingBarContainer>
     <SidebarProvider className="bg-bgColor">
@@ -28,7 +32,7 @@ export default async function SystemLayout({ children }) {
       >
         {/* <SidebarTrigger className="fixed top-0  z-[30]" /> */}
         <div className="w-full  ">
-          <NavbarWrapper user={session?.user} />
+          <NavbarWrapper user={session?.user} notification={notification} />
           {children}
         </div>
       </div>

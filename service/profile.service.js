@@ -52,7 +52,6 @@ export const getUserAchievementService = async ({ token }) => {
 
 
 export const updateAchievementService = async ({ token, payload }) => {
-  console.log("payload", payload);
 
   let method = "POST";
   let endpoint = profileRouteGroup.setUpAchievementCurrentUser({ token });
