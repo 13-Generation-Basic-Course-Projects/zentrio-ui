@@ -30,7 +30,7 @@ export default function Reportpage({ modal, report }) {
       setAmtM(0);
 
       // Process each member
-      report.payload.allMembers.forEach((item) => {
+      report?.payload?.allMembers.forEach((item) => {
         if (item.roleName === "ROLE_MANAGER") {
           setAmtM(item.total);
         } else if (item.roleName === "ROLE_LEADER") {
@@ -46,7 +46,7 @@ export default function Reportpage({ modal, report }) {
   const allVersion = Array.from({ length: maximum }, (_, i) => i + 1);
 
   useEffect(()=>{
-    report.payload.allTasks.forEach((item)=>{
+    report?.payload?.allTasks.forEach((item)=>{
       if(item.task == "TO DO"){
         setamtChklistTodo(item.checklist.length || 0)
       }
@@ -62,7 +62,7 @@ export default function Reportpage({ modal, report }) {
     })
   })
 
-  const chartData = report.payload.allTasks.map((item)=>{
+  const chartData = report?.payload?.allTasks.map((item)=>{
       return {
         stage: item.task,
       }
