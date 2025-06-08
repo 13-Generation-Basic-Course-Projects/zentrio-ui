@@ -52,7 +52,7 @@ export const CoverBgImg = () => {
 export const CoverPage = () => {
   return (
     <>
-      <div className="w-full h-screen flex justify-center items-center">
+      <div className={`w-full h-full flex justify-center items-center`}>
         {/* Copy from this */}
         <div className="bg-[#D6DEE1] w-[595px] h-[842px]">
           <div className="h-full flex items-center justify-center relative">
@@ -726,21 +726,101 @@ export const PageFour = () => {
 };
 
 export const PDFPreviewer = () => {
-  return(<>
-    <div className="w-full h-screen">
-      <div className="h-[5%] bg-[#323639]"></div>
-      <div className="w-full h-[95%] flex">
-        <div className="w-[15%] bg-title flex justify-center overflow-y-scroll">
-          <div className="grid grid-cols-1 grid-rows-5 gap-[17.5%] w-[65%] h-auto py-[10%]">
-              <div className="bg-slate-blue w-full h-[194px]">1</div>
-              <div className="bg-slate-green w-full h-[194px]">2</div>
-              <div className="bg-slate-orange w-full h-[194px]">3</div>
-              <div className="bg-blue-100 w-full h-[194px]">4</div>
-              <div className="bg-green-100 w-full h-[194px]">5</div>
+  return (
+    <>
+      <div className="w-full h-screen overflow-y-hidden">
+        {/* this header */}
+        <div className="h-[5%] bg-[#323639] flex items-center px-[2.5%] justify-between">
+          <div className="text-h5 text-white">
+            <p className="font-medium">Report v1</p>
+          </div>
+          <div className="flex w-[437px] justify-center">
+            <div className="flex items-center w-28 justify-evenly text-white text-body-sm pr-4">
+              <p className="w-6 h-6 bg-black flex justify-center items-center">
+                1
+              </p>
+              <p>/</p>
+              <p>2</p>
+            </div>
+            <div className="flex items-center text-white justify-evenly w-40 h-7 pl-3 border-l-1 border-gray-100/50">
+              <div className="w-8 h-8 flex justify-center items-center cursor-pointer hover:bg-black">
+                <p className="text-h2">-</p>
+              </div>
+              <p className="text-body-sm h-6 w-14 flex justify-center items-center bg-black">
+                100%
+              </p>
+              <div className="w-8 h-8 hover:bg-black flex items-center cursor-pointer justify-center">
+                <p className="text-h2">+</p>
+              </div>
+            </div>
+          </div>
+          <div className="w-8 h-8 hover:bg-black flex justify-center items-center cursor-pointer">
+            <svg
+              width={24}
+              height={24}
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M16.59 9H15V4C15 3.45 14.55 3 14 3H10C9.45 3 9 3.45 9 4V9H7.41C6.52 9 6.07 10.08 6.7 10.71L11.29 15.3C11.68 15.69 12.31 15.69 12.7 15.3L17.29 10.71C17.92 10.08 17.48 9 16.59 9ZM5 19C5 19.55 5.45 20 6 20H18C18.55 20 19 19.55 19 19C19 18.45 18.55 18 18 18H6C5.45 18 5 18.45 5 19Z"
+                fill="white"
+              />
+            </svg>
           </div>
         </div>
-        <div className="w-[85%]"></div>
+
+        {/* this body */}
+        <div className="w-full h-[95%] flex relative">
+          {/* this pdf sidebar */}
+          <div className="absolute top-0 left-0 h-full w-[15%]">
+            <div className="bg-title flex justify-center overflow-y-scroll">
+              <div className="grid grid-cols-1 grid-rows-5 w-[65%] h-auto py-[10%] gap-[3.5%]">
+                <div className="bg-slate-blue w-full h-[194px] hover:border-2 hover:border-title relative overflow-clip">
+                  1
+                </div>
+                <div className="bg-slate-green w-full h-[194px] hover:border-2 hover:border-title">
+                  2
+                </div>
+                <div className="bg-slate-orange w-full h-[194px] hover:border-2 hover:border-title">
+                  3
+                </div>
+                <div className="bg-blue-100 w-full h-[194px] hover:border-2 hover:border-title">
+                  4
+                </div>
+                <div className="bg-green-100 w-full h-[194px] hover:border-2 hover:border-title">
+                  5
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* this pdf display */}
+          <div className="w-[100%] flex justify-end">
+            <div className="w-[85%] h-full flex justify-center items-center">
+              <div className="w-full h-full flex justify-center items-start">
+                <div className="flex flex-col gap-4 overflow-y-scroll max-h-full" style={{msOverflowStyle: 'none', scrollbarWidth: 'none'}}>
+                  <div className="pt-8">
+                    <CoverPage />
+                  </div>
+                  <div>
+                    <PageOne />
+                  </div>
+                  <div>
+                    <PageTwo />
+                  </div>
+                  <div>
+                    <PageThree />
+                  </div>
+                  <div>
+                    <PageFour />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-  </>)
-}
+    </>
+  );
+};
