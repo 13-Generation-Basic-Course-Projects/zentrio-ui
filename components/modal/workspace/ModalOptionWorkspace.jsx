@@ -11,8 +11,6 @@ import {
 } from "@heroui/react";
 import ModalDelete from "../ModalDelete";
 import { useState } from "react";
-import ModalRenameFileOrFolder from "../docu/ModalRenameDocu";
-import ModalRenameworkspace from "./ModalRenameWorkspace";
 import ModalRenameWorkspace from "./ModalRenameWorkspace";
 
 // icon components directly in the same file
@@ -114,12 +112,25 @@ export default function ModalOptionWorkspace({
   workspaceId,
   deleteWorkspace,
   updateNameWorkspace,
+
+  workspaceUserTitle,
+  workspaceUserId,
+  deleteUserWorkspace,
+  updateNameUserWorkspace,
+
+  selectedId,
+  setSelectedId,
 }) {
   const iconClasses =
     "text-xl text-default-500 pointer-events-none flex-shrink-0";
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isRenameModalOpen, setRenameModalOpen] = useState(false);
 
+  const [deleteType, setDeleteType] = useState(null); 
+
+  console.log("workspaceTitle:", workspaceTitle);
+  console.log("workspaceUserTitle test:", workspaceUserTitle);
+  console.log("workspaceUserId test:", workspaceUserId);
   return (
     <>
       <Dropdown>
@@ -154,7 +165,19 @@ export default function ModalOptionWorkspace({
             key="delete"
             className="w-full hover:bg-default-100 mb-1"
             startContent={<DeleteDocumentIcon className={iconClasses} />}
-            onClick={() => setDeleteModalOpen(true)}
+            onClick={() => {
+              if (workspaceId) {
+                setSelectedId(workspaceId);
+                setDeleteType("my");
+                setDeleteModalOpen(true);
+              } else if (workspaceUserId) {
+                setSelectedId(workspaceUserId);
+                setDeleteType("other");
+                setDeleteModalOpen(true);
+              } else {
+                console.error("No valid ID found for deletion");
+              }
+            }}
           >
             Move to trash
           </DropdownItem>
@@ -188,25 +211,32 @@ export default function ModalOptionWorkspace({
       <ModalDelete
         isOpen={isDeleteModalOpen}
         onClose={() => setDeleteModalOpen(false)}
-        messageTitle={
-          <>
-            Are you sure?
-          </>
-        }
-        messageBody={`Deleting "${workspaceTitle}" cannot be undone.`}
+        messageTitle={<>Are you sure?</>}
+        messageBody={`Deleting "${
+          workspaceTitle || workspaceUserTitle
+        }" cannot be undone.`}
         messageUndo="Cancel"
         messageDo="Delete"
         action={() => {
-          console.log("Deleting workspace ID:", workspaceId);
-          if (!workspaceId) {
-            console.error("Workspace ID is undefined!");
+          if (!selectedId) {
+            console.error("No ID selected for deletion");
             return;
           }
-          deleteWorkspace(workspaceId)
-            .then(() => setDeleteModalOpen(false))
-            .catch((err) => console.error("Delete error:", err));
+
+          if (deleteType === "my" && deleteWorkspace) {
+            deleteWorkspace(selectedId)
+              .then(() => setDeleteModalOpen(false))
+              .catch(console.error);
+          } else if (deleteType === "other" && deleteUserWorkspace) {
+            deleteUserWorkspace(selectedId)
+              .then(() => setDeleteModalOpen(false))
+              .catch(console.error);
+          } else {
+            console.error("No valid delete function or type provided.");
+          }
         }}
       />
+
       {/* Move ModalRename outside the Dropdown */}
       <ModalRenameWorkspace
         isOpen={isRenameModalOpen}

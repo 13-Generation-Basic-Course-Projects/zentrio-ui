@@ -1,10 +1,10 @@
 import React from "react";
 import ProfileComponent from "./ProfileComponent";
 
-export default function OtherProfileTab() {
+export default function OtherProfileTab({ MemberDetails, userId }) {
   return (
     <div className="flex flex-col min-h-screen">
-      <ProfileComponent />
+      <ProfileComponent MemberDetails={MemberDetails} userId={userId} />
     </div>
   );
 }

@@ -34,7 +34,7 @@ export default function ModalDelete({
           </ModalHeader>
           <ModalHeader>{messageTitle}</ModalHeader>
           <ModalBody>
-            <p>{messageBody}</p>
+            <p className="text-center">{messageBody}</p>
           </ModalBody>
           <ModalFooter>
             <Button

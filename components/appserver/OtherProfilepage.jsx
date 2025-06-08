@@ -9,14 +9,18 @@ import OtherAchievmentTab from "../profilecomponent/OtherAchievmentTab";
 import OtherProfileLayout from "../profilecomponent/OtherProfileLayout";
 import OtherProfileTab from "../profilecomponent/OtherProfileTab";
 
-export default function OtherUserProfile() {
+export default function OtherUserProfile({ MemberDetails, userId }) {
   return (
-    
-      <OtherProfileLayout
-        userName={"Jack Ma"}
-        profile={<OtherProfileTab/>}
-        acheivment={<OtherAchievmentTab />}
-      />
-    
+    <OtherProfileLayout
+      MemberDetails={MemberDetails}
+      userName={"Jack Ma"}
+      userId={userId}
+      profile={
+        <OtherProfileTab MemberDetails={MemberDetails} userId={userId} />
+      }
+      acheivment={
+        <OtherAchievmentTab MemberDetails={MemberDetails} userId={userId} />
+      }
+    />
   );
 }

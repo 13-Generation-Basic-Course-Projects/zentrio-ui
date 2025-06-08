@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 
 import {
   Modal,
@@ -39,6 +39,14 @@ const svgIconType = encodeURIComponent(`
 
     `);
 
+const fileToBase64 = (file) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
+
 export default function ModalCreateBoard({ createBoardAction, Workspaceid }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
@@ -46,10 +54,13 @@ export default function ModalCreateBoard({ createBoardAction, Workspaceid }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [showColors, setShowColors] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
-
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const inputRef = useRef(null);
   const {
     register,
     handleSubmit,
+    setValue,
     reset,
     formState: { errors },
   } = useForm({
@@ -60,20 +71,27 @@ export default function ModalCreateBoard({ createBoardAction, Workspaceid }) {
     setShowColors((prev) => !prev);
   };
 
-  
   const handleColorSelect = (colorKey) => {
     setSelectedOption((prev) => (prev === colorKey ? null : colorKey));
     setShowColors(false);
     setDropdownOpen(false);
   };
-  
-  
 
-  const handleUploadSelect = () => {
-    alert("Upload images clicked");
-    setDropdownOpen(false);
+  const handleUploadSelect = (event) => {
+    const files = Array.from(event.target.files);
+    setSelectedFiles(files);
+
+    if (files.length > 0) {
+      setPreviewUrl(URL.createObjectURL(files[0]));
+    } else {
+      setPreviewUrl(null);
+    }
+
+    // Update react-hook-form value for coverFile manually
+    setValue("coverFile", files, { shouldValidate: true, shouldDirty: true });
   };
-
+  
+  
   const colorOptions = [
     { key: "red", label: "Red", className: "bg-board-red" },
     { key: "blue", label: "Blue Sky", className: "bg-board-primary" },
@@ -83,16 +101,19 @@ export default function ModalCreateBoard({ createBoardAction, Workspaceid }) {
     { key: "violet", label: "Violet", className: "bg-board-violet" },
   ];
 
-
-  // This function will be called when the form is submitted
   const onSubmit = async (data) => {
+    // Get files directly from input ref
+    const files = inputRef.current?.files;
+
+    console.log("Files from inputRef:", files);
+
     try {
       let cover = "";
 
-      if (data.coverFile && data.coverFile.length > 0) {
-        cover = data.coverFile[0]; // file
+      if (files && files.length > 0) {
+        cover = await fileToBase64(files[0]);
       } else if (selectedOption) {
-        cover = selectedOption; // color string
+        cover = selectedOption;
       }
 
       const response = await createBoardAction({
@@ -102,15 +123,14 @@ export default function ModalCreateBoard({ createBoardAction, Workspaceid }) {
         workspaceId: Workspaceid,
       });
 
-      // Optional: you might need to check `response` shape here
-      console.log("Board created:", response);
-
+      console.log("Board created ✅", response);
       reset();
       onOpenChange(false);
     } catch (error) {
-      console.error(error);
+      console.error("Create board error ❌", error);
     }
   };
+  
   
 
   return (
@@ -176,7 +196,7 @@ export default function ModalCreateBoard({ createBoardAction, Workspaceid }) {
                           onClick={() => setDropdownOpen((open) => !open)}
                           type="button"
                         >
-                          {selectedOption && (
+                          {selectedOption && !selectedFiles.length && (
                             <div
                               className={`w-4 h-4 rounded-full ${
                                 colorOptions.find(
@@ -186,8 +206,10 @@ export default function ModalCreateBoard({ createBoardAction, Workspaceid }) {
                             />
                           )}
 
-                          <p className="text-caption-tiny text-title/50">
-                            {selectedOption
+                          <p className="text-caption-tiny text-title/50 truncate max-w-[120px]">
+                            {selectedFiles.length > 0
+                              ? selectedFiles[0].name // Show the uploaded image filename
+                              : selectedOption
                               ? colorOptions.find(
                                   (color) => color.key === selectedOption
                                 )?.label || selectedOption
@@ -216,15 +238,13 @@ export default function ModalCreateBoard({ createBoardAction, Workspaceid }) {
                           <div className="absolute mt-1 w-36 text-caption bg-white border rounded-small shadow-md z-50">
                             <input
                               type="file"
-                              id="fileUpload"
-                              multiple
-                              accept="image/*"
+                              ref={inputRef}
                               onChange={handleUploadSelect}
-                              className="hidden"
+                              accept="image/*"
                             />
 
                             <label
-                              htmlFor="fileUpload"
+                              htmlFor="coverFile"
                               className="w-full px-2 py-2 flex justify-between items-center hover:bg-gray-100 cursor-pointer"
                             >
                               <span>Upload images</span>
@@ -251,6 +271,19 @@ export default function ModalCreateBoard({ createBoardAction, Workspaceid }) {
                                 />
                               </svg>
                             </label>
+                            {previewUrl && (
+                              <div className="mt-2">
+                                <img
+                                  src={previewUrl}
+                                  alt="Preview"
+                                  className="max-w-full max-h-40 rounded-md object-contain"
+                                />
+                                {/* Show file name here */}
+                                <p className="text-sm mt-1 text-gray-600">
+                                  {selectedFiles[0]?.name}
+                                </p>
+                              </div>
+                            )}
 
                             <div>
                               <button
