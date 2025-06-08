@@ -191,11 +191,11 @@ export function ModalEditProfile({ currentUserProfile }) {
     try {
       const response = await updateAchievementAction(payload); // API call with correct structure
       onOpenChange(false);
-      await sendNotificationToUserIdAction({
-        senderId: "c892d319-90c7-4890-ba95-73c6962afb06",
-        receiverId: "0366b3f6-9922-4f1c-8d91-c74b0cf8edab",
-        taskId: "2267948e-2016-44cf-9de9-fff512ee429d",
-        data: "Task is Completed !"
+
+
+      /* Testing send notification to users*/
+      await sendNotificationForAllUserAction({
+        data: "✅ The task has been marked as completed!", // 👈 Send string only
       });
       
     } catch (error) {

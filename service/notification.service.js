@@ -37,12 +37,6 @@ export const sendNotificationToUserIdService = async ({
   data,
   token,
 }) => {
-  // ✅ Input validation
-  if (!senderId) throw new Error("sendId is required");
-  if (!receiverId) throw new Error("receiverId is required");
-  if (!taskId) throw new Error("taskId is required");
-  if (!token) throw new Error("token is required");
-
   const url = notificationRouteGroup.sendNotificationToUserId(
     senderId,
     receiverId,
@@ -59,7 +53,7 @@ export const sendNotificationToUserIdService = async ({
       body: JSON.stringify(data),
     });
 
-    const resultText = await response.text();
+    const resultText = await response.text(); // Get text first
 
     if (!response.ok) {
       throw new Error(
@@ -67,13 +61,13 @@ export const sendNotificationToUserIdService = async ({
       );
     }
 
+    // Try to parse JSON, fallback to plain text
     try {
-      return JSON.parse(resultText);
+      return JSON.parse(resultText); // will succeed if backend returns JSON
     } catch (err) {
-      console.warn("Response is not valid JSON:", resultText);
+      // If parsing fails, return plain text response as message
       return {
-        message: "Notification sent, but response is not valid JSON",
-        raw: resultText,
+        message: resultText || "Notification sent (no JSON returned)",
       };
     }
   } catch (error) {
@@ -81,6 +75,7 @@ export const sendNotificationToUserIdService = async ({
     throw error;
   }
 };
+
 
 export const getNotificationForUserIdService = async({ userId, token }) => {
   const response = await fetch(notificationRouteGroup.getNotificationForUserId(userId),
