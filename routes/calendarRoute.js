@@ -3,14 +3,14 @@ import { LuKanban } from "react-icons/lu";
 
 
 export const calenderRouteGroup = {
-    //get
+    //get note by id
     getNotebyId: (id) => `${apiConfig.baseUrl}/calendars/${id}`,
-    //get
+    //get note by task id
     getNotebyTaskId: (id) => `${apiConfig.baseUrl}/calendars/tasks/${id}`,
-    //get
+    //get task by board id
     getTaskbyBoardId: (id) => `${apiConfig.baseUrl}/calendars/boards/${id}`,
-    //update
+    //update note by id
     updateNoteById: (id) => `${apiConfig.baseUrl}/calendars/${id}`,
-    //delete
+    //delete delete note by task id
     deteteNoteByNoteIdTaskId: (noteId, taskId) => `${apiConfig.baseUrl}/calendars/${noteId}/tasks/${taskId}`,
 };

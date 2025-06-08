@@ -45,8 +45,14 @@ export default function CardTCommentCalender({ note, selectedTaskId, taskColorMa
 
   // Filter comments based on selected task
   const filteredComments = selectedTaskId 
-    ? note?.payload.filter(comment => comment.taskId === selectedTaskId) || []
+    ? note?.payload.filter(comment => {
+        console.log("CardComment - Comparing comment.taskId:", comment.taskId, "with selectedTaskId:", selectedTaskId);
+        return String(comment.taskId) === String(selectedTaskId);
+      }) || []
     : note?.payload || [];
+
+  console.log("CardComment - selectedTaskId:", selectedTaskId);
+  console.log("CardComment - filteredComments:", filteredComments);
 
   return (
     <>

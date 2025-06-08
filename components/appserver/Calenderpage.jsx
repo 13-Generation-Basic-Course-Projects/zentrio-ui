@@ -108,7 +108,15 @@ export default function MyCalender({ tasks, note }) {
   const mappedComments = useMemo(() => {
     if (!note?.payload || !selectedTaskId) return [];
     
-    const taskComments = note.payload.filter(comment => comment.taskId === selectedTaskId);
+    console.log("Filtering comments for taskId:", selectedTaskId);
+    console.log("All comments:", note.payload);
+    
+    const taskComments = note.payload.filter(comment => {
+      console.log("Comparing comment.taskId:", comment.taskId, "with selectedTaskId:", selectedTaskId);
+      return String(comment.taskId) === String(selectedTaskId);
+    });
+    
+    console.log("Filtered comments:", taskComments);
     
     if (taskComments.length === 0) return [];
     
@@ -140,6 +148,9 @@ export default function MyCalender({ tasks, note }) {
 
   const handleTaskClick = (taskId) => {
     console.log("Task clicked:", taskId);
+    console.log("Available tasks:", tasks?.payload?.map(t => ({ taskId: t.taskId, title: t.title })));
+    console.log("Available comments:", note?.payload?.map(c => ({ taskId: c.taskId, noted: c.noted })));
+    
     setSelectedTaskId(taskId);
     
     // Navigate to the task date
