@@ -1,6 +1,4 @@
-"use client";
 import React, { useState, useTransition } from "react";
-
 import {
   Modal,
   ModalContent,
@@ -13,15 +11,215 @@ import {
   DropdownMenu,
   DropdownItem,
 } from "@heroui/react";
-import { createWorkspaceAction } from "@/action/workspace.action";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createWorkspaceSchema } from "@/lib/schemas/workspaceSchema";
 
+export default function ModalCreateWorkspace({ createWorkspace }) {
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [selectedOption, setSelectedOption] = useState(null);
+  const router = useRouter();
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+    setValue,
+  } = useForm({
+    resolver: zodResolver(createWorkspaceSchema),
+  });
 
-// SVG Icons 
+  const [isPending, startTransition] = useTransition();
+
+  // Define the color options with the sidebar key colors you want:
+  const colorOptions = [
+    { key: "red", label: "Red", className: "bg-board-red" },
+    { key: "blue", label: "Blue Sky", className: "bg-board-primary" },
+    { key: "green", label: "Green", className: "bg-board-green" },
+    { key: "purple", label: "Purple", className: "bg-board-purple" },
+    { key: "orange", label: "Orange", className: "bg-board-orange" },
+    { key: "violet", label: "Violet", className: "bg-board-violet" },
+  ];
+
+  // On color select:
+  const handleColorSelect = (key) => {
+    const color = colorOptions.find((c) => c.key === key);
+
+    if (color) {
+      if (selectedOption?.key === key) {
+        // Unselect if clicking again
+        setSelectedOption(null);
+        setValue("color", "", { shouldValidate: true });
+      } else {
+        setSelectedOption(color);
+        setValue("color", color.key, { shouldValidate: true });
+      }
+    }
+  };
+
+  // On submit handler
+  const onSubmit = async (data) => {
+    try {
+      await createWorkspace(data);
+      reset();
+      setSelectedOption(null);
+      onOpenChange(false); // close modal
+      startTransition(() => {
+        router.refresh(); // or navigate somewhere if needed
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  return (
+    <>
+      <Button
+        onPress={onOpen}
+        className="w-[10px] min-w-0 bg-transparent border border-primary text-primary"
+        size="sm"
+      >
+        +
+      </Button>
+
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="xl">
+        <ModalContent className="max-h-[90vh] overflow-y-auto">
+          <>
+            <ModalHeader className="flex flex-col gap-1">
+              Create New Workspace
+            </ModalHeader>
+            <div className="border border-bgColor my-4"></div>
+            <ModalBody>
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <div className="grid grid-cols-4 gap-2 text-title">
+                  {/* Title */}
+                  <div className="col-span-3 flex flex-col space-y-2">
+                    <label className="text-label-sm">Workspace Title</label>
+                    <input
+                      {...register("title")}
+                      placeholder="Type here"
+                      className="text-title/50 text-caption bg-transparent w-full border border-gray-300 rounded-full px-9 h-10"
+                      style={{
+                        backgroundImage: `url("data:image/svg+xml;utf8,${svgIconInput}")`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "8px center",
+                      }}
+                    />
+                    {errors.title && (
+                      <p className="text-red-500 text-caption">
+                        *{errors.title.message}*
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Color */}
+                  <div className="flex flex-col space-y-2">
+                    <label className="text-label-sm">Color</label>
+                    <Dropdown>
+                      <DropdownTrigger>
+                        <Button
+                          variant="bordered"
+                          className="h-10 flex justify-between items-center px-4"
+                          radius="full"
+                        >
+                          {selectedOption ? (
+                            <div className="flex items-center gap-2 text-label-sm text-title">
+                              <div
+                                className={`w-4 h-4 rounded-full ${selectedOption.className}`}
+                              />
+                              <span>{selectedOption.label}</span>
+                            </div>
+                          ) : (
+                            <span className="text-title/50 text-label-sm">
+                              Select color
+                            </span>
+                          )}
+
+                          <svg
+                            width="14"
+                            height="9"
+                            viewBox="0 0 14 9"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M13 1.5C13 1.5 8.58107 7.5 6.99995 7.5 5.41884 7.5 1 1.5 1 1.5"
+                              stroke="#59BAD5"
+                              strokeWidth="1.5"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        </Button>
+                      </DropdownTrigger>
+
+                      <DropdownMenu
+                        aria-label="Select Color"
+                        onAction={handleColorSelect}
+                      >
+                        {colorOptions.map((color) => (
+                          <DropdownItem
+                            key={color.key}
+                            className="hover:text-primary hover:bg-primary/10"
+                          >
+                            <div className="flex flex-row space-x-4 items-center">
+                              <div
+                                className={`w-4 h-4 rounded-full ${color.className}`}
+                              />
+                              <p>{color.label}</p>
+                            </div>
+                          </DropdownItem>
+                        ))}
+                      </DropdownMenu>
+                    </Dropdown>
+
+                    {/* Hidden input for form */}
+                    <input type="hidden" {...register("color")} />
+                  </div>
+
+                  {/* Description */}
+                  <div className="col-span-4 space-y-2">
+                    <label className="text-label-sm">
+                      Workspace Description
+                    </label>
+                    <textarea
+                      {...register("description")}
+                      placeholder="Type here"
+                      className="text-title/50 text-caption bg-transparent w-full border border-gray-300 rounded-lg p-3 resize-none h-20"
+                      style={{
+                        backgroundImage: `url("data:image/svg+xml;utf8,${svgIconType}")`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "10px calc(1em + 0px)",
+                        paddingLeft: "36px",
+                        lineHeight: "1.4",
+                      }}
+                    />
+                  </div>
+                </div>
+
+                <div className="border border-bgColor my-4"></div>
+
+                <div className="flex justify-end items-center pt-2 py-4">
+                  <button
+                    type="submit"
+                    disabled={isPending}
+                    className="bg-primary text-white px-4 py-2 rounded-full"
+                  >
+                    {isPending ? "Creating..." : "Create Workspace"}
+                  </button>
+                </div>
+              </form>
+            </ModalBody>
+          </>
+        </ModalContent>
+      </Modal>
+    </>
+  );
+}
+
+// You can keep your SVG icons encoded strings as you had them
 const svgIconInput = encodeURIComponent(`
   <svg width="20" height="22" viewBox="0 0 20 22" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M5.99805 15H9.99805M5.99805 10H13.998" stroke="#59BAD5" strokeWidth="1.5" strokeLinecap="round"/>
@@ -35,203 +233,3 @@ const svgIconType = encodeURIComponent(`
   <path d="M12.2141 2.98239L13.6158 1.58063C14.39 0.806457 15.6452 0.806457 16.4194 1.58063C17.1935 2.3548 17.1935 3.60998 16.4194 4.38415L15.0176 5.78591M12.2141 2.98239L3.98023 11.2163C2.93493 12.2616 2.41226 12.7842 2.05637 13.4211C1.70047 14.058 1.3424 15.5619 1 17C2.43809 16.6576 3.94199 16.2995 4.57889 15.9436C5.21579 15.5877 5.73844 15.0651 6.78375 14.0198L15.0176 5.78591M12.2141 2.98239L15.0176 5.78591" stroke="#59BAD5" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
   </svg>
 `);
-
-export default function ModalCreateWorkspace({ createWorkspace }) {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [selectedOption, setSelectedOption] = useState(null);
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm({
-    resolver: zodResolver(createWorkspaceSchema),
-  });
-
-  const [isPending, startTransition] = useTransition();
-
-  const onSubmit = async (data) => {
-    try {
-      await createWorkspace(data); 
-      reset();
-      setSelectedOption(null);
-      startTransition(() => {
-      });
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  
-  const colorOptions = [
-    { key: "red", label: "Red", className: "bg-board-red" },
-    { key: "blue", label: "Blue Sky", className: "bg-board-primary" },
-    { key: "green", label: "Green", className: "bg-board-green" },
-    { key: "purple", label: "Purple", className: "bg-board-purple" },
-    { key: "orange", label: "Orange", className: "bg-board-orange" },
-    { key: "violet", label: "Violet", className: "bg-board-violet" },
-  ];
-
-  const handleColorSelect = (key) => {
-    const color = colorOptions.find((c) => c.key === key);
-    if (color) {
-      if (selectedOption?.key === key) {
-        setSelectedOption(null);
-      } else {
-        setSelectedOption(color);
-      }
-    }
-  };
-
-  return (
-    <>
-      <Button
-        onPress={onOpen}
-        className="w-[10px] min-w-0 bg-transparent border-1 border-primary text-primary"
-        size="sm"
-      >
-        +
-      </Button>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="xl">
-        <ModalContent className="max-h-[90vh] overflow-y-auto">
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex flex-col gap-1">
-                Create New Workspace
-              </ModalHeader>
-              <div className="border-1 mt-2 mb-4 border-bgColor"></div>
-              <ModalBody>
-                <form onSubmit={handleSubmit(onSubmit)}>
-                  <div className="grid grid-cols-4 gap-2 text-title">
-                    {/* Title */}
-                    <div className="col-span-3 flex flex-col space-y-2">
-                      <label className="text-label-sm">Workspace Title</label>
-                      <input
-                        {...register("title", { required: true })}
-                        // type="title"
-                        placeholder="Type here"
-                        style={{
-                          backgroundImage: `url("data:image/svg+xml;utf8,${svgIconInput}")`,
-                          backgroundRepeat: "no-repeat",
-                          backgroundPosition: "8px center",
-                          paddingLeft: "36px",
-                          height: "40px",
-                          borderRadius: "9999px",
-                          border: "1px solid #ccc",
-                        }}
-                        className="text-title/50 text-caption bg-transparent w-full"
-                      />
-                      {errors.title && (
-                        <p className="text-red-500 text-caption">
-                          *{errors.title.message}*
-                        </p>
-                      )}
-                    </div>
-
-                    {/* Color */}
-                    <div className="flex flex-col space-y-2">
-                      <label className="text-label-sm">Color</label>
-                      <Dropdown>
-                        <DropdownTrigger>
-                          <Button
-                            variant="bordered"
-                            className="h-[40px]"
-                            radius="full"
-                          >
-                            {selectedOption ? (
-                              <div className="flex items-center gap-2 text-label-sm">
-                                <div
-                                  className={`w-4 h-4 rounded-full ${selectedOption.className}`}
-                                ></div>
-                                <span>{selectedOption.label}</span>
-                              </div>
-                            ) : (
-                              <span className="text-title/50 text-label-sm">
-                                Select color
-                              </span>
-                            )}
-                            <svg
-                              width="14"
-                              height="9"
-                              viewBox="0 0 14 9"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M13 1.50005C13 1.50005 8.58107 7.49999 6.99995 7.5C5.41884 7.50001 1 1.5 1 1.5"
-                                stroke="#59BAD5"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                          </Button>
-                        </DropdownTrigger>
-                        <DropdownMenu
-                          aria-label="Select Color"
-                          onAction={handleColorSelect}
-                        >
-                          {colorOptions.map((color) => (
-                            <DropdownItem
-                              key={color.key}
-                              className="hover:text-primary hover:bg-primary/10"
-                            >
-                              <div className="flex items-center justify-between gap-2">
-                                <p>{color.label}</p>
-                                <div
-                                  className={`w-4 h-4 rounded-full  ${color.className}`}
-                                />
-                              </div>
-                            </DropdownItem>
-                          ))}
-                        </DropdownMenu>
-                      </Dropdown>
-                    </div>
-
-                    {/* Description */}
-                    <div className="col-span-4 space-y-2">
-                      <label className="text-label-sm">
-                        Workspace Description
-                      </label>
-                      <textarea
-                        {...register("description")}
-                        // type="description"
-                        placeholder="Type here"
-                        style={{
-                          backgroundImage: `url("data:image/svg+xml;utf8,${svgIconType}")`,
-                          backgroundRepeat: "no-repeat",
-                          backgroundPosition: "10px calc(1em + 0px)",
-                          paddingLeft: "36px",
-                          paddingTop: "10px",
-                          height: "80px",
-                          borderRadius: "12px",
-                          border: "1px solid #ccc",
-                          lineHeight: "1.4",
-                          resize: "none",
-                        }}
-                        className="text-title/50 text-caption bg-transparent w-full"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="mx-[-1rem] border border-bgColor mt-5 mb-2"></div>
-
-                  <div className="flex justify-end items-center pt-2 py-4">
-                    <button
-                      type="submit"
-                      disabled={isPending}
-                      className="bg-primary text-white px-4 py-2 rounded-full"
-                    >
-                      {isPending ? "Creating..." : "Create Workspace"}
-                    </button>
-                  </div>
-                </form>
-              </ModalBody>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
-    </>
-  );
-}
