@@ -70,7 +70,7 @@ const formatFaceTitle = (face) => {
     .replace(/\b\w/g, (char) => char.toUpperCase()); // Capitalize first letter of each word
 };
 
-export default function GanttChart({ modal, ganttbar }) {
+export default function GanttChart({ modal, ganttbar, ganttChartName }) {
   const calendarRef = useRef(null);
   console.log("log gant bar again ", ganttbar);
 
@@ -82,7 +82,12 @@ export default function GanttChart({ modal, ganttbar }) {
 
     if (data.length === 0) {
       console.log("No valid data found in ganttbar.payload");
-      return { resources: [], events: [], dynamicFaceMap: {} };
+      // Return default empty resources but still allow calendar to render
+      return {
+        resources: [{ id: "default-phase", title: "Project Phases" }],
+        events: [],
+        dynamicFaceMap: {},
+      };
     }
 
     const uniqueFaces = new Set();
@@ -354,7 +359,13 @@ export default function GanttChart({ modal, ganttbar }) {
 
   // Calculate duration string for the header
   const durationString = useMemo(() => {
-    if (!events || events.length === 0) return "No Events";
+    if (!events || events.length === 0) {
+      // Show current month when no events
+      const today = new Date();
+      const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+      const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+      return `${formatDate(startOfMonth)} - ${formatDate(endOfMonth)}`;
+    }
     // Use the calculated min/max dates for the header string
     const start = new Date(minDate);
     const end = new Date(maxDate);
@@ -369,7 +380,7 @@ export default function GanttChart({ modal, ganttbar }) {
       <BredCrum
         board={"Project Dashboard"} // Example: Make dynamic if needed
         feature={"Gantt Chart"}
-        header={"Gantt Chart"} // Example: Make dynamic if needed
+        header={ganttChartName ?? "Gantt Chart"} // Example: Make dynamic if needed
         modal={modal}
       />
       <div className="flex items-center justify-between bg-[#F3F7FB] px-6 py-3 rounded-t-[16px] mt-3 border-b border-gray-200">
@@ -416,96 +427,113 @@ export default function GanttChart({ modal, ganttbar }) {
       </div>
 
       <div className="flex-grow overflow-hidden pt-1 relative">
-        {/* Conditionally render FullCalendar only when resources/events are ready */}
-        {resources.length > 0 || events.length > 0 ? (
-          <FullCalendar
-            key={`${minDate}-${maxDate}-${resources.length}-${events.length}`} // More robust key for re-renders
-            ref={calendarRef}
-            plugins={[resourceTimelinePlugin, interactionPlugin]} // Removed dayGridPlugin if not used
-            schedulerLicenseKey="GPL-My-Project-Is-Open-Source" // Use your actual key if applicable
-            initialView="resourceTimelineMonthCustom" // Default view
-            headerToolbar={false} // Using custom header
-            slotMinWidth={50} // Adjust column width as needed
-            slotMinHeight={80}
-            editable={true}
-            eventDrop={handleEventChange}
-            eventResize={handleEventChange}
-            slotDuration={{ days: 1 }} // Each slot is one day
-            slotLabelInterval={{ days: 1 }} // Label each day slot
-            slotLabelFormat={{
-              day: "numeric",
+        {/* Always render FullCalendar, but show empty state overlay when no events */}
+        <FullCalendar
+          key={`${minDate}-${maxDate}-${resources.length}-${events.length}`} // More robust key for re-renders
+          ref={calendarRef}
+          plugins={[resourceTimelinePlugin, interactionPlugin]} // Removed dayGridPlugin if not used
+          schedulerLicenseKey="GPL-My-Project-Is-Open-Source" // Use your actual key if applicable
+          initialView="resourceTimelineMonthCustom" // Default view
+          headerToolbar={false} // Using custom header
+          slotMinWidth={50} // Adjust column width as needed
+          slotMinHeight={80}
+          editable={true}
+          eventDrop={handleEventChange}
+          eventResize={handleEventChange}
+          slotDuration={{ days: 1 }} // Each slot is one day
+          slotLabelInterval={{ days: 1 }} // Label each day slot
+          slotLabelFormat={{
+            day: "numeric",
+            weekday: "short",
+            omitCommas: true,
+          }}
+          slotLabelClassNames="text-xs text-gray-500"
+          slotLaneClassNames="border-b border-gray-100"
+          slotLabelContent={(arg) => {
+            const date = arg.date;
+            const today = new Date();
+            const isToday =
+              date.getDate() === today.getDate() &&
+              date.getMonth() === today.getMonth() &&
+              date.getFullYear() === today.getFullYear();
+
+            const weekday = date.toLocaleDateString("en-US", {
               weekday: "short",
-              omitCommas: true,
-            }}
-            slotLabelClassNames="text-xs text-gray-500"
-            slotLaneClassNames="border-b border-gray-100"
-            slotLabelContent={(arg) => {
-              const date = arg.date;
-              const today = new Date();
-              const isToday =
-                date.getDate() === today.getDate() &&
-                date.getMonth() === today.getMonth() &&
-                date.getFullYear() === today.getFullYear();
+            });
+            const day = date.getDate();
 
-              const weekday = date.toLocaleDateString("en-US", {
-                weekday: "short",
-              });
-              const day = date.getDate();
-
-              return (
-                <div
-                  className={`flex flex-col items-center justify-center w-10 h-10 rounded-lg mx-auto my-1  ${
-                    isToday
-                      ? "bg-primary rounded-xl text-white font-bold p-2"
-                      : "bg-gray-100 rounded-xl text-gray-700 p-2"
-                  }`}
-                >
-                  <div className="text-[10px] uppercase">{weekday}</div>
-                  <div className="text-sm font-medium">{day}</div>
-                </div>
-              );
-            }}
-            views={{
-              resourceTimelineMonthCustom: {
-                type: "resourceTimeline",
-                duration: { days: 31 }, // Default duration
-                visibleRange: {
-                  // Dynamically set based on data
-                  start: minDate,
-                  end: maxDate,
-                },
-                slotDuration: { days: 1 },
+            return (
+              <div
+                className={`flex flex-col items-center justify-center w-10 h-10 rounded-lg mx-auto my-1  ${
+                  isToday
+                    ? "bg-primary rounded-xl text-white font-bold p-2"
+                    : "bg-gray-100 rounded-xl text-gray-700 p-2"
+                }`}
+              >
+                <div className="text-[10px] uppercase">{weekday}</div>
+                <div className="text-sm font-medium">{day}</div>
+              </div>
+            );
+          }}
+          views={{
+            resourceTimelineMonthCustom: {
+              type: "resourceTimeline",
+              duration: { days: 31 }, // Default duration
+              visibleRange: {
+                // Dynamically set based on data
+                start: minDate,
+                end: maxDate,
               },
-              // Add other views if needed (e.g., week, year)
-            }}
-            viewDidMount={(viewInfo) => {
-              // Optional: Update header title when view changes
-              // This requires state management (useState) for the header title
-              console.log("View Title:", viewInfo.view.title);
-            }}
-            nowIndicator={true}
-            now={new Date().toISOString()} // Ensure 'now' is in correct format
-            eventContent={renderEventContent}
-            resourceAreaWidth="220px" // Adjusted width for potentially longer titles
-            resourceAreaHeaderContent="Phases" // Header for the resource column
-            resourceAreaClassNames="text-sm font-medium text-gray-700 bg-gray-50 border-r border-gray-200"
-            resourceLabelClassNames="p-2 sticky top-0 bg-gray-50 z-10"
-            resources={resources}
-            events={events}
-            resourceOrder="title" // Order resources alphabetically
-            eventMaxStack={2} // Limit number of stacked events shown per day
-            eventOverlap={false} // Prevent events visually overlapping in time
-            aspectRatio={2.5} // Adjust overall aspect ratio
-            height="100%" // Let container control height
-            //scrollTime="00:00:00"
-            // contentHeight="auto"
-          />
-        ) : (
-          // Display a loading or empty state message
-          <div className="flex justify-center items-center h-full text-gray-500">
-            {ganttbar === undefined
-              ? "Loading Gantt data..."
-              : "No tasks found for this chart."}
+              slotDuration: { days: 1 },
+            },
+            // Add other views if needed (e.g., week, year)
+          }}
+          viewDidMount={(viewInfo) => {
+            // Optional: Update header title when view changes
+            // This requires state management (useState) for the header title
+            console.log("View Title:", viewInfo.view.title);
+          }}
+          nowIndicator={true}
+          now={new Date().toISOString()} // Ensure 'now' is in correct format
+          eventContent={renderEventContent}
+          resourceAreaWidth="220px" // Adjusted width for potentially longer titles
+          resourceAreaHeaderContent="Phases" // Header for the resource column
+          resourceAreaClassNames="text-sm font-medium text-gray-700 bg-gray-50 border-r border-gray-200"
+          resourceLabelClassNames="p-2 sticky top-0 bg-gray-50 z-10"
+          resources={resources}
+          events={events}
+          resourceOrder="title" // Order resources alphabetically
+          eventMaxStack={2} // Limit number of stacked events shown per day
+          eventOverlap={false} // Prevent events visually overlapping in time
+          aspectRatio={2.5} // Adjust overall aspect ratio
+          height="100%" // Let container control height
+          //scrollTime="00:00:00"
+          // contentHeight="auto"
+        />
+
+        {/* Empty state overlay when no events */}
+        {events.length === 0 && ganttbar !== undefined && (
+          <div className="absolute inset-0 flex justify-center items-center bg-white bg-opacity-70 z-10">
+            <div className="text-center">
+              <div className="text-lg font-medium text-gray-600 mb-2">
+                No tasks scheduled
+              </div>
+              <div className="text-sm text-gray-500">
+                Add tasks to see them on the timeline
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Loading state */}
+        {ganttbar === undefined && (
+          <div className="absolute inset-0 flex justify-center items-center bg-white bg-opacity-90 z-10">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+              <div className="text-lg font-medium text-gray-600">
+                Loading Gantt data...
+              </div>
+            </div>
           </div>
         )}
       </div>

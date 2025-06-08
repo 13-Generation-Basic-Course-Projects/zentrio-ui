@@ -37,29 +37,10 @@ export default function ModalCreateGanttChart({ boardId }) {
 
   // Form submission handler
   const onSubmit = async (data) => {
-    try {
-      console.log("Form data:", data);
+    console.log("Form data:", data);
 
-      // Call the action with form data and boardId
-      const result = await createGanttChartByBoardIdAction(data, boardId);
-
-      if (result.success) {
-        console.log("Gantt chart created successfully:", result.data);
-        // Reset form and close modal on success
-        reset();
-        onOpenChange();
-        // You might want to add a success toast here
-        // toast.success("Gantt chart created successfully!");
-      } else {
-        console.error("Failed to create gantt chart:", result.error);
-        // Handle error - you might want to show an error toast
-        // toast.error(result.error || "Failed to create gantt chart");
-      }
-    } catch (error) {
-      console.error("Error creating gantt chart:", error);
-      // Handle unexpected errors
-      // toast.error("An unexpected error occurred");
-    }
+    // Call the action with form data and boardId
+    const result = await createGanttChartByBoardIdAction(data, boardId);
   };
 
   const handleClose = () => {

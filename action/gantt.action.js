@@ -1,6 +1,7 @@
 "use server";
 import { Token } from "@/constant/token";
 import {
+  getGanttBarByGanttChartIdService,
   getGanttBarService,
   getGanttChartByBoardIdService,
 } from "@/service/gantt.service";
@@ -25,7 +26,7 @@ export const getGanttBarByGanttChartIdAction = async ({ ganttChartId }) => {
   const userToken = await Token();
   const token = userToken.Credential;
   console.log(token);
-  const result = await getGanttBarService({
+  const result = await getGanttBarByGanttChartIdService({
     ganttChartId,
     token,
   });
@@ -39,6 +40,7 @@ export const getGanttChartByBoardIdAction = async ({ boardId }) => {
   const userToken = await Token();
   const token = userToken.Credential;
   console.log(token);
+
   const result = await getGanttChartByBoardIdService({
     boardId,
     token,

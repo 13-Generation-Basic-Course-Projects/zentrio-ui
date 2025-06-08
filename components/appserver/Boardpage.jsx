@@ -22,6 +22,7 @@ export default function SystemBoard({
   allMemberInBoard,
   boardId,
   ganttChartId,
+  ganttChartName,
 }) {
   const pathname = usePathname();
   const segments = pathname.split("/");
@@ -167,19 +168,13 @@ export default function SystemBoard({
         </svg>
       ),
 
-      content: ganttChartId ? (
+      content: (
         <GanttChart
           modal={[
             <ModalCreateGanttChart
               key="create-gantt-chart"
               boardId={boardId}
             />,
-          ]}
-          ganttbar={ganttbar}
-        />
-      ) : (
-        <GanttChart
-          modal={[
             <ModalCreateGanttBar
               key="create-gantt-bar"
               boardId={boardId}
@@ -187,6 +182,7 @@ export default function SystemBoard({
             />,
           ]}
           ganttbar={ganttbar}
+          ganttChartName={ganttChartName}
         />
       ),
     },

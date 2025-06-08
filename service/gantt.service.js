@@ -17,23 +17,15 @@ export const getGanttBarService = async ({ token }) => {
         Authorization: `Bearer ${token}`,
       },
     });
-
     const data = await res.json();
     console.log("📥 Backend responded with:", data);
 
-    // Check if payload exists and return it, otherwise return null or handle accordingly
-    if (data && data.payload) {
-      return data;
-    } else {
-      console.log("⚠️ No gantt chart data found.");
-      return null; // or throw an error, or return a default value
-    }
+    return data; // just return the data, don’t redirect here
   } catch (error) {
-    console.error("🔥 Gantt service error:", error.message);
+    console.error("Login service error:", error.message);
     throw error;
   }
 };
-
 /*
  * get ganttchart by ganntchart Id
  */

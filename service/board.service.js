@@ -205,7 +205,6 @@ export const createTaskByBoardIdAndGanttChartIdService = async ({
  */
 export const createGanttChartByBoardIdService = async ({
   boardId,
-  ganttChartId,
   data,
   token,
 }) => {
@@ -218,7 +217,7 @@ export const createGanttChartByBoardIdService = async ({
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ data, boardId }),
+      body: JSON.stringify({ title: data.title, boardId: boardId }),
     });
     const result = await res.json();
     console.log("📥 Backend responded with:", result);

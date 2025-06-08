@@ -24,25 +24,36 @@ async function fetchGanttChartId(boardId) {
     return FALLBACK_STRING;
   }
 }
+async function fetchGanttChartName(boardId) {
+  const FALLBACK_STRING = "No data available";
+  try {
+    const ganttchartByBoardId = await getGanttChartByBoardIdAction({ boardId });
+    return ganttchartByBoardId?.payload?.title || FALLBACK_STRING;
+  } catch (error) {
+    console.error("Error fetching gantt chart by board ID:", error);
+    return FALLBACK_STRING;
+  }
+}
 
 export default async function BoardLayout({ children, params }) {
   // Fallback values
   const FALLBACK_STRING = "No data available";
   const FALLBACK_ARRAY = [];
   const FALLBACK_OBJECT = {};
+  const boardId = params?.boardId || FALLBACK_STRING;
 
+  /*
+   * Get ganttChartId using the utility function
+   */
+  const ganttChartId = await fetchGanttChartId(boardId);
+  const ganttChartName = await fetchGanttChartName(boardId);
+  console.log("test gant chart id", ganttChartId); // Log inside BoardLayout
   try {
     /*
      * Get prop id with fallback
      */
-    const boardId = params?.boardId || FALLBACK_STRING;
-    const session = await auth();
 
-    /*
-     * Get ganttChartId using the utility function
-     */
-    const ganttChartId = await fetchGanttChartId(boardId);
-    console.log("test gant chart id", ganttChartId); // Log inside BoardLayout
+    const session = await auth();
 
     /*
      * Get for gantt bar feature with error handling
@@ -99,7 +110,7 @@ export default async function BoardLayout({ children, params }) {
     let allGanttBar = { payload: FALLBACK_ARRAY };
     try {
       if (ganttChartId !== FALLBACK_STRING) {
-        allGanttBar = await getAllGanttBarByGanttChartIDAction({
+        allGanttBar = await getGanttBarByGanttChartIdAction({
           ganttChartId,
         });
       }
@@ -180,6 +191,8 @@ export default async function BoardLayout({ children, params }) {
             Array.isArray(allMemberInBoard) ? allMemberInBoard : FALLBACK_ARRAY
           }
           boardId={boardId || FALLBACK_STRING}
+          ganttChartId={ganttChartId}
+          ganttChartName={ganttChartName}
         />
         <main>{children}</main>
       </div>
@@ -194,7 +207,9 @@ export default async function BoardLayout({ children, params }) {
           ganttbar={FALLBACK_OBJECT}
           checklistbyTaskIds={FALLBACK_ARRAY}
           allMemberInBoard={FALLBACK_ARRAY}
-          boardId={FALLBACK_STRING}
+          boardId={boardId}
+          ganttChartId={ganttChartId}
+          ganttChartName={ganttChartName}
         />
         <main>{children}</main>
       </div>

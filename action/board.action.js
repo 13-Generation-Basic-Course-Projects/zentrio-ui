@@ -1,6 +1,7 @@
 "use server";
 import { Token } from "@/constant/token";
 import {
+  createGanttChartByBoardIdService,
   createTaskByBoardIdAndGanttChartIdService,
   getAllGanttBarByGanttChartIDService,
   getCheckListByTaskIdService,
@@ -98,6 +99,7 @@ export const getAllGanttBarByGanttChartIDAction = async ({ ganttChartId }) => {
   const userToken = await Token();
   const token = userToken.Credential;
   //console.log(token);
+  console.log("gantbar by gant chart ", ganttChartId);
   const result = await getAllGanttBarByGanttChartIDService({
     ganttChartId,
     token,
@@ -146,7 +148,7 @@ export const createGanttChartByBoardIdAction = async (data, boardId) => {
     }
     console.log("boardId:", boardId);
     console.log("data create form", data);
-    const result = await createTaskByBoardIdAndGanttChartIdService({
+    const result = await createGanttChartByBoardIdService({
       boardId,
       data,
       token,
