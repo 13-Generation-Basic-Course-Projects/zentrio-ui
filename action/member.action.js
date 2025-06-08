@@ -18,3 +18,4 @@ export const getBoardMemberAction = async (boardId) => {
 
   return Array.isArray(result?.payload) ? result.payload : [];
 };
+

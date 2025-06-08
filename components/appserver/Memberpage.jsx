@@ -29,11 +29,11 @@ import { IconpopupDelete } from "../icon/Iconpopup";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import ModalDelete from "../modal/ModalDelete";
 
-export default function Memberpage({ boardId, boardMember }) {
+export default function Memberpage({boardMember}) {
   const [members, setMembers] = useState(
     Array.isArray(boardMember) ? boardMember : []
   ); //call from props
- 
+
   const { isOpen, onOpen, onOpenChange } = useDisclosure(); // For delete modal
   const targetRef = useRef(null);
   const { moveProps } = useDraggable({
@@ -59,17 +59,32 @@ export default function Memberpage({ boardId, boardMember }) {
     setMembers((prev) => prev.filter((m) => m.userId !== id));
   };
 
-  // New state for search input
+  // New state for search input and filter
   const [searchTerm, setSearchTerm] = useState("");
+  const [filterRange, setFilterRange] = useState("all");
 
-  // Filter members based on search term (username or email)
+  // Filter members based on search term (username or email) and filter
   const filteredMembers = members.filter((member) => {
     const search = searchTerm.toLowerCase();
-    return (
+    const matchSearch =
       member.username.toLowerCase().includes(search) ||
-      member.email.toLowerCase().includes(search)
-    );
+      member.email.toLowerCase().includes(search);
+
+    if (filterRange === "all") return matchSearch;
+
+    const joinedDate = new Date(
+      member.joinedAt || member.createdAt || "2025-06-01T00:00:00Z"
+    ); // fallback date
+    const now = new Date();
+    const diffDays = (now - joinedDate) / (1000 * 60 * 60 * 24);
+
+    if (filterRange === "week" && diffDays <= 7) return matchSearch;
+    if (filterRange === "month" && diffDays <= 30) return matchSearch;
+    if (filterRange === "year" && diffDays <= 365) return matchSearch;
+
+    return false;
   });
+  
 
   // Pagination calculations use filteredMembers instead of all members
   const [currentPage, setCurrentPage] = useState(1);
@@ -89,12 +104,9 @@ export default function Memberpage({ boardId, boardMember }) {
     setCurrentPage(1);
   }, [searchTerm]);
 
-
-  /* use for animation on icon arrow */ 
-  const [ makeOpen, setMakeOpen] = useState(false);
+  /* use for animation on icon arrow */
+  const [makeOpen, setMakeOpen] = useState(false);
   const [openPopoverId, setOpenPopoverId] = useState(null);
- 
-
 
   return (
     <div className="p-4 ">
@@ -106,16 +118,18 @@ export default function Memberpage({ boardId, boardMember }) {
             <Image src={icon1} alt="Filter" className="w-4 h-4" />
             <div className="relative">
               <select
+                value={filterRange}
+                onChange={(e) => setFilterRange(e.target.value)}
                 onFocus={() => setMakeOpen(true)}
                 onBlur={() => setMakeOpen(false)}
-                className="appearance-none bg-white text-sm text-gray-700 px-3 pr-8 py-1.5   focus:outline-none  transition"
-                defaultValue="all"
+                className="appearance-none bg-white text-sm text-gray-700 px-3 pr-8 py-1.5 focus:outline-none transition"
               >
                 <option value="all">All</option>
                 <option value="week">Last week</option>
                 <option value="month">Last month</option>
                 <option value="year">Last year</option>
               </select>
+
               <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center transition-transform duration-300">
                 <Image
                   src={arrowdown}
@@ -174,7 +188,6 @@ export default function Memberpage({ boardId, boardMember }) {
                       {index + 1 + (currentPage - 1) * membersPerPage}
                     </span>
                   </td>
-
                   {/* Username with Modern Hover Effect */}
                   <td className="px-6 py-4">
                     <Link
@@ -207,21 +220,18 @@ export default function Memberpage({ boardId, boardMember }) {
                       </div>
                     </Link>
                   </td>
-
                   {/* Gender */}
                   <td className="px-6 py-4">
                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors duration-200">
                       {member.gender}
                     </span>
                   </td>
-
                   {/* Email */}
                   <td className="px-6 py-4">
                     <span className="text-gray-600 group-hover:text-gray-800 transition-colors duration-200">
                       {member.email}
                     </span>
                   </td>
-
                   {/* Roles Popover */}
                   <td className="px-6 py-4 border-none">
                     <div className="flex items-center gap-2">
@@ -268,9 +278,9 @@ export default function Memberpage({ boardId, boardMember }) {
                   <td className="px-6 py-4 border-none">
                     <div className="flex items-center gap-2 !border-none">
                       <span className="text-gray-700 group-hover:text-green-700 transition-colors duration-200">
-                        {/* {member.task[0]} */}
+                        {member.tasks[0]}
                       </span>
-                      {/* {member.task.length > 1 && (
+                      {member.tasks.length > 1 && (
                         <Popover>
                           <PopoverTrigger className="cursor-pointer border-0">
                             <div className="p-1 rounded-full hover:bg-green-100 transition-colors duration-200 border-none">
@@ -279,7 +289,7 @@ export default function Memberpage({ boardId, boardMember }) {
                           </PopoverTrigger>
                           <PopoverContent className="text-h6 bg-white border-0 p-4 rounded-lg">
                             <div className="space-y-2">
-                              {member.task.map((task, i) => (
+                              {member.tasks.map((task, i) => (
                                 <div
                                   key={i}
                                   className="px-2 py-1 bg-green-50 text-green-700 rounded text-sm"
@@ -290,10 +300,9 @@ export default function Memberpage({ boardId, boardMember }) {
                             </div>
                           </PopoverContent>
                         </Popover>
-                      )} */}
+                      )}
                     </div>
                   </td>
-
                   {/* Action for delete */}
                   <td className="px-6 py-4">
                     <svg

@@ -37,7 +37,6 @@ export default function Myworkspace({
                       boardId={board.boardId}
                       // projectId={board.boardId}
                       title={board.title}
-                      // image={colorClass}
                       image={board.cover}
                       isFavourite={board.isFavourite}
                       deleteBoardAction={deleteBoardAction}

@@ -7,3 +7,4 @@ export const memberRouteGroup = {
   getBoardMembers: (boardId) =>
     `${apiConfig.baseUrl}/boards/${boardId}/members`, // Get board members
 };
+

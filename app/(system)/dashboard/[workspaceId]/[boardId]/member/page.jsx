@@ -1,7 +1,7 @@
 import Memberpage from "@/components/appserver/Memberpage";
 import React from "react";
 import Memberempty from "@/components/appserver/Memberempty";
-import { getBoardMemberAction } from "@/action/member.action";
+import { getBoardMemberAction, getTaskByBoardIdAction } from "@/action/member.action";
 
 //useage route : http://localhost:3000/dashboard/1/1/member
 export default async function Member({ params }) {
@@ -11,6 +11,11 @@ export default async function Member({ params }) {
   const boardMember = await getBoardMemberAction(boardId);
   console.log("Fetched board members:", boardMember);
 
-  return <Memberpage boardId={boardId} boardMember={boardMember} />;
+
+  return (
+    <Memberpage
+      boardMember={boardMember}
+    />
+  );
 }
 
