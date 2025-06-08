@@ -20,6 +20,9 @@ import {
   Textarea,
 } from "@heroui/react";
 import Image from "next/image";
+import { createWorkspaceSchema } from "@/lib/schemas/workspaceSchema";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const svgIconInput = encodeURIComponent(`
   <svg width="20" height="22" viewBox="0 0 20 22" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -36,7 +39,7 @@ const svgIconType = encodeURIComponent(`
 
     `);
 
-export default function ModalCreateBoard() {
+export default function ModalCreateBoard({ createBoardAction, Workspaceid }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   // function for select
@@ -44,21 +47,32 @@ export default function ModalCreateBoard() {
   const [showColors, setShowColors] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
 
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(createWorkspaceSchema),
+  });
+
   const toggleColors = () => {
     setShowColors((prev) => !prev);
   };
 
-  const handleColorSelect = (color) => {
-    setSelectedOption((prev) => (prev === color ? null : color));
+  
+  const handleColorSelect = (colorKey) => {
+    setSelectedOption((prev) => (prev === colorKey ? null : colorKey));
     setShowColors(false);
     setDropdownOpen(false);
   };
   
+  
+
   const handleUploadSelect = () => {
     alert("Upload images clicked");
     setDropdownOpen(false);
   };
-
 
   const colorOptions = [
     { key: "red", label: "Red", className: "bg-board-red" },
@@ -68,11 +82,42 @@ export default function ModalCreateBoard() {
     { key: "orange", label: "Orange", className: "bg-board-orange" },
     { key: "violet", label: "Violet", className: "bg-board-violet" },
   ];
+
+
+  // This function will be called when the form is submitted
+  const onSubmit = async (data) => {
+    try {
+      let cover = "";
+
+      if (data.coverFile && data.coverFile.length > 0) {
+        cover = data.coverFile[0]; // file
+      } else if (selectedOption) {
+        cover = selectedOption; // color string
+      }
+
+      const response = await createBoardAction({
+        title: data.title,
+        description: data.description || "",
+        cover,
+        workspaceId: Workspaceid,
+      });
+
+      // Optional: you might need to check `response` shape here
+      console.log("Board created:", response);
+
+      reset();
+      onOpenChange(false);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
+
   return (
     <>
       <Button
         onPress={onOpen}
-        className="bg-transparent h-[340px]  "
+        className="bg-transparent h-[340px] !p-0 "
         fullWidth="true "
       >
         <Card className="bg-transparent w-full h-full  shadow-none border-none">
@@ -99,14 +144,15 @@ export default function ModalCreateBoard() {
               </ModalHeader>
               <div className="border-1 mt-2 mb-4 border-bgColor "></div>
               <ModalBody>
-                <form action="">
+                <form onSubmit={handleSubmit(onSubmit)}>
                   <div className="grid grid-cols-4 gap-2 text-title">
                     {/* title */}
                     <div className="col-span-3 flex flex-col items-start justify-center space-y-2">
                       <label className="text-label-sm">Board Title</label>
 
                       <input
-                        type="text"
+                        {...register("title")}
+                        // type="text"
                         placeholder="Type here"
                         style={{
                           backgroundImage: `url("data:image/svg+xml;utf8,${svgIconInput}")`,
@@ -253,11 +299,11 @@ export default function ModalCreateBoard() {
                         )}
                       </div>
                     </div>
-
                     {/* description */}
                     <div className="col-span-4 space-y-2">
                       <label className="text-label-sm">Board Description</label>
                       <textarea
+                        {...register("description")}
                         placeholder="Type here"
                         style={{
                           backgroundImage: `url("data:image/svg+xml;utf8,${svgIconType}")`,
@@ -278,7 +324,12 @@ export default function ModalCreateBoard() {
                   <div className="mx-[-1rem] border border-bgColor mt-5 mb-2"></div>
 
                   <div className="flex justify-end items-center pt-2 py-4">
-                    <Button color="primary" radius="full" onPress={onClose}>
+                    <Button
+                      color="primary"
+                      radius="full"
+                      onPress={onClose}
+                      type="submit"
+                    >
                       Create Board
                     </Button>
                   </div>

@@ -1,88 +1,243 @@
 "use client";
-import { useState } from "react";
-import { Plus, ChevronDown, ChevronRight, ChevronUp } from "lucide-react";
-import { teamLeader } from "@/data/board/teamleader";
-import { initialColumns } from "@/data/boardData";
-import { CardCheckList } from "../card/CardChecklist";
-import UserAvater from "../useravatar/UserAvatar";
-import BredCrum from "../bredcrum/MyBredcrum";
+
+import React, { useState, useEffect } from "react";
 import { StackedUser } from "../useravatar/StackUser";
-import ModalCreateChecklist from "../modal/board/ModalCreateChecklist";
+import BredCrum from "../bredcrum/MyBredcrum";
 import ModalDetailChecklist from "../modal/board/ModalDetailChecklist";
+import { ChevronDown, ChevronUp, MessageSquare, Paperclip } from "lucide-react";
 import CardDateChecklist from "../card/CardDateChecklist";
+import ModalCreateChecklist from "../modal/board/ModalCreateChecklist";
+import { EmptyKanban } from "../appserver/EmptyKanban";
 
-export default function KanbanBoard({ modal }) {
-  const [columns, setColumns] = useState(initialColumns);
-  const [draggedItem, setDraggedItem] = useState(null);
-  const [dragTarget, setDragTarget] = useState(null);
+// Placeholder component (unchanged)
+const UserAvater = ({ image }) => (
+  <img
+    src={image}
+    alt="avatar"
+    className="w-6 h-6 rounded-full border border-white -ml-2 first:ml-0"
+  />
+);
 
-  // Find card or subtask by ID
-  const findItem = (itemId) => {
-    for (const column of columns) {
-      // Check if it's a main task
-      const card = column.cards.find((card) => card.id === itemId);
-      if (card) {
-        return {
-          type: "card",
-          item: card,
-          columnId: column.id,
-          cardIndex: column.cards.findIndex((c) => c.id === itemId),
-          parentCardId: null,
-        };
+// Function to get checklists for a specific task
+const getChecklistsForTask = (taskId, checklistbyTaskIds) => {
+  if (!checklistbyTaskIds || !Array.isArray(checklistbyTaskIds)) {
+    return [];
+  }
+
+  // Find the response object that contains checklists for this taskId
+  for (const response of checklistbyTaskIds) {
+    if (
+      response.success &&
+      response.payload &&
+      Array.isArray(response.payload)
+    ) {
+      // Check if any checklist in this payload belongs to the taskId
+      const taskChecklists = response.payload.filter(
+        (checklist) => checklist.taskId === taskId
+      );
+      if (taskChecklists.length > 0) {
+        // Sort by checklistOrder
+        return taskChecklists.sort(
+          (a, b) => a.checklistOrder - b.checklistOrder
+        );
       }
+    }
+  }
+  return [];
+};
 
-      // Check if it's a subtask
-      for (const card of column.cards) {
-        const subtask = card.subtasks.find((st) => st.id === itemId);
-        if (subtask) {
-          return {
-            type: "subtask",
-            item: subtask,
-            columnId: column.id,
-            cardIndex: column.cards.findIndex((c) => c.id === card.id),
-            parentCardId: card.id,
-            subtaskIndex: card.subtasks.findIndex((st) => st.id === itemId),
-          };
+// Function to transform API data into columns format
+const transformApiToColumns = (apiData, checklistbyTaskIds) => {
+  // Initialize columns
+  const columns = [
+    { id: "todo", title: "TODO", cards: [] },
+    { id: "in-progress", title: "In Progress", cards: [] },
+    { id: "under-review", title: "Under Review", cards: [] },
+    { id: "done", title: "COMPLETED", cards: [] },
+  ];
+
+  // Map API stage to column ID
+  const stageToColumnMap = {
+    COMPLETED: "done",
+    UNDER_REVIEW: "under-review",
+    IN_PROGRESS: "in-progress",
+  };
+
+  // Transform tasks into cards
+  apiData.forEach((task) => {
+    const columnId = stageToColumnMap[task.stage] || "todo"; // Default to 'todo' if stage is unknown
+
+    // Calculate duration
+    let duration = "N/A";
+    if (task.startedAt && task.finishedAt) {
+      const start = new Date(task.startedAt);
+      const end = new Date(task.finishedAt);
+      const diffTime = Math.abs(end - start);
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      duration = `${diffDays} day${diffDays !== 1 ? "s" : ""}`;
+    }
+
+    // Get checklists for this task
+    const taskChecklists = getChecklistsForTask(
+      task.taskId,
+      checklistbyTaskIds
+    );
+
+    const card = {
+      id: task.taskId,
+      title: task.title,
+      description: task.description,
+      label: null, // API doesn't provide; set default
+      comment: 0, // API doesn't provide; set default
+      attachment: 0, // API doesn't provide; set default
+      duration: duration,
+      order: task.taskOrder,
+      expanded: false, // Default
+      checklists: taskChecklists, // Use actual checklists instead of subtasks
+      assignees: [task.creator.imageUrl], // Use creator's image URL
+      startedAt: task.startedAt,
+      finishedAt: task.finishedAt,
+    };
+
+    const column = columns.find((col) => col.id === columnId);
+    if (column) {
+      column.cards.push(card);
+    }
+  });
+
+  // Sort cards by order
+  columns.forEach((column) => {
+    column.cards.sort((a, b) => a.order - b.order);
+  });
+
+  return columns;
+};
+
+export default function KanbanBoard({
+  modal,
+  tasks,
+  checklistbyTaskIds,
+  allMemberInBoard,
+  test,
+  preventUserImage,
+}) {
+  const [columns, setColumns] = useState([]);
+  const [draggedItem, setDraggedItem] = useState(null);
+  const [hoverInfo, setHoverInfo] = useState(null);
+  const [newSubtaskCardId, setNewSubtaskCardId] = useState(null);
+  const [newSubtaskText, setNewSubtaskText] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // show all checklist
+
+  // console.log("the one show all checklist in kanban", checklistbyTaskIds);
+
+  // Fetch and transform API data
+  useEffect(() => {
+    const fetchTasks = async () => {
+      // try {
+      //   setLoading(true);
+      //   // Replace with your actual API endpoint
+      //   const response = await fetch("/api/tasks");
+      //   if (!response.ok) {
+      //     throw new Error("Failed to fetch tasks");
+      //   }
+      //   const apiData = await response.json();
+      //   const transformedColumns = transformApiToColumns(
+      //     apiData,
+      //     checklistbyTaskIds
+      //   );
+      //   setColumns(transformedColumns);
+      // } catch (err) {
+      //   setError(err.message);
+      // } finally {
+      //   setLoading(false);
+      // }
+    };
+
+    // If tasks prop is provided (for testing), use it; otherwise, fetch
+    if (tasks) {
+      const transformedColumns = transformApiToColumns(
+        tasks,
+        checklistbyTaskIds
+      );
+      setColumns(transformedColumns);
+      setLoading(false);
+    } else {
+      fetchTasks();
+    }
+  }, [tasks, JSON.stringify(checklistbyTaskIds)]);
+
+  const findChecklistDetails = (checklistId) => {
+    for (let colIndex = 0; colIndex < columns.length; colIndex++) {
+      const column = columns[colIndex];
+      for (
+        let cardIndex = 0;
+        cardIndex < (column.cards || []).length;
+        cardIndex++
+      ) {
+        const card = column.cards[cardIndex];
+        if (card.checklists) {
+          for (
+            let checklistIndex = 0;
+            checklistIndex < card.checklists.length;
+            checklistIndex++
+          ) {
+            const checklist = card.checklists[checklistIndex];
+            if (checklist.checklistId === checklistId) {
+              return {
+                columnId: column.id,
+                cardId: card.id,
+                checklistIndex: checklistIndex,
+              };
+            }
+          }
         }
       }
     }
-    return { type: null, item: null, columnId: null, cardIndex: -1 };
+    return null;
   };
 
-  // Toggle task expansion
   const toggleTaskExpansion = (cardId) => {
     setColumns((prev) =>
       prev.map((column) => ({
         ...column,
-        cards: column.cards.map((card) =>
+        cards: (column.cards || []).map((card) =>
           card.id === cardId ? { ...card, expanded: !card.expanded } : card
         ),
       }))
     );
   };
 
-  // Add new subtask with data from modal
-  const addSubtask = (cardId, subtaskData) => {
-    const newSubtaskId = `${cardId}-${Date.now()}`;
+  const addChecklist = (cardId, checklistData) => {
+    if (!checklistData?.description?.trim()) return;
+    const newChecklistId = `${cardId}-checklist-${Date.now()}`;
     setColumns((prev) =>
       prev.map((column) => ({
         ...column,
-        cards: column.cards.map((card) =>
+        cards: (column.cards || []).map((card) =>
           card.id === cardId
             ? {
                 ...card,
-                subtasks: [
-                  ...card.subtasks,
+                checklists: [
+                  ...(card.checklists || []),
                   {
-                    id: newSubtaskId,
+                    checklistId: newChecklistId,
                     title:
-                      subtaskData.title ||
-                      `subtask ${card.subtasks.length + 1}`,
-                    description: subtaskData.description || "New subtask",
-                    duration: subtaskData.duration || null,
-                    label: subtaskData.label || null,
-                    comment: subtaskData.comment || null,
-                    order: card.subtasks.length,
+                      checklistData.title ||
+                      `Checklist ${(card.checklists || []).length + 1}`,
+                    description: checklistData.description,
+                    status: "PENDING",
+                    cover: null,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
+                    checklistOrder: (card.checklists || []).length + 1,
+                    startedAt: checklistData.startedAt || null,
+                    finishedAt: checklistData.finishedAt || null,
+                    taskId: cardId,
+                    createdBy: "current-user-id", // Replace with actual user ID
+                    members: [],
                   },
                 ],
                 expanded: true,
@@ -91,81 +246,75 @@ export default function KanbanBoard({ modal }) {
         ),
       }))
     );
+    setNewSubtaskText("");
+    setNewSubtaskCardId(null);
   };
 
-  // Drag handlers
-  const handleDragStart = (e, itemId, itemType) => {
-    e.stopPropagation(); // Prevent parent drag events
-    const itemData = findItem(itemId);
-    setDraggedItem({ itemId, itemType, ...itemData });
+  // Drag-and-drop handlers (updated for checklists)
+  const handleDragStart = (e, item) => {
+    e.stopPropagation();
+    setDraggedItem(item);
     e.dataTransfer.effectAllowed = "move";
-    e.dataTransfer.setData("text/plain", itemId);
-
+    e.dataTransfer.setData("text/plain", item.id);
     setTimeout(() => {
-      if (e.target.classList) {
-        e.target.classList.add("opacity-50");
+      const element = document.getElementById(item.id);
+      if (element) {
+        element.style.opacity = "0.5";
+        element.style.transform = "rotate(2deg) scale(1.05)";
+        element.style.transition =
+          "transform 0.1s ease-in-out, opacity 0.1s ease-in-out";
       }
     }, 0);
   };
 
   const handleDragEnd = (e) => {
     e.stopPropagation();
-    if (e.target.classList) {
-      e.target.classList.remove("opacity-50");
+    if (draggedItem) {
+      const element = document.getElementById(draggedItem.id);
+      if (element) {
+        element.style.opacity = "";
+        element.style.transform = "";
+        element.style.transition = "";
+      }
     }
     setDraggedItem(null);
-    setDragTarget(null);
+    setHoverInfo(null);
   };
 
-  const handleDragOver = (
-    e,
-    targetType,
-    columnId,
-    cardIndex = null,
-    subtaskIndex = null
-  ) => {
+  const handleDragOver = (e, targetInfo) => {
     e.preventDefault();
     e.stopPropagation();
 
     if (!draggedItem) return;
 
-    // Prevent cards from being dropped into subtask or task-body areas
+    if (draggedItem.type === "card" && targetInfo.type === "checklist") {
+      e.dataTransfer.dropEffect = "none";
+      setHoverInfo(null);
+      return;
+    }
     if (
-      draggedItem.type === "card" &&
-      ["subtask", "task-body"].includes(targetType)
+      draggedItem.type === "checklist" &&
+      targetInfo.type === "card" &&
+      targetInfo.isDropZone
     ) {
+      e.dataTransfer.dropEffect = "none";
+      setHoverInfo(null);
+      return;
+    }
+    if (
+      draggedItem.type === "checklist" &&
+      targetInfo.type === "checklist" &&
+      draggedItem.sourceCardId !== targetInfo.targetCardId
+    ) {
+      e.dataTransfer.dropEffect = "none";
+      setHoverInfo(null);
       return;
     }
 
-    // Restrict subtask drops to subtask or task-body areas only
-    if (
-      draggedItem.type === "subtask" &&
-      !["subtask", "task-body"].includes(targetType)
-    ) {
-      return;
-    }
+    e.dataTransfer.dropEffect = "move";
 
-    if (targetType === "card") {
-      const cardElement = e.currentTarget;
-      const rect = cardElement.getBoundingClientRect();
-      const mouseY = e.clientY;
-      const cardMidpoint = rect.top + rect.height / 2;
-      const dropIndex = mouseY < cardMidpoint ? cardIndex : cardIndex + 1;
-
-      setDragTarget({ type: "card", columnId, index: dropIndex });
-    } else if (targetType === "subtask") {
-      const subtaskElement = e.currentTarget;
-      const rect = subtaskElement.getBoundingClientRect();
-      const mouseY = e.clientY;
-      const subtaskMidpoint = rect.top + rect.height / 2;
-      const dropIndex =
-        mouseY < subtaskMidpoint ? subtaskIndex : subtaskIndex + 1;
-
-      setDragTarget({ type: "subtask", columnId, cardIndex, index: dropIndex });
-    } else if (targetType === "column") {
-      setDragTarget({ type: "column", columnId });
-    } else if (targetType === "task-body") {
-      setDragTarget({ type: "task-body", columnId, cardIndex });
+    if (JSON.stringify(targetInfo) !== JSON.stringify(hoverInfo)) {
+      setHoverInfo(targetInfo);
     }
   };
 
@@ -173,110 +322,167 @@ export default function KanbanBoard({ modal }) {
     e.preventDefault();
     e.stopPropagation();
 
-    if (!draggedItem || !dragTarget) return;
+    if (!draggedItem || !hoverInfo) {
+      handleDragEnd(e);
+      return;
+    }
+
+    const {
+      id: draggedId,
+      type: draggedType,
+      sourceColumnId,
+      sourceCardId,
+      sourceIndex,
+    } = draggedItem;
+    const {
+      targetColumnId,
+      targetCardId,
+      targetIndex,
+      type: dropTargetType,
+    } = hoverInfo;
+
+    if (
+      draggedId ===
+      (dropTargetType === "card"
+        ? columns.find((c) => c.id === targetColumnId)?.cards[targetIndex]?.id
+        : columns
+            .find((c) => c.id === targetColumnId)
+            ?.cards.find((c) => c.id === targetCardId)?.checklists[targetIndex]
+            ?.checklistId)
+    ) {
+      handleDragEnd(e);
+      return;
+    }
 
     let newColumns = JSON.parse(JSON.stringify(columns));
-    const sourceColumnIndex = newColumns.findIndex(
-      (col) => col.id === draggedItem.columnId
-    );
-    const targetColumnIndex = newColumns.findIndex(
-      (col) => col.id === dragTarget.columnId
-    );
-
-    if (sourceColumnIndex === -1 || targetColumnIndex === -1) return;
-
-    // Get the item to move
     let itemToMove;
 
-    if (draggedItem.type === "card") {
-      itemToMove = newColumns[sourceColumnIndex].cards[draggedItem.cardIndex];
-    } else if (draggedItem.type === "subtask") {
-      const sourceCard =
-        newColumns[sourceColumnIndex].cards[draggedItem.cardIndex];
-      itemToMove = sourceCard.subtasks[draggedItem.subtaskIndex];
+    const sourceCol = newColumns.find((col) => col.id === sourceColumnId);
+    if (!sourceCol) {
+      console.error("Source column not found");
+      handleDragEnd(e);
+      return;
     }
 
-    if (!itemToMove) return;
-
-    // Handle different drop scenarios
-    if (dragTarget.type === "card" && draggedItem.type === "card") {
-      // Dropping as a main task (only allowed for cards)
-      let targetIndex = dragTarget.index;
-
-      // If moving within same column, adjust index for removal
-      if (
-        sourceColumnIndex === targetColumnIndex &&
-        draggedItem.cardIndex < targetIndex
-      ) {
-        targetIndex -= 1;
+    if (draggedType === "card") {
+      if (sourceIndex < 0 || sourceIndex >= sourceCol.cards.length) {
+        console.error("Source card index invalid");
+        handleDragEnd(e);
+        return;
       }
-
-      // Remove from source and insert as main task
-      newColumns[sourceColumnIndex].cards.splice(draggedItem.cardIndex, 1);
-      newColumns[targetColumnIndex].cards.splice(targetIndex, 0, itemToMove);
-    } else if (
-      dragTarget.type === "subtask" &&
-      draggedItem.type === "subtask"
-    ) {
-      // Dropping as a subtask
-      const targetCard =
-        newColumns[targetColumnIndex].cards[dragTarget.cardIndex];
-      let targetIndex = dragTarget.index;
-
-      // If moving within same subtask array, adjust index for removal
+      itemToMove = sourceCol.cards.splice(sourceIndex, 1)[0];
+    } else {
+      const sourceCard = sourceCol.cards.find(
+        (card) => card.id === sourceCardId
+      );
       if (
-        sourceColumnIndex === targetColumnIndex &&
-        draggedItem.cardIndex === dragTarget.cardIndex &&
-        draggedItem.subtaskIndex < targetIndex
+        !sourceCard ||
+        !sourceCard.checklists ||
+        sourceIndex < 0 ||
+        sourceIndex >= sourceCard.checklists.length
       ) {
-        targetIndex -= 1;
+        console.error(
+          "Source checklist index invalid or card/checklists missing"
+        );
+        handleDragEnd(e);
+        return;
       }
-
-      // Remove subtask from source
-      const sourceCard =
-        newColumns[sourceColumnIndex].cards[draggedItem.cardIndex];
-      sourceCard.subtasks.splice(draggedItem.subtaskIndex, 1);
-      // Insert subtask at target position
-      targetCard.subtasks.splice(targetIndex, 0, itemToMove);
-      targetCard.expanded = true;
-    } else if (
-      dragTarget.type === "task-body" &&
-      draggedItem.type === "subtask"
-    ) {
-      // Dropping into task body (append to end)
-      const targetCard =
-        newColumns[targetColumnIndex].cards[dragTarget.cardIndex];
-
-      const sourceCard =
-        newColumns[sourceColumnIndex].cards[draggedItem.cardIndex];
-      sourceCard.subtasks.splice(draggedItem.subtaskIndex, 1);
-      targetCard.subtasks.push(itemToMove);
-      targetCard.expanded = true;
-    } else if (dragTarget.type === "column" && draggedItem.type === "card") {
-      // Dropping into empty column (append to end, only allowed for cards)
-      newColumns[sourceColumnIndex].cards.splice(draggedItem.cardIndex, 1);
-      newColumns[targetColumnIndex].cards.push(itemToMove);
+      itemToMove = sourceCard.checklists.splice(sourceIndex, 1)[0];
     }
 
-    // Update order properties
-    newColumns.forEach((column) => {
-      column.cards.forEach((card, index) => {
-        card.order = index;
-      });
-      column.cards.forEach((card) => {
-        card.subtasks.forEach((subtask, subIndex) => {
-          subtask.order = subIndex;
+    if (!itemToMove) {
+      console.error("Failed to find item to move");
+      handleDragEnd(e);
+      return;
+    }
+
+    const targetCol = newColumns.find((col) => col.id === targetColumnId);
+    if (!targetCol) {
+      console.error("Target column not found");
+      handleDragEnd(e);
+      return;
+    }
+
+    try {
+      if (draggedType === "card" && dropTargetType === "card") {
+        const maxIndex = targetCol.cards.length;
+        const insertIndex = Math.max(0, Math.min(targetIndex, maxIndex));
+        targetCol.cards.splice(insertIndex, 0, itemToMove);
+      } else if (
+        draggedType === "checklist" &&
+        dropTargetType === "checklist"
+      ) {
+        const targetCard = targetCol.cards.find(
+          (card) => card.id === targetCardId
+        );
+        if (!targetCard)
+          throw new Error("Target card for checklist drop not found");
+        if (!targetCard.checklists) targetCard.checklists = [];
+        const maxIndex = targetCard.checklists.length;
+        const insertIndex = Math.max(0, Math.min(targetIndex, maxIndex));
+        targetCard.checklists.splice(insertIndex, 0, itemToMove);
+        targetCard.expanded = true;
+      } else {
+        console.warn("Invalid drop combination detected in handleDrop");
+        handleDragEnd(e);
+        return;
+      }
+
+      newColumns.forEach((column) => {
+        column.cards.forEach((card, index) => {
+          card.order = index;
+          if (card.checklists) {
+            card.checklists.forEach((checklist, checkIndex) => {
+              checklist.checklistOrder = checkIndex + 1;
+            });
+          }
         });
       });
-    });
 
-    setColumns(newColumns);
-    setDraggedItem(null);
-    setDragTarget(null);
+      setColumns(newColumns);
+
+      // Optionally, update the backend with the new column/stage
+      if (draggedType === "card") {
+        const taskId = itemToMove.id;
+        const stageMap = {
+          done: "COMPLETED",
+          "under-review": "UNDER_REVIEW",
+          "in-progress": "IN_PROGRESS",
+          todo: "TODO",
+        };
+        const newStage = stageMap[targetColumnId];
+        //will update use enpoint to update the task order
+        if (newStage) {
+          // Update backend (example)
+          // fetch(`/api/tasks/${taskId}`, {
+          //   method: "PATCH",
+          //   headers: { "Content-Type": "application/json" },
+          //   body: JSON.stringify({ stage: newStage }),
+          // }).catch((err) => console.error("Failed to update task stage:", err));
+        }
+      }
+    } catch (error) {
+      console.error("Error during drop:", error);
+    }
+
+    handleDragEnd(e);
   };
 
-  //
+  // Column header styles (unchanged)
+  const columnHeaderStyles = {
+    todo: "border-black",
+    "in-progress": "border-blue-500",
+    "under-review": "border-yellow-500",
+    done: "border-green-500",
+  };
 
+  // Render loading or error states
+  if (loading) {
+    return <div>Loading tasks...</div>;
+  }
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
   return (
     <div className="w-full h-screen flex flex-col">
       <BredCrum
@@ -285,256 +491,322 @@ export default function KanbanBoard({ modal }) {
         header={"Hikko Design"}
         modal={modal}
       />
-      <StackedUser />
+      <StackedUser image={allMemberInBoard} />
       {/* Column Headers */}
-      <div className=" pt-5 pb-2 grid grid-cols-4 gap-4">
-        <div className="mb-4 border-b-4  pb-2  border-black flex items-center gap-3">
-          <p className="text-2xl font-semibold">TODO</p>
-          <button className="px-3 py-1 text-sm rounded-full bg-transparent border-2 border-gray-300 shadow-sm">
-            {columns.find((col) => col.id === "todo")?.cards.length || 0}
-          </button>
-        </div>
-        <div className="mb-4 border-b-4 border-blue-500 pb-2 flex items-center gap-3">
-          <p className="text-2xl font-bold">In Progress</p>
-          <button className="px-3 py-1 text-sm rounded-full bg-transparent border-2 border-gray-300 shadow-sm">
-            {columns.find((col) => col.id === "in-progress")?.cards.length || 0}
-          </button>
-        </div>
-        <div className="mb-4 border-b-4 border-[#FFB580] pb-2 flex items-center gap-3">
-          <p className="text-2xl font-bold">Under Review</p>
-          <button className="px-3 py-1 text-sm rounded-full bg-transparent border-2 border-gray-300 shadow-sm">
-            {columns.find((col) => col.id === "under-review")?.cards.length ||
-              0}
-          </button>
-        </div>
-        <div className="mb-4 border-b-4 border-green-500 pb-2 flex items-center gap-3">
-          <p className="text-2xl font-bold">COMPLETED</p>
-          <button className="px-3 py-1 text-sm rounded-full bg-transparent border-2 border-gray-300 shadow-sm">
-            {columns.find((col) => col.id === "done")?.cards.length || 0}
-          </button>
-        </div>
-      </div>
-
-      {/* Kanban Columns */}
-      <div className="   grid grid-cols-4  gap-4 h-full  ">
-        {columns.map((column) => (
-          // parent
+      <div className="pt-5 pb-2 grid grid-cols-4 gap-4">
+        {(columns || []).map((column) => (
           <div
             key={column.id}
-            className="flex  flex-col min-h-0 w-full  h-[99%] overflow-hidden  "
-            onDragOver={(e) => handleDragOver(e, "column", column.id)}
-            onDrop={handleDrop}
+            className={`mb-4 border-b-4 pb-2 flex items-center gap-3 ${
+              columnHeaderStyles[column.id]
+            }`}
           >
-            {/* child */}
-            <div className="  scrollbar-hidden pb-20 overflow-y-auto  bp-3  ">
-              {column.cards
-                .sort((a, b) => a.order - b.order)
-                .map((card, cardIndex) => (
-                  <div key={card.id}>
-                    {/* Drop zone above card */}
+            <p className="text-2xl font-semibold">{column.title}</p>
+            <button className="px-3 py-1 text-sm rounded-full bg-transparent border-2 border-gray-300 shadow-sm">
+              {column.cards?.length || 0}
+            </button>
+          </div>
+        ))}
+      </div>
+      {/* Kanban Columns */}
+      {tasks.length > 0 ? (
+        <div className="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 p-2 overflow-hidden">
+          {(columns || []).map((column) => (
+            <div
+              key={column.id}
+              className="flex flex-col min-h-0 w-full rounded-lg p-1 h-full px-2 py-5"
+              onDragOver={(e) =>
+                handleDragOver(e, {
+                  targetColumnId: column.id,
+                  targetIndex: (column.cards || []).length,
+                  type: "card",
+                  isDropZone: true,
+                })
+              }
+              onDrop={handleDrop}
+            >
+              <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-hidden pr-1 pb-[300px]">
+                {(column.cards || []).map((card, cardIndex) => {
+                  const isCardDragging = draggedItem?.id === card.id;
+                  const isCardHoverMakeSpace =
+                    hoverInfo?.type === "card" &&
+                    hoverInfo?.targetColumnId === column.id &&
+                    hoverInfo?.targetIndex === cardIndex;
+                  const isCardDropZoneHovered =
+                    hoverInfo?.type === "card" &&
+                    hoverInfo?.targetColumnId === column.id &&
+                    hoverInfo?.targetIndex === cardIndex;
+                  const isChecklistHoverTargetCard =
+                    hoverInfo?.type === "checklist" &&
+                    hoverInfo?.targetCardId === card.id;
+
+                  return (
                     <div
-                      className={`h-4 w-full transition-all ${
-                        dragTarget &&
-                        dragTarget.type === "card" &&
-                        dragTarget.columnId === column.id &&
-                        dragTarget.index === cardIndex
-                          ? "border-t-2 border-blue-500 bg-blue-50"
-                          : "border-t-2 border-transparent"
-                      }`}
-                      onDragOver={(e) =>
-                        handleDragOver(e, "card", column.id, cardIndex)
-                      }
-                      onDrop={handleDrop}
-                    />
-
-                    {/* Main Task Card */}
-                    <div className="bg-white rounded-xl shadow mb-2 overflow-hidden hover:shadow-md transition-shadow border-1 border-bgColor">
-                      {/* Task Header */}
+                      key={card.id}
+                      id={card.id}
+                      className="mb-3 bg-white rounded-xl px-2"
+                    >
                       <div
-                        className="py-3  cursor-move"
-                        draggable
-                        onDragStart={(e) => handleDragStart(e, card.id, "card")}
-                        onDragEnd={handleDragEnd}
-                      >
-                        <div className="flex items-center justify-between px-3">
-                          <div className="flex items-center gap-2">
-                            <div>
-                              {/* tam pet ah ng title key te */}
-                              <div className="text-sm text-gray-600 sm:text-body-sm truncate max-w-[150px]">
-                                {card.description}
-                              </div>
-                            </div>
-                          </div>
-                          <div className="flex items-center justify-between gap-2  ">
-                            <UserAvater
-                              image={
-                                "https://cdn.prod.website-files.com/5dd827bbc07b1656e06b16d8/623db0c2ec0384a4ffd2c4ab_mosh.jpeg"
-                              }
-                            />
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Subtasks - Always visible, but images hidden when collapsed */}
-                      <div
-                        className="px-3 pb-5"
+                        className={`h-2 w-full transition-all duration-300 ease-in-out rounded ${
+                          isCardDropZoneHovered
+                            ? "bg-blue-200 h-8 border-2 border-dashed border-blue-500"
+                            : ""
+                        }`}
                         onDragOver={(e) =>
-                          handleDragOver(e, "task-body", column.id, cardIndex)
+                          handleDragOver(e, {
+                            targetColumnId: column.id,
+                            targetIndex: cardIndex,
+                            type: "card",
+                            isDropZone: true,
+                          })
                         }
                         onDrop={handleDrop}
+                      />
+                      <div
+                        className={`shadow-sm rounded-xl overflow-hidden transition-all duration-300 ease-in-out ${
+                          isChecklistHoverTargetCard
+                            ? "ring-2 ring-green-300"
+                            : ""
+                        }`}
+                        style={{
+                          opacity: isCardDragging ? 0.5 : 1,
+                          transform: isCardDragging
+                            ? "rotate(2deg) scale(1.05)"
+                            : isCardHoverMakeSpace
+                            ? "translateY(8px)"
+                            : "none",
+                        }}
+                        draggable
+                        onDragStart={(e) =>
+                          handleDragStart(e, {
+                            id: card.id,
+                            type: "card",
+                            sourceColumnId: column.id,
+                            sourceIndex: cardIndex,
+                          })
+                        }
+                        onDragEnd={handleDragEnd}
                       >
-                        {card.subtasks
-                          .sort((a, b) => a.order - b.order)
-                          .map((subtask, subtaskIndex) => (
-                            <div key={subtask.id}>
-                              {/* Drop zone above subtask - only visible when expanded */}
-                              {card.expanded && (
-                                <div
-                                  className={`h-2 w-full transition-all ${
-                                    dragTarget &&
-                                    dragTarget.type === "subtask" &&
-                                    dragTarget.columnId === column.id &&
-                                    dragTarget.cardIndex === cardIndex &&
-                                    dragTarget.index === subtaskIndex
-                                      ? "border-t-2 border-green-500 bg-green-50"
-                                      : "border-t-2 border-transparent"
-                                  }`}
-                                  onDragOver={(e) =>
-                                    handleDragOver(
-                                      e,
-                                      "subtask",
-                                      column.id,
-                                      cardIndex,
-                                      subtaskIndex
-                                    )
-                                  }
-                                  onDrop={handleDrop}
-                                />
-                              )}
-
-                              {/* Subtask Item */}
-                              <div
-                                className="pb-4"
-                                draggable
-                                onDragStart={(e) =>
-                                  handleDragStart(e, subtask.id, "subtask")
-                                }
-                                onDragEnd={handleDragEnd}
+                        <div className="p-3 cursor-grab active:cursor-grabbing">
+                          <div className="flex items-center justify-between">
+                            <div className="flex-1 min-w-0 mr-2">
+                              <p
+                                className="text-sm font-medium text-gray-800 truncate"
+                                title={card.title}
                               >
-                                <ModalDetailChecklist
-                                  title="Hello"
-                                  startDate={"25/05/25"}
-                                  status={"Overdue"}
-                                  label={subtask.label}
-                                  comment={subtask.comment}
-                                  image={
-                                    card.expanded
-                                      ? "https://codewithmosh.com/_next/image?url=https%3A%2F%2Fcdn.filestackcontent.com%2F8MbtJ4hTAaOk3KPcptqZ&w=3840&q=75"
-                                      : null
-                                  }
-                                  hideImage={!card.expanded}
-                                />
+                                {card.title}
+                              </p>
+                            </div>
+                            <div className="flex items-center flex-shrink-0">
+                              <div className="flex -space-x-2 mr-2">
+                                {(card.assignees || []).map((assignee, idx) => (
+                                  <UserAvater key={idx} image={assignee} />
+                                ))}
                               </div>
                             </div>
-                          ))}
-
-                        {/* Drop zone at end of subtasks - only visible when expanded */}
-                        {card.expanded && (
-                          <div
-                            className={`h-2 w-full transition-all ${
-                              dragTarget &&
-                              dragTarget.type === "subtask" &&
-                              dragTarget.columnId === column.id &&
-                              dragTarget.cardIndex === cardIndex &&
-                              dragTarget.index === card.subtasks.length
-                                ? "border-t-2 border-green-500 bg-green-50"
-                                : "border-t-2 border-transparent"
-                            }`}
-                            onDragOver={(e) =>
-                              handleDragOver(
-                                e,
-                                "subtask",
-                                column.id,
-                                cardIndex,
-                                card.subtasks.length
-                              )
-                            }
-                            onDrop={handleDrop}
-                          />
-                        )}
-
-                        {card.expanded && card.subtasks.length === 0 && (
-                          <div className="ml-4 p-2 border-2 border-dashed border-gray-300 rounded text-xs text-gray-400 text-center">
-                            Drop subtasks here
                           </div>
-                        )}
-                      </div>
-
-                      {/* Create Subtask Button at Bottom of Card */}
-                      {card.expanded && (
-                        <div className=" pb-3 pt-1 px-3">
-                          <div className="grid grid-cols-12">
-                            <div className="col-span-8 flex items-center">
-                              <ModalCreateChecklist
-                                onSubmit={(subtaskData) =>
-                                  addSubtask(card.id, subtaskData)
-                                }
-                                buttonText="New checklist"
-                                modalTitle="Create Checklist"
-                              />
-                            </div>
-                            <div className="col-span-4 p-2">
-                              <CardDateChecklist date={"April 25"} />
+                          <div className="flex items-center justify-between text-xs text-gray-500 mt-2">
+                            <div className="flex items-center gap-3">
+                              {card.comment > 0 && (
+                                <span className="flex items-center gap-1">
+                                  <MessageSquare size={12} /> {card.comment}
+                                </span>
+                              )}
+                              {card.attachment > 0 && (
+                                <span className="flex items-center gap-1">
+                                  <Paperclip size={12} /> {card.attachment}
+                                </span>
+                              )}
                             </div>
                           </div>
                         </div>
-                      )}
-                      {/* collape */}
-                      <div className="flex items-center justify-center text-primary">
+                        {card.expanded && (
+                          <div
+                            className="p-2"
+                            onDragOver={(e) =>
+                              handleDragOver(e, {
+                                targetColumnId: column.id,
+                                targetCardId: card.id,
+                                targetIndex: (card.checklists || []).length,
+                                type: "checklist",
+                              })
+                            }
+                            onDrop={handleDrop}
+                          >
+                            {(card.checklists || []).map(
+                              (checklist, checklistIndex) => {
+                                const isChecklistDragging =
+                                  draggedItem?.id === checklist.checklistId;
+                                const isChecklistHoverMakeSpace =
+                                  hoverInfo?.type === "checklist" &&
+                                  hoverInfo?.targetCardId === card.id &&
+                                  hoverInfo?.targetIndex === checklistIndex;
+                                const isChecklistDropZoneHovered =
+                                  hoverInfo?.type === "checklist" &&
+                                  hoverInfo?.targetCardId === card.id &&
+                                  hoverInfo?.targetIndex === checklistIndex;
+
+                                return (
+                                  <div
+                                    key={checklist.checklistId}
+                                    id={checklist.checklistId}
+                                  >
+                                    <div
+                                      className={`h-1 w-full transition-all duration-200 ease-in-out rounded ${
+                                        isChecklistDropZoneHovered
+                                          ? "bg-green-200 h-6 border-2 border-dashed border-green-500"
+                                          : ""
+                                      }`}
+                                      onDragOver={(e) =>
+                                        handleDragOver(e, {
+                                          targetColumnId: column.id,
+                                          targetCardId: card.id,
+                                          targetIndex: checklistIndex,
+                                          type: "checklist",
+                                        })
+                                      }
+                                      onDrop={handleDrop}
+                                    />
+                                    <div
+                                      className={`mb-1 cursor-grab active:cursor-grabbing bg-white transition-all duration-200 ease-in-out rounded-xl shadow-sm`}
+                                      style={{
+                                        opacity: isChecklistDragging ? 0.5 : 1,
+                                        transform: isChecklistDragging
+                                          ? "scale(1.05)"
+                                          : isChecklistHoverMakeSpace
+                                          ? "translateY(4px)"
+                                          : "none",
+                                      }}
+                                      draggable
+                                      onDragStart={(e) =>
+                                        handleDragStart(e, {
+                                          id: checklist.checklistId,
+                                          type: "checklist",
+                                          sourceColumnId: column.id,
+                                          sourceCardId: card.id,
+                                          sourceIndex: checklistIndex,
+                                        })
+                                      }
+                                      onDragEnd={handleDragEnd}
+                                    >
+                                      <ModalDetailChecklist
+                                        id={checklist?.checklistId}
+                                        taskTitle={card.title}
+                                        title={checklist.title}
+                                        startDate={
+                                          checklist.startedAt
+                                            ? new Date(
+                                                checklist.startedAt
+                                              ).toLocaleDateString()
+                                            : "N/A"
+                                        }
+                                        status={checklist.status}
+                                        image={
+                                          checklist.members &&
+                                          checklist.members.length > 0
+                                            ? checklist.members[0].imageUrl
+                                            : card.assignees[0] || ""
+                                        }
+                                        description={checklist.description}
+                                        checklistId={checklist.checklistId}
+                                        members={checklist.members || []}
+                                        createdAt={checklist.createdAt}
+                                        updatedAt={checklist.updatedAt}
+                                        finishedAt={checklist.finishedAt}
+                                        member={checklist.members}
+                                        preventUserImage={preventUserImage}
+                                      />
+                                    </div>
+                                  </div>
+                                );
+                              }
+                            )}
+                            <div
+                              className={`h-1 w-full transition-all duration-200 ease-in-out rounded ${
+                                hoverInfo?.type === "checklist" &&
+                                hoverInfo?.targetCardId === card.id &&
+                                hoverInfo?.targetIndex ===
+                                  (card.checklists || []).length
+                                  ? "bg-green-200 h-6 border-2 border-dashed border-green-500"
+                                  : ""
+                              }`}
+                              onDragOver={(e) =>
+                                handleDragOver(e, {
+                                  targetColumnId: column.id,
+                                  targetCardId: card.id,
+                                  targetIndex: (card.checklists || []).length,
+                                  type: "checklist",
+                                })
+                              }
+                              onDrop={handleDrop}
+                            />
+                            <div className="pb-3 pt-1 px-3">
+                              <div className="grid grid-cols-12">
+                                <div className="col-span-8 flex items-center">
+                                  <ModalCreateChecklist
+                                    onSubmit={(checklistData) =>
+                                      addChecklist(card.id, checklistData)
+                                    }
+                                    buttonText="New checklist"
+                                    modalTitle="Create Checklist"
+                                  />
+                                </div>
+                                <div className="col-span-4 p-2">
+                                  <CardDateChecklist
+                                    date={
+                                      card.startedAt
+                                        ? new Date(
+                                            card.startedAt
+                                          ).toLocaleDateString()
+                                        : "N/A"
+                                    }
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex items-center justify-center">
                         <button
                           onClick={() => toggleTaskExpansion(card.id)}
-                          className="p-1 hover:bg-gray-100 rounded"
+                          className="text-gray-400 hover:text-gray-600 p-1 rounded hover:bg-gray-100"
                         >
                           {card.expanded ? (
-                            <ChevronUp size={26} />
+                            <ChevronUp size={16} />
                           ) : (
-                            <ChevronDown size={26} />
+                            <ChevronDown size={16} />
                           )}
                         </button>
                       </div>
                     </div>
-                  </div>
-                ))}
-
-              {/* Drop zone at end of column */}
-              <div
-                className={`h-4 w-full transition-all ${
-                  dragTarget &&
-                  dragTarget.type === "card" &&
-                  dragTarget.columnId === column.id &&
-                  dragTarget.index === column.cards.length
-                    ? "border-t-2 border-blue-500 bg-blue-50"
-                    : "border-t-2 border-transparent"
-                }`}
-                onDragOver={(e) =>
-                  handleDragOver(e, "card", column.id, column.cards.length)
-                }
-                onDrop={handleDrop}
-              />
-
-              {column.cards.length === 0 && (
+                  );
+                })}
                 <div
-                  className="h-20 w-full border-2 border-dashed border-gray-300 rounded flex items-center justify-center text-gray-400"
-                  onDragOver={(e) => handleDragOver(e, "column", column.id)}
+                  className={`min-h-[10px] w-full transition-all duration-300 ease-in-out rounded ${
+                    hoverInfo?.type === "card" &&
+                    hoverInfo?.targetColumnId === column.id &&
+                    hoverInfo?.targetIndex === (column.cards || []).length
+                      ? "bg-blue-100 border-2 border-dashed border-blue-400 py-4"
+                      : ""
+                  }`}
+                  onDragOver={(e) =>
+                    handleDragOver(e, {
+                      targetColumnId: column.id,
+                      targetIndex: (column.cards || []).length,
+                      type: "card",
+                      isDropZone: true,
+                    })
+                  }
                   onDrop={handleDrop}
-                >
-                  Drop here
-                </div>
-              )}
+                />
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      ) : (
+        <EmptyKanban />
+      )}
     </div>
   );
 }

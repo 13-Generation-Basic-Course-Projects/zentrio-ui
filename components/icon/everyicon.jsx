@@ -244,8 +244,29 @@ export function StarIconOutline({ className = "w-6 h-6" }) {
     </svg>
   );
 }
-
-export function StackedProfiles() {
+//dynamic
+export function StackedProfileChecklist({ member }) {
+  console.log("=====", member);
+  return (
+    <div className="flex items-center space-x-[-14px]">
+      {member.slice(0, 4).map((user, index) => (
+        <img
+          key={user.username}
+          src={user.imageUrl}
+          alt={user.username}
+          className="w-8 h-8 rounded-full border-2 border-white shadow"
+        />
+      ))}
+      {member.length > 4 && (
+        <div className="w-8 h-8 rounded-full bg-gray-300 text-btn-sm flex items-center justify-center border-2 border-white shadow">
+          +{member.length - 4}
+        </div>
+      )}
+    </div>
+  );
+}
+export function StackedProfiles({ member }) {
+  console.log("=====", member);
   return (
     <div className="flex items-center space-x-[-14px]">
       <img

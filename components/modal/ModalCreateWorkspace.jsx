@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useTransition } from "react";
 
 import {
   Modal,
@@ -13,6 +13,13 @@ import {
   DropdownMenu,
   DropdownItem,
 } from "@heroui/react";
+import { createWorkspaceAction } from "@/action/workspace.action";
+import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { createWorkspaceSchema } from "@/lib/schemas/workspaceSchema";
+
+
 
 // SVG Icons 
 const svgIconInput = encodeURIComponent(`
@@ -29,10 +36,34 @@ const svgIconType = encodeURIComponent(`
   </svg>
 `);
 
-export default function ModalCreateWorkspace() {
+export default function ModalCreateWorkspace({ createWorkspace }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [selectedOption, setSelectedOption] = useState(null);
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm({
+    resolver: zodResolver(createWorkspaceSchema),
+  });
+
+  const [isPending, startTransition] = useTransition();
+
+  const onSubmit = async (data) => {
+    try {
+      await createWorkspace(data); 
+      reset();
+      setSelectedOption(null);
+      startTransition(() => {
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  
   const colorOptions = [
     { key: "red", label: "Red", className: "bg-board-red" },
     { key: "blue", label: "Blue Sky", className: "bg-board-primary" },
@@ -46,14 +77,12 @@ export default function ModalCreateWorkspace() {
     const color = colorOptions.find((c) => c.key === key);
     if (color) {
       if (selectedOption?.key === key) {
-        // If the same color is clicked again, deselect
         setSelectedOption(null);
       } else {
         setSelectedOption(color);
       }
     }
   };
-  
 
   return (
     <>
@@ -73,13 +102,14 @@ export default function ModalCreateWorkspace() {
               </ModalHeader>
               <div className="border-1 mt-2 mb-4 border-bgColor"></div>
               <ModalBody>
-                <form>
+                <form onSubmit={handleSubmit(onSubmit)}>
                   <div className="grid grid-cols-4 gap-2 text-title">
                     {/* Title */}
                     <div className="col-span-3 flex flex-col space-y-2">
                       <label className="text-label-sm">Workspace Title</label>
                       <input
-                        type="text"
+                        {...register("title", { required: true })}
+                        // type="title"
                         placeholder="Type here"
                         style={{
                           backgroundImage: `url("data:image/svg+xml;utf8,${svgIconInput}")`,
@@ -92,6 +122,11 @@ export default function ModalCreateWorkspace() {
                         }}
                         className="text-title/50 text-caption bg-transparent w-full"
                       />
+                      {errors.title && (
+                        <p className="text-red-500 text-caption">
+                          *{errors.title.message}*
+                        </p>
+                      )}
                     </div>
 
                     {/* Color */}
@@ -160,6 +195,8 @@ export default function ModalCreateWorkspace() {
                         Workspace Description
                       </label>
                       <textarea
+                        {...register("description")}
+                        // type="description"
                         placeholder="Type here"
                         style={{
                           backgroundImage: `url("data:image/svg+xml;utf8,${svgIconType}")`,
@@ -181,9 +218,13 @@ export default function ModalCreateWorkspace() {
                   <div className="mx-[-1rem] border border-bgColor mt-5 mb-2"></div>
 
                   <div className="flex justify-end items-center pt-2 py-4">
-                    <Button color="primary" radius="full" onPress={onClose}>
-                      Create Workspace
-                    </Button>
+                    <button
+                      type="submit"
+                      disabled={isPending}
+                      className="bg-primary text-white px-4 py-2 rounded-full"
+                    >
+                      {isPending ? "Creating..." : "Create Workspace"}
+                    </button>
                   </div>
                 </form>
               </ModalBody>

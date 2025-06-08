@@ -17,17 +17,15 @@ export const metadata = {
 
 export default async function OverviewLayout({ children }) {
   const session = await auth();
-
-  console.log("aaa", session?.user);
   return (
     <div className="h-screen flex flex-col overflow-y-hidden ">
       <div className="flex-1 pt-0 flex flex-col overflow-hidden h-[100%] px-2  ">
         {/* Top section - fixed height */}
         <div className="grid grid-cols-12  gap-2   flex-shrink-0 ">
-          <div className="col-span-9 flex flex-col pt-5 overflow-hidden ">
+          <div className="col-span-9 flex flex-col pt-4 overflow-hidden ">
             <CardWelcomeComponent />
           </div>
-          <div className="col-span-3  px-1 ">
+          <div className="col-span-3  px-1 mt-10">
             <SmallCalendar />
           </div>
         </div>

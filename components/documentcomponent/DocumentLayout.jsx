@@ -11,7 +11,13 @@ import ModalNotification from "../modal/noti/ModalNotification";
 import AllDocument from "./AllDocument";
 import ModalCreateDocu from "../modal/docu/ModalCreateDocu";
 
-export default function DocumentLayout({ user }) {
+export default function DocumentLayout({
+  user,
+  documents,
+  tokenFromGoogle,
+  boardId,
+  preventUserImage,
+}) {
   const [activeTab, setActiveTab] = useState(null);
 
   const tabItems = [
@@ -82,7 +88,9 @@ export default function DocumentLayout({ user }) {
                         : "text-gray-600 hover:text-gray-900"
                     }`}
                   >
-                    <span className="mr-2">{tab.icon(activeTab === tab.key)}</span>
+                    <span className="mr-2">
+                      {tab.icon(activeTab === tab.key)}
+                    </span>
                     {tab.title}
                   </li>
                 ))}
@@ -95,9 +103,9 @@ export default function DocumentLayout({ user }) {
               <Link href="/profile">
                 <div className="overflow-hidden rounded-full border-2 border-gray-200 hover:border-gray-300 shadow-sm transition-all duration-200 hover:shadow-md">
                   <span className="sr-only">Toggle dashboard menu</span>
-                  {user?.image != null ? (
+                  {preventUserImage ? (
                     <img
-                      src={user?.image || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzyLc8LMQIrviNz6u2EP3TtPRZZt3OlhrhHA&s"}
+                      src={preventUserImage}
                       alt={user?.name || "User"}
                       className="size-10 object-cover hover:scale-105 transition-transform duration-200"
                     />
@@ -118,9 +126,25 @@ export default function DocumentLayout({ user }) {
       {/* Tab Content Area */}
       <main className="p-4 min-h-screen">
         <div className="mx-auto">
-          {activeTab === "kanban" && <PrivateDocument modal={[<ModalCreateDocu />]} />}
-          {activeTab === "calendar" && <PublicDocument modal={[<ModalCreateDocu />]} />}
-          {activeTab === null && <AllDocument />}
+          {activeTab === "kanban" && (
+            <PrivateDocument
+              documents={documents}
+              modal={[<ModalCreateDocu boardId={boardId} />]}
+            />
+          )}
+          {activeTab === "calendar" && (
+            <PublicDocument
+              documents={documents}
+              modal={[<ModalCreateDocu boardId={boardId} />]}
+            />
+          )}
+          {activeTab === null && (
+            <AllDocument
+              documents={documents}
+              tokenFromGoogle={tokenFromGoogle}
+              boardId={boardId}
+            />
+          )}
         </div>
       </main>
     </>

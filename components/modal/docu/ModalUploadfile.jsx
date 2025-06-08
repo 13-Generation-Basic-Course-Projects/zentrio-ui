@@ -11,15 +11,25 @@ import {
 } from "@heroui/react"; // no useDisclosure needed here
 import uploadIcon from "@/assets/uploadicon.svg";
 import Image from "next/image";
+import { createDocumentByUploadAction } from "@/action/document.action";
 
-export default function ModalUploadFile({ isOpen, onClose }) {
+export default function ModalUploadFile({
+  isOpen,
+  onClose,
+  boardId,
+  uploadDocument,
+  tokenFromGoogle,
+}) {
   const [fileName, setFileName] = useState("");
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
   const inputRef = useRef(null);
 
   const handleFileSelect = (event) => {
     const file = event.target.files?.[0];
     if (file) {
       setFileName(file.name);
+      setSelectedFile(file);
     }
   };
 
@@ -27,11 +37,46 @@ export default function ModalUploadFile({ isOpen, onClose }) {
     inputRef.current?.click();
   };
 
-  const handleUpload = () => {
-    if (!fileName) return;
-    console.log("Uploading:", fileName);
+  const handleUpload = async () => {
+    if (!selectedFile || !boardId) {
+      console.error("No file selected or boardId missing");
+      return;
+    }
+
+    setIsUploading(true);
+
+    try {
+      // Create FormData object
+      const formData = new FormData();
+      formData.append("multipartFile", selectedFile);
+      formData.append("accessToken", tokenFromGoogle);
+
+      const result = await createDocumentByUploadAction(
+        formData,
+        boardId,
+        tokenFromGoogle
+      );
+
+      console.log("Upload successful:", result);
+
+      // Reset form and close modal
+      setFileName("");
+      setSelectedFile(null);
+      onClose();
+
+      window.location.reload();
+    } catch (error) {
+      console.error("Upload failed:", error);
+      // Handle error (show toast, etc.)
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleClose = () => {
     setFileName("");
-    onClose(); // close modal from parent
+    setSelectedFile(null);
+    onClose();
   };
 
   return (
@@ -39,12 +84,11 @@ export default function ModalUploadFile({ isOpen, onClose }) {
       {/* You can delete this Button if you open modal from a parent component */}
       {/* <Button onPress={onOpen}>Open Modal</Button> */}
 
-      <Modal isOpen={isOpen} onOpenChange={onClose}>
+      <Modal isOpen={isOpen} onOpenChange={handleClose}>
         <ModalContent>
           {(onCloseModal) => (
             <>
               <ModalHeader className="flex justify-center text-2xl font-bold">
-                
                 Upload
               </ModalHeader>
 
@@ -114,10 +158,11 @@ export default function ModalUploadFile({ isOpen, onClose }) {
                 <Button
                   className="w-full"
                   color="primary"
-                  isDisabled={!fileName}
+                  isDisabled={!fileName || isUploading}
                   onPress={handleUpload}
+                  isLoading={isUploading}
                 >
-                  Upload File
+                  {isUploading ? "Uploading..." : "Upload File"}
                 </Button>
               </ModalFooter>
             </>

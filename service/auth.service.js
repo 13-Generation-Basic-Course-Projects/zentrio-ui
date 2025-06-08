@@ -21,7 +21,7 @@ export const registerZentrioService = async ({
       },
       body: JSON.stringify({
         username,
-        gender: "RATHER_NOT_TO_SAY",
+        gender: "OTHER",
         email,
         password,
         profileImage,

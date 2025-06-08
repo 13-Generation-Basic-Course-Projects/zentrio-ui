@@ -9,6 +9,16 @@ import { Suspense } from "react";
 import Loading from "../loading";
 import SidebarRenderer from "@/components/sidebar/SidebarRenderer";
 import { SideBarIcon } from "@/components/icon/everyicon";
+import {
+  createWorkspaceAction,
+  deleteWorkspaceByIdAction,
+  getAllBoardBywWorkspaceIdAction,
+  getAllWorkspaceAction,
+  getAllWorkspaceForUserAction,
+  updateWorkspaceByIdAction,
+} from "@/action/workspace.action";
+import { getCurrentUserProfileAction } from "@/action/profile.action";
+import { preventImage } from "@/constant/preventimage";
 //import { LoadingBarContainer } from "react-top-loading-bar";
 export const metadata = {
   title: "Zentrio | Task Mangement",
@@ -20,16 +30,40 @@ export const metadata = {
 export default async function SystemLayout({ children }) {
   const session = await auth();
   console.log("aaa", session?.user);
+
+  /*  call action get all workspace */
+  const workspaceData = await getAllWorkspaceAction();
+  /*  call action get all workspace for users */
+  const workspaceUsersData = await getAllWorkspaceForUserAction();
+
+  /*
+   * This function is the main entry point for the profile page.
+   */
+  const currentUserProfile = await getCurrentUserProfileAction();
+  const imageUser = currentUserProfile?.payload?.user?.profileImage;
+  const noImage = preventImage.noProfile;
+  const preventUserImage = imageUser == null ? noImage : imageUser;
+  console.log("what inside layout and userprofile", imageUser);
   return (
     // <LoadingBarContainer>
     <SidebarProvider className="bg-bgColor">
-      <SidebarRenderer />
+      <SidebarRenderer
+        workspaceData={workspaceData}
+        workspaceUsersData={workspaceUsersData}
+        createWorkspace={createWorkspaceAction}
+        deleteWorkspace={deleteWorkspaceByIdAction}
+        updateNameWorkspace={updateWorkspaceByIdAction}
+        getBoardByWorkspaceId={getAllBoardBywWorkspaceIdAction}
+      />
       <div
         className={" font-poppin h-screen overflow-hidden  bg-white  w-full"}
       >
         {/* <SidebarTrigger className="fixed top-0  z-[30]" /> */}
         <div className="w-full  ">
-          <NavbarWrapper user={session?.user} />
+          <NavbarWrapper
+            user={session?.user}
+            preventUserImage={preventUserImage}
+          />
           {children}
         </div>
       </div>

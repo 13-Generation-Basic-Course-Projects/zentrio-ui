@@ -248,3 +248,11 @@ a.fc-event {
   padding: 0px;
   background-color: transparent !important;
 }
+
+/* gant chat  */
+.fixed-slot-height {
+  height: 80px !important; /* Match slotMinHeight */
+  min-height: 80px !important;
+  max-height: 80px !important;
+  overflow: hidden; /* Prevent content from expanding the slot */
+}

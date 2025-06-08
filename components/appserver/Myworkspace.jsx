@@ -6,31 +6,77 @@ import { Link } from "lucide-react";
 import CardMember from "../card/CardMember";
 import Bar from "../bredcrum/Bar";
 
-export default function Myworkspace({ Workspaceid }) {
-  return (
-    <div className=" w-full grid grid-cols-12 h-full">
-      {/* board - this one scrolls */}
-      <div className="col-span-9  flex flex-col overflow-hidden p-3 min-h-0">
-        <Bar title={"My Boards"} btn={"see all"} />
-        <div className="grid grid-cols-3 gap-3 scrollbar-hidden px-2 pb-[200px] py-4 overflow-y-auto  flex-1 min-h-0">
-          {Array.from({ length: 5 * Workspaceid }).map((_, index) => (
-            <CardBoard
-              key={index}
-              role={"pm"}
-              workspaceId="123"
-              projectId="456"
-              title={`Hikko ${Workspaceid}`}
-              image={
-                Workspaceid % 2 == 0 ? "bg-board-green" : "bg-board-primary"
-              }
-            />
-          ))}
+// Central color mapping
+const colorOptions = [
+  { key: "red", label: "Red", className: "bg-board-red" },
+  { key: "blue", label: "Blue Sky", className: "bg-board-primary" },
+  { key: "green", label: "Green", className: "bg-board-green" },
+  { key: "purple", label: "Purple", className: "bg-board-purple" },
+  { key: "orange", label: "Orange", className: "bg-board-orange" },
+  { key: "violet", label: "Violet", className: "bg-board-violet" },
+];
 
-          {/* your hidden add new board card here */}
-          <div className="hidden flex flex-col items-center border-2 border-dashed border-blue-400 rounded-xl p-10 text-center text-blue-400 cursor-pointer hover:bg-blue-50 transition" />
+export default function Myworkspace({
+  Workspaceid,
+  getBoardByWorkspaceId,
+  createBoardAction,
+  deleteBoardAction,
+  updateNameBoardAction,
+  getBoardByIdAction,
+  updateFavAction,
+}) {
+  console.log("Workspace id in myworkspace: ", Workspaceid);
+
+  return (
+    <div className="w-full grid grid-cols-12 h-full">
+      {/* board - scrollable */}
+      <div className="col-span-9 flex flex-col overflow-hidden p-3 min-h-0">
+        <Bar title={"My Boards"} btn={"see all"} />
+        <div className="grid grid-cols-3 gap-3 scrollbar-hidden px-2 pb-[200px] py-4 overflow-y-auto flex-1 min-h-0 ">
+          {getBoardByWorkspaceId.payload.length > 0 ? (
+            <>
+              {getBoardByWorkspaceId.payload
+                .slice() // create a copy to avoid mutating original array
+                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // sort by createdAt descending
+                .map((board, i) => {
+                  const matchedColor = colorOptions.find(
+                    (c) => c.key === board.cover
+                  );
+                  const colorClass = matchedColor?.className || board.cover;
+                  console.log("Id board in my workspace: ", board.boardId);
+                  return (
+                    <CardBoard
+                      key={i}
+                      role="pm"
+                      workspaceId={board.workspaceId}
+                      boardId={board.boardId}
+                      // projectId={board.boardId}
+                      title={board.title}
+                      image={colorClass}
+                      isFavourite={board.isFavourite}
+                      deleteBoardAction={deleteBoardAction}
+                      updateNameBoardAction={updateNameBoardAction}
+                      getBoardByIdAction={getBoardByIdAction}
+                      updateFavAction={updateFavAction}
+                    />
+                  );
+                })}
+              {/* Add new board card */}
+              <CardBoardEmpty
+                Workspaceid={Workspaceid}
+                createBoardAction={createBoardAction}
+              />
+            </>
+          ) : (
+            <CardBoardEmpty
+              Workspaceid={Workspaceid}
+              createBoardAction={createBoardAction}
+            />
+          )}
         </div>
       </div>
-      {/* event - no scroll */}
+
+      {/* right side column - fixed */}
       <div className="col-span-3 p-2">
         <CardMember />
       </div>

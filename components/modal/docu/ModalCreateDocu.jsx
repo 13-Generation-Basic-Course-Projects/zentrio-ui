@@ -10,8 +10,9 @@ import {
 import { IconAdd } from "../../icon/everyicon";
 import ModalCreateFolder from "./ModalCreateFolder";
 import ModalUploadFile from "./ModalUploadfile";
+import { createDocumentByUploadAction } from "@/action/document.action";
 
-export default function ModalCreateDocu() {
+export default function ModalCreateDocu({ boardId, tokenFromGoogle }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isCreateFolderOpen, setIsCreateFolderOpen] = useState(false);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
@@ -83,7 +84,7 @@ export default function ModalCreateDocu() {
       setIsUploadModalOpen(true);
     }
   };
-
+  console.log("board in modal create doc", boardId);
   return (
     <>
       <Dropdown
@@ -125,11 +126,16 @@ export default function ModalCreateDocu() {
       <ModalCreateFolder
         isOpen={isCreateFolderOpen}
         onClose={() => setIsCreateFolderOpen(false)}
+        boardId={boardId}
+        tokenFromGoogle={tokenFromGoogle}
       />
 
       <ModalUploadFile
         isOpen={isUploadModalOpen}
         onClose={() => setIsUploadModalOpen(false)}
+        boardId={boardId}
+        uploadDocument={createDocumentByUploadAction}
+        tokenFromGoogle={tokenFromGoogle}
       />
     </>
   );

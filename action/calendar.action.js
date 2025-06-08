@@ -1,49 +1,56 @@
-"use server"
+"use server";
 
 import { Token } from "@/constant/token";
-import { getTaskbyBoardIdService, getNotebyTaskIdService, updateNoteByIdService } from "@/service/calendar.service";
-
+import {
+  getTaskbyBoardIdService,
+  getNotebyTaskIdService,
+  updateNoteByIdService,
+} from "@/service/calendar.service";
 
 export const calendarAction = async () => {
-    const userToken = await Token();
-    const zentrioToken = userToken.Credential;
-    // define boardId
-    const boardId = "d4f6ed17-3f68-48b4-9cbb-fa141a2d2000";
+  const userToken = await Token();
+  const zentrioToken = userToken.Credential;
+  // define boardId
+  const boardId = "0a3d4af8-d4dd-4a67-88cc-7bd7cc06a59f";
 
-    const result = await getTaskbyBoardIdService({ boardId, zentrioToken });
-    return result;
-}
+  const result = await getTaskbyBoardIdService({ boardId, zentrioToken });
+  return result;
+};
 
 export const calendarNoteAction = async () => {
-    const userToken = await Token();
-    const zentrioToken = userToken.Credential;
-    //define taskId
-    const taskId = "277f6217-2f73-4241-a0b4-d40c60877cd1";
+  const userToken = await Token();
+  const zentrioToken = userToken.Credential;
+  //define taskId
+  const taskId = "0a3d4af8-d4dd-4a67-88cc-7bd7cc06a59f";
 
-    const result = await getNotebyTaskIdService({ taskId, zentrioToken });
-    return result;
-}
+  const result = await getNotebyTaskIdService({ taskId, zentrioToken });
+  return result;
+};
 
-export const calendarUpdateNoteAction = async ({ noteId, noted, startDate, tillDate, taskId }) => {
-    console.log("testing: ")
-    const userToken = await Token();
-   
-    const zentrioToken = userToken.Credential;
+export const calendarUpdateNoteAction = async ({
+  noteId,
+  noted,
+  startDate,
+  tillDate,
+  taskId,
+}) => {
+  console.log("testing: ");
+  const userToken = await Token();
 
-    console.log("Token before update:", startDate);
+  const zentrioToken = userToken.Credential;
 
-    if (!zentrioToken) throw new Error("Token missing!");
+  console.log("Token before update:", startDate);
 
-    const result = await updateNoteByIdService({
-        noteId,
-        noted,
-        startDate,
-        tillDate,
-        taskId,
-        zentrioToken,
-    });
+  if (!zentrioToken) throw new Error("Token missing!");
 
-    
+  const result = await updateNoteByIdService({
+    noteId,
+    noted,
+    startDate,
+    tillDate,
+    taskId,
+    zentrioToken,
+  });
 
   return result;
-}
+};
