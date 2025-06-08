@@ -11,21 +11,6 @@ import {
   Cell,
 } from "recharts";
 
-const chartData = [
-  { date: "2024-01-10", stage: "Todo", weekly: 2, monthly: 6 },
-  { date: "2024-02-12", stage: "On Progress", weekly: 3, monthly: 7 },
-  { date: "2024-03-15", stage: "Done", weekly: 1, monthly: 4 },
-  { date: "2024-04-18", stage: "Under Review", weekly: 2, monthly: 5 },
-  { date: "2024-05-20", stage: "Todo", weekly: 4, monthly: 8 },
-  { date: "2024-06-22", stage: "On Progress", weekly: 3, monthly: 6 },
-  { date: "2024-07-24", stage: "Done", weekly: 2, monthly: 7 },
-  { date: "2024-08-26", stage: "Under Review", weekly: 1, monthly: 3 },
-  { date: "2024-09-10", stage: "Todo", weekly: 2, monthly: 4 },
-  { date: "2024-10-14", stage: "On Progress", weekly: 3, monthly: 5 },
-  { date: "2024-11-17", stage: "Done", weekly: 2, monthly: 6 },
-  { date: "2024-12-19", stage: "Under Review", weekly: 1, monthly: 2 },
-];
-
 // Fixed soft colors for 4 stages
 const stageColors = {
   Todo: "hsl(210, 70%, 85%)", // Soft blue
@@ -35,6 +20,21 @@ const stageColors = {
 };
 
 export default function VerticalChart() {
+  const chartData = [
+    { date: "2024-01-10", stage: "Todo", weekly: 2, monthly: 6 },
+    { date: "2024-02-12", stage: "On Progress", weekly: 3, monthly: 7 },
+    { date: "2024-03-15", stage: "Done", weekly: 1, monthly: 4 },
+    { date: "2024-04-18", stage: "Under Review", weekly: 2, monthly: 5 },
+    { date: "2024-05-20", stage: "Todo", weekly: 4, monthly: 8 },
+    { date: "2024-06-22", stage: "On Progress", weekly: 3, monthly: 6 },
+    { date: "2024-07-24", stage: "Done", weekly: 2, monthly: 7 },
+    { date: "2024-08-26", stage: "Under Review", weekly: 1, monthly: 3 },
+    { date: "2024-09-10", stage: "Todo", weekly: 2, monthly: 4 },
+    { date: "2024-10-14", stage: "On Progress", weekly: 3, monthly: 5 },
+    { date: "2024-11-17", stage: "Done", weekly: 2, monthly: 6 },
+    { date: "2024-12-19", stage: "Under Review", weekly: 1, monthly: 2 },
+  ];
+
   const [activeChart, setActiveChart] = useState("weekly");
   const chartContainerRef = useRef(null);
   const [chartWidth, setChartWidth] = useState(0);

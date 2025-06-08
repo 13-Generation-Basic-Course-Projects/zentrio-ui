@@ -15,6 +15,12 @@ export default function Reportpage({ modal, report }) {
   const [amttl, setAmttl] = useState();
   const [amtM, setAmtM] = useState();
 
+  // this use to count checklist for displaying in horizontalChart
+  const [amtChklistTodo, setamtChklistTodo] = useState();
+  const [amtChklistProgress, setamtChklistProgress] = useState();
+  const [amtChklistReview, setamtChklistReview] = useState();
+  const [amtChklistDone, setamtChklistDone] = useState();
+
   // this use to count amount of project manager, team leader, member
   useEffect(() => {
     if (report?.payload?.allMembers) {
@@ -38,6 +44,31 @@ export default function Reportpage({ modal, report }) {
 
   const maximum = report?.payload?.version;
   const allVersion = Array.from({ length: maximum }, (_, i) => i + 1);
+
+  useEffect(()=>{
+    report.payload.allTasks.forEach((item)=>{
+      if(item.task == "TO DO"){
+        setamtChklistTodo(item.checklist.length || 0)
+      }
+      else if(item.task == "IN_PROGRESS"){
+        setamtChklistProgress(item.checklist.length || 0)
+      }
+      else if(item.task == "UNDER_REVIEW"){
+        setamtChklistReview(item.checklist.length || 0)
+      }
+      else{
+        setamtChklistDone(item.checklist.length || 0)
+      }
+    })
+  })
+
+  const chartData = report.payload.allTasks.map((item)=>{
+      return {
+        stage: item.task,
+      }
+    })
+
+  console.log("Chart Data: ", chartData)
 
   return (
     <>
@@ -151,7 +182,7 @@ export default function Reportpage({ modal, report }) {
             </div>
             {/* Show chart horizontal chart */}
             <div className="mt-5">
-              <HorizontalChart />
+              <HorizontalChart amtChklistTodo={amtChklistTodo} amtChklistProgress={amtChklistProgress} amtChklistUnderReview={amtChklistReview} amtChklistDone={amtChklistDone}/>
             </div>
           </div>
         </div>

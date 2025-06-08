@@ -1,20 +1,28 @@
 "use client";
 import { TrendingUp } from "lucide-react";
 
-const data = [
-  { browser: "Todo", visitors: 270, color: "#64A9F6" },
-  { browser: "In Progress", visitors: 200, color: "#5FC381" },
-  { browser: "Under Review", visitors: 187, color: "#F59E0B" },
-  { browser: "Done", visitors: 173, color: "#64A9F6" },
-];
+export default function HorizontalChart({ amtChklistTodo, amtChklistProgress, amtChklistUnderReview, amtChklistDone }) {
 
-const maxVisitors = Math.max(...data.map((d) => d.visitors));
-const labelWidth = 120;
-const barHeight = 15;
-const barGap = 16;
-const padding = 20;
+  const todo = Number(amtChklistTodo) || 0;
+  const progress = Number(amtChklistProgress) || 0;
+  const review = Number(amtChklistUnderReview) || 0;
+  const done = Number(amtChklistDone) || 0;
 
-export default function HorizontalChart() {
+  const data = [
+    { browser: "Todo", visitors: todo, color: "#64A9F6" },
+    { browser: "In Progress", visitors: progress, color: "#5FC381" },
+    { browser: "Under Review", visitors: review, color: "#F59E0B" },
+    { browser: "Done", visitors: done, color: "#64A9F6" },
+  ];
+
+  
+
+  const maxVisitors = Math.max(...data.map((d) => d.visitors));
+  const labelWidth = 120;
+  const barHeight = 15;
+  const barGap = 16;
+  const padding = 20;
+
   const totalHeight = data.length * (barHeight + barGap);
   const viewBoxWidth = 1000;
   const barAreaWidth = viewBoxWidth - labelWidth - padding * 2;
@@ -35,7 +43,7 @@ export default function HorizontalChart() {
         >
           {/* Bars */}
           {data.map((item, index) => {
-            const barLength = (item.visitors / maxVisitors) * barAreaWidth;
+            const barLength = maxVisitors > 0 ? (item.visitors / maxVisitors) * barAreaWidth : 0;
             const percent =
               ((item.visitors / maxVisitors) * 100).toFixed(1) + "%";
             const y = index * (barHeight + barGap);
