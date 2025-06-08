@@ -7,7 +7,7 @@ import Link from "next/link";
 import Tapp from "../taps/BoardTab";
 import userProfile from "@/assets/profile.png";
 import ModalNotification from "../modal/noti/ModalNotification";
-export function NavbarAuthorized({ user }) {
+export function NavbarAuthorized({ user, preventUserImage }) {
   console.log("pf", user);
   return (
     <>
@@ -25,10 +25,10 @@ export function NavbarAuthorized({ user }) {
               <Link href="/profile">
                 <div className="overflow-hidden rounded-full border-2 border-gray-200 hover:border-gray-300 shadow-sm transition-all duration-200 hover:shadow-md">
                   <span className="sr-only">Toggle dashboard menu</span>
-                  {user?.image != null ? (
+                  {preventUserImage != null ? (
                     <img
                       src={
-                        user?.image ||
+                        preventUserImage ||
                         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzyLc8LMQIrviNz6u2EP3TtPRZZt3OlhrhHA&s"
                       }
                       alt={user?.name || "User"}

@@ -16,6 +16,7 @@ export default function DocumentLayout({
   documents,
   tokenFromGoogle,
   boardId,
+  preventUserImage,
 }) {
   const [activeTab, setActiveTab] = useState(null);
 
@@ -102,12 +103,9 @@ export default function DocumentLayout({
               <Link href="/profile">
                 <div className="overflow-hidden rounded-full border-2 border-gray-200 hover:border-gray-300 shadow-sm transition-all duration-200 hover:shadow-md">
                   <span className="sr-only">Toggle dashboard menu</span>
-                  {user?.image != null ? (
+                  {preventUserImage ? (
                     <img
-                      src={
-                        user?.image ||
-                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzyLc8LMQIrviNz6u2EP3TtPRZZt3OlhrhHA&s"
-                      }
+                      src={preventUserImage}
                       alt={user?.name || "User"}
                       className="size-10 object-cover hover:scale-105 transition-transform duration-200"
                     />

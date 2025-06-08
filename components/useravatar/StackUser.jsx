@@ -1,6 +1,8 @@
+import { preventImage } from "@/constant/preventimage";
+
 export function StackedUser({ image }) {
   // console.log("in stackuser", image);
-
+  const noImage = preventImage.noProfile;
   const maxVisible = 4;
   const payload = image || []; // Fallback to empty array if undefined
   const visibleUsers = payload.slice(0, maxVisible);
@@ -11,7 +13,7 @@ export function StackedUser({ image }) {
       {visibleUsers.map((user, index) => (
         <img
           key={index}
-          src={user?.profileImage || "/default-profile.png"} // Fallback for undefined profileImage
+          src={user?.profileImage || noImage} // Fallback for undefined profileImage
           alt={user?.username || "User"} // Fallback for undefined username
           className="w-8 h-8 rounded-full border-2 border-white shadow"
         />

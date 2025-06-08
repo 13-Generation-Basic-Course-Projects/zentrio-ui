@@ -33,11 +33,11 @@ export default function ModalDetailChecklist({
   startDate,
   status,
   label,
-
   description,
   image,
   member,
   hideImage,
+  preventUserImage,
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 

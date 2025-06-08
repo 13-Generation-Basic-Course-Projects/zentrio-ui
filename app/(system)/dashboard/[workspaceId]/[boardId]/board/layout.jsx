@@ -12,6 +12,8 @@ import {
   getGanttBarByGanttChartIdAction,
   getGanttChartByBoardIdAction,
 } from "@/action/gantt.action";
+import { preventImage } from "@/constant/preventimage";
+import { getCurrentUserProfileAction } from "@/action/profile.action";
 
 // Utility function to fetch ganttChartId
 async function fetchGanttChartId(boardId) {
@@ -176,6 +178,15 @@ export default async function BoardLayout({ children, params }) {
       console.error("Error processing checklists:", error);
     }
 
+    //pf
+    /*
+     * This function is the main entry point for the profile page.
+     */
+    const currentUserProfile = await getCurrentUserProfileAction();
+    const imageUser = currentUserProfile?.payload?.user?.profileImage;
+    const noImage = preventImage.noProfile;
+    const preventUserImage = imageUser == null ? noImage : imageUser;
+    console.log("what inside layout and userprofile", imageUser);
     return (
       <div>
         <SystemBoard
@@ -193,6 +204,7 @@ export default async function BoardLayout({ children, params }) {
           boardId={boardId || FALLBACK_STRING}
           ganttChartId={ganttChartId}
           ganttChartName={ganttChartName}
+          preventUserImage={preventUserImage}
         />
         <main>{children}</main>
       </div>
@@ -210,6 +222,7 @@ export default async function BoardLayout({ children, params }) {
           boardId={boardId}
           ganttChartId={ganttChartId}
           ganttChartName={ganttChartName}
+          preventUserImage={preventUserImage}
         />
         <main>{children}</main>
       </div>

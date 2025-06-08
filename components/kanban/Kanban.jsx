@@ -119,6 +119,7 @@ export default function KanbanBoard({
   checklistbyTaskIds,
   allMemberInBoard,
   test,
+  preventUserImage,
 }) {
   const [columns, setColumns] = useState([]);
   const [draggedItem, setDraggedItem] = useState(null);
@@ -713,6 +714,7 @@ export default function KanbanBoard({
                                         updatedAt={checklist.updatedAt}
                                         finishedAt={checklist.finishedAt}
                                         member={checklist.members}
+                                        preventUserImage={preventUserImage}
                                       />
                                     </div>
                                   </div>
