@@ -1,7 +1,7 @@
 import React from "react";
 
 import { BackgroundAuthentication } from "@/components/background/Background";
-import { OtpForm, SignUpForm } from "../_components/form/Form";
+import { SignUpForm } from "../_components/form/SignupForm";
 export default function Signup() {
   return (
     <>

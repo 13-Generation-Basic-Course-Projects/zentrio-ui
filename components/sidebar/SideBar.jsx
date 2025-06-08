@@ -12,7 +12,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarTrigger,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 import calender from "../../assets/calendarSidebar.png";
@@ -23,10 +23,12 @@ import report from "@/assets/report.png";
 import ModalLeave from "../modal/ModalLeave";
 import LeaveButton from "../button/LeaveButton";
 import PopupAction from "../popup/PopupAction";
+import { Button } from "@heroui/react";
 
 export default function DashboardSidebar() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const { toggleSidebar } = useSidebar();
 
   const [role, setRole] = useState("pm"); // default fallback role
 
@@ -48,7 +50,7 @@ export default function DashboardSidebar() {
     {
       title: "Board",
       url: `/dashboard/${workspaceId}/${projectId}/board?role=${role}`,
-      icon: board,
+
       activeIcon: (active) => (
         <svg
           width={22}
@@ -69,10 +71,10 @@ export default function DashboardSidebar() {
     {
       title: "Calendar",
       url: `/dashboard/${workspaceId}/${projectId}/calendar?role=${role}`,
-      icon: calender,
+
       activeIcon: (active) => (
         <svg
-           width={22}
+          width={22}
           height={22}
           viewBox="0 0 20 20"
           fill="none"
@@ -155,53 +157,50 @@ export default function DashboardSidebar() {
         </svg>
       ),
     },
-     {
+    {
       title: "Document",
       url: `/dashboard/${workspaceId}/${projectId}/docu?role=${role}`,
-      icon: folder,
+
       activeIcon: (active) => (
-     <svg
-  width={22}
-  height={22}
-  viewBox="0 0 22 22"
-  fill="none"
-  xmlns="http://www.w3.org/2000/svg"
->
-  <path
-    d="M0.992188 7.08951V14.4119C0.992188 15.4646 1.40563 16.4742 2.14156 17.2186C2.87748 17.963 3.87562 18.3812 4.91638 18.3812H8.84057H10.4922M0.992188 7.08951V5.47698C0.992188 4.68744 1.30227 3.93023 1.85421 3.37194C2.40616 2.81365 3.15476 2.5 3.93533 2.5H6.78037C7.10247 2.49994 7.42143 2.56406 7.71904 2.68869C8.01665 2.81332 8.28707 2.99603 8.51486 3.22638L10.0669 4.79624M0.992188 7.08951H6.78429C7.1064 7.08957 7.42536 7.02546 7.72297 6.90082C8.02057 6.77619 8.29099 6.59348 8.51878 6.36313L10.0669 4.79624M19.1416 8.76555C19.1416 7.71283 18.7281 6.70322 17.9922 5.95883C17.2563 5.21444 16.2581 4.79624 15.2174 4.79624H10.0669"
-    stroke={active ? "#59BAD5" : "black"}
-    strokeWidth="1.5"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  />
-  <path
-    d="M17.0078 11.002C18.1145 11.002 19.0078 11.8953 19.0078 13.002C19.0078 14.1086 18.1145 15.002 17.0078 15.002C15.9011 15.002 15.0078 14.1086 15.0078 13.002C15.0078 11.8953 15.9011 11.002 17.0078 11.002Z"
-    stroke={active ? "#59BAD5" : "black"}
-    strokeWidth="1.3"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  />
-  <path
-    d="M21.0078 18.3C21.0078 17.7 19.2935 16.5 17.0078 16.5C14.7221 16.5 13.0078 17.7 13.0078 18.3C13.0078 18.3 13.0078 19.5 17.0078 19.5C21.0078 19.5 21.0078 18.3 21.0078 18.3Z"
-    stroke={active ? "#59BAD5" : "black"}
-    strokeWidth="1.3"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  />
-</svg>
-
-
-
-    ),
+        <svg
+          width={22}
+          height={22}
+          viewBox="0 0 22 22"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M0.992188 7.08951V14.4119C0.992188 15.4646 1.40563 16.4742 2.14156 17.2186C2.87748 17.963 3.87562 18.3812 4.91638 18.3812H8.84057H10.4922M0.992188 7.08951V5.47698C0.992188 4.68744 1.30227 3.93023 1.85421 3.37194C2.40616 2.81365 3.15476 2.5 3.93533 2.5H6.78037C7.10247 2.49994 7.42143 2.56406 7.71904 2.68869C8.01665 2.81332 8.28707 2.99603 8.51486 3.22638L10.0669 4.79624M0.992188 7.08951H6.78429C7.1064 7.08957 7.42536 7.02546 7.72297 6.90082C8.02057 6.77619 8.29099 6.59348 8.51878 6.36313L10.0669 4.79624M19.1416 8.76555C19.1416 7.71283 18.7281 6.70322 17.9922 5.95883C17.2563 5.21444 16.2581 4.79624 15.2174 4.79624H10.0669"
+            stroke={active ? "#59BAD5" : "black"}
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M17.0078 11.002C18.1145 11.002 19.0078 11.8953 19.0078 13.002C19.0078 14.1086 18.1145 15.002 17.0078 15.002C15.9011 15.002 15.0078 14.1086 15.0078 13.002C15.0078 11.8953 15.9011 11.002 17.0078 11.002Z"
+            stroke={active ? "#59BAD5" : "black"}
+            strokeWidth="1.3"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M21.0078 18.3C21.0078 17.7 19.2935 16.5 17.0078 16.5C14.7221 16.5 13.0078 17.7 13.0078 18.3C13.0078 18.3 13.0078 19.5 17.0078 19.5C21.0078 19.5 21.0078 18.3 21.0078 18.3Z"
+            stroke={active ? "#59BAD5" : "black"}
+            strokeWidth="1.3"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      ),
     },
     {
       title: "Members",
       url: `/dashboard/${workspaceId}/${projectId}/member?role=${role}`,
-      icon: member,
+
       activeIcon: (active) => (
         <svg
           width={22}
-        height={22}
+          height={22}
           viewBox="0 0 20 20"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -240,11 +239,11 @@ export default function DashboardSidebar() {
     {
       title: "Reports",
       url: `/dashboard/${workspaceId}/${projectId}/report?role=${role}`,
-      icon: report,
+
       activeIcon: (active) => (
         <svg
-         width={22}
-        height={22}
+          width={22}
+          height={22}
           viewBox="0 0 20 20"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -314,6 +313,8 @@ export default function DashboardSidebar() {
     ? items.filter((item) => item.title !== "Reports")
     : items;
 
+  console.log("toggle: ", toggleSidebar);
+
   return (
     <Sidebar collapsible="icon" className="border-none rounded-tr-3xl bg-white">
       <SidebarContent className="h-screen flex flex-col !border-0 rounded-tr-xl">
@@ -321,7 +322,26 @@ export default function DashboardSidebar() {
           <Link href="/workspace">
             <Image src={logo} className="w-[118px] object-cover" alt="logo" />
           </Link>
-          <SidebarTrigger />
+          <Button
+            isIconOnly
+            onClick={toggleSidebar}
+            className="bg-transparent min-w-fit w-fit h-fit rounded-none !px-0 !py-0"
+          >
+            <svg
+              width="22"
+              height="25"
+              viewBox="0 0 25 28"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fillRule="evenodd"
+                clipule="evenodd"
+                d="M5.96522 5.52079C5.12183 5.52079 4.31298 5.85583 3.71662 6.45219C3.12025 7.04856 2.78522 7.8574 2.78522 8.70079V19.2992C2.78522 20.1426 3.12025 20.9514 3.71662 21.5478C4.31298 22.1442 5.12183 22.4792 5.96522 22.4792H7.71842V5.52079H5.96522ZM5.96522 3.40039C4.55978 3.40039 3.21191 3.9587 2.21812 4.95249C1.22432 5.94628 0.666016 7.29416 0.666016 8.69959V19.2992C0.665858 19.9952 0.80281 20.6844 1.06905 21.3275C1.33529 21.9705 1.7256 22.5549 2.21769 23.0471C2.70978 23.5393 3.29402 23.9297 3.93702 24.1961C4.58003 24.4625 5.26921 24.5996 5.96522 24.5996H19.3668C20.0629 24.5996 20.7522 24.4624 21.3953 24.196C22.0384 23.9295 22.6227 23.539 23.1148 23.0466C23.6069 22.5543 23.9972 21.9698 24.2633 21.3266C24.5295 20.6834 24.6663 19.9941 24.666 19.298V8.69959C24.666 7.29416 24.1077 5.94628 23.1139 4.95249C22.1201 3.9587 20.7723 3.40039 19.3668 3.40039H5.96522ZM9.83882 5.52079V22.4792H19.3668C20.2102 22.4792 21.019 22.1442 21.6154 21.5478C22.2118 20.9514 22.5468 20.1426 22.5468 19.2992V8.69959C22.5468 7.8562 22.2118 7.04736 21.6154 6.45099C21.019 5.85463 20.2102 5.51959 19.3668 5.51959H9.83882V5.52079Z"
+                fill="#59BAD5"
+              />
+            </svg>
+          </Button>
         </div>
 
         <SidebarGroup className="flex-1 flex flex-col !border-0">
@@ -342,7 +362,11 @@ export default function DashboardSidebar() {
                       } py-5 px-3 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:!px-5 group-data-[collapsible=icon]:!py-5`}
                       style={{ borderRadius: "0.5rem" }}
                     >
-                      <Link href={item.url} style={{ borderRadius: "0.5rem" }} className="flex items-center justify-start group-data-[collapsible=icon]:justify-center w-full">
+                      <Link
+                        href={item.url}
+                        style={{ borderRadius: "0.5rem" }}
+                        className="flex items-center justify-start group-data-[collapsible=icon]:justify-center w-full"
+                      >
                         {typeof item.activeIcon === "function" ? (
                           <div className="flex items-center justify-center min-w-[22px]">
                             {item.activeIcon(isActive)}
@@ -356,7 +380,9 @@ export default function DashboardSidebar() {
                             />
                           </div>
                         )}
-                        <span className="pl-3 group-data-[collapsible=icon]:hidden">{item.title}</span>
+                        <span className="pl-3 group-data-[collapsible=icon]:hidden">
+                          {item.title}
+                        </span>
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -370,9 +396,15 @@ export default function DashboardSidebar() {
                 <SidebarMenuButton
                   asChild
                   tooltip="Logout"
-                  className="flex items-center gap-2 px-4 cursor-pointer pb-10 !border-0 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:!px-2"
+                  className="flex items-center gap-2 px-4 cursor-pointer pb-10 
+                              !border-0 !bg-transparent hover:!bg-transparent focus:!bg-transparent active:!bg-transparent
+                              group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:!px-2"
                 >
-                  <div className="flex items-center justify-start group-data-[collapsible=icon]:justify-center w-full">
+                  <div
+                    className="flex items-center justify-start w-full 
+                                    group-data-[collapsible=icon]:justify-center 
+                                    !bg-transparent hover:!bg-transparent"
+                  >
                     <ModalLeave
                       massageTitle={"Are you sure?"}
                       massageBody={"You want to leave this board "}

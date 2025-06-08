@@ -1,61 +1,83 @@
-"use client"
+"use client";
 
-import BredCrum from "../bredcrum/Bredcrum";
+import BredCrum from "../bredcrum/MyBredcrum";
 import MyDatePicker from "../date/DatePicker";
 import CardFolder, { CardFile } from "../card/CardDoc";
 import ModalCreateDocu from "../modal/docu/ModalCreateDocu";
-import { documentData } from "@/data/docu/documentData";
 import { Input } from "@heroui/input";
-import { Autocomplete, AutocompleteItem, Select, SelectItem } from "@heroui/react";
+import {
+  Autocomplete,
+  AutocompleteItem,
+  Select,
+  SelectItem,
+} from "@heroui/react";
 import { useState } from "react";
 
-export default function AllDocument() {
-  const data = documentData;
-  console.log("Received data in all:", data);
+export default function AllDocument({ documents }) {
+  // const data = documentData;
+  const data = documents || [];
 
-  
-const [sortOrder, setSortOrder] = useState("asc");
-const [searchTerm, setSearchTerm] = useState("");
-const sortOptions = [
-  { key: "asc", label: "A-Z" },
-  { key: "desc", label: "Z-A" },
-];
-const myFilter = (textValue, inputValue) => {
-  if (inputValue.length === 0) {
-    return true;
-  }
-
-  textValue = textValue.normalize("NFC").toLowerCase();
-  inputValue = inputValue.normalize("NFC").toLowerCase();
-
-  return textValue.startsWith(inputValue);
-};
-
-// Sort and filter documentData
-const filteredData = [...documentData]
-  .filter((item) => {
-    // Filter by title or other fields if you want
-    return myFilter(item.title, searchTerm);
-  })
-  .sort((a, b) => {
-    if (sortOrder === "asc") {
-      return a.title.localeCompare(b.title);
-    } else {
-      return b.title.localeCompare(a.title);
+  const [sortOrder, setSortOrder] = useState("asc");
+  const [searchTerm, setSearchTerm] = useState("");
+  const sortOptions = [
+    { key: "asc", label: "A-Z" },
+    { key: "desc", label: "Z-A" },
+  ];
+  const myFilter = (textValue, inputValue) => {
+    if (inputValue.length === 0) {
+      return true;
     }
+
+    textValue = textValue.normalize("NFC").toLowerCase();
+    inputValue = inputValue.normalize("NFC").toLowerCase();
+
+    return textValue.startsWith(inputValue);
+  };
+
+  const transformedData = data.payload.map((doc) => {
+    const docType = doc.documentType || "";
+    const isGoogleDoc = docType.includes("google-apps.document");
+    const isGoogleSheet = docType.includes("google-apps.spreadsheet");
+    const isGoogleSlide = docType.includes("google-apps.presentation");
+    const isFolder =
+      !docType || (!isGoogleDoc && !isGoogleSheet && !isGoogleSlide);
+
+    return {
+      title: doc.description || "Untitled",
+      status: doc._private ? "private" : "personal",
+      date: new Date(doc.creationDate).toISOString().split("T")[0],
+      type: isGoogleDoc
+        ? "docx"
+        : isGoogleSheet
+        ? "xlsx"
+        : isGoogleSlide
+        ? "pptx"
+        : "folder",
+      category: isFolder ? "Folder" : "File",
+      link: doc.drive_url || null,
+    };
   });
+
+  const filteredData = transformedData
+    .filter((doc) => doc.title.toLowerCase().includes(searchTerm.toLowerCase()))
+    .sort((a, b) => {
+      if (sortOrder === "asc") {
+        return a.title.localeCompare(b.title);
+      } else {
+        return b.title.localeCompare(a.title);
+      }
+    });
 
   return (
     <div className="h-full flex flex-col">
       <div className="grid grid-cols-1 gap-3">
         <div className="p-0">
-         <BredCrum
-        board={"Hikko Design"}
-        feature={"Document"}
-        header={"Document"}
-         modal={[<ModalCreateDocu />]}
-         />
-
+          <BredCrum
+            board={"Hikko Design"}
+            feature={"Document"}
+            header={"Document"}
+            modal={[<ModalCreateDocu />]}
+          />
         </div>
 
         <div className="flex items-center justify-between pb-5">
@@ -88,6 +110,7 @@ const filteredData = [...documentData]
           <div className="w-[340px] rounded-2xl flex justify-center items-center  text-white ">
             <Input
               isClearable
+              onValueChange={(val) => setSearchTerm(val)}
               classNames={{
                 label: "text-black/50 dark:text-white/90",
                 input: [
@@ -108,11 +131,12 @@ const filteredData = [...documentData]
 
         <div className="w-full  max-h-screen overflow-y-auto scrollbar-hidden  pb-[300px] px-5  pt-10 ">
           {/* Folders Section */}
-          <div className="mb-8 ">
+          <div className="mb-8">
             <div className="flex items-center justify-between mb-4">
               <p className="text-h5 font-semibold">Folders</p>
               <span className="text-sm text-gray-500">
-                {data?.filter((el) => el.category === "Folder").length || 0}{" "}
+                {filteredData?.filter((el) => el.category === "Folder")
+                  .length || 0}{" "}
                 folders
               </span>
             </div>
@@ -126,6 +150,7 @@ const filteredData = [...documentData]
                       title={el.title || "Untitled Folder"}
                       status={el.status || "personal"}
                       date={el.date || "2025-05-25"}
+                      link={el?.link}
                     />
                   ))
               ) : (
@@ -133,26 +158,28 @@ const filteredData = [...documentData]
               )}
             </div>
           </div>
-
           {/* Files Section */}
           <div>
             <div className="flex items-center justify-between mb-4">
               <p className="text-h5 font-semibold">Files</p>
               <span className="text-sm text-gray-500">
-                {data?.filter((el) => el.category === "File").length || 0} files
+                {filteredData?.filter((el) => el.category === "File").length ||
+                  0}{" "}
+                files
               </span>
             </div>
-            <div className="grid grid-cols-6 gap-3  pb-4 pr-2 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
+            <div className="grid grid-cols-6 gap-3 pb-4 pr-2 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
               {filteredData && filteredData.length > 0 ? (
                 filteredData
                   .filter((el) => el.category === "File")
                   .map((el, i) => (
                     <CardFile
                       key={`file-${i}`}
-                      title={el.title || "Untitled File"}
-                      status={el.status || "personal"}
-                      date={el.date || "2025-05-25"}
+                      title={el.title}
+                      status={el.status}
+                      date={el.date}
                       type={el.type}
+                      link={el.link}
                     />
                   ))
               ) : (
@@ -165,8 +192,6 @@ const filteredData = [...documentData]
     </div>
   );
 }
-
-
 
 // for icon search
 export const SearchIcon = (props) => {

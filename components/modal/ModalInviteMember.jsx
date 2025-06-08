@@ -70,7 +70,7 @@ export default function ModalInviteMember() {
                   <div className="text-h6 ">Adding Member</div>
                   <div className="flex items-center gap-x-4">
                     <div className="grid grid-cols-[60%_40%] border border-gray-300 rounded-small px-4 py-2 bg-white w-full focus-within:ring-2 focus-within:ring-primary transition-all hover:bg-white">
-                      <Input
+                  <Input
                         isRequired
                         errorMessage="Please input a valid email"
                         name="email"
@@ -89,9 +89,9 @@ export default function ModalInviteMember() {
                       <Select
                         key={"inside"}
                         placeholder="Select role"
-                        variant="ghost"
+                       
                         popoverProps={{
-                          className: "w-[200px] shadow-none",
+                          className: "w-[200px] shadow-none !bg-transparent",
                         }}
                       >
                         {roles.map((role) => (

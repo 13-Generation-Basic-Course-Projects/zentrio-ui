@@ -7,7 +7,7 @@ export const AuthInput = extendVariants(Input, {
     color: {
       custom: {
         inputWrapper: [
-          "bg-bgColor",
+          "bg-white",
           "group-data-[focus=true]:bg-bgColor",
           "border-[0.1px] border-stroke",
           "hover:bg-bgColor",

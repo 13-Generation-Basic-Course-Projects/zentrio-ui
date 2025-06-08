@@ -6,15 +6,21 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
+import {
+  ChevronLeft,
+  ChevronRight,
+  MessageCircleMore,
+  ClipboardList,
+} from "lucide-react";
 
-import BredCrum from "../bredcrum/Bredcrum";
+import BredCrum from "../bredcrum/MyBredcrum";
 import ModalCreateGanttBar from "../modal/board/ModalCreateGanttBar";
 import CardTaskCalender from "../card/CardTaskCalender";
 import CardTCommentCalender from "../card/CardCommentCalender";
-import { MessageCircleMore, ClipboardList } from "lucide-react";
 
 export default function MyCalender({ tasks }) {
   const calendarRef = useRef(null);
+  const [currentTitle, setCurrentTitle] = useState("");
 
   const colorList = [
     {
@@ -133,32 +139,72 @@ export default function MyCalender({ tasks }) {
     return null;
   };
 
+  const handleDateNav = (action) => {
+    const calendarApi = calendarRef.current?.getApi();
+    if (!calendarApi) return;
+
+    if (action === "today") calendarApi.today();
+    else if (action === "prev") calendarApi.prev();
+    else if (action === "next") calendarApi.next();
+
+    setCurrentTitle(calendarApi.view.title);
+  };
+
   return (
     <div className="p-4 h-screen flex flex-col overflow-hidden">
       <BredCrum board="Hikko Design" feature="Calender" header="Calender" />
+
+      {/* Move header outside the grid */}
+      <div className="flex space-x-[500px] items-center mt-4 px-2 mb-6">
+        <button
+          onClick={() => handleDateNav("today")}
+          className="rounded-full px-4 py-1 shadow-sm bg-white text-gray-600 font-medium border border-gray-200 hover:bg-gray-50 transition"
+        >
+          Today
+        </button>
+
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => handleDateNav("prev")}
+            className="rounded-full p-2 shadow-sm bg-white text-gray-500 hover:bg-gray-100 transition"
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+          <h2 className="text-lg font-semibold text-gray-600">
+            {currentTitle}
+          </h2>
+          <button
+            onClick={() => handleDateNav("next")}
+            className="rounded-full p-2 shadow-sm bg-white text-gray-500 hover:bg-gray-100 transition"
+          >
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+
+      {/* Full 12-col grid */}
       <div className="grid grid-cols-12 gap-4 h-full">
-        <div className="col-span-9 h-full overflow-hidden pr-2">
-          <FullCalendar
-            ref={calendarRef}
-            plugins={[
-              resourceTimelinePlugin,
-              dayGridPlugin,
-              interactionPlugin,
-              timeGridPlugin,
-            ]}
-            headerToolbar={{
-              left: "today",
-              center: "prev,title,next",
-              right: "",
-            }}
-            initialView="dayGridMonth"
-            events={events}
-            eventContent={renderEventContent}
-            height="auto"
-          />
+        <div className="col-span-9 max-h-[700px]  pr-2">
+          <div className="h-full overflow-y-auto scrollbar-hidden">
+            <FullCalendar
+              ref={calendarRef}
+              plugins={[
+                resourceTimelinePlugin,
+                dayGridPlugin,
+                interactionPlugin,
+                timeGridPlugin,
+              ]}
+              headerToolbar={false}
+              initialView="dayGridMonth"
+              events={events}
+              eventContent={renderEventContent}
+              datesSet={(arg) => setCurrentTitle(arg.view.title)}
+              height="auto"
+            />
+          </div>
         </div>
 
-        <div className="col-span-3 h-full overflow-y-auto p-2 flex flex-col gap-5">
+        <div className="col-span-3 h-full overflow-y-auto pl-2 flex flex-col gap-5">
           <CardTaskCalender
             tasks={mappedTasks}
             onTaskClick={(dateStr, taskId) => handleTaskClick(dateStr, taskId)}

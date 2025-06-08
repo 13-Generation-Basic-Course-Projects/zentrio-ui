@@ -1,0 +1,27 @@
+import { apiConfig } from "@/constant/baseurl";
+
+export const checklistRouteGroup = {
+  //get
+  getCheckListByTaskId: (id) => `${apiConfig.baseUrl}/checklists/tasks/${id}`, // Get all checklist by specific tasks ID
+  getCoverOfCheckList: (checklistId, fileName) =>
+    `${apiConfig.baseUrl}/checklists/${checklistId}/cover/${fileName}`, // Get cover of checklist by checklist ID and File Name Parameters
+  getCheckListByCurrentUser: (id) => `${apiConfig.baseUrl}/checklists/current`, // Get all checklists by current users
+
+  //update
+  updateCheckListByIdAndTaskId: (id) =>
+    `${apiConfig.baseUrl}/checklists/tasks/${id}`, // Get all checklist by specific tasks ID
+  updateStatusById: (id) => `${apiConfig.baseUrl}/checklists/tasks/${id}`,
+  updateStatusById: (id) => `${apiConfig.baseUrl}/checklists/${id}/status`, //enum
+
+  //post
+
+  createCheckListByTaskId: () => `${apiConfig.baseUrl}/checklists`,
+  uploadCoverOfChecklistByCheckListId: (id) =>
+    `${apiConfig.baseUrl}/checklists/${id}/cover`,
+  assignMemberToCheckList: (checklistId, taskId, assignedBy, assignTo) =>
+    `${apiConfig.baseUrl}/checklists/${checklistId}/tasks/${taskId}/members${assignedBy}/members/${assignTo}`,
+
+  //delete
+  deleteCheckListByTaskId: (checkListId, taskId) =>
+    `${apiConfig.baseUrl}/checklists/${checkListId}/tasks/${taskId}`, // Get all checklist by specific tasks ID
+};
