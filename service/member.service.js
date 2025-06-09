@@ -43,6 +43,9 @@ export const getUserByUserIdService = async ({ userId, token }) => {
     const url = memberRouteGroup.getUserByUserId(userId);
 
     const res = await fetch(url, {
+      next: {
+        tags: ["members"],
+      },
       headers: {
         Authorization: `Bearer ${token}`,
         // "Content-Type": "application/json",

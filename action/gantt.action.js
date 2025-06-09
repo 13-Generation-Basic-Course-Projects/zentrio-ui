@@ -1,11 +1,12 @@
 "use server";
 import { Token } from "@/constant/token";
 import {
+  createGanttBarsByGanttChartIdService,
   getGanttBarByGanttChartIdService,
   getGanttBarService,
   getGanttChartByBoardIdService,
 } from "@/service/gantt.service";
-
+import { revalidatePath } from "next/cache";
 console.log("test actions must create folders");
 /*
  * get ganttbar
@@ -46,4 +47,39 @@ export const getGanttChartByBoardIdAction = async ({ boardId }) => {
     token,
   });
   return result;
+};
+
+/*
+ * create multiple ganttbar
+ */
+import { ganttBarSchema } from "@/lib/schemas/ganttBarSchema";
+
+/*
+ * create multiple ganttbar
+ */
+export const createGanttBarsByGanttChartIdAction = async ({
+  ganttChartId,
+  data: payload,
+}) => {
+  // 1. Validate the incoming payload using Zod schema
+  try {
+    const validatedPayload = payload.map((item) => ganttBarSchema.parse(item));
+    console.log("✅ Payload validated successfully:", validatedPayload);
+
+    const userToken = await Token(); // Assuming Token() is defined elsewhere
+    const token = userToken.Credential;
+    console.log(token);
+
+    const result = await createGanttBarsByGanttChartIdService({
+      ganttChartId,
+      data: validatedPayload, // Pass the validated payload
+      token,
+    });
+    revalidatePath("/gantbar");
+    return result;
+  } catch (error) {
+    console.error("❌ Validation error or action failed:", error);
+    // Re-throw the error or handle it as appropriate for your application
+    throw error;
+  }
 };

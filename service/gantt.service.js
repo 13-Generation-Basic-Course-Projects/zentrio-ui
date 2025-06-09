@@ -78,3 +78,42 @@ export const getGanttChartByBoardIdService = async ({ boardId, token }) => {
     throw error;
   }
 };
+
+/*
+ * create gantt bar by GantchartId
+ */
+export const createGanttBarsByGanttChartIdService = async ({
+  ganttChartId,
+  data,
+  token,
+}) => {
+  try {
+    console.log("from service", { ganttChartId, data, token });
+
+    const url = ganttRouteGroup.createGanttBar();
+    const bodyToSend = data.map((item) => ({
+      title: item.title,
+      startedAt: item.startedAt,
+      finishedAt: item.finishedAt,
+      face: item.face,
+      ganttChartId: ganttChartId,
+    }));
+
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(bodyToSend),
+    });
+
+    const result = await res.json();
+    console.log("📥 Backend responded with:", result);
+
+    return result;
+  } catch (error) {
+    console.error("🐞 Error:", error.message);
+    throw error;
+  }
+};

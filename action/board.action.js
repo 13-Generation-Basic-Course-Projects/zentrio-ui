@@ -10,6 +10,7 @@ import {
   getTaskByBoardIdAndGanttBarIdService,
   inviteMemberToBoardService,
 } from "@/service/board.service";
+import { revalidatePath } from "next/cache";
 
 console.log("test actions must create folders");
 /*
@@ -153,7 +154,7 @@ export const createGanttChartByBoardIdAction = async (data, boardId) => {
       data,
       token,
     });
-
+    revalidatePath("/gantbar");
     return { success: true, data: result };
   } catch (error) {
     console.error("Create task action error:", error.message);
