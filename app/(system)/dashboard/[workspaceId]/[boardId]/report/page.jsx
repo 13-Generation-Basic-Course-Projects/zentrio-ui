@@ -6,8 +6,8 @@ import { Token } from "@/constant/token";
 import React from "react";
 
 //useage route : http://localhost:3000/dashboard/1/1/report
-export default async function Report() {
-  const boardId = `8d985fb5-cdd6-45a5-82a0-ee821f3aceda`;
+export default async function Report({ boardId }) {
+  // const boardId = `8d985fb5-cdd6-45a5-82a0-ee821f3aceda`;
   const reportData = await getReportAction({ boardId });
 
   return (
@@ -18,6 +18,7 @@ export default async function Report() {
           <ModalSaveAs key="modal-save-as" />,
         ]}
         report={reportData}
+        boardId={boardId} // -> prop me at Reportpage.jsx
       />
     </>
   );
