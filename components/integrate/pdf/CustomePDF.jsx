@@ -4,7 +4,7 @@ import GanttChart from "@/assets/calendarlanding.svg";
 import { getReportAction } from "@/action/report.action";
 
 const CustomePDF = async () => {
-  const reportData = await getReportAction(`feb6d22e-b2d6-4105-b3ad-663c7148c337`)
+  // const reportData = await getReportAction(`feb6d22e-b2d6-4105-b3ad-663c7148c337`)
 
   return (
     <>
