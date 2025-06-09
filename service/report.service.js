@@ -14,5 +14,6 @@ export const getReportService = async ({ boardId, zentrioToken } = {}) => {
         }
     });
     const data = await res.json();
+    console.log('Request URL:', url);
     return data;
 }

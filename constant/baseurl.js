@@ -1,3 +1,3 @@
 export const apiConfig = {
-  baseUrl: ` http://35.187.228.225:9100/api/v1`,
+  baseUrl: `http://localhost:8080/api/v1`,
 };

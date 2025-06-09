@@ -19,21 +19,21 @@ const stageColors = {
   Done: "hsl(160, 70%, 85%)", // Soft green
 };
 
-export default function VerticalChart() {
-  const chartData = [
-    { date: "2024-01-10", stage: "Todo", weekly: 2, monthly: 6 },
-    { date: "2024-02-12", stage: "On Progress", weekly: 3, monthly: 7 },
-    { date: "2024-03-15", stage: "Done", weekly: 1, monthly: 4 },
-    { date: "2024-04-18", stage: "Under Review", weekly: 2, monthly: 5 },
-    { date: "2024-05-20", stage: "Todo", weekly: 4, monthly: 8 },
-    { date: "2024-06-22", stage: "On Progress", weekly: 3, monthly: 6 },
-    { date: "2024-07-24", stage: "Done", weekly: 2, monthly: 7 },
-    { date: "2024-08-26", stage: "Under Review", weekly: 1, monthly: 3 },
-    { date: "2024-09-10", stage: "Todo", weekly: 2, monthly: 4 },
-    { date: "2024-10-14", stage: "On Progress", weekly: 3, monthly: 5 },
-    { date: "2024-11-17", stage: "Done", weekly: 2, monthly: 6 },
-    { date: "2024-12-19", stage: "Under Review", weekly: 1, monthly: 2 },
-  ];
+export default function VerticalChart({ weeknum, totalTask ,chartData }) {
+  // const chartData = [
+  //   { date: "2024-01-10", stage: "Todo", weekly: 2, monthly: 6 },
+  //   { date: "2024-02-12", stage: "On Progress", weekly: 3, monthly: 7 },
+  //   { date: "2024-03-15", stage: "Done", weekly: 1, monthly: 4 },
+  //   { date: "2024-04-18", stage: "Under Review", weekly: 2, monthly: 5 },
+  //   { date: "2024-05-20", stage: "Todo", weekly: 4, monthly: 8 },
+  //   { date: "2024-06-22", stage: "On Progress", weekly: 3, monthly: 6 },
+  //   { date: "2024-07-24", stage: "Done", weekly: 2, monthly: 7 },
+  //   { date: "2024-08-26", stage: "Under Review", weekly: 1, monthly: 3 },
+  //   { date: "2024-09-10", stage: "Todo", weekly: 2, monthly: 4 },
+  //   { date: "2024-10-14", stage: "On Progress", weekly: 3, monthly: 5 },
+  //   { date: "2024-11-17", stage: "Done", weekly: 2, monthly: 6 },
+  //   { date: "2024-12-19", stage: "Under Review", weekly: 1, monthly: 2 },
+  // ];
 
   const [activeChart, setActiveChart] = useState("weekly");
   const chartContainerRef = useRef(null);
@@ -157,7 +157,7 @@ export default function VerticalChart() {
                 tickFormatter={(date) => {
                   const d = new Date(date);
                   if (activeChart === "weekly") {
-                    const weekNum = Math.ceil(d.getDate() / 7);
+                    const weekNum = Math.ceil(d.getDate() / 7);;
                     return `Week ${weekNum}`;
                   } else {
                     return d.toLocaleDateString("en-US", { month: "short" });

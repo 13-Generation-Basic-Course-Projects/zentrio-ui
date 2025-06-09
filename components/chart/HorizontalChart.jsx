@@ -35,7 +35,7 @@ export default function HorizontalChart({ amtChklistTodo, amtChklistProgress, am
 
       <div className="relative w-full">
         <svg
-          className="w-full h-auto "
+          className="w-full h-auto"
           viewBox={`0 0 ${viewBoxWidth} ${totalHeight + 60}`}
           preserveAspectRatio="xMinYMin meet"
           role="img"

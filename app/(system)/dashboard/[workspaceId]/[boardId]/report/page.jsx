@@ -7,8 +7,11 @@ import React from "react";
 
 //useage route : http://localhost:3000/dashboard/1/1/report
 export default async function Report({ boardId }) {
-  // const boardId = `8d985fb5-cdd6-45a5-82a0-ee821f3aceda`;
+  // export default async function Report() {
+  // const boardId = `feb6d22e-b2d6-4105-b3ad-663c7148c337`;
+  // const {boardId} = params;
   const reportData = await getReportAction({ boardId });
+  // console.log("Param: ", boardId)
 
   return (
     <>
@@ -18,7 +21,7 @@ export default async function Report({ boardId }) {
           <ModalSaveAs key="modal-save-as" />,
         ]}
         report={reportData}
-        boardId={boardId} // -> prop me at Reportpage.jsx
+        boardId={boardId} // -> prop me if you can
       />
     </>
   );
