@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useState, useMemo } from "react";
+import React, { useRef, useState, useMemo, useEffect } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -17,6 +17,19 @@ import BredCrum from "../bredcrum/MyBredcrum";
 import ModalCreateGanttBar from "../modal/board/ModalCreateGanttBar";
 import CardTaskCalender from "../card/CardTaskCalender";
 import CardTCommentCalender from "../card/CardCommentCalender";
+import { dropdown } from "@heroui/theme";
+import { Button } from "@heroui/react";
+
+/*
+ * Use normalizeDateToDay to compare dates ignoring time.
+ * Adjust selected end date by subtracting 1 day for inclusiveness.
+ */
+
+function normalizeDateToDay(date) {
+  const d = new Date(date);
+  d.setHours(0, 0, 0, 0);
+  return d.getTime();
+}
 
 export default function MyCalender({ tasks }) {
   const calendarRef = useRef(null);
@@ -54,6 +67,16 @@ export default function MyCalender({ tasks }) {
       border: "border-orange-500",
     },
   ];
+
+  /*
+   * for right click state
+   */
+  const [contextMenu, setContextMenu] = useState({
+    visible: false,
+    x: 0,
+    y: 0,
+    eventId: null,
+  });
 
   const mappedTasks = useMemo(() => {
     const uniqueIds = new Set();
@@ -110,30 +133,18 @@ export default function MyCalender({ tasks }) {
 
     if (type === "task") {
       return (
-        <div>
-          <div
-            className={`${baseStyle} h-[70px] text-[0.9rem] ${
-              color?.border || "border-green-500"
-            } p-1 flex flex-col`}
-          >
-            <div className="text-[0.65rem] font-medium bg-opacity-80 bg-white w-fit px-2 py-[2px] rounded">
-              {formattedDate}
-            </div>
-            <div className="flex items-center gap-1">
-              <ClipboardList className="w-4 h-4" />
-              <span className="truncate">{event.title}</span>
-            </div>
+        <div
+          className={`${baseStyle} h-[70px] text-[0.9rem] ${
+            color?.border || "border-green-500"
+          } p-1 flex flex-col`}
+        >
+          <div className="text-[0.65rem] font-medium bg-opacity-80 bg-white w-fit px-2 py-[2px] rounded">
+            {formattedDate}
           </div>
-          {/* at here for create comment */}
-          <button
-            onClick={() => {
-              setNewEventData({ ...newEventData, type: "task" });
-              setIsOpen(true);
-            }}
-            className="fixed bottom-4 right-4 bg-blue-500 text-white rounded-full p-4 shadow-md"
-          >
-            +
-          </button>
+          <div className="flex items-center gap-1">
+            <ClipboardList className="w-4 h-4" />
+            <span className="truncate">{event.title}</span>
+          </div>
         </div>
       );
     }
@@ -141,10 +152,23 @@ export default function MyCalender({ tasks }) {
     if (type === "comment") {
       return (
         <div
-          className={`${baseStyle} mt-2 h-[30px] text-[0.7rem] flex items-center gap-1 border-green-500`}
+          onContextMenu={(e) => {
+            e.preventDefault();
+            setContextMenu({
+              visible: true,
+              x: e.clientX,
+              y: e.clientY,
+              eventId: event.id,
+            });
+          }}
+          className={`mt-1 h-[30px] text-[0.7rem] flex items-center gap-1 rounded border-2 border-dashed px-2 py-1 ${
+            color?.text || "text-green-600"
+          } ${color?.light || "bg-green-100"}`}
         >
-          <span>comment</span>
           <MessageCircleMore className="w-4 h-4" />
+          <span className="truncate">
+            {event.extendedProps.noted || "No note"}
+          </span>
         </div>
       );
     }
@@ -163,52 +187,113 @@ export default function MyCalender({ tasks }) {
     setCurrentTitle(calendarApi.view.title);
   };
 
-
   /* use for handler modal comment */
   const [isOpen, setIsOpen] = useState(false);
+
+  /* state use for comments dropdown */
+  const [commentDropdown, setCommentDropdown] = useState({
+    visible: false,
+    x: 0,
+    y: 0,
+    eventData: {
+      noted: "",
+      start: "",
+      end: "",
+      type: "comment",
+    },
+  });
+
   const [newEventData, setNewEventData] = useState({
-    title: "",
-    description: "",
-    type: "task",
+    noted: "",
+    // description: "",
+    type: "comment",
     start: "",
     end: "",
   });
+  const [showPopup, setShowPopup] = useState(false);
   const handleDateSelect = (info) => {
-    setNewEventData({
-      title: "",
-      description: "",
-      type: "task", // or "comment"
-      start: info.startStr,
-      end: info.endStr,
+    const selectedStart = new Date(info.startStr);
+    const selectedEnd = new Date(info.endStr);
+
+    const isWithinAnyTask = mappedTasks.some((task) => {
+      const taskStart = normalizeDateToDay(task.start);
+      const taskEnd = normalizeDateToDay(task.end);
+      const selStart = normalizeDateToDay(selectedStart);
+      const selEnd = normalizeDateToDay(
+        new Date(selectedEnd.getTime() - 24 * 60 * 60 * 1000)
+      );
+
+      return selStart >= taskStart && selEnd <= taskEnd;
     });
-    setIsOpen(true);
+
+    if (!isWithinAnyTask) {
+      setShowPopup(true);
+      return;
+    }
+
+    // Use cursor position if available (must pass via event)
+    const x = info.jsEvent?.clientX || window.innerWidth / 2;
+    const y = info.jsEvent?.clientY || window.innerHeight / 2;
+
+    setCommentDropdown({
+      visible: true,
+      x,
+      y,
+      eventData: {
+        noted: "",
+        start: info.startStr,
+        end: info.endStr,
+        type: "comment",
+      },
+    });
   };
 
   const handleEventSubmit = () => {
     const color = colorList[Math.floor(Math.random() * colorList.length)];
 
-    const newEvent = {
-      id: Date.now().toString(),
-      title: newEventData.title,
-      start: newEventData.start,
-      end: newEventData.end,
-      extendedProps: {
-        type: newEventData.type,
-        content: newEventData.description,
-        color,
-      },
-    };
+    if (newEventData.id) {
+      // update existing
+      setEvents((prev) =>
+        prev.map((ev) =>
+          ev.id === newEventData.id
+            ? {
+                ...ev,
+                noted: newEventData.noted,
+                start: newEventData.start,
+                end: newEventData.end,
+                extendedProps: {
+                  ...ev.extendedProps,
+                  type: newEventData.type,
+                  content: newEventData.description,
+                  color,
+                },
+              }
+            : ev
+        )
+      );
+    } else {
+      // create new
+      const newEvent = {
+        id: Date.now().toString(),
+        title: "Comment",
+        noted: newEventData.noted,
+        start: newEventData.start,
+        end: newEventData.end,
+        extendedProps: {
+          type: newEventData.type,
+          content: newEventData.description,
+          color,
+        },
+      };
+      setEvents((prev) => [...prev, newEvent]);
+    }
 
-    setEvents((prev) => [...prev, newEvent]);
+    setIsOpen(false);
   };
-  
-  
-
 
   return (
     <div className="p-4 h-screen flex flex-col overflow-hidden">
       <BredCrum board="Hikko Design" feature="Calender" header="Calender" />
-
       {/* Move header outside the grid */}
       <div className="flex space-x-[500px] items-center mt-4 px-2 mb-6">
         <button
@@ -236,7 +321,6 @@ export default function MyCalender({ tasks }) {
           </button>
         </div>
       </div>
-
       {/* Full 12-col grid */}
       <div className="grid grid-cols-12 gap-4 h-full">
         <div className="col-span-9 max-h-[700px]  pr-2">
@@ -255,10 +339,10 @@ export default function MyCalender({ tasks }) {
               eventContent={renderEventContent}
               datesSet={(arg) => setCurrentTitle(arg.view.title)}
               height="auto"
-              
               /* it make comment can select */
               selectable={true}
-              select={(info) => handleDateSelect(info)}
+              // select={(info) => handleDateSelect(info)}
+              select={(info, jsEvent) => handleDateSelect({ ...info, jsEvent })}
             />
           </div>
         </div>
@@ -271,65 +355,28 @@ export default function MyCalender({ tasks }) {
           <CardTCommentCalender tasks={tasks} />
         </div>
       </div>
-
       {/* modal for create commemt when select at button */}
-      {isOpen && (
+      {/* {isOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-md w-[400px] space-y-4">
-            <h2 className="text-lg font-semibold">Create Event</h2>
-            <input
-              className="w-full border rounded px-3 py-1"
-              placeholder="Title"
-              value={newEventData.title}
-              onChange={(e) =>
-                setNewEventData({ ...newEventData, title: e.target.value })
-              }
-            />
-            <textarea
-              className="w-full border rounded px-3 py-1"
-              placeholder="Description"
-              value={newEventData.description}
-              onChange={(e) =>
-                setNewEventData({
-                  ...newEventData,
-                  description: e.target.value,
-                })
-              }
-            />
-            <select
-              className="w-full border rounded px-3 py-1"
-              value={newEventData.type}
-              onChange={(e) =>
-                setNewEventData({ ...newEventData, type: e.target.value })
-              }
-            >
-              <option value="task">Task</option>
-              <option value="comment">Comment</option>
-            </select>
+          <div className="bg-white p-6 rounded-xl shadow-xl w-[400px] space-y-4">
+            <h2 className="text-lg font-semibold text-blue-600 flex items-center gap-2">
+              <MessageCircleMore className="w-5 h-5" />
+              Create Comment (Note)
+            </h2>
 
-            <div className="flex gap-2">
-              <input
-                type="date"
-                className="w-full border rounded px-3 py-1"
-                value={newEventData.start}
-                onChange={(e) =>
-                  setNewEventData({ ...newEventData, start: e.target.value })
-                }
-              />
-              <input
-                type="date"
-                className="w-full border rounded px-3 py-1"
-                value={newEventData.end}
-                onChange={(e) =>
-                  setNewEventData({ ...newEventData, end: e.target.value })
-                }
-              />
-            </div>
+            <input
+              className="w-full border border-blue-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              placeholder="Write your note here ✍️"
+              value={newEventData.noted}
+              onChange={(e) =>
+                setNewEventData({ ...newEventData, noted: e.target.value })
+              }
+            />
 
             <div className="flex justify-end gap-2">
               <button
                 onClick={() => setIsOpen(false)}
-                className="px-4 py-1 text-sm rounded bg-gray-200"
+                className="px-4 py-1 text-sm rounded bg-gray-200 hover:bg-gray-300"
               >
                 Cancel
               </button>
@@ -338,11 +385,151 @@ export default function MyCalender({ tasks }) {
                   handleEventSubmit();
                   setIsOpen(false);
                 }}
-                className="px-4 py-1 text-sm rounded bg-blue-500 text-white"
+                className="px-4 py-1 text-sm rounded bg-blue-500 text-white hover:bg-blue-600"
               >
                 Save
               </button>
             </div>
+          </div>
+        </div>
+      )} */}
+      {/* alert popup range comment */}
+      {showPopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+          <div className="bg-white px-6 py-4 rounded-xl shadow-xl w-[350px] space-y-3">
+            <h3 className="text-red-600 font-semibold text-lg">
+              ⚠️ Invalid Selection
+            </h3>
+            <p className="text-gray-700 text-sm">
+              Comments can only be added within the duration of a task.
+            </p>
+            <div className="flex justify-end">
+              <button
+                onClick={() => setShowPopup(false)}
+                className="px-4 py-1 text-sm rounded bg-blue-500 text-white hover:bg-blue-600"
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Render the Context Menu (when right click it give this option) */}
+      {contextMenu.visible && (
+        <div
+          style={{
+            position: "fixed",
+            top: contextMenu.y,
+            left: contextMenu.x,
+            backgroundColor: "white",
+            // border: "1px solid #ccc",
+            boxShadow: "0 2px 10px rgba(0,0,0,0.2)",
+            borderRadius: "15px",
+            zIndex: 10000,
+            width: "100px",
+          }}
+          onMouseLeave={() =>
+            setContextMenu({ ...contextMenu, visible: false })
+          }
+        >
+          <button
+            className="w-full px-3 py-2 text-left hover:bg-gray-100 text-caption-tiny"
+            onClick={() => {
+              const comment = events.find((e) => e.id === contextMenu.eventId);
+              if (comment) {
+                setNewEventData({
+                  ...comment,
+                  noted: comment.noted || "",
+                  start: comment.start,
+                  end: comment.end,
+                  type: comment.extendedProps.type,
+                });
+                setIsOpen(true); // open modal for update
+                setContextMenu({ ...contextMenu, visible: false });
+              }
+            }}
+          >
+            Update
+          </button>
+          <button
+            className="w-full px-3 py-2 text-left hover:bg-gray-100 text-red-600 text-caption-tiny"
+            onClick={() => {
+              setEvents((prev) =>
+                prev.filter((e) => e.id !== contextMenu.eventId)
+              );
+              setContextMenu({ ...contextMenu, visible: false });
+            }}
+          >
+            Delete
+          </button>
+        </div>
+      )}
+      {/* Render dropdown for comment input */}
+      {commentDropdown.visible && (
+        <div
+          className="fixed bg-white p-4 rounded-medium shadow-xl border w-[300px] z-50"
+          style={{ top: commentDropdown.y + 120 }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <h2 className="text-body-sm font-semibold text-blue-600 flex items-center gap-2 mb-2">
+            <MessageCircleMore className="w-4 h-4" />
+            Create Comment (Note)
+          </h2>
+
+          <input
+            className="w-full border border-blue-300 rounded-medium px-3 py-2 mb-3 focus:outline-none focus:ring-2 focus:ring-blue-400 text-caption-tiny"
+            placeholder="Write your note here ✍️"
+            value={commentDropdown.eventData.noted}
+            onChange={(e) =>
+              setCommentDropdown({
+                ...commentDropdown,
+                eventData: {
+                  ...commentDropdown.eventData,
+                  noted: e.target.value,
+                },
+              })
+            }
+          />
+
+          <div className="flex justify-end gap-2">
+            <Button
+              // color="primary"
+              radius="full"
+              type="submit"
+              onClick={() =>
+                setCommentDropdown((prev) => ({ ...prev, visible: false }))
+              }
+              className="px-3 py-1 text-btn-sm rounded-medium bg-gray-200 hover:bg-gray-300"
+            >
+              Cancel
+            </Button>
+            <Button
+              color="primary"
+              radius="full"
+              type="submit"
+              onClick={() => {
+                const color =
+                  colorList[Math.floor(Math.random() * colorList.length)];
+
+                const newEvent = {
+                  id: Date.now().toString(),
+                  title: "Comment",
+                  noted: commentDropdown.eventData.noted,
+                  start: commentDropdown.eventData.start,
+                  end: commentDropdown.eventData.end,
+                  extendedProps: {
+                    type: "comment",
+                    color,
+                  },
+                };
+
+                setEvents((prev) => [...prev, newEvent]);
+                setCommentDropdown((prev) => ({ ...prev, visible: false }));
+              }}
+              className="px-3 py-1 text-btn-sm rounded-medium "
+            >
+              Save
+            </Button>
           </div>
         </div>
       )}
