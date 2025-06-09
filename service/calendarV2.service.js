@@ -84,3 +84,40 @@ export const getGanttChartByBoardIdService = async ({ boardId, token }) => {
     throw error;
   }
 };
+
+/* calendar controller */
+/* 
+* create noted in calendar 
+*/
+export const createNoteInCalendarService = async ({
+  token,
+  noted,
+  startDate,
+  tillDate,
+  taskId,
+}) => {
+  try {
+    const url = calendarV2RouteGroup.createNoteInCalendar();
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        noted,
+        startDate,
+        tillDate,
+        taskId,
+      }),
+    });
+
+    const data = await res.json();
+    console.log("📥📝 Backend responded create note with:", data);
+
+    return data; s
+  } catch (error) {
+    console.error("Create note service error📝🤔:", error.message);
+    throw error;
+  }
+};

@@ -13,7 +13,7 @@ const colorMap = [
 
 export default function CardTaskCalender({ tasks, onTaskClick }) {
   return (
-    <Card className="py-4 rounded-large bg-white w-full mx-auto shadow-sm h-[350px]">
+    <Card className="py-4 rounded-medium bg-white w-full mx-auto shadow-sm h-[350px]">
       <CardHeader className="pb-0 pt-2 px-6 flex-col items-start">
         <div className="flex items-center gap-3">
           <Image
@@ -21,17 +21,17 @@ export default function CardTaskCalender({ tasks, onTaskClick }) {
             className="w-6 h-6 object-contain"
             alt="task-icon"
           />
-          <h1 className="text-title text-large font-semibold">Tasks</h1>
+          <h1 className="text-title text-h5 font-semibold">Tasks</h1>
         </div>
       </CardHeader>
 
-      <CardBody className="overflow-y-auto scrollbar-hidden py-3 px-4 rounded-lg">
+      <CardBody className="overflow-y-auto scrollbar-hidden py-3 px-4 rounded-medium text-body-sm">
         {tasks.length > 0 ? (
           tasks.map((el, i) => {
             const color = colorMap[i % colorMap.length];
             return (
               <div
-                key={i}
+                key={el.id}
                 onClick={() => {
                   if (el.start) {
                     onTaskClick?.(el.start, el.id);
@@ -39,7 +39,7 @@ export default function CardTaskCalender({ tasks, onTaskClick }) {
                 }}
                 className="py-3 px-3 flex items-center justify-between gap-2 hover:bg-gray-100 rounded-xl cursor-pointer active:bg-gray-100 transition-colors"
               >
-                <div className="flex items-center gap-3 flex-1 min-w-0">
+                <div className="flex items-center gap-3 flex-1 min-w-0 text-body-sm">
                   <span
                     className={`w-4 h-4 rounded-full ${color.value} flex-shrink-0`}
                   />

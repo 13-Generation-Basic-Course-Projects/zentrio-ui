@@ -8,4 +8,8 @@ export const calendarV2RouteGroup = {
     `${apiConfig.baseUrl}/gantt-bars/gantt-charts/${ganttChartId}`, // Get gantt bar by gantt chart id
   getGanttChartByBoardId: (boardId) =>
     `${apiConfig.baseUrl}/gantt-charts/boards/${boardId}`, //Get gantt chart by specific boards ID
+
+  /* calendar controller */
+  createNoteInCalendar: () =>
+    `${apiConfig.baseUrl}/calendars/tasks`, // create noted in calendar
 };

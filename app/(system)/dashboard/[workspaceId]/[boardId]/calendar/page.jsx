@@ -1,4 +1,5 @@
 import {
+  createNoteInCalendarAction,
   getGanttBarByGanttChartIdAction,
   getGanttChartByBoardIdAction,
   getTaskByBoardIdAndGanttBarIdAction,
@@ -70,12 +71,15 @@ export default async function Calender({ params }) {
         );
       }
     }
-    console.log("All tasks in calendar: ", allTasks);
+    console.log("✅👨‍🏭 All tasks in calendar: ", allTasks);
+   
 
-    // ✅ Render the calendar with fetched tasks
     return (
       <div>
-        <MyCalender tasks={allTasks} />
+        <MyCalender
+          tasks={allTasks}
+          createNoteAction={createNoteInCalendarAction}
+        />
       </div>
     );
   } catch (error) {

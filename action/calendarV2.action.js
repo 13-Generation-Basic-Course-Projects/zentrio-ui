@@ -1,6 +1,6 @@
 "use server";
 import { Token } from "@/constant/token";
-import { getGanttBarByGanttChartIdService, getGanttChartByBoardIdService, getTaskByBoardIdAndGanttBarIdService } from "@/service/calendarV2.service";
+import { createNoteInCalendarService, getGanttBarByGanttChartIdService, getGanttChartByBoardIdService, getTaskByBoardIdAndGanttBarIdService } from "@/service/calendarV2.service";
 /*
  * getTaskbyBoardId and GanttbarId
  */
@@ -49,5 +49,29 @@ export const getGanttChartByBoardIdAction = async (boardId) => {
     boardId,
     token,
   });
+  return result;
+};
+
+/* 
+* create noted in calendar 
+*/
+export const createNoteInCalendarAction = async ({
+  noted,
+  startDate,
+  tillDate,
+  taskId,
+}) => {
+  const userToken = await Token();
+  const token = userToken.Credential;
+  console.log("Token:", token);
+
+  const result = await createNoteInCalendarService({
+    token,
+    noted,
+    startDate,
+    tillDate,
+    taskId,
+  });
+
   return result;
 };

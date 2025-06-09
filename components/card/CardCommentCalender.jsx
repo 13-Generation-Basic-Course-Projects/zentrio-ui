@@ -59,7 +59,7 @@ export default function CardTCommentCalender({ note, selectedTaskId, taskColorMa
               className="w-7 h-7 object-contain"
               alt="comment-icon"
             />
-            <h1 className="text-title text-large font-semibold">
+            <h1 className="text-title text-h5 font-semibold">
               {selectedTaskId ? "Task Comments" : "All Comments"}
             </h1>
           </div>
@@ -68,14 +68,16 @@ export default function CardTCommentCalender({ note, selectedTaskId, taskColorMa
         <CardBody className="py-3 px-4 space-y-3 overflow-y-auto flex-1">
           {filteredComments.length === 0 ? (
             <div className="flex items-center justify-center h-full text-gray-500">
-              <p className="text-sm">
-                {selectedTaskId ? "No comments for this task" : "No comments available"}
+              <p className="text-body-sm">
+                {selectedTaskId
+                  ? "No comments for this task"
+                  : "No comments available"}
               </p>
             </div>
           ) : (
             filteredComments.map((data, index) => {
               const commentColor = taskColorMap[data.taskId];
-              
+
               return (
                 <div
                   key={index}
@@ -93,11 +95,13 @@ export default function CardTCommentCalender({ note, selectedTaskId, taskColorMa
                       <h3 className="font-semibold text-sm text-gray-900">
                         {data.userId?.username || "Kdey Pesith"}
                       </h3>
-                      <button className={`transition-colors ${
-                        selectedTaskId && commentColor 
-                          ? `${commentColor.text} hover:opacity-70` 
-                          : 'text-green-500 hover:text-green-600'
-                      }`}>
+                      <button
+                        className={`transition-colors ${
+                          selectedTaskId && commentColor
+                            ? `${commentColor.text} hover:opacity-70`
+                            : "text-green-500 hover:text-green-600"
+                        }`}
+                      >
                         <SquarePen
                           size={15}
                           onClick={() => handleClickNote(data)}
@@ -108,16 +112,20 @@ export default function CardTCommentCalender({ note, selectedTaskId, taskColorMa
                       {data.noted}
                     </p>
                     <div className="flex items-center justify-end gap-1">
-                      <AlarmClock className={`w-5 h-5 transition-colors ${
-                        selectedTaskId && commentColor 
-                          ? commentColor.text 
-                          : 'text-green-500'
-                      }`} />
-                      <span className={`text-xs font-medium transition-colors ${
-                        selectedTaskId && commentColor 
-                          ? commentColor.text 
-                          : 'text-green-500'
-                      }`}>
+                      <AlarmClock
+                        className={`w-5 h-5 transition-colors ${
+                          selectedTaskId && commentColor
+                            ? commentColor.text
+                            : "text-green-500"
+                        }`}
+                      />
+                      <span
+                        className={`text-xs font-medium transition-colors ${
+                          selectedTaskId && commentColor
+                            ? commentColor.text
+                            : "text-green-500"
+                        }`}
+                      >
                         {new Date(data.notedAt).toLocaleDateString("en-GB", {
                           day: "2-digit",
                           month: "short",
