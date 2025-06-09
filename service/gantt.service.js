@@ -117,3 +117,34 @@ export const createGanttBarsByGanttChartIdService = async ({
     throw error;
   }
 };
+
+/*
+ * create gantt bar by GantchartId
+ */
+export const deleteGanttBarsByGanttChartIdService = async ({
+  ganttChartId,
+  data,
+  token,
+}) => {
+  try {
+    console.log("from service", { ganttChartId, boardId, token });
+
+    const url = ganttRouteGroup.deleteGanttBar(ganttChartId, boardId);
+
+    const res = await fetch(url, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const result = await res.json();
+    console.log("📥 Backend responded with:", result);
+
+    return result;
+  } catch (error) {
+    console.error("🐞 Error:", error.message);
+    throw error;
+  }
+};
