@@ -64,16 +64,16 @@ export default function ProfileDetailsCardOther({
             </p>
             <p className="flex items-center gap-2">
               <IconJob strokeWidth={1.5} size={4} />
-              {userDetails?.position || "N/A"}
+              {userIdDetail?.position || "N/A"}
             </p>
             <p className="flex items-center gap-2">
               <IconMap strokeWidth={1.5} size={4} color={"currentColor"} />
-              {userDetails?.location || "N/A"}
+              {userIdDetail?.location || "N/A"}
             </p>
             <p className="flex items-center gap-2">
               <IconDate strokeWidth={1.5} size={4} color={"currentColor"} />
-              {userDetails.createdAt
-                ? userDetails.createdAt.split("T")[0]
+              {userIdDetail.createdAt
+                ? userIdDetail.createdAt.split("T")[0]
                 : "N/A"}
             </p>
           </div>
@@ -84,15 +84,15 @@ export default function ProfileDetailsCardOther({
             <p className="flex items-center gap-2">
               <IconPhone strokeWidth={1.5} size={4} color={"currentColor"} />
               +855{" "}
-              {userDetails?.contact
-                ? userDetails?.contact?.startsWith("0")
-                  ? userDetails.contact.slice(1)
-                  : userDetails.contact
+              {userIdDetail?.contact
+                ? userIdDetail?.contact?.startsWith("0")
+                  ? userIdDetail.contact.slice(1)
+                  : userIdDetail.contact
                 : "N/A"}
             </p>
             <p className="flex items-center gap-2">
               <IconMail strokeWidth={1.5} size={4} color={"currentColor"} />
-              {userDetails.email || "N/A"}
+              {userIdDetail.email || "N/A"}
             </p>
           </div>
 

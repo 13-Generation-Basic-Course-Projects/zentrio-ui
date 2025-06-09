@@ -13,6 +13,7 @@ export default function ProfileComponentOther({
   userIdDetail,
 }) {
   console.log("detail the member", MemberDetails);
+  console.log("88", userIdDetail);
   return (
     <div className="min-h-screen p-2">
       <div className="grid grid-cols-1 md:grid-cols-[43%_55%] gap-2 ">

@@ -27,6 +27,7 @@ export default function OtherProfileLayout({
   action,
   userName,
   MemberDetails,
+  userIdDetail,
 }) {
   const searchParams = useSearchParams();
   const params = useParams(); // Get params from the URL path
@@ -96,7 +97,11 @@ export default function OtherProfileLayout({
       key: "profile",
       title: "Profile",
       content: (
-        <OtherProfileTab MemberDetails={MemberDetails} userId={userId} />
+        <OtherProfileTab
+          MemberDetails={MemberDetails}
+          userId={userId}
+          userIdDetail={userIdDetail}
+        />
       ),
     },
     {
