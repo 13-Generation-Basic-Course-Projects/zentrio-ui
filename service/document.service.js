@@ -168,7 +168,11 @@ export const deleteDocumentService = async ({
  * create new document
  */
 export const createDocumentService = async (data, token) => {
-  const res = await fetch(documentRouteGroup.createDocument(), {
+  const url = documentRouteGroup.createDocument();
+
+  console.log("data", data)
+
+  const res = await fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -178,7 +182,9 @@ export const createDocumentService = async (data, token) => {
   });
 
   if (!res.ok) {
-    throw new Error(`Failed to create document: ${res.status}`);
+    const errorText = await res.text();
+    console.log('Error details:', errorText);
+    throw new Error(`Failed: ${res.status}`);
   }
 
   return res.json();

@@ -74,12 +74,13 @@ export const createFileAction = async ({
   try {
     const userToken = await Token(); // get your backend token
     const token = userToken.Credential;
+    revalidatePath("/document");
 
     const data = {
-      name: name,
-      mimeType: mimeType,
+      accessToken: tokenFromGoogle, // optional, if needed
+      folderName: name,
+      types: mimeType,
       boardId: boardId,
-      token: tokenFromGoogle, // optional, if needed
     };
 
     const createdDocument = await createDocumentService(data, token);

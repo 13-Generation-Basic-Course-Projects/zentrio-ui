@@ -89,37 +89,52 @@ export default function ModalCreateDocu({ boardId, tokenFromGoogle }) {
     } else if (["doc", "slide", "sheet"].includes(key)) {
       try {
         const mimeTypes = {
-          doc: "application/vnd.google-apps.document",
-          slide: "application/vnd.google-apps.presentation",
-          sheet: "application/vnd.google-apps.spreadsheet",
+          doc: "DOC",
+          slide: "SLIDE",
+          sheet: "SHEET",
         };
 
-        const docTypes = {
-          doc: "doc", // for Google Docs
-          slide: "presentation", // for Google Slides
-          sheet: "spreadsheets", // for Google Sheets
+        const defaultNames = {
+          doc: "Untitled Document",
+          slide: "Untitled Presentation",
+          sheet: "Untitled Spreadsheet",
         };
 
         const data = {
-          name: "Untitled",
+          name: defaultNames[key],
           mimeType: mimeTypes[key],
           boardId,
           token: tokenFromGoogle,
         };
 
-        const result = await createFileAction(data);
-        const fileId = result?.payload?.id;
+        console.log("Creating Google file with data:", data);
 
-        if (fileId) {
-          const editorType = docTypes[key]; // "document" for doc
-          const editorUrl = `https://docs.google.com/${editorType}/d/${fileId}/edit`;
-          window.open(editorUrl, "_blank");
+        const result = await createFileAction(data);
+        console.log("Create file result:", result);
+
+        // The backend returns the Google Drive URL directly in drive_url
+        const driveUrl = result?.payload?.drive_url;
+
+        console.log("drive url: ", driveUrl)
+
+        if (driveUrl) {
+          console.log("Opening Google Drive URL:", driveUrl);
+          window.open(driveUrl, "_blank");
         } else {
-          alert("File ID missing. Could not open editor.");
+          console.error("Drive URL missing from result:", result);
+          alert("Drive URL missing. Could not open editor.");
         }
       } catch (error) {
         console.error("Error creating Google file:", error);
-        alert("Failed to create Google document.");
+        alert(
+          `Failed to create Google ${
+            key === "doc"
+              ? "document"
+              : key === "slide"
+              ? "presentation"
+              : "spreadsheet"
+          }: ${error.message}`
+        );
       }
     }
   };
