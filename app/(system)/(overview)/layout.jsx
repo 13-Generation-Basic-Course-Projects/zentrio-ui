@@ -17,8 +17,6 @@ export const metadata = {
 
 export default async function OverviewLayout({ children }) {
   const session = await auth();
-
-  console.log("aaa", session?.user);
   return (
     <div className="h-screen flex flex-col overflow-y-hidden ">
       <div className="flex-1 pt-0 flex flex-col overflow-hidden h-[100%] px-2  ">

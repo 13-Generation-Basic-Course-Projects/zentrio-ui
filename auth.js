@@ -65,7 +65,6 @@ export const {
     },
     async session(props) {
       const { token } = props;
-      console.log("this is  the token", token);
       return token;
     },
   },

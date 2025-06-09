@@ -1,120 +1,172 @@
 import { Card, CardHeader, CardBody } from "@heroui/react";
+import { useState } from "react";
 import Image from "next/image";
 import commentlogo from "../../assets/Comment.png";
 import profile from "../../public/image/minh.png";
-import { SquarePen, AlarmClock } from 'lucide-react';
+import { SquarePen, AlarmClock } from "lucide-react";
+import { calendarUpdateNoteAction } from "@/action/calendar.action";
 
-// mock data user
-const users = {
-  "a1b2c3d4-e5f6-7890-abcd-1234567890ab": { name: "Fong", avatar: "https://i.pinimg.com/736x/e6/a9/8a/e6a98a257565d829009a1c1735ee1589.jpg" },
-  "b2a5a1cb-4de2-4b8e-b84e-613e5bd96dbe": { name: "Visa", avatar: "https://i.pinimg.com/736x/b2/5c/9e/b25c9ef93482fe428f1df4dbe4ae60a1.jpg" },
-  "c3efbe9d-781b-4c2b-85b0-0f9a1e4b9e03": { name: "Skan", avatar: "https://i.pinimg.com/736x/ed/f0/2d/edf02dd0f05b7c249f35d3680f306497.jpg" },
-}
+export default function CardTCommentCalender({ note, selectedTaskId, taskColorMap }) {
+  console.log("this is note : ", note);
 
-// function fomart date
-const formatRelativeTime = (dateString) => {
-  const commentDate = new Date(dateString)
-  const now = new Date()
-  const diffInMs = now.getTime() - commentDate.getTime()
-  const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60))
-  const diffInDays = Math.floor(diffInHours / 24)
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedNote, setSelectedNote] = useState(null);
+  const [editedNoteText, setEditedNoteText] = useState("");
 
-  if (diffInHours < 24) {
-    return `${diffInHours} hours ago`
-  } else if (diffInDays === 1) {
-    return "1 day ago"
-  } else {
-    return commentDate.toLocaleDateString("en-GB", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    })
-  }
-}
+  const handleClickNote = (noteData) => {
+    console.log("click note Id : ", noteData.calendarId);
 
-export default function CardTCommentCalender() {
-  const comments = [
-    {
-      comment_id: "c1d2e3f4-5678-9abc-def0-1234567890ab",
-      content: "This task needs some updates, please review.",
-      comment_date: "2025-05-10 14:23",
-      checklist_id: "chk001-a1b2-c3d4-e5f6-123456789abc",
-      commented_by: "a1b2c3d4-e5f6-7890-abcd-1234567890ab",
-    },
-    {
-      comment_id: "d2e3f4g5-6789-abcd-ef01-2345678901bc",
-      content: "Checked and approved the checklist items.",
-      comment_date: "2025-05-11 09:45",
-      checklist_id: "chk002-b2c3-d4e5-f6a7-23456789bcde",
-      commented_by: "b2a5a1cb-4de2-4b8e-b84e-613e5bd96dbe",
-    },
-    {
-      comment_id: "e3f4g5h6-789a-bcde-f012-3456789012cd",
-      content: "Let's add a few more checkpoints here.",
-      comment_date: "2025-05-12 16:30",
-      checklist_id: "chk003-c3d4-e5f6-a7b8-3456789cdef0",
-      commented_by: "c3efbe9d-781b-4c2b-85b0-0f9a1e4b9e03",
-    },
-  ]
+    setSelectedNote(noteData);
+    setEditedNoteText(noteData.noted);
+    setIsModalOpen(true);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!selectedNote) return;
+
+    try {
+      console.log("Hellooooo", selectedNote);
+      const result = await calendarUpdateNoteAction({
+        noteId: selectedNote.calendarId,
+        noted: editedNoteText,
+        startDate: selectedNote.notedAt,
+        tillDate: selectedNote.tillDate,
+        taskId: selectedNote.taskId
+      });
+
+      console.log("Note updated successfully:", result);
+
+      setIsModalOpen(false);
+    } catch (err) {
+      console.error("Failed to update note:", err);
+    }
+  };
+
+  // Filter comments based on selected task
+  const filteredComments = selectedTaskId 
+    ? note?.payload.filter(comment => comment.taskId === selectedTaskId) || []
+    : note?.payload || [];
+
   return (
-    <Card className="py-4 h-[500px] flex flex-col shadow-sm">
-      {/* Header */}
-      <CardHeader className="pb-0 pt-2 px-6 flex-col items-start">
-        <div className="flex items-center gap-2">
-          <Image
-            src={commentlogo}
-            className="w-7 h-7 object-contain"
-            alt="comment-icon"
-          />
-          <h1 className="text-title text-large font-semibold">All Comments</h1>
-        </div>
-      </CardHeader>
+    <>
+      <Card className="py-4 h-[400px] flex flex-col rounded-large shadow-sm">
+        {/* Header */}
+        <CardHeader className="pb-0 pt-2 px-6 flex-col items-start">
+          <div className="flex items-center gap-2">
+            <Image
+              src={commentlogo}
+              className="w-7 h-7 object-contain"
+              alt="comment-icon"
+            />
+            <h1 className="text-title text-large font-semibold">
+              {selectedTaskId ? "Task Comments" : "All Comments"}
+            </h1>
+          </div>
+        </CardHeader>
 
-      {/* Body: Scrollable comments */}
-      <CardBody className="py-3 px-4 space-y-3 overflow-y-auto flex-1 scrollbar-hidden">
-        {comments.map((comment) => {
-          const user = users[comment.commented_by];
-          return (
-            <div
-              key={comment.comment_id}
-              className="flex items-start gap-3 p-5 rounded-large bg-slate-100 transition-colors"
-            >
-              {/* Avatar */}
-              <Image
-                src={profile}
-                className="w-7 h-7 object-cover rounded-full"
-                alt={user?.name}
-                width={28}
-                height={28}
-              />
-
-              {/* Comment Content */}
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between mb-1">
-                  <h3 className="font-semibold text-sm text-gray-900">
-                    {user?.name || "Unknown User"}
-                  </h3>
-                  <button className="text-green-500 hover:text-green-600 transition-colors">
-                    <SquarePen size={15} />
-                  </button>
-                </div>
-
-                <p className="text-body-sm text-gray-600 mb-2 leading-relaxed">
-                  {comment.content}
-                </p>
-
-                <div className="flex items-center text-body-sm justify-end gap-1">
-                  <AlarmClock className="text-green-500 w-5 h-5" />
-                  <span className=" text-green-500 font-medium">
-                    {formatRelativeTime(comment.comment_date)}
-                  </span>
-                </div>
-              </div>
+        <CardBody className="py-3 px-4 space-y-3 overflow-y-auto flex-1">
+          {filteredComments.length === 0 ? (
+            <div className="flex items-center justify-center h-full text-gray-500">
+              <p className="text-sm">
+                {selectedTaskId ? "No comments for this task" : "No comments available"}
+              </p>
             </div>
-          );
-        })}
-      </CardBody>
-    </Card>
+          ) : (
+            filteredComments.map((data, index) => {
+              const commentColor = taskColorMap[data.taskId];
+              
+              return (
+                <div
+                  key={index}
+                  className="flex items-start gap-3 p-5 rounded-large bg-slate-100 transition-colors"
+                >
+                  <Image
+                    src={data.userId?.userProfile || profile}
+                    className="w-7 h-7 object-cover rounded-full"
+                    alt="profile"
+                    width={28}
+                    height={28}
+                  />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between mb-1">
+                      <h3 className="font-semibold text-sm text-gray-900">
+                        {data.userId?.username || "Kdey Pesith"}
+                      </h3>
+                      <button className={`transition-colors ${
+                        selectedTaskId && commentColor 
+                          ? `${commentColor.text} hover:opacity-70` 
+                          : 'text-green-500 hover:text-green-600'
+                      }`}>
+                        <SquarePen
+                          size={15}
+                          onClick={() => handleClickNote(data)}
+                        />
+                      </button>
+                    </div>
+                    <p className="text-sm text-gray-600 mb-2 leading-relaxed">
+                      {data.noted}
+                    </p>
+                    <div className="flex items-center justify-end gap-1">
+                      <AlarmClock className={`w-5 h-5 transition-colors ${
+                        selectedTaskId && commentColor 
+                          ? commentColor.text 
+                          : 'text-green-500'
+                      }`} />
+                      <span className={`text-xs font-medium transition-colors ${
+                        selectedTaskId && commentColor 
+                          ? commentColor.text 
+                          : 'text-green-500'
+                      }`}>
+                        {new Date(data.notedAt).toLocaleDateString("en-GB", {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                        })}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </CardBody>
+      </Card>
 
+      {/* Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+          <div className="bg-bgColor rounded-xl shadow-lg p-6 w-full max-w-md">
+            <h2 className="text-lg font-semibold text-title mb-4">
+              Edit Comment
+            </h2>
+            <form onSubmit={handleSubmit}>
+              <textarea
+                value={editedNoteText}
+                onChange={(e) => setEditedNoteText(e.target.value)}
+                className="w-full border-none text-description rounded-medium p-2 mb-4"
+                rows={4}
+                required
+              />
+              <div className="flex justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="px-4 py-2 text-sm bg-stroke rounded-medium"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 text-sm bg-primary text-white rounded-medium"
+                >
+                  Save
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </>
   );
 }

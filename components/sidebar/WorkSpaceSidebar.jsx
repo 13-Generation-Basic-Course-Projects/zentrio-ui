@@ -87,11 +87,11 @@ export default function WorkSpaceSideBar({
                           asChild
                           tooltip={item?.title || "Untitled Workspace"}
                           className={`group flex w-full items-center justify-between rounded-lg transition-colors duration-200 p-0
-                  ${
-                    isActive
-                      ? "bg-slate-blue text-primary"
-                      : "hover:bg-slate-100 text-gray-700"
-                  }`}
+                            ${
+                              isActive
+                                ? "bg-slate-100 text-gray-700"
+                                : "hover:bg-slate-100 text-gray-700"
+                            }`}
                         >
                           <div className="flex items-center justify-between w-full gap-2">
                             {item?.workspaceId ? (
@@ -137,27 +137,42 @@ export default function WorkSpaceSideBar({
               {/* 2 */}
               <p className="text-body-sm  font-extrabold">Other Workspace</p>
               {Array.isArray(workspaceUsersData.payload) &&
-                workspaceUsersData.payload
-                  .slice() // create a copy to avoid mutating original array
-                  .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // sort by createdAt descending
-                  .map((item, i) => {
-                    const isActive = pathname.includes(item?.workspaceId);
-                    return (
-                      <SidebarMenuItem key={i} className="!border-0 w-full p-0">
-                        <SidebarMenuButton
-                          style={{ borderRadius: "0.5rem" }}
-                          asChild
-                          tooltip={item.title}
-                          className={`group flex w-full items-center justify-between p-0 rounded-lg transition-colors duration-200 
-            ${
-              isActive
-                ? "bg-slate-blue text-primary"
-                : "hover:bg-slate-100 text-gray-700"
-            }`}
-                        >
-                          <div className="flex items-center justify-between w-full gap-2">
-                            {/* Left: Color dot + Title */}
-                            <div className="flex items-center gap-2 overflow-hidden flex-1">
+                workspaceUsersData.payload.map((item, i) => {
+                  const isActive = pathname.includes(item?.workspaceId);
+                  // For shared workspaces, assign color by index
+                  const colorClass =
+                    workspaceColors[item.workspaceId] ||
+                    colorOptions[i % colorOptions.length].className;
+                  const activeColorClass =
+                    activeColorMap[colorClass] || "bg-slate-blue text-primary";
+                  return (
+                    <SidebarMenuItem key={i} className="!border-0 p-0 hidden">
+                      <SidebarMenuButton
+                        style={{ borderRadius: "0.5rem" }}
+                        asChild
+                        tooltip={item?.title || "Untitled Workspace"}
+                        className={`group flex w-full items-center justify-between rounded-lg transition-colors duration-200 p-0
+                          ${
+                            isActive
+                              ? "bg-slate-100 text-gray-700"
+                              : "hover:bg-slate-100 text-gray-700"
+                          }`}
+                      >
+                        <div className="flex items-center justify-between w-full gap-2">
+                          {item?.workspaceId ? (
+                            <Link
+                              href={`/workspace/${item.workspaceId}`}
+                              className="flex items-center gap-2 flex-1 overflow-hidden"
+                            >
+                              <span
+                                className={`${colorClass} h-5 w-5 rounded-full inline-block flex-shrink-0`}
+                              />
+                              <span className="truncate text-left sm:text-body-sm text-gray-800">
+                                {item?.title || "Untitled Workspace"}
+                              </span>
+                            </Link>
+                          ) : (
+                            <div className="flex items-center gap-2 flex-1 overflow-hidden">
                               <span
                                 style={{ backgroundColor: "#59BAD5" }}
                                 className="h-5 w-5 rounded-full flex-shrink-0"

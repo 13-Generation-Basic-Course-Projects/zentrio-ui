@@ -1,10 +1,20 @@
 import React from "react";
 import ProfileComponent from "./ProfileComponent";
+import ProfileComponentOther from "./ProfileComponentOther";
 
-export default function OtherProfileTab() {
+export default function OtherProfileTab({
+  MemberDetails,
+  userId,
+  userIdDetail,
+}) {
+  console.log("helo in other profiletba", userIdDetail);
   return (
     <div className="flex flex-col min-h-screen">
-      <ProfileComponent />
+      <ProfileComponentOther
+        MemberDetails={MemberDetails}
+        userId={userId}
+        userIdDetail={userIdDetail}
+      />
     </div>
   );
 }

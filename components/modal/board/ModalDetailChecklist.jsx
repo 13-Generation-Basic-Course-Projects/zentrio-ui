@@ -14,7 +14,11 @@ import {
   DateRangePicker,
   Input,
 } from "@heroui/react";
-import { IconAdd, StackedProfiles } from "../../icon/everyicon";
+import {
+  IconAdd,
+  StackedProfileChecklist,
+  StackedProfiles,
+} from "../../icon/everyicon";
 import ModalUploadAttachment from "./ModalUploadAttachment";
 import { allAttachment } from "@/data/board/allAttachment";
 import { CardCheckList } from "@/components/card/CardChecklist";
@@ -22,13 +26,19 @@ import Trash from "@/components/button/Trash";
 import PopupAction from "@/components/popup/PopupAction";
 import { IconpopupDelete } from "@/components/icon/Iconpopup";
 
-export default function ModalDetailChecklist({  title,
-                                  startDate,
-                                  status,
-                                  label,
-                                  comment,
-                                  image,
-                                  hideImage}) {
+export default function ModalDetailChecklist({
+  id,
+  taskTitle,
+  title,
+  startDate,
+  status,
+  label,
+  description,
+  image,
+  member,
+  hideImage,
+  preventUserImage,
+}) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const [activeTab, setActiveTab] = useState("add"); // 'add' or 'all'
@@ -51,18 +61,30 @@ export default function ModalDetailChecklist({  title,
       "https://cdn-icons-png.flaticon.com/128/833/833524.png"
     ); // Default icon
   };
-  
-  
+  console.log("member", member);
+
+  console.log("id", id);
+
   return (
     <>
       <Button
-      onPress={onOpen}
-        className="h-full w-full p-0 shadow-sm"   
+        onPress={onOpen}
+        className="h-full w-full p-0 shadow-sm"
         fullWidth="true"
       >
-    <div className="h-full w-full  max-w-none !p-0 bg-pink-300"> 
-    <CardCheckList   status={status}  title={title} startDate={startDate} comment ={comment} label={label} image={image} hideImage={hideImage}  />    
-    </div>
+        <div className="h-full w-full  max-w-none !p-0 bg-pink-300">
+          <CardCheckList
+            status={status}
+            title={title}
+            startDate={startDate}
+            comment={"static comment"}
+            label={label}
+            image={image}
+            hideImage={hideImage}
+            member={member}
+            id={id}
+          />
+        </div>
       </Button>
       <Modal
         isOpen={isOpen}
@@ -114,7 +136,9 @@ export default function ModalDetailChecklist({  title,
                       strokeLinejoin="round"
                     />
                   </svg>
-                  <p className="text-h5 font-medium">Draw ERD (Task name)</p>
+                  <p className="text-h5 font-medium">
+                    {taskTitle || "task name"}
+                  </p>
                 </div>
               </ModalHeader>
 
@@ -123,8 +147,8 @@ export default function ModalDetailChecklist({  title,
                 {/* for show image of task */}
                 <div className=" border rounded-medium flex justify-center items-center">
                   <img
-                    // src="https://codewithmosh.com/_next/image?url=https%3A%2F%2Fcdn.filestackcontent.com%2F8MbtJ4hTAaOk3KPcptqZ&w=3840&q=75"
                     src={
+                      image ||
                       "https://codewithmosh.com/_next/image?url=https%3A%2F%2Fcdn.filestackcontent.com%2F8MbtJ4hTAaOk3KPcptqZ&w=3840&q=75"
                     }
                     alt="Dynamic ERD"
@@ -135,7 +159,7 @@ export default function ModalDetailChecklist({  title,
                 <div className="flex flex-col ">
                   <div className="flex flex-wrap justify-between items-center">
                     <p className="text-title text-h6 underline font-normal">
-                      Design the ux ui of mobile application
+                      {title || "title of checklist"}
                     </p>
                     {/* <button className="bg-progress-red/20 rounded-full p-2 w-[50px] h-[50px] flex justify-center items-center border-title/20 border-1 hover:bg-[#FFF] hover:border-1 hover:border-primary">
                       <svg
@@ -151,9 +175,9 @@ export default function ModalDetailChecklist({  title,
                         />
                       </svg>
                     </button> */}
-                    
-                     <PopupAction
-                      title={<Trash/>}
+
+                    <PopupAction
+                      title={<Trash />}
                       color={"text-blue-600"}
                       massageTitle={"Are you sure?"}
                       massageBody={"You want to delete this checklist "}
@@ -162,19 +186,15 @@ export default function ModalDetailChecklist({  title,
                       massageDo={"Yes, Delete"}
                       massageUndo={"No, Cancel"}
                     />
-                      
-                    
-                    
                   </div>
                   <div className="flex flex-wrap justify-between items-center mt-5">
-                    <StackedProfiles />
+                    <StackedProfileChecklist member={member} />
                     <div>
                       <div className="w-full max-w-xl flex flex-row gap-4">
                         <DateRangePicker
                           showMonthAndYearPickers
                           //   label="Birth Date"
                           variant="none"
-                          
                           size="md"
                         />
                       </div>
@@ -221,9 +241,8 @@ export default function ModalDetailChecklist({  title,
                     </div>
                   </div>
                   <p className="text-title/50 text-caption ">
-                    The Task Management System is a web-based application
-                    designed to help individuals and teams effectively manage
-                    their daily activity.
+                    {description ||
+                      "The Task Management System is a web-based application designed to help individuals and teams effectively manage their daily activity"}
                   </p>
                 </div>
 
@@ -327,6 +346,7 @@ export default function ModalDetailChecklist({  title,
                         </div>
                       </div>
 
+                      {/* comment */}
                       <div className="space-y-1">
                         <p className="flex items-center gap-2">
                           <img
@@ -339,8 +359,9 @@ export default function ModalDetailChecklist({  title,
 
                         <div className="ml-8 text-title/50 text-caption flex flex-col space-y-1">
                           <p>
-                            Discussed project timeline and identified key
-                            milestones.
+                            {
+                              "Static  Discussed project timeline and identified key milestones."
+                            }
                           </p>
                           <div className="flex justify-end">
                             <div className="flex flex-col items-end bg-progress-green/20 rounded-full p-2">
@@ -414,7 +435,6 @@ export default function ModalDetailChecklist({  title,
                               key={idx}
                               className="mt-1 flex items-center space-x-2"
                             >
-                            
                               <a
                                 href={item.linkAttached[idx]}
                                 target="_blank"

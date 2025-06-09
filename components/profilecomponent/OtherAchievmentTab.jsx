@@ -1,10 +1,11 @@
 import React from "react";
 import AchievmentComponent from "./AchievmentComponent";
+import AchievmentComponentOther from "./AchievmentComponentOther";
 
-export default function OtherAchievmentTab() {
+export default function OtherAchievmentTab({ MemberDetails, userId }) {
   return (
     <div className="flex flex-col min-h-screen">
-      <AchievmentComponent />
+      <AchievmentComponentOther MemberDetails={MemberDetails} userId={userId} />
     </div>
   );
 }

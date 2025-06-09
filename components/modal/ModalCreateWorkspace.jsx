@@ -187,7 +187,7 @@ export default function ModalCreateWorkspace({ createWorkspace }) {
                     <textarea
                       {...register("description")}
                       placeholder="Type here"
-                      className="text-title/50 text-caption bg-transparent w-full border border-gray-300 rounded-lg p-3 resize-none h-20"
+                      className="text-title/50 text-caption bg-transparent w-full border border-gray-300 rounded-xl p-3 resize-none h-20"
                       style={{
                         backgroundImage: `url("data:image/svg+xml;utf8,${svgIconType}")`,
                         backgroundRepeat: "no-repeat",

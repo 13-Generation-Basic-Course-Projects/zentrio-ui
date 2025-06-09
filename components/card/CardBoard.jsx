@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, CardHeader, CardBody, CardFooter } from "@heroui/card";
 import {
   IconDelete,
@@ -12,6 +12,8 @@ import iconMember from "@/assets/memberSideBar.png";
 import Image from "next/image";
 import { usePathname, useSearchParams } from "next/navigation";
 import ModalDelete from "../modal/ModalDelete";
+import { StackedUser } from "../useravatar/StackUser";
+import { getMemberByBoardIdAction } from "@/action/board.action";
 
 export default function CardBoard({
   title,
@@ -30,8 +32,7 @@ export default function CardBoard({
   /* Extract workspaceId and projectId from the current URL */
   const pathSegments = pathname.split("/");
   const workspaceId = pathSegments[2] || "defaultWorkspace";
-  // const projectId = pathSegments[3] || "defaultProject";
-  const boardIdFromURL = pathSegments[3] || boardId; // defaultProject
+  const projectId = pathSegments[3] || "defaultProject";
 
   const userRole = role || searchParams.get("role") || "pm";
   const [favorited, setFavorited] = useState(isFavourite);
@@ -70,7 +71,30 @@ export default function CardBoard({
 
     setEditing(false); // Hide input after update
   };
+  // fong
+  const [members, setMembers] = useState([]); // State to store members
+  const [loading, setLoading] = useState(true); // State for loading
+  const [error, setError] = useState(null); // State for error handling
+  /* Fetch members when component mounts or boardId changes */
+  useEffect(() => {
+    const fetchMembers = async () => {
+      try {
+        setLoading(true);
+        const membersResponse = await getMemberByBoardIdAction({ boardId });
+        const allMemberInBoard = membersResponse?.payload || [];
+        setMembers(allMemberInBoard);
+      } catch (err) {
+        console.error("❌ Failed to fetch members:", err);
+        setError("Failed to load members");
+        setMembers([]); // Fallback to empty array
+      } finally {
+        setLoading(false);
+      }
+    };
 
+    fetchMembers();
+  }, [boardId]);
+  console.log("member", members);
   return (
     <Card className="py-4 h-[340px] rounded-xl shadow-sm">
       {/* Card Header: shows editable title and favorite button */}
@@ -133,30 +157,17 @@ export default function CardBoard({
 
       {/* Card Body: background image or placeholder */}
       <CardBody className="overflow-visible py-2">
-        <Link
-          href={`/dashboard/${workspaceId}/${boardIdFromURL}/board?role=${role}`}
-        >
-          {image &&
-          (image.startsWith("http") || image.startsWith("data:image")) ? (
-            // Cover is an image URL or base64 image string
-            <img
-              src={image}
-              alt="Board Cover"
-              className="w-full h-32 object-cover rounded-lg"
+        <Link href={`/dashboard/${workspaceId}/${boardId}/board?role=${role}`}>
+          {image && image.startsWith("bg-") ? (
+            <div
+              className={`rounded-xl w-full h-32 bg-cover bg-center ${image}`}
+              aria-label={`Card background for ${title}`}
             />
           ) : image ? (
-            // Cover is a color keyword
-            <div
-              className={`w-full h-32 rounded-lg ${
-                {
-                  red: "bg-board-red",
-                  blue: "bg-board-primary",
-                  green: "bg-board-green",
-                  purple: "bg-board-purple",
-                  orange: "bg-board-orange",
-                  violet: "bg-board-violet",
-                }[image] || "bg-gray-300"
-              }`}
+            <img
+              src={image}
+              alt={`Card background for ${title}`}
+              className="object-cover rounded-xl w-full h-32"
             />
           ) : (
             // No cover at all
@@ -170,7 +181,7 @@ export default function CardBoard({
 
       {/* Card Footer: member count and delete button */}
       <CardFooter className="pt-2 px-4 flex flex-col items-start space-y-4">
-        <StackedProfiles />
+        <StackedUser image={members} />
         <div className="flex w-full justify-between text-sm text-gray-600">
           {/* Members icon and text */}
           <div className="flex items-center gap-1">

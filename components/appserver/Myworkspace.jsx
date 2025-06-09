@@ -51,12 +51,10 @@ export default function Myworkspace({
               />
             </>
           ) : (
-            
-              <CardBoardEmpty
-                Workspaceid={Workspaceid}
-                createBoardAction={createBoardAction}
-              />
-            
+            <CardBoardEmpty
+              Workspaceid={Workspaceid}
+              createBoardAction={createBoardAction}
+            />
           )}
         </div>
       </div>

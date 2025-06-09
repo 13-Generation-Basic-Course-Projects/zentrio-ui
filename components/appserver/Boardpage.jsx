@@ -14,18 +14,39 @@ import ModalNotification from "../modal/noti/ModalNotification";
 import ModalCreateGanttChart from "../modal/board/ModalCreateGanttChart";
 import ModalCreateGanttBar from "../modal/board/ModalCreateGanttBar";
 
-export default function SystemBoard({ user }) {
+export default function SystemBoard({
+  user,
+  tasks,
+  ganttbar,
+  checklistbyTaskIds,
+  allMemberInBoard,
+  boardId,
+  ganttChartId,
+  ganttChartName,
+  preventUserImage,
+}) {
   const pathname = usePathname();
   const segments = pathname.split("/");
   const workspaceId = segments[2]; // gets workspaceId from URL like /dashboard/otherworkspace/2/board
 
   const [activeTab, setActiveTab] = useState("kanban");
 
+  console.log("board id for passing prop", ganttChartId);
+
   // Conditionally add ModalInviteMember only if workspaceId is NOT 'otherworkspace'
   const modalComponents = [
-    <ModalCreateTask key="create-task" />,
+    <ModalCreateTask
+      key="create-task"
+      boardId={boardId}
+      ganttChartId={ganttChartId}
+      ganttbar={ganttbar}
+    />,
     workspaceId !== "otherworkspace" && (
-      <ModalInviteMember key="invite-member" />
+      <ModalInviteMember
+        key="invite-member"
+        boardId={boardId}
+        allMemberInBoard={allMemberInBoard}
+      />
     ),
     <StarBoard key="star-board" />,
   ].filter(Boolean);
@@ -52,7 +73,15 @@ export default function SystemBoard({ user }) {
           />
         </svg>
       ),
-      content: <KanbanBoard modal={modalComponents} />,
+      content: (
+        <KanbanBoard
+          modal={modalComponents}
+          tasks={tasks}
+          checklistbyTaskIds={checklistbyTaskIds}
+          allMemberInBoard={allMemberInBoard}
+          preventUserImage={preventUserImage}
+        />
+      ),
     },
     {
       key: "calendar",
@@ -141,7 +170,23 @@ export default function SystemBoard({ user }) {
         </svg>
       ),
 
-      content: <GanttChart modal={[<ModalCreateGanttBar />]} />,
+      content: (
+        <GanttChart
+          modal={[
+            <ModalCreateGanttChart
+              key="create-gantt-chart"
+              boardId={boardId}
+            />,
+            <ModalCreateGanttBar
+              key="create-gantt-bar"
+              boardId={boardId}
+              ganttChartId={ganttChartId}
+            />,
+          ]}
+          ganttbar={ganttbar}
+          ganttChartName={ganttChartName}
+        />
+      ),
     },
   ];
 
@@ -183,12 +228,9 @@ export default function SystemBoard({ user }) {
               <Link href="/profile">
                 <div className="overflow-hidden rounded-full border-2 border-gray-200 hover:border-gray-300 shadow-sm transition-all duration-200 hover:shadow-md ">
                   <span className="sr-only">Toggle dashboard menu</span>
-                  {user?.image ? (
+                  {preventUserImage ? (
                     <img
-                      src={
-                        user.image ||
-                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzyLc8LMQIrviNz6u2EP3TtPRZZt3OlhrhHA&s"
-                      }
+                      src={preventUserImage}
                       alt={user.name || "User"}
                       className="size-10 object-cover hover:scale-105 transition-transform duration-200"
                     />

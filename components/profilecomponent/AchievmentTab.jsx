@@ -1,10 +1,13 @@
 import React from "react";
 import AchievmentComponent from "./AchievmentComponent";
 
-export default function AchievmentTab() {
+export default function AchievmentTab({ currentUserProfile, userAchievement }) {
   return (
     <div className="flex flex-col min-h-screen">
-      <AchievmentComponent />
+      <AchievmentComponent
+        currentUserProfile={currentUserProfile}
+        userAchievement={userAchievement}
+      />
     </div>
   );
 }

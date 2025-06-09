@@ -20,12 +20,9 @@ import BredCrum from "../bredcrum/MyBredcrum";
 import Link from "next/link";
 import { ChevronUp } from "lucide-react";
 import ModalDelete from "../modal/ModalDelete";
+import { preventImage } from "@/constant/preventimage";
 
-export default function Memberpage({
-  boardId,
-  boardMember,
-  deleteMemberAction,
-}) {
+export default function Memberpage({ boardMember, boardId, preventUserImage }) {
   const [members, setMembers] = useState(
     Array.isArray(boardMember) ? boardMember : []
   ); //call from props
@@ -103,9 +100,10 @@ export default function Memberpage({
   /* use for animation on icon arrow */
   const [makeOpen, setMakeOpen] = useState(false);
   const [openPopoverId, setOpenPopoverId] = useState(null);
+  //prevent pf
+  const preventProfile = preventImage.noProfile;
 
-  const userId = selectedUserId;
-
+  console.log("board id in memberpage", boardId);
   return (
     <div className="p-4 ">
       {/* Breadcrumb */}
@@ -152,7 +150,7 @@ export default function Memberpage({
           />
         </div>
         {/* Invite */}
-        <ModalInviteMember />
+        <ModalInviteMember boardId={boardId} />
       </div>
 
       <section className="overflow-hidden">
@@ -193,6 +191,7 @@ export default function Memberpage({
                         pathname: `/profile/${member.userId}`,
                         query: {
                           name: member.username,
+                          boardId: boardId,
                           profileImage: member.profileImage,
                         },
                       }}
@@ -200,11 +199,19 @@ export default function Memberpage({
                     >
                       <div className="flex items-center gap-3 cursor-pointer group/user">
                         <div className="relative">
-                          <img
-                            src={member.profileImage}
-                            alt={`${member.username}'s profile`}
-                            className="rounded-full w-[40px] h-[40px] object-cover ring-2 ring-transparent group-hover/user:ring-blue-300 group-hover/user:ring-offset-2 transition-all duration-300 transform group-hover/user:scale-110"
-                          />
+                          {member?.profileImage ? (
+                            <img
+                              src={member.profileImage}
+                              alt={`${member.username}'s profile`}
+                              className="rounded-full w-[40px] h-[40px] object-cover ring-2 ring-transparent group-hover/user:ring-blue-300 group-hover/user:ring-offset-2 transition-all duration-300 transform group-hover/user:scale-110"
+                            />
+                          ) : (
+                            <img
+                              src={preventProfile}
+                              alt={`${member.username}'s profile`}
+                              className="rounded-full w-[40px] h-[40px] object-cover ring-2 ring-transparent group-hover/user:ring-blue-300 group-hover/user:ring-offset-2 transition-all duration-300 transform group-hover/user:scale-110"
+                            />
+                          )}
                           <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-blue-400/20 to-purple-400/20 opacity-0 group-hover/user:opacity-100 transition-opacity duration-300"></div>
                         </div>
                         <div className="flex flex-col">

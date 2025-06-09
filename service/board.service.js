@@ -1,500 +1,230 @@
 ///service/board.service.js
 "use server";
-import { boardRoute } from "@/routes/boardRoute";
+import { boardRouteGroup } from "@/routes/boardRoute";
+import { checklistRouteGroup } from "@/routes/checklistRoute";
+import { ganttRouteGroup } from "@/routes/ganttRoute";
 
 /*
- * 1. for Get board by ID -> getBoardById: (id) => `${apiConfig.baseUrl}/boards/${id}`,
+ * getTaskByBoardIdAndGanttBarIdService in side board feature or stage
  */
-
-export const getBoardByIdService = async (id, yourToken) => {
+export const getTaskByBoardIdAndGanttBarIdService = async ({
+  boardId,
+  ganttbarId,
+  token,
+}) => {
   try {
-    const url = boardRoute.getBoardById(id);
-
-    const res = await fetch(url, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${yourToken}`,
-      },
-    });
-
-    if (!res.ok) {
-      const errorData = await res.json();
-      throw new Error(
-        errorData.message || `Request failed with status ${res.status}`
-      );
-    }
-
-    return await res.json();
-  } catch (error) {
-    console.error("❌ Failed to get board by ID:", error.message);
-    throw error;
-  }
-};
-
-/*
- * 2. Update board by board Id and workspace id
- */
-export const updateBoardByIdService = async (
-  id,
-  title,
-  description,
-  cover,
-  workspaceId,
-  yourToken
-) => {
-  try {
-    const url = boardRoute.updateBoardById(id);
-
-    const res = await fetch(url, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${yourToken}`,
-      },
-      body: JSON.stringify({ title, description, cover, workspaceId }),
-    });
-
-    if (!res.ok) {
-      const errorData = await res.json();
-      throw new Error(
-        errorData.message || `Request failed with status ${res.status}`
-      );
-    }
-
-    return await res.json();
-  } catch (error) {
-    console.error("❌ Failed to update board:", error.message);
-    throw error;
-  }
-};
-
-/*
- * 3. Updated favourite of board by id
- */
-export const updateFavBoardByIdService = async (id, isFavourite, yourToken) => {
-  try {
-    const url = boardRoute.updateFavBoardById(id);
-
-    const res = await fetch(url, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${yourToken}`,
-      },
-      body: JSON.stringify({ id, isFavourite }),
-    });
-
-    if (!res.ok) {
-      const errorData = await res.json();
-      throw new Error(
-        errorData.message || `Request failed with status ${res.status}`
-      );
-    }
-
-    return await res.json();
-  } catch (error) {
-    console.error("❌ Failed to update favourite board:", error.message);
-    throw error;
-  }
-};
-
-/*
- * 4. Get all boards
- */
-export const getAllBoardsService = async (yourToken) => {
-  try {
-    const url = boardRoute.updateFavBoardById();
-
+    //console.log("from service ", token);
+    const url = boardRouteGroup.getTaskByBoardAndGanttBarId(
+      boardId,
+      ganttbarId
+    );
     const res = await fetch(url, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${yourToken}`,
+        Authorization: `Bearer ${token}`,
       },
     });
+    const data = await res.json();
+    console.log("📥 Backend responded with:", data);
 
-    if (!res.ok) {
-      const errorData = await res.json();
-      throw new Error(
-        errorData.message || `Request failed with status ${res.status}`
-      );
-    }
-
-    return await res.json();
+    return data; // just return the data, don’t redirect here
   } catch (error) {
-    console.error("❌ Failed to get all boards:", error.message);
+    console.error("bug", error.message);
     throw error;
   }
 };
 
 /*
- * 5. Create new board by workspace id
+ * getCheckListByTaskId in side board feature or stage
  */
-export const createBoardService = async (
-  title,
-  description,
-  cover,
-  workspaceId,
-  yourToken
-) => {
+export const getCheckListByTaskIdService = async ({ taskId, token }) => {
   try {
-    const url = boardRoute.createBoard();
-
-    const res = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${yourToken}`,
-      },
-      body: JSON.stringify({ title, description, cover, workspaceId }),
-    });
-
-    if (!res.ok) {
-      const errorData = await res.json();
-      throw new Error(
-        errorData.message || `Request failed with status ${res.status}`
-      );
-    }
-
-    return await res.json();
-  } catch (error) {
-    console.error("❌ Failed to create board by workspace id :", error.message);
-    throw error;
-  }
-};
-
-/*
- * 6. Invite users to board
- */
-export const inviteUserToBoardService = async (id, email, roleName, yourToken) => {
-  try {
-    const url = boardRoute.inviteUserToBoard(id);
-
-    const res = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${yourToken}`,
-      },
-      body: JSON.stringify({ id, email, roleName }),
-    });
-
-    if (!res.ok) {
-      const errorData = await res.json();
-      throw new Error(
-        errorData.message || `Request failed with status ${res.status}`
-      );
-    }
-
-    return await res.json();
-  } catch (error) {
-    console.error(
-      "❌ Failed to invite any users to specific board :",
-      error.message
-    );
-    throw error;
-  }
-};
-
-/*
- * 7. Upload cover by board id
- */
-export const uploadBoardCoverService = async (id, file, yourToken) => {
-  try {
-    const url = boardRoute.uploadBoardCover(id);
-
-    const res = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${yourToken}`,
-      },
-      body: JSON.stringify({ id, file }),
-    });
-
-    if (!res.ok) {
-      const errorData = await res.json();
-      throw new Error(
-        errorData.message || `Request failed with status ${res.status}`
-      );
-    }
-
-    return await res.json();
-  } catch (error) {
-    console.error(
-      "❌ Failed to upload board cover by specific board id :",
-      error.message
-    );
-    throw error;
-  }
-};
-
-/*
- * 8. Assigned users role to board
- */
-export const assignUserRoleService = async (
-  id,
-  assigneeId,
-  roleName,
-  workspaceId,
-  yourToken
-) => {
-  try {
-    const validRoles = ["ROLE_LEADER", "ROLE_MEMBER", "ROLE_MANAGER"];
-    if (!validRoles.includes(roleName)) {
-      throw new Error(
-        `Invalid roleName: must be one of ${validRoles.join(", ")}`
-      );
-    }
-
-    const url = boardRoute.assignUserRole;
-
-    const res = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${yourToken}`,
-      },
-      body: JSON.stringify({ id, assigneeId, roleName, workspaceId }),
-    });
-
-    if (!res.ok) {
-      const errorData = await res.json();
-      throw new Error(
-        errorData.message || `Request failed with status ${res.status}`
-      );
-    }
-
-    return await res.json();
-  } catch (error) {
-    console.error("❌ Failed to assign user role to board:", error.message);
-    throw error;
-  }
-};
-
-/*
- * 9. Get board by id with current user id
- */
-export const getBoardsByUserIdService = async (id, yourToken) => {
-  try {
-    const url = boardRoute.getBoardsByUserId(id);
-
+    //console.log("from service ", token);
+    const url = checklistRouteGroup.getCheckListByTaskId(taskId);
     const res = await fetch(url, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${yourToken}`,
+        Authorization: `Bearer ${token}`,
       },
     });
+    const data = await res.json();
+    console.log("📥 Backend responded with:", data);
 
-    if (!res.ok) {
-      const errorData = await res.json();
-      throw new Error(
-        errorData.message || `Request failed with status ${res.status}`
-      );
-    }
-
-    return await res.json();
+    return data; // just return the data, don’t redirect here
   } catch (error) {
-    console.error(
-      "❌ Failed to get board by id with current user id :",
-      error.message
-    );
+    console.error("bug", error.message);
     throw error;
   }
 };
 
 /*
- * 10. Get board with members
+ * get all  memeber  specific boardId
  */
-export const getBoardMembersService = async (userid, yourToken) => {
+export const getMemberByBoardIdService = async ({ boardId, token }) => {
   try {
-    const url = boardRoute.getBoardMembers(userid);
-
+    //console.log("from service ", token);
+    const url = boardRouteGroup.getMemberByBoardId(boardId);
     const res = await fetch(url, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${yourToken}`,
+        Authorization: `Bearer ${token}`,
       },
     });
+    const data = await res.json();
+    console.log("📥 Backend responded with:", data);
 
-    if (!res.ok) {
-      const errorData = await res.json();
-      throw new Error(
-        errorData.message || `Request failed with status ${res.status}`
-      );
-    }
-
-    return await res.json();
+    return data; // just return the data, don’t redirect here
   } catch (error) {
-    console.error("❌ Failed to get board with members:", error.message);
+    console.error("bug", error.message);
+    throw error;
+  }
+};
+/*
+ * invite member to baord
+ */
+export const inviteMemberToBoardService = async ({ boardId, data, token }) => {
+  try {
+    console.log("from service", { boardId, data, token });
+    const url = boardRouteGroup.inviteUserToBoard(boardId);
+    const res = await fetch(url, {
+      method: "POST", // Changed to POST to send invite data
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(data), // Send the array of invites
+    });
+    const result = await res.json();
+    console.log("📥 Backend responded with:", result);
+
+    // Ensure the response has a consistent structure
+    return {
+      success: res.ok,
+      data: result.data || null,
+      error: res.ok ? null : result.error || "Failed to send invites",
+    };
+  } catch (error) {
+    console.error("Invite service error:", error.message);
+    return { success: false, error: error.message };
+  }
+};
+
+/*
+ * get comment by checklist
+ */
+export const getCommentByCheckListIdService = async ({
+  checkListId,
+  token,
+}) => {
+  try {
+    const url = boardRouteGroup.getCommentByCheckListId(checkListId);
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const result = await res.json();
+    console.log("📥 Backend responded with:", result);
+
+    // Ensure the response has a consistent structure
+    return {
+      success: res.ok,
+      data: result.data || null,
+      error: res.ok ? null : result.error || "Failed to send invites",
+    };
+  } catch (error) {
+    console.error("Invite service error:", error.message);
+    return { success: false, error: error.message };
+  }
+};
+/*
+ * get all ganttchart
+ */
+export const getAllGanttBarByGanttChartIDService = async ({
+  ganttChartId,
+  token,
+}) => {
+  try {
+    //console.log("from service ", token);
+    const url = ganttRouteGroup.getAllGanttBarByGanttChartID(ganttChartId);
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await res.json();
+    console.log("📥 Backend responded with:", data);
+
+    return data; // just return the data, don’t redirect here
+  } catch (error) {
+    console.error("bug", error.message);
     throw error;
   }
 };
 
 /*
- * 11. Accept board invitation : acceptBoardInvite: (id) =>
-     `${apiConfig.baseUrl}/boards/${id}/invitations/accept`,
+ * create task by boardId and Gantt chart id
  */
-export const acceptBoardInviteService = async (id, email, roleName, yourToken) => {
+export const createTaskByBoardIdAndGanttChartIdService = async ({
+  boardId,
+  ganttChartId,
+  data,
+  token,
+}) => {
+  console.log("taskkk");
   try {
-    // Optional: validate roleName
-    const validRoles = ["ROLE_LEADER", "ROLE_MEMBER"];
-    if (!validRoles.includes(roleName)) {
-      throw new Error(`Invalid roleName: ${roleName}`);
-    }
-
-    const url = boardRoute.acceptInviteBoardById(id);
-
+    console.log("from service", { boardId, data, token });
+    const url = boardRouteGroup.createTaskByBoardIdAndGanttBarId();
     const res = await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${yourToken}`,
+        Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ email, roleName }),
+      body: JSON.stringify(data),
     });
+    const result = await res.json();
+    console.log("📥 Backend responded with:", result);
 
-    if (!res.ok) {
-      const errorData = await res.json();
-      throw new Error(
-        errorData.message || `Request failed with status ${res.status}`
-      );
-    }
-
-    return await res.json();
+    return data;
   } catch (error) {
-    console.error("❌ Failed to accept board invitation:", error.message);
+    console.error("bug", error.message);
     throw error;
   }
 };
 
 /*
- * 12. Get cover board by board id
+ * create gantt chart by board id
  */
-export const getBoardCoverService = async (id, filename, yourToken) => {
+export const createGanttChartByBoardIdService = async ({
+  boardId,
+  data,
+  token,
+}) => {
   try {
-    const url = boardRoute.getBoardCover(id, filename);
-
+    console.log("from service", { boardId, data, token });
+    const url = ganttRouteGroup.createGanttChart();
     const res = await fetch(url, {
-      headers: {
-        Authorization: `Bearer ${yourToken}`,
-      },
-    });
-
-    if (!res.ok) {
-      throw new Error(`Failed to fetch cover image: ${res.status}`);
-    }
-
-    return await res.blob(); // Return image blob
-  } catch (error) {
-    console.error("❌ Failed to get board cover:", error.message);
-    throw error;
-  }
-};
-
-
-/*
- * 13. Get all boards by workspace id
- */
-export const getBoardsByWorkspaceIdService = async (workspaceId, yourToken) => {
-  try {
-    const url = boardRoute.getBoardsByWorkspaceId(workspaceId);
-
-    const res = await fetch(url, {
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${yourToken}`,
+        Authorization: `Bearer ${token}`,
       },
+      body: JSON.stringify({ title: data.title, boardId: boardId }),
     });
+    const result = await res.json();
+    console.log("📥 Backend responded with:", result);
 
-    if (!res.ok) {
-      throw new Error(`Failed to get boards: ${res.status}`);
-    }
-
-    return await res.json();
+    return data;
   } catch (error) {
-    console.error("❌ Failed to get boards by workspace ID:", error.message);
-    throw error;
-  }
-};
-
-
-/*
- * 14. Get board by title
- */
-export const getBoardByTitleService = async (title, yourToken) => {
-  try {
-    const url = boardRoute.getBoardByTitle(title);
-
-    const res = await fetch(url, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${yourToken}`,
-      },
-    });
-
-    if (!res.ok) {
-      throw new Error(`Failed to get board by title: ${res.status}`);
-    }
-
-    return await res.json();
-  } catch (error) {
-    console.error("❌ Failed to get board by title:", error.message);
-    throw error;
-  }
-};
-
-
-/*
- * 15. Get all board for current user
- */
-export const getBoardsForCurrentUserService = async (yourToken) => {
-  try {
-    const url = boardRoute.getBoardsForCurrentUser;
-
-    const res = await fetch(url, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${yourToken}`,
-      },
-    });
-
-    if (!res.ok) {
-      throw new Error(`Failed to get current user's boards: ${res.status}`);
-    }
-
-    return await res.json();
-  } catch (error) {
-    console.error("❌ Failed to get boards for current user:", error.message);
-    throw error;
-  }
-};
-
-
-/*
- * 16. Deleted board by id and workspace id
- */
-export const deleteBoardService = async (id, workspaceId, yourToken) => {
-  try {
-    const url = boardRoute.deleteBoard(id, workspaceId);
-
-    const res = await fetch(url, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${yourToken}`,
-      },
-    });
-
-    if (!res.ok) {
-      throw new Error(`Failed to delete board: ${res.status}`);
-    }
-
-    return await res.json();
-  } catch (error) {
-    console.error("❌ Failed to delete board:", error.message);
+    console.error("bug", error.message);
     throw error;
   }
 };
