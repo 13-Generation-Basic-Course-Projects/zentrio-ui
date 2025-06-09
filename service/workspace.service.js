@@ -628,6 +628,7 @@ export const getBoardsByWorkspaceIdService = async ({ workspaceId, token }) => {
 
     const res = await fetch(url, {
       method: "GET",
+      cache: 'no-store' ,
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -699,6 +700,7 @@ export const getBoardsForCurrentUserService = async (token) => {
  * 16. Deleted board by id and workspace id
  */
 export const deleteBoardService = async ({ id, workspaceId, token }) => {
+  console.log("WorkspaceId in delete board service: ", workspaceId);
   try {
     const url = boardRouteGroup.deleteBoard(id, workspaceId);
 
@@ -709,7 +711,7 @@ export const deleteBoardService = async ({ id, workspaceId, token }) => {
         Authorization: `Bearer ${token}`,
       },
       next: { tags: ["boards"] },
-      body: JSON.stringify({ id, workspaceId }),
+      // body: JSON.stringify({ id, workspaceId }),
     });
 
     if (!res.ok) {

@@ -136,13 +136,16 @@ export default function CardBoard({
         <Link
           href={`/dashboard/${workspaceId}/${boardIdFromURL}/board?role=${role}`}
         >
-          {image?.startsWith("data:image") ? (
+          {image &&
+          (image.startsWith("http") || image.startsWith("data:image")) ? (
+            // Cover is an image URL or base64 image string
             <img
               src={image}
               alt="Board Cover"
               className="w-full h-32 object-cover rounded-lg"
             />
           ) : image ? (
+            // Cover is a color keyword
             <div
               className={`w-full h-32 rounded-lg ${
                 {
@@ -156,6 +159,7 @@ export default function CardBoard({
               }`}
             />
           ) : (
+            // No cover at all
             <div
               className="rounded-xl w-full h-32 bg-gray-200"
               aria-label={`No image available for ${title}`}
