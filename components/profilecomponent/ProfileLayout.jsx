@@ -53,12 +53,13 @@ export default function ProfileLayout({
 
   const [previewUrl, setPreviewUrl] = useState(null);
   const handleImageChange = async (e) => {
-    try {
-      const response = await getUploadProfileImageAction();
-      console.log("Upload response", response);
-    } catch (err) {
-      console.error("upload failed", err);
-    }
+    // try {
+    //   //const response = await getUploadProfileImageAction();
+    //   console.log("Upload response", response);
+    // } catch (err) {
+    //   console.error("upload failed", err);
+    // }
+    console.log("bro u forgot to create service how can u call an action");
   };
 
   return (

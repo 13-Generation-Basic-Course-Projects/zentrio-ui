@@ -161,7 +161,7 @@ export default function Memberpage({ boardMember, boardId, preventUserImage }) {
       </div>
 
       <section className="overflow-hidden">
-        <div className="relative min-h-[450px] mt-10 ">
+        <div className="relative min-h-[550px] mt-10 ">
           <table className="w-full text-body-sm text-left text-title ">
             <thead className="text-title/50 bg-primary/20 ">
               <tr>
