@@ -3,7 +3,7 @@ import { useState } from "react";
 import Image from "next/image";
 import commentlogo from "../../assets/Comment.png";
 import profile from "../../public/image/minh.png";
-import { SquarePen, AlarmClock } from "lucide-react";
+import { SquarePen, AlarmClock, Trash2 } from "lucide-react";
 import { calendarUpdateNoteAction } from "@/action/calendar.action";
 
 export default function CardTCommentCalender({ note, selectedTaskId, taskColorMap }) {
@@ -66,7 +66,7 @@ export default function CardTCommentCalender({ note, selectedTaskId, taskColorMa
               alt="comment-icon"
             />
             <h1 className="text-title text-large font-semibold">
-              {selectedTaskId ? "Task Comments" : "All Comments"}
+              {selectedTaskId ? "All Comments" : "All Comments"}
             </h1>
           </div>
         </CardHeader>
@@ -99,7 +99,8 @@ export default function CardTCommentCalender({ note, selectedTaskId, taskColorMa
                       <h3 className="font-semibold text-sm text-gray-900">
                         {data.userId?.username || "Kdey Pesith"}
                       </h3>
-                      <button className={`transition-colors ${
+                      <div className="flex gap-3">
+                        <button className={`transition-colors ${
                         selectedTaskId && commentColor 
                           ? `${commentColor.text} hover:opacity-70` 
                           : 'text-green-500 hover:text-green-600'
@@ -109,6 +110,16 @@ export default function CardTCommentCalender({ note, selectedTaskId, taskColorMa
                           onClick={() => handleClickNote(data)}
                         />
                       </button>
+                      <button className={`transition-colors ${
+                        selectedTaskId && commentColor 
+                          ? `${commentColor.text} hover:opacity-70` 
+                          : 'text-green-500 hover:text-green-600'
+                      }`}>
+                         <Trash2 
+                          size={15}
+                        />
+                      </button>
+                      </div>
                     </div>
                     <p className="text-sm text-gray-600 mb-2 leading-relaxed">
                       {data.noted}

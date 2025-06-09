@@ -11,6 +11,7 @@ import interactionPlugin from "@fullcalendar/interaction";
 import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
 
 import { useRef, useState, useMemo } from "react";
+import {DatePicker} from "@heroui/react";
 import {
   ChevronLeft,
   ChevronRight,
@@ -57,10 +58,10 @@ const CommentModal = ({ isOpen, onClose, task, onSubmit, loading }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-md mx-4">
+      <div className="bg-white rounded-large shadow-xl w-full max-w-md mx-4">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b">
-          <h2 className="text-xl font-semibold text-gray-800">Add Comment</h2>
+          <h2 className="text-xl font-semibold text-title">Add Comment</h2>
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600 transition-colors"
@@ -70,56 +71,49 @@ const CommentModal = ({ isOpen, onClose, task, onSubmit, loading }) => {
         </div>
 
         {/* Task Info */}
-        <div className="p-6 border-b bg-gray-50">
+        <div className="p-6 border-b">
           <div className="flex items-start gap-3">
             <div className={`w-3 h-3 rounded-full mt-2 ${task.extendedProps?.color?.bg}`}></div>
             <div className="flex-1">
               <h3 className="font-medium text-gray-800 mb-2">{task.title}</h3>
-              <div className="flex items-center gap-4 text-sm text-gray-600">
+              <div className="flex items-center gap-4 text-sm text-description">
                 <div className="flex items-center gap-1">
                   <Calendar className="w-4 h-4" />
                   <span>{formatDate(task.start)} - {formatDate(task.end)}</span>
                 </div>
               </div>
-              {task.extendedProps?.taskData?.description && (
-                <p className="text-sm text-gray-600 mt-2">
-                  {task.extendedProps.taskData.description}
-                </p>
-              )}
             </div>
           </div>
         </div>
 
         {/* Comment Form */}
-        <form onSubmit={handleSubmit} className="p-6">
+        <form onSubmit={handleSubmit} className="p-6 rounded-large">
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Comment *
+            <label className="block text-sm font-medium text-title mb-2">
+              Comment
             </label>
             <textarea
               value={comment}
               onChange={(e) => setComment(e.target.value)}
               placeholder="Add your comment here..."
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+              className="w-full px-3 py-2 border border-gray-300 rounded-large focus:outline-none"
               rows={4}
               required
             />
           </div>
 
           <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-title mb-2">
               Till Date
             </label>
             <input
               type="datetime-local"
               value={tillDate}
               onChange={(e) => setTillDate(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 focus:outline-none rounded-large"
               required
             />
-            <p className="text-xs text-gray-500 mt-1">
-              If not specified, will default to current date/time
-            </p>
+            {/* <DatePicker isRequired className="max-w-full" label="" /> */}
           </div>
 
           {/* Action Buttons */}
@@ -127,14 +121,14 @@ const CommentModal = ({ isOpen, onClose, task, onSubmit, loading }) => {
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
+              className="flex-1 px-4 py-2 border border-gray-300 text-title rounded-large transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading || !comment.trim() || !tillDate}
-              className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+              className="flex-1 bg-primary text-white px-4 py-2 rounded-mddisabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center rounded-large gap-2"
             >
               {loading ? (
                 <>
