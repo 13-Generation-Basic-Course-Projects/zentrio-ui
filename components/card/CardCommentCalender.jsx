@@ -50,7 +50,7 @@ export default function CardTCommentCalender({ note, selectedTaskId, taskColorMa
 
   return (
     <>
-      <Card className="py-4 h-[400px] flex flex-col rounded-large shadow-sm">
+      <Card className="py-4 h-[335px] flex flex-col rounded-large shadow-sm">
         {/* Header */}
         <CardHeader className="pb-0 pt-2 px-6 flex-col items-start">
           <div className="flex items-center gap-2">

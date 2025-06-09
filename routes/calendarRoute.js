@@ -3,7 +3,7 @@ import { LuKanban } from "react-icons/lu";
 
 
 export const calenderRouteGroup = {
-    //get
+  
     getNotebyId: (id) => `${apiConfig.baseUrl}/calendars/${id}`,
     //get
     getNotebyTaskId: (id) => `${apiConfig.baseUrl}/calendars/tasks/${id}`,

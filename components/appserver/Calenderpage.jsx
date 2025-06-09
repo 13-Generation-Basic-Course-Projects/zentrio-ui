@@ -59,19 +59,20 @@ export default function MyCalender({ tasks }) {
     const uniqueIds = new Set();
     return tasks
       .filter((task) => {
-        if (uniqueIds.has(task.task_id)) return false;
-        uniqueIds.add(task.task_id);
+        if (uniqueIds.has(task.taskId)) return false;
+        uniqueIds.add(task.taskId);
         return true;
       })
       .map((task, index) => {
         const color = colorList[index % colorList.length];
         return {
-          id: task.task_id,
+          id: task.taskId,
           title: task.title,
-          start: task.created_at,
-          end: task.finished_at ?? task.created_at,
+          start: task.createdAt,
+          end: task.finishedAt ?? task.createdAt,
           extendedProps: {
-            type: "task",
+            // type: "task",
+            type: task.type || "task",
             content: task.description,
             color,
           },
@@ -109,18 +110,30 @@ export default function MyCalender({ tasks }) {
 
     if (type === "task") {
       return (
-        <div
-          className={`${baseStyle} h-[70px] text-[0.9rem] ${
-            color?.border || "border-green-500"
-          } p-1 flex flex-col`}
-        >
-          <div className="text-[0.65rem] font-medium bg-opacity-80 bg-white w-fit px-2 py-[2px] rounded">
-            {formattedDate}
+        <div>
+          <div
+            className={`${baseStyle} h-[70px] text-[0.9rem] ${
+              color?.border || "border-green-500"
+            } p-1 flex flex-col`}
+          >
+            <div className="text-[0.65rem] font-medium bg-opacity-80 bg-white w-fit px-2 py-[2px] rounded">
+              {formattedDate}
+            </div>
+            <div className="flex items-center gap-1">
+              <ClipboardList className="w-4 h-4" />
+              <span className="truncate">{event.title}</span>
+            </div>
           </div>
-          <div className="flex items-center gap-1">
-            <ClipboardList className="w-4 h-4" />
-            <span className="truncate">{event.title}</span>
-          </div>
+          {/* at here for create comment */}
+          <button
+            onClick={() => {
+              setNewEventData({ ...newEventData, type: "task" });
+              setIsOpen(true);
+            }}
+            className="fixed bottom-4 right-4 bg-blue-500 text-white rounded-full p-4 shadow-md"
+          >
+            +
+          </button>
         </div>
       );
     }
@@ -149,6 +162,48 @@ export default function MyCalender({ tasks }) {
 
     setCurrentTitle(calendarApi.view.title);
   };
+
+
+  /* use for handler modal comment */
+  const [isOpen, setIsOpen] = useState(false);
+  const [newEventData, setNewEventData] = useState({
+    title: "",
+    description: "",
+    type: "task",
+    start: "",
+    end: "",
+  });
+  const handleDateSelect = (info) => {
+    setNewEventData({
+      title: "",
+      description: "",
+      type: "task", // or "comment"
+      start: info.startStr,
+      end: info.endStr,
+    });
+    setIsOpen(true);
+  };
+
+  const handleEventSubmit = () => {
+    const color = colorList[Math.floor(Math.random() * colorList.length)];
+
+    const newEvent = {
+      id: Date.now().toString(),
+      title: newEventData.title,
+      start: newEventData.start,
+      end: newEventData.end,
+      extendedProps: {
+        type: newEventData.type,
+        content: newEventData.description,
+        color,
+      },
+    };
+
+    setEvents((prev) => [...prev, newEvent]);
+  };
+  
+  
+
 
   return (
     <div className="p-4 h-screen flex flex-col overflow-hidden">
@@ -200,11 +255,15 @@ export default function MyCalender({ tasks }) {
               eventContent={renderEventContent}
               datesSet={(arg) => setCurrentTitle(arg.view.title)}
               height="auto"
+              
+              /* it make comment can select */
+              selectable={true}
+              select={(info) => handleDateSelect(info)}
             />
           </div>
         </div>
 
-        <div className="col-span-3 h-full overflow-y-auto pl-2 flex flex-col gap-5">
+        <div className="col-span-3 h-full pl-2 flex flex-col gap-5">
           <CardTaskCalender
             tasks={mappedTasks}
             onTaskClick={(dateStr, taskId) => handleTaskClick(dateStr, taskId)}
@@ -212,6 +271,81 @@ export default function MyCalender({ tasks }) {
           <CardTCommentCalender tasks={tasks} />
         </div>
       </div>
+
+      {/* modal for create commemt when select at button */}
+      {isOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-md w-[400px] space-y-4">
+            <h2 className="text-lg font-semibold">Create Event</h2>
+            <input
+              className="w-full border rounded px-3 py-1"
+              placeholder="Title"
+              value={newEventData.title}
+              onChange={(e) =>
+                setNewEventData({ ...newEventData, title: e.target.value })
+              }
+            />
+            <textarea
+              className="w-full border rounded px-3 py-1"
+              placeholder="Description"
+              value={newEventData.description}
+              onChange={(e) =>
+                setNewEventData({
+                  ...newEventData,
+                  description: e.target.value,
+                })
+              }
+            />
+            <select
+              className="w-full border rounded px-3 py-1"
+              value={newEventData.type}
+              onChange={(e) =>
+                setNewEventData({ ...newEventData, type: e.target.value })
+              }
+            >
+              <option value="task">Task</option>
+              <option value="comment">Comment</option>
+            </select>
+
+            <div className="flex gap-2">
+              <input
+                type="date"
+                className="w-full border rounded px-3 py-1"
+                value={newEventData.start}
+                onChange={(e) =>
+                  setNewEventData({ ...newEventData, start: e.target.value })
+                }
+              />
+              <input
+                type="date"
+                className="w-full border rounded px-3 py-1"
+                value={newEventData.end}
+                onChange={(e) =>
+                  setNewEventData({ ...newEventData, end: e.target.value })
+                }
+              />
+            </div>
+
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setIsOpen(false)}
+                className="px-4 py-1 text-sm rounded bg-gray-200"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  handleEventSubmit();
+                  setIsOpen(false);
+                }}
+                className="px-4 py-1 text-sm rounded bg-blue-500 text-white"
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

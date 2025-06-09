@@ -13,7 +13,7 @@ const colorMap = [
 
 export default function CardTaskCalender({ tasks, onTaskClick }) {
   return (
-    <Card className="py-4 rounded-large bg-white w-full mx-auto shadow-sm">
+    <Card className="py-4 rounded-large bg-white w-full mx-auto shadow-sm h-[350px]">
       <CardHeader className="pb-0 pt-2 px-6 flex-col items-start">
         <div className="flex items-center gap-3">
           <Image
@@ -25,7 +25,7 @@ export default function CardTaskCalender({ tasks, onTaskClick }) {
         </div>
       </CardHeader>
 
-      <CardBody className="overflow-visible py-3 px-4 rounded-lg">
+      <CardBody className="overflow-y-auto scrollbar-hidden py-3 px-4 rounded-lg">
         {tasks.length > 0 ? (
           tasks.map((el, i) => {
             const color = colorMap[i % colorMap.length];
