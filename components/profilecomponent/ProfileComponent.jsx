@@ -3,7 +3,10 @@ import React from "react";
 import ProfileDetailsCard from "./ProfileDetailsCard";
 import ActiveBoards from "./ActiveBoards";
 
-export default function ProfileComponent({ currentUserProfile, userAchievement }) {
+export default function ProfileComponent({
+  currentUserProfile,
+  userAchievement,
+}) {
   return (
     <div className="min-h-screen p-2">
       <div className="grid grid-cols-1 md:grid-cols-[43%_55%] gap-2 ">

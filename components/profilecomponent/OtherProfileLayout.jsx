@@ -17,6 +17,8 @@ import { useSearchParams, useParams } from "next/navigation"; // Add useParams h
 import ButtonEditprofile from "../modal/profile/ModalEditProfileTab";
 import BredCrum from "../bredcrum/MyBredcrum";
 import { preventImage } from "@/constant/preventimage";
+import OtherAchievmentTab from "./OtherAchievmentTab";
+import OtherProfileTab from "./OtherProfileTab";
 
 export default function OtherProfileLayout({
   user,
@@ -93,12 +95,16 @@ export default function OtherProfileLayout({
     {
       key: "profile",
       title: "Profile",
-      content: profile,
+      content: (
+        <OtherProfileTab MemberDetails={MemberDetails} userId={userId} />
+      ),
     },
     {
       key: "achievement",
       title: "Achievements",
-      content: acheivment,
+      content: (
+        <OtherAchievmentTab MemberDetails={MemberDetails} userId={userId} />
+      ),
     },
   ];
 
@@ -113,7 +119,7 @@ export default function OtherProfileLayout({
 
   return (
     <>
-      <div className="w-full sticky top-0 z-[20] px-10 py-2">
+      <div className="w-full sticky top-0 z-[20] px-10 py-2 ">
         <BredCrum
           board={"Hikko Design"}
           feature={"Members"}
@@ -186,7 +192,7 @@ export default function OtherProfileLayout({
           <div className="flex flex-col gap-3 items-center justify-center">
             {email && <div className="mt-2 text-sm text-gray-500">{email}</div>}
 
-            <div className="flex items-center gap-3">
+            <div className="hidden flex items-center gap-3">
               {roles.length > 1 && (
                 <div className="mt-1 text-xs text-gray-400">
                   Roles: {formatRoles(roles)}
@@ -202,7 +208,7 @@ export default function OtherProfileLayout({
           </div>
         </div>
 
-        <div className="flex justify-between items-center mt-6">
+        <div className="flex justify-between items-center mt-0">
           <div className="flex gap-6 border-b w-fit">
             {tabItems.map((tab) => (
               <button
