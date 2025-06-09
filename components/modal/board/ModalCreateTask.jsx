@@ -17,17 +17,18 @@ import {
 import { IconAdd } from "../../icon/everyicon";
 import { taskFormSchema } from "@/lib/schemas/createTaskSchema";
 import { createTaskByBoardIdAndGanttChartIdAction } from "@/action/board.action";
+import { toast } from "react-toastify"; // Import toast
 
 export default function ModalCreateTask({
   input,
   boardId,
   ganttChartId,
   ganttbar,
+  allMemberInBoard,
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [apiError, setApiError] = useState(null);
 
-  // React Hook Form setup with Zod resolver
   const {
     control,
     handleSubmit,
@@ -38,28 +39,53 @@ export default function ModalCreateTask({
     defaultValues: {
       title: "",
       description: "",
-      date: "",
+      startedAt: "",
+      finishedAt: "",
       ganttBarId: "",
+      teamLeader: "",
     },
   });
 
-  // Form submission handler
   const onSubmit = async (data) => {
     try {
       setApiError(null);
-      // Transform form data to match API request
+
+      // Validate ganttBarId
+      const selectedGanttBar = ganttbar?.payload?.find(
+        (bar) => bar.ganttBarId === data.ganttBarId
+      );
+      if (!selectedGanttBar) {
+        throw new Error("Invalid Gantt bar ID selected");
+      }
+
+      // Validate task dates against Gantt bar dates
+      const taskStart = new Date(data.startedAt);
+      const taskEnd = new Date(data.finishedAt);
+      const ganttStart = new Date(selectedGanttBar.startedAt);
+      const ganttEnd = new Date(selectedGanttBar.finishedAt);
+
+      if (taskStart < ganttStart) {
+        throw new Error(
+          `Task start date must be on or after Gantt bar start date (${ganttStart.toLocaleDateString()})`
+        );
+      }
+      if (taskEnd > ganttEnd) {
+        throw new Error(
+          `Task end date must be on or before Gantt bar end date (${ganttEnd.toLocaleDateString()})`
+        );
+      }
+
       const payload = {
         title: data.title,
         description: data.description,
-        startedAt: new Date(data.date).toISOString(),
-        finishedAt: new Date(data.date).toISOString(),
+        startedAt: taskStart.toISOString(),
+        finishedAt: taskEnd.toISOString(),
         boardId: boardId,
         ganttBarId: data.ganttBarId,
       };
 
       console.log("Submitting Payload:", payload);
 
-      // Call API action
       const result = await createTaskByBoardIdAndGanttChartIdAction(
         payload,
         boardId,
@@ -72,12 +98,22 @@ export default function ModalCreateTask({
 
       console.log("API Response:", result);
 
-      // Reset form and close modal on success
+      // Show success toast
+      toast.success(`"${data.title}"\nTask created successfully!`, {
+        position: "top-right",
+        autoClose: 3000,
+      });
+
       reset();
       onOpenChange();
     } catch (error) {
       console.error("Error creating task:", error.message);
       setApiError(error.message);
+      // Show error toast
+      toast.error(error.message, {
+        position: "top-right",
+        autoClose: 3000,
+      });
     }
   };
 
@@ -87,7 +123,9 @@ export default function ModalCreateTask({
     onOpenChange();
   };
 
-  // Check if ganttbar payload is empty
+  console.log("modal create task and all member", allMemberInBoard);
+  console.log("show gantbar and contain gantbar id ", ganttbar, boardId);
+
   if (!ganttbar?.payload?.length) {
     return <p className="text-red-500">No Gantt bars available.</p>;
   }
@@ -118,7 +156,6 @@ export default function ModalCreateTask({
                   onSubmit={handleSubmit(onSubmit)}
                   className="grid grid-cols-1 gap-4"
                 >
-                  {/* Title Field */}
                   <div>
                     <Controller
                       name="title"
@@ -148,7 +185,7 @@ export default function ModalCreateTask({
                               rounded-small
                               transition-all 
                               hover:bg-white
-                              px-6
+                              px-0
                               py-6
                               ${errors.title ? "border-red-500" : ""}
                             `,
@@ -164,21 +201,20 @@ export default function ModalCreateTask({
                     )}
                   </div>
 
-                  {/* Date Field */}
                   <div>
                     <Controller
-                      name="date"
+                      name="startedAt"
                       control={control}
                       render={({ field }) => (
                         <Input
                           {...field}
                           isRequired
-                          label="Duration"
+                          label="Start Date"
                           labelPlacement="outside"
-                          placeholder="Select date"
+                          placeholder="Select start date"
                           type="date"
-                          isInvalid={!!errors.date}
-                          errorMessage={errors.date?.message}
+                          isInvalid={!!errors.startedAt}
+                          errorMessage={errors.startedAt?.message}
                           classNames={{
                             label: "text-label font-medium",
                             inputWrapper: `
@@ -194,58 +230,109 @@ export default function ModalCreateTask({
                               rounded-small
                               transition-all 
                               hover:bg-white
-                              px-6
+                              px-0
                               py-6
-                              ${errors.date ? "border-red-500" : ""}
+                              ${errors.startedAt ? "border-red-500" : ""}
                             `,
                             input: "text-black",
                           }}
                         />
                       )}
                     />
-                    {errors.date && (
+                    {errors.startedAt && (
                       <p className="text-red-500 text-sm mt-1">
-                        {errors.date.message}
+                        {errors.startedAt.message}
                       </p>
                     )}
                   </div>
-                  {/* team leader optional */}
+
                   <div>
-                    <Input
-                      isRequired
-                      errorMessage="Please enter a valid team leader"
-                      label="Assign team leader"
-                      labelPlacement="outside"
-                      name="name"
-                      placeholder="Name"
-                      startContent={
-                        <span className=" text-2xl p-1 border-r-1 border-gray-400 text-default-400 pointer-events-none flex-shrink-0">
-                          @
-                        </span>
-                      }
-                      type="text"
-                      classNames={{
-                        label: "text-label font-medium",
-                        inputWrapper: `
-                        bg-white 
-                        border
-                        border-gray-300
-                        shadow-none         
-                        focus:shadow-none  
-                        focus:outline-none
-                        focus:ring-0       
-                        focus-within:shadow-none
-                        focus-within:ring-0 
-                        rounded-small
-                        transition-all 
-                        hover:bg-white 
-                        py-6
-                      `,
-                        input: "text-black",
-                      }}
+                    <Controller
+                      name="finishedAt"
+                      control={control}
+                      render={({ field }) => (
+                        <Input
+                          {...field}
+                          isRequired
+                          label="End Date"
+                          labelPlacement="outside"
+                          placeholder="Select end date"
+                          type="date"
+                          isInvalid={!!errors.finishedAt}
+                          errorMessage={errors.finishedAt?.message}
+                          classNames={{
+                            label: "text-label font-medium",
+                            inputWrapper: `
+                              bg-white 
+                              border
+                              border-gray-300
+                              shadow-none         
+                              focus:shadow-none  
+                              focus:outline-none
+                              focus:ring-0       
+                              focus-within:shadow-none
+                              focus-within:ring-0
+                              rounded-small
+                              transition-all 
+                              hover:bg-white
+                              px-0
+                              py-6
+                              ${errors.finishedAt ? "border-red-500" : ""}
+                            `,
+                            input: "text-black",
+                          }}
+                        />
+                      )}
+                    />
+                    {errors.finishedAt && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.finishedAt.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <Controller
+                      name="teamLeader"
+                      control={control}
+                      render={({ field }) => (
+                        <Input
+                          {...field}
+                          label="Assign team leader"
+                          labelPlacement="outside"
+                          placeholder="Name"
+                          startContent={
+                            <span className="text-2xl p-1 border-r-1 border-gray-400 text-default-400 pointer-events-none flex-shrink-0">
+                              @
+                            </span>
+                          }
+                          type="text"
+                          isInvalid={!!errors.teamLeader}
+                          errorMessage={errors.teamLeader?.message}
+                          classNames={{
+                            label: "text-label font-medium",
+                            inputWrapper: `
+                              bg-white 
+                              border
+                              border-gray-300
+                              shadow-none         
+                              focus:shadow-none  
+                              focus:outline-none
+                              focus:ring-0       
+                              focus-within:shadow-none
+                              focus-within:ring-0 
+                              rounded-small
+                              transition-all 
+                              hover:bg-white 
+                              py-6
+                            `,
+                            input: "text-black",
+                          }}
+                        />
+                      )}
                     />
                   </div>
-                  {/* Gantt Bar Field */}
+
                   <div>
                     <label className="text-label font-medium">
                       Gantt bar <span className="text-red-500">*</span>
@@ -276,7 +363,7 @@ export default function ModalCreateTask({
                               rounded-small
                               transition-all 
                               hover:bg-white 
-                              px-6
+                              px-0
                               py-6
                               ${errors.ganttBarId ? "border-red-500" : ""}
                             `,
@@ -288,7 +375,11 @@ export default function ModalCreateTask({
                               key={bar.ganttBarId}
                               value={bar.ganttBarId}
                             >
-                              {bar.title}
+                              {`${bar.title} (${bar.face}, ${new Date(
+                                bar.startedAt
+                              ).toLocaleDateString()} - ${new Date(
+                                bar.finishedAt
+                              ).toLocaleDateString()})`}
                             </SelectItem>
                           ))}
                         </Select>
@@ -301,7 +392,6 @@ export default function ModalCreateTask({
                     )}
                   </div>
 
-                  {/* Description Field */}
                   <div>
                     <Controller
                       name="description"
@@ -315,7 +405,7 @@ export default function ModalCreateTask({
                           placeholder="Input your description"
                           isInvalid={!!errors.description}
                           errorMessage={errors.description?.message}
-                          onChange={(e) => field.onChange(e.target.value)}
+                          onChange={(e) => field.onChange(e.target.value)} // Fixed typo: onChangeFACChange
                           classNames={{
                             inputWrapper: `
                               bg-white 
@@ -331,7 +421,7 @@ export default function ModalCreateTask({
                               rounded-small
                               transition-all 
                               hover:bg-white
-                              px-6
+                              px-0
                               py-4
                               ${errors.description ? "border-red-500" : ""}
                             `,
@@ -347,7 +437,6 @@ export default function ModalCreateTask({
                     )}
                   </div>
 
-                  {/* Action Buttons */}
                   <div className="grid grid-cols-2 gap-3 pt-2">
                     <Button
                       type="button"

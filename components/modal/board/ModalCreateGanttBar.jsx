@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useRef, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -14,6 +14,7 @@ import {
 import { IconAdd } from "../../icon/everyicon";
 import { X } from "lucide-react";
 import { createGanttBarsByGanttChartIdAction } from "@/action/gantt.action";
+import { toast } from "react-toastify";
 
 // Define the Face enum values
 const faceEnum = [
@@ -52,6 +53,10 @@ export default function ModalCreateGanttBar({ input, ganttChartId }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [pendingItems, setPendingItems] = useState([]);
 
+  // Use refs to track active toasts and prevent duplicates
+  const activeToasts = useRef(new Set());
+  const toastCounter = useRef(0);
+
   // React Hook Form setup
   const {
     register,
@@ -75,36 +80,103 @@ export default function ModalCreateGanttBar({ input, ganttChartId }) {
   const finishedAtValue = watch("finishedAt");
   const faceValue = watch("face");
 
+  // Utility function to safely show toast with simplified toastId
+  const showToast = useCallback((type, message, options = {}) => {
+    try {
+      // Generate simple, unique toastId
+      const toastId = `${type}-${++toastCounter.current}`;
+
+      // Clean up any existing toast with same base identifier
+      if (options.preventDuplicate) {
+        activeToasts.current.forEach((id) => {
+          if (id.startsWith(`${type}-`)) {
+            try {
+              toast.dismiss(id);
+              activeToasts.current.delete(id);
+            } catch (err) {
+              // Silently handle dismiss errors
+              console.warn("Toast dismiss error:", err);
+            }
+          }
+        });
+      }
+
+      const toastOptions = {
+        toastId,
+        position: "top-right",
+        autoClose: 3000,
+        ...options,
+        onClose: () => {
+          activeToasts.current.delete(toastId);
+          if (options.onClose) options.onClose();
+        },
+      };
+
+      activeToasts.current.add(toastId);
+
+      return toast[type](message, toastOptions);
+    } catch (error) {
+      console.error("Toast error:", error);
+      // Fallback to console log if toast fails
+      console.log(`${type.toUpperCase()}: ${message}`);
+    }
+  }, []);
+
   // Add item to pending list
-  const onAddToPending = (data) => {
-    if (!data.title.trim()) return;
+  const onAddToPending = useCallback(
+    (data) => {
+      if (!data.title.trim()) return;
 
-    const newItem = {
-      title: data.title.trim(),
-      startedAt: data.startedAt,
-      finishedAt: data.finishedAt,
-      face: data.face,
-    };
+      const newItem = {
+        title: data.title.trim(),
+        startedAt: data.startedAt,
+        finishedAt: data.finishedAt,
+        face: data.face,
+      };
 
-    setPendingItems((prev) => [...prev, newItem]);
+      setPendingItems((prev) => [...prev, newItem]);
 
-    // Reset form but keep face selection for convenience
-    reset({
-      title: "",
-      startedAt: "",
-      finishedAt: "",
-      face: "",
-    });
-  };
+      // Show success toast with simplified message
+      showToast("success", `"${data.title}" added to pending list!`, {
+        preventDuplicate: false,
+        autoClose: 2000,
+      });
+
+      // Reset form but keep face selection
+      reset({
+        title: "",
+        startedAt: "",
+        finishedAt: "",
+        face: data.face,
+      });
+    },
+    [showToast, reset]
+  );
 
   // Remove item from pending list by index
-  const handleRemovePendingItem = (index) => {
-    setPendingItems((prev) => prev.filter((_, i) => i !== index));
-  };
+  const handleRemovePendingItem = useCallback(
+    (index) => {
+      const removedItem = pendingItems[index];
+      if (!removedItem) return;
 
-  // Handle final form submission (Save button) - calls action
-  const onSaveAllItems = async () => {
-    if (pendingItems.length === 0) return;
+      setPendingItems((prev) => prev.filter((_, i) => i !== index));
+
+      // Show info toast for removal
+      showToast("info", `"${removedItem.title}" removed from pending list`, {
+        autoClose: 1500,
+      });
+    },
+    [pendingItems, showToast]
+  );
+
+  // Handle final form submission (Save button)
+  const onSaveAllItems = useCallback(async () => {
+    if (pendingItems.length === 0) {
+      showToast("warn", "No items in pending list to save", {
+        preventDuplicate: true,
+      });
+      return;
+    }
 
     const payload = pendingItems.map((item) => ({
       title: item.title,
@@ -117,27 +189,65 @@ export default function ModalCreateGanttBar({ input, ganttChartId }) {
     console.log("Sending payload to action:", payload);
 
     try {
-      await createGanttBarsByGanttChartIdAction({
+      const result = await createGanttBarsByGanttChartIdAction({
         ganttChartId,
         data: payload,
       });
 
-      // Clear form and pending items on success
-      reset();
-      setPendingItems([]);
+      console.log("API result:", result);
 
-      // Optionally close modal on success
-      // onOpenChange(false);
+      // Show success or error toast based on result
+      const titles = pendingItems.map((item) => item.title).join(", ");
+
+      if (result.status !== 400) {
+        showToast(
+          "success",
+          `Gantt bar(s) created successfully!\nItems: ${titles}`,
+          {
+            preventDuplicate: true,
+            autoClose: 4000,
+          }
+        );
+
+        // Clear form and pending items on success
+        reset();
+        setPendingItems([]);
+        onOpenChange(); // Close modal
+      } else {
+        showToast("error", `Failed to create Gantt bars. Please try again.`, {
+          preventDuplicate: true,
+          autoClose: 4000,
+        });
+      }
     } catch (err) {
       console.error("Failed to create Gantt bars:", err);
+      showToast(
+        "error",
+        `Failed to create Gantt bars: ${err.message || "Unknown error"}`,
+        {
+          preventDuplicate: true,
+          autoClose: 4000,
+        }
+      );
     }
-  };
+  }, [pendingItems, ganttChartId, showToast, reset, onOpenChange]);
 
-  // Handle modal close
-  const handleModalClose = () => {
+  // Handle modal close - cleanup function
+  const handleModalClose = useCallback(() => {
     reset();
     setPendingItems([]);
-  };
+
+    // Clean up any active toasts when modal closes
+    activeToasts.current.forEach((toastId) => {
+      try {
+        toast.dismiss(toastId);
+      } catch (err) {
+        // Silently handle cleanup errors
+        console.warn("Toast cleanup error:", err);
+      }
+    });
+    activeToasts.current.clear();
+  }, [reset]);
 
   return (
     <>
@@ -212,7 +322,7 @@ export default function ModalCreateGanttBar({ input, ganttChartId }) {
                       onClick={() => {
                         document
                           .querySelector('input[name="startedAt"]')
-                          .showPicker?.();
+                          ?.showPicker?.();
                       }}
                     >
                       <svg
@@ -268,7 +378,7 @@ export default function ModalCreateGanttBar({ input, ganttChartId }) {
                       onClick={() => {
                         document
                           .querySelector('input[name="finishedAt"]')
-                          .showPicker?.();
+                          ?.showPicker?.();
                       }}
                     >
                       <svg
@@ -323,7 +433,7 @@ export default function ModalCreateGanttBar({ input, ganttChartId }) {
                       pendingItems.map(
                         ({ title, startedAt, finishedAt, face }, idx) => (
                           <div
-                            key={idx}
+                            key={`${title}-${idx}`}
                             className="flex items-center justify-between bg-bgColor rounded-large px-4 py-2 w-auto"
                           >
                             <span>
@@ -340,7 +450,7 @@ export default function ModalCreateGanttBar({ input, ganttChartId }) {
                               type="button"
                               onClick={() => handleRemovePendingItem(idx)}
                               className="text-progress-red/70 hover:text-progress-red ml-2"
-                              aria-label={`Remove item ${title}`}
+                              aria-label="Delete"
                             >
                               <X size={16} />
                             </button>
@@ -360,7 +470,7 @@ export default function ModalCreateGanttBar({ input, ganttChartId }) {
                         !finishedAtValue ||
                         !faceValue
                       }
-                      className="w-full bg-bgColor text-primary font-medium py-3 rounded-full border border-title/20 hover:bg-title hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="w-full bg-bgColor text-primary font-medium py-3 rounded-full border border-title/20 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       Add to Pending
                     </button>
@@ -368,7 +478,7 @@ export default function ModalCreateGanttBar({ input, ganttChartId }) {
                 </form>
 
                 {/* Action buttons */}
-                <div className="grid grid-cols-2 gap-3 pt-2 py-4">
+                <div className="grid grid-cols-2 gap-3 pt-2 py-6">
                   <Button
                     className="bg-transparent border-1 border-bgColor"
                     radius="full"

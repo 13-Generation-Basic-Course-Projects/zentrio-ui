@@ -40,6 +40,7 @@ export default function SystemBoard({
       boardId={boardId}
       ganttChartId={ganttChartId}
       ganttbar={ganttbar}
+      allMemberInBoard={allMemberInBoard}
     />,
     workspaceId !== "otherworkspace" && (
       <ModalInviteMember

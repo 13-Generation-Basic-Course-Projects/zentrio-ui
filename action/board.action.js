@@ -123,14 +123,14 @@ export const createTaskByBoardIdAndGanttChartIdAction = async (
       throw new Error("No authentication token found");
     }
     console.log("Token retrieved:", token);
-    console.log("data create form", data);
+    console.log("Data create form:", data);
     const result = await createTaskByBoardIdAndGanttChartIdService({
       boardId,
       ganttChartId,
       data,
       token,
     });
-
+    revalidatePath("/task");
     return { success: true, data: result };
   } catch (error) {
     console.error("Create task action error:", error.message);

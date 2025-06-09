@@ -178,24 +178,49 @@ export const createTaskByBoardIdAndGanttChartIdService = async ({
   data,
   token,
 }) => {
-  console.log("taskkk");
   try {
-    console.log("from service", { boardId, data, token });
-    const url = boardRouteGroup.createTaskByBoardIdAndGanttBarId();
+    const payload = {
+      title: data.title,
+      description: data.description,
+      startedAt: data.startedAt,
+      finishedAt: data.finishedAt,
+      boardId,
+      ganttBarId: data.ganttBarId,
+    };
+    console.log("Service payload:", payload);
+    console.log("Service params:", { boardId, ganttChartId, token });
+    const url = boardRouteGroup.createTaskByBoardIdAndGanttBarId(
+      boardId,
+      ganttChartId
+    );
+    console.log("Request URL:", url);
+
     const res = await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify(payload),
     });
+
+    if (!res.ok) {
+      let errorMessage = `Failed to create task: ${res.statusText} (${res.status})`;
+      try {
+        const errorData = await res.json();
+        errorMessage = errorData.message || errorMessage;
+      } catch (jsonError) {
+        console.error("Failed to parse error response:", jsonError);
+      }
+      throw new Error(errorMessage);
+    }
+
     const result = await res.json();
     console.log("📥 Backend responded with:", result);
 
-    return data;
+    return result;
   } catch (error) {
-    console.error("bug", error.message);
+    console.error("Create task service error:", error.message);
     throw error;
   }
 };

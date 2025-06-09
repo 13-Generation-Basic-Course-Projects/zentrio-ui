@@ -14,7 +14,8 @@ import {
 } from "@/action/gantt.action";
 import { preventImage } from "@/constant/preventimage";
 import { getCurrentUserProfileAction } from "@/action/profile.action";
-
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 // Utility function to fetch ganttChartId
 async function fetchGanttChartId(boardId) {
   const FALLBACK_STRING = "No data available";
@@ -206,6 +207,7 @@ export default async function BoardLayout({ children, params }) {
           ganttChartName={ganttChartName}
           preventUserImage={preventUserImage}
         />
+        <ToastContainer position="top-right" autoClose={3000} />
         <main>{children}</main>
       </div>
     );
