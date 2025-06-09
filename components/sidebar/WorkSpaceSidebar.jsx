@@ -224,7 +224,7 @@ export default function WorkSpaceSideBar({
                   const activeColorClass =
                     activeColorMap[colorClass] || "bg-slate-blue text-primary";
                   return (
-                    <SidebarMenuItem key={i} className="!border-0 p-0">
+                    <SidebarMenuItem key={i} className="!border-0 p-0 hidden">
                       <SidebarMenuButton
                         style={{ borderRadius: "0.5rem" }}
                         asChild

@@ -1,24 +1,19 @@
+import { Card, CardHeader, CardBody } from "@heroui/react";
 import Image from "next/image";
 import tasklogo from "../../assets/task.png";
 
-import { Card, CardHeader, CardBody } from "@heroui/react";
+// Define color palette with count mappings
+const colorMap = [
+  { count: 12, value: "bg-red-500", textColor: "text-red-500" },
+  { count: 2, value: "bg-blue-500", textColor: "text-blue-500" },
+  { count: 4, value: "bg-green-500", textColor: "text-green-500" },
+  { count: 5, value: "bg-purple-500", textColor: "text-purple-500" },
+  { count: 22, value: "bg-orange-500", textColor: "text-orange-500" },
+];
 
-export default function CardTaskCalender({
-  tasks,
-  onTaskClick,
-  taskColorMap,
-  selectedTaskId,
-}) {
-  console.log("this is tasks :", tasks);
-
-  const handleTaskClick = (task) => {
-    if (onTaskClick) {
-      onTaskClick(task.taskId);
-    }
-  };
-
+export default function CardTaskCalender({ tasks, onTaskClick }) {
   return (
-    <Card className="py-4 rounded-large h-[400px] bg-white w-full mx-auto shadow-sm flex flex-col">
+    <Card className="py-4 rounded-large bg-white w-full mx-auto shadow-sm">
       <CardHeader className="pb-0 pt-2 px-6 flex-col items-start">
         <div className="flex items-center gap-3">
           <Image
@@ -30,41 +25,39 @@ export default function CardTaskCalender({
         </div>
       </CardHeader>
 
-      <CardBody className="py-3 px-4 rounded-lg overflow-y-auto flex-1">
-        {tasks?.payload.map((task, index) => {
-          const taskColor = taskColorMap[task.taskId];
-          const isSelected = selectedTaskId === task.taskId;
-
-          return (
-            <div
-              key={index}
-              onClick={() => handleTaskClick(task)}
-              className={`py-3 px-3 flex items-center justify-between gap-2 rounded-xl cursor-pointer transition-colors ${
-                isSelected
-                  ? "bg-gray-200"
-                  : "hover:bg-gray-100 active:bg-gray-100"
-              }`}
-            >
-              <div className="flex items-center gap-3 flex-1 min-w-0">
-                <span
-                  className={`w-4 h-4 rounded-full ${
-                    taskColor?.bg || "bg-blue-500"
-                  } flex-shrink-0`}
-                />
-                <span
-                  className={`${
-                    taskColor?.text || "text-blue-500"
-                  } font-medium text-large truncate`}
-                >
-                  {task.title}
-                </span>
+      <CardBody className="overflow-visible py-3 px-4 rounded-lg">
+        {tasks.length > 0 ? (
+          tasks.map((el, i) => {
+            const color = colorMap[i % colorMap.length];
+            return (
+              <div
+                key={i}
+                onClick={() => {
+                  if (el.start) {
+                    onTaskClick?.(el.start, el.id);
+                  }
+                }}
+                className="py-3 px-3 flex items-center justify-between gap-2 hover:bg-gray-100 rounded-xl cursor-pointer active:bg-gray-100 transition-colors"
+              >
+                <div className="flex items-center gap-3 flex-1 min-w-0">
+                  <span
+                    className={`w-4 h-4 rounded-full ${color.value} flex-shrink-0`}
+                  />
+                  <span
+                    className={`${color.textColor} font-medium text-large truncate`}
+                  >
+                    {el.title}
+                  </span>
+                </div>
+                <small className="text-title font-medium text-xs flex-shrink-0">
+                  {color.count}
+                </small>
               </div>
-              <small className="text-title font-medium text-xs flex-shrink-0">
-                {task.taskOrder || "0"}
-              </small>
-            </div>
-          );
-        })}
+            );
+          })
+        ) : (
+          <div className="text-title text-sm">No tasks available</div>
+        )}
       </CardBody>
     </Card>
   );
