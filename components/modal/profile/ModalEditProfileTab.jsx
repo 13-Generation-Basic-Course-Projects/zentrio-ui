@@ -12,8 +12,9 @@ import {
   Input,
   Select,
   SelectItem,
+  user,
 } from "@heroui/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   IconEdit,
   IconJob,
@@ -27,7 +28,7 @@ import correctIcon from "@/assets/correct.png";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { profileSchema } from "@/lib/schemas/editprofileSchema";
-import { updateAchievementAction, updateUserProfileAction } from "@/action/profile.action";
+import { getCurrentUserProfileAction, updateAchievementAction, updateUserProfileAction } from "@/action/profile.action";
 import { Controller } from "react-hook-form";
 
 export const gender = [
@@ -59,74 +60,6 @@ export function ModalEditProfile({ currentUserProfile }) {
     })
   );
 
-
-
-  // const boards = [
-  //   {
-  //     id: 1,
-  //     percent: 25,
-  //     role: "Owner",
-  //     color: "bg-progress-red",
-  //     title: "Zentrio UI Design",
-  //   },
-  //   {
-  //     id: 2,
-  //     percent: 50,
-  //     role: "Team Leader",
-  //     color: "bg-progress-orange",
-  //     title: "Mobile App Development",
-  //   },
-  //   {
-  //     id: 3,
-  //     percent: 75,
-  //     role: "Owner",
-  //     color: "bg-progress-blue",
-  //     title: "Web Development",
-  //   },
-  //   {
-  //     id: 4,
-  //     percent: 90,
-  //     role: "Owner",
-  //     color: "bg-progress-green",
-  //     title: "API Integration",
-  //   },
-  //   {
-  //     id: 5,
-  //     percent: 90,
-  //     role: "Developer",
-  //     color: "bg-progress-green",
-  //     title: "Database Design",
-  //   },
-  //   {
-  //     id: 6,
-  //     percent: 90,
-  //     role: "Lead",
-  //     color: "bg-progress-green",
-  //     title: "Testing Framework",
-  //   },
-  //   {
-  //     id: 7,
-  //     percent: 90,
-  //     role: "Owner",
-  //     color: "bg-progress-green",
-  //     title: "DevOps Setup",
-  //   },
-  //   {
-  //     id: 8,
-  //     percent: 90,
-  //     role: "Manager",
-  //     color: "bg-progress-green",
-  //     title: "Project Management",
-  //   },
-  //   {
-  //     id: 9,
-  //     percent: 90,
-  //     role: "Owner",
-  //     color: "bg-progress-green",
-  //     title: "Code Review",
-  //   },
-  // ];
-
   const handleAchievementToggle = (achievementId) => {
     setSelectedAchievements((prev) => {
       const newSelected = new Set(prev);
@@ -139,15 +72,37 @@ export function ModalEditProfile({ currentUserProfile }) {
     });
   };
 
+  const user = currentUserProfile?.payload?.user || {};
+
   const {
     register,
     handleSubmit,
     control,
+    reset,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(profileSchema),
-    defaultValues: {},
+    defaultValues: {
+      username: "",
+      gender: "", 
+      position: "",
+      location: "",
+      contact: "",
+    },
   });
+
+  useEffect(() => {
+    if (isOpen && user) {
+      reset({
+        username: user?.username || "",
+        gender: user?.gender?.toLowerCase() || "",
+        position: user?.position || "",
+        location: user?.location || "",
+        contact: user?.contact || "",
+      });
+    }
+  }, [isOpen, , reset]);
+  
 
   const onSubmit = async (data) => {
     const result = await updateUserProfileAction(data);
@@ -318,214 +273,6 @@ export function ModalEditProfile({ currentUserProfile }) {
                     </div>
                   </form>
                 )}
-                {/* {selectedTab === "Profile" && (
-                  <form action="" className="grid grid-cols-1 gap-4">
-                    <div>
-                      <label className="text-label font-medium flex items-center gap-x-2 mb-2">
-                        <IconUser strokeWidth={1} size={4} />
-                        Name <span className="text-red-500">*</span>
-                      </label>
-                      <Input
-                        {...register("name")}
-                        isRequired
-                        errorMessage="Please input a valid name"
-                        labelPlacement="outside"
-                        name="name"
-                        placeholder="Input your name"
-                        type="text"
-                        classNames={{
-                          label: "text-label font-medium shadow-none",
-                          inputWrapper: `
-                      bg-white 
-                      border
-                      border-gray-300
-                      shadow-none         
-                      focus:shadow-none   
-                      focus:outline-none
-                      focus:ring-0        
-                      focus-within:shadow-none
-                      focus-within:ring-0
-                      rounded-small
-                      transition-all 
-                      hover:bg-white
-                      px-6
-                      py-6
-                    `,
-                          input: "text-black",
-                        }}
-                      />
-                    </div>
-
-                    <div>
-                      <label className="text-label font-medium flex items-center gap-x-2 mb-2">
-                        <IconShield
-                          strokeWidth={1}
-                          size={4}
-                          color={"currentColor"}
-                        />
-                        Gender <span className="text-red-500">*</span>
-                      </label>
-                      <Select
-                        name="gender"
-                        isInvalid={!!errors.gender}
-                        errorMessage={errors.gender?.message}
-                        isRequired
-                        placeholder="Choose your gender"
-                        classNames={{
-                          trigger: `
-                      bg-white 
-                      text-black 
-                      border 
-                      border-gray-300 
-                      shadow-none         
-                      focus:shadow-none   
-                      focus:outline-none
-                      focus:ring-0        
-                      focus-within:shadow-none
-                      focus-within:ring-0
-                      rounded-small
-                      transition-all 
-                      hover:bg-white 
-                      px-6
-                      py-6
-                    `,
-                          value: "text-gray-500",
-                        }}>
-                        {gender.map((ganttBar) => (
-                          <SelectItem key={ganttBar.key}>
-                            {ganttBar.label}
-                          </SelectItem>
-                        ))}
-                      </Select>
-                    </div>
-
-                    <div>
-                      <label className="text-label font-medium flex items-center gap-x-2 mb-2">
-                        <IconJob strokeWidth={1} size={4} />
-                        Position <span className="text-red-500">*</span>
-                      </label>
-                      <Input
-                        {...register("position")}
-                        isRequired
-                        errorMessage="Please input a valid position"
-                        labelPlacement="outside"
-                        name="position"
-                        placeholder="Input your position"
-                        type="text"
-                        classNames={{
-                          label: "text-label font-medium",
-                          inputWrapper: `
-                      bg-white 
-                      border
-                      border-gray-300
-                      shadow-none         
-                      focus:shadow-none   
-                      focus:outline-none
-                      focus:ring-0        
-                      focus-within:shadow-none
-                      focus-within:ring-0 
-                      rounded-small
-                      transition-all 
-                      hover:bg-white
-                      px-6
-                      py-6
-                    `,
-                          input: "text-black",
-                        }}
-                      />
-                    </div>
-
-                    <div>
-                      <label className="text-label font-medium flex items-center gap-x-2 mb-2">
-                        <IconMap
-                          strokeWidth={1}
-                          size={4}
-                          color={"currentColor"}
-                        />
-                        Location <span className="text-red-500">*</span>
-                      </label>
-                      <Input
-                        {...register("location")}
-                        isRequired
-                        errorMessage="Please input a valid location"
-                        name="location"
-                        placeholder="Input your location"
-                        type="text"
-                        classNames={{
-                          label: "text-label font-medium",
-                          inputWrapper: `
-                      bg-white 
-                      border
-                      border-gray-300
-                      shadow-none         
-                      focus:shadow-none   
-                      focus:outline-none
-                      focus:ring-0        
-                      focus-within:shadow-none
-                      focus-within:ring-0 
-                      rounded-small
-                      transition-all 
-                      hover:bg-white
-                      px-6
-                      py-6
-                    `,
-                          input: "text-black",
-                        }}
-                      />
-                    </div>
-
-                    <div>
-                      <label className="text-label font-medium flex items-center gap-x-2 mb-2">
-                        <IconPhone
-                          strokeWidth={1}
-                          size={4}
-                          color={"currentColor"}
-                        />
-                        Contact <span className="text-red-500">*</span>
-                      </label>
-                      <Input
-                        {...register("contact")}
-                        isRequired
-                        errorMessage="Please input a valid contact"
-                        name="contact"
-                        placeholder="Input your contact"
-                        type="tel"
-                        classNames={{
-                          label: "text-label font-medium",
-                          inputWrapper: `
-                      bg-white 
-                      border
-                      border-gray-300
-                      shadow-none         
-                      focus:shadow-none   
-                      focus:outline-none
-                      focus:ring-0        
-                      focus-within:shadow-none
-                      focus-within:ring-0
-                      rounded-small
-                      transition-all 
-                      hover:bg-white
-                      px-6
-                      py-6
-                    `,
-                          input: "text-black",
-                        }}
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-3 pt-2">
-                      <Button
-                        className="bg-transparent border-1 border-bgColor"
-                        radius="full"
-                        onPress={onClose}>
-                        Cancel
-                      </Button>
-                      <Button type="submit" color="primary" radius="full" onPress={onClose}>
-                        Save
-                      </Button>
-                    </div>
-                  </form>
-                )} */}
                 {selectedTab === "Profile" && (
                   <form
                     onSubmit={handleSubmit(onSubmit)}
