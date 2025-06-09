@@ -13,8 +13,9 @@ import ModalDelete from "../ModalDelete";
 import PopupAction from "@/components/popup/PopupAction";
 import { IconpopupDelete } from "@/components/icon/Iconpopup";
 import { ModalRenameFileOrFolder } from "./ModalRenameDocu";
-import { deleteDocumentAction } from "@/action/document.action";
+import { deleteDocumentAction, downloadDocumentByDocumentIdAction } from "@/action/document.action";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 // icon components directly in the same file
 const AddNoteIcon = (props) => (
@@ -111,6 +112,34 @@ const ShareoDcumentIcon = (props) => (
 );
 
 export default function ModalOptionDocument({ documentId, accessToken }) {
+  const [isDownloading, setIsDownloading] = useState(false);
+
+  const handleDownload = async () => {
+    try {
+      setIsDownloading(true);
+      
+      // Get blob from action
+      const { blob, fileName } = await downloadDocumentByDocumentIdAction(
+      documentId, // you should define or pass this
+      accessToken // also passed or fetched beforehand
+    );
+
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = fileName || "document"; // Fallback filename
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(url); // Clean up
+      
+    } catch (error) {
+      console.error("Download failed:", error);
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
   const iconClasses =
     "text-xl text-default-500 pointer-events-none flex-shrink-0";
 
@@ -137,18 +166,26 @@ export default function ModalOptionDocument({ documentId, accessToken }) {
         closeOnSelect={false}
       >
         <DropdownItem
-          key="new"
-          className="w-full hover:bg-default-100 "
-          startContent={<AddNoteIcon className={iconClasses} />}
+          key="download"
+          className="w-full hover:bg-default-100"
+          onClick={handleDownload}
+          isDisabled={isDownloading} // Disable while downloading
+          startContent={
+            isDownloading ? (
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-900"></div>
+            ) : (
+              <AddNoteIcon className={iconClasses} />
+            )
+          }
         >
-          Download
+          {isDownloading ? 'Downloading...' : 'Download'}
         </DropdownItem>
         <DropdownItem
           key="copy"
           className="w-full hover:bg-default-100"
           startContent={<CopyDocumentIcon className={iconClasses} />}
         >
-          <ModalRenameFileOrFolder />
+          <ModalRenameFileOrFolder documentId={documentId} tokenFromGoogle={accessToken} />
         </DropdownItem>
         <DropdownItem
           key="edit"

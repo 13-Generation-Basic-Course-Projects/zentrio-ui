@@ -2,7 +2,9 @@
 
 import { documentRouteGroup } from "@/routes/documentRoute";
 
-// GET document by ID
+/*
+ * get document by document Id
+ */
 export const fetchDocumentService = async (id, token) => {
   const res = await fetch(documentRouteGroup.getDocumentById(id), {
     method: "GET",
@@ -41,7 +43,9 @@ export const fetchPublicDocumentsService = async (boardId, token) => {
   return res.json();
 };
 
-// GET documents by board
+/*
+ * get all documents by board Id
+ */
 export const fetchDocumentsByBoardService = async (boardId, token) => {
   const res = await fetch(
     documentRouteGroup.getAllDocumentsByBoard(boardId), // URL only
@@ -61,7 +65,9 @@ export const fetchDocumentsByBoardService = async (boardId, token) => {
   return res.json();
 };
 
-// GET File by folder id
+/*
+ * get file by folder Id
+ */
 export const getFileByFolderIdService = async ({
   accessToken,
   folderId,
@@ -88,14 +94,57 @@ export const getFileByFolderIdService = async ({
   }
 };
 
-// DELETE document by ID
+/**
+ * Download document by document ID
+ */
+export const downloadDocumentByDocumentIdService = async ({
+  documentId,
+  accessToken,
+  token,
+}) => {
+  const url = documentRouteGroup.downloadDocumentByDocumentId(
+    documentId,
+    accessToken
+  );
+
+  const res = await fetch(url, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "*/*",
+    },
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to download file");
+  }
+
+  const blob = await res.blob();
+
+  // Extract filename from headers
+  const contentDisposition = res.headers.get("Content-Disposition");
+  let fileName = "document";
+
+  if (contentDisposition && contentDisposition.includes("filename=")) {
+    const match = contentDisposition.match(
+      /filename[^;=\n]*=(['"]?)([^'"\n]*)\1?/
+    );
+    if (match && match.length >= 3) {
+      fileName = decodeURIComponent(match[2]);
+    }
+  }
+
+  return { blob, fileName };
+};
+
+/*
+ * delete document by document Id
+ */
 export const deleteDocumentService = async ({
   accessToken,
   documentId,
   token,
 }) => {
-  console.log("accc====", accessToken);
-  console.log("docid=====", documentId);
   try {
     const res = await fetch(
       documentRouteGroup.deleteDocumentById(documentId, accessToken),
@@ -114,7 +163,10 @@ export const deleteDocumentService = async ({
     console.error("Delete service error:", error.message);
   }
 };
-// POST (create) new document
+
+/*
+ * create new document
+ */
 export const createDocumentService = async (data, token) => {
   const res = await fetch(documentRouteGroup.createDocument(), {
     method: "POST",
@@ -132,7 +184,9 @@ export const createDocumentService = async (data, token) => {
   return res.json();
 };
 
-// POST (create) new document by upload
+/*
+ * create new document by file upload
+ */
 export const createDocumentByUploadService = async (
   formData,
   boardId,
@@ -160,3 +214,67 @@ export const createDocumentByUploadService = async (
 
   return res.json();
 };
+
+/*
+ * create drive file
+ */
+export const createDriveFileService = async (
+  name,
+  folderId,
+  fileType,
+  token,
+  tokenFromGoogle
+) => {
+  const url = documentRouteGroup.createDriveFile(
+    name,
+    folderId,
+    fileType,
+    tokenFromGoogle // accessToken in query param
+  );
+
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    console.error("❌ Error creating drive file:", data);
+    throw new Error(`Failed to create drive file: ${res.status}`);
+  }
+
+  return data;
+};
+
+/*
+ * Update document name by document id
+ */
+export const updateDocumentNameByIdService = async (documentId, newName, token, tokenFromGoogle) => {
+  const url = documentRouteGroup.updateDocumentById(documentId, tokenFromGoogle, newName); // now includes name in URL
+
+  try {
+    const res = await fetch(url, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "*/*",
+      },
+      // ✅ Don't send body, because name is in the URL
+    });
+
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => null);
+      throw new Error(errorData?.message || `Request failed with status ${res.status}`);
+    }
+
+    const updatedDocument = await res.json();
+    return updatedDocument;
+  } catch (error) {
+    console.error("Error updating document name:", error);
+    throw error;
+  }
+};
+

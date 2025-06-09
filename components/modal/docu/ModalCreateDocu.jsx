@@ -10,7 +10,10 @@ import {
 import { IconAdd } from "../../icon/everyicon";
 import ModalCreateFolder from "./ModalCreateFolder";
 import ModalUploadFile from "./ModalUploadfile";
-import { createDocumentByUploadAction } from "@/action/document.action";
+import {
+  createDocumentByUploadAction,
+  createFileAction,
+} from "@/action/document.action";
 
 export default function ModalCreateDocu({ boardId, tokenFromGoogle }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -76,14 +79,51 @@ export default function ModalCreateDocu({ boardId, tokenFromGoogle }) {
     },
   ];
 
-  const handleItemClick = (key) => {
+  const handleItemClick = async (key) => {
     setIsDropdownOpen(false);
+
     if (key === "create") {
       setIsCreateFolderOpen(true);
     } else if (key === "upload") {
       setIsUploadModalOpen(true);
+    } else if (["doc", "slide", "sheet"].includes(key)) {
+      try {
+        const mimeTypes = {
+          doc: "application/vnd.google-apps.document",
+          slide: "application/vnd.google-apps.presentation",
+          sheet: "application/vnd.google-apps.spreadsheet",
+        };
+
+        const docTypes = {
+          doc: "doc", // for Google Docs
+          slide: "presentation", // for Google Slides
+          sheet: "spreadsheets", // for Google Sheets
+        };
+
+        const data = {
+          name: "Untitled",
+          mimeType: mimeTypes[key],
+          boardId,
+          token: tokenFromGoogle,
+        };
+
+        const result = await createFileAction(data);
+        const fileId = result?.payload?.id;
+
+        if (fileId) {
+          const editorType = docTypes[key]; // "document" for doc
+          const editorUrl = `https://docs.google.com/${editorType}/d/${fileId}/edit`;
+          window.open(editorUrl, "_blank");
+        } else {
+          alert("File ID missing. Could not open editor.");
+        }
+      } catch (error) {
+        console.error("Error creating Google file:", error);
+        alert("Failed to create Google document.");
+      }
     }
   };
+
   console.log("board in modal create doc", boardId);
   return (
     <>

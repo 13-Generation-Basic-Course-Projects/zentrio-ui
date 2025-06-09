@@ -11,12 +11,17 @@ import {
   useDisclosure,
 } from "@heroui/react";
 import { IconFolder } from "../../icon/everyicon";
-import { CardFile } from "../../card/CardDoc";
+import CardFolder, { CardFile } from "../../card/CardDoc";
 import { getFileByFolderIdAction } from "@/action/document.action";
 import NoFilesFound from "./NoFilesFound";
-import ModalCreateDocu from "./ModalCreateDocu";
+import ModalCreateDocuInFolder from "./ModalCreateDocuInFolder";
 
-export default function ModalFolderList({ title, folderId, accessToken }) {
+export default function ModalFolderList({
+  title,
+  folderId,
+  boardId,
+  accessToken,
+}) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [data, setData] = useState([]); // State to store fetched data
   const [loading, setLoading] = useState(true); // State to handle loading
@@ -89,37 +94,54 @@ export default function ModalFolderList({ title, folderId, accessToken }) {
                 ) : error ? (
                   <p className="text-red-500">{error}</p>
                 ) : data.length === 0 ? (
-                  // <p>No files found</p>
                   <NoFilesFound />
                 ) : (
                   <div className="grid grid-cols-4 gap-4 overflow-y-auto scrollbar-hidden pb-[250px] p-2">
                     {data.map((el, i) => {
-                      // Skip folders based on mimeType
+                      // Check if it's a folder
                       if (
                         el.mimeType === "application/vnd.google-apps.folder"
                       ) {
-                        return null;
+                        return (
+                          <CardFolder
+                            key={`folder-${i}`}
+                            title={el.name || "Untitled Folder"}
+                            status={el.status || "personal"}
+                            date={new Date().toISOString().split("T")[0]}
+                            link={el.webViewLink}
+                            documentId={el.id}
+                            folderId={el.id}
+                            tokenFromGoogle={accessToken}
+                          />
+                        );
                       }
-                      // Map backend fields to CardFile props
+
+                      // Otherwise, render file
                       const fileType =
                         el.mimeType.split("application/vnd.google-apps.")[1] ||
                         el.mimeType.split("/")[1] ||
                         "file";
+
                       return (
                         <CardFile
-                          key={el.id || i} // Use id for unique key
-                          title={el.name} // Map name to title
-                          status="public" // Default status
-                          date={new Date().toISOString().split("T")[0]} // Default date
-                          type={fileType} // Extract file type
-                          webViewLink={el.webViewLink} // Optional
+                          key={el.id || i}
+                          title={el.name}
+                          status={el.status || "personal"}
+                          date={new Date().toISOString().split("T")[0]}
+                          type={fileType}
+                          link={el.webViewLink}
                         />
                       );
                     })}
                   </div>
                 )}
-                <ModalCreateDocu />
+                <ModalCreateDocuInFolder
+                  folderId={folderId}
+                  boardId={boardId}
+                  tokenFromGoogle={accessToken}
+                />
               </ModalBody>
+
               <ModalFooter>
                 {/* <Button color="danger" variant="light" onPress={onClose}>
                   Close

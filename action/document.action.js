@@ -4,10 +4,14 @@ import { Token } from "@/constant/token";
 import {
   createDocumentByUploadService,
   createDocumentService,
+  createDriveFileService,
   deleteDocumentService,
+  downloadDocumentByDocumentIdService,
   fetchDocumentsByBoardService,
   getFileByFolderIdService,
+  updateDocumentNameByIdService,
 } from "@/service/document.service";
+import { revalidatePath } from "next/cache";
 
 // Get
 export const getDocumentsByBoardAction = async (boardId) => {
@@ -33,6 +37,24 @@ export const getFileByFolderIdAction = async (accessToken, folderId) => {
   return files;
 };
 
+// Download document
+export const downloadDocumentByDocumentIdAction = async (
+  documentId,
+  accessTokenFromGoogle
+) => {
+  const userToken = await Token();
+  const token = userToken.Credential;
+
+  // Only return the blob and filename - NO browser download code
+  const { blob, fileName } = await downloadDocumentByDocumentIdService({
+    documentId,
+    accessToken: accessTokenFromGoogle,
+    token,
+  });
+
+  return { blob, fileName }; // Just return data
+};
+
 // Create
 export const createFolderAction = async (data) => {
   const userToken = await Token();
@@ -42,6 +64,34 @@ export const createFolderAction = async (data) => {
   return folder;
 };
 
+// Create
+export const createFileAction = async ({
+  name,
+  mimeType,
+  boardId,
+  token: tokenFromGoogle,
+}) => {
+  try {
+    const userToken = await Token(); // get your backend token
+    const token = userToken.Credential;
+
+    const data = {
+      name: name,
+      mimeType: mimeType,
+      boardId: boardId,
+      token: tokenFromGoogle, // optional, if needed
+    };
+
+    const createdDocument = await createDocumentService(data, token);
+
+    return createdDocument;
+  } catch (error) {
+    console.error("Error creating file:", error);
+    throw error;
+  }
+};
+
+// Create
 export const createDocumentByUploadAction = async (
   formData,
   boardId,
@@ -52,6 +102,24 @@ export const createDocumentByUploadAction = async (
   const document = await createDocumentByUploadService(
     formData,
     boardId,
+    token,
+    tokenFromGoogle
+  );
+  return document;
+};
+
+export const createDriveFileAction = async (
+  name,
+  folderId,
+  fileType,
+  tokenFromGoogle
+) => {
+  const userToken = await Token();
+  const token = userToken.Credential;
+  const document = await createDriveFileService(
+    name,
+    folderId,
+    fileType,
     token,
     tokenFromGoogle
   );
@@ -70,4 +138,24 @@ export const deleteDocumentAction = async (accessToken, documentId) => {
   });
 
   return document;
+};
+
+// Update
+export const updateDocumentNameByIdAction = async (
+  documentId,
+  newName,
+  tokenFromGoogle
+) => {
+  console.log("tokekkek", tokenFromGoogle);
+  const userToken = await Token();
+  const token = userToken.Credential;
+  revalidatePath("/document");
+
+  const updated = await updateDocumentNameByIdService(
+    documentId,
+    newName,
+    token,
+    tokenFromGoogle
+  );
+  return updated;
 };
