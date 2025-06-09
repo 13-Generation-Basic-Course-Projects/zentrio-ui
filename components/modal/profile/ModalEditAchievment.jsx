@@ -13,7 +13,7 @@ import {
   Select,
   SelectItem,
 } from "@heroui/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   IconEdit,
   IconJob,
@@ -59,15 +59,37 @@ export function ModalEditAchievment({ currentUserProfile }) {
     })
   );
 
-  const {
-    register,
-    handleSubmit,
-    control,
-    formState: { errors },
-  } = useForm({
-    resolver: zodResolver(profileSchema),
-    defaultValues: {},
-  });
+   const user = currentUserProfile?.payload?.user || {};
+ 
+   const {
+     register,
+     handleSubmit,
+     control,
+     reset,
+     formState: { errors },
+   } = useForm({
+     resolver: zodResolver(profileSchema),
+     defaultValues: {
+       username: "",
+       gender: "", 
+       position: "",
+       location: "",
+       contact: "",
+     },
+   });
+ 
+   useEffect(() => {
+     if (isOpen && user) {
+       reset({
+         username: user?.username || "",
+         gender: user?.gender?.toLowerCase() || "",
+         position: user?.position || "",
+         location: user?.location || "",
+         contact: user?.contact || "",
+       });
+     }
+   }, [isOpen, , reset]);
+   
 
   const onSubmit = async (data) => {
     const result = await updateUserProfileAction(data);
@@ -119,73 +141,6 @@ export function ModalEditAchievment({ currentUserProfile }) {
       console.error("Error saving achievements:", error);
     }
   };
-
-
-  // const boards = [
-  //   {
-  //     id: 1,
-  //     percent: 25,
-  //     role: "Owner",
-  //     color: "bg-progress-red",
-  //     title: "Zentrio UI Design",
-  //   },
-  //   {
-  //     id: 2,
-  //     percent: 50,
-  //     role: "Team Leader",
-  //     color: "bg-progress-orange",
-  //     title: "Mobile App Development",
-  //   },
-  //   {
-  //     id: 3,
-  //     percent: 75,
-  //     role: "Owner",
-  //     color: "bg-progress-blue",
-  //     title: "Web Development",
-  //   },
-  //   {
-  //     id: 4,
-  //     percent: 90,
-  //     role: "Owner",
-  //     color: "bg-progress-green",
-  //     title: "API Integration",
-  //   },
-  //   {
-  //     id: 5,
-  //     percent: 90,
-  //     role: "Developer",
-  //     color: "bg-progress-green",
-  //     title: "Database Design",
-  //   },
-  //   {
-  //     id: 6,
-  //     percent: 90,
-  //     role: "Lead",
-  //     color: "bg-progress-green",
-  //     title: "Testing Framework",
-  //   },
-  //   {
-  //     id: 7,
-  //     percent: 90,
-  //     role: "Owner",
-  //     color: "bg-progress-green",
-  //     title: "DevOps Setup",
-  //   },
-  //   {
-  //     id: 8,
-  //     percent: 90,
-  //     role: "Manager",
-  //     color: "bg-progress-green",
-  //     title: "Project Management",
-  //   },
-  //   {
-  //     id: 9,
-  //     percent: 90,
-  //     role: "Owner",
-  //     color: "bg-progress-green",
-  //     title: "Code Review",
-  //   },
-  // ];
 
   const handleAchievementToggle = (achievementId) => {
     setSelectedAchievements((prev) => {
