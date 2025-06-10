@@ -1,6 +1,7 @@
 import React from "react";
 import CartPostAnnouncement from "../announcementCompo/CardPostAnnouncement";
 import CardCreateAnnouncement from "../announcementCompo/CardCreateAnnouncement";
+import CardAllMembers from "../announcementCompo/CardAllMembers";
 
 export default function Announcementpage() {
   return (
@@ -35,8 +36,8 @@ export default function Announcementpage() {
         </div>
       </div>
 
-      <div className="bg-orange-400 col-span-3">
-        all members component
+      <div className="col-span-3">
+        <CardAllMembers />
       </div>
     </div>
   );
