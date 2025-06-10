@@ -8,6 +8,7 @@ import { ChevronDown, ChevronUp, MessageSquare, Paperclip } from "lucide-react";
 import CardDateChecklist from "../card/CardDateChecklist";
 import ModalCreateChecklist from "../modal/board/ModalCreateChecklist";
 import { EmptyKanban } from "../appserver/EmptyKanban";
+import { card } from "@heroui/theme";
 
 // Placeholder component (unchanged)
 const UserAvater = ({ image }) => (
@@ -120,6 +121,7 @@ export default function KanbanBoard({
   allMemberInBoard,
   test,
   preventUserImage,
+  boardData,
 }) {
   const [columns, setColumns] = useState([]);
   const [draggedItem, setDraggedItem] = useState(null);
@@ -484,13 +486,13 @@ export default function KanbanBoard({
   if (error) {
     return <div>Error: {error}</div>;
   }
-
+  console.log("aaaa", allMemberInBoard);
   return (
     <div className="w-full h-screen flex flex-col">
       <BredCrum
-        board={"Hikko Design"}
+        board={boardData?.payload.title || "Hikko Design"}
         feature={"Board"}
-        header={"Hikko Design"}
+        header={boardData?.payload.title || "Hikko Design"}
         modal={modal}
       />
       <StackedUser image={allMemberInBoard} />

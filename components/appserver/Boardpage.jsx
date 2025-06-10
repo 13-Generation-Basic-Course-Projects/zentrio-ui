@@ -24,6 +24,7 @@ export default function SystemBoard({
   ganttChartId,
   ganttChartName,
   preventUserImage,
+  boardData,
 }) {
   const pathname = usePathname();
   const segments = pathname.split("/");
@@ -81,6 +82,7 @@ export default function SystemBoard({
           checklistbyTaskIds={checklistbyTaskIds}
           allMemberInBoard={allMemberInBoard}
           preventUserImage={preventUserImage}
+          boardData={boardData}
         />
       ),
     },

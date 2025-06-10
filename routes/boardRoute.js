@@ -2,7 +2,7 @@ import { apiConfig } from "@/constant/baseurl";
 
 export const boardRouteGroup = {
   //get
-  getBoardById: (id) => `${apiConfig.baseUrl}/board/${id}`, //
+  getBoardById: (id) => `${apiConfig.baseUrl}/boards/${id}`, //
   getTaskByBoardAndGanttBarId: (boardId, ganttbarId) =>
     `${apiConfig.baseUrl}/tasks/boards/${boardId}/gantt-bars/${ganttbarId}`, //Get all task by specific board ID with gantt bar ID
 

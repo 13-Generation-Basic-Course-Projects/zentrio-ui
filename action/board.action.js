@@ -5,6 +5,7 @@ import {
   createGanttChartByBoardIdService,
   createTaskByBoardIdAndGanttChartIdService,
   getAllGanttBarByGanttChartIDService,
+  getBoardByBoardIdService,
   getCheckListByTaskIdService,
   getCommentByCheckListIdService,
   getMemberByBoardIdService,
@@ -212,7 +213,26 @@ export const createCheckListAction = async (taskId, data) => {
     revalidatePath("/checklist");
     return result;
   } catch (error) {
-    console.log("Create task action error:", error.message);
+    console.log("Create checklist action error:", error.message);
+    return { success: false, error: error.message };
+  }
+};
+
+/*
+ * getboard
+ */
+export const getBoardByBoardIdAction = async (boardId) => {
+  const userToken = await Token();
+  const token = userToken?.Credential;
+  try {
+    const result = await getBoardByBoardIdService({
+      boardId,
+      token,
+    });
+
+    return result;
+  } catch (error) {
+    console.log("error:", error.message);
     return { success: false, error: error.message };
   }
 };

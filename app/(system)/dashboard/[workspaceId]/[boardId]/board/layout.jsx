@@ -2,6 +2,7 @@ import SystemBoard from "@/components/appserver/Boardpage";
 import { auth } from "@/auth";
 import {
   getAllGanttBarByGanttChartIDAction,
+  getBoardByBoardIdAction,
   getCheckListByTaskIdAction,
   getCommentByCheckListIdAction,
   getMemberByBoardIdAction,
@@ -197,6 +198,11 @@ export default async function BoardLayout({ children, params }) {
     // );
     // Extract checklistId values from checklistbyTaskIds
 
+    /*
+     * get board by board id
+     */
+    const boardData = await getBoardByBoardIdAction(boardId);
+    console.log("boardData", boardData);
     return (
       <div>
         <SystemBoard
@@ -215,6 +221,7 @@ export default async function BoardLayout({ children, params }) {
           ganttChartId={ganttChartId}
           ganttChartName={ganttChartName}
           preventUserImage={preventUserImage}
+          boardData={boardData}
         />
         <ToastContainer position="top-right" autoClose={3000} />
         <main>{children}</main>
@@ -234,6 +241,7 @@ export default async function BoardLayout({ children, params }) {
           ganttChartId={ganttChartId}
           ganttChartName={ganttChartName}
           preventUserImage={preventUserImage}
+          boardData={boardData}
         />
         <main>{children}</main>
       </div>
