@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import {
   Modal,
   ModalContent,
@@ -8,46 +8,55 @@ import {
   ModalFooter,
   Button,
   useDisclosure,
-  Card,
+  DateRangePicker,
 } from "@heroui/react";
-import { IconAdd } from "../../icon/everyicon";
+import { useForm, Controller } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { parseDate } from "@internationalized/date";
+import { checklistSchema } from "@/lib/schemas/createCheckListSchema";
 
 export default function ModalCreateChecklist({
-  input,
   onSubmit,
   buttonText = "Create",
   modalTitle = "Create Checklist",
+  taskid,
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [formData, setFormData] = useState({
-    title: "",
-    duration: "",
-    description: "",
+
+  // Initialize React Hook Form with Zod resolver
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    control,
+    reset,
+  } = useForm({
+    resolver: zodResolver(checklistSchema),
+    defaultValues: {
+      title: "",
+      duration: {
+        start: "2024-04-01",
+        end: "2024-04-08",
+      },
+      description: "",
+    },
   });
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (onSubmit && formData.title.trim()) {
-      onSubmit({
-        title: formData.title.trim(),
-        duration: formData.duration,
-        description: formData.description || "New checklist item",
+  // Handle form submission
+  const onFormSubmit = async (data) => {
+    if (onSubmit) {
+      await onSubmit({
+        title: data.title.trim(),
+        duration: {
+          start: data.duration.start,
+          end: data.duration.end,
+        },
+        description: data.description || "New checklist item",
       });
-      // Reset form
-      setFormData({
-        title: "",
-        duration: "",
-        description: "",
-      });
-      onOpenChange(false);
+      reset(); // Reset form after submission
+      onOpenChange(false); // Close modal
     }
-  };
-
-  const handleInputChange = (field, value) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
   };
 
   return (
@@ -68,78 +77,64 @@ export default function ModalCreateChecklist({
                 {modalTitle}
               </ModalHeader>
               <ModalBody>
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit(onFormSubmit)}>
                   <div className="flex flex-col gap-3">
                     <label className="text-sm font-medium text-title">
                       Title <span className="text-progress-red">*</span>
                     </label>
                     <input
-                      className="border text-caption border-gray-300 rounded-small px-3 py-3 "
+                      className="border text-caption border-gray-300 rounded-small px-3 py-3"
                       placeholder="Input your title"
-                      value={formData.title}
-                      onChange={(e) =>
-                        handleInputChange("title", e.target.value)
-                      }
-                      required
+                      {...register("title")}
                     />
+                    {errors.title && (
+                      <p className="text-progress-red text-xs">
+                        {errors.title.message}
+                      </p>
+                    )}
                   </div>
 
                   <div className="relative w-full flex flex-col gap-3 mt-3">
                     <label className="text-sm font-medium text-title">
                       Duration <span className="text-progress-red">*</span>
                     </label>
-
-                    <input
-                      type="date"
-                      className="border text-caption border-gray-300 rounded-small px-3 py-3  w-full pr-12"
-                      placeholder="choose your date"
-                      value={formData.duration}
-                      onChange={(e) =>
-                        handleInputChange("duration", e.target.value)
-                      }
-                      required
-                      style={{
-                        appearance: "none",
-                        WebkitAppearance: "none",
-                        MozAppearance: "none",
-                        cursor: "pointer",
-                      }}
-                    />
-
-                    {/* Custom calendar icon container */}
-                    <div
-                      className="absolute right-3 top-1/2 transform -translate-y-0 flex items-center justify-center rounded bg-opacity-10 p-1.5 cursor-pointer"
-                      onClick={() => {
-                        // Optional: programmatically open date picker if needed
-                        document
-                          .querySelector('input[type="date"]')
-                          ?.showPicker?.();
-                      }}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5 text-primary"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth={2}
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                    <Controller
+                      name="duration"
+                      control={control}
+                      render={({ field }) => (
+                        <DateRangePicker
+                          isRequired
+                          className="max-w-none"
+                          value={{
+                            start: parseDate(field.value.start),
+                            end: parseDate(field.value.end),
+                          }}
+                          onChange={(value) =>
+                            field.onChange({
+                              start: value.start.toString(),
+                              end: value.end.toString(),
+                            })
+                          }
+                          label="Stay duration"
+                          style={{
+                            appearance: "none",
+                            WebkitAppearance: "none",
+                            MozAppearance: "none",
+                            cursor: "pointer",
+                          }}
                         />
-                      </svg>
-                    </div>
-
-                    <style jsx>{`
-                      /* Hide native calendar icon */
-                      input[type="date"]::-webkit-calendar-picker-indicator {
-                        opacity: 0;
-                        pointer-events: none;
-                        display: none;
-                      }
-                    `}</style>
+                      )}
+                    />
+                    {errors.duration?.start && (
+                      <p className="text-progress-red text-xs">
+                        {errors.duration.start.message}
+                      </p>
+                    )}
+                    {errors.duration?.end && (
+                      <p className="text-progress-red text-xs">
+                        {errors.duration.end.message}
+                      </p>
+                    )}
                   </div>
 
                   <div className="flex flex-col gap-3 mt-3">
@@ -147,27 +142,25 @@ export default function ModalCreateChecklist({
                       Description
                     </label>
                     <textarea
-                      className="border text-caption border-gray-300 rounded-small px-3 py-3  resize-none"
+                      className="border text-caption border-gray-300 rounded-small px-3 py-3 resize-none"
                       placeholder="Add a description (optional)"
                       rows={3}
-                      value={formData.description}
-                      onChange={(e) =>
-                        handleInputChange("description", e.target.value)
-                      }
+                      {...register("description")}
                     />
+                    {errors.description && (
+                      <p className="text-progress-red text-xs">
+                        {errors.description.message}
+                      </p>
+                    )}
                   </div>
-                  {/* button */}
+
                   <div className="grid grid-cols-2 gap-3 pt-2 py-4">
                     <Button
                       type="button"
                       className="bg-transparent border-1 border-bgColor"
                       radius="full"
                       onPress={() => {
-                        setFormData({
-                          title: "",
-                          duration: "",
-                          description: "",
-                        });
+                        reset();
                         onClose();
                       }}
                     >
@@ -177,7 +170,8 @@ export default function ModalCreateChecklist({
                       type="submit"
                       color="primary"
                       radius="full"
-                      isDisabled={!formData.title.trim()}
+                      isDisabled={isSubmitting || !!errors.title}
+                      isLoading={isSubmitting}
                     >
                       Save
                     </Button>

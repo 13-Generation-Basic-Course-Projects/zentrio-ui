@@ -750,6 +750,7 @@ export default function KanbanBoard({
                                     }
                                     buttonText="New checklist"
                                     modalTitle="Create Checklist"
+                                    taskid={card.id}
                                   />
                                 </div>
                                 <div className="col-span-4 p-2">

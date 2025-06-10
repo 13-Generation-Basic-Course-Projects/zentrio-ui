@@ -254,3 +254,34 @@ export const createGanttChartByBoardIdService = async ({
     throw error;
   }
 };
+
+/*
+ * create gantt chart by board id
+ */
+export const createCheckListService = async ({ taskId, data, token }) => {
+  try {
+    console.log("from service", { boardId, data, token });
+    const url = ganttRouteGroup.createGanttChart();
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        title: data.title,
+        description: data.description,
+        startedAt: data.startedAt,
+        finishedAt: data.finishedAt,
+        taskId: taskId,
+      }),
+    });
+    const result = await res.json();
+    //console.log("📥 Backend responded with:", result);
+
+    return data;
+  } catch (error) {
+    console.error("bug", error.message);
+    throw error;
+  }
+};

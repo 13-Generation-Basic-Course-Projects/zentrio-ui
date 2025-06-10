@@ -1,6 +1,7 @@
 "use server";
 import { Token } from "@/constant/token";
 import {
+  createCheckListService,
   createGanttChartByBoardIdService,
   createTaskByBoardIdAndGanttChartIdService,
   getAllGanttBarByGanttChartIDService,
@@ -181,6 +182,31 @@ export const createGanttChartByBoardIdAction = async (data, boardId) => {
     console.log("data create form", data);
     const result = await createGanttChartByBoardIdService({
       boardId,
+      data,
+      token,
+    });
+    revalidatePath("/gantbar");
+    return { success: true, data: result };
+  } catch (error) {
+    console.error("Create task action error:", error.message);
+    return { success: false, error: error.message };
+  }
+};
+
+/*
+ * create gantt chart by board id
+ */
+export const createCheckListAction = async (taskId, data) => {
+  try {
+    const userToken = await Token();
+    const token = userToken?.Credential;
+    if (!token) {
+      throw new Error("No authentication token found");
+    }
+    console.log("boardId:", boardId);
+    console.log("data create form", data);
+    const result = await createCheckListService({
+      taskId,
       data,
       token,
     });
