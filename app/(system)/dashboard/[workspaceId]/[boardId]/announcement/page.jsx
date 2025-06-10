@@ -5,10 +5,6 @@ export default async function page() {
   return (
     <div>
       <Announcementpage />
-      {/* <AnnouncemntComponent />
-        --> put in appServer
-        --> in app server design component and put componet in announcement
-        */}
     </div>
   );
 }
