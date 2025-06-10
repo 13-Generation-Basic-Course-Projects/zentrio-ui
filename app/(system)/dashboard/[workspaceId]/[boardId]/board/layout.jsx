@@ -188,6 +188,15 @@ export default async function BoardLayout({ children, params }) {
     const noImage = preventImage.noProfile;
     const preventUserImage = imageUser == null ? noImage : imageUser;
     console.log("what inside layout and userprofile", imageUser);
+
+    // /**
+    //  * get comment
+    //  * */
+    // const getCommentByChecklistId = await getCommentByCheckListIdAction(
+    //   checklistbyTaskIds
+    // );
+    // Extract checklistId values from checklistbyTaskIds
+
     return (
       <div>
         <SystemBoard

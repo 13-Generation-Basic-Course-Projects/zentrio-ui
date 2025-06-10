@@ -268,7 +268,7 @@ export const getWorkspacesByTitleService = async (title, token) => {
  * 1. for Get board by ID -> getBoardById: (id) => `${apiConfig.baseUrl}/boards/${id}`,
  */
 
-export const getBoardByIdService = async ({boardId, token}) => {
+export const getBoardByIdService = async ({ boardId, token }) => {
   try {
     const url = boardRouteGroup.getBoardById(boardId);
 
@@ -314,7 +314,7 @@ export const updateBoardByIdService = async ({
     cover,
     workspaceId,
   });
-  
+
   const url = boardRouteGroup.updateBoardById(boardId);
 
   const res = await fetch(url, {
@@ -378,11 +378,10 @@ export const updateFavBoardByIdService = async ({
   }
 };
 
-
 /*
  * 4. Get all boards
  */
-export const getAllBoardsService = async ({token}) => {
+export const getAllBoardsService = async ({ token }) => {
   try {
     const url = boardRouteGroup.getAllBoards();
 
@@ -587,8 +586,6 @@ export const getBoardsByUserIdService = async (id, token) => {
     throw error;
   }
 };
-
-
 
 /*
  * 12. Get cover board by board id

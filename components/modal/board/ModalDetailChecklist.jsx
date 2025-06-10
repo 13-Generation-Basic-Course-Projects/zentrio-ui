@@ -25,6 +25,8 @@ import { CardCheckList } from "@/components/card/CardChecklist";
 import Trash from "@/components/button/Trash";
 import PopupAction from "@/components/popup/PopupAction";
 import { IconpopupDelete } from "@/components/icon/Iconpopup";
+import { preventImage } from "@/constant/preventimage";
+import { getCommentByCheckListIdAction } from "@/action/board.action";
 
 export default function ModalDetailChecklist({
   id,
@@ -62,9 +64,8 @@ export default function ModalDetailChecklist({
     ); // Default icon
   };
   console.log("member", member);
-
-  console.log("id", id);
-
+  //const fetchCommentDependOnId = await getCommentByCheckListIdAction();
+  const prevnetCheckListImage = preventImage.noChecklistImage;
   return (
     <>
       <Button
@@ -147,10 +148,7 @@ export default function ModalDetailChecklist({
                 {/* for show image of task */}
                 <div className=" border rounded-medium flex justify-center items-center">
                   <img
-                    src={
-                      image ||
-                      "https://codewithmosh.com/_next/image?url=https%3A%2F%2Fcdn.filestackcontent.com%2F8MbtJ4hTAaOk3KPcptqZ&w=3840&q=75"
-                    }
+                    src={image || prevnetCheckListImage}
                     alt="Dynamic ERD"
                     className="w-full h-40 object-cover rounded-medium"
                   />

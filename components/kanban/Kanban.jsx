@@ -483,6 +483,7 @@ export default function KanbanBoard({
   if (error) {
     return <div>Error: {error}</div>;
   }
+
   return (
     <div className="w-full h-screen flex flex-col">
       <BredCrum

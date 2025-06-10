@@ -18,7 +18,7 @@ export const getGanttBarService = async ({ token }) => {
       },
     });
     const data = await res.json();
-    console.log("📥 Backend responded with:", data);
+    //// console.log("📥 Backend responded with:", data);
 
     return data; // just return the data, don’t redirect here
   } catch (error) {
@@ -43,7 +43,7 @@ export const getGanttBarByGanttChartIdService = async ({
       },
     });
     const data = await res.json();
-    console.log("📥 Backend responded with:", data);
+    // console.log("📥 Backend responded with:", data);
 
     return data; // just return the data, don’t redirect here
   } catch (error) {
@@ -70,7 +70,7 @@ export const getGanttChartByBoardIdService = async ({ boardId, token }) => {
       },
     });
     const data = await res.json();
-    console.log("📥 Backend responded with:", data);
+    // console.log("📥 Backend responded with:", data);
 
     return data; // just return the data, don’t redirect here
   } catch (error) {
@@ -109,7 +109,7 @@ export const createGanttBarsByGanttChartIdService = async ({
     });
 
     const result = await res.json();
-    console.log("📥 Backend responded with:", result);
+    // console.log("📥 Backend responded with:", result);
 
     return result;
   } catch (error) {
@@ -140,7 +140,7 @@ export const deleteGanttBarsByGanttChartIdService = async ({
     });
 
     const result = await res.json();
-    console.log("📥 Backend responded with:", result);
+    //console.log("📥 Backend responded with:", result);
 
     return result;
   } catch (error) {
@@ -173,7 +173,7 @@ export const updateGantChartBytIdService = async ({
     });
 
     const result = await res.json();
-    console.log("📥 Backend responded with:", result);
+    //  console.log("📥 Backend responded with:", result);
 
     return result;
   } catch (error) {

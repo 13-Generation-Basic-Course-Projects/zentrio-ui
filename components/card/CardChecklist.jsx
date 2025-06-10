@@ -8,6 +8,7 @@ import {
 import CalendarIcon from "@/assets/calendarSidebar.png";
 import CommentIcon from "@/assets/CommentIcon.svg";
 import Image from "next/image";
+
 export const CardCheckList = ({
   title,
   startDate,
@@ -18,6 +19,7 @@ export const CardCheckList = ({
   member,
   id,
 }) => {
+  console.log("id 0000", id);
   return (
     <div>
       <Card className="py-4 rounded-xl cursor-pointer hover:bg-blue-50 transition shadow-sm w-full">

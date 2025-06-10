@@ -83,15 +83,45 @@ export const inviteMemberToBoardAction = async ({ boardId, data }) => {
 /*
  * get all  comment by CheckList Id
  */
-export const getCommentByCheckListIdAction = async ({ checkListId }) => {
+export const getCommentByCheckListIdAction = async (checklistId) => {
   const userToken = await Token();
   const token = userToken.Credential;
-  //console.log(token);
-  const result = await getCommentByCheckListIdService({
-    checkListId,
-    token,
-  });
-  return result;
+
+  if (
+    !checklistId ||
+    !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+      checklistId
+    )
+  ) {
+    console.warn(`Invalid checklistId: ${checklistId}`);
+    return {
+      success: false,
+      data: [],
+      error: "Invalid checklistId",
+    };
+  }
+
+  try {
+    const result = await getCommentByCheckListIdService({
+      checkListId: checklistId,
+      token,
+    });
+
+    // Transform the backend response to match your expected frontend format
+    return {
+      success: result.success,
+      data: result.payload || result.data || [], // Map payload to data
+      error: result.error || null,
+      message: result.message,
+    };
+  } catch (error) {
+    console.error("Error in getCommentByCheckListIdAction:", error);
+    return {
+      success: false,
+      data: [],
+      error: error.message || "Failed to fetch comments",
+    };
+  }
 };
 /*
  * get all  gannt chart

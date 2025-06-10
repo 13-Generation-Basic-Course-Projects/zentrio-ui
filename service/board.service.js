@@ -26,7 +26,7 @@ export const getTaskByBoardIdAndGanttBarIdService = async ({
       },
     });
     const data = await res.json();
-    console.log("📥 Backend responded with:", data);
+    //console.log("📥 Backend responded with:", data);
 
     return data; // just return the data, don’t redirect here
   } catch (error) {
@@ -74,7 +74,7 @@ export const getMemberByBoardIdService = async ({ boardId, token }) => {
       },
     });
     const data = await res.json();
-    console.log("📥 Backend responded with:", data);
+    //console.log("📥 Backend responded with:", data);
 
     return data; // just return the data, don’t redirect here
   } catch (error) {
@@ -98,7 +98,7 @@ export const inviteMemberToBoardService = async ({ boardId, data, token }) => {
       body: JSON.stringify(data), // Send the array of invites
     });
     const result = await res.json();
-    console.log("📥 Backend responded with:", result);
+    //console.log("📥 Backend responded with:", result);
 
     // Ensure the response has a consistent structure
     return {
@@ -120,6 +120,7 @@ export const getCommentByCheckListIdService = async ({
   token,
 }) => {
   try {
+    console.log("uuid comment", checkListId);
     const url = boardRouteGroup.getCommentByCheckListId(checkListId);
     const res = await fetch(url, {
       method: "GET",
@@ -129,13 +130,13 @@ export const getCommentByCheckListIdService = async ({
       },
     });
     const result = await res.json();
-    console.log("📥 Backend responded with:", result);
+    console.log("📥 Backend responded with comment:", result);
 
     // Ensure the response has a consistent structure
     return {
       success: res.ok,
       data: result.data || null,
-      error: res.ok ? null : result.error || "Failed to send invites",
+      error: res.ok ? null : result.error || "Failed to get comment",
     };
   } catch (error) {
     console.error("Invite service error:", error.message);
@@ -216,7 +217,7 @@ export const createTaskByBoardIdAndGanttChartIdService = async ({
     }
 
     const result = await res.json();
-    console.log("📥 Backend responded with:", result);
+    //console.log("📥 Backend responded with:", result);
 
     return result;
   } catch (error) {
@@ -245,7 +246,7 @@ export const createGanttChartByBoardIdService = async ({
       body: JSON.stringify({ title: data.title, boardId: boardId }),
     });
     const result = await res.json();
-    console.log("📥 Backend responded with:", result);
+    //console.log("📥 Backend responded with:", result);
 
     return data;
   } catch (error) {
