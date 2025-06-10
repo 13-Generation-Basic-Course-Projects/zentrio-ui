@@ -1,5 +1,5 @@
 import { Card, CardContent } from "../ui/card"
-import { EllipsisVertical, Users } from "lucide-react"
+import { EllipsisVertical, UsersRound } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 export default function CardAllMembers() {
@@ -64,15 +64,12 @@ export default function CardAllMembers() {
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-2">
-              <Users className="w-5 h-5 text-gray-600" />
-              <h2 className="text-lg font-semibold text-gray-900">All Members</h2>
-              <span className="bg-blue-100 text-primary text-xs font-medium px-2.5 py-0.5 rounded-full">
+              <UsersRound className="w-5 h-5 text-title" />
+              <h2 className="text-lg font-semibold text-title">All Members</h2>
+              <span className="text-primary text-xs font-medium px-2.5 py-0.5 rounded-full">
                 {members.length}
               </span>
             </div>
-            <Button variant="ghost" size="sm" className="text-gray-400 hover:text-gray-600">
-              <EllipsisVertical className="w-5 h-5" />
-            </Button>
           </div>
 
           {/* Members List */}
@@ -86,7 +83,7 @@ export default function CardAllMembers() {
                   <div className="relative">
                     <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center overflow-hidden">
                       <img
-                        src={member.avatar || "/placeholder.svg"}
+                        src={member.avatar || ""}
                         alt={member.name}
                         className="w-full h-full object-cover"
                       />
@@ -97,38 +94,25 @@ export default function CardAllMembers() {
                     ></div>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900">{member.name}</h3>
-                    <p className="text-sm text-gray-600">{member.role}</p>
+                    <h3 className="font-semibold text-title">{member.name}</h3>
+                    <p className="text-sm text-description">{member.role}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
                   <span
                     className={`text-xs font-medium px-2 py-1 rounded-full ${
                       member.status === "online"
-                        ? "bg-green-100 text-green-800"
-                        : member.status === "away"
-                          ? "bg-yellow-100 text-yellow-800"
-                          : "bg-gray-100 text-gray-800"
+                        ? "bg-green-100 text-title"
+                        : member.status === "offline"
+                        ? "bg-yellow-100 text-yellow-800"
+                          : ""
                     }`}
                   >
                     {member.status}
                   </span>
-                  <Button variant="ghost" size="sm" className="text-gray-400 hover:text-gray-600 p-1">
-                    <EllipsisVertical className="w-4 h-4" />
-                  </Button>
                 </div>
               </div>
             ))}
-          </div>
-
-          {/* Footer */}
-          <div className="mt-6 pt-4 border-t border-gray-200">
-            <div className="flex items-center justify-between text-sm text-gray-600">
-              <span>{members.filter((m) => m.status === "online").length} members online</span>
-              <Button variant="outline" size="sm" className="text-blue-600 border-blue-200 hover:bg-blue-50">
-                View All
-              </Button>
-            </div>
           </div>
         </CardContent>
       </Card>
