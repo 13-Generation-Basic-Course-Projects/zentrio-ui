@@ -18,6 +18,7 @@ export default function ModalCreateDocuInFolder({ boardId, folderId, tokenFromGo
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const fileInputRef = useRef(null);
 
+
   const items = [
     {
       key: "create",
@@ -135,6 +136,7 @@ export default function ModalCreateDocuInFolder({ boardId, folderId, tokenFromGo
         isOpen={isUploadModalOpen}
         onClose={() => setIsUploadModalOpen(false)}
         boardId={boardId}
+        folderId={folderId}
         uploadDocument={createDocumentByUploadAction}
         tokenFromGoogle={tokenFromGoogle}
       />

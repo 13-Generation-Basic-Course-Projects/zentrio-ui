@@ -14,6 +14,7 @@ import ModalCreateDocu from "../modal/docu/ModalCreateDocu";
 export default function DocumentLayout({
   user,
   documents,
+  publicDocuments,
   tokenFromGoogle,
   boardId,
 }) {
@@ -136,7 +137,7 @@ export default function DocumentLayout({
           )}
           {activeTab === "calendar" && (
             <PublicDocument
-              documents={documents}
+              publicDocuments={publicDocuments}
               modal={[<ModalCreateDocu boardId={boardId} />]}
             />
           )}

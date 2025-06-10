@@ -17,7 +17,6 @@ export default function ModalUploadFile({
   isOpen,
   onClose,
   boardId,
-  uploadDocument,
   tokenFromGoogle,
 }) {
   const [fileName, setFileName] = useState("");
@@ -46,28 +45,37 @@ export default function ModalUploadFile({
     setIsUploading(true);
 
     try {
-      // Create FormData object
+      
+    } catch (error) {
+      console.log("Upload failed:", error);
+    } finally {
+      setIsUploading(false);
+    }
+
+    try {
       const formData = new FormData();
       formData.append("multipartFile", selectedFile);
       formData.append("accessToken", tokenFromGoogle);
+      formData.append("boardId", boardId);
 
-      const result = await createDocumentByUploadAction(
-        formData,
-        boardId,
-        tokenFromGoogle
-      );
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
 
-      console.log("Upload successful:", result);
+      const result = await res.json();
 
-      // Reset form and close modal
+      if (!res.ok) {
+        throw new Error(result.error || "Upload failed");
+      }
+
+      console.log("Upload success:", result);
       setFileName("");
       setSelectedFile(null);
       onClose();
-
       window.location.reload();
     } catch (error) {
       console.error("Upload failed:", error);
-      // Handle error (show toast, etc.)
     } finally {
       setIsUploading(false);
     }

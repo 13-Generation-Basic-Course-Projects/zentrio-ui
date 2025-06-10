@@ -8,6 +8,7 @@ import {
   deleteDocumentService,
   downloadDocumentByDocumentIdService,
   fetchDocumentsByBoardService,
+  fetchPublicDocumentsService,
   getFileByFolderIdService,
   updateDocumentNameByIdService,
 } from "@/service/document.service";
@@ -22,6 +23,16 @@ export const getDocumentsByBoardAction = async (boardId) => {
 
   return documents;
 };
+
+// Get public documents
+export const getPublicDocumentsByBoardAction = async (boardId) => {
+  const userToken = await Token();
+  const token = userToken.Credential;
+
+  const publicDocuments = await fetchPublicDocumentsService(boardId, token);
+
+  return publicDocuments;
+}
 
 // Get file by folder id
 export const getFileByFolderIdAction = async (accessToken, folderId) => {

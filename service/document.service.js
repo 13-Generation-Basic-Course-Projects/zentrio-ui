@@ -256,6 +256,30 @@ export const createDriveFileService = async (
 };
 
 /*
+* Upload file to folder id
+*/
+export const uploadDocumentToBoardServie = async (file, folderId, token, tokenFromGoogle) => {
+  const url = documentRouteGroup.uploadDocumentToFolder(folderId, tokenFromGoogle);
+
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: formData
+  });
+
+  if (!res.success) {
+    console.error("error of post file");
+  }
+  
+  return res.json();
+}
+
+/*
  * Update document name by document id
  */
 export const updateDocumentNameByIdService = async (documentId, newName, token, tokenFromGoogle) => {

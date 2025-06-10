@@ -116,11 +116,16 @@ export default function ModalFolderList({
                         );
                       }
 
-                      // Otherwise, render file
-                      const fileType =
-                        el.mimeType.split("application/vnd.google-apps.")[1] ||
-                        el.mimeType.split("/")[1] ||
-                        "file";
+                      const mime = el.mimeType;
+                      const fileType = mime.includes("document")
+                        ? "docx"
+                        : mime.includes("spreadsheet")
+                        ? "xlsx"
+                        : mime.includes("presentation")
+                        ? "pptx"
+                        : mime.includes("folder")
+                        ? "folder"
+                        : mime.split("/")[1] || "file";
 
                       return (
                         <CardFile

@@ -13,7 +13,7 @@ import {
 } from "@heroui/react";
 import { useState } from "react";
 
-export default function AllDocument({ boardId, documents, tokenFromGoogle }) {
+export default function AllDocument({boardId, documents, tokenFromGoogle }) {
   // const data = documentData;
   const data = documents || [];
   console.log("document in all document", documents);
@@ -45,7 +45,7 @@ export default function AllDocument({ boardId, documents, tokenFromGoogle }) {
 
     return {
       title: doc.description || "Untitled",
-      status: doc._private ? "private" : "personal",
+      status: doc._private ? "public" : "personal",
       id: doc.documentId,
       folderId: doc.folderId,
       date: new Date(doc.creationDate).toISOString().split("T")[0],
