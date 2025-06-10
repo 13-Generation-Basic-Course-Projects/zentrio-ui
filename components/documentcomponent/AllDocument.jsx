@@ -192,6 +192,7 @@ export default function AllDocument({ boardId, documents, tokenFromGoogle }) {
                       type={el.type}
                       link={el.link}
                       documentId={el?.id}
+                      folderId={el?.folderId}
                       tokenFromGoogle={tokenFromGoogle}
                     />
                   ))

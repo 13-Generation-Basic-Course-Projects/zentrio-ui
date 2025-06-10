@@ -84,7 +84,7 @@ export default function GanttChart({ modal, ganttbar, ganttChartName }) {
       console.log("No valid data found in ganttbar.payload");
       // Return default empty resources but still allow calendar to render
       return {
-        resources: [{ id: "default-phase", title: "Project Phases" }],
+        resources: [{ id: "default-phase", title: "" }],
         events: [],
         dynamicFaceMap: {},
       };
@@ -109,7 +109,7 @@ export default function GanttChart({ modal, ganttbar, ganttChartName }) {
 
     const unknownResourceProps = {
       id: "resource-unknown",
-      title: "Unknown Phase",
+      title: "",
       color: "#F3F4F6",
       borderColor: "#9CA3AF",
     };
@@ -122,18 +122,17 @@ export default function GanttChart({ modal, ganttbar, ganttChartName }) {
       const resourceId = `resource-${face
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, "-")}`;
-      const resourceTitle = formatFaceTitle(face);
 
       dynamicFaceMap[face] = {
         id: resourceId,
-        title: resourceTitle,
+        title: "",
         color: colorPair.background,
         borderColor: colorPair.border,
       };
 
       processedResources.push({
         id: resourceId,
-        title: resourceTitle,
+        title: "",
       });
       colorIndex++;
     });
@@ -183,6 +182,7 @@ export default function GanttChart({ modal, ganttbar, ganttChartName }) {
             duration: `${durationDays} Day${durationDays !== 1 ? "s" : ""}`,
             teamLeader: Array.isArray(item.teamLeader) ? item.teamLeader : [],
             face: faceKey,
+            formattedFace: formatFaceTitle(faceKey),
           },
         };
       })
@@ -260,9 +260,12 @@ export default function GanttChart({ modal, ganttbar, ganttChartName }) {
     });
   };
 
-  // Custom event rendering
+  // Custom event rendering with phase information
   const renderEventContent = (eventInfo) => {
     const teamLeaders = eventInfo.event.extendedProps.teamLeader || [];
+    const phaseName =
+      eventInfo.event.extendedProps.formattedFace || "Unknown Phase";
+
     return (
       <div
         className={`rounded-r-[10px] h-full p-0 overflow-hidden cursor-pointer`}
@@ -270,13 +273,14 @@ export default function GanttChart({ modal, ganttbar, ganttChartName }) {
           backgroundColor: eventInfo.event.backgroundColor,
           borderLeft: `4px solid ${eventInfo.event.borderColor}`,
         }}
-        title={`${eventInfo.event.title}\nDuration: ${eventInfo.event.extendedProps.duration}`}
+        title={`${eventInfo.event.title}\nPhase: ${phaseName}\nDuration: ${eventInfo.event.extendedProps.duration}`}
       >
         <div className="w-full h-full flex justify-between items-center px-3 py-1">
           <div className="flex-grow mr-2 overflow-hidden">
             <h2 className="text-[14px] font-semibold text-gray-800 truncate">
               {eventInfo.event.title}
             </h2>
+
             {/* Display Team Leader images */}
             {teamLeaders.length > 0 && (
               <div className="flex items-center space-x-1 mt-1">
@@ -306,8 +310,18 @@ export default function GanttChart({ modal, ganttbar, ganttChartName }) {
               </div>
             )}
           </div>
-          <div className="text-xs text-gray-700 whitespace-nowrap font-medium">
-            {eventInfo.event.extendedProps.duration}
+          <div className=" flex flex-col justify-end gap-4  text-xs text-gray-700 whitespace-nowrap font-medium">
+            <div>{eventInfo.event.extendedProps.duration}</div>
+            {/* Phase badge */}
+            <div className=" flex items-center  gap-2 mb-1">
+              <span
+                className="inline-block px-2 py-0.5 text-xs font-medium rounded-full text-white truncate overflow-hidden whitespace-nowrap max-w-[100px]"
+                style={{ backgroundColor: eventInfo.event.borderColor }}
+                title={phaseName} // 👈 shows full text on hover
+              >
+                {phaseName}
+              </span>
+            </div>
           </div>
         </div>
       </div>
@@ -498,10 +512,10 @@ export default function GanttChart({ modal, ganttbar, ganttChartName }) {
           nowIndicator={true}
           now={new Date().toISOString()} // Ensure 'now' is in correct format
           eventContent={renderEventContent}
-          resourceAreaWidth="220px" // Adjusted width for potentially longer titles
-          resourceAreaHeaderContent="Phases" // Header for the resource column
-          resourceAreaClassNames="text-sm font-medium text-gray-700 bg-gray-50 border-r border-gray-200"
-          resourceLabelClassNames="p-2 sticky top-0 bg-gray-50 z-10"
+          resourceAreaWidth="0px" // Hide the resource area completely
+          resourceAreaHeaderContent="" // Remove header content
+          resourceAreaClassNames="hidden" // Hide resource area
+          resourceLabelClassNames="hidden" // Hide resource labels
           resources={resources}
           events={events}
           resourceOrder="title" // Order resources alphabetically
@@ -511,6 +525,11 @@ export default function GanttChart({ modal, ganttbar, ganttChartName }) {
           height="100%" // Let container control height
           //scrollTime="00:00:00"
           // contentHeight="auto"
+          eventClick={(info) => {
+            const ganttBarId = info.event.id;
+            const eventTitle = info.event.title;
+            handleDeleteGanttBar(ganttBarId, eventTitle);
+          }}
         />
 
         {/* Empty state overlay when no events */}

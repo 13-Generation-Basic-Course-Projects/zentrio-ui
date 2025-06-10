@@ -8,15 +8,23 @@ import NavbarWrapper from "@/components/layout/NavbarWrapper";
 import SidebarRenderer from "@/components/sidebar/SidebarRenderer";
 import CardWelcomeComponent from "@/components/card/CardWelcome";
 import SmallCalendar from "@/components/testcomponent/SmallCalendar";
+import { loginThirdPartyService } from "@/service/auth.service";
 export const metadata = {
   title: "Zentrio | Task Mangement",
   description: "Welcome to Zentrio Cambodia",
 };
 
-//this layout is use for everything of workspace, and dashbaord .......
+//sss
 
 export default async function OverviewLayout({ children }) {
   const session = await auth();
+  if (session?.accessToken) {
+    const res = await loginThirdPartyService({
+      accessToken: session.accessToken,
+    });
+    console.log("Backend response in /test:", res);
+  }
+
   return (
     <div className="h-screen flex flex-col overflow-y-hidden ">
       <div className="flex-1 pt-0 flex flex-col overflow-hidden h-[100%] px-2  ">

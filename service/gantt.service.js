@@ -123,19 +123,52 @@ export const createGanttBarsByGanttChartIdService = async ({
  */
 export const deleteGanttBarsByGanttChartIdService = async ({
   ganttChartId,
-  data,
+  ganttbarId,
   token,
 }) => {
   try {
-    console.log("from service", { ganttChartId, boardId, token });
+    console.log("from service", { ganttChartId, ganttbarId, token });
 
-    const url = ganttRouteGroup.deleteGanttBar(ganttChartId, boardId);
+    const url = ganttRouteGroup.deleteGanttBar(ganttbarId, ganttChartId);
 
     const res = await fetch(url, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const result = await res.json();
+    console.log("📥 Backend responded with:", result);
+
+    return result;
+  } catch (error) {
+    console.error("🐞 Error:", error.message);
+    throw error;
+  }
+};
+
+/*
+ * create gantt bar by GantchartId
+ */
+export const updateGantChartBytIdService = async ({
+  ganttChartId,
+  boardId,
+  data,
+  token,
+}) => {
+  try {
+    console.log("from service", { ganttChartId, boardId, token });
+
+    const url = ganttRouteGroup.updateGanttChart(ganttChartId);
+
+    const res = await fetch(url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+        body: JSON.stringify({ title: data.title, boardId: boardId }),
       },
     });
 

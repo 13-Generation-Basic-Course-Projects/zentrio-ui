@@ -14,8 +14,10 @@ export default async function BoardLayout({ children, params }) {
 
   const getDocuments = await getDocumentsByBoardAction(boardId);
 
+  console.log("doooo", getDocuments);
+
   const tokenFromGoogle =
-    "ya29.a0AW4XtxiI2oxYcy_QpLwPjaCPrh3hka6WauBBvggaIKi8PnkSZ4oUFYnY4cmmq7W1CfvBrAcR8B-hmnrbESFZfkn56-UYOmlg_Er0P01pVqKCumURBOq7bhEjD_pnGQPWrVGEZS0dSxkyTCuVvL0vNNKamRMo2m_fWEwhX6GSFwaCgYKAXwSARYSFQHGX2MislZSD27DjS3PdQV6bqPuLg0177";
+    "ya29.a0AW4XtxjXCngCVfswyg0VcxVqCBTf07rmNn-25epp2Ry5EAvYeiZU_pEe2YPs_3JJAU0q3QnCzzrQoIG8Yy_-q9lCCZvYtSZwWHvASenPTGv9DZ_O4OXtI-NvQudpF6_HvFeYwrbOcPMFJiZlTe7ARj664JTWmi-7ie4gC9tl4gaCgYKAZkSARYSFQHGX2MiiFBC2xuEwG79tlslJeXSWA0177";
 
   //pf
   /*

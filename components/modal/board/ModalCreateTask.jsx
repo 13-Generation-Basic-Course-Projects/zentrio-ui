@@ -185,7 +185,7 @@ export default function ModalCreateTask({
                               rounded-small
                               transition-all 
                               hover:bg-white
-                              px-0
+                              px-3
                               py-6
                               ${errors.title ? "border-red-500" : ""}
                             `,
@@ -230,7 +230,7 @@ export default function ModalCreateTask({
                               rounded-small
                               transition-all 
                               hover:bg-white
-                              px-0
+                              px-3
                               py-6
                               ${errors.startedAt ? "border-red-500" : ""}
                             `,
@@ -275,8 +275,9 @@ export default function ModalCreateTask({
                               rounded-small
                               transition-all 
                               hover:bg-white
-                              px-0
+                              px-3
                               py-6
+
                               ${errors.finishedAt ? "border-red-500" : ""}
                             `,
                             input: "text-black",
@@ -363,7 +364,7 @@ export default function ModalCreateTask({
                               rounded-small
                               transition-all 
                               hover:bg-white 
-                              px-0
+                              px-3
                               py-6
                               ${errors.ganttBarId ? "border-red-500" : ""}
                             `,
@@ -421,7 +422,7 @@ export default function ModalCreateTask({
                               rounded-small
                               transition-all 
                               hover:bg-white
-                              px-0
+                              px-3
                               py-4
                               ${errors.description ? "border-red-500" : ""}
                             `,
