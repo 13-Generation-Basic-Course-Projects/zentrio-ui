@@ -7,4 +7,4 @@ export default async function page() {
       <Announcementpage />
     </div>
   );
-}
+};

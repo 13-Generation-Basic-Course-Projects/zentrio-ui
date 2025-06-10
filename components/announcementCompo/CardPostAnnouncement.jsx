@@ -1,4 +1,4 @@
-import { ThumbsUp, Bookmark, EllipsisVertical, } from 'lucide-react'
+import { ThumbsUp, Bookmark, EllipsisVertical, Pin } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 

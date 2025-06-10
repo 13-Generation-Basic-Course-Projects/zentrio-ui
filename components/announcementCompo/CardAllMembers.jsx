@@ -1,6 +1,5 @@
 import { Card, CardContent } from "../ui/card"
-import { EllipsisVertical, UsersRound } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { UsersRound } from "lucide-react"
 
 export default function CardAllMembers() {
   const members = [
@@ -46,6 +45,27 @@ export default function CardAllMembers() {
       avatar: "https://i.pinimg.com/736x/8d/95/03/8d9503a77e4c21ebf0ced6c252819a0e.jpg",
       status: "online",
     },
+    {
+      id: 7,
+      name: "Davit",
+      role: "Member",
+      avatar: "https://i.pinimg.com/736x/8d/95/03/8d9503a77e4c21ebf0ced6c252819a0e.jpg",
+      status: "online",
+    },
+    {
+      id: 8,
+      name: "Davit",
+      role: "Member",
+      avatar: "https://i.pinimg.com/736x/8d/95/03/8d9503a77e4c21ebf0ced6c252819a0e.jpg",
+      status: "online",
+    },
+    {
+      id: 9,
+      name: "Davit",
+      role: "Member",
+      avatar: "https://i.pinimg.com/736x/8d/95/03/8d9503a77e4c21ebf0ced6c252819a0e.jpg",
+      status: "online",
+    },
   ]
 
   const getStatusColor = (status) => {
@@ -73,7 +93,7 @@ export default function CardAllMembers() {
           </div>
 
           {/* Members List */}
-          <div className="space-y-4">
+          <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2">
             {members.map((member) => (
               <div
                 key={member.id}
@@ -83,7 +103,7 @@ export default function CardAllMembers() {
                   <div className="relative">
                     <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center overflow-hidden">
                       <img
-                        src={member.avatar || ""}
+                        src={member.avatar}
                         alt={member.name}
                         className="w-full h-full object-cover"
                       />
@@ -103,11 +123,9 @@ export default function CardAllMembers() {
                     className={`text-xs font-medium px-2 py-1 rounded-full ${
                       member.status === "online"
                         ? "bg-green-100 text-title"
-                        : member.status === "offline"
-                        ? "bg-yellow-100 text-yellow-800"
-                          : ""
-                    }`}
-                  >
+                        : "bg-yellow-100 text-yellow-800"
+                        }`}
+                    >
                     {member.status}
                   </span>
                 </div>
@@ -118,4 +136,4 @@ export default function CardAllMembers() {
       </Card>
     </div>
   )
-}
+};

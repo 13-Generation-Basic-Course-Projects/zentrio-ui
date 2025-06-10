@@ -2,12 +2,13 @@ import React from "react";
 import CartPostAnnouncement from "../announcementCompo/CardPostAnnouncement";
 import CardCreateAnnouncement from "../announcementCompo/CardCreateAnnouncement";
 import CardAllMembers from "../announcementCompo/CardAllMembers";
+import CardFilterComponent from "../announcementCompo/CardFilterComponent";
 
 export default function Announcementpage() {
   return (
     <div className="grid grid-cols-12 w-full h-screen p-4">
       <div className="bg-red-400 col-span-3">
-        filter component
+        <CardFilterComponent />
       </div>
 
       <div
@@ -31,8 +32,6 @@ export default function Announcementpage() {
 
         <div className="space-y-4">
           <CartPostAnnouncement />
-          <CartPostAnnouncement />
-          <CartPostAnnouncement />
         </div>
       </div>
 
@@ -41,4 +40,4 @@ export default function Announcementpage() {
       </div>
     </div>
   );
-}
+};
