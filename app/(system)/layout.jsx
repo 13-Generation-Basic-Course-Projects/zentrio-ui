@@ -1,14 +1,9 @@
 import "../globals.css";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { SidebarTest } from "@/components/sidebar/Sidebar";
 
 import { auth } from "../../auth";
-import { UserAvatar } from "@/components/testcomponent/Avatar";
 import NavbarWrapper from "@/components/layout/NavbarWrapper";
-import { Suspense } from "react";
-import Loading from "../loading";
 import SidebarRenderer from "@/components/sidebar/SidebarRenderer";
-import { SideBarIcon } from "@/components/icon/everyicon";
 import { getNotificationForUserIdAction } from "@/action/notification.action";
 //import { LoadingBarContainer } from "react-top-loading-bar";
 export const metadata = {
@@ -21,8 +16,9 @@ export const metadata = {
 export default async function SystemLayout({ children }) {
   const session = await auth();
 
-  const userId = "0366b3f6-9922-4f1c-8d91-c74b0cf8edab";
+  const userId = "bcf9227f-c24a-47a0-b91f-50125c4ef0a2";
   const notification = await getNotificationForUserIdAction(userId);
+  console.log("notification", notification);
   return (
     // <LoadingBarContainer>
     <SidebarProvider className="bg-bgColor">
@@ -32,7 +28,7 @@ export default async function SystemLayout({ children }) {
       >
         {/* <SidebarTrigger className="fixed top-0  z-[30]" /> */}
         <div className="w-full  ">
-          <NavbarWrapper user={session?.user} notification={notification} />
+          <NavbarWrapper user={session?.user} />
           {children}
         </div>
       </div>

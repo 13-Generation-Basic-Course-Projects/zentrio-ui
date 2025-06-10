@@ -15,14 +15,13 @@ export const sendNotificationForAllUserAction = async ({ data }) => {
   
 };
 
-export const sendNotificationToUserIdAction = async ({ senderId, receiverId, taskId, data }) => {
+export const sendNotificationToUserIdAction = async ({receiverId, taskId, data }) => {
   try {
     const userToken = await Token();
     const token = userToken.Credential;
 
     // Call the service with token included
     const result = await sendNotificationToUserIdService({
-      senderId,
       receiverId,
       taskId,
       data,
@@ -37,15 +36,14 @@ export const sendNotificationToUserIdAction = async ({ senderId, receiverId, tas
 };
 
 
-export const getNotificationForUserIdAction = async (userId) => {
-  try {
-    const userToken = await Token();
-    const token = userToken.Credential;
-
-    const result = await getNotificationForUserIdService({ userId, token });
-    return result;
-  } catch (error) {
-    console.error("Failed to send notification to user:", error);
-    throw error;
-  }
-}
+  export const getNotificationForUserIdAction = async (userId) => {
+    try {
+      const userToken = new Token()
+      const token = userToken.Credential;
+      const result = await getNotificationForUserIdService({userId, token});
+      return result;
+    } catch (error) {
+      console.error("Failed to get notification for user");
+    }
+  };
+  

@@ -38,7 +38,6 @@ export const sendNotificationToUserIdService = async ({
   token,
 }) => {
   const url = notificationRouteGroup.sendNotificationToUserId(
-    senderId,
     receiverId,
     taskId
   );
@@ -77,17 +76,53 @@ export const sendNotificationToUserIdService = async ({
 };
 
 
-export const getNotificationForUserIdService = async({ userId, token }) => {
-  const response = await fetch(notificationRouteGroup.getNotificationForUserId(userId),
+export const getNotificationForUserIdService = async ({ userId, token }) => {
+  // Ensure userId is not undefined here, if it is, the URL will be malformed
+  if (!userId) {
+    throw new Error("User ID is required for fetching notifications.");
+  }
+  if (!token) {
+    throw new Error(
+      "Authentication token is required for fetching notifications."
+    );
+  }
+
+  // Define url *before* using it
+  const url = notificationRouteGroup.getNotificationForUserId(userId);
+
+  // Place console.log statements *before* the fetch call
+  console.log("Fetching notifications from URL:", url); // Debugging: log the URL
+  console.log(
+    "Using token (first 10 chars):",
+    token ? token.substring(0, 10) + "..." : "No Token"
+  ); // Debugging: log token (partially)
+
+  const response = await fetch(
+    url, // First argument: the URL
     {
+      // Second argument: the options object
       headers: {
         Authorization: `Bearer ${token}`,
       },
     }
-  )
+  );
+
   if (!response.ok) {
-    throw new Error("Can't get notification data")
+    // Attempt to read the error body for more details
+    let errorDetail = "No additional error detail available.";
+    try {
+      errorDetail = await response.text();
+    } catch (e) {
+      // Ignore if reading text fails
+    }
+    console.error(
+      `HTTP Error: ${response.status} ${response.statusText} - Response Body: ${errorDetail}`
+    );
+    throw new Error(
+      `Can't get notification data: ${response.status} ${response.statusText}`
+    );
   }
+
   const data = await response.json();
   return data;
-}
+};

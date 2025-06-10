@@ -65,24 +65,23 @@ export default function ModalNotification({notificationData}) {
     ? notifications
     : notifications.slice(0, 3);
 
-  
-  console.log("notification in component", notificationData);
   return (
     <Dropdown className="p-0 bg-transparent">
       <DropdownTrigger>
         <Button
           variant="none"
-          className="p-2 rounded-lg transition-transform duration-150 active:scale-95 focus:outline-none"
-        >
+          className="p-2 rounded-lg transition-transform duration-150 active:scale-95 focus:outline-none">
           <Image src={notification} className="size-5" alt="notification" />
         </Button>
       </DropdownTrigger>
-      <DropdownMenu  closeOnSelect={false} aria-label="Static Actions" className="p-0 bg-transparent">
+      <DropdownMenu
+        closeOnSelect={false}
+        aria-label="Static Actions"
+        className="p-0 bg-transparent">
         <DropdownItem
           key="delete"
           className="text-danger p-0 bg-transparent"
-          color="danger"
-        >
+          color="danger">
           <div className="w-full flex items-center justify-center">
             <div className="w-[380px] h-fit bg-white shadow-sm rounded-[22px]">
               {/* Header */}
@@ -95,18 +94,16 @@ export default function ModalNotification({notificationData}) {
                 <div className="h-fit flex gap-2">
                   {/* Delete all button */}
                   {notifications.length > 0 && (
-                    <button 
+                    <button
                       onClick={deleteAllNotifications}
                       className="text-red-500 hover:text-red-700 transition-colors"
-                      title="Delete all notifications"
-                    >
+                      title="Delete all notifications">
                       <svg
                         width="17"
                         height="20"
                         viewBox="0 0 17 20"
                         fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
+                        xmlns="http://www.w3.org/2000/svg">
                         <path
                           d="M14.75 4.58325L14.2336 12.9375C14.1016 15.072 14.0356 16.1392 13.5006 16.9065C13.2361 17.2858 12.8955 17.606 12.5006 17.8466C11.7018 18.3333 10.6325 18.3333 8.49395 18.3333C6.3526 18.3333 5.28192 18.3333 4.48254 17.8457C4.08733 17.6046 3.74666 17.2839 3.48224 16.904C2.9474 16.1354 2.88288 15.0667 2.75384 12.9292L2.25 4.58325"
                           stroke="currentColor"
@@ -128,8 +125,7 @@ export default function ModalNotification({notificationData}) {
                     height="18"
                     viewBox="0 0 17 18"
                     fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
+                    xmlns="http://www.w3.org/2000/svg">
                     <path
                       d="M3.91663 17.25L3.91663 14.5"
                       stroke="#787486"
@@ -182,8 +178,7 @@ export default function ModalNotification({notificationData}) {
                       viewBox="0 0 24 24"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
-                      className="mb-3 text-gray-400"
-                    >
+                      className="mb-3 text-gray-400">
                       <path
                         d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"
                         stroke="currentColor"
@@ -202,7 +197,7 @@ export default function ModalNotification({notificationData}) {
                     <p className="text-gray-500 text-sm">No notifications</p>
                   </div>
                 ) : (
-                  notificationData.map((notificationItem) => (
+                  displayedNotifications.map((notificationItem) => (
                     <div
                       key={notificationItem.notificationId}
                       className={`flex justify-between items-start ${
@@ -211,8 +206,7 @@ export default function ModalNotification({notificationData}) {
                           : notificationItem.read
                           ? "bg-white"
                           : "bg-slate-blue-more"
-                      } py-[15px] px-[5px] border-b border-white hover:bg-gray-50 transition-colors`}
-                    >
+                      } py-[15px] px-[5px] border-b border-white hover:bg-gray-50 transition-colors`}>
                       <div className="flex gap-[12px] pl-[12px]">
                         <div>
                           <Image
@@ -223,16 +217,16 @@ export default function ModalNotification({notificationData}) {
                         </div>
                         <div className="flex flex-col gap-[3px]">
                           <p className="text-[14px] text-title">
-                            {notificationItem.content}
+                            {/* {notificationItem.content} */}
                           </p>
                           <p className="text-[12px] text-description">
-                            {notificationItem.type}
+                            {/* {notificationItem.type} */}
                           </p>
                           <p className="text-[12px] text-description">
-                            {notificationItem.isRead}
+                            {/* {notificationItem.isRead} */}
                           </p>
                           <p className="text-[12px] text-description">
-                            {notificationItem.createdAt.split("T")[0]}
+                            {/* {notificationItem.createdAt.split("T")[0]} */}
                           </p>
                         </div>
                       </div>
@@ -240,21 +234,19 @@ export default function ModalNotification({notificationData}) {
                         {!markAllRead && !notificationItem.read && (
                           <div className="w-[7px] h-[7px] rounded-full bg-primary mb-[7px]"></div>
                         )}
-                        <button 
+                        <button
                           onClick={(e) => {
                             e.stopPropagation();
                             deleteNotification(notificationItem.id);
                           }}
                           className="hover:scale-110 transition-transform text-red-500 hover:text-red-700"
-                          title="Delete notification"
-                        >
+                          title="Delete notification">
                           <svg
                             width="17"
                             height="20"
                             viewBox="0 0 17 20"
                             fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
+                            xmlns="http://www.w3.org/2000/svg">
                             <path
                               d="M14.75 4.58325L14.2336 12.9375C14.1016 15.072 14.0356 16.1392 13.5006 16.9065C13.2361 17.2858 12.8955 17.606 12.5006 17.8466C11.7018 18.3333 10.6325 18.3333 8.49395 18.3333C6.3526 18.3333 5.28192 18.3333 4.48254 17.8457C4.08733 17.6046 3.74666 17.2839 3.48224 16.904C2.9474 16.1354 2.88288 15.0667 2.75384 12.9292L2.25 4.58325"
                               stroke="currentColor"
@@ -280,8 +272,7 @@ export default function ModalNotification({notificationData}) {
                 {notifications.length > 3 && (
                   <p
                     className="text-[12px] text-description cursor-pointer hover:text-primary transition-colors"
-                    onClick={() => setShowAll(!showAll)}
-                  >
+                    onClick={() => setShowAll(!showAll)}>
                     {showAll ? "Show Less" : "See All Notification"}
                   </p>
                 )}
@@ -293,8 +284,7 @@ export default function ModalNotification({notificationData}) {
                         ? `text-[12px] text-description cursor-pointer`
                         : `text-[12px] text-primary cursor-pointer hover:text-blue-600 transition-colors`
                     }
-                    onClick={markAllAsRead}
-                  >
+                    onClick={markAllAsRead}>
                     Mark All As Read
                   </p>
                 )}
