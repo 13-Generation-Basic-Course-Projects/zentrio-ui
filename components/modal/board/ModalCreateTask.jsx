@@ -124,7 +124,7 @@ export default function ModalCreateTask({
   };
 
   console.log("modal create task and all member", allMemberInBoard);
-  console.log("show gantbar and contain gantbar id ", ganttbar, boardId);
+  //console.log("show gantbar and contain gantbar id ", ganttbar, boardId);
 
   if (!ganttbar?.payload?.length) {
     return <p className="text-red-500">No Gantt bars available.</p>;

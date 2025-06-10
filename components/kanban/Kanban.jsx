@@ -241,6 +241,7 @@ export default function KanbanBoard({
                   },
                 ],
                 expanded: true,
+                // expanded: card.expanded,
               }
             : card
         ),
@@ -745,12 +746,14 @@ export default function KanbanBoard({
                               <div className="grid grid-cols-12">
                                 <div className="col-span-8 flex items-center">
                                   <ModalCreateChecklist
-                                    onSubmit={(checklistData) =>
-                                      addChecklist(card.id, checklistData)
-                                    }
+                                    // onSubmit={(checklistData) =>
+                                    //   addChecklist(card.id, checklistData)
+                                    // }
                                     buttonText="New checklist"
                                     modalTitle="Create Checklist"
                                     taskid={card.id}
+                                    startedAt={card.startedAt}
+                                    finishedAt={card.finishedAt}
                                   />
                                 </div>
                                 <div className="col-span-4 p-2">

@@ -260,8 +260,8 @@ export const createGanttChartByBoardIdService = async ({
  */
 export const createCheckListService = async ({ taskId, data, token }) => {
   try {
-    console.log("from service", { boardId, data, token });
-    const url = ganttRouteGroup.createGanttChart();
+    console.log("from service", { taskId, data, token });
+    const url = boardRouteGroup.createCheckListBytaskId();
     const res = await fetch(url, {
       method: "POST",
       headers: {
@@ -277,7 +277,7 @@ export const createCheckListService = async ({ taskId, data, token }) => {
       }),
     });
     const result = await res.json();
-    //console.log("📥 Backend responded with:", result);
+    console.log("📥 Backend responded with checklist:", result);
 
     return data;
   } catch (error) {

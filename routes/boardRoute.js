@@ -17,7 +17,7 @@ export const boardRouteGroup = {
     `${apiConfig.baseUrl}/boards/${boardId}/users/invite`,
 
   createTaskByBoardIdAndGanttBarId: () => `${apiConfig.baseUrl}/tasks`, // Created task with boards ID and gantt bars ID
-  createCheckListBytaskId: () => () => `${apiConfig.baseUrl}/checklists`, // Created task with boards ID and gantt bars ID
+  createCheckListBytaskId: () => `${apiConfig.baseUrl}/checklists`, // Created task with boards ID and gantt bars ID
 
   //put
   updateBoardFavorite: (boardId) =>

@@ -13,18 +13,32 @@ import {
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { parseDate } from "@internationalized/date";
+import { parseDate, getLocalTimeZone, today } from "@internationalized/date";
 import { checklistSchema } from "@/lib/schemas/createCheckListSchema";
+import { createCheckListAction } from "@/action/board.action";
 
 export default function ModalCreateChecklist({
   onSubmit,
   buttonText = "Create",
   modalTitle = "Create Checklist",
   taskid,
+  finishedAt,
+  startedAt,
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-  // Initialize React Hook Form with Zod resolver
+  // Convert the task dates to the correct format for default values
+  const taskStartDate = startedAt ? startedAt.split("T")[0] : null; // "2025-06-13"
+  const taskEndDate = finishedAt ? finishedAt.split("T")[0] : null; // "2025-06-21"
+
+  // Get today's date in the local timezone
+  const todayDate = today(getLocalTimeZone());
+
+  // Set default values based on task dates or fallback to today + 7 days
+  const defaultStart = taskStartDate || todayDate.toString();
+  const defaultEnd = taskEndDate || todayDate.add({ days: 7 }).toString();
+
+  // Initialize React Hook Form with Zod resolver - call the schema function with task dates
   const {
     register,
     handleSubmit,
@@ -32,12 +46,17 @@ export default function ModalCreateChecklist({
     control,
     reset,
   } = useForm({
-    resolver: zodResolver(checklistSchema),
+    resolver: zodResolver(
+      checklistSchema({
+        taskStartedAt: startedAt,
+        taskFinishedAt: finishedAt,
+      })
+    ),
     defaultValues: {
       title: "",
       duration: {
-        start: "2024-04-01",
-        end: "2024-04-08",
+        start: defaultStart,
+        end: defaultEnd,
       },
       description: "",
     },
@@ -45,19 +64,39 @@ export default function ModalCreateChecklist({
 
   // Handle form submission
   const onFormSubmit = async (data) => {
-    if (onSubmit) {
-      await onSubmit({
-        title: data.title.trim(),
-        duration: {
-          start: data.duration.start,
-          end: data.duration.end,
-        },
-        description: data.description || "New checklist item",
-      });
-      reset(); // Reset form after submission
-      onOpenChange(false); // Close modal
+    try {
+      // Transform the data to match the backend's expected format
+      const transformedData = {
+        title: data.title,
+        description: data.description || "", // Ensure description is always a string
+        startedAt: new Date(
+          data.duration.start + "T00:00:00.000Z"
+        ).toISOString(),
+        finishedAt: new Date(
+          data.duration.end + "T23:59:59.999Z"
+        ).toISOString(),
+        taskId: taskid,
+      };
+
+      console.log("Transformed submit data", transformedData);
+
+      // Call the createCheckListAction
+      const result = await createCheckListAction(taskid, transformedData);
+      console.log("result form", result);
+
+      // Close modal and reset form on success
+      reset();
+      //onClose();
+    } catch (error) {
+      console.error("Form submission error:", error.message);
+      // Show user-facing error
+      alert(`Error: ${error.message}`);
     }
   };
+
+  // console.log("task id in modal", taskid);
+  // console.log("date", finishedAt, startedAt);
+  // console.log("default dates", defaultStart, defaultEnd);
 
   return (
     <>
@@ -105,6 +144,10 @@ export default function ModalCreateChecklist({
                         <DateRangePicker
                           isRequired
                           className="max-w-none"
+                          minValue={todayDate} // Prevent selecting past dates
+                          maxValue={
+                            taskEndDate ? parseDate(taskEndDate) : undefined
+                          } // Limit to task end date if available
                           value={{
                             start: parseDate(field.value.start),
                             end: parseDate(field.value.end),

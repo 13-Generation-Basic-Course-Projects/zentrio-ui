@@ -194,7 +194,7 @@ export const createGanttChartByBoardIdAction = async (data, boardId) => {
 };
 
 /*
- * create gantt chart by board id
+ * create
  */
 export const createCheckListAction = async (taskId, data) => {
   try {
@@ -203,17 +203,16 @@ export const createCheckListAction = async (taskId, data) => {
     if (!token) {
       throw new Error("No authentication token found");
     }
-    console.log("boardId:", boardId);
     console.log("data create form", data);
     const result = await createCheckListService({
       taskId,
       data,
       token,
     });
-    revalidatePath("/gantbar");
-    return { success: true, data: result };
+    revalidatePath("/checklist");
+    return result;
   } catch (error) {
-    console.error("Create task action error:", error.message);
+    console.log("Create task action error:", error.message);
     return { success: false, error: error.message };
   }
 };

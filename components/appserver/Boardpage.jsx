@@ -177,7 +177,9 @@ export default function SystemBoard({
             <ModalCreateGanttChart
               key="create-gantt-chart"
               boardId={boardId}
+              ganttChartId={ganttChartId}
             />,
+
             <ModalCreateGanttBar
               key="create-gantt-bar"
               boardId={boardId}
