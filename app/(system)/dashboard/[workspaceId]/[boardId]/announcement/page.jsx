@@ -4,7 +4,6 @@ import React from "react";
 export default async function page() {
   return (
     <div>
-      your component here example :
       <Announcementpage />
       {/* <AnnouncemntComponent />
         --> put in appServer
