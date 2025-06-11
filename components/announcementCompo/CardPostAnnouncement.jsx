@@ -41,7 +41,9 @@ export default function CardPostAnnouncement({ Announcements }) {
                     <h3 className="font-bold text-title">
                       {announcement.createdBy?.username}
                     </h3>
-                    <p className="text-sm text-description">{"12/05/2002"}</p>
+                    <p className="text-sm text-description">
+                      {announcement.createdAt}
+                    </p>
                   </div>
                 </div>
                 <Button
@@ -62,6 +64,17 @@ export default function CardPostAnnouncement({ Announcements }) {
               <div className="text-description mb-6 leading-relaxed">
                 <p>{announcement.description}</p>
               </div>
+
+              {/* Optional Image */}
+              {announcement.createdBy?.imageUrl && (
+                <div className="mb-4">
+                  <img
+                    src={announcement.createdBy?.imageUrl}
+                    alt="Announcement visual"
+                    className="w-full h-auto rounded-large object-cover max-h-96"
+                  />
+                </div>
+              )}
 
               {/* Action Buttons */}
               <div className="flex items-center justify-between border-t border-gray-100 pt-4">
