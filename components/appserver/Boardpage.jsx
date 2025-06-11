@@ -3,7 +3,7 @@ import Image from "next/image";
 import notification from "../../assets/notification.png";
 import Link from "next/link";
 import React, { useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import KanbanBoard from "../kanban/Kanban";
 import GanttChart from "../Gantt/GanttChart";
 import userProfile from "@/assets/profile.png";
@@ -29,21 +29,24 @@ export default function SystemBoard({
   const pathname = usePathname();
   const segments = pathname.split("/");
   const workspaceId = segments[2]; // gets workspaceId from URL like /dashboard/otherworkspace/2/board
-
+  const searchParams = useSearchParams();
+  const role = searchParams.get("role") || user.role || "ROLE_MEMBER";
   const [activeTab, setActiveTab] = useState("kanban");
 
   console.log("data board", boardData);
 
   // Conditionally add ModalInviteMember only if workspaceId is NOT 'otherworkspace'
   const modalComponents = [
-    <ModalCreateTask
-      key="create-task"
-      boardId={boardId}
-      ganttChartId={ganttChartId}
-      ganttbar={ganttbar}
-      allMemberInBoard={allMemberInBoard}
-    />,
-    workspaceId !== "otherworkspace" && (
+    (role === "tl" || role === "pm") && (
+      <ModalCreateTask
+        key="create-task"
+        boardId={boardId}
+        ganttChartId={ganttChartId}
+        ganttbar={ganttbar}
+        allMemberInBoard={allMemberInBoard}
+      />
+    ),
+    (role === "tl" || role === "pm") && workspaceId !== "otherworkspace" && (
       <ModalInviteMember
         key="invite-member"
         boardId={boardId}
@@ -52,7 +55,22 @@ export default function SystemBoard({
     ),
     <StarBoard key="star-board" />,
   ].filter(Boolean);
-
+  // GanttChart modal based on role
+  const ganttModal =
+    role === "ROLE_MEMBER"
+      ? []
+      : [
+          <ModalCreateGanttChart
+            key="create-gantt-chart"
+            boardId={boardId}
+            ganttChartId={ganttChartId}
+          />,
+          <ModalCreateGanttBar
+            key="create-gantt-bar"
+            boardId={boardId}
+            ganttChartId={ganttChartId}
+          />,
+        ];
   const tabItems = [
     {
       key: "kanban",
@@ -175,19 +193,7 @@ export default function SystemBoard({
 
       content: (
         <GanttChart
-          modal={[
-            <ModalCreateGanttChart
-              key="create-gantt-chart"
-              boardId={boardId}
-              ganttChartId={ganttChartId}
-            />,
-
-            <ModalCreateGanttBar
-              key="create-gantt-bar"
-              boardId={boardId}
-              ganttChartId={ganttChartId}
-            />,
-          ]}
+          modal={ganttModal}
           ganttbar={ganttbar}
           ganttChartName={ganttChartName}
         />

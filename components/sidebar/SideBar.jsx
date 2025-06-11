@@ -45,6 +45,7 @@ export default function DashboardSidebar() {
   const projectId = pathSegments[3] || "1";
 
   const isTl = role === "tl";
+  const ismem = role === "ROLE_MEMBER";
 
   const items = [
     {
@@ -330,10 +331,9 @@ export default function DashboardSidebar() {
     },
   ];
 
+  // Fixed: Use OR (||) instead of AND (&&) to hide Reports for either tl OR ROLE_MEMBER
   const filteredItems =
-    isTl && role == "ROLE_MEMBER"
-      ? items.filter((item) => item.title !== "Reports")
-      : items;
+    isTl || ismem ? items.filter((item) => item.title !== "Reports") : items;
 
   console.log("toggle: ", toggleSidebar);
 
