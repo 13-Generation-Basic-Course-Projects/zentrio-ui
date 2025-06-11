@@ -56,6 +56,7 @@ export default function WorkSpaceSideBar({
   deleteWorkspace,
   updateNameWorkspace,
 }) {
+  console.log("ssss",workspaceData)
   const pathname = usePathname();
   const { toggleSidebar } = useSidebar();
   const [selectedId, setSelectedId] = useState("");
@@ -224,7 +225,7 @@ export default function WorkSpaceSideBar({
                   const activeColorClass =
                     activeColorMap[colorClass] || "bg-slate-blue text-primary";
                   return (
-                    <SidebarMenuItem key={i} className="!border-0 p-0 hidden">
+                    <SidebarMenuItem key={i} className="!border-0 p-0 ">
                       <SidebarMenuButton
                         style={{ borderRadius: "0.5rem" }}
                         asChild

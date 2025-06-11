@@ -26,6 +26,8 @@ export default function CardBoard({
   updateFavAction,
   isFavourite,
 }) {
+  
+
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
@@ -45,6 +47,7 @@ export default function CardBoard({
   const [newTitle, setNewTitle] = useState(title);
 
   /* Function to handle rename confirmation */
+  
 
   const handleTitleUpdate = async () => {
     if (newTitle.trim() === "") return; // Skip if empty
@@ -95,6 +98,7 @@ export default function CardBoard({
     fetchMembers();
   }, [boardId]);
   console.log("member", members);
+  console.log("image source:", image);
   return (
     <Card className="py-4 h-[340px] rounded-xl shadow-sm">
       {/* Card Header: shows editable title and favorite button */}

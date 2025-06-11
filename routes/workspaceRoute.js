@@ -7,7 +7,7 @@ export const workspaceRouteGroup = {
   deleteWorkspaceById: (id) => `${apiConfig.baseUrl}/workspaces/${id}`, // Delete workspace by id
   updateWorkspaceById: (id) => `${apiConfig.baseUrl}/workspaces/${id}`, // Update workspace by id
 
-  getWorkspacesByUser: () => `${apiConfig.baseUrl}/workspaces/users`, // Get all workspaces by user
+  getWorkspacesByUser: () => `${apiConfig.baseUrl}/workspaces/other`, // Get all workspaces by user
   getWorkspacesByUserId: (id) => `${apiConfig.baseUrl}/workspaces/users/${id}`, // Get workspaces by workspace id for user
   getWorkspacesByTitle: (title) =>
     `${apiConfig.baseUrl}/workspaces/title/${title}`, // Get workspaces by title
