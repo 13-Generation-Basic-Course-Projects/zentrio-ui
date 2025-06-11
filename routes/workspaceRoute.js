@@ -11,6 +11,9 @@ export const workspaceRouteGroup = {
   getWorkspacesByUserId: (id) => `${apiConfig.baseUrl}/workspaces/users/${id}`, // Get workspaces by workspace id for user
   getWorkspacesByTitle: (title) =>
     `${apiConfig.baseUrl}/workspaces/title/${title}`, // Get workspaces by title
+
+  //new
+  getOtherWorkSpaceJoined: () => `${apiConfig.baseUrl}/workspaces/other`, // Get other workspaces that users has joined
 };
 
 export const boardRouteGroup = {

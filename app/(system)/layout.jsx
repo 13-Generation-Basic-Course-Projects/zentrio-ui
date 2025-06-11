@@ -16,6 +16,7 @@ import {
   getAllWorkspaceAction,
   getAllWorkspaceForUserAction,
   getFavoriteBoardAction,
+  getOtherWorkSpaceJoinedAction,
   updateWorkspaceByIdAction,
 } from "@/action/workspace.action";
 import {
@@ -59,6 +60,11 @@ export default async function SystemLayout({ children }) {
   const myFavBoard = await getFavoriteBoardAction(myUserId);
   console.log("getFavoriteBoardAction", myFavBoard);
   console.log("myUserId", myUserId);
+
+  //workspace other
+
+  const getWorKSpaceJoined = await getOtherWorkSpaceJoinedAction();
+  console.log("getWorKSpaceJoined", getWorKSpaceJoined);
   return (
     // <LoadingBarContainer>
     <SidebarProvider className="bg-bgColor">
@@ -69,6 +75,7 @@ export default async function SystemLayout({ children }) {
         deleteWorkspace={deleteWorkspaceByIdAction}
         updateNameWorkspace={updateWorkspaceByIdAction}
         getBoardByWorkspaceId={getAllBoardBywWorkspaceIdAction}
+        getWorKSpaceJoined={getWorKSpaceJoined}
       />
       <div
         className={" font-poppin h-screen overflow-hidden  bg-white  w-full"}

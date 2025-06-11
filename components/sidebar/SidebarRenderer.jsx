@@ -11,7 +11,7 @@ export default function SidebarRenderer({
   deleteWorkspace,
   updateNameWorkspace,
   getBoardByWorkspaceId,
-  myFavBoard,
+  getWorKSpaceJoined,
 }) {
   const pathname = usePathname();
 
@@ -28,6 +28,7 @@ export default function SidebarRenderer({
         deleteWorkspace={deleteWorkspace}
         updateNameWorkspace={updateNameWorkspace}
         getBoardByWorkspaceId={getBoardByWorkspaceId}
+        getWorKSpaceJoined={getWorKSpaceJoined}
       />
     );
   }

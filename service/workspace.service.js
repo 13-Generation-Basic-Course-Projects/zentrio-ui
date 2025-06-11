@@ -720,11 +720,35 @@ export const deleteBoardService = async ({ id, workspaceId, token }) => {
   }
 };
 /*
- * get all  getTaskByBoardId
+ * get all  favorite
  */
 export const getFavoriteBoardService = async (userId, token) => {
   console.log("service id", userId);
   const url = boardRouteGroup.getFavoriteBoard(userId);
+  try {
+    console.log(url);
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await res.json();
+    console.log("📥 Backend responded with favboard:", data);
+
+    return data; // just return the data, don’t redirect here
+  } catch (error) {
+    console.error("bug", error.message);
+    throw error;
+  }
+};
+
+/*
+ * get all  joinworkspace for baord
+ */
+export const getOtherWorkSpaceJoinedService = async (token) => {
+  const url = workspaceRouteGroup.getOtherWorkSpaceJoined();
   try {
     console.log(url);
     const res = await fetch(url, {

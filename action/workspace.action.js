@@ -12,6 +12,7 @@ import {
   getBoardByIdService,
   getBoardsByWorkspaceIdService,
   getFavoriteBoardService,
+  getOtherWorkSpaceJoinedService,
   getWorkspacesByUserService,
   updateBoardByIdService,
   updateFavBoardByIdService,
@@ -238,11 +239,25 @@ export const deleteBoardAction = async (id, workspaceId) => {
   revalidateTag("/boards");
   return result;
 };
+/**
+ *
+ * favorite
+ */
 
 export const getFavoriteBoardAction = async (userId) => {
   const userToken = await Token();
   const token = userToken.Credential;
   console.log("from uid", userId);
   const result = await getFavoriteBoardService(userId, token);
+  return result;
+};
+
+/**
+ * other workspace
+ */
+export const getOtherWorkSpaceJoinedAction = async () => {
+  const userToken = await Token();
+  const token = userToken.Credential;
+  const result = await getOtherWorkSpaceJoinedService(token);
   return result;
 };

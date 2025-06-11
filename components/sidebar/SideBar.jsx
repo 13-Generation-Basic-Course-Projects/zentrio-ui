@@ -330,9 +330,10 @@ export default function DashboardSidebar() {
     },
   ];
 
-  const filteredItems = isTl
-    ? items.filter((item) => item.title !== "Reports")
-    : items;
+  const filteredItems =
+    isTl && role == "ROLE_MEMBER"
+      ? items.filter((item) => item.title !== "Reports")
+      : items;
 
   console.log("toggle: ", toggleSidebar);
 

@@ -55,6 +55,7 @@ export default function WorkSpaceSideBar({
   createWorkspace,
   deleteWorkspace,
   updateNameWorkspace,
+  getWorKSpaceJoined,
 }) {
   const pathname = usePathname();
   const { toggleSidebar } = useSidebar();
@@ -214,8 +215,9 @@ export default function WorkSpaceSideBar({
                   })}
               {/* 2 */}
               <p className="text-body-sm font-extrabold">Other Workspace</p>
+
               {Array.isArray(workspaceUsersData.payload) &&
-                workspaceUsersData.payload.map((item, i) => {
+                getWorKSpaceJoined.payload.map((item, i) => {
                   const isActive = pathname.includes(item?.workspaceId);
                   // For shared workspaces, assign color by index
                   const colorClass =
@@ -224,7 +226,7 @@ export default function WorkSpaceSideBar({
                   const activeColorClass =
                     activeColorMap[colorClass] || "bg-slate-blue text-primary";
                   return (
-                    <SidebarMenuItem key={i} className="!border-0 p-0 hidden">
+                    <SidebarMenuItem key={i} className="!border-0 p-0 ">
                       <SidebarMenuButton
                         style={{ borderRadius: "0.5rem" }}
                         asChild
@@ -238,17 +240,20 @@ export default function WorkSpaceSideBar({
                       >
                         <div className="flex items-center justify-between w-full gap-2">
                           {item?.workspaceId ? (
-                            <Link
-                              href={`/workspace/${item.workspaceId}`}
-                              className="flex items-center gap-2 flex-1 overflow-hidden"
-                            >
-                              <span
-                                className={`${colorClass} h-5 w-5 rounded-full inline-block flex-shrink-0`}
-                              />
-                              <span className="truncate text-left sm:text-body-sm text-gray-800">
-                                {item?.title || "Untitled Workspace"}
-                              </span>
-                            </Link>
+                            <div>
+                              {/* <p>{item?.workspaceId}</p> */}
+                              <Link
+                                href={`/workspace/otherworkspace/${item.workspaceId}`}
+                                className="flex items-center gap-2 flex-1 overflow-hidden"
+                              >
+                                <span
+                                  className={`${colorClass} h-5 w-5 rounded-full inline-block flex-shrink-0`}
+                                />
+                                <span className="truncate text-left sm:text-body-sm text-gray-800">
+                                  {item?.title || "Untitled Workspace"}
+                                </span>
+                              </Link>
+                            </div>
                           ) : (
                             <div className="flex items-center gap-2 flex-1 overflow-hidden">
                               <span
