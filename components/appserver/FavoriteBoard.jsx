@@ -46,6 +46,7 @@ export default function MyFavoriteBoard({
                     deleteBoardAction={deleteBoardAction}
                     updateNameBoardAction={updateNameBoardAction}
                     updateFavAction={updateFavAction}
+                    role="pm"
                   />
                 );
               })
