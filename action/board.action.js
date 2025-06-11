@@ -1,6 +1,7 @@
 "use server";
 import { Token } from "@/constant/token";
 import {
+  assignUserRoleLeadeerToBoardService,
   createCheckListService,
   createGanttChartByBoardIdService,
   createTaskByBoardIdAndGanttChartIdService,
@@ -11,6 +12,7 @@ import {
   getCommentByCheckListIdService,
   getMemberByBoardIdService,
   getTaskByBoardIdAndGanttBarIdService,
+  getTaskByBoardIdService,
   inviteMemberToBoardService,
   postCommentByCheckListIdService,
 } from "@/service/board.service";
@@ -187,7 +189,7 @@ export const createGanttChartByBoardIdAction = async (data, boardId) => {
       throw new Error("No authentication token found");
     }
     console.log("boardId:", boardId);
-    console.log("data create form", data);
+    //console.log("data create form", data);
     const result = await createGanttChartByBoardIdService({
       boardId,
       data,
@@ -211,7 +213,7 @@ export const createCheckListAction = async (taskId, data) => {
     if (!token) {
       throw new Error("No authentication token found");
     }
-    console.log("data create form", data);
+    //console.log("data create form", data);
     const result = await createCheckListService({
       taskId,
       data,
@@ -249,7 +251,7 @@ export const getBoardByBoardIdAction = async (boardId) => {
 export const postCommentByCheckListIdAction = async (data, checklistId) => {
   const userToken = await Token();
   const token = userToken?.Credential;
-  console.log("data create form", data);
+  //console.log("data create form", data);
   try {
     const result = await postCommentByCheckListIdService({
       checklistId,
@@ -269,7 +271,7 @@ export const postCommentByCheckListIdAction = async (data, checklistId) => {
 export const editCommmentAction = async (data) => {
   const userToken = await Token();
   const token = userToken?.Credential;
-  console.log("data create form", data);
+  //console.log("data create form", data);
   try {
     const result = await editCommmentService({
       data,
@@ -281,4 +283,36 @@ export const editCommmentAction = async (data) => {
     console.error("put comment action error:", error.message);
     return { success: false, error: error.message };
   }
+};
+/*
+ * assign leader
+ */
+export const assignLeaderAction = async (taskid, assignId) => {
+  const userToken = await Token();
+  const token = userToken?.Credential;
+  //console.log("data create form", taskid, assignId);
+  try {
+    const result = await assignUserRoleLeadeerToBoardService({
+      taskid,
+      assignId,
+      token,
+    });
+    revalidatePath("/task");
+    return { success: true, data: result };
+  } catch (error) {
+    console.error("put comment action error:", error.message);
+    return { success: false, error: error.message };
+  }
+};
+/*
+ * assign leader
+ */
+export const getTaskByBoardIdAction = async (boardId) => {
+  const userToken = await Token();
+  const token = userToken?.Credential;
+  const result = await getTaskByBoardIdService({
+    boardId,
+    token,
+  });
+  return result;
 };

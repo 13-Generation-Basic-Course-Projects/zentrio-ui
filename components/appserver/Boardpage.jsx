@@ -32,7 +32,7 @@ export default function SystemBoard({
 
   const [activeTab, setActiveTab] = useState("kanban");
 
-  console.log("board id for passing prop", ganttChartId);
+  console.log("data board", boardData);
 
   // Conditionally add ModalInviteMember only if workspaceId is NOT 'otherworkspace'
   const modalComponents = [

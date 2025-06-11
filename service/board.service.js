@@ -366,3 +366,54 @@ export const editCommmentService = async ({ data, token }) => {
     throw error;
   }
 };
+/*
+ * assign leader
+ */
+export const assignUserRoleLeadeerToBoardService = async ({
+  taskid,
+  assignId,
+  token,
+}) => {
+  try {
+    console.log("from service", { taskid, assignId, token });
+    const url = boardRouteGroup.assignUserRoleLeaderToBoard(taskid, assignId);
+    console.log(url);
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const result = await res.json();
+    console.log("📥 Backend responded with ld:", result);
+
+    return data;
+  } catch (error) {
+    console.error("bug", error.message);
+    throw error;
+  }
+};
+/*
+ * get all  getTaskByBoardId
+ */
+export const getTaskByBoardIdService = async ({ boardId, token }) => {
+  try {
+    //console.log("from service ", token);
+    const url = boardRouteGroup.getTaskByBoardId(boardId);
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await res.json();
+    //console.log("📥 Backend responded with boardtask:", data);
+
+    return data; // just return the data, don’t redirect here
+  } catch (error) {
+    console.error("bug", error.message);
+    throw error;
+  }
+};

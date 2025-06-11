@@ -3,6 +3,7 @@ import { apiConfig } from "@/constant/baseurl";
 export const boardRouteGroup = {
   //get
   getBoardById: (id) => `${apiConfig.baseUrl}/boards/${id}`, //
+  getTaskByBoardId: (id) => `${apiConfig.baseUrl}/tasks/boards/${id}`, // get task use to recive fill call " createdBy "
   getTaskByBoardAndGanttBarId: (boardId, ganttbarId) =>
     `${apiConfig.baseUrl}/tasks/boards/${boardId}/gantt-bars/${ganttbarId}`, //Get all task by specific board ID with gantt bar ID
 
@@ -15,8 +16,8 @@ export const boardRouteGroup = {
   assignUserRoleToBoard: () => `${apiConfig.baseUrl}/boards/assign`,
   inviteUserToBoard: (boardId) =>
     `${apiConfig.baseUrl}/boards/${boardId}/users/invite`,
-  assignUserRoleToBoard: (taskid, assignId) =>
-    `${apiConfig.baseUrl}/tasks/${taskid}/member/${assignId}`, //asign team ld
+  assignUserRoleLeaderToBoard: (taskid, assignId) =>
+    `${apiConfig.baseUrl}/tasks/${taskid}/members/${assignId}`, //asign team ld
 
   createTaskByBoardIdAndGanttBarId: () => `${apiConfig.baseUrl}/tasks`, // Created task with boards ID and gantt bars ID
   createCheckListBytaskId: () => `${apiConfig.baseUrl}/checklists`, // Created task with boards ID and gantt bars ID

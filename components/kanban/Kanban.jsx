@@ -9,6 +9,7 @@ import CardDateChecklist from "../card/CardDateChecklist";
 import ModalCreateChecklist from "../modal/board/ModalCreateChecklist";
 import { EmptyKanban } from "../appserver/EmptyKanban";
 import { card } from "@heroui/theme";
+import ModalOptionTask from "../modal/board/ModalOptionTask";
 
 // Placeholder component (unchanged)
 const UserAvater = ({ image }) => (
@@ -610,6 +611,11 @@ export default function KanbanBoard({
                                   />
                                 ))}
                               </div>
+                              <ModalOptionTask
+                                key={"apple"}
+                                allMemberInBoard={allMemberInBoard}
+                                taskId={card.id}
+                              />
                             </div>
                           </div>
                           <div className="flex items-center justify-between text-xs text-gray-500 mt-2">

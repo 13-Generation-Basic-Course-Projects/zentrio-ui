@@ -6,6 +6,7 @@ import {
   getCheckListByTaskIdAction,
   getCommentByCheckListIdAction,
   getMemberByBoardIdAction,
+  getTaskByBoardIdAction,
   getTaskByBoardIdAndGanttBarIdAction,
 } from "@/action/board.action";
 import {
@@ -203,6 +204,11 @@ export default async function BoardLayout({ children, params }) {
      */
     const boardData = await getBoardByBoardIdAction(boardId);
     console.log("boardData", boardData);
+    /*
+     * get create id
+     */
+    const allTask = await getTaskByBoardIdAction(boardId);
+    console.log("id creator", allTask);
     return (
       <div>
         <SystemBoard
