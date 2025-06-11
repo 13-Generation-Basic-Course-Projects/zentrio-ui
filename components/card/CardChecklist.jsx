@@ -18,8 +18,8 @@ export const CardCheckList = ({
   comment,
   member,
   id,
+  commentCount,
 }) => {
-  console.log("id 0000", id);
   return (
     <div>
       <Card className="py-4 rounded-xl cursor-pointer hover:bg-blue-50 transition shadow-sm w-full">
@@ -127,7 +127,7 @@ export const CardCheckList = ({
                 className="w-[16px] h-[16px]"
                 alt="Comments icon"
               />
-              <p className="text-body-sm font-semibold">{comment}</p>
+              <p className="text-body-sm font-semibold">{commentCount}</p>
             </div>
             <div className="flex flex-row justify-center items-center space-x-2">
               <Image

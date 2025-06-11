@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import member from "@/assets/memberSideBar.png";
 import Image from "next/image";
 import {
@@ -49,6 +49,10 @@ export default function ModalDetailChecklist({
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
+  //fetch
+  const [comments, setComments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const data = allAttachment;
   const icons = {
     pdf: "https://cdn-icons-png.flaticon.com/128/4726/4726010.png",
@@ -64,8 +68,56 @@ export default function ModalDetailChecklist({
     ); // Default icon
   };
   console.log("member", member);
-  //const fetchCommentDependOnId = await getCommentByCheckListIdAction();
+  //comment
+  console.log("is this the id of checklist", id);
   const prevnetCheckListImage = preventImage.noChecklistImage;
+  //fetch comment
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchComments = async () => {
+      if (!id) {
+        console.warn("Checklist ID is missing");
+        setError("Checklist ID is required");
+        setLoading(false);
+        return;
+      }
+
+      setLoading(true);
+      setError(null);
+      try {
+        const result = await getCommentByCheckListIdAction(id);
+        console.log("Fetch result:", result); // Log the result
+        if (isMounted) {
+          if (result.success) {
+            setComments(result.data);
+          } else {
+            setError(result.error || "Failed to load comments");
+          }
+        }
+      } catch (err) {
+        if (isMounted) {
+          setError("An unexpected error occurred");
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchComments();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [id]);
+
+  // Separate useEffect for logging comments
+  useEffect(() => {
+    console.log("Updated comments state:", comments);
+  }, [comments]);
+
   return (
     <>
       <Button
@@ -84,20 +136,21 @@ export default function ModalDetailChecklist({
             hideImage={hideImage}
             member={member}
             id={id}
+            commentCount={comments.length}
           />
         </div>
       </Button>
       <Modal
         isOpen={isOpen}
         onOpenChange={onOpenChange}
-        size="xl"
+        size="5xl"
         className="overflow-y-auto scrollbar-hidden  max-h-[760px]"
       >
         <ModalContent>
           {(onClose) => (
             <>
               {/* Modal Header */}
-              <ModalHeader className="flex flex-col gap-1">
+              <ModalHeader className="flex flex-col gap-1  sticky top-0 z-10 bg-white">
                 <div className="flex flex-wrap justify-start items-center gap-2">
                   <svg
                     width="12"
@@ -137,7 +190,7 @@ export default function ModalDetailChecklist({
                       strokeLinejoin="round"
                     />
                   </svg>
-                  <p className="text-h5 font-medium">
+                  <p className="text-h5 font-medium break-words max-w-full">
                     {taskTitle || "task name"}
                   </p>
                 </div>
@@ -156,23 +209,9 @@ export default function ModalDetailChecklist({
                 {/* for show sub title of task */}
                 <div className="flex flex-col ">
                   <div className="flex flex-wrap justify-between items-center">
-                    <p className="text-title text-h6 underline font-normal">
+                    <p className="text-title text-h6 underline font-normal break-words max-w-full">
                       {title || "title of checklist"}
                     </p>
-                    {/* <button className="bg-progress-red/20 rounded-full p-2 w-[50px] h-[50px] flex justify-center items-center border-title/20 border-1 hover:bg-[#FFF] hover:border-1 hover:border-primary">
-                      <svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 19 20"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M17.4062 3.3125H13.8125V2.59375C13.8125 2.02188 13.5853 1.47343 13.1809 1.06905C12.7766 0.664676 12.2281 0.4375 11.6562 0.4375H7.34375C6.77188 0.4375 6.22343 0.664676 5.81905 1.06905C5.41468 1.47343 5.1875 2.02188 5.1875 2.59375V3.3125H1.59375C1.40313 3.3125 1.22031 3.38823 1.08552 3.52302C0.950725 3.65781 0.875 3.84063 0.875 4.03125C0.875 4.22187 0.950725 4.40469 1.08552 4.53948C1.22031 4.67427 1.40313 4.75 1.59375 4.75H2.3125V17.6875C2.3125 18.0687 2.46395 18.4344 2.73353 18.704C3.00312 18.9735 3.36875 19.125 3.75 19.125H15.25C15.6312 19.125 15.9969 18.9735 16.2665 18.704C16.536 18.4344 16.6875 18.0687 16.6875 17.6875V4.75H17.4062C17.5969 4.75 17.7797 4.67427 17.9145 4.53948C18.0493 4.40469 18.125 4.22187 18.125 4.03125C18.125 3.84063 18.0493 3.65781 17.9145 3.52302C17.7797 3.38823 17.5969 3.3125 17.4062 3.3125ZM6.625 2.59375C6.625 2.40313 6.70073 2.22031 6.83552 2.08552C6.97031 1.95073 7.15313 1.875 7.34375 1.875H11.6562C11.8469 1.875 12.0297 1.95073 12.1645 2.08552C12.2993 2.22031 12.375 2.40313 12.375 2.59375V3.3125H6.625V2.59375ZM15.25 17.6875H3.75V4.75H15.25V17.6875ZM8.0625 8.34375V14.0938C8.0625 14.2844 7.98677 14.4672 7.85198 14.602C7.71719 14.7368 7.53437 14.8125 7.34375 14.8125C7.15313 14.8125 6.97031 14.7368 6.83552 14.602C6.70073 14.4672 6.625 14.2844 6.625 14.0938V8.34375C6.625 8.15313 6.70073 7.97031 6.83552 7.83552C6.97031 7.70073 7.15313 7.625 7.34375 7.625C7.53437 7.625 7.71719 7.70073 7.85198 7.83552C7.98677 7.97031 8.0625 8.15313 8.0625 8.34375ZM12.375 8.34375V14.0938C12.375 14.2844 12.2993 14.4672 12.1645 14.602C12.0297 14.7368 11.8469 14.8125 11.6562 14.8125C11.4656 14.8125 11.2828 14.7368 11.148 14.602C11.0132 14.4672 10.9375 14.2844 10.9375 14.0938V8.34375C10.9375 8.15313 11.0132 7.97031 11.148 7.83552C11.2828 7.70073 11.4656 7.625 11.6562 7.625C11.8469 7.625 12.0297 7.70073 12.1645 7.83552C12.2993 7.97031 12.375 8.15313 12.375 8.34375Z"
-                          fill="#FF4640"
-                        />
-                      </svg>
-                    </button> */}
 
                     <PopupAction
                       title={<Trash />}
@@ -186,7 +225,10 @@ export default function ModalDetailChecklist({
                     />
                   </div>
                   <div className="flex flex-wrap justify-between items-center mt-5">
-                    <StackedProfileChecklist member={member} />
+                    <StackedProfileChecklist
+                      member={member}
+                      preventUserImage={preventUserImage}
+                    />
                     <div>
                       <div className="w-full max-w-xl flex flex-row gap-4">
                         <DateRangePicker
@@ -204,7 +246,7 @@ export default function ModalDetailChecklist({
                 <div className="flex flex-col space-y-3">
                   <div className="flex flex-wrap justify-between items-center">
                     <p className="text-h6 text-title font-semibold">
-                      Description
+                      Description test id == {id}
                     </p>
                     <div>
                       <svg
@@ -238,7 +280,7 @@ export default function ModalDetailChecklist({
                       </svg>
                     </div>
                   </div>
-                  <p className="text-title/50 text-caption ">
+                  <p className="text-title/50 text-caption break-words max-w-full">
                     {description ||
                       "The Task Management System is a web-based application designed to help individuals and teams effectively manage their daily activity"}
                   </p>
@@ -346,63 +388,69 @@ export default function ModalDetailChecklist({
 
                       {/* comment */}
                       <div className="space-y-1">
-                        <p className="flex items-center gap-2">
-                          <img
-                            src="https://i.pinimg.com/736x/78/d9/4b/78d94baa8d7459c33b6b99f647893869.jpg"
-                            alt="Fong"
-                            className="w-6 h-6 rounded-full object-cover"
-                          />
-                          Fong
-                        </p>
+                        {comments.map((el, index) => (
+                          <div key={index}>
+                            <p className="flex items-center gap-2">
+                              <img
+                                src={
+                                  preventUserImage ||
+                                  "https://i.pinimg.com/736x/78/d9/4b/78d94baa8d7459c33b6b99f647893869.jpg"
+                                }
+                                alt={el?.member?.username}
+                                className="w-6 h-6 rounded-full object-cover"
+                              />
+                              {el?.member?.username}
+                            </p>
 
-                        <div className="ml-8 text-title/50 text-caption flex flex-col space-y-1">
-                          <p>
-                            {
-                              "Static  Discussed project timeline and identified key milestones."
-                            }
-                          </p>
-                          <div className="flex justify-end">
-                            <div className="flex flex-col items-end bg-progress-green/20 rounded-full p-2">
-                              <div className="flex items-center space-x-2">
-                                <svg
-                                  width="10"
-                                  height="11"
-                                  viewBox="0 0 10 11"
-                                  fill="none"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                >
-                                  <path
-                                    fillRule="evenodd"
-                                    clipRule="evenodd"
-                                    d="M5 2.24344C2.83564 2.24344 1.08108 3.998 1.08108 6.16236C1.08108 8.32672 2.83564 10.0813 5 10.0813C7.16436 10.0813 8.91892 8.32672 8.91892 6.16236C8.91892 3.998 7.16436 2.24344 5 2.24344ZM0.27027 6.16236C0.27027 3.5502 2.38784 1.43263 5 1.43263C7.61216 1.43263 9.72973 3.5502 9.72973 6.16236C9.72973 8.77452 7.61216 10.8921 5 10.8921C2.38784 10.8921 0.27027 8.77452 0.27027 6.16236Z"
-                                    fill="#5FC381"
-                                  />
-                                  <path
-                                    fillRule="evenodd"
-                                    clipRule="evenodd"
-                                    d="M5 3.05425C5.2239 3.05425 5.40541 3.23576 5.40541 3.45966V5.93766L6.83649 6.83209C7.02635 6.95076 7.08407 7.20087 6.9654 7.39074C6.84674 7.5806 6.59662 7.63832 6.40676 7.51966L4.78514 6.50614C4.6666 6.43206 4.59459 6.30214 4.59459 6.16236V3.45966C4.59459 3.23576 4.7761 3.05425 5 3.05425Z"
-                                    fill="#5FC381"
-                                  />
-                                  <path
-                                    fillRule="evenodd"
-                                    clipRule="evenodd"
-                                    d="M2.04342 1.01083C2.20174 1.16915 2.20174 1.42584 2.04342 1.58416L0.69207 2.93551C0.53375 3.09383 0.277061 3.09383 0.11874 2.93551C-0.0395802 2.77719 -0.0395802 2.5205 0.11874 2.36218L1.47009 1.01083C1.62841 0.85251 1.8851 0.85251 2.04342 1.01083Z"
-                                    fill="#5FC381"
-                                  />
-                                  <path
-                                    fillRule="evenodd"
-                                    clipRule="evenodd"
-                                    d="M7.95658 1.01083C7.79826 1.16915 7.79826 1.42584 7.95658 1.58416L9.30793 2.93551C9.46625 3.09383 9.72294 3.09383 9.88126 2.93551C10.0396 2.77719 10.0396 2.5205 9.88126 2.36218L8.52991 1.01083C8.37159 0.85251 8.1149 0.85251 7.95658 1.01083Z"
-                                    fill="#5FC381"
-                                  />
-                                </svg>
-                                <span className="text-caption-tiny text-gray-500">
-                                  2 hours ago
-                                </span>
+                            <div className="ml-8 text-title/50 text-caption flex flex-col space-y-1">
+                              <p>
+                                {el?.content ||
+                                  "Static  Discussed project timeline and identified key milestones."}
+                              </p>
+                              <div className="flex justify-end">
+                                <div className="flex flex-col items-end bg-progress-green/20 rounded-full p-2">
+                                  <div className="flex items-center space-x-2">
+                                    <svg
+                                      width="10"
+                                      height="11"
+                                      viewBox="0 0 10 11"
+                                      fill="none"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                      <path
+                                        fillRule="evenodd"
+                                        clipRule="evenodd"
+                                        d="M5 2.24344C2.83564 2.24344 1.08108 3.998 1.08108 6.16236C1.08108 8.32672 2.83564 10.0813 5 10.0813C7.16436 10.0813 8.91892 8.32672 8.91892 6.16236C8.91892 3.998 7.16436 2.24344 5 2.24344ZM0.27027 6.16236C0.27027 3.5502 2.38784 1.43263 5 1.43263C7.61216 1.43263 9.72973 3.5502 9.72973 6.16236C9.72973 8.77452 7.61216 10.8921 5 10.8921C2.38784 10.8921 0.27027 8.77452 0.27027 6.16236Z"
+                                        fill="#5FC381"
+                                      />
+                                      <path
+                                        fillRule="evenodd"
+                                        clipRule="evenodd"
+                                        d="M5 3.05425C5.2239 3.05425 5.40541 3.23576 5.40541 3.45966V5.93766L6.83649 6.83209C7.02635 6.95076 7.08407 7.20087 6.9654 7.39074C6.84674 7.5806 6.59662 7.63832 6.40676 7.51966L4.78514 6.50614C4.6666 6.43206 4.59459 6.30214 4.59459 6.16236V3.45966C4.59459 3.23576 4.7761 3.05425 5 3.05425Z"
+                                        fill="#5FC381"
+                                      />
+                                      <path
+                                        fillRule="evenodd"
+                                        clipRule="evenodd"
+                                        d="M2.04342 1.01083C2.20174 1.16915 2.20174 1.42584 2.04342 1.58416L0.69207 2.93551C0.53375 3.09383 0.277061 3.09383 0.11874 2.93551C-0.0395802 2.77719 -0.0395802 2.5205 0.11874 2.36218L1.47009 1.01083C1.62841 0.85251 1.8851 0.85251 2.04342 1.01083Z"
+                                        fill="#5FC381"
+                                      />
+                                      <path
+                                        fillRule="evenodd"
+                                        clipRule="evenodd"
+                                        d="M7.95658 1.01083C7.79826 1.16915 7.79826 1.42584 7.95658 1.58416L9.30793 2.93551C9.46625 3.09383 9.72294 3.09383 9.88126 2.93551C10.0396 2.77719 10.0396 2.5205 9.88126 2.36218L8.52991 1.01083C8.37159 0.85251 8.1149 0.85251 7.95658 1.01083Z"
+                                        fill="#5FC381"
+                                      />
+                                    </svg>
+                                    <span className="text-caption-tiny text-gray-500">
+                                      2 hours ago
+                                    </span>
+                                  </div>
+                                </div>
                               </div>
                             </div>
                           </div>
-                        </div>
+                        ))}
                       </div>
                     </div>
                   )}

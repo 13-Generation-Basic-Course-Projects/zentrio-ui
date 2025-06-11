@@ -11,6 +11,7 @@ import {
   getMemberByBoardIdService,
   getTaskByBoardIdAndGanttBarIdService,
   inviteMemberToBoardService,
+  postCommentByCheckListIdService,
 } from "@/service/board.service";
 import { revalidatePath } from "next/cache";
 
@@ -109,15 +110,20 @@ export const getCommentByCheckListIdAction = async (checklistId) => {
       token,
     });
 
-    // Transform the backend response to match your expected frontend format
+    console.log("Raw service response:", result); // Log raw response
+
     return {
       success: result.success,
-      data: result.payload || result.data || [], // Map payload to data
+      data: result.payload || result.data || [], // Ensure payload is prioritized
       error: result.error || null,
       message: result.message,
     };
   } catch (error) {
-    console.error("Error in getCommentByCheckListIdAction:", error);
+    console.error("Error in getCommentByCheckListIdAction:", {
+      checklistId,
+      error: error.message,
+      response: error.response?.data,
+    });
     return {
       success: false,
       data: [],
@@ -233,6 +239,30 @@ export const getBoardByBoardIdAction = async (boardId) => {
     return result;
   } catch (error) {
     console.log("error:", error.message);
+    return { success: false, error: error.message };
+  }
+};
+/*
+ * create comment
+ */
+export const postCommentByCheckListIdAction = async (data, taskId) => {
+  try {
+    const userToken = await Token();
+    const token = userToken?.Credential;
+    if (!token) {
+      throw new Error("No authentication token found");
+    }
+    console.log("boardId:", boardId);
+    console.log("data create form", data);
+    const result = await postCommentByCheckListIdService({
+      taskId,
+      data,
+      token,
+    });
+    revalidatePath("/gantbar");
+    return { success: true, data: result };
+  } catch (error) {
+    console.error("Create task action error:", error.message);
     return { success: false, error: error.message };
   }
 };

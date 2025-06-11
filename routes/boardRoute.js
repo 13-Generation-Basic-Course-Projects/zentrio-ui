@@ -18,7 +18,7 @@ export const boardRouteGroup = {
 
   createTaskByBoardIdAndGanttBarId: () => `${apiConfig.baseUrl}/tasks`, // Created task with boards ID and gantt bars ID
   createCheckListBytaskId: () => `${apiConfig.baseUrl}/checklists`, // Created task with boards ID and gantt bars ID
-
+  postCommentByCheckListId: () => `${apiConfig.baseUrl}/comment/checklists`,
   //put
   updateBoardFavorite: (boardId) =>
     `${apiConfig.baseUrl}/boards/${boardId}/favourite`, //enum

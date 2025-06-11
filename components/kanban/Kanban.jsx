@@ -604,7 +604,10 @@ export default function KanbanBoard({
                             <div className="flex items-center flex-shrink-0">
                               <div className="flex -space-x-2 mr-2">
                                 {(card.assignees || []).map((assignee, idx) => (
-                                  <UserAvater key={idx} image={assignee} />
+                                  <UserAvater
+                                    key={idx}
+                                    image={assignee ?? preventUserImage}
+                                  />
                                 ))}
                               </div>
                             </div>

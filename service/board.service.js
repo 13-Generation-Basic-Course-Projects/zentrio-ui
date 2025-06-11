@@ -120,27 +120,27 @@ export const getCommentByCheckListIdService = async ({
   token,
 }) => {
   try {
-    console.log("uuid comment", checkListId);
-    const url = boardRouteGroup.getCommentByCheckListId(checkListId);
-    const res = await fetch(url, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const result = await res.json();
-    console.log("📥 Backend responded with comment:", result);
+    const response = await fetch(
+      boardRouteGroup.getCommentByCheckListId(checkListId),
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
-    // Ensure the response has a consistent structure
-    return {
-      success: res.ok,
-      data: result.data || null,
-      error: res.ok ? null : result.error || "Failed to get comment",
-    };
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log("Service raw response:", data); // Log for debugging
+    return data; // Return the full response { success, payload, message, status, timestamp }
   } catch (error) {
-    console.error("Invite service error:", error.message);
-    return { success: false, error: error.message };
+    console.error("Error in getCommentByCheckListIdService:", error);
+    throw error; // Rethrow to be handled by the action
   }
 };
 /*
@@ -277,7 +277,7 @@ export const createCheckListService = async ({ taskId, data, token }) => {
       }),
     });
     const result = await res.json();
-    console.log("📥 Backend responded with checklist:", result);
+    // console.log("📥 Backend responded with checklist:", result);
 
     return data;
   } catch (error) {
@@ -303,6 +303,37 @@ export const getBoardByBoardIdService = async ({ boardId, token }) => {
     console.log("📥 Backend responded with board:", data);
 
     return data; // just return the data, don’t redirect here
+  } catch (error) {
+    console.error("bug", error.message);
+    throw error;
+  }
+};
+/*
+ * create comment
+ */
+export const postCommentByCheckListIdService = async ({
+  taskId,
+  data,
+  token,
+}) => {
+  try {
+    console.log("from service", { checklistId, data, token });
+    const url = boardRouteGroup.postCommentByCheckListId();
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        content: data.content,
+        checklistId: checklistId,
+      }),
+    });
+    const result = await res.json();
+    // console.log("📥 Backend responded with checklist:", result);
+
+    return data;
   } catch (error) {
     console.error("bug", error.message);
     throw error;

@@ -245,8 +245,9 @@ export function StarIconOutline({ className = "w-6 h-6" }) {
   );
 }
 //dynamic
-export function StackedProfileChecklist({ member }) {
+export function StackedProfileChecklist({ member, preventUserImage }) {
   console.log("=====", member);
+
   return (
     <div className="flex items-center space-x-[-14px]">
       {member.slice(0, 4).map((user, index) => (
