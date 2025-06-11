@@ -2,9 +2,7 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import notification from "../../assets/notification.png";
 import Link from "next/link";
-import Tapp from "../taps/BoardTab";
 import userProfile from "@/assets/profile.png";
 import ModalNotification from "../modal/noti/ModalNotification";
 export function NavbarAuthorized({ user, notification }) {

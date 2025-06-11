@@ -10,41 +10,62 @@ import {
 import notification from "../../../assets/notification.png";
 import ActiveIcon from "@/assets/profile.png";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function ModalNotification({notificationData}) {
   const [isActive, setIsActive] = useState(false);
   const [markAllRead, setMarkAllRead] = useState(false);
   const [showAll, setShowAll] = useState(false);
+  const [notifications, setNotifications] = useState([]);
+
+  useEffect(() => {
+    console.log("notificationData:", notificationData);
+  }, [notificationData]);
+  
+  useEffect(() => {
+    if (notificationData && Array.isArray(notificationData)) {
+      const formatted = notificationData.map((item, index) => ({
+        id: item.id || index,
+        sender: item.sender,
+        message: item.message,
+        action: item.action,
+        date: item.createdAt?.split("T")[0] ?? item.date ?? "",
+        read: item.read ?? false,
+      }));
+      setNotifications(formatted);
+    }
+  }, [notificationData]);
+  
+
 
   // Sample notifications data - moved to state so we can modify it
-  const [notifications, setNotifications] = useState([
-    {
-      id: 1,
-      sender: "Seam Chiminh",
-      message: "welcome to Zentrio system",
-      action: "created Task Back-End.",
-      date: "5 May",
-      read: false,
-    },
-    {
-      id: 2,
-      sender: "John Doe",
-      message: "updated project timeline",
-      action: "modified Task Front-End.",
-      date: "6 May",
-      read: false,
-    },
-    // Add more notifications as needed
-    ...Array.from({ length: 10 }, (_, i) => ({
-      id: i + 3,
-      sender: `User ${i + 3}`,
-      message: `Notification message ${i + 3}`,
-      action: `performed action ${i + 3}`,
-      date: `${i + 7} May`,
-      read: false,
-    })),
-  ]);
+  // const [notifications, setNotifications] = useState([
+  //   {
+  //     id: 1,
+  //     sender: "Seam Chiminh",
+  //     message: "welcome to Zentrio system",
+  //     action: "created Task Back-End.",
+  //     date: "5 May",
+  //     read: false,
+  //   },
+  //   {
+  //     id: 2,
+  //     sender: "John Doe",
+  //     message: "updated project timeline",
+  //     action: "modified Task Front-End.",
+  //     date: "6 May",
+  //     read: false,
+  //   },
+  //   // Add more notifications as needed
+  //   ...Array.from({ length: 10 }, (_, i) => ({
+  //     id: i + 3,
+  //     sender: `User ${i + 3}`,
+  //     message: `Notification message ${i + 3}`,
+  //     action: `performed action ${i + 3}`,
+  //     date: `${i + 7} May`,
+  //     read: false,
+  //   })),
+  // ]);
 
   const markAllAsRead = () => {
     setIsActive(true);
@@ -64,7 +85,9 @@ export default function ModalNotification({notificationData}) {
   const displayedNotifications = showAll
     ? notifications
     : notifications.slice(0, 3);
-
+  
+  
+  console.log("display data", displayedNotifications);
   return (
     <Dropdown className="p-0 bg-transparent">
       <DropdownTrigger>
@@ -199,7 +222,7 @@ export default function ModalNotification({notificationData}) {
                 ) : (
                   displayedNotifications.map((notificationItem) => (
                     <div
-                      key={notificationItem.notificationId}
+                      key={notificationItem.id}
                       className={`flex justify-between items-start ${
                         markAllRead
                           ? "bg-white"
@@ -217,13 +240,13 @@ export default function ModalNotification({notificationData}) {
                         </div>
                         <div className="flex flex-col gap-[3px]">
                           <p className="text-[14px] text-title">
-                            {/* {notificationItem.content} */}
+                            {notificationItem.content}
                           </p>
                           <p className="text-[12px] text-description">
-                            {/* {notificationItem.type} */}
+                            {notificationItem.type}
                           </p>
                           <p className="text-[12px] text-description">
-                            {/* {notificationItem.isRead} */}
+                            {notificationItem.isRead}
                           </p>
                           <p className="text-[12px] text-description">
                             {/* {notificationItem.createdAt.split("T")[0]} */}

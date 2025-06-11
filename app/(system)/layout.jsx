@@ -18,7 +18,6 @@ export default async function SystemLayout({ children }) {
 
   const userId = "bcf9227f-c24a-47a0-b91f-50125c4ef0a2";
   const notification = await getNotificationForUserIdAction(userId);
-  console.log("notification", notification);
   return (
     // <LoadingBarContainer>
     <SidebarProvider className="bg-bgColor">
@@ -28,7 +27,7 @@ export default async function SystemLayout({ children }) {
       >
         {/* <SidebarTrigger className="fixed top-0  z-[30]" /> */}
         <div className="w-full  ">
-          <NavbarWrapper user={session?.user} />
+          <NavbarWrapper user={session?.user} notification={notification}/>
           {children}
         </div>
       </div>

@@ -149,6 +149,7 @@ export function ModalEditProfile({ currentUserProfile }) {
 
 
       /* Testing send notification to users*/
+      console.log("Calling sendNotificationForAllUserAction...");
       await sendNotificationForAllUserAction({
         data: "✅ The task has been marked as completed!", // 👈 Send string only
       });

@@ -31,7 +31,6 @@ export const sendNotificationForAllUserService = async ({ token, data }) => {
 };
 
 export const sendNotificationToUserIdService = async ({
-  senderId,
   receiverId,
   taskId,
   data,
@@ -49,10 +48,10 @@ export const sendNotificationToUserIdService = async ({
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify({ data }), // wrap data inside an object
     });
 
-    const resultText = await response.text(); // Get text first
+    const resultText = await response.text();
 
     if (!response.ok) {
       throw new Error(
@@ -60,11 +59,9 @@ export const sendNotificationToUserIdService = async ({
       );
     }
 
-    // Try to parse JSON, fallback to plain text
     try {
-      return JSON.parse(resultText); // will succeed if backend returns JSON
+      return JSON.parse(resultText);
     } catch (err) {
-      // If parsing fails, return plain text response as message
       return {
         message: resultText || "Notification sent (no JSON returned)",
       };
@@ -77,51 +74,24 @@ export const sendNotificationToUserIdService = async ({
 
 
 export const getNotificationForUserIdService = async ({ userId, token }) => {
-  // Ensure userId is not undefined here, if it is, the URL will be malformed
+  // Validate userId to ensure it's not undefined or null before making the request
   if (!userId) {
-    throw new Error("User ID is required for fetching notifications.");
-  }
-  if (!token) {
-    throw new Error(
-      "Authentication token is required for fetching notifications."
-    );
-  }
-
-  // Define url *before* using it
-  const url = notificationRouteGroup.getNotificationForUserId(userId);
-
-  // Place console.log statements *before* the fetch call
-  console.log("Fetching notifications from URL:", url); // Debugging: log the URL
-  console.log(
-    "Using token (first 10 chars):",
-    token ? token.substring(0, 10) + "..." : "No Token"
-  ); // Debugging: log token (partially)
-
-  const response = await fetch(
-    url, // First argument: the URL
-    {
-      // Second argument: the options object
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
-
-  if (!response.ok) {
-    // Attempt to read the error body for more details
-    let errorDetail = "No additional error detail available.";
-    try {
-      errorDetail = await response.text();
-    } catch (e) {
-      // Ignore if reading text fails
-    }
     console.error(
-      `HTTP Error: ${response.status} ${response.statusText} - Response Body: ${errorDetail}`
+      "Error: userId is undefined or null. Cannot fetch notifications."
     );
-    throw new Error(
-      `Can't get notification data: ${response.status} ${response.statusText}`
-    );
+    throw new Error("userId is required to fetch notifications.");
   }
+
+  const url = notificationRouteGroup.getNotificationForUserId(userId);
+  console.log("Fetching notifications for userId:", userId);
+  console.log("URL:", url);
+
+  const response = await fetch(url, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json", // It's good practice to include Content-Type even for GET requests if applicable
+    },
+  });
 
   const data = await response.json();
   return data;
