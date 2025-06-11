@@ -1,5 +1,6 @@
 import {
   createNoteInCalendarAction,
+  getAllNoteInCalendarAction,
   getGanttBarByGanttChartIdAction,
   getGanttChartByBoardIdAction,
   getTaskByBoardIdAndGanttBarIdAction,
@@ -72,6 +73,8 @@ export default async function Calender({ params }) {
       }
     }
     console.log("✅👨‍🏭 All tasks in calendar: ", allTasks);
+    
+
    
 
     return (
@@ -79,6 +82,7 @@ export default async function Calender({ params }) {
         <MyCalender
           tasks={allTasks}
           createNoteAction={createNoteInCalendarAction}
+          boardId={boardId}
         />
       </div>
     );

@@ -97,6 +97,10 @@ export const createNoteInCalendarService = async ({
   taskId,
 }) => {
   try {
+    console.log("Service noted input:", noted);
+    console.log("Service startDate input:", startDate);
+    console.log("Service tillDate input:", tillDate);
+    console.log("Service taskId input:", taskId);
     const url = calendarV2RouteGroup.createNoteInCalendar();
     const res = await fetch(url, {
       method: "POST",
@@ -113,11 +117,45 @@ export const createNoteInCalendarService = async ({
     });
 
     const data = await res.json();
-    console.log("📥📝 Backend responded create note with:", data);
+    console.log("📥📝 Backend service responded create note with:", data);
 
     return data; s
   } catch (error) {
     console.error("Create note service error📝🤔:", error.message);
+    throw error;
+  }
+};
+
+
+/*
+* Get note in calendar
+*/
+// service\calendarV2.service.js
+
+export const getAllNoteInCalendarService = async ({ taskId, token }) => { 
+  console.log("Service - Received taskId (should be string):", taskId);
+
+  try {
+    const url = calendarV2RouteGroup.getAllNoteInCalendar(taskId);
+    console.log("Service - Fetching URL (final):", url);
+
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        accept: "*/*",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+
+    const data = await res.json();
+    console.log("Service - getAllNoteInCalendar (successful data):", data);
+    return data;
+  } catch (error) {
+    console.error("Service - Error fetching note in Calendar:", error.message);
     throw error;
   }
 };

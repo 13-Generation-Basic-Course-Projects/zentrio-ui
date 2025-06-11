@@ -24,8 +24,14 @@ const normalizeDateToDay = (date) => {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate());
 };
 
-export default function MyCalender({ tasks, createNoteAction }) {
+export default  function MyCalender({
+  tasks,
+  createNoteAction,
+  getNoteAllInCalendarAction,
+}) {
   const calendarRef = useRef(null);
+  const [selectedTaskId, setSelectedTaskId] = useState(null);
+  const [selectedTask, setSelectedTask] = useState(null);
 
   const colorList = [
     {
@@ -60,285 +66,298 @@ export default function MyCalender({ tasks, createNoteAction }) {
     },
   ];
 
-  const mappedTasks = useMemo(() => {
+  // const mappedTasks = useMemo(() => {
+  //   const uniqueIds = new Set();
+  //   return tasks
+  //     .filter((task) => {
+  //       if (uniqueIds.has(task.taskId)) return false;
+  //       uniqueIds.add(task.taskId);
+  //       return true;
+  //     })
+  //     .map((task, index) => {
+  //       const color = colorList[index % colorList.length];
+  //       return {
+  //         id: task.taskId,
+  //         title: task.title,
+  //         start: task.createdAt,
+  //         end: task.finishedAt ?? task.createdAt,
+  //         extendedProps: {
+  //           // type: "task",
+  //           type: task.type || "task",
+  //           content: task.description,
+  //           color,
+  //         },
+  //       };
+  //     });
+  // }, [tasks]);
+  // Map tasks for FullCalendar AND create the taskColorMap
+  const { mappedTasks, taskColorMap } = useMemo(() => {
     const uniqueIds = new Set();
-    return tasks
-      .filter((task) => {
-        if (uniqueIds.has(task.taskId)) return false;
+    const mapForCalendar = [];
+    const mapForColors = {}; // This will be our taskColorMap
+
+    let colorIndex = 0; // Keep track of color for unique tasks
+
+    tasks.forEach((task) => {
+      // Ensure we only process each unique task ID once for color assignment
+      if (!uniqueIds.has(task.taskId)) {
         uniqueIds.add(task.taskId);
-        return true;
-      })
-      .map((task, index) => {
-        const color = colorList[index % colorList.length];
-        return {
+        const color = colorList[colorIndex % colorList.length];
+        colorIndex++; // Move to next color for the next unique task
+
+        // Store the color for this taskId in our mapForColors
+        mapForColors[task.taskId] = color;
+
+        // Add to mapped tasks for FullCalendar
+        mapForCalendar.push({
           id: task.taskId,
           title: task.title,
           start: task.createdAt,
           end: task.finishedAt ?? task.createdAt,
           extendedProps: {
-            // type: "task",
             type: task.type || "task",
             content: task.description,
-            color,
+            color, // Assign color to the FullCalendar event
           },
-        };
-      });
-  }, [tasks]);
+          // You might also want to set backgroundColor, borderColor for FullCalendar events
+          // based on your color object if you want them visible on the calendar itself
+          backgroundColor: color.bg.replace("bg-", "#"), // FullCalendar expects hex or name
+          borderColor: color.border.replace("border-", "#"),
+        });
+      }
+    });
 
-  const [newEventData, setNewEventData] = useState({
-    noted: "",
-    // description: "",
-    type: "comment",
-    start: "",
-    end: "",
-  });
+    return {
+      mappedTasks: mapForCalendar,
+      taskColorMap: mapForColors, // Return the generated map
+    };
+  }, [tasks, colorList]);
 
   const handleTaskClick = (dateStr, taskId) => {
     const task = mappedTasks.find((t) => t.id === taskId);
     if (task) {
       setEvents([task]);
       setSelectedTaskId(taskId); // <-- set selected task here
+      setSelectedTask(task);
       calendarRef.current?.getApi().gotoDate(dateStr);
     }
   };
 
+  // Asynchronous function to handle saving/updating/deleting notes via API
+  const handleNoteSave = async (
+    currentEventId,
+    currentDayKey,
+    currentNoteValue,
+    initialNoteValue
+  ) => {
+    const trimmedNoteValue = currentNoteValue.trim();
+
+    // Do nothing if no change or new empty note
+    if (!trimmedNoteValue && !initialNoteValue) {
+      return;
+    }
+
+    const isNewNote = !initialNoteValue && trimmedNoteValue; // Check if it's a creation
+    const isUpdatedNote =
+      initialNoteValue && initialNoteValue !== trimmedNoteValue; // Check if existing note changed
+    const isDeletedNote = initialNoteValue && !trimmedNoteValue; // Check if existing note was cleared
+    // const formattedStartDate = new Date(
+    //   `${currentDayKey}T00:00:00.000Z`
+    // ).toISOString();
+
+    const startDateObj = new Date(`${currentDayKey}T00:00:00.000Z`);
+    startDateObj.setDate(startDateObj.getDate() +3 );
+    const formattedStartDate = startDateObj.toISOString();
+   
+    const tillDateObj = new Date(`${currentDayKey}T23:59:59.999Z`);
+    tillDateObj.setDate(tillDateObj.getDate() + 6);
+    const formattedTillDate = tillDateObj.toISOString();
+
+    try {
+      if (isNewNote || isUpdatedNote) {
+        console.log(
+          `Attempting to ${
+            isNewNote ? "create" : "update"
+          } note for Task ID: ${currentEventId} on ${currentDayKey}`
+        );
+        const noted = trimmedNoteValue;
+        const startDate = formattedStartDate ;
+        const tillDate = formattedTillDate ;
+        const taskId = currentEventId;
+
+        await createNoteAction(
+          noted,
+          startDate, 
+          tillDate, 
+          taskId,
+        );
+        console.log(`Note ${isNewNote ? "created" : "updated"} successfully.`);
+      } else if (isDeletedNote) {
+        console.log(
+          `Attempting to delete note for Task ID: ${currentEventId} on ${currentDayKey}`
+        );
+        // Implement your delete note action here if you have one
+        // For example: await deleteNoteAction({ taskId: currentEventId, date: currentDayKey });
+        console.log("Note deletion (local only for now) initiated.");
+      }
+    } catch (error) {
+      console.error("Failed to save/update/delete note via API:", error);
+    }
+  };
+
   const [events, setEvents] = useState([]);
-  const renderEventContent = ({ event }) => {
-    const { type, content, color } = event.extendedProps;
+  const [editingNoteId, setEditingNoteId] = useState(null);
+  const [editingNoteDate, setEditingNoteDate] = useState(null);
+  const [noteValue, setNoteValue] = useState("");
+  const moveNoteToAnotherDay = (eventId, oldDayKey, newDayKey) => {
+    setEvents((prevEvents) =>
+      prevEvents.map((ev) => {
+        if (ev.id === eventId) {
+          const notes = { ...ev.extendedProps.notesByDate };
+          if (notes[oldDayKey]) {
+            notes[newDayKey] = notes[oldDayKey]; // Move note content
+            delete notes[oldDayKey]; // Remove old note
+          }
+          return {
+            ...ev,
+            extendedProps: {
+              ...ev.extendedProps,
+              notesByDate: notes,
+            },
+          };
+        }
+        return ev;
+      })
+    );
+  };
+
+  const renderEventContent = ({ event, isStart }) => {
+    const { type, color } = event.extendedProps;
+
+    if (type !== "task") return null;
+
     const baseStyle = `rounded border-2 px-2 font-bold ${
       color?.text || "text-green-600"
     } ${color?.light || "bg-green-100"}`;
 
-    const formatDate = (dateStr) => {
-      const date = new Date(dateStr);
-      return date.toLocaleDateString("en-GB", {
+    const formatDate = (dateStr) =>
+      new Date(dateStr).toLocaleDateString("en-GB", {
         day: "numeric",
         month: "short",
       });
-    };
 
     const formattedDate = `${formatDate(event.start)} - ${formatDate(
       event.end
     )}`;
 
-    if (type === "task") {
+    if (!isStart) {
       return (
         <div
           className={`${baseStyle} h-[70px] text-[0.9rem] ${
             color?.border || "border-green-500"
           } p-1 flex flex-col rounded-medium`}
-        >
-          <div className="text-[0.65rem] font-medium bg-opacity-80 bg-white w-fit px-2 py-[2px] rounded-medium mb-1">
-            {formattedDate}
-          </div>
-          <div className="flex items-center gap-1">
-            <ClipboardList className="w-4 h-4" />
-            <span className="truncate">{event.title}</span>
-          </div>
-        </div>
+        ></div>
       );
     }
+    const dayDate = event.range?.start
+      ? new Date(event.range.start)
+      : new Date(event.start);
+    const dayKey = dayDate.toISOString().split("T")[0]; // e.g., "2025-06-10"
 
-    if (type === "comment") {
-      return (
+    const notesByDate = event.extendedProps.notesByDate || {};
+
+
+    return (
+      <div className="flex flex-col">
+        {/* Task container (not draggable) */}
         <div
-          onContextMenu={(e) => {
-            e.preventDefault();
-            setContextMenu({
-              visible: true,
-              x: e.clientX,
-              y: e.clientY,
-              eventId: event.id,
-            });
-          }}
-          className={`mt-1 mb-2 h-[30px] text-[0.7rem] flex items-center gap-1 rounded-medium border-2 border-dashed px-2 py-1 ${
-            color?.text || "text-primary"
-          } ${color?.light || "bg-primary"}`}
+          className={`${baseStyle} p-1 flex flex-col rounded-medium border ${
+            color?.border || "border-green-500"
+          }`}
         >
-          <MessageCircleMore className="w-4 h-4" />
-          <span className="truncate">
-            {event.extendedProps.noted || "No note"}
-          </span>
+          <div className="h-[70px] text-[0.9rem]">
+            <div className="text-[0.65rem] font-medium bg-opacity-80 bg-white w-fit px-2 py-[2px] rounded-medium mb-1">
+              {formattedDate}
+            </div>
+
+            {/* Task title (non-editable) */}
+            <div className="flex items-center gap-1">
+              <ClipboardList className="w-4 h-4" />
+              <span className="truncate">{event.title}</span>
+            </div>
+          </div>
         </div>
-      );
-    }
 
-    return null;
-  };
+        {/* Note per specific day */}
+        <div
+          className={`mt-1 mb-2 h-[30px] text-[0.7rem] flex items-center gap-1 rounded-medium border-2 px-2 py-1
+    ${
+      editingNoteId === event.id && editingNoteDate === dayKey
+        ? "cursor-text border-primary/70"
+        : "cursor-pointer border-dashed hover:border-primary/70"
+    } ${color?.text || "text-primary"} ${color?.light || "bg-primary"}`}
+          style={{ width: "15%", boxSizing: "border-box" }} // strict 15% width within parent
+          onClick={(e) => {
+            e.stopPropagation();
+            setEditingNoteId(event.id);
+            setEditingNoteDate(dayKey);
+            setNoteValue(notesByDate[dayKey] || "");
+          }}
+        >
+          {editingNoteId === event.id && editingNoteDate === dayKey ? (
+            <div className="flex flex-row justify-between  items-center w-full">
+              <input
+                type="text"
+                value={noteValue}
+                onChange={(e) => setNoteValue(e.target.value)}
+                onBlur={() => {
+                  const initialNoteValue = notesByDate[dayKey] || "";
+                  handleNoteSave(event.id, dayKey, noteValue, initialNoteValue);
+                  // If the note value is edited on a new day (different from where it was before)
+                  if (editingNoteDate !== dayKey) {
+                    moveNoteToAnotherDay(event.id, editingNoteDate, dayKey);
+                  }
 
-  /*
-   * use for handler modal comment
-   */
-  const [isOpen, setIsOpen] = useState(false);
-  /*
-   * state use for comments dropdown
-   */
-  const [commentDropdown, setCommentDropdown] = useState({
-    visible: false,
-    x: 0,
-    y: 0,
-    eventData: {
-      noted: "",
-      start: "",
-      end: "",
-      type: "comment",
-    },
-  });
+                  // Update or set the note on this day
+                  const updated = events.map((ev) =>
+                    ev.id === event.id
+                      ? {
+                          ...ev,
+                          extendedProps: {
+                            ...ev.extendedProps,
+                            notesByDate: {
+                              ...ev.extendedProps.notesByDate,
+                              [dayKey]: noteValue,
+                            },
+                          },
+                        }
+                      : ev
+                  );
+                  setEvents(updated);
 
-  /*
-   * Handler for select date to comment base on each task have selected
-   */
-  const [showPopup, setShowPopup] = useState(false);
-  const [selectedTaskId, setSelectedTaskId] = useState(null);
-  const handleDateSelect = (info) => {
-    const selectedStart = new Date(info.startStr);
-    const selectedEnd = new Date(info.endStr);
-
-    // Normalize dates to ignore time part
-    const selStart = normalizeDateToDay(selectedStart);
-    const selEnd = normalizeDateToDay(
-      new Date(selectedEnd.getTime() - 24 * 60 * 60 * 1000) // adjust end date to be inclusive
+                  setEditingNoteId(null);
+                  setEditingNoteDate(null);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") e.target.blur();
+                }}
+                autoFocus
+                className="bg-transparent px-1 text-[0.7rem] border-0 outline-none w-full"
+              />
+              <MessageCircleMore className="w-4 h-4" />
+            </div>
+          ) : (
+            <div className="flex flex-row justify-between items-center w-full">
+              <span className="truncate" title={notesByDate[dayKey]}>
+                {notesByDate[dayKey] || "Click to add note"}
+              </span>
+              <MessageCircleMore className="w-4 h-4" />
+            </div>
+          )}
+        </div>
+      </div>
     );
-
-    // Ensure a task is selected before allowing comments
-    if (!selectedTaskId) {
-      setShowPopup(true); // Show alert to select a task first
-      return;
-    }
-
-    // Find the selected task from mappedTasks using correct id property
-    const matchingTask = mappedTasks.find((task) => {
-      if (task.id === selectedTaskId) {
-        const taskStart = normalizeDateToDay(new Date(task.start));
-        const taskEnd = normalizeDateToDay(new Date(task.end));
-
-        // Check if the selected date range falls within the task duration
-        return (
-          selStart.getTime() >= taskStart.getTime() &&
-          selEnd.getTime() <= taskEnd.getTime()
-        );
-      }
-      return false;
-    });
-
-    // If no matching task or date range is outside task duration, show alert
-    if (!matchingTask) {
-      setShowPopup(true); // Show alert about invalid comment range
-      return;
-    }
-
-    // If validation passed, open comment input dropdown near the click position
-    const x = info.jsEvent?.clientX || window.innerWidth / 2;
-    const y = info.jsEvent?.clientY || window.innerHeight / 2;
-
-    setCommentDropdown({
-      visible: true,
-      x,
-      y,
-      eventData: {
-        noted: "",
-        start: info.startStr,
-        end: info.endStr,
-        type: "comment",
-      },
-    });
   };
-
-  /*
-   * handle on action for create note
-   */
-  const handleCommentSubmit = async () => {
-    try {
-      const color = colorList[Math.floor(Math.random() * colorList.length)];
-
-      const newEvent = {
-        id: Date.now().toString(),
-        title: "Comment",
-        noted: commentDropdown.eventData.noted,
-        start: commentDropdown.eventData.start,
-        end: commentDropdown.eventData.end,
-        extendedProps: {
-          type: "comment",
-          taskId: selectedTaskId,
-          color,
-        },
-      };
-
-      // 🔁 Call backend API to persist note
-      await createNoteAction({
-        noted: newEvent.noted,
-        startDate: newEvent.start,
-        tillDate: newEvent.end,
-        taskId: selectedTaskId,
-      });
-
-      // ✅ Update calendar UI
-      setEvents((prev) => [...prev, newEvent]);
-      setCommentDropdown({ ...commentDropdown, visible: false });
-
-      console.log("Note successfully created!");
-    } catch (error) {
-      console.error("Failed to create note:", error);
-      // Optionally show a user-friendly message
-    }
-  };
-
-  /*
-   * handle on action for update note
-   */
-  const commentInputRef = useRef(null);
-  useEffect(() => {
-    if (isOpen && commentInputRef.current) {
-      commentInputRef.current.focus();
-    }
-  }, [isOpen]);
-  
-  const handleUpdateComment = async () => {
-    try {
-      const color = colorList[Math.floor(Math.random() * colorList.length)];
-
-      // Update on the backend
-      await createNoteAction({
-        noted: newEventData.noted,
-        startDate: newEventData.start,
-        tillDate: newEventData.end,
-        taskId: newEventData.extendedProps?.taskId || selectedTaskId,
-      });
-
-      // Update the local calendar event
-      setEvents((prevEvents) =>
-        prevEvents.map((event) =>
-          event.id === newEventData.id
-            ? {
-                ...event,
-                noted: newEventData.noted,
-                start: newEventData.start,
-                end: newEventData.end,
-                extendedProps: {
-                  ...event.extendedProps,
-                  color,
-                },
-              }
-            : event
-        )
-      );
-
-      setIsOpen(false); // close modal
-      console.log("Comment updated!");
-    } catch (err) {
-      console.error("Failed to update comment:", err);
-    }
-  };
-
-  /*
-   * for right click state
-   */
-  const [contextMenu, setContextMenu] = useState({
-    visible: false,
-    x: 0,
-    y: 0,
-    eventId: null,
-  });
 
   return (
     <div className="p-4 h-screen flex flex-col overflow-hidden">
@@ -355,12 +374,12 @@ export default function MyCalender({ tasks, createNoteAction }) {
                 interactionPlugin,
                 timeGridPlugin,
               ]}
+              eventContent={(arg) =>
+                renderEventContent({ event: arg.event, isStart: arg.isStart })
+              }
               initialView="dayGridMonth"
               events={events}
-              eventContent={renderEventContent}
               height="auto"
-              selectable={true}
-              select={(info, jsEvent) => handleDateSelect({ ...info, jsEvent })}
               headerToolbar={{
                 left: "today",
                 center: "prev,title,next",
@@ -405,7 +424,7 @@ export default function MyCalender({ tasks, createNoteAction }) {
                   if (label === "today") {
                     // Match your custom Tailwind-like styles
                     btn.style.backgroundColor = "#ffffff";
-                    btn.style.color = "#4b5563"; // text-gray-600
+                    btn.style.color = "#000"; // text-black
                     btn.style.fontWeight = "500";
                     btn.style.border = "1px solid #e5e7eb"; // border-gray-200
                     btn.style.borderRadius = "9999px"; // rounded-full
@@ -413,14 +432,6 @@ export default function MyCalender({ tasks, createNoteAction }) {
                     btn.style.boxShadow = "0 1px 2px rgba(0, 0, 0, 0.05)"; // shadow-sm
                     btn.style.transition = "background-color 0.2s ease";
                     btn.style.textTransform = "capitalize"; // Capitalize first letter
-
-                    btn.onmouseenter = () => {
-                      btn.style.backgroundColor = "#59bad5"; // hover:#59bad5
-                      btn.style.color = "#FFF";
-                    };
-                    btn.onmouseleave = () => {
-                      btn.style.backgroundColor = "#ffffff";
-                    };
                   } else {
                     // Style for Prev/Next
                     btn.style.backgroundColor = "transparent";
@@ -435,7 +446,16 @@ export default function MyCalender({ tasks, createNoteAction }) {
                     btn.style.height = "30px"; // Fixed height
                     btn.style.lineHeight = "30px"; // Vertically center text within height
                     btn.style.textAlign = "center"; // Horizontally center text
+                    btn.style.border = "1px solid #e5e7eb"; // border-gray-200
                   }
+                  btn.onmouseenter = () => {
+                    btn.style.backgroundColor = "#59bad5"; // hover:#59bad5
+                    btn.style.color = "#FFF";
+                  };
+                  btn.onmouseleave = () => {
+                    btn.style.backgroundColor = "#fff";
+                    btn.style.color = "#000";
+                  };
                 });
                 // Style toolbar title (optional)
                 const title = document.querySelector(".fc-toolbar-title");
@@ -454,119 +474,14 @@ export default function MyCalender({ tasks, createNoteAction }) {
             tasks={mappedTasks}
             onTaskClick={(dateStr, taskId) => handleTaskClick(dateStr, taskId)}
           />
-          <CardTCommentCalender tasks={tasks} />
+          <CardTCommentCalender
+            selectedTaskId={selectedTaskId}
+            selectedTask={selectedTask}
+            taskColorMap={taskColorMap}
+            getNoteAllInCalendarAction={getNoteAllInCalendarAction}
+          />
         </div>
       </div>
-
-      {/* alert error popup range comment */}
-      {showPopup && (
-        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
-          <div className="bg-white px-6 py-4 rounded-medium shadow-sm w-[350px] space-y-3">
-            <h3 className="text-red-600 font-semibold text-body-lg">
-              ⚠️ Invalid Selection
-            </h3>
-            <p className="text-gray-700 text-caption">
-              Comments can only be added within the duration of a task.
-            </p>
-            <div className="flex justify-end">
-              <Button
-                onClick={() => setShowPopup(false)}
-                className="px-4 py-1 text-btn rounded-medium bg-primary text-white hover:bg-[#FFF] border hover:border-primary hover:text-title"
-              >
-                OK
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
-      {/* Render the Context Menu (when right click it give this option) */}
-      {contextMenu.visible && (
-        <div
-          style={{
-            position: "fixed",
-            top: contextMenu.y,
-            left: contextMenu.x,
-            backgroundColor: "white",
-            // border: "1px solid #ccc",
-            boxShadow: "0 2px 10px rgba(0,0,0,0.2)",
-            borderRadius: "0px 12px 12px 12px",
-            zIndex: 10000,
-            width: "100px",
-          }}
-          onMouseLeave={() =>
-            setContextMenu({ ...contextMenu, visible: false })
-          }
-        >
-          <button
-            className="w-full px-3 py-2 text-left hover:bg-gray-100 text-caption-tiny rounded-medium"
-            onClick={handleUpdateComment}
-          >
-            Update
-          </button>
-          <button
-            className="w-full px-3 py-2 text-left hover:bg-gray-100 text-red-600 text-caption-tiny rounded-medium"
-            onClick={() => {
-              setEvents((prev) =>
-                prev.filter((e) => e.id !== contextMenu.eventId)
-              );
-              setContextMenu({ ...contextMenu, visible: false });
-            }}
-          >
-            Delete
-          </button>
-        </div>
-      )}
-      {/* Render dropdown for comment input */}
-      {commentDropdown.visible && (
-        <div
-          className="fixed bg-white p-4 rounded-medium shadow-xl border w-[300px] z-50"
-          style={{ top: commentDropdown.y + 120 }}
-          onClick={(e) => e.stopPropagation()}
-        >
-          <h2 className="text-body-sm font-semibold text-blue-600 flex items-center gap-2 mb-2">
-            <MessageCircleMore className="w-4 h-4" />
-            Create Comment (Note)
-          </h2>
-
-          <input
-            className="w-full border border-blue-300 rounded-medium px-3 py-2 mb-3 focus:outline-none focus:ring-2 focus:ring-blue-400 text-caption-tiny"
-            placeholder="Write your note here ✍️"
-            ref={commentInputRef}
-            value={commentDropdown.eventData.noted}
-            onChange={(e) =>
-              setCommentDropdown({
-                ...commentDropdown,
-                eventData: {
-                  ...commentDropdown.eventData,
-                  noted: e.target.value,
-                },
-              })
-            }
-          />
-
-          <div className="flex justify-end gap-2">
-            <Button
-              // color="primary"
-              radius="full"
-              type="submit"
-              onClick={() =>
-                setCommentDropdown((prev) => ({ ...prev, visible: false }))
-              }
-              className="px-3 py-1 text-btn-sm rounded-medium bg-gray-200 hover:bg-gray-300"
-            >
-              Cancel
-            </Button>
-            <Button
-              color="primary"
-              radius="full"
-              type="submit"
-              onClick={handleCommentSubmit}
-            >
-              Save
-            </Button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

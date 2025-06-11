@@ -1,6 +1,6 @@
 "use server";
 import { Token } from "@/constant/token";
-import { createNoteInCalendarService, getGanttBarByGanttChartIdService, getGanttChartByBoardIdService, getTaskByBoardIdAndGanttBarIdService } from "@/service/calendarV2.service";
+import { createNoteInCalendarService, getAllNoteInCalendarService, getCalendarByBoardIdAndUserIdService, getGanttBarByGanttChartIdService, getGanttChartByBoardIdService, getNoteInCalendarService, getTaskByBoardIdAndGanttBarIdService } from "@/service/calendarV2.service";
 /*
  * getTaskbyBoardId and GanttbarId
  */
@@ -55,15 +55,19 @@ export const getGanttChartByBoardIdAction = async (boardId) => {
 /* 
 * create noted in calendar 
 */
-export const createNoteInCalendarAction = async ({
+export const createNoteInCalendarAction = async (
   noted,
   startDate,
   tillDate,
   taskId,
-}) => {
+) => {
   const userToken = await Token();
   const token = userToken.Credential;
-  console.log("Token:", token);
+  console.log("Action noted input:", noted);
+  console.log("Action startDate input:", startDate);
+  console.log("Action tillDate input:", tillDate);
+  console.log("Action taskId input:", taskId);
+  
 
   const result = await createNoteInCalendarService({
     token,
@@ -74,4 +78,27 @@ export const createNoteInCalendarAction = async ({
   });
 
   return result;
+};
+
+
+/*
+ * Action Get all note from calendar by current user (note in each task)
+ */
+
+
+export const getAllNoteInCalendarAction = async (taskId) => {
+  console.log("Action - Received taskId (should be string):", taskId);
+  try {
+    const userToken = await Token();
+    const token = userToken.Credential;
+
+    const result = await getAllNoteInCalendarService({
+      taskId: taskId,
+      token: token,
+    });
+    return result; 
+  } catch (error) {
+    console.error("getNoteInCalendarAction error:", error);
+    throw error; 
+  }
 };
