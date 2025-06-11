@@ -15,9 +15,13 @@ import {
   getAllBoardBywWorkspaceIdAction,
   getAllWorkspaceAction,
   getAllWorkspaceForUserAction,
+  getFavoriteBoardAction,
   updateWorkspaceByIdAction,
 } from "@/action/workspace.action";
-import { getCurrentUserProfileAction } from "@/action/profile.action";
+import {
+  getCurrentUserProfileAction,
+  getPreviewProfileAction,
+} from "@/action/profile.action";
 import { preventImage } from "@/constant/preventimage";
 //import { LoadingBarContainer } from "react-top-loading-bar";
 export const metadata = {
@@ -39,11 +43,22 @@ export default async function SystemLayout({ children }) {
   /*
    * This function is the main entry point for the profile page.
    */
+
   const currentUserProfile = await getCurrentUserProfileAction();
-  const imageUser = currentUserProfile?.payload?.user?.profileImage;
+  /**
+   * get board favorite
+   */
+  const getUserDetials = await getPreviewProfileAction();
+  //  console.log("getPreviewProfileAction", getUserDetials);
+  const myUserId = getUserDetials?.payload?.userId;
+  const imageUser = getUserDetials?.payload?.profileImage;
   const noImage = preventImage.noProfile;
   const preventUserImage = imageUser == null ? noImage : imageUser;
   console.log("what inside layout and userprofile", imageUser);
+
+  const myFavBoard = await getFavoriteBoardAction(myUserId);
+  console.log("getFavoriteBoardAction", myFavBoard);
+  console.log("myUserId", myUserId);
   return (
     // <LoadingBarContainer>
     <SidebarProvider className="bg-bgColor">

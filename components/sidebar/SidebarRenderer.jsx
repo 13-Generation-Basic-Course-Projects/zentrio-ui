@@ -11,6 +11,7 @@ export default function SidebarRenderer({
   deleteWorkspace,
   updateNameWorkspace,
   getBoardByWorkspaceId,
+  myFavBoard,
 }) {
   const pathname = usePathname();
 

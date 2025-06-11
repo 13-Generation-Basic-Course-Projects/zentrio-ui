@@ -13,13 +13,12 @@ export const workspaceRouteGroup = {
     `${apiConfig.baseUrl}/workspaces/title/${title}`, // Get workspaces by title
 };
 
- 
 export const boardRouteGroup = {
   getBoardById: (boardId) => `${apiConfig.baseUrl}/boards/${boardId}`, // Get board by ID
   updateBoardById: (boardId) => `${apiConfig.baseUrl}/boards/${boardId}`, // Update board by board ID and workspace id
   updateFavBoardById: (boardId) =>
     `${apiConfig.baseUrl}/boards/${boardId}/favourite`, // Toggle favorite (updated favorite of board by id)
-  getAllBoards:() => `${apiConfig.baseUrl}/boards`, // Get all boards
+  getAllBoards: () => `${apiConfig.baseUrl}/boards`, // Get all boards
   createBoard: () => `${apiConfig.baseUrl}/boards`, // Create new board by workspace id
   inviteUserToBoard: (id) => `${apiConfig.baseUrl}/boards/${id}/users/invite`, // Invite user to board
   uploadBoardCover: (id) => `${apiConfig.baseUrl}/boards/${id}/cover`, // Upload cover by board id
@@ -34,4 +33,8 @@ export const boardRouteGroup = {
   getBoardsForCurrentUser: `${apiConfig.baseUrl}/boards/current`, // Boards for current user
   deleteBoard: (id, workspaceId) =>
     `${apiConfig.baseUrl}/boards/${id}/workspaces/${workspaceId}`, // Delete board
+
+  //new
+  getFavoriteBoard: (userId) =>
+    `${apiConfig.baseUrl}/boards/favourite/users/${userId}`, // getfavorite board
 };

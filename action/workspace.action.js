@@ -11,6 +11,7 @@ import {
   getAllWorkspacesService,
   getBoardByIdService,
   getBoardsByWorkspaceIdService,
+  getFavoriteBoardService,
   getWorkspacesByUserService,
   updateBoardByIdService,
   updateFavBoardByIdService,
@@ -113,13 +114,11 @@ export const getBoardByIdAction = async (boardId) => {
   const userToken = await Token();
   const token = userToken.Credential;
 
-  const result = await getBoardByIdService({ boardId, token }); 
+  const result = await getBoardByIdService({ boardId, token });
 
   revalidateTag("boards");
   return result;
 };
-
-
 
 /*
  * 2. Update board by board Id and workspace id
@@ -152,11 +151,10 @@ export const updateBoardByIdAction = async (boardId, payload = {}) => {
   return result;
 };
 
-
 /*
  * 3. Updated favourite of board by id
  */
-export const updateFavBoardByIdAction = async ({boardId, isFavourite}) => {
+export const updateFavBoardByIdAction = async ({ boardId, isFavourite }) => {
   console.log("🔁 Sending update favorite payload in action:", {
     boardId,
     isFavourite,
@@ -178,7 +176,6 @@ export const updateFavBoardByIdAction = async ({boardId, isFavourite}) => {
   revalidateTag("boards");
   return result;
 };
-
 
 /*
  * 4. Get all boards
@@ -216,7 +213,6 @@ export const createBoardAction = async (payload = {}) => {
   return result;
 };
 
-
 /*
  * 13. Get all boards by workspace id
  */
@@ -227,8 +223,6 @@ export const getAllBoardBywWorkspaceIdAction = async (workspaceId) => {
   const result = await getBoardsByWorkspaceIdService({ workspaceId, token });
   return result;
 };
-
-
 
 /*
  * 16. Deleted board by id and workspace id
@@ -241,6 +235,14 @@ export const deleteBoardAction = async (id, workspaceId) => {
   const result = await deleteBoardService({ id, workspaceId, token });
 
   // revalidate tag related to workspaces
-  revalidateTag("boards");
+  revalidateTag("/boards");
+  return result;
+};
+
+export const getFavoriteBoardAction = async (userId) => {
+  const userToken = await Token();
+  const token = userToken.Credential;
+  console.log("from uid", userId);
+  const result = await getFavoriteBoardService(userId, token);
   return result;
 };

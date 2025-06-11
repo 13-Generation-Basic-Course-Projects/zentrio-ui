@@ -3,6 +3,7 @@
 import { boardRouteGroup } from "@/routes/boardRoute";
 import { checklistRouteGroup } from "@/routes/checklistRoute";
 import { ganttRouteGroup } from "@/routes/ganttRoute";
+import { workspaceRouteGroup } from "@/routes/workspaceRoute";
 
 /*
  * getTaskByBoardIdAndGanttBarIdService in side board feature or stage

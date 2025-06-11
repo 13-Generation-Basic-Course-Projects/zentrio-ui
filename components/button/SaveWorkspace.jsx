@@ -4,7 +4,7 @@ import { Button } from "@heroui/react";
 import star from "../../assets/sparkles.png";
 import Image from "next/image";
 import Link from "next/link";
-export default function SaveWorkspace() {
+export default function SaveWorkspace({}) {
   return (
     <div>
       <Link href="/workspace/favoriteboard">
