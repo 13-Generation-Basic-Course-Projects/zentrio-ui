@@ -32,6 +32,7 @@ export default  function MyCalender({
   const calendarRef = useRef(null);
   const [selectedTaskId, setSelectedTaskId] = useState(null);
   const [selectedTask, setSelectedTask] = useState(null);
+  const [noteRefreshKey, setNoteRefreshKey] = useState(0); // NEW STATE: To trigger comment card refresh
 
   const colorList = [
     {
@@ -66,7 +67,6 @@ export default  function MyCalender({
     },
   ];
 
-  // const mappedTasks = useMemo(() => {
   //   const uniqueIds = new Set();
   //   return tasks
   //     .filter((task) => {
@@ -143,7 +143,6 @@ export default  function MyCalender({
     }
   };
 
-  // Asynchronous function to handle saving/updating/deleting notes via API
   const handleNoteSave = async (
     currentEventId,
     currentDayKey,
@@ -152,93 +151,149 @@ export default  function MyCalender({
   ) => {
     const trimmedNoteValue = currentNoteValue.trim();
 
-    // Do nothing if no change or new empty note
-    if (!trimmedNoteValue && !initialNoteValue) {
-      return;
-    }
+    if (!trimmedNoteValue && !initialNoteValue) return;
 
-    const isNewNote = !initialNoteValue && trimmedNoteValue; // Check if it's a creation
+    const isNewNote = !initialNoteValue && trimmedNoteValue;
     const isUpdatedNote =
-      initialNoteValue && initialNoteValue !== trimmedNoteValue; // Check if existing note changed
-    const isDeletedNote = initialNoteValue && !trimmedNoteValue; // Check if existing note was cleared
-    // const formattedStartDate = new Date(
-    //   `${currentDayKey}T00:00:00.000Z`
-    // ).toISOString();
+      initialNoteValue && initialNoteValue !== trimmedNoteValue;
+    const isDeletedNote = initialNoteValue && !trimmedNoteValue;
 
     const startDateObj = new Date(`${currentDayKey}T00:00:00.000Z`);
-    startDateObj.setDate(startDateObj.getDate() +3 );
+    startDateObj.setDate(startDateObj.getDate() + 4);
     const formattedStartDate = startDateObj.toISOString();
-   
+
     const tillDateObj = new Date(`${currentDayKey}T23:59:59.999Z`);
     tillDateObj.setDate(tillDateObj.getDate() + 6);
     const formattedTillDate = tillDateObj.toISOString();
 
     try {
       if (isNewNote || isUpdatedNote) {
-        console.log(
-          `Attempting to ${
-            isNewNote ? "create" : "update"
-          } note for Task ID: ${currentEventId} on ${currentDayKey}`
-        );
         const noted = trimmedNoteValue;
-        const startDate = formattedStartDate ;
-        const tillDate = formattedTillDate ;
+        const startDate = formattedStartDate;
+        const tillDate = formattedTillDate;
         const taskId = currentEventId;
 
-        await createNoteAction(
-          noted,
-          startDate, 
-          tillDate, 
-          taskId,
-        );
+        await createNoteAction(noted, startDate, tillDate, taskId);
         console.log(`Note ${isNewNote ? "created" : "updated"} successfully.`);
       } else if (isDeletedNote) {
         console.log(
-          `Attempting to delete note for Task ID: ${currentEventId} on ${currentDayKey}`
+          `Note deletion for Task ID: ${currentEventId} on ${currentDayKey}`
         );
-        // Implement your delete note action here if you have one
-        // For example: await deleteNoteAction({ taskId: currentEventId, date: currentDayKey });
-        console.log("Note deletion (local only for now) initiated.");
+        // Optional: await deleteNoteAction(...)
       }
+
+      // Refresh UI by injecting/removing "comment" event
+      setEvents((prevEvents) => {
+        const filtered = prevEvents.filter(
+          (ev) =>
+            !(
+              ev.extendedProps.type === "comment" &&
+              ev.extendedProps.sourceTaskId === currentEventId &&
+              ev.start === currentDayKey
+            )
+        );
+
+        if (!isDeletedNote) {
+          filtered.push({
+            id: `comment-${currentEventId}-${currentDayKey}`,
+            title: trimmedNoteValue,
+            start: currentDayKey,
+            end: currentDayKey,
+            allDay: true,
+            extendedProps: {
+              type: "comment",
+              noted: trimmedNoteValue,
+              color: {
+                text: "text-green-600",
+                light: "bg-green-100",
+              },
+              sourceTaskId: currentEventId,
+            },
+          });
+        }
+
+        return filtered;
+      });
+
+      setNoteRefreshKey((prev) => prev + 1); // Trigger refresh if needed
     } catch (error) {
       console.error("Failed to save/update/delete note via API:", error);
     }
   };
+  
 
   const [events, setEvents] = useState([]);
   const [editingNoteId, setEditingNoteId] = useState(null);
   const [editingNoteDate, setEditingNoteDate] = useState(null);
   const [noteValue, setNoteValue] = useState("");
-  const moveNoteToAnotherDay = (eventId, oldDayKey, newDayKey) => {
-    setEvents((prevEvents) =>
-      prevEvents.map((ev) => {
-        if (ev.id === eventId) {
-          const notes = { ...ev.extendedProps.notesByDate };
-          if (notes[oldDayKey]) {
-            notes[newDayKey] = notes[oldDayKey]; // Move note content
-            delete notes[oldDayKey]; // Remove old note
-          }
-          return {
-            ...ev,
-            extendedProps: {
-              ...ev.extendedProps,
-              notesByDate: notes,
-            },
-          };
+  const [showPopup, setShowPopup] = useState(false);
+  const handleEventDrop = (info) => {
+    const { event } = info;
+
+    if (event.extendedProps.type === "comment") {
+      const newDate = new Date(event.startStr);
+      const sourceTask = events.find(
+        (ev) => ev.id === event.extendedProps.sourceTaskId
+      );
+
+      if (sourceTask) {
+        const taskStart = new Date(sourceTask.start);
+        const taskEnd = new Date(sourceTask.end);
+
+        if (newDate < taskStart || newDate > taskEnd) {
+          info.revert(); // Revert the drop
+          return;
         }
-        return ev;
-      })
-    );
+      }
+
+      // Valid drop
+      setEvents((prev) =>
+        prev.map((ev) =>
+          ev.id === event.id
+            ? {
+                ...ev,
+                start: newDate.toISOString().split("T")[0],
+                end: newDate.toISOString().split("T")[0],
+              }
+            : ev
+        )
+      );
+    }
   };
+  
+  const handleDateSelect = (info) => {
+    const selectedStart = new Date(info.startStr);
+    const selectedEnd = new Date(info.endStr);
 
+    const isWithinAnyTask = mappedTasks.some((task) => {
+      const taskStart = normalizeDateToDay(task.start);
+      const taskEnd = normalizeDateToDay(task.end);
+      const selStart = normalizeDateToDay(selectedStart);
+      const selEnd = normalizeDateToDay(
+        new Date(selectedEnd.getTime() - 24 * 60 * 60 * 1000)
+      );
+
+      return selStart >= taskStart && selEnd <= taskEnd;
+    });
+
+    if (!isWithinAnyTask) {
+      setShowPopup(true);
+      return;
+    }
+
+  };
   const renderEventContent = ({ event, isStart }) => {
-    const { type, color } = event.extendedProps;
+    const { type, color, notesByDate = {} } = event.extendedProps;
 
-    if (type !== "task") return null;
+    if (type !== "task" && type !== "comment") return null;
 
     const baseStyle = `rounded border-2 px-2 font-bold ${
       color?.text || "text-green-600"
     } ${color?.light || "bg-green-100"}`;
+    const dayDate = event.range?.start
+      ? new Date(event.range.start)
+      : new Date(event.start);
+    const dayKey = dayDate.toISOString().split("T")[0];
 
     const formatDate = (dateStr) =>
       new Date(dateStr).toLocaleDateString("en-GB", {
@@ -250,53 +305,69 @@ export default  function MyCalender({
       event.end
     )}`;
 
+    // COMMENT BLOCK ONLY
+    if (type === "comment") {
+      return (
+        <div
+          onContextMenu={(e) => {
+            e.preventDefault();
+            setContextMenu({
+              visible: true,
+              x: e.clientX,
+              y: e.clientY,
+              eventId: event.id,
+            });
+          }}
+          className={`mt-1 h-[30px] text-[0.7rem] flex items-center gap-1 rounded border-2 border-dashed px-2 py-1 ${
+            color?.text || "text-green-600"
+          } ${color?.light || "bg-green-100"}`}
+        >
+          <MessageCircleMore className="w-4 h-4" />
+          <span className="truncate">
+            {event.extendedProps.noted || "No note"}
+          </span>
+        </div>
+      );
+    }
+
+    // TASK BLOCK ONLY
     if (!isStart) {
       return (
         <div
-          className={`${baseStyle} h-[70px] text-[0.9rem] ${
+          className={`${baseStyle} h-[70px] text-[0.9rem] border ${
             color?.border || "border-green-500"
-          } p-1 flex flex-col rounded-medium`}
-        ></div>
+          } p-1`}
+        />
       );
     }
-    const dayDate = event.range?.start
-      ? new Date(event.range.start)
-      : new Date(event.start);
-    const dayKey = dayDate.toISOString().split("T")[0]; // e.g., "2025-06-10"
-
-    const notesByDate = event.extendedProps.notesByDate || {};
-
-
     return (
-      <div className="flex flex-col">
-        {/* Task container (not draggable) */}
+      <div className="flex flex-col gap-1">
         <div
-          className={`${baseStyle} p-1 flex flex-col rounded-medium border ${
+          draggable={false}
+          onDragStart={(e) => e.preventDefault()}
+          className={`${baseStyle} p-1 border ${
             color?.border || "border-green-500"
-          }`}
+          } rounded-medium`}
         >
-          <div className="h-[70px] text-[0.9rem]">
-            <div className="text-[0.65rem] font-medium bg-opacity-80 bg-white w-fit px-2 py-[2px] rounded-medium mb-1">
-              {formattedDate}
-            </div>
-
-            {/* Task title (non-editable) */}
-            <div className="flex items-center gap-1">
-              <ClipboardList className="w-4 h-4" />
-              <span className="truncate">{event.title}</span>
-            </div>
+          <div className="text-[0.65rem] font-medium bg-white bg-opacity-80 w-fit px-2 py-[2px] rounded mb-1">
+            {formattedDate}
+          </div>
+          <div className="flex items-center gap-1 text-[0.9rem] h-[60px]">
+            <ClipboardList className="w-4 h-4" />
+            <span className="truncate">{event.title}</span>
           </div>
         </div>
 
-        {/* Note per specific day */}
+        {/* Inline Note Field */}
         <div
-          className={`mt-1 mb-2 h-[30px] text-[0.7rem] flex items-center gap-1 rounded-medium border-2 px-2 py-1
-    ${
-      editingNoteId === event.id && editingNoteDate === dayKey
-        ? "cursor-text border-primary/70"
-        : "cursor-pointer border-dashed hover:border-primary/70"
-    } ${color?.text || "text-primary"} ${color?.light || "bg-primary"}`}
-          style={{ width: "15%", boxSizing: "border-box" }} // strict 15% width within parent
+          className={`text-[0.7rem] flex items-center gap-1 rounded-medium border-2 px-2 py-1
+            ${
+              editingNoteId === event.id && editingNoteDate === dayKey
+                ? "cursor-text border-primary/70"
+                : "cursor-pointer border-dashed hover:border-primary/70"
+            }
+            ${color?.text || "text-primary"} ${color?.light || "bg-primary"}`}
+          style={{ width: "15%", boxSizing: "border-box" }}
           onClick={(e) => {
             e.stopPropagation();
             setEditingNoteId(event.id);
@@ -305,7 +376,7 @@ export default  function MyCalender({
           }}
         >
           {editingNoteId === event.id && editingNoteDate === dayKey ? (
-            <div className="flex flex-row justify-between  items-center w-full">
+            <div className="flex justify-between items-center w-full">
               <input
                 type="text"
                 value={noteValue}
@@ -313,27 +384,27 @@ export default  function MyCalender({
                 onBlur={() => {
                   const initialNoteValue = notesByDate[dayKey] || "";
                   handleNoteSave(event.id, dayKey, noteValue, initialNoteValue);
-                  // If the note value is edited on a new day (different from where it was before)
+
                   if (editingNoteDate !== dayKey) {
                     moveNoteToAnotherDay(event.id, editingNoteDate, dayKey);
                   }
 
-                  // Update or set the note on this day
-                  const updated = events.map((ev) =>
-                    ev.id === event.id
-                      ? {
-                          ...ev,
-                          extendedProps: {
-                            ...ev.extendedProps,
-                            notesByDate: {
-                              ...ev.extendedProps.notesByDate,
-                              [dayKey]: noteValue,
+                  setEvents((prev) =>
+                    prev.map((ev) =>
+                      ev.id === event.id
+                        ? {
+                            ...ev,
+                            extendedProps: {
+                              ...ev.extendedProps,
+                              notesByDate: {
+                                ...ev.extendedProps.notesByDate,
+                                [dayKey]: noteValue,
+                              },
                             },
-                          },
-                        }
-                      : ev
+                          }
+                        : ev
+                    )
                   );
-                  setEvents(updated);
 
                   setEditingNoteId(null);
                   setEditingNoteDate(null);
@@ -347,7 +418,7 @@ export default  function MyCalender({
               <MessageCircleMore className="w-4 h-4" />
             </div>
           ) : (
-            <div className="flex flex-row justify-between items-center w-full">
+            <div className="flex justify-between items-center w-full">
               <span className="truncate" title={notesByDate[dayKey]}>
                 {notesByDate[dayKey] || "Click to add note"}
               </span>
@@ -358,6 +429,8 @@ export default  function MyCalender({
       </div>
     );
   };
+  
+
 
   return (
     <div className="p-4 h-screen flex flex-col overflow-hidden">
@@ -374,11 +447,16 @@ export default  function MyCalender({
                 interactionPlugin,
                 timeGridPlugin,
               ]}
-              eventContent={(arg) =>
-                renderEventContent({ event: arg.event, isStart: arg.isStart })
-              }
+              // eventContent={(arg) =>
+              //   renderEventContent({ event: arg.event, isStart: arg.isStart })
+              // }
               initialView="dayGridMonth"
+              editable={true}
+              selectable={true}
               events={events}
+              eventDrop={handleEventDrop}
+              select={handleDateSelect}
+              eventContent={renderEventContent}
               height="auto"
               headerToolbar={{
                 left: "today",
@@ -387,11 +465,14 @@ export default  function MyCalender({
               }}
               dayHeaderFormat={{ weekday: "long" }} // <- full day names like "Monday"
               datesSet={() => {
-                // Target all header cells (the day names like Monday, Tuesday, etc.)
                 const headerCells = document.querySelectorAll(
                   ".fc-col-header-cell"
                 );
-
+                headerCells.forEach((cell) => {
+                  cell.style.textAlign = "center";
+                  cell.style.verticalAlign = "middle";
+                  cell.style.fontWeight = "200";
+                });
                 headerCells.forEach((cell) => {
                   cell.style.textAlign = "center"; // center text
                   cell.style.verticalAlign = "middle";
@@ -478,10 +559,31 @@ export default  function MyCalender({
             selectedTaskId={selectedTaskId}
             selectedTask={selectedTask}
             taskColorMap={taskColorMap}
-            getNoteAllInCalendarAction={getNoteAllInCalendarAction}
+            noteRefreshKey={noteRefreshKey}
           />
         </div>
       </div>
+      {/* alert popup range comment */}
+      {showPopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+          <div className="bg-white px-6 py-4 rounded-xl shadow-xl w-[350px] space-y-3">
+            <h3 className="text-red-600 font-semibold text-lg">
+              ⚠️ Invalid Selection
+            </h3>
+            <p className="text-gray-700 text-sm">
+              Comments can only be added within the duration of a task.
+            </p>
+            <div className="flex justify-end">
+              <button
+                onClick={() => setShowPopup(false)}
+                className="px-4 py-1 text-sm rounded bg-blue-500 text-white hover:bg-blue-600"
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

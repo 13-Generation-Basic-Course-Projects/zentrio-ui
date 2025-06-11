@@ -146,16 +146,73 @@ export const getAllNoteInCalendarService = async ({ taskId, token }) => {
         Authorization: `Bearer ${token}`,
       },
     });
-
-    if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`);
-    }
-
     const data = await res.json();
     console.log("Service - getAllNoteInCalendar (successful data):", data);
     return data;
   } catch (error) {
     console.error("Service - Error fetching note in Calendar:", error.message);
+    throw error;
+  }
+};
+
+
+/*
+* delete note in calendar
+*/
+export const deleteNoteInCalendarService = async ({calendarId, taskId, token }) => {
+  try {
+    const url = calendarV2RouteGroup.deleteNoteInCalendar(calendarId, taskId);
+    console.log("Service - Fetching URL (final):", url);
+
+    const res = await fetch(url, {
+      method: "DELETE",
+      headers: {
+        accept: "*/*",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await res.json();
+    console.log("Service - deleteNoteInCalendar (successful data):", data);
+    return data;
+  } catch (error) {
+    console.error("Service - Error deleteNoteInCalendar :", error.message);
+    throw error;
+  }
+};
+
+/*
+* update note in calendar
+*/
+export const updateNoteInCalendarService = async ({
+  calendarId,
+  noted,
+  startDate,
+  tillDate,
+  taskId,
+  token,
+}) => {
+  try {
+    const url = calendarV2RouteGroup.updateNoteInCalendar(calendarId);
+    console.log("Service - Fetching URL (final):", url);
+
+    const res = await fetch(url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        noted,
+        startDate,
+        tillDate,
+        taskId,
+      }),
+    });
+    const data = await res.json();
+    console.log("Service - updateNoteInCalendar (successful data):", data);
+    return data;
+  } catch (error) {
+    console.error("Service - Error updateNoteInCalendar :", error.message);
     throw error;
   }
 };

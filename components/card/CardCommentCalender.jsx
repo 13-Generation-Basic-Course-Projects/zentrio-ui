@@ -1,63 +1,69 @@
 import { Card, CardHeader, CardBody } from "@heroui/react";
-import { useState, useEffect } from "react"; // Import useEffect
+import { useState, useEffect, useCallback } from "react"; // Import useEffect
 import Image from "next/image";
 import commentlogo from "../../assets/Comment.png";
 import profile from "../../public/image/minh.png";
 import { SquarePen, AlarmClock, Trash2 } from "lucide-react";
 import { calendarUpdateNoteAction } from "@/action/calendar.action";
-import { getAllNoteInCalendarAction } from "@/action/calendarV2.action";
+import { deleteNoteInCalendarAction, getAllNoteInCalendarAction, updateNoteInCalendarAction } from "@/action/calendarV2.action";
 
 export default function CardTCommentCalender({
   selectedTaskId,
   taskColorMap = {},
   selectedTask,
+  noteRefreshKey,
 }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedNote, setSelectedNote] = useState(null);
   const [editedNoteText, setEditedNoteText] = useState("");
+  const [editingNoteId, setEditingNoteId] = useState(null);
+  const [editingNoteText, setEditingNoteText] = useState("");
+
 
   const [notes, setNotes] = useState([]);
-  const [isLoading, setIsLoading] = useState(false); // New loading state
+  const [isLoading, setIsLoading] = useState(false);
+  const [refreshTrigger, setRefreshTrigger] = useState(0); // New state to manually trigger refresh
+
+  // Use useCallback to memoize fetchNotesForTask to avoid unnecessary re-renders
+  const fetchNotesForTask = useCallback(async () => {
+    setIsLoading(true);
+    setNotes([]); // Clear notes before fetching new ones
+
+    if (!selectedTaskId) {
+      console.warn(
+        "CardTCommentCalender: No selectedTaskId, skipping note fetch."
+      );
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      console.log(
+        "CardTCommentCalender - Fetching notes for Task ID:",
+        selectedTaskId
+      );
+
+      const response = await getAllNoteInCalendarAction(selectedTaskId);
+
+      setNotes(response?.payload || []);
+      console.log(
+        "CardTCommentCalender - Notes fetched successfully:",
+        response?.payload
+      );
+    } catch (err) {
+      console.error(
+        "CardTCommentCalender - Error fetching notes for task:",
+        err
+      );
+      setNotes([]);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [selectedTaskId, getAllNoteInCalendarAction]); 
 
   useEffect(() => {
-    const fetchNotesForTask = async () => {
-      setIsLoading(true);
-      setNotes([]);
-
-      if (!selectedTaskId) {
-        console.warn(
-          "CardTCommentCalender: No selectedTaskId, skipping note fetch."
-        );
-        setIsLoading(false);
-        return;
-      }
-
-      try {
-        console.log(
-          "CardTCommentCalender - Fetching notes for Task ID:",
-          selectedTaskId
-        );
-
-        const response = await getAllNoteInCalendarAction(selectedTaskId);
-
-        setNotes(response?.payload || []);
-        console.log(
-          "CardTCommentCalender - Notes fetched successfully:",
-          response?.payload
-        );
-      } catch (err) {
-        console.error(
-          "CardTCommentCalender - Error fetching notes for task:",
-          err
-        );
-        setNotes([]);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
     fetchNotesForTask();
-  }, [selectedTaskId, getNoteAllInCalendarAction]);
+  }, [selectedTaskId, noteRefreshKey, fetchNotesForTask]); // Add fetchNotesForTask to dependencies
 
   const handleClickNote = (noteData) => {
     console.log("click note Id : ", noteData.calendarId);
@@ -66,36 +72,77 @@ export default function CardTCommentCalender({
     setIsModalOpen(true);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!selectedNote || !editedNoteText.trim()) return; // Add check for empty text
+  const handleUpdateNoteInline = async (noteData) => {
+    if (!editingNoteText.trim()) {
+      setEditingNoteId(null);
+      return;
+    }
 
     try {
-      console.log("Updating note:", selectedNote);
       const result = await calendarUpdateNoteAction({
-        noteId: selectedNote.calendarId,
-        noted: editedNoteText,
-        startDate: selectedNote.notedAt, // Ensure this is the correct field for start date
-        tillDate: selectedNote.tillDate, // Ensure this is the correct field for till date
-        taskId: selectedNote.taskId,
+        noteId: noteData.calendarId,
+        noted: editingNoteText,
+        startDate: noteData.notedAt,
+        tillDate: noteData.tillDate,
+        taskId: noteData.taskId,
       });
 
       console.log("Note updated successfully:", result);
-      setIsModalOpen(false);
 
-      const response = await getNoteAllInCalendarAction({
-        taskId: selectedTaskId,
-      });
-      setNotes(response?.payload || []);
+      // Update the note locally
+      setNotes((prevNotes) =>
+        prevNotes.map((note) =>
+          note.calendarId === noteData.calendarId
+            ? { ...note, noted: editingNoteText }
+            : note
+        )
+      );
+
+      setEditingNoteId(null);
+      setEditingNoteText("");
     } catch (err) {
       console.error("Failed to update note:", err);
     }
   };
+  
+
+  const handleDeleteNote = async (calendarId, taskId) => {
+    if (!calendarId || !taskId) {
+      console.warn("Missing calendarId or taskId.");
+      return;
+    }
+
+    try {
+      console.log("Deleting note:", { calendarId, taskId });
+
+      const result = await deleteNoteInCalendarAction(calendarId, taskId);
+
+      console.log("Note deleted successfully:", result);
+      await fetchNotesForTask();
+
+      setSelectedNote(null);
+      setEditedNoteText("");
+    } catch (err) {
+      console.error("Failed to delete note:", err);
+    }
+  };
+  
+  
 
   const displayedComments = notes;
-  
-  console.log("CardComment - selectedTaskId:", selectedTaskId);
-  console.log("CardComment - displayedComments:", notes); // Use displayedComments here
+  const formatDate = (dateStr) => {
+    const d = new Date(dateStr);
+    console.log("Inside formatDate - Date Str:", dateStr);
+    console.log("Inside formatDate - Date Object (toString):", d.toString());
+    console.log(
+      "Inside formatDate - Date Object (toISOString):",
+      d.toISOString()
+    ); 
+    return d.toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "short",
+    });
+  };
 
   return (
     <>
@@ -117,7 +164,7 @@ export default function CardTCommentCalender({
         </CardHeader>
 
         <CardBody className="py-3 px-4 space-y-3 overflow-y-auto flex-1 scrollbar-hidden">
-          {isLoading ? ( // Show loading indicator
+          {isLoading ? ( 
             <div className="flex items-center justify-center h-full text-gray-500">
               <p className="text-sm">Loading comments...</p>
             </div>
@@ -130,9 +177,8 @@ export default function CardTCommentCalender({
               </p>
             </div>
           ) : (
-            // --- Map over the comments array to display each one ---
+           
             displayedComments.map((data, index) => {
-            
               const commentColor = taskColorMap[data.taskId];
 
               return (
@@ -162,7 +208,10 @@ export default function CardTCommentCalender({
                         >
                           <SquarePen
                             size={15}
-                            onClick={() => handleClickNote(data)}
+                            onClick={() => {
+                              setEditingNoteId(data.calendarId);
+                              setEditingNoteText(data.noted);
+                            }}
                           />
                         </button>
                         <button
@@ -171,16 +220,40 @@ export default function CardTCommentCalender({
                               ? `${commentColor.text} hover:opacity-70`
                               : "text-red-500 hover:text-red-600" // Changed to red for Trash
                           }`}
-                          // Add an onClick handler for deletion if you implement it
-                          // onClick={() => handleDeleteNote(data.calendarId)}
+                          onClick={() =>
+                            handleDeleteNote(data.calendarId, data.taskId)
+                          }
                         >
                           <Trash2 size={15} />
                         </button>
                       </div>
                     </div>
-                    <p className="text-sm text-gray-600 mb-2 leading-relaxed">
-                      {data.noted}
-                    </p>
+                    {editingNoteId === data.calendarId ? (
+                      <input
+                        type="text"
+                        value={editingNoteText}
+                        onChange={(e) => setEditingNoteText(e.target.value)}
+                        onBlur={() => handleUpdateNoteInline(data)} // save on blur
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            e.target.blur(); // triggers onBlur
+                          }
+                        }}
+                        className="text-sm text-title/50 mb-2 leading-relaxed border-0 px-2 py-1 rounded w-full focus:outline-none focus:bg-transparent"
+                        autoFocus
+                      />
+                    ) : (
+                      <p
+                        className="text-sm text-title/80 mb-2 leading-relaxed cursor-pointer"
+                        onClick={() => {
+                          setEditingNoteId(data.calendarId);
+                          setEditingNoteText(data.noted);
+                        }}
+                      >
+                        {data.noted}
+                      </p>
+                    )}
+
                     <div className="flex items-center justify-end gap-1">
                       <AlarmClock
                         className={`w-5 h-5 transition-colors ${
@@ -196,11 +269,7 @@ export default function CardTCommentCalender({
                             : "text-green-500"
                         }`}
                       >
-                        {new Date(data.notedAt).toLocaleDateString("en-GB", {
-                          day: "2-digit",
-                          month: "short",
-                          year: "numeric",
-                        })}
+                        {formatDate(data.notedAt)}
                       </span>
                     </div>
                   </div>

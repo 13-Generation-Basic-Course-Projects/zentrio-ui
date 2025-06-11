@@ -1,6 +1,6 @@
 "use server";
 import { Token } from "@/constant/token";
-import { createNoteInCalendarService, getAllNoteInCalendarService, getCalendarByBoardIdAndUserIdService, getGanttBarByGanttChartIdService, getGanttChartByBoardIdService, getNoteInCalendarService, getTaskByBoardIdAndGanttBarIdService } from "@/service/calendarV2.service";
+import { createNoteInCalendarService, deleteNoteInCalendarService, getAllNoteInCalendarService, getCalendarByBoardIdAndUserIdService, getGanttBarByGanttChartIdService, getGanttChartByBoardIdService, getNoteInCalendarService, getTaskByBoardIdAndGanttBarIdService } from "@/service/calendarV2.service";
 /*
  * getTaskbyBoardId and GanttbarId
  */
@@ -100,5 +100,56 @@ export const getAllNoteInCalendarAction = async (taskId) => {
   } catch (error) {
     console.error("getNoteInCalendarAction error:", error);
     throw error; 
+  }
+};
+
+/*
+* delete note in calendar
+*/
+export const deleteNoteInCalendarAction = async (calendarId, taskId) => {
+  
+  try {
+    const userToken = await Token();
+    const token = userToken.Credential;
+
+    const result = await deleteNoteInCalendarService({
+      calendarId,
+      taskId: taskId,
+      token: token,
+    });
+    return result;
+  } catch (error) {
+    console.error("deleteNoteInCalendarAction error:", error);
+    throw error;
+  }
+};
+
+
+/*
+* update note in calendar
+*/
+export const updateNoteInCalendarAction = async (
+  calendarId,
+  noted,
+  startDate,
+  tillDate,
+  taskId
+) => {
+  try {
+    const userToken = await Token();
+    const token = userToken.Credential;
+
+    const result = await deleteNoteInCalendarService({
+      calendarId,
+      noted,
+      startDate,
+      tillDate,
+      taskId,
+      token: token,
+    });
+    return result;
+  } catch (error) {
+    console.error("updateNoteInCalendarAction error:", error);
+    throw error;
   }
 };
