@@ -66,13 +66,16 @@ export default function CardPostAnnouncement({ Announcements }) {
               </div>
 
               {/* Optional Image */}
-              {announcement.createdBy?.imageUrl && (
-                <div className="mb-4">
-                  <img
-                    src={announcement.createdBy?.imageUrl}
-                    alt="Announcement visual"
-                    className="w-full h-auto rounded-large object-cover max-h-96"
-                  />
+              {announcement.imageUrl?.length > 0 && (
+                <div className="mb-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {announcement.imageUrl.map((url, i) => (
+                    <img
+                      key={i}
+                      src={url}
+                      alt={`Announcement visual ${i + 1}`}
+                      className="w-full h-auto rounded-lg object-cover max-h-96"
+                    />
+                  ))}
                 </div>
               )}
 

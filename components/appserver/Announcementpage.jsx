@@ -4,7 +4,7 @@ import CardCreateAnnouncement from "../announcementCompo/CardCreateAnnouncement"
 import CardAllMembers from "../announcementCompo/CardAllMembers";
 import CardFilterComponent from "../announcementCompo/CardFilterComponent";
 
-export default function Announcementpage({ boardId, Announcements }) {
+export default function Announcementpage({ boardId, Announcements, boardMember }) {
   console.log("All announcement",Announcements);
   console.log("boardid",boardId);
   return (
@@ -24,7 +24,7 @@ export default function Announcementpage({ boardId, Announcements }) {
       </div>
 
       <div className="col-span-3">
-        <CardAllMembers />
+        <CardAllMembers boardMember={boardMember} />
       </div>
     </div>
   );
