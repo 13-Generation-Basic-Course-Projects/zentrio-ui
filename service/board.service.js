@@ -300,7 +300,7 @@ export const getBoardByBoardIdService = async ({ boardId, token }) => {
       },
     });
     const data = await res.json();
-    console.log("📥 Backend responded with board:", data);
+    // console.log("📥 Backend responded with board:", data);
 
     return data; // just return the data, don’t redirect here
   } catch (error) {
@@ -331,7 +331,34 @@ export const postCommentByCheckListIdService = async ({
       }),
     });
     const result = await res.json();
-    console.log("📥 Backend responded with content:", result);
+    // console.log("📥 Backend responded with content:", result);
+
+    return data;
+  } catch (error) {
+    console.error("bug", error.message);
+    throw error;
+  }
+};
+/*
+ * edit comment
+ */
+export const editCommmentService = async ({ data, token }) => {
+  try {
+    console.log("service edit", data.content, data.checklistId);
+    const url = boardRouteGroup.updateCommentById(data.commentId);
+    const res = await fetch(url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        content: data.content,
+        checklistId: data.checklistId,
+      }),
+    });
+    const result = await res.json();
+    console.log("📥 Backend responded with comment reply:", result);
 
     return data;
   } catch (error) {

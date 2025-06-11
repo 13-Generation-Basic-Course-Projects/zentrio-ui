@@ -1,10 +1,11 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { postCommentByCheckListIdAction } from "@/action/board.action";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 // Define the Zod schema for the comment
 const commentSchema = z.object({
@@ -15,7 +16,6 @@ const commentSchema = z.object({
 });
 
 export default function PostCommentChecklist({ checklistId, onCommentPosted }) {
-  const [submitError, setSubmitError] = useState("");
   const router = useRouter();
 
   // Initialize React Hook Form with Zod resolver
@@ -34,8 +34,6 @@ export default function PostCommentChecklist({ checklistId, onCommentPosted }) {
   // Handle form submission
   const onSubmit = async (data) => {
     try {
-      setSubmitError(""); // Clear previous errors
-
       const result = await postCommentByCheckListIdAction({
         checklistId,
         content: data.content,
@@ -47,6 +45,9 @@ export default function PostCommentChecklist({ checklistId, onCommentPosted }) {
         // Clear the form
         reset();
 
+        // Show success toast
+        toast.success("Comment posted successfully!");
+
         // Notify parent component if callback provided
         if (onCommentPosted) {
           onCommentPosted(result.data);
@@ -56,11 +57,11 @@ export default function PostCommentChecklist({ checklistId, onCommentPosted }) {
         router.refresh();
       } else {
         console.error("Failed to post comment:", result.error);
-        setSubmitError(result.error || "Failed to post comment");
+        toast.error(result.error || "Failed to post comment");
       }
     } catch (error) {
       console.error("Error posting comment:", error);
-      setSubmitError("An unexpected error occurred");
+      toast.error("An unexpected error occurred");
     }
   };
 
@@ -82,11 +83,6 @@ export default function PostCommentChecklist({ checklistId, onCommentPosted }) {
           <p className="text-red-500 text-caption mt-1">
             {errors.content.message}
           </p>
-        )}
-
-        {/* Submission errors */}
-        {submitError && (
-          <p className="text-red-500 text-caption mt-1">{submitError}</p>
         )}
 
         <button

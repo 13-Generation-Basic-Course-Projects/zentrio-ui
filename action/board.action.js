@@ -4,6 +4,7 @@ import {
   createCheckListService,
   createGanttChartByBoardIdService,
   createTaskByBoardIdAndGanttChartIdService,
+  editCommmentService,
   getAllGanttBarByGanttChartIDService,
   getBoardByBoardIdService,
   getCheckListByTaskIdService,
@@ -259,6 +260,25 @@ export const postCommentByCheckListIdAction = async (data, checklistId) => {
     return { success: true, data: result };
   } catch (error) {
     console.error("Create task action error:", error.message);
+    return { success: false, error: error.message };
+  }
+};
+/*
+ * edit comment
+ */
+export const editCommmentAction = async (data) => {
+  const userToken = await Token();
+  const token = userToken?.Credential;
+  console.log("data create form", data);
+  try {
+    const result = await editCommmentService({
+      data,
+      token,
+    });
+    revalidatePath("/comment");
+    return { success: true, data: result };
+  } catch (error) {
+    console.error("put comment action error:", error.message);
     return { success: false, error: error.message };
   }
 };

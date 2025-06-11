@@ -15,6 +15,8 @@ export const boardRouteGroup = {
   assignUserRoleToBoard: () => `${apiConfig.baseUrl}/boards/assign`,
   inviteUserToBoard: (boardId) =>
     `${apiConfig.baseUrl}/boards/${boardId}/users/invite`,
+  assignUserRoleToBoard: (taskid, assignId) =>
+    `${apiConfig.baseUrl}/tasks/${taskid}/member/${assignId}`, //asign team ld
 
   createTaskByBoardIdAndGanttBarId: () => `${apiConfig.baseUrl}/tasks`, // Created task with boards ID and gantt bars ID
   createCheckListBytaskId: () => `${apiConfig.baseUrl}/checklists`, // Created task with boards ID and gantt bars ID
@@ -22,6 +24,7 @@ export const boardRouteGroup = {
   //put
   updateBoardFavorite: (boardId) =>
     `${apiConfig.baseUrl}/boards/${boardId}/favourite`, //enum
+  updateCommentById: (id) => `${apiConfig.baseUrl}/comment/${id}`,
 
   //delete
   deleteBoardById: (boardId, workspaceId) =>

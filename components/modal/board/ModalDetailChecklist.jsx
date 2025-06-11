@@ -28,6 +28,7 @@ import { IconpopupDelete } from "@/components/icon/Iconpopup";
 import { preventImage } from "@/constant/preventimage";
 import { getCommentByCheckListIdAction } from "@/action/board.action";
 import PostCommentChecklist from "./PostCommentChecklist";
+import CommentChecklistSec from "./CommentChecklistSec";
 
 export default function ModalDetailChecklist({
   id,
@@ -41,6 +42,7 @@ export default function ModalDetailChecklist({
   member,
   hideImage,
   preventUserImage,
+  checklistId,
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
@@ -391,71 +393,17 @@ export default function ModalDetailChecklist({
                       </div>
 
                       {/* comment */}
-                      <div className="space-y-1">
-                        {comments.map((el, index) => (
-                          <div key={index}>
-                            <p className="flex items-center gap-2">
-                              <img
-                                src={
-                                  preventUserImage ||
-                                  "https://i.pinimg.com/736x/78/d9/4b/78d94baa8d7459c33b6b99f647893869.jpg"
-                                }
-                                alt={el?.member?.username}
-                                className="w-6 h-6 rounded-full object-cover"
-                              />
-                              {el?.member?.username}
-                            </p>
-
-                            <div className="ml-8 text-title/50 text-caption flex flex-col space-y-1">
-                              <p>
-                                {el?.content ||
-                                  "Static  Discussed project timeline and identified key milestones."}
-                              </p>
-                              <div className="flex justify-end">
-                                <div className="flex flex-col items-end bg-progress-green/20 rounded-full p-2">
-                                  <div className="flex items-center space-x-2">
-                                    <svg
-                                      width="10"
-                                      height="11"
-                                      viewBox="0 0 10 11"
-                                      fill="none"
-                                      xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                      <path
-                                        fillRule="evenodd"
-                                        clipRule="evenodd"
-                                        d="M5 2.24344C2.83564 2.24344 1.08108 3.998 1.08108 6.16236C1.08108 8.32672 2.83564 10.0813 5 10.0813C7.16436 10.0813 8.91892 8.32672 8.91892 6.16236C8.91892 3.998 7.16436 2.24344 5 2.24344ZM0.27027 6.16236C0.27027 3.5502 2.38784 1.43263 5 1.43263C7.61216 1.43263 9.72973 3.5502 9.72973 6.16236C9.72973 8.77452 7.61216 10.8921 5 10.8921C2.38784 10.8921 0.27027 8.77452 0.27027 6.16236Z"
-                                        fill="#5FC381"
-                                      />
-                                      <path
-                                        fillRule="evenodd"
-                                        clipRule="evenodd"
-                                        d="M5 3.05425C5.2239 3.05425 5.40541 3.23576 5.40541 3.45966V5.93766L6.83649 6.83209C7.02635 6.95076 7.08407 7.20087 6.9654 7.39074C6.84674 7.5806 6.59662 7.63832 6.40676 7.51966L4.78514 6.50614C4.6666 6.43206 4.59459 6.30214 4.59459 6.16236V3.45966C4.59459 3.23576 4.7761 3.05425 5 3.05425Z"
-                                        fill="#5FC381"
-                                      />
-                                      <path
-                                        fillRule="evenodd"
-                                        clipRule="evenodd"
-                                        d="M2.04342 1.01083C2.20174 1.16915 2.20174 1.42584 2.04342 1.58416L0.69207 2.93551C0.53375 3.09383 0.277061 3.09383 0.11874 2.93551C-0.0395802 2.77719 -0.0395802 2.5205 0.11874 2.36218L1.47009 1.01083C1.62841 0.85251 1.8851 0.85251 2.04342 1.01083Z"
-                                        fill="#5FC381"
-                                      />
-                                      <path
-                                        fillRule="evenodd"
-                                        clipRule="evenodd"
-                                        d="M7.95658 1.01083C7.79826 1.16915 7.79826 1.42584 7.95658 1.58416L9.30793 2.93551C9.46625 3.09383 9.72294 3.09383 9.88126 2.93551C10.0396 2.77719 10.0396 2.5205 9.88126 2.36218L8.52991 1.01083C8.37159 0.85251 8.1149 0.85251 7.95658 1.01083Z"
-                                        fill="#5FC381"
-                                      />
-                                    </svg>
-                                    <span className="text-caption-tiny text-gray-500">
-                                      2 hours ago
-                                    </span>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
+                      <CommentChecklistSec
+                        comments={comments}
+                        checklistId={id}
+                        onCommentsUpdated={(dataOrUpdater) => {
+                          if (typeof dataOrUpdater === "function") {
+                            setComments((prev) => dataOrUpdater(prev));
+                          } else {
+                            setComments(dataOrUpdater);
+                          }
+                        }}
+                      />
                     </div>
                   )}
 
