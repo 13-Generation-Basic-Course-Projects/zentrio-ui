@@ -245,21 +245,17 @@ export const getBoardByBoardIdAction = async (boardId) => {
 /*
  * create comment
  */
-export const postCommentByCheckListIdAction = async (data, taskId) => {
+export const postCommentByCheckListIdAction = async (data, checklistId) => {
+  const userToken = await Token();
+  const token = userToken?.Credential;
+  console.log("data create form", data);
   try {
-    const userToken = await Token();
-    const token = userToken?.Credential;
-    if (!token) {
-      throw new Error("No authentication token found");
-    }
-    console.log("boardId:", boardId);
-    console.log("data create form", data);
     const result = await postCommentByCheckListIdService({
-      taskId,
+      checklistId,
       data,
       token,
     });
-    revalidatePath("/gantbar");
+    revalidatePath("/comment");
     return { success: true, data: result };
   } catch (error) {
     console.error("Create task action error:", error.message);

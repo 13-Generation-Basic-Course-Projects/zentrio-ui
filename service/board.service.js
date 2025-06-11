@@ -312,7 +312,7 @@ export const getBoardByBoardIdService = async ({ boardId, token }) => {
  * create comment
  */
 export const postCommentByCheckListIdService = async ({
-  taskId,
+  checklistId,
   data,
   token,
 }) => {
@@ -327,11 +327,11 @@ export const postCommentByCheckListIdService = async ({
       },
       body: JSON.stringify({
         content: data.content,
-        checklistId: checklistId,
+        checklistId: data.checklistId,
       }),
     });
     const result = await res.json();
-    // console.log("📥 Backend responded with checklist:", result);
+    console.log("📥 Backend responded with content:", result);
 
     return data;
   } catch (error) {

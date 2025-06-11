@@ -27,6 +27,7 @@ import PopupAction from "@/components/popup/PopupAction";
 import { IconpopupDelete } from "@/components/icon/Iconpopup";
 import { preventImage } from "@/constant/preventimage";
 import { getCommentByCheckListIdAction } from "@/action/board.action";
+import PostCommentChecklist from "./PostCommentChecklist";
 
 export default function ModalDetailChecklist({
   id,
@@ -145,6 +146,8 @@ export default function ModalDetailChecklist({
         onOpenChange={onOpenChange}
         size="5xl"
         className="overflow-y-auto scrollbar-hidden  max-h-[760px]"
+        isDismissable={false}
+        isKeyboardDismissDisabled={true}
       >
         <ModalContent>
           {(onClose) => (
@@ -358,7 +361,7 @@ export default function ModalDetailChecklist({
                         )}
                       </div>
                       <div className="space-y-2">
-                        <label className="block text-title">Activity</label>
+                        {/* <label className="block text-title">Activity</label>
                         <div className="relative">
                           <input
                             type="text"
@@ -383,7 +386,8 @@ export default function ModalDetailChecklist({
                               />
                             </svg>
                           </button>
-                        </div>
+                        </div> */}
+                        <PostCommentChecklist checklistId={id} />
                       </div>
 
                       {/* comment */}
