@@ -19,6 +19,7 @@ export const createAnnouncementByBoardIdService = async ({ boardId, title, descr
     return data;
 };
 
+// not finnish
 export const uploadMultiImgByBoardIdService = async ({ boardId, token }) => {
 
     const url = announcementRouteGroup.uploadMultiImgByBoardId(boardId);
@@ -48,5 +49,19 @@ export const getAllAnnouncementByBoardIdService = async ({boardId, token }) => {
     });
     const data = await res.json();
     console.log("get all announcements",data);
+    return data;
+};
+
+export const deleteAnnouncementByIdService = async ({announId, token}) => {
+
+    const url =announcementRouteGroup.deleteAnnouncementById(announId);
+    const res = await fetch(url, {
+        method: "DELETE",
+        headers: {
+            "accept": "*/*",
+            Authorization: `Bearer ${token}`,
+        },
+    });
+    const data = await res.json();
     return data;
 };

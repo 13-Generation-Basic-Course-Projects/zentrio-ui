@@ -1,6 +1,7 @@
 import { ThumbsUp, Bookmark, EllipsisVertical, Pin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import ModalOptionAnnoun from "./ModalOptionAnnoun";
 
 export default function CardPostAnnouncement({ Announcements }) {
   const announcementList = Announcements?.payload || [];
@@ -51,7 +52,7 @@ export default function CardPostAnnouncement({ Announcements }) {
                   size="sm"
                   className="text-title hover:text-primary"
                 >
-                  <EllipsisVertical className="w-5 h-5" />
+                  <ModalOptionAnnoun/>
                 </Button>
               </div>
 

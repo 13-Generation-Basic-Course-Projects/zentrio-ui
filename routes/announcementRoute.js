@@ -9,7 +9,8 @@ export const announcementRouteGroup = {
     getAllAnnouncementByBoardId: (boardId) => `${apiConfig.baseUrl}/announcements/boards/${boardId}`,
 
 
-    
+    // DELETE
+    deleteAnnouncementById: (announId) => `${apiConfig.baseUrl}announcements/${announId}`,
 
 
     // GET members

@@ -1,7 +1,7 @@
 "use server";
 
 import { Token } from "@/constant/token";
-import { createAnnouncementByBoardIdService, getAllAnnouncementByBoardIdService, uploadMultiImgByBoardIdService } from "@/service/annoncement.service"
+import { createAnnouncementByBoardIdService, deleteAnnouncementByIdService, getAllAnnouncementByBoardIdService, uploadMultiImgByBoardIdService } from "@/service/annoncement.service"
 import { revalidatePath } from "next/cache";
 
 export const createAnnouncementByBoardIdAction = async (payload = {}) => {
@@ -27,6 +27,7 @@ export const uploadMultiImgByBoardIdAction = async (boardId) => {
     const userToken = await Token();
     const token = userToken.Credential;
     const result = await uploadMultiImgByBoardIdService({
+        boardId,
         token,
     });
     return result;
@@ -42,3 +43,16 @@ export const getAllAnnouncementByBoardIdAction = async (boardId) => {
     });
     return result;
 };
+
+
+export const deleteAnnouncementByIdAction = async (announId) => {
+
+    const userToken = await Token();
+    const token = userToken.Credential;
+    const result = await deleteAnnouncementByIdService({
+        announId,
+        token,
+    });
+    revalidatePath("/delete");
+    return result;
+}
