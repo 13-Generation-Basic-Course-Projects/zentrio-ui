@@ -15,4 +15,5 @@ export const announcementRouteGroup = {
 
     // GET members
     getAllMembersByBoardId: (boardId) => `${apiConfig.baseUrl}/`,
+
 };

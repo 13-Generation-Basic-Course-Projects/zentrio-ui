@@ -3,13 +3,21 @@ import React from "react";
 import { X } from "lucide-react";
 import { Input, Textarea, Button } from "@heroui/react";
 import { useState } from "react";
-import { createAnnouncementByBoardIdAction } from "@/action/announcement.action";
+import { createAnnouncementByBoardIdAction, uploadMultiImgByBoardIdAction } from "@/action/announcement.action";
 
 export default function CardCreateModal({ onClose, boardId }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [image, setImage] = useState([]);
   const [loading, setLoading] = useState(false);
 
+
+
+   const handleImageChange = (e) => {
+  const files = Array.from(e.target.files || []);
+  console.log("Selected files:", files);
+  setImage(files.length > 0 ? files : null); // set to array or null
+};
  
 
   const handleSubmit = async () => {
@@ -17,6 +25,11 @@ export default function CardCreateModal({ onClose, boardId }) {
 
     setLoading(true);
     try {
+          // First, upload images (if any)
+    if (Array.isArray(image) && image.length > 0) {
+      await uploadMultiImgByBoardIdAction(boardId, image);
+    }
+      
       await createAnnouncementByBoardIdAction({ title, description , boardId});
       onClose();
     } catch (error) {
@@ -65,6 +78,7 @@ export default function CardCreateModal({ onClose, boardId }) {
               labelPlacement="outside"
               type="file"
               className="w-full"
+                  onChange={handleImageChange}
             />
             <div className="flex justify-between pt-2">
               <Button

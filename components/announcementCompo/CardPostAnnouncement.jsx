@@ -31,7 +31,7 @@ export default function CardPostAnnouncement({ Announcements, }) {
             }
           `}
       </style>
-      <div className="h-full overflow-y-auto space-y-4 scroll-container">
+      <div className="h-full overflow-y-auto space-y-4 scroll-container pb-[400px]">
         {announcementList?.map((announcement, index) => (
           <Card
             key={index}

@@ -4,6 +4,8 @@ import { Token } from "@/constant/token";
 import { createAnnouncementByBoardIdService, deleteAnnouncementByIdService, getAllAnnouncementByBoardIdService, uploadMultiImgByBoardIdService } from "@/service/annoncement.service"
 import { revalidatePath } from "next/cache";
 
+
+
 export const createAnnouncementByBoardIdAction = async (payload = {}) => {
 
     const { title, description, boardId } = payload;
@@ -22,12 +24,14 @@ export const createAnnouncementByBoardIdAction = async (payload = {}) => {
     return result;
 };
 
-export const uploadMultiImgByBoardIdAction = async (boardId) => {
-
+export const uploadMultiImgByBoardIdAction = async (boardId,image) => {
+    
+    console.log("kakakak", image)
     const userToken = await Token();
     const token = userToken.Credential;
     const result = await uploadMultiImgByBoardIdService({
         boardId,
+        image,
         token,
     });
     return result;
