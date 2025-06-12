@@ -13,16 +13,13 @@ export default function CardTCommentCalender({
   selectedTask,
   noteRefreshKey,
 }) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedNote, setSelectedNote] = useState(null);
   const [editedNoteText, setEditedNoteText] = useState("");
   const [editingNoteId, setEditingNoteId] = useState(null);
   const [editingNoteText, setEditingNoteText] = useState("");
 
-
   const [notes, setNotes] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [refreshTrigger, setRefreshTrigger] = useState(0); // New state to manually trigger refresh
 
   // Use useCallback to memoize fetchNotesForTask to avoid unnecessary re-renders
   const fetchNotesForTask = useCallback(async () => {
@@ -59,18 +56,13 @@ export default function CardTCommentCalender({
     } finally {
       setIsLoading(false);
     }
-  }, [selectedTaskId, getAllNoteInCalendarAction]); 
+  }, [selectedTaskId, getAllNoteInCalendarAction]);
 
   useEffect(() => {
     fetchNotesForTask();
   }, [selectedTaskId, noteRefreshKey, fetchNotesForTask]); // Add fetchNotesForTask to dependencies
 
-  const handleClickNote = (noteData) => {
-    console.log("click note Id : ", noteData.calendarId);
-    setSelectedNote(noteData);
-    setEditedNoteText(noteData.noted);
-    setIsModalOpen(true);
-  };
+  
 
   const handleUpdateNoteInline = async (noteData) => {
     if (!editingNoteText.trim()) {
@@ -104,7 +96,6 @@ export default function CardTCommentCalender({
       console.error("Failed to update note:", err);
     }
   };
-  
 
   const handleDeleteNote = async (calendarId, taskId) => {
     if (!calendarId || !taskId) {
@@ -126,8 +117,6 @@ export default function CardTCommentCalender({
       console.error("Failed to delete note:", err);
     }
   };
-  
-  
 
   const displayedComments = notes;
   const formatDate = (dateStr) => {
@@ -137,12 +126,20 @@ export default function CardTCommentCalender({
     console.log(
       "Inside formatDate - Date Object (toISOString):",
       d.toISOString()
-    ); 
+    );
     return d.toLocaleDateString("en-GB", {
       day: "numeric",
       month: "short",
     });
   };
+  const formatRange = (start, end) => {
+    const options = { day: "numeric", month: "short" }; // e.g., "14 Jun"
+    const startDate = new Date(start).toLocaleDateString("en-GB", options);
+    const endDate = new Date(end).toLocaleDateString("en-GB", options);
+
+    return `${startDate} - ${endDate}`;
+  };
+  
 
   return (
     <>
@@ -164,7 +161,7 @@ export default function CardTCommentCalender({
         </CardHeader>
 
         <CardBody className="py-3 px-4 space-y-3 overflow-y-auto flex-1 scrollbar-hidden">
-          {isLoading ? ( 
+          {isLoading ? (
             <div className="flex items-center justify-center h-full text-gray-500">
               <p className="text-sm">Loading comments...</p>
             </div>
@@ -177,7 +174,6 @@ export default function CardTCommentCalender({
               </p>
             </div>
           ) : (
-           
             displayedComments.map((data, index) => {
               const commentColor = taskColorMap[data.taskId];
 
@@ -244,7 +240,7 @@ export default function CardTCommentCalender({
                       />
                     ) : (
                       <p
-                        className="text-sm text-title/80 mb-2 leading-relaxed cursor-pointer"
+                        className="text-sm text-title/50 mb-2 leading-relaxed border-0 px-2 py-1 rounded w-full focus:outline-none focus:bg-transparent "
                         onClick={() => {
                           setEditingNoteId(data.calendarId);
                           setEditingNoteText(data.noted);
@@ -256,20 +252,20 @@ export default function CardTCommentCalender({
 
                     <div className="flex items-center justify-end gap-1">
                       <AlarmClock
-                        className={`w-5 h-5 transition-colors ${
+                        className={`w-4 h-4 transition-colors ${
                           selectedTaskId && commentColor
                             ? commentColor.text
                             : "text-green-500"
                         }`}
                       />
                       <span
-                        className={`text-xs font-medium transition-colors ${
+                        className={`text-caption-tiny font-medium transition-colors ${
                           selectedTaskId && commentColor
                             ? commentColor.text
                             : "text-green-500"
                         }`}
                       >
-                        {formatDate(data.notedAt)}
+                        {formatRange(data.notedAt, data.tillDate)}
                       </span>
                     </div>
                   </div>
@@ -280,40 +276,7 @@ export default function CardTCommentCalender({
         </CardBody>
       </Card>
 
-      {/* Modal for editing comments */}
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
-          <div className="bg-bgColor rounded-xl shadow-lg p-6 w-full max-w-md">
-            <h2 className="text-lg font-semibold text-title mb-4">
-              Edit Comment
-            </h2>
-            <form onSubmit={handleSubmit}>
-              <textarea
-                value={editedNoteText}
-                onChange={(e) => setEditedNoteText(e.target.value)}
-                className="w-full border-none text-description rounded-medium p-2 mb-4"
-                rows={4}
-                required
-              />
-              <div className="flex justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 text-sm bg-stroke rounded-medium"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 text-sm bg-primary text-white rounded-medium"
-                >
-                  Save
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      
     </>
   );
 }
