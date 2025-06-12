@@ -12,7 +12,7 @@ export const createAnnouncementByBoardIdService = async ({ boardId, title, descr
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ boardId, title, description, }),
+        body: JSON.stringify({  title, description, boardId }),
     });
     const data = await res.json();
     console.log("create announcement",data);

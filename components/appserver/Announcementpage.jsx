@@ -15,7 +15,7 @@ export default function Announcementpage({ boardId, Announcements, boardMember }
 
       <div className="col-span-6 ">
         <div className="pt-0">
-          <CardCreateAnnouncement />
+          <CardCreateAnnouncement boardId={boardId} />
         </div>
 
         <div className="space-y-4">

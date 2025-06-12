@@ -9,6 +9,9 @@ export const announcementRouteGroup = {
     getAllAnnouncementByBoardId: (boardId) => `${apiConfig.baseUrl}/announcements/boards/${boardId}`,
 
 
+    
+
+
     // GET members
     getAllMembersByBoardId: (boardId) => `${apiConfig.baseUrl}/`,
 };
