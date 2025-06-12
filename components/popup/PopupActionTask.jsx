@@ -1,4 +1,6 @@
 "use client";
+import React from "react";
+
 import {
   Modal,
   ModalContent,
@@ -7,6 +9,7 @@ import {
   ModalFooter,
   Button,
   useDisclosure,
+  useDraggable,
 } from "@heroui/react";
 import { toast, ToastContainer } from "react-toastify";
 import { deleteTaskAction } from "@/action/board.action";
@@ -18,7 +21,6 @@ export default function PopupActionTask({
   massageBody,
   massageUndo,
   massageDo,
-
   color,
   swapButton,
   action,
@@ -27,6 +29,13 @@ export default function PopupActionTask({
   boardId,
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+  const targetRef = React.useRef(null);
+  const { moveProps } = useDraggable({
+    targetRef,
+    canOverflow: true,
+    isDisabled: !isOpen,
+  });
 
   const handleDelete = async () => {
     try {
@@ -57,12 +66,26 @@ export default function PopupActionTask({
     <>
       <Button
         onPress={onOpen}
-        className="bg-transparent h-auto  flex items-center cursor-pointer  p-0 !border-0"
+        className="bg-transparent h-auto  flex items-center cursor-pointer  !p-0 !border-0 w-full"
+        disableRipple={true}
+        disableAnimation
       >
-        <div className={`font-medium ${color} `}>{title}</div>
+        <div
+          className={`font-medium ${color} flex justify-start items-center w-full`}
+        >
+          {title}
+        </div>
       </Button>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="sm">
-        <ModalContent className="flex  flex-col justify-center items-center z-[50px]">
+      <Modal
+        ref={targetRef}
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        size="sm"
+      >
+        <ModalContent
+          {...moveProps}
+          className="flex  flex-col justify-center items-center z-[50px]"
+        >
           {(onClose) => (
             <>
               <ModalHeader>

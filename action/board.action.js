@@ -1,6 +1,7 @@
 "use server";
 import { Token } from "@/constant/token";
 import {
+  assignMemberInChecklistService,
   assignUserRoleLeadeerToBoardService,
   createCheckListService,
   createGanttChartByBoardIdService,
@@ -220,7 +221,7 @@ export const createCheckListAction = async (taskId, data) => {
       data,
       token,
     });
-    // revalidatePath("/checklist");
+    revalidatePath("/checklist");
     return result;
   } catch (error) {
     console.log("Create checklist action error:", error.message);
@@ -292,18 +293,14 @@ export const assignLeaderAction = async (taskid, assignId) => {
   const userToken = await Token();
   const token = userToken?.Credential;
   //console.log("data create form", taskid, assignId);
-  try {
-    const result = await assignUserRoleLeadeerToBoardService({
-      taskid,
-      assignId,
-      token,
-    });
-    revalidatePath("/task");
-    return { success: true, data: result };
-  } catch (error) {
-    console.error("put comment action error:", error.message);
-    return { success: false, error: error.message };
-  }
+
+  const result = await assignUserRoleLeadeerToBoardService({
+    taskid,
+    assignId,
+    token,
+  });
+  revalidatePath("/assignLd");
+  return result;
 };
 /*
  * get task baord id
@@ -324,6 +321,28 @@ export const deleteTaskAction = async (taskId, boardId, ganttBarId) => {
   const userToken = await Token();
   const token = userToken?.Credential;
   const result = await deleteTaskService(taskId, boardId, ganttBarId, token);
+  revalidatePath("/task");
+  // console.log("📥 Backend responded with delete action", result);
+
+  return result;
+};
+
+/*
+ * assign member in checklist
+ */
+export const assignMemberInChecklistAction = async (
+  taskId,
+  boardId,
+  ganttBarId
+) => {
+  const userToken = await Token();
+  const token = userToken?.Credential;
+  const result = await assignMemberInChecklistService(
+    taskId,
+    boardId,
+    ganttBarId,
+    token
+  );
   revalidatePath("/task");
   // console.log("📥 Backend responded with delete action", result);
 

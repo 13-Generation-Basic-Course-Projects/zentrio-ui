@@ -285,6 +285,7 @@ export default function KanbanBoard({
     setDraggedItem(null);
     setHoverInfo(null);
   };
+  /** 
 
   const handleDragOver = (e, targetInfo) => {
     e.preventDefault();
@@ -472,7 +473,198 @@ export default function KanbanBoard({
 
     handleDragEnd(e);
   };
+*/
+  const handleDragOver = (e, targetInfo) => {
+    e.preventDefault();
+    e.stopPropagation();
 
+    if (!draggedItem) return;
+
+    // Prevent card drag-and-drop between columns
+    if (
+      draggedItem.type === "card" &&
+      targetInfo.type === "card" &&
+      draggedItem.sourceColumnId !== targetInfo.targetColumnId
+    ) {
+      e.dataTransfer.dropEffect = "none";
+      setHoverInfo(null);
+      return;
+    }
+
+    // Prevent card from being dropped onto checklist
+    if (draggedItem.type === "card" && targetInfo.type === "checklist") {
+      e.dataTransfer.dropEffect = "none";
+      setHoverInfo(null);
+      return;
+    }
+
+    // Prevent checklist from being dropped onto card drop zone
+    if (
+      draggedItem.type === "checklist" &&
+      targetInfo.type === "card" &&
+      targetInfo.isDropZone
+    ) {
+      e.dataTransfer.dropEffect = "none";
+      setHoverInfo(null);
+      return;
+    }
+
+    // Prevent checklist drag-and-drop between different cards
+    if (
+      draggedItem.type === "checklist" &&
+      targetInfo.type === "checklist" &&
+      draggedItem.sourceCardId !== targetInfo.targetCardId
+    ) {
+      e.dataTransfer.dropEffect = "none";
+      setHoverInfo(null);
+      return;
+    }
+
+    e.dataTransfer.dropEffect = "move";
+
+    if (JSON.stringify(targetInfo) !== JSON.stringify(hoverInfo)) {
+      setHoverInfo(targetInfo);
+    }
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!draggedItem || !hoverInfo) {
+      handleDragEnd(e);
+      return;
+    }
+
+    const {
+      id: draggedId,
+      type: draggedType,
+      sourceColumnId,
+      sourceCardId,
+      sourceIndex,
+    } = draggedItem;
+    const {
+      targetColumnId,
+      targetCardId,
+      targetIndex,
+      type: dropTargetType,
+    } = hoverInfo;
+
+    // Prevent dropping card to the same position
+    if (
+      draggedId ===
+      (dropTargetType === "card"
+        ? columns.find((c) => c.id === targetColumnId)?.cards[targetIndex]?.id
+        : columns
+            .find((c) => c.id === targetColumnId)
+            ?.cards.find((c) => c.id === targetCardId)?.checklists[targetIndex]
+            ?.checklistId)
+    ) {
+      handleDragEnd(e);
+      return;
+    }
+
+    // Prevent card drop between columns
+    if (draggedType === "card" && sourceColumnId !== targetColumnId) {
+      handleDragEnd(e);
+      return;
+    }
+
+    let newColumns = JSON.parse(JSON.stringify(columns));
+    let itemToMove;
+
+    const sourceCol = newColumns.find((col) => col.id === sourceColumnId);
+    if (!sourceCol) {
+      console.error("Source column not found");
+      handleDragEnd(e);
+      return;
+    }
+
+    if (draggedType === "card") {
+      if (sourceIndex < 0 || sourceIndex >= sourceCol.cards.length) {
+        console.error("Source card index invalid");
+        handleDragEnd(e);
+        return;
+      }
+      itemToMove = sourceCol.cards.splice(sourceIndex, 1)[0];
+    } else {
+      const sourceCard = sourceCol.cards.find(
+        (card) => card.id === sourceCardId
+      );
+      if (
+        !sourceCard ||
+        !sourceCard.checklists ||
+        sourceIndex < 0 ||
+        sourceIndex >= sourceCard.checklists.length
+      ) {
+        console.error(
+          "Source checklist index invalid or card/checklists missing"
+        );
+        handleDragEnd(e);
+        return;
+      }
+      itemToMove = sourceCard.checklists.splice(sourceIndex, 1)[0];
+    }
+
+    if (!itemToMove) {
+      console.error("Failed to find item to move");
+      handleDragEnd(e);
+      return;
+    }
+
+    const targetCol = newColumns.find((col) => col.id === targetColumnId);
+    if (!targetCol) {
+      console.error("Target column not found");
+      handleDragEnd(e);
+      return;
+    }
+
+    try {
+      if (draggedType === "card" && dropTargetType === "card") {
+        const maxIndex = targetCol.cards.length;
+        const insertIndex = Math.max(0, Math.min(targetIndex, maxIndex));
+        targetCol.cards.splice(insertIndex, 0, itemToMove);
+      } else if (
+        draggedType === "checklist" &&
+        dropTargetType === "checklist"
+      ) {
+        const targetCard = targetCol.cards.find(
+          (card) => card.id === targetCardId
+        );
+        if (!targetCard)
+          throw new Error("Target card for checklist drop not found");
+        if (!targetCard.checklists) targetCard.checklists = [];
+        const maxIndex = targetCard.checklists.length;
+        const insertIndex = Math.max(0, Math.min(targetIndex, maxIndex));
+        targetCard.checklists.splice(insertIndex, 0, itemToMove);
+        targetCard.expanded = true;
+      } else {
+        console.warn("Invalid drop combination detected in handleDrop");
+        handleDragEnd(e);
+        return;
+      }
+
+      // Update orders
+      newColumns.forEach((column) => {
+        column.cards.forEach((card, index) => {
+          card.order = index;
+          if (card.checklists) {
+            card.checklists.forEach((checklist, checkIndex) => {
+              checklist.checklistOrder = checkIndex + 1;
+            });
+          }
+        });
+      });
+
+      setColumns(newColumns);
+
+      // No backend stage update needed since cards stay in the same column
+    } catch (error) {
+      console.error("Error during drop:", error);
+    }
+
+    handleDragEnd(e);
+  };
   // Column header styles (unchanged)
   const columnHeaderStyles = {
     todo: "border-black",
@@ -568,6 +760,7 @@ export default function KanbanBoard({
                         }
                         onDrop={handleDrop}
                       />
+                      {card.id}
                       <div
                         className={`shadow-sm rounded-xl overflow-hidden transition-all duration-300 ease-in-out ${
                           isChecklistHoverTargetCard
@@ -602,7 +795,6 @@ export default function KanbanBoard({
                               >
                                 {card.title}
                               </p>
-
                               {tasks.map((task) =>
                                 task.taskId === card.id ? (
                                   <div key={task.taskId}>

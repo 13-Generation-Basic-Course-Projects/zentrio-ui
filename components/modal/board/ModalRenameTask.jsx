@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
 import {
   Modal,
@@ -7,6 +8,7 @@ import {
   ModalBody,
   Button,
   useDisclosure,
+  useDraggable,
 } from "@heroui/react";
 import { updateDocumentNameByIdAction } from "@/action/document.action";
 
@@ -17,23 +19,37 @@ export function ModalRenameTask({}) {
 
   const handleSave = async (close) => {};
 
+  const targetRef = React.useRef(null);
+  const { moveProps } = useDraggable({
+    targetRef,
+    canOverflow: true,
+    isDisabled: !isOpen,
+  });
+
   return (
     <>
       <Button
         onPress={onOpen}
-        className="bg-transparent p-0 m-0 border-none shadow-none  min-w-0 h-auto "
+        className="bg-transparent !p-0 m-0 border-none shadow-none  min-w-0 h-auto w-full"
         radius="none"
         disableRipple={true}
         disableAnimation
       >
-        Rename
+        <div className="flex justify-start items-center w-full">Rename</div>
       </Button>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="xl">
+      <Modal
+        ref={targetRef}
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        size="xl"
+      >
         1
         <ModalContent>
           {(close) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">Rename</ModalHeader>
+              <ModalHeader {...moveProps} className="flex flex-col gap-1">
+                Rename
+              </ModalHeader>
               <ModalBody>
                 <form onSubmit={(e) => e.preventDefault()}>
                   <div className="flex flex-col gap-3">

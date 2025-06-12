@@ -175,7 +175,7 @@ export default function ModalOptionTask({
 
         <DropdownItem
           key="delete"
-          className="w-full hover:bg-default-100 mb-1"
+          className="w-full hover:bg-default-100 mb-1 "
           startContent={<DeleteDocumentIcon className={cn(iconClasses)} />}
         >
           <PopupActionTask
@@ -192,7 +192,7 @@ export default function ModalOptionTask({
             ganttBarId={currentGanttBarId}
             boardId={boardId}
           />
-          {taskId}
+          {/* {taskId} */}
         </DropdownItem>
         <DropdownSection className="border-t-1 border-default-200 pt-1">
           <DropdownItem className="w-full hover:bg-default-100">

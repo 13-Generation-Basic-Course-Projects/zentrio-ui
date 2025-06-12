@@ -68,7 +68,7 @@ export function ModalAssignLeaderTask({
       }
 
       const result = await assignLeaderAction(taskId, data.userId);
-
+      console.log("result assignLd", result);
       if (result.success) {
         toast.success("Leader assigned successfully!");
         if (onLeaderAssigned && result.updatedTask) {
@@ -83,7 +83,9 @@ export function ModalAssignLeaderTask({
             currentLeader ? { ...currentLeader, id: taskId } : null
           );
         }
-        toast.error(result.error || "Failed to assign leader");
+        if (result.error) {
+          toast.error(result.error || "Failed to assign leader");
+        }
       }
     } catch (error) {
       // Revert optimistic update

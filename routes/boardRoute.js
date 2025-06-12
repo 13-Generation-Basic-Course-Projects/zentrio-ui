@@ -18,6 +18,8 @@ export const boardRouteGroup = {
     `${apiConfig.baseUrl}/boards/${boardId}/users/invite`,
   assignUserRoleLeaderToBoard: (taskid, assignId) =>
     `${apiConfig.baseUrl}/tasks/${taskid}/members/${assignId}`, //asign team ld
+  assignMemberInChecklist: (checklistId, taskId, assignedBy, assignedTo) =>
+    `${apiConfig.baseUrl}/api/v1/checklists/${checklistId}/tasks/${taskId}/members${assignedBy}/members/${assignedTo}/`,
 
   createTaskByBoardIdAndGanttBarId: () => `${apiConfig.baseUrl}/tasks`, // Created task with boards ID and gantt bars ID
   createCheckListBytaskId: () => `${apiConfig.baseUrl}/checklists`, // Created task with boards ID and gantt bars ID
@@ -32,4 +34,9 @@ export const boardRouteGroup = {
     `${apiConfig.baseUrl}/boards/${boardId}/workspaces/${workspaceId}`, //Deleted a board by board ID
   deleteTask: (taskId, boardId, ganttbarId) =>
     `${apiConfig.baseUrl}/tasks/${taskId}/boards/${boardId}/gantt-bars/${ganttbarId}`, //Deleted a board by board ID
+
+  //advance
+
+  moveTaskOrder: (taskId) =>
+    `${apiConfig.baseUrl}/checklists/orders/tasks/${taskId}`,
 };

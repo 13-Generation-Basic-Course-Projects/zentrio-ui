@@ -375,25 +375,20 @@ export const assignUserRoleLeadeerToBoardService = async ({
   assignId,
   token,
 }) => {
-  try {
-    console.log("from service", { taskid, assignId, token });
-    const url = boardRouteGroup.assignUserRoleLeaderToBoard(taskid, assignId);
-    console.log(url);
-    const res = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const result = await res.json();
-    console.log("📥 Backend responded with ld:", result);
+  console.log("from service", { taskid, assignId, token });
+  const url = boardRouteGroup.assignUserRoleLeaderToBoard(taskid, assignId);
+  console.log(url);
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  const result = await res.json();
+  console.log("📥 Backend responded with ld:", result);
 
-    return data;
-  } catch (error) {
-    console.error("bug", error.message);
-    throw error;
-  }
+  return result;
 };
 /*
  * get all  getTaskByBoardId
@@ -437,6 +432,47 @@ export const deleteTaskService = async (taskId, boardId, ganttbarId, token) => {
     // console.log("📥 Backend responded with delete:", data);
 
     return data; // just return the data, don’t redirect here
+  } catch (error) {
+    console.error("bug", error.message);
+    throw error;
+  }
+};
+/*
+ * assign member in checklist
+ */
+export const assignMemberInChecklistService = async ({
+  checklistId,
+  taskId,
+  assignBy,
+  assignTo,
+  token,
+}) => {
+  try {
+    console.log("from service", {
+      checklistId,
+      taskId,
+      assignBy,
+      assignTo,
+      token,
+    });
+    const url = boardRouteGroup.assignMemberInChecklist(
+      checklistId,
+      taskId,
+      assignBy,
+      assignTo
+    );
+    console.log(url);
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const result = await res.json();
+    console.log("📥 Backend responded with ld:", result);
+
+    return result;
   } catch (error) {
     console.error("bug", error.message);
     throw error;
