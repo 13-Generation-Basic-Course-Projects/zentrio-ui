@@ -208,7 +208,7 @@ export default async function BoardLayout({ children, params }) {
      * get create id
      */
     const allTask = await getTaskByBoardIdAction(boardId);
-    // console.log("id creator", allTask);
+    console.log("task response", allTask);
 
     return (
       <div>

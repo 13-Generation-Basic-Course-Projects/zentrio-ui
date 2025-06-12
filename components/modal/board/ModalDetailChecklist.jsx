@@ -35,6 +35,7 @@ export default function ModalDetailChecklist({
   taskTitle,
   title,
   startDate,
+  finishedAt,
   status,
   label,
   description,
@@ -140,6 +141,7 @@ export default function ModalDetailChecklist({
             member={member}
             id={id}
             commentCount={comments.length}
+            finishedAt={finishedAt}
           />
         </div>
       </Button>

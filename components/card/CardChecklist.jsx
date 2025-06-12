@@ -18,8 +18,12 @@ export const CardCheckList = ({
   comment,
   member,
   id,
+  finishedAt,
   commentCount,
 }) => {
+  const finishedAtRaw = finishedAt;
+  const FormattedFinishDate = finishedAtRaw.split("T")[0];
+  // Result: "06-14-2025"
   return (
     <div>
       <Card className="py-4 rounded-xl cursor-pointer hover:bg-blue-50 transition shadow-sm w-full">
@@ -135,7 +139,7 @@ export const CardCheckList = ({
                 className="w-[16px] h-[16px]"
                 alt="Comments icon"
               />
-              <p className="text-body-sm/50 ">Date</p>
+              <p className="text-body-sm/50 ">{FormattedFinishDate}</p>
             </div>
           </div>
         </CardFooter>

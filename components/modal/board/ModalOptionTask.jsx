@@ -121,37 +121,23 @@ export default function ModalOptionTask({
   accessToken,
   allMemberInBoard,
   taskId,
+  ganttbarData,
+  tasks,
+  boardId,
 }) {
-  const [isDownloading, setIsDownloading] = useState(false);
-
-  const handleDownload = async () => {
-    try {
-      setIsDownloading(true);
-
-      // Get blob from action
-      const { blob, fileName } = await downloadDocumentByDocumentIdAction(
-        documentId, // you should define or pass this
-        accessToken // also passed or fetched beforehand
-      );
-
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = fileName || "document"; // Fallback filename
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      window.URL.revokeObjectURL(url); // Clean up
-    } catch (error) {
-      console.error("Download failed:", error);
-    } finally {
-      setIsDownloading(false);
-    }
-  };
-
   const iconClasses =
     "text-xl text-default-500 pointer-events-none flex-shrink-0";
-  console.log("taksss", taskId);
+  console.log("task iddd", taskId);
+  console.log("taskkk", tasks);
+  // Filter task by taskId and get ganttBarId
+  const getGanttBarIdByTaskId = (taskId) => {
+    const task = tasks?.find((task) => task?.taskId === taskId);
+    return task ? task?.ganttBarId : null;
+  };
+
+  // Get the ganttBarId for current taskId
+  const currentGanttBarId = getGanttBarIdByTaskId(taskId);
+  console.log("current gantbarid", currentGanttBarId);
   return (
     <Dropdown className="-z-[10px]">
       <DropdownTrigger>
@@ -203,6 +189,8 @@ export default function ModalOptionTask({
             accessToken={accessToken}
             massageUndo={"No, Cancel"}
             taskId={taskId}
+            ganttBarId={currentGanttBarId}
+            boardId={boardId}
           />
           {taskId}
         </DropdownItem>

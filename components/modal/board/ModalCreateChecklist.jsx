@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useMemo, useCallback } from "react";
 import {
   Modal,
   ModalContent,
@@ -16,6 +16,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { parseDate, getLocalTimeZone, today } from "@internationalized/date";
 import { checklistSchema } from "@/lib/schemas/createCheckListSchema";
 import { createCheckListAction } from "@/action/board.action";
+import { toast, ToastContainer } from "react-toastify";
 
 export default function ModalCreateChecklist({
   onSubmit,
@@ -27,18 +28,65 @@ export default function ModalCreateChecklist({
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-  // Convert the task dates to the correct format for default values
-  const taskStartDate = startedAt ? startedAt.split("T")[0] : null; // "2025-06-13"
-  const taskEndDate = finishedAt ? finishedAt.split("T")[0] : null; // "2025-06-21"
+  // Memoize all computed values to prevent recalculation
+  const {
+    taskStartDate,
+    taskEndDate,
+    todayDate,
+    defaultStart,
+    defaultEnd,
+    minValue,
+    maxValue,
+    memoizedSchema,
+    defaultValues,
+  } = useMemo(() => {
+    // Convert the task dates to the correct format for default values
+    const taskStartDate = startedAt ? startedAt.split("T")[0] : null;
+    const taskEndDate = finishedAt ? finishedAt.split("T")[0] : null;
 
-  // Get today's date in the local timezone
-  const todayDate = today(getLocalTimeZone());
+    // Get today's date in the local timezone
+    const todayDate = today(getLocalTimeZone());
 
-  // Set default values based on task dates or fallback to today + 7 days
-  const defaultStart = taskStartDate || todayDate.toString();
-  const defaultEnd = taskEndDate || todayDate.add({ days: 7 }).toString();
+    // Set default values based on task dates or fallback to today + 7 days
+    const defaultStart = taskStartDate || todayDate.toString();
+    const defaultEnd = taskEndDate || todayDate.add({ days: 7 }).toString();
 
-  // Initialize React Hook Form with Zod resolver - call the schema function with task dates
+    // Set minValue: if task has a start date, use that; otherwise use today
+    const minValue = taskStartDate ? parseDate(taskStartDate) : todayDate;
+
+    // Create the schema
+    const memoizedSchema = checklistSchema({
+      taskStartedAt: startedAt,
+      taskFinishedAt: finishedAt,
+    });
+
+    // Create default values
+    const defaultValues = {
+      title: "",
+      duration: {
+        start: defaultStart,
+        end: defaultEnd,
+      },
+      description: "",
+    };
+
+    // Create maxValue for DateRangePicker
+    const maxValue = taskEndDate ? parseDate(taskEndDate) : undefined;
+
+    return {
+      taskStartDate,
+      taskEndDate,
+      todayDate,
+      defaultStart,
+      defaultEnd,
+      minValue,
+      maxValue,
+      memoizedSchema,
+      defaultValues,
+    };
+  }, [startedAt, finishedAt]);
+
+  // Initialize React Hook Form with memoized values
   const {
     register,
     handleSubmit,
@@ -46,21 +94,21 @@ export default function ModalCreateChecklist({
     control,
     reset,
   } = useForm({
-    resolver: zodResolver(
-      checklistSchema({
-        taskStartedAt: startedAt,
-        taskFinishedAt: finishedAt,
-      })
-    ),
-    defaultValues: {
-      title: "",
-      duration: {
-        start: defaultStart,
-        end: defaultEnd,
-      },
-      description: "",
-    },
+    resolver: zodResolver(memoizedSchema),
+    defaultValues,
   });
+
+  // Memoize the date range change handler to prevent recreation
+  const handleDateRangeChange = useCallback((field) => {
+    return (value) => {
+      if (value && value.start && value.end) {
+        field.onChange({
+          start: value.start.toString(),
+          end: value.end.toString(),
+        });
+      }
+    };
+  }, []);
 
   // Handle form submission
   const onFormSubmit = async (data) => {
@@ -68,7 +116,7 @@ export default function ModalCreateChecklist({
       // Transform the data to match the backend's expected format
       const transformedData = {
         title: data.title,
-        description: data.description || "", // Ensure description is always a string
+        description: data.description || "",
         startedAt: new Date(
           data.duration.start + "T00:00:00.000Z"
         ).toISOString(),
@@ -82,21 +130,34 @@ export default function ModalCreateChecklist({
 
       // Call the createCheckListAction
       const result = await createCheckListAction(taskid, transformedData);
+      console.log("hello checklist result", result);
       console.log("result form", result);
+      if (result.status == 200) {
+        // Show success toast
+        toast.success("Checklist created successfully!");
+      } else if (result.status === 403) {
+        console.log("err mss", result);
+        toast.error(`Error: ${result?.detail}`);
+      }
+
+      // Call onSubmit prop if provided
+      if (onSubmit) onSubmit(transformedData);
 
       // Close modal and reset form on success
       reset();
-      //onClose();
+      onOpenChange(false); // Explicitly close modal
     } catch (error) {
-      console.error("Form submission error:", error.message);
-      // Show user-facing error
-      alert(`Error: ${error.message}`);
+      console.error("Form submission error:", error);
+
+      // Extract error message from backend response or use a default
+      const errorMessage = error.response?.data?.detail
+        ? error.response.data.detail
+        : error.message || "An unexpected error occurred.";
+
+      // Show error toast
+      toast.error(`Error: ${errorMessage}`);
     }
   };
-
-  // console.log("task id in modal", taskid);
-  // console.log("date", finishedAt, startedAt);
-  // console.log("default dates", defaultStart, defaultEnd);
 
   return (
     <>
@@ -140,33 +201,37 @@ export default function ModalCreateChecklist({
                     <Controller
                       name="duration"
                       control={control}
-                      render={({ field }) => (
-                        <DateRangePicker
-                          isRequired
-                          className="max-w-none"
-                          minValue={todayDate} // Prevent selecting past dates
-                          maxValue={
-                            taskEndDate ? parseDate(taskEndDate) : undefined
-                          } // Limit to task end date if available
-                          value={{
-                            start: parseDate(field.value.start),
-                            end: parseDate(field.value.end),
-                          }}
-                          onChange={(value) =>
-                            field.onChange({
-                              start: value.start.toString(),
-                              end: value.end.toString(),
-                            })
-                          }
-                          label="Stay duration"
-                          style={{
-                            appearance: "none",
-                            WebkitAppearance: "none",
-                            MozAppearance: "none",
-                            cursor: "pointer",
-                          }}
-                        />
-                      )}
+                      render={({ field }) => {
+                        // Safely parse the field values
+                        let startValue, endValue;
+                        try {
+                          startValue = field.value?.start
+                            ? parseDate(field.value.start)
+                            : parseDate(defaultStart);
+                          endValue = field.value?.end
+                            ? parseDate(field.value.end)
+                            : parseDate(defaultEnd);
+                        } catch (error) {
+                          console.error("Date parsing error:", error);
+                          startValue = parseDate(defaultStart);
+                          endValue = parseDate(defaultEnd);
+                        }
+
+                        return (
+                          <DateRangePicker
+                            isRequired
+                            className="max-w-none"
+                            minValue={minValue}
+                            maxValue={maxValue}
+                            value={{
+                              start: startValue,
+                              end: endValue,
+                            }}
+                            onChange={handleDateRangeChange(field)}
+                            label="Stay duration"
+                          />
+                        );
+                      }}
                     />
                     {errors.duration?.start && (
                       <p className="text-progress-red text-xs">
@@ -225,6 +290,15 @@ export default function ModalCreateChecklist({
           )}
         </ModalContent>
       </Modal>
+      <ToastContainer
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar={false}
+        closeOnClick
+        pauseOnHover
+        draggable
+        theme="colored"
+      />
     </>
   );
 }

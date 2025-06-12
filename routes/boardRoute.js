@@ -30,4 +30,6 @@ export const boardRouteGroup = {
   //delete
   deleteBoardById: (boardId, workspaceId) =>
     `${apiConfig.baseUrl}/boards/${boardId}/workspaces/${workspaceId}`, //Deleted a board by board ID
+  deleteTask: (taskId, boardId, ganttbarId) =>
+    `${apiConfig.baseUrl}/tasks/${taskId}/boards/${boardId}/gantt-bars/${ganttbarId}`, //Deleted a board by board ID
 };

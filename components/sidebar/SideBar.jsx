@@ -44,7 +44,7 @@ export default function DashboardSidebar() {
   const workspaceId = pathSegments[2] || "1";
   const projectId = pathSegments[3] || "1";
 
-  const isTl = role === "tl";
+  const isTl = role === "ROLE_LEADER";
   const ismem = role === "ROLE_MEMBER";
 
   const items = [

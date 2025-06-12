@@ -5,6 +5,7 @@ import {
   createCheckListService,
   createGanttChartByBoardIdService,
   createTaskByBoardIdAndGanttChartIdService,
+  deleteTaskService,
   editCommmentService,
   getAllGanttBarByGanttChartIDService,
   getBoardByBoardIdService,
@@ -219,7 +220,7 @@ export const createCheckListAction = async (taskId, data) => {
       data,
       token,
     });
-    revalidatePath("/checklist");
+    // revalidatePath("/checklist");
     return result;
   } catch (error) {
     console.log("Create checklist action error:", error.message);
@@ -305,7 +306,7 @@ export const assignLeaderAction = async (taskid, assignId) => {
   }
 };
 /*
- * assign leader
+ * get task baord id
  */
 export const getTaskByBoardIdAction = async (boardId) => {
   const userToken = await Token();
@@ -314,5 +315,17 @@ export const getTaskByBoardIdAction = async (boardId) => {
     boardId,
     token,
   });
+  return result;
+};
+/*
+ * delete task
+ */
+export const deleteTaskAction = async (taskId, boardId, ganttBarId) => {
+  const userToken = await Token();
+  const token = userToken?.Credential;
+  const result = await deleteTaskService(taskId, boardId, ganttBarId, token);
+  revalidatePath("/task");
+  // console.log("📥 Backend responded with delete action", result);
+
   return result;
 };

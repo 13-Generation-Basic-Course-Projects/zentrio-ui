@@ -278,7 +278,7 @@ export const createCheckListService = async ({ taskId, data, token }) => {
       }),
     });
     const result = await res.json();
-    // console.log("📥 Backend responded with checklist:", result);
+    console.log("📥 Backend responded with checklist:", result);
 
     return data;
   } catch (error) {
@@ -411,6 +411,30 @@ export const getTaskByBoardIdService = async ({ boardId, token }) => {
     });
     const data = await res.json();
     //console.log("📥 Backend responded with boardtask:", data);
+
+    return data; // just return the data, don’t redirect here
+  } catch (error) {
+    console.error("bug", error.message);
+    throw error;
+  }
+};
+
+/*
+ * delete task
+ */
+export const deleteTaskService = async (taskId, boardId, ganttbarId, token) => {
+  try {
+    //console.log("from service ", token);
+    const url = boardRouteGroup.deleteTask(taskId, boardId, ganttbarId);
+    const res = await fetch(url, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await res.json();
+    // console.log("📥 Backend responded with delete:", data);
 
     return data; // just return the data, don’t redirect here
   } catch (error) {

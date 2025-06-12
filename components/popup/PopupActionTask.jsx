@@ -8,10 +8,8 @@ import {
   Button,
   useDisclosure,
 } from "@heroui/react";
-
-import { IconpopupDelete } from "@/components/icon/Iconpopup";
-import { useRouter } from "next/navigation";
-import { deleteDocumentAction } from "@/action/document.action";
+import { toast, ToastContainer } from "react-toastify";
+import { deleteTaskAction } from "@/action/board.action";
 export default function PopupActionTask({
   title,
   icon,
@@ -20,23 +18,38 @@ export default function PopupActionTask({
   massageBody,
   massageUndo,
   massageDo,
-  documentId,
-  accessToken,
+
   color,
   swapButton,
   action,
+  ganttBarId,
+  taskId,
+  boardId,
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-  console.log(accessToken);
-  const router = useRouter();
-
   const handleDelete = async () => {
     try {
-      await deleteDocumentAction(accessToken, documentId);
-      router.refresh();
+      const result = await deleteTaskAction(taskId, boardId, ganttBarId);
+      console.log("respon delete", result);
+      toast.success("Task deleted successfully!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
     } catch (error) {
       console.error("Delete failed", error);
+      toast.error("Failed to delete task!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
     }
   };
 

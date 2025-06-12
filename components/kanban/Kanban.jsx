@@ -123,6 +123,7 @@ export default function KanbanBoard({
   test,
   preventUserImage,
   boardData,
+  ganttbar,
 }) {
   const [columns, setColumns] = useState([]);
   const [draggedItem, setDraggedItem] = useState(null);
@@ -487,7 +488,7 @@ export default function KanbanBoard({
   if (error) {
     return <div>Error: {error}</div>;
   }
-  console.log("aaaa", allMemberInBoard);
+  console.log("ganttbar data", ganttbar);
   return (
     <div className="w-full h-screen flex flex-col">
       <BredCrum
@@ -601,20 +602,58 @@ export default function KanbanBoard({
                               >
                                 {card.title}
                               </p>
+
+                              {tasks.map((task) =>
+                                task.taskId === card.id ? (
+                                  <div key={task.taskId}>
+                                    {task.teamLeader ? (
+                                      <p className="text-[10px] text-green-500">
+                                        {" "}
+                                        TL {task.teamLeader.username}
+                                      </p>
+                                    ) : (
+                                      <p className="text-[10px] text-red-500">
+                                        No Team Leader yet
+                                      </p>
+                                    )}
+                                  </div>
+                                ) : null
+                              )}
                             </div>
                             <div className="flex items-center flex-shrink-0">
                               <div className="flex -space-x-2 mr-2">
-                                {(card.assignees || []).map((assignee, idx) => (
-                                  <UserAvater
-                                    key={idx}
-                                    image={assignee ?? preventUserImage}
-                                  />
-                                ))}
+                                {/* image */}
+                                {tasks.map((task) =>
+                                  task.taskId === card.id ? (
+                                    <div key={task.taskId}>
+                                      {task.teamLeader ? (
+                                        <UserAvater
+                                          key={task.taskId}
+                                          image={
+                                            task.teamLeader?.imageUrl ??
+                                            preventUserImage
+                                          }
+                                        />
+                                      ) : (
+                                        <UserAvater
+                                          key={task.taskId}
+                                          image={
+                                            "https://public.bnbstatic.com/20190405/eb2349c3-b2f8-4a93-a286-8f86a62ea9d8.png"
+                                          }
+                                        />
+                                      )}
+                                    </div>
+                                  ) : null
+                                )}
                               </div>
+
                               <ModalOptionTask
                                 key={"apple"}
                                 allMemberInBoard={allMemberInBoard}
                                 taskId={card.id}
+                                boardId={boardData?.payload?.boardId}
+                                ganttbarData={ganttbar}
+                                tasks={tasks}
                               />
                             </div>
                           </div>

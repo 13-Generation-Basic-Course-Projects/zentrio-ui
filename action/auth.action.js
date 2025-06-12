@@ -1,6 +1,7 @@
 "use server";
 import { signIn, signOut } from "@/auth";
 import {
+  loginWithGoogleZentrioService,
   loginZentrioCredentailService,
   loginZentrioService,
   otpZentrioService,
@@ -71,4 +72,22 @@ export async function zentrioRegisterAction(data) {
 export async function zentrioOtpAction(data) {
   const { email, otp } = data; // Destructure both email and otp from data
   await otpZentrioService({ email, otp }); // Pass email and otp to the service
+}
+
+// google login
+export async function zentrioLoginWithGoogle(idToken, provider) {
+  try {
+    const token = await loginWithGoogleZentrioService({ idToken, provider });
+    // token is the JWT from backend on success
+    if (token) {
+      // You can save token to localStorage, context, or use it directly
+      redirect("/workspace");
+    } else {
+      console.error("Login failed: No token received");
+      return null;
+    }
+  } catch (error) {
+    console.error("Login with Google failed:", error.message);
+    return null;
+  }
 }

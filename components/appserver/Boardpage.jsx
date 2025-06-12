@@ -13,6 +13,7 @@ import ModalCreateTask from "../modal/board/ModalCreateTask";
 import ModalNotification from "../modal/noti/ModalNotification";
 import ModalCreateGanttChart from "../modal/board/ModalCreateGanttChart";
 import ModalCreateGanttBar from "../modal/board/ModalCreateGanttBar";
+import { data } from "autoprefixer";
 
 export default function SystemBoard({
   user,
@@ -34,10 +35,12 @@ export default function SystemBoard({
   const [activeTab, setActiveTab] = useState("kanban");
 
   console.log("data board", boardData);
+  console.log("data fav", boardData?.payload?.isFavourite);
+  const favBoard = boardData?.payload?.isFavourite;
 
   // Conditionally add ModalInviteMember only if workspaceId is NOT 'otherworkspace'
   const modalComponents = [
-    (role === "tl" || role === "pm") && (
+    (role === "ROLE_LEADER" || role === "pm") && (
       <ModalCreateTask
         key="create-task"
         boardId={boardId}
@@ -53,11 +56,11 @@ export default function SystemBoard({
         allMemberInBoard={allMemberInBoard}
       />
     ),
-    <StarBoard key="star-board" />,
+    <StarBoard key="star-board" favBoard={favBoard} />,
   ].filter(Boolean);
   // GanttChart modal based on role
   const ganttModal =
-    role === "ROLE_MEMBER"
+    role === "ROLE_MEMBER" || role === "ROLE_LEADER"
       ? []
       : [
           <ModalCreateGanttChart
@@ -101,6 +104,7 @@ export default function SystemBoard({
           allMemberInBoard={allMemberInBoard}
           preventUserImage={preventUserImage}
           boardData={boardData}
+          ganttbar={ganttbar}
         />
       ),
     },
