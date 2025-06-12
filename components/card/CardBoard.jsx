@@ -169,7 +169,7 @@ export default function CardBoard({
             />
           ) : image ? (
             <img
-              src={image}
+              src={"https://i.pinimg.com/736x/6c/27/78/6c2778d99129de5fb6be03eaaa483f13.jpg"}
               alt={`Card background for ${title}`}
               className="object-cover rounded-xl w-full h-32"
             />
