@@ -216,3 +216,28 @@ export const updateNoteInCalendarService = async ({
     throw error;
   }
 };
+
+
+/*
+ * Get all checklist by task id
+ */
+export const getChecklistByTaskIdService = async ({ taskId, token }) => {
+ 
+  try {
+    const url = calendarV2RouteGroup.getChecklistByTaskId(taskId);
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await res.json();
+    // console.log("📥 Backend responded checklist with:", data);
+
+    return data; // just return the data, don’t redirect here
+  } catch (error) {
+    console.error("Login service error:", error.message);
+    throw error;
+  }
+};

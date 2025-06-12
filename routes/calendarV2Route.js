@@ -18,4 +18,8 @@ export const calendarV2RouteGroup = {
 
   updateNoteInCalendar: (calendarId) =>
     `${apiConfig.baseUrl}/calendars/${calendarId}`, // update note by id from calendar
+
+  /* checklist controller */
+  getChecklistByTaskId: (taskId) =>
+    `${apiConfig.baseUrl}/checklists/tasks/${taskId}`, // Get all checklist by task id
 };

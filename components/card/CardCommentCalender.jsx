@@ -6,6 +6,7 @@ import profile from "../../public/image/minh.png";
 import { SquarePen, AlarmClock, Trash2 } from "lucide-react";
 import { calendarUpdateNoteAction } from "@/action/calendar.action";
 import { deleteNoteInCalendarAction, getAllNoteInCalendarAction, updateNoteInCalendarAction } from "@/action/calendarV2.action";
+import ModalDelete from "../modal/ModalDelete";
 
 export default function CardTCommentCalender({
   selectedTaskId,
@@ -140,22 +141,29 @@ export default function CardTCommentCalender({
     return `${startDate} - ${endDate}`;
   };
   
-
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [deleteData, setDeleteData] = useState({ calendarId: null, taskId: null });
+  
   return (
     <>
       <Card className="py-4 h-[400px] flex flex-col rounded-large shadow-sm">
         {/* Header */}
         <CardHeader className="pb-0 pt-2 px-6 flex-col items-start">
-          <div className="flex items-center gap-2">
+          <div className="flex gap-2">
             <Image
               src={commentlogo}
-              className="w-7 h-7 object-contain"
+              className="w-6 h-6 object-contain"
               alt="comment-icon"
             />
-            <h1 className="text-title text-large font-semibold">
-              {selectedTaskId && selectedTask
-                ? `Comments in ${selectedTask.title}`
-                : "All Comments"}{" "}
+            <h1 className="text-title text-h6 font-semibold">
+              {selectedTaskId && selectedTask ? (
+                <>
+                  Comments in{" "}
+                  <span className="text-primary">{selectedTask.title}</span>
+                </>
+              ) : (
+                "All Comments"
+              )}
             </h1>
           </div>
         </CardHeader>
@@ -163,11 +171,11 @@ export default function CardTCommentCalender({
         <CardBody className="py-3 px-4 space-y-3 overflow-y-auto flex-1 scrollbar-hidden">
           {isLoading ? (
             <div className="flex items-center justify-center h-full text-gray-500">
-              <p className="text-sm">Loading comments...</p>
+              <p className="text-caption">Loading comments...</p>
             </div>
           ) : displayedComments.length === 0 ? ( // Show message if no comments
             <div className="flex items-center justify-center h-full text-gray-500">
-              <p className="text-sm">
+              <p className="text-caption">
                 {selectedTaskId
                   ? "No comments for this task."
                   : "Please select a task to view comments."}
@@ -191,7 +199,7 @@ export default function CardTCommentCalender({
                   />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-1">
-                      <h3 className="font-semibold text-sm text-gray-900">
+                      <h3 className="font-semibold text-body-sm text-gray-900">
                         {data.useData?.username || "Kdey Pesith"}
                       </h3>
                       <div className="flex gap-3">
@@ -210,15 +218,20 @@ export default function CardTCommentCalender({
                             }}
                           />
                         </button>
+
                         <button
                           className={`transition-colors ${
                             selectedTaskId && commentColor
                               ? `${commentColor.text} hover:opacity-70`
-                              : "text-red-500 hover:text-red-600" // Changed to red for Trash
+                              : "text-red-500 hover:text-red-600"
                           }`}
-                          onClick={() =>
-                            handleDeleteNote(data.calendarId, data.taskId)
-                          }
+                          onClick={() => {
+                            setDeleteData({
+                              calendarId: data.calendarId,
+                              taskId: data.taskId,
+                            });
+                            setDeleteModalOpen(true);
+                          }}
                         >
                           <Trash2 size={15} />
                         </button>
@@ -235,12 +248,12 @@ export default function CardTCommentCalender({
                             e.target.blur(); // triggers onBlur
                           }
                         }}
-                        className="text-sm text-title/50 mb-2 leading-relaxed border-0 px-2 py-1 rounded w-full focus:outline-none focus:bg-transparent"
+                        className="text-caption text-title/50 mb-2 leading-relaxed border-0 py-1 rounded w-full focus:outline-none focus:bg-transparent"
                         autoFocus
                       />
                     ) : (
                       <p
-                        className="text-sm text-title/50 mb-2 leading-relaxed border-0 px-2 py-1 rounded w-full focus:outline-none focus:bg-transparent "
+                        className="text-caption text-title/50 mb-2 leading-relaxed border-0  py-1 rounded w-full focus:outline-none focus:bg-transparent "
                         onClick={() => {
                           setEditingNoteId(data.calendarId);
                           setEditingNoteText(data.noted);
@@ -275,8 +288,18 @@ export default function CardTCommentCalender({
           )}
         </CardBody>
       </Card>
-
-      
+      <ModalDelete
+        isOpen={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        messageTitle="Confirm Delete"
+        messageBody="Are you sure you want to delete this note?"
+        messageUndo="Cancel"
+        messageDo="Delete"
+        action={() => {
+          handleDeleteNote(deleteData.calendarId, deleteData.taskId);
+          setDeleteModalOpen(false);
+        }}
+      />
     </>
   );
 }

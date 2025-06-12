@@ -101,34 +101,58 @@ export default function MyCalender({ tasks }) {
       initialNoteValue && initialNoteValue !== trimmedNoteValue;
     const isDeletedNote = initialNoteValue && !trimmedNoteValue;
 
-    // Normalize start date to 00:00:00.000Z UTC
+    /* // Normalize start date to 00:00:00.000Z UTC
     const startDateObj = new Date(`${startDateStr}T00:00:00.000Z`);
     const formattedStartDate = startDateObj.toISOString();
 
     // Normalize end date to 23:59:59.999Z UTC (end of day)
-    const tillDateObj = new Date(`${endDateStr}T23:59:59.999Z`);
+    // const tillDateObj = new Date(`${endDateStr}T23:59:59.999Z`);
+    const tillDateObj = new Date(`${endDateStr}T00:00:00.000Z`);
+    const formattedTillDate = tillDateObj.toISOString(); */
+
+    const startDateObj = new Date(`${startDateStr}T00:00:00.000Z`);
+    const endDateObj = new Date(`${endDateStr}T00:00:00.000Z`);
+
+    // 🔍 Adjust tillDate based on whether it's a single-day
+    let tillDateObj;
+    const isSingleDay = startDateStr === endDateStr;
+
+    if (isSingleDay) {
+      // Set to 23:59:59.999 of the same day
+      tillDateObj = new Date(startDateObj);
+      tillDateObj.setHours(0, 0, 0, 0);
+    } else {
+      // Set to full end day
+      tillDateObj = new Date(endDateObj);
+      tillDateObj.setHours(0, 0, 0, 0);
+    }
+
+    const formattedStartDate = startDateObj.toISOString();
     const formattedTillDate = tillDateObj.toISOString();
 
     try {
       if (isNewNote || isUpdatedNote) {
-        await createNoteInCalendarAction(
+        const response = await createNoteInCalendarAction(
           trimmedNoteValue,
           formattedStartDate,
           formattedTillDate,
           currentEventId
         );
         console.log(`Note ${isNewNote ? "created" : "updated"} successfully.`);
+        if (response.error) {
+          toast.error(response.error.detail || "Error saving note");
+          return { success: false, message: response.error.detail };
+        }
       } else if (isDeletedNote) {
         console.log(
           `Note deletion for Task ID: ${currentEventId} on ${startDateStr} - ${endDateStr}`
         );
-        // Call your API or service to delete the note here:
+        // Uncomment and implement if you have a delete API:
         // await deleteNoteInCalendarAction(currentEventId, formattedStartDate, formattedTillDate);
       }
 
       // Update events state (inject or remove comment event)
       setEvents((prevEvents) => {
-        // Remove existing comment for this task and date range start
         const filtered = prevEvents.filter(
           (ev) =>
             !(
@@ -161,32 +185,50 @@ export default function MyCalender({ tasks }) {
       });
 
       setNoteRefreshKey((prev) => prev + 1); // Trigger UI refresh if needed
+
+      return { success: true };
     } catch (error) {
       console.error("Failed to save/update/delete note via API:", error);
+
+      // Extract meaningful error message if possible
+      const errorMsg =
+        error?.response?.data?.detail ||
+        error?.message ||
+        "Unknown error occurred";
+
+      toast.error(errorMsg);
+
+      return { success: false, message: errorMsg };
     }
+    
   };
 
   const [notes, setNotes] = useState([]);
 
   useEffect(() => {
-    if (!selectedTaskId) {
-      setNotes([]);
-      return;
-    }
+    const fetchAllNotes = async () => {
+      const allNotes = [];
 
-    async function fetchNotes() {
-      try {
-        const allNoted = await getAllNoteInCalendarAction(selectedTaskId);
-        setNotes(allNoted.payload); // ✅ Fix here
-        console.log("Notes fetched:", allNoted.payload);
-      } catch (error) {
-        console.error("Failed to fetch notes:", error);
-        setNotes([]);
+      for (const task of tasks) {
+        try {
+          const response = await getAllNoteInCalendarAction(task.taskId);
+          const taskNotes = Array.isArray(response?.payload)
+            ? response.payload
+            : [];
+
+          allNotes.push(...taskNotes);
+        } catch (error) {
+          console.error("Error fetching notes for task:", task.taskId, error);
+        }
       }
-    }
 
-    fetchNotes();
-  }, [selectedTaskId]);
+      setNotes(allNotes);
+    };
+
+    if (tasks.length > 0) {
+      fetchAllNotes();
+    }
+  }, [tasks]);
 
   console.log("Use noted to find: ", notes); // ✅ Now logs an array
 
@@ -235,79 +277,40 @@ export default function MyCalender({ tasks }) {
     };
   }, [tasks, colorList, notes]);
 
-  // const handleTaskClick = (dateStr, taskId) => {
-  //   const task = mappedTasks.find((t) => t.id === taskId);
-  //   if (task) {
-  //     setEvents([task]);
-  //     setSelectedTaskId(taskId); // <-- set selected task here
-  //     setSelectedTask(task);
-  //     calendarRef.current?.getApi().gotoDate(dateStr);
-  //   }
-  // };
-
-  const commentEvents = notes.map((note, index) => {
-    const color = {
-      text: "text-blue-600",
-      light: "bg-blue-100",
-      border: "border-blue-500",
-      bg: "bg-blue-100", // for backgroundColor
-    };
-
-    return {
-      id: `comment-${index}`,
-      title: "Comment",
-      start: note.notedAt,
-      end: note.tillDate || note.notedAt,
-      extendedProps: {
-        type: "comment",
-        color,
-        notes: [note],
-      },
-      backgroundColor: "#BFDBFE",
-      borderColor: "#3B82F6",
-    };
-  });
-
-
   const handleTaskClick = (dateStr, taskId) => {
     const task = mappedTasks.find((t) => t.id === taskId);
     if (!task) return;
 
-    setSelectedTaskId(taskId); // Triggers note fetch via useEffect
+    setSelectedTaskId(taskId); // Triggers useEffect to fetch notes if needed
     setSelectedTask(task);
     calendarRef.current?.getApi().gotoDate(dateStr);
 
-    // After notes are fetched (already in useEffect), you can map them into comment events.
-    // We'll do a temporary workaround by delaying a bit so notes are loaded.
-    setTimeout(() => {
-      const relatedNotes = notes.filter((note) => note.taskId === taskId);
+    // Show comment events immediately if notes are already available
+    const relatedNotes = notes?.filter((note) => note.taskId === taskId) || [];
 
-      const commentEvents = relatedNotes.map((note, i) => ({
-        id: `${taskId}-comment-${i}`,
-        title: `Note: ${note.noted.slice(0, 20)}...`,
-        start: note.notedAt,
-        end: note.notedAt,
-        extendedProps: {
-          type: "comment",
-          notes: [note], // pass note inside array for renderEventContent
-          color: taskColorMap[taskId], // reuse task color
-        },
-        backgroundColor: "transparent",
-        borderColor: "transparent",
-      }));
+    const commentEvents = relatedNotes.map((note, i) => ({
+      id: `${taskId}-comment-${i}`,
+      title: `Note: ${note.noted?.slice(0, 20) || "No Content"}...`,
+      start: note.notedAt,
+      end: note.tillDate,
+      extendedProps: {
+        type: "comment",
+        notes: [note],
+        color: taskColorMap[taskId],
+      },
+      backgroundColor: "transparent",
+      borderColor: "transparent",
+    }));
 
-      setEvents([task, ...commentEvents]);
-    }, 100); // 100ms wait for notes to be fetched
+    setEvents([task, ...commentEvents]);
   };
 
-
-
   const renderEventContent = ({ event, isStart }) => {
-    const { type, color, notesByDate = {} , notes=[]} = event.extendedProps;
+    const { type, color, notes = [] } = event.extendedProps;
 
     if (type !== "task" && type !== "comment") return null;
 
-    const baseStyle = `rounded border-2 px-2 font-bold ${
+    const baseStyle = `h-[70px] p-1 rounded-small border-2 px-2 font-bold ${
       color?.text || "text-green-600"
     } ${color?.light || "bg-green-100"}`;
     const dayDate = event.range?.start
@@ -325,27 +328,33 @@ export default function MyCalender({ tasks }) {
       event.end
     )}`;
 
-   
     if (type === "comment") {
       return (
         <div
           className={`mt-1 text-[0.7rem] flex flex-col gap-1 rounded border-2 border-dashed px-2 py-1 ${
             color?.text || "text-blue-600"
           } ${color?.light || "bg-blue-100"}`}
+          // style={{ width: "100%" }}
+          style={{
+            width: "100%",
+            height: "30px", // fixed height
+            display: "grid", // use grid
+            gridTemplateRows: "1fr", // or customize rows
+            rowGap: "4px",
+          }}
         >
-          <div className="flex items-center gap-1">
+          <div className="flex flex-row justify-between items-center gap-1">
+            {notes.map((note, i) => (
+              <div key={i} className="truncate">
+                {note.noted}
+              </div>
+            ))}
             <MessageCircleMore className="w-4 h-4" />
-            <span className="font-semibold">Note:</span>
           </div>
-          {notes.map((note, i) => (
-            <div key={i} className="ml-5 truncate">
-              • {note.noted}
-            </div>
-          ))}
         </div>
       );
     }
-    
+
     // TASK BLOCK ONLY
     if (!isStart) {
       return (
@@ -361,11 +370,17 @@ export default function MyCalender({ tasks }) {
         <div
           draggable={false}
           onDragStart={(e) => e.preventDefault()}
-          className={`${baseStyle} p-1 border ${
+          className={`${baseStyle}  border ${
             color?.border || "border-green-500"
           } rounded-medium`}
+          style={{
+            height: "70px", // fixed height
+            display: "grid",
+            gridTemplateRows: "auto 1fr", // 2 rows: date + content
+            gap: 0,
+          }}
         >
-          <div className="text-[0.65rem] font-medium bg-white bg-opacity-80 w-fit px-2 py-[2px] rounded mb-1">
+          <div className="text-[0.65rem] font-medium bg-white bg-opacity-80 w-fit px-2 py-[2px] rounded-small ">
             {formattedDate}
           </div>
           <div className="flex items-center gap-1 text-[0.9rem] h-[60px]">
@@ -373,12 +388,9 @@ export default function MyCalender({ tasks }) {
             <span className="truncate">{event.title}</span>
           </div>
         </div>
-
-        
       </div>
     );
   };
-  
 
   const handleDateNav = (action) => {
     const calendarApi = calendarRef.current?.getApi();
@@ -451,63 +463,64 @@ export default function MyCalender({ tasks }) {
   };
 
   return (
-    <div className="p-4 h-screen flex flex-col overflow-hidden">
+    <div className="p-4 h-screen flex flex-col overflow-hidden relative">
       <BredCrum board="Hikko Design" feature="Calender" header="Calender" />
-      {/* Move header outside the grid */}
-      <div className="flex space-x-[500px] items-center mt-4 px-2 mb-6">
-        <button
-          onClick={() => handleDateNav("today")}
-          className="rounded-full px-4 py-1 shadow-sm bg-white text-gray-600 font-medium border border-gray-200 hover:bg-gray-50 transition"
-        >
-          Today
-        </button>
 
-        <div className="flex items-center gap-4">
-          <button
-            onClick={() => handleDateNav("prev")}
-            className="rounded-full p-2 shadow-sm bg-white text-gray-500 hover:bg-gray-100 transition"
-          >
-            <ChevronLeft className="w-4 h-4" />
-          </button>
-          <h2 className="text-lg font-semibold text-gray-600">
-            {currentTitle}
-          </h2>
-          <button
-            onClick={() => handleDateNav("next")}
-            className="rounded-full p-2 shadow-sm bg-white text-gray-500 hover:bg-gray-100 transition"
-          >
-            <ChevronRight className="w-4 h-4" />
-          </button>
-        </div>
-      </div>
-      {/* Full 12-col grid */}
-      <div className="grid grid-cols-12 gap-4 h-full">
-        <div className="col-span-9 max-h-[700px]  pr-2">
-          <div className="h-full overflow-y-auto scrollbar-hidden">
-            <FullCalendar
-              ref={calendarRef}
-              plugins={[
-                resourceTimelinePlugin,
-                dayGridPlugin,
-                interactionPlugin,
-                timeGridPlugin,
-              ]}
-              headerToolbar={false}
-              initialView="dayGridMonth"
-              events={events}
-              // events={allEvents}
-              eventContent={renderEventContent}
-              datesSet={(arg) => setCurrentTitle(arg.view.title)}
-              height="auto"
-              /* it make comment can select */
-              selectable={true}
-              // select={(info) => handleDateSelect(info)}
-              select={(info, jsEvent) => handleDateSelect({ ...info, jsEvent })}
-            />
+      {/* Main content grid */}
+      <div className="flex flex-1 overflow-hidden scrollbar-hidden gap-4">
+        {/* Calendar Section */}
+        <div className="flex-1 overflow-y-auto scrollbar-hidden max-w-[75%]">
+          {/* Top navigation */}
+          <div className="flex justify-between items-center mt-4 mb-6 px-2">
+            <button
+              onClick={() => handleDateNav("today")}
+              className="rounded-full px-4 py-1 shadow-sm bg-white text-gray-600 font-medium border border-gray-200 hover:bg-gray-50 transition"
+            >
+              Today
+            </button>
+
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => handleDateNav("prev")}
+                className="rounded-full p-2 shadow-sm bg-white text-gray-500 hover:bg-gray-100 transition"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+              <h2 className="text-lg font-semibold text-gray-600">
+                {currentTitle}
+              </h2>
+              <button
+                onClick={() => handleDateNav("next")}
+                className="rounded-full p-2 shadow-sm bg-white text-gray-500 hover:bg-gray-100 transition"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
           </div>
+          <FullCalendar
+            ref={calendarRef}
+            plugins={[
+              resourceTimelinePlugin,
+              dayGridPlugin,
+              interactionPlugin,
+              timeGridPlugin,
+            ]}
+            headerToolbar={false}
+            initialView="dayGridMonth"
+            dayHeaderFormat={{ weekday: "long" }}
+            events={events}
+            eventContent={renderEventContent}
+            datesSet={(arg) => setCurrentTitle(arg.view.title)}
+            height="auto"
+            contentHeight={200}
+            selectable={true}
+            select={(info, jsEvent) => handleDateSelect({ ...info, jsEvent })}
+            displayEventTime={false}
+          />
         </div>
 
-        <div className="col-span-3 h-full pl-2 flex flex-col gap-5">
+        {/* Sidebar Section */}
+        <div className="w-[25%] flex flex-col gap-5 overflow-y-auto scrollbar-hidden absolute top-16 right-1">
           <CardTaskCalender
             tasks={mappedTasks}
             onTaskClick={(dateStr, taskId) => handleTaskClick(dateStr, taskId)}
@@ -519,50 +532,73 @@ export default function MyCalender({ tasks }) {
             noteRefreshKey={noteRefreshKey}
           />
         </div>
-      </div>
 
-      {/* Render dropdown for comment input */}
-      {commentBarInput?.visible && (
-        <div className="mt-4 p-3 bg-white border rounded-xl shadow-md z-10">
-          <h2 className="text-sm mb-2 text-primary font-semibold">
-            Add note for {new Date(commentBarInput.start).toLocaleDateString()}{" "}
-            - {new Date(commentBarInput.end).toLocaleDateString()}
-          </h2>
-          <input
-            type="text"
-            value={noteValue}
-            onChange={(e) => setNoteValue(e.target.value)}
-            onBlur={() => {
+        {/* Dropdown-style note input */}
+        {commentBarInput?.visible &&
+          (() => {
+            const startDate = new Date(commentBarInput.start);
+            const rawEndDate = new Date(commentBarInput.end);
+
+            // Adjust endDate for display
+            const endDate = new Date(rawEndDate);
+            endDate.setMilliseconds(endDate.getMilliseconds() - 1);
+
+            const isSingleDay =
+              startDate.toISOString().slice(0, 10) ===
+              endDate.toISOString().slice(0, 10);
+
+            const handleSave = () => {
+              if (!noteValue.trim()) {
+                toast.error("Note cannot be empty!");
+                return;
+              }
+
               handleNoteSave(
                 commentBarInput.taskId,
                 commentBarInput.start,
                 commentBarInput.end,
                 noteValue,
-                "" // previous note value if editing, or "" for new
+                ""
               );
               setCommentBarInput(null);
               setNoteValue("");
-            }}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                handleNoteSave(
-                  commentBarInput.taskId,
-                  commentBarInput.start,
-                  commentBarInput.end,
-                  noteValue,
-                  ""
-                );
-                setCommentBarInput(null);
-                setNoteValue("");
-              }
-            }}
-            autoFocus
-            placeholder="Write your note here..."
-            className="w-full p-2 border rounded-md outline-none text-sm"
-          />
-        </div>
-      )}
+            };
+
+            return (
+              <div className="absolute bottom-20 left-4 right-4 z-50 bg-white rounded-xl shadow-md p-4 border w-[500px] mx-auto">
+                <h2 className="text-sm mb-2 text-primary font-semibold">
+                  Add note for {startDate.toLocaleDateString()}{" "}
+                  {!isSingleDay && `- ${endDate.toLocaleDateString()}`}
+                </h2>
+                <input
+                  type="text"
+                  value={noteValue}
+                  onChange={(e) => setNoteValue(e.target.value)}
+                  onBlur={() => {
+                    if (noteValue.trim()) {
+                      handleSave();
+                    } else {
+                      toast.error("Note cannot be empty!");
+                    }
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      if (noteValue.trim()) {
+                        handleSave();
+                      } else {
+                        toast.error("Note cannot be empty!");
+                      }
+                    }
+                  }}
+                  autoFocus
+                  placeholder="Write your note here..."
+                  className="w-full px-3 py-2 border border-gray-300 rounded-medium outline-none text-sm focus:ring-2 focus:ring-primary"
+                />
+              </div>
+            );
+          })()}
+      </div>
 
       <ToastContainer position="top-center" autoClose={4000} />
     </div>

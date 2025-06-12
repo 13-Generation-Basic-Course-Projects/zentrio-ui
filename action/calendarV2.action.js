@@ -1,6 +1,6 @@
 "use server";
 import { Token } from "@/constant/token";
-import { createNoteInCalendarService, deleteNoteInCalendarService, getAllNoteInCalendarService, getCalendarByBoardIdAndUserIdService, getGanttBarByGanttChartIdService, getGanttChartByBoardIdService, getNoteInCalendarService, getTaskByBoardIdAndGanttBarIdService } from "@/service/calendarV2.service";
+import { createNoteInCalendarService, deleteNoteInCalendarService, getAllNoteInCalendarService, getCalendarByBoardIdAndUserIdService, getChecklistByTaskIdService, getGanttBarByGanttChartIdService, getGanttChartByBoardIdService, getNoteInCalendarService, getTaskByBoardIdAndGanttBarIdService } from "@/service/calendarV2.service";
 /*
  * getTaskbyBoardId and GanttbarId
  */
@@ -150,6 +150,29 @@ export const updateNoteInCalendarAction = async (
     return result;
   } catch (error) {
     console.error("updateNoteInCalendarAction error:", error);
+    throw error;
+  }
+};
+
+
+/*
+ * Get all checklist by task id
+ */
+
+
+export const getChecklistByTaskIdAction = async (taskId) => {
+  
+  try {
+    const userToken = await Token();
+    const token = userToken.Credential;
+
+    const result = await getChecklistByTaskIdService({
+      taskId: taskId,
+      token: token,
+    });
+    return result;
+  } catch (error) {
+    console.error("getChecklistByTaskIdAction error:", error);
     throw error;
   }
 };
