@@ -45,14 +45,15 @@ export const getAllAnnouncementByBoardIdAction = async (boardId) => {
 };
 
 
-export const deleteAnnouncementByIdAction = async (announId) => {
+export const deleteAnnouncementByIdAction = async (id) => {
 
+console.log("kdet",id)
     const userToken = await Token();
     const token = userToken.Credential;
-    const result = await deleteAnnouncementByIdService({
-        announId,
+    const result = await deleteAnnouncementByIdService(
+        id,
         token,
-    });
+    );
     revalidatePath("/delete");
     return result;
-}
+};

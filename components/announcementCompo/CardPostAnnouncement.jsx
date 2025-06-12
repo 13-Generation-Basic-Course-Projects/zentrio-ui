@@ -1,11 +1,21 @@
+// "use client";
+
 import { ThumbsUp, Bookmark, EllipsisVertical, Pin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import ModalOptionAnnoun from "./ModalOptionAnnoun";
+// import { useState } from "react";
 
-export default function CardPostAnnouncement({ Announcements }) {
+export default function CardPostAnnouncement({ Announcements, }) {
   const announcementList = Announcements?.payload || [];
-  console.log("announcement", announcementList);
+  // console.log("announcement", announcementList);
+  // const [localAnnouncements, setLocalAnnouncements] = useState(announcementList);
+  // console.log("announcementlist",announcementList);
+
+  const handleDeleteSuccess = (deletedId) => {
+    // console.log("id to delete: ", deletedId)
+    // setLocalAnnouncements(prev => prev.filter(ann => ann.id !== deletedId));
+  };
 
   return (
     <div className="max-w-4xl mx-auto h-screen overflow-hidden p-4">
@@ -52,7 +62,11 @@ export default function CardPostAnnouncement({ Announcements }) {
                   size="sm"
                   className="text-title hover:text-primary"
                 >
-                  <ModalOptionAnnoun/>
+                  <ModalOptionAnnoun 
+                    Announcement={announcement}
+                    announId={announcement.announcementId}
+                    // onDeleteSuccess={() => handleDeleteSuccess(announcement.id)}
+                  />
                 </Button>
               </div>
 
