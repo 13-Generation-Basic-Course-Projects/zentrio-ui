@@ -31,6 +31,7 @@ import { profileSchema } from "@/lib/schemas/editprofileSchema";
 import { getCurrentUserProfileAction, updateAchievementAction, updateUserProfileAction } from "@/action/profile.action";
 import { Controller } from "react-hook-form";
 import { sendNotificationForAllUserAction, sendNotificationToUserIdAction } from "@/action/notification.action";
+import { sendNotificationToUserIdService } from "@/service/notification.service";
 
 export const gender = [
   { key: "male", label: "Male" },
@@ -147,13 +148,6 @@ export function ModalEditProfile({ currentUserProfile }) {
       const response = await updateAchievementAction(payload); // API call with correct structure
       onOpenChange(false);
 
-
-      /* Testing send notification to users*/
-      console.log("Calling sendNotificationForAllUserAction...");
-      await sendNotificationForAllUserAction({
-        data: "✅ The task has been marked as completed!", // 👈 Send string only
-      });
-      
     } catch (error) {
       console.error("Error saving achievements:", error);
     }

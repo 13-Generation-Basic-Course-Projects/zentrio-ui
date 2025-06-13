@@ -13,6 +13,7 @@ import { revalidatePath } from "next/cache";
 export const getCurrentUserProfileAction = async () => {
   const userToken = await Token();
   const token = userToken.Credential;
+  console.log("token", token);
   const result = await getCurrentUserProfileService({
     token,
   });

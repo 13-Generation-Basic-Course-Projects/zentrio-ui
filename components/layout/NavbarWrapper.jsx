@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation";
 import { NavbarAuthorized } from "./NavbarAutherized";
 
-export default function NavbarWrapper({ user,notification }) {
+export default function NavbarWrapper({ user, notificationData }) {
   const pathname = usePathname();
   // Hide navbar if on certain paths
   const hideNavbar =
@@ -13,5 +13,5 @@ export default function NavbarWrapper({ user,notification }) {
 
   if (hideNavbar) return null;
 
-  return <NavbarAuthorized user={user} notification={notification} />;
+  return <NavbarAuthorized user={user} notificationData={notificationData} />;
 }

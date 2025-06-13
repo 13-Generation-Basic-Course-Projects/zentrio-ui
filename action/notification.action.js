@@ -2,6 +2,9 @@
 
 import { Token } from "@/constant/token";
 import {
+  deleteAllNotificationForUserIdService,
+  deleteNotificationByIdAndUserIdService,
+  deleteNotificationByIdService,
   getNotificationForUserIdService,
   sendNotificationForAllUserService,
   sendNotificationToUserId,
@@ -19,22 +22,22 @@ export const sendNotificationForAllUserAction = async ({ data }) => {
   }
 };
 
-export const sendNotificationToUserIdAction = async ({
+export const sendNotificationToUserIdAction = async (
   receiverId,
   taskId,
   data,
-}) => {
+) => {
   try {
     const userToken = await Token();
     const token = userToken.Credential;
 
     // Call the service with token included
-    const result = await sendNotificationToUserIdService({
+    const result = await sendNotificationToUserIdService(
       receiverId,
       taskId,
       data,
       token,
-    });
+    );
 
     return result;
   } catch (error) {
@@ -61,5 +64,38 @@ export const getNotificationForUserIdAction = async (userId) => {
     // Catch specific errors if needed, otherwise re-throw or handle generically
     console.error("Failed to get notification for user:", error.message);
     throw error; // Re-throwing the error to be handled by the caller of the action
+  }
+};
+
+
+
+
+export const deleteNotificationByIdAction = async (notificationId) => {
+  console.log("notification id in the action", notificationId);
+
+  try {
+    const userToken = await Token();
+    const token = userToken.Credential;
+
+    console.log("id in the action", notificationId);
+
+    if (!token) {
+      console.error("Authentication token is missing.");
+      return { error: "Authentication token missing" }; // Plain object
+    }
+
+    const result = await deleteNotificationByIdService(notificationId, token);
+
+    // Ensure the result is a plain object
+    const plainResult = {
+      success: true,
+      id: notificationId,
+      // Add other serializable properties if needed
+    };
+
+    return plainResult; // Return a plain object
+  } catch (error) {
+    console.error("Failed to delete notification:", error.message);
+    return { error: error.message }; // Return a plain object
   }
 };

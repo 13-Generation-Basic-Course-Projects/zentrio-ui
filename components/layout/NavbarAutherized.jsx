@@ -1,11 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import userProfile from "@/assets/profile.png";
 import ModalNotification from "../modal/noti/ModalNotification";
-export function NavbarAuthorized({ user, notification }) {
+export function NavbarAuthorized({ user, notificationData }) {
+  // const notifications = notificationData?.payload ?? [];
+  console.log("notification in  the nav bar authication", notificationData);
+
   console.log("pf", user);
   return (
     <>
@@ -17,7 +19,7 @@ export function NavbarAuthorized({ user, notification }) {
             {/* Right side - Notification and Profile */}
             <div className="flex items-center gap-4">
               {/* Notification Icon */}
-              <ModalNotification notificationData={notification} />
+              <ModalNotification notificationData={notificationData} />
 
               {/* Profile */}
               <Link href="/profile">

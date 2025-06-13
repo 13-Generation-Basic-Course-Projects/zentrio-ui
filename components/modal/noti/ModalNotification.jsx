@@ -6,88 +6,102 @@ import {
   DropdownItem,
   Button,
 } from "@heroui/react";
-
 import notification from "../../../assets/notification.png";
 import ActiveIcon from "@/assets/profile.png";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { deleteNotificationByIdAction } from "@/action/notification.action";
 
-export default function ModalNotification({notificationData}) {
+export default function ModalNotification({ notificationData }) {
   const [isActive, setIsActive] = useState(false);
   const [markAllRead, setMarkAllRead] = useState(false);
   const [showAll, setShowAll] = useState(false);
   const [notifications, setNotifications] = useState([]);
+  const [error, setError] = useState(null);
 
+  // Process notificationData to create notifications array
   useEffect(() => {
-    console.log("notificationData:", notificationData);
-  }, [notificationData]);
-  
-  useEffect(() => {
-    if (notificationData && Array.isArray(notificationData)) {
-      const formatted = notificationData.map((item, index) => ({
-        id: item.id || index,
-        sender: item.sender,
-        message: item.message,
-        action: item.action,
-        date: item.createdAt?.split("T")[0] ?? item.date ?? "",
-        read: item.read ?? false,
-      }));
-      setNotifications(formatted);
+    if (!notificationData || !Array.isArray(notificationData?.payload)) {
+      console.warn("Invalid notificationData:", notificationData);
+      setNotifications([]);
+      return;
     }
+
+    const formatted = notificationData.payload.map((item, index) => ({
+      id: item.id ?? index,
+      content: item.message ?? item.content ?? "No content",
+      action: item.action ?? "",
+      createdAt: item.createdAt?.split("T")[0] ?? item.date ?? "",
+      read: item.read ?? item.isRead ?? false,
+      notificationId: item.notificationId ?? item.id ?? index,
+      sender: item.sender
+        ? {
+            userId: item.sender.userId,
+            username: item.sender.username,
+            email: item.sender.email,
+            contact: item.sender.contact,
+            gender: item.sender.gender,
+            location: item.sender.location,
+            position: item.sender.position,
+            profileImage: item.sender.profileImage,
+          }
+        : {
+            userId: null,
+            username: "Unknown Sender",
+          },
+    }));
+    setNotifications(formatted);
   }, [notificationData]);
-  
 
-
-  // Sample notifications data - moved to state so we can modify it
-  // const [notifications, setNotifications] = useState([
-  //   {
-  //     id: 1,
-  //     sender: "Seam Chiminh",
-  //     message: "welcome to Zentrio system",
-  //     action: "created Task Back-End.",
-  //     date: "5 May",
-  //     read: false,
-  //   },
-  //   {
-  //     id: 2,
-  //     sender: "John Doe",
-  //     message: "updated project timeline",
-  //     action: "modified Task Front-End.",
-  //     date: "6 May",
-  //     read: false,
-  //   },
-  //   // Add more notifications as needed
-  //   ...Array.from({ length: 10 }, (_, i) => ({
-  //     id: i + 3,
-  //     sender: `User ${i + 3}`,
-  //     message: `Notification message ${i + 3}`,
-  //     action: `performed action ${i + 3}`,
-  //     date: `${i + 7} May`,
-  //     read: false,
-  //   })),
-  // ]);
-
+  // Mark all notifications as read
   const markAllAsRead = () => {
     setIsActive(true);
     setMarkAllRead(true);
+    setNotifications((prev) =>
+      prev.map((n) => ({
+        ...n,
+        read: true,
+      }))
+    );
   };
 
-  // Delete notification function
+  // Delete a single notification from local state
   const deleteNotification = (notificationId) => {
-    setNotifications(prev => prev.filter(notification => notification.id !== notificationId));
+    setNotifications((prev) =>
+      prev.filter(
+        (notification) => notification.notificationId !== notificationId
+      )
+    );
   };
 
-  // Delete all notifications function
+  // Delete all notifications
   const deleteAllNotifications = () => {
     setNotifications([]);
   };
 
+  // Handle delete action
+  async function handleDelete(notificationId) {
+    try {
+      setError(null);
+      const result = await deleteNotificationByIdAction(notificationId);
+      if (result.success) {
+        deleteNotification(notificationId); // Update local state
+      } else {
+        setError(result.error || "Failed to delete notification");
+      }
+    } catch (error) {
+      console.error("Error in handleDelete:", error.message);
+      setError(
+        error.message || "An error occurred while deleting the notification"
+      );
+    }
+  }
+
+  // Limit displayed notifications unless showAll is true
   const displayedNotifications = showAll
     ? notifications
     : notifications.slice(0, 3);
-  
-  
-  console.log("display data", displayedNotifications);
+
   return (
     <Dropdown className="p-0 bg-transparent">
       <DropdownTrigger>
@@ -191,6 +205,13 @@ export default function ModalNotification({notificationData}) {
                 </div>
               </div>
 
+              {/* Error Display */}
+              {error && (
+                <div className="px-[15px] py-[10px] text-red-500 text-[12px] text-center">
+                  {error}
+                </div>
+              )}
+
               {/* Notification Items */}
               <div className="overflow-y-scroll h-[350px] scrollbar-hidden">
                 {notifications.length === 0 ? (
@@ -224,9 +245,7 @@ export default function ModalNotification({notificationData}) {
                     <div
                       key={notificationItem.id}
                       className={`flex justify-between items-start ${
-                        markAllRead
-                          ? "bg-white"
-                          : notificationItem.read
+                        markAllRead || notificationItem.read
                           ? "bg-white"
                           : "bg-slate-blue-more"
                       } py-[15px] px-[5px] border-b border-white hover:bg-gray-50 transition-colors`}>
@@ -240,16 +259,14 @@ export default function ModalNotification({notificationData}) {
                         </div>
                         <div className="flex flex-col gap-[3px]">
                           <p className="text-[14px] text-title">
+                            {notificationItem.sender?.username ??
+                              "Unknown sender"}
+                          </p>
+                          <p className="text-[12px] text-description">
                             {notificationItem.content}
                           </p>
                           <p className="text-[12px] text-description">
-                            {notificationItem.type}
-                          </p>
-                          <p className="text-[12px] text-description">
-                            {notificationItem.isRead}
-                          </p>
-                          <p className="text-[12px] text-description">
-                            {/* {notificationItem.createdAt.split("T")[0]} */}
+                            {notificationItem.createdAt}
                           </p>
                         </div>
                       </div>
@@ -258,10 +275,9 @@ export default function ModalNotification({notificationData}) {
                           <div className="w-[7px] h-[7px] rounded-full bg-primary mb-[7px]"></div>
                         )}
                         <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            deleteNotification(notificationItem.id);
-                          }}
+                          onClick={() =>
+                            handleDelete(notificationItem.notificationId)
+                          }
                           className="hover:scale-110 transition-transform text-red-500 hover:text-red-700"
                           title="Delete notification">
                           <svg
@@ -304,8 +320,8 @@ export default function ModalNotification({notificationData}) {
                   <p
                     className={
                       isActive
-                        ? `text-[12px] text-description cursor-pointer`
-                        : `text-[12px] text-primary cursor-pointer hover:text-blue-600 transition-colors`
+                        ? "text-[12px] text-description cursor-pointer"
+                        : "text-[12px] text-primary cursor-pointer hover:text-blue-600 transition-colors"
                     }
                     onClick={markAllAsRead}>
                     Mark All As Read
