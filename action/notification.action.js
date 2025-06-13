@@ -2,14 +2,13 @@
 
 import { Token } from "@/constant/token";
 import {
-  deleteAllNotificationForUserIdService,
-  deleteNotificationByIdAndUserIdService,
+  deleteAllNotificationService,
   deleteNotificationByIdService,
   getNotificationForUserIdService,
   sendNotificationForAllUserService,
-  sendNotificationToUserId,
   sendNotificationToUserIdService,
 } from "@/service/notification.service";
+import { revalidatePath } from "next/cache";
 
 export const sendNotificationForAllUserAction = async ({ data }) => {
   const userToken = await Token();
@@ -71,13 +70,9 @@ export const getNotificationForUserIdAction = async (userId) => {
 
 
 export const deleteNotificationByIdAction = async (notificationId) => {
-  console.log("notification id in the action", notificationId);
-
   try {
     const userToken = await Token();
     const token = userToken.Credential;
-
-    console.log("id in the action", notificationId);
 
     if (!token) {
       console.error("Authentication token is missing.");
@@ -85,7 +80,8 @@ export const deleteNotificationByIdAction = async (notificationId) => {
     }
 
     const result = await deleteNotificationByIdService(notificationId, token);
-
+    revalidatePath('/notification')
+    
     // Ensure the result is a plain object
     const plainResult = {
       success: true,
@@ -99,3 +95,26 @@ export const deleteNotificationByIdAction = async (notificationId) => {
     return { error: error.message }; // Return a plain object
   }
 };
+
+
+export const deleteAllNotificationAction = async () => {
+  try {
+    const userToken = await Token();
+    const token = userToken?.Credential;
+
+    if (!token) {
+      console.error("Authentication token is missing.");
+      return { error: "Authentication token missing" };
+    }
+
+    const result = await deleteAllNotificationService(token);
+    revalidatePath("/notification");
+    const plainResult = {
+      success: true,
+    }
+    return plainResult;
+  } catch (error) {
+    console.error("Failed to delete all notifications:", error);
+    return { error: error.message || "Unknown error occurred" };
+  }
+}

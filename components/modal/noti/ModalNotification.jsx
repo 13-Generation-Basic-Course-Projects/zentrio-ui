@@ -10,7 +10,7 @@ import notification from "../../../assets/notification.png";
 import ActiveIcon from "@/assets/profile.png";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { deleteNotificationByIdAction } from "@/action/notification.action";
+import { deleteAllNotificationAction, deleteNotificationByIdAction } from "@/action/notification.action";
 
 export default function ModalNotification({ notificationData }) {
   const [isActive, setIsActive] = useState(false);
@@ -96,6 +96,22 @@ export default function ModalNotification({ notificationData }) {
       );
     }
   }
+  
+
+  async function handleDeleteAll() {
+    try {
+      setError(null);
+      const result = await deleteAllNotificationAction();
+      if (result.success) {
+        deleteAllNotifications();
+      } else {
+        setError(result.error || "Failed to delete all notification");
+      }
+    } catch (error) {
+      console.error("Error in handle deleted all notification");
+      setError(error.message || "An error occurred while deleting the notification");
+    }
+  }
 
   // Limit displayed notifications unless showAll is true
   const displayedNotifications = showAll
@@ -132,7 +148,7 @@ export default function ModalNotification({ notificationData }) {
                   {/* Delete all button */}
                   {notifications.length > 0 && (
                     <button
-                      onClick={deleteAllNotifications}
+                      onClick={()=> handleDeleteAll()}
                       className="text-red-500 hover:text-red-700 transition-colors"
                       title="Delete all notifications">
                       <svg

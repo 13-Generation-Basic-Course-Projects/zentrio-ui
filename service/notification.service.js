@@ -34,7 +34,7 @@ export const sendNotificationToUserIdService = async (
   receiverId,
   taskId,
   data,
-  token,
+  token
 ) => {
   const url = notificationRouteGroup.sendNotificationToUserId(
     receiverId,
@@ -72,7 +72,6 @@ export const sendNotificationToUserIdService = async (
   }
 };
 
-
 export const getNotificationForUserIdService = async ({ userId, token }) => {
   // Validate userId to ensure it's not undefined or null before making the request
   if (!userId) {
@@ -83,7 +82,7 @@ export const getNotificationForUserIdService = async ({ userId, token }) => {
   }
 
   const url = notificationRouteGroup.getNotificationForUserId(userId);
-  
+
   const response = await fetch(url, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -94,7 +93,6 @@ export const getNotificationForUserIdService = async ({ userId, token }) => {
   const data = await response.json();
   return data;
 };
-
 
 export const deleteNotificationByIdService = async (notificationId, token) => {
   if (!notificationId) {
@@ -124,3 +122,19 @@ export const deleteNotificationByIdService = async (notificationId, token) => {
   }
 };
 
+export const deleteAllNotificationService = async (token) => {
+  const url = notificationRouteGroup.deleteAllNotification();
+  try {
+    const response = await fetch(url, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response;
+  } catch (error) {
+    console.error("Can't delete notification:", error);
+    throw error;
+  }
+};

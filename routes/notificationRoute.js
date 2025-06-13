@@ -12,4 +12,6 @@ export const notificationRouteGroup = {
 
   deleteNotificationById: (notificationId) =>
     `${apiConfig.baseUrl}/notifications/${notificationId}`,
+
+  deleteAllNotification: () => `${apiConfig.baseUrl}/notifications`,
 };
