@@ -11,9 +11,6 @@ const VerticalChartNoSSR = dynamic(() => import("../chart/VerticalChart"), {
 });
 
 export default function Reportpage({ modal, report }) {
-  const [amtpm, setAmtPm] = useState();
-  const [amttl, setAmttl] = useState();
-  const [amtM, setAmtM] = useState();
 
   const task = {
     todo: 0,
@@ -22,7 +19,13 @@ export default function Reportpage({ modal, report }) {
     done: 0,
   };
 
-  report.payload.allTasks.forEach((item) => {
+  const userRole = {
+    pm: 0,
+    tl: 0,
+    m: 0
+  };
+
+  report?.payload?.allTasks.forEach((item) => {
     if (item.task == "TO DO") {
       ++task.todo;
     } else if (item.task == "IN_PROGRESS") {
@@ -72,25 +75,15 @@ export default function Reportpage({ modal, report }) {
   const totalTask = task.todo + task.progress + task.review + task.done;
 
   // this use to count amount of project manager, team leader, member
-  useEffect(() => {
-    if (report?.payload?.allMembers) {
-      // Reset values first
-      setAmtPm(0);
-      setAmttl(0);
-      setAmtM(0);
-
-      // Process each member
-      report?.payload?.allMembers.forEach((item) => {
+  report?.payload?.allMembers.forEach((item) => {
         if (item.roleName === "ROLE_MANAGER") {
-          setAmtM(item.total != 0 ? item.total : 0);
+          ++userRole.pm;
         } else if (item.roleName === "ROLE_LEADER") {
-          setAmttl(item.total != 0 ? item.total : 0);
+          ++userRole.tl;
         } else if (item.roleName === "ROLE_MEMBER") {
-          setAmtPm(item.total != 0 ? item.total : 0);
+          ++userRole.m;
         }
       });
-    }
-  }, [report]);
 
   const maximum = report?.payload?.version;
   const allVersion = Array.from({ length: maximum }, (_, i) => i + 1);
@@ -102,7 +95,7 @@ export default function Reportpage({ modal, report }) {
     inDone: 0,
   };
 
-  report.payload.allTasks.forEach((item) => {
+  report?.payload?.allTasks.forEach((item) => {
     if (item.task == "TO DO") {
       cheklist.inTodo = cheklist.inTodo + item.checklist.length;
     } else if (item.task == "IN_PROGRESS") {
@@ -179,6 +172,10 @@ const calculateMonthlyTotal = (allTasks, weekStart, targetStage) => {
 const processTasksToWeeklyData = (allTasks) => {
   // Group tasks by week and status, but keep original dates
   const weeklyGroups = {};
+
+  if (!allTasks || !Array.isArray(allTasks)) {
+    return weeklyGroups;
+  }
   
   allTasks.forEach(task => {
     const startWeek = getWeekKey(task.startAt); // Use for grouping only
@@ -230,7 +227,7 @@ const processTasksToWeeklyData = (allTasks) => {
   
   const weeklyChartData = processTasksToWeeklyData(report?.payload?.allTasks);
 
-  
+  // console.log("ReportPage: ", report)
   // End Code
   return (
     <>
@@ -308,7 +305,7 @@ const processTasksToWeeklyData = (allTasks) => {
                 <div className="relative w-[200px] h-[200px] mx-auto">
                   {/* Big Blue Circle */}
                   <div className="absolute w-[160px] h-[160px] bg-blue-500 rounded-full border-3 border-bgColor flex items-center justify-center">
-                    <p className="text-h3 text-white font-semibold">{amtM}</p>
+                    <p className="text-h3 text-white font-semibold">{userRole.m}</p>
                   </div>
 
                   {/* Medium Purple Circle */}
@@ -316,7 +313,7 @@ const processTasksToWeeklyData = (allTasks) => {
                     className="absolute w-[100px] h-[100px] bg-purple-500 rounded-full border-3 border-bgColor flex items-center justify-center"
                     style={{ top: "20px", left: "120px" }}
                   >
-                    <p className="text-h5 text-white font-semibold">{amttl}</p>
+                    <p className="text-h5 text-white font-semibold">{userRole.tl}</p>
                   </div>
 
                   {/* Small Black Circle */}
@@ -324,7 +321,7 @@ const processTasksToWeeklyData = (allTasks) => {
                     className="absolute w-[80px] h-[80px] bg-black rounded-full border-3 border-bgColor flex items-center justify-center"
                     style={{ top: "80px", left: "110px" }}
                   >
-                    <p className="text-h6 text-white font-semibold">{amtpm}</p>
+                    <p className="text-h6 text-white font-semibold">{userRole.pm}</p>
                   </div>
                 </div>
                 <div className="flex justify-between text-title/50 text-caption items-center">

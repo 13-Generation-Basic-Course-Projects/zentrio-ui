@@ -13,27 +13,13 @@ import {
 
 // Fixed soft colors for 4 stages
 const stageColors = {
-  Todo: "hsl(210, 70%, 85%)", // Soft blue
+  "TO DO": "hsl(210, 70%, 85%)", // Soft blue
   "On Progress": "hsl(40, 70%, 85%)", // Soft yellow
   "Under Review": "hsl(260, 70%, 85%)", // Soft purple
   Done: "hsl(160, 70%, 85%)", // Soft green
 };
 
 export default function VerticalChart({ weeknum, totalTask ,chartData }) {
-  // const chartData = [
-  //   { date: "2024-01-10", stage: "Todo", weekly: 2, monthly: 6 },
-  //   { date: "2024-02-12", stage: "On Progress", weekly: 3, monthly: 7 },
-  //   { date: "2024-03-15", stage: "Done", weekly: 1, monthly: 4 },
-  //   { date: "2024-04-18", stage: "Under Review", weekly: 2, monthly: 5 },
-  //   { date: "2024-05-20", stage: "Todo", weekly: 4, monthly: 8 },
-  //   { date: "2024-06-22", stage: "On Progress", weekly: 3, monthly: 6 },
-  //   { date: "2024-07-24", stage: "Done", weekly: 2, monthly: 7 },
-  //   { date: "2024-08-26", stage: "Under Review", weekly: 1, monthly: 3 },
-  //   { date: "2024-09-10", stage: "Todo", weekly: 2, monthly: 4 },
-  //   { date: "2024-10-14", stage: "On Progress", weekly: 3, monthly: 5 },
-  //   { date: "2024-11-17", stage: "Done", weekly: 2, monthly: 6 },
-  //   { date: "2024-12-19", stage: "Under Review", weekly: 1, monthly: 2 },
-  // ];
 
   const [activeChart, setActiveChart] = useState("weekly");
   const chartContainerRef = useRef(null);
@@ -69,6 +55,7 @@ export default function VerticalChart({ weeknum, totalTask ,chartData }) {
       groups[groupKey][stage] += activeChart === "weekly" ? weekly : monthly;
     });
 
+    console.log("ChartData: ", chartData)
     return Object.values(groups);
   }, [activeChart]);
 

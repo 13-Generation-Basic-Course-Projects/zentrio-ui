@@ -6,22 +6,22 @@ import { Token } from "@/constant/token";
 import React from "react";
 
 //useage route : http://localhost:3000/dashboard/1/1/report
-export default async function Report({ boardId }) {
-  // export default async function Report() {
-  // const boardId = `feb6d22e-b2d6-4105-b3ad-663c7148c337`;
+// export default async function Report({ boardId }) {
+  export default async function Report() {
+  const boardId = `d4f6ed17-3f68-48b4-9cbb-fa141a2d2000`;
   // const {boardId} = params;
   const reportData = await getReportAction({ boardId });
   // console.log("Param: ", boardId)
+  // console.log("Report: ", reportData)
 
   return (
     <>
       <Reportpage
         modal={[
-          <BtnPreview key="btn-preview" />,
+          <BtnPreview key="btn-preview" />, 
           <ModalSaveAs key="modal-save-as" />,
         ]}
         report={reportData}
-        boardId={boardId} // -> prop me if you can
       />
     </>
   );
