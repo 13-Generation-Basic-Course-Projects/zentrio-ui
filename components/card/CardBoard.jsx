@@ -170,6 +170,7 @@ export default function CardBoard({
               className="object-cover rounded-xl w-full h-32"
             />
           ) : (
+            // No cover at all
             <div
               className="rounded-xl w-full h-32 bg-gray-200"
               aria-label={`No image available for ${title}`}

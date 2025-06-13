@@ -27,6 +27,7 @@ export default async function Member({ params }) {
 
   return (
     <Memberpage
+    boardId={boardId}
       boardMember={boardMember}
       preventUserImage={preventUserImage}
       boardId={boardId}
