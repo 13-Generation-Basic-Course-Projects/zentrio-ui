@@ -2,24 +2,30 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { reactAction } from "@/action/react.action";
 
 const reactions = [
   { label: "Like", emoji: "👍" },
   { label: "Love", emoji: "❤️" },
-  { label: "Haha", emoji: "😂" },
-  { label: "Wow", emoji: "😮" },
+  { label: "Funny", emoji: "😂" },
+  { label: "Surprised", emoji: "😮" },
   { label: "Sad", emoji: "😢" },
   { label: "Angry", emoji: "😡" },
 ];
 
-export function LikeReactionButton() {
+export function LikeReactionButton({announId}) {
   const [selectedReaction, setSelectedReaction] = useState(null);
   const [showPicker, setShowPicker] = useState(false);
   let closeTimeout;
 
-  const handleReactionSelect = (reaction) => {
+  console.log("kkaaa", announId)
+
+  const handleReactionSelect = async (reaction) => {
+    console.log("Calling reactAction with:", reaction, announId);
     setSelectedReaction(reaction);
     setShowPicker(false);
+    await reactAction({reaction,announId});
+
   };
 
   const currentReaction = selectedReaction || reactions[0];

@@ -23,18 +23,30 @@ export const createAnnouncementByBoardIdService = async ({
   return data;
 };
 
-// not finnish
-export const uploadMultiImgByBoardIdService = async ({ boardId, token }) => {
+export const uploadMultiImgByBoardIdService = async ({ boardId, image, token }) => {
   const url = announcementRouteGroup.uploadMultiImgByBoardId(boardId);
+  console.log("url",url)
+  const formData = new FormData();
+  formData.append("boardId", boardId);
+
+  // Safely loop if imageFiles is array
+  if (Array.isArray(image)) {
+    image.forEach((file) => {
+      formData.append("files", file); // Make sure this matches your backend field name
+    });
+  }
+  console.log("kakak",formData)
+
   const res = await fetch(url, {
     method: "POST",
     headers: {
-      accept: "*/*",
-      "Content-Type": "application/json",
+         "accept": "*/*",
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({ boardId }),
+    body: formData,
+
   });
+
   const data = await res.json();
   console.log("img announcement", data);
   return data;

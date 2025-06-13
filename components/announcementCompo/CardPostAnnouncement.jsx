@@ -4,13 +4,13 @@ import { ThumbsUp, Bookmark, EllipsisVertical, Pin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import ModalOptionAnnoun from "./ModalOptionAnnoun";
-import { ImageViewer } from "./popupImage";
 import { LikeReactionButton } from "./ModalLikeComponent";
+import ImageViewer from "./popupImage";
 // import { useState } from "react";
 
-export default function CardPostAnnouncement({ Announcements, }) {
+export default function CardPostAnnouncement({ Announcements }) {
   const announcementList = Announcements?.payload || [];
-  // console.log("announcement", announcementList);
+   console.log("announcement", announcementList);
   // const [localAnnouncements, setLocalAnnouncements] = useState(announcementList);
   // console.log("announcementlist",announcementList);
 
@@ -76,7 +76,7 @@ export default function CardPostAnnouncement({ Announcements, }) {
               {/* Actions */}
               <div className="flex items-center justify-between border-t border-gray-100 pt-4">
                 <div className="flex items-center gap-6">
-                  <LikeReactionButton />
+                  <LikeReactionButton announId={announcement.announcementId} />
                   <Button
                     variant="ghost"
                     size="sm"

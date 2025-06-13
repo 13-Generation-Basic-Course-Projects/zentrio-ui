@@ -117,8 +117,8 @@ export default function ModalOptionAnnoun({ Announcement, announId, onDeleteSucc
   return (
     <Dropdown className="z-[10px]">
       <DropdownTrigger>
-        <Button variant="ghost" className="p-0 min-w-0 h-auto w-auto ">
-          <div className="hover:text-black text-gray-600  px-2 py-1">
+        <div className="p-0 min-w-0 h-auto w-auto cursor-pointer">
+          <div className="hover:text-black text-gray-600 px-2 py-1">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="w-4 h-4"
@@ -128,8 +128,9 @@ export default function ModalOptionAnnoun({ Announcement, announId, onDeleteSucc
               <path d="M10 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4z" />
             </svg>
           </div>
-        </Button>
+        </div>
       </DropdownTrigger>
+
 
       <DropdownMenu
         aria-label="Dropdown menu with description"
@@ -163,7 +164,7 @@ export default function ModalOptionAnnoun({ Announcement, announId, onDeleteSucc
             announId={announId}
             onDeleteSuccess={announId}
           />
-          
+
         </DropdownItem>
       </DropdownMenu>
     </Dropdown>
