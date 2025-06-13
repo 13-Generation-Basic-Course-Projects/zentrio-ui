@@ -53,6 +53,7 @@ export const {
       },
     }),
   ],
+  secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     async jwt(token) {
       // if (account) {

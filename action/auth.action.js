@@ -1,7 +1,6 @@
 "use server";
 import { signIn, signOut } from "@/auth";
 import {
-  loginWithGoogleZentrioService,
   loginZentrioCredentailService,
   loginZentrioService,
   otpZentrioService,
@@ -9,7 +8,7 @@ import {
 } from "../service/auth.service";
 import { useAuthStore } from "../lib/store";
 import { redirect } from "next/navigation";
-
+import { loginGoogleService } from "../service/auth.service";
 //google login
 export async function doSocialLogin(formData) {
   const action = formData.get("action");
