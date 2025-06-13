@@ -6,16 +6,17 @@ import CardFilterComponent from "../announcementCompo/CardFilterComponent";
 
 export default function Announcementpage({ boardId, Announcements, boardMember }) {
   console.log("All announcement",Announcements);
-  console.log("boardid",boardId);
+  console.log("kdet",boardId);
+    console.log("kdet2",boardMember);
   return (
-    <div className="grid grid-cols-12 w-full h-screen p-4">
-      <div className="bg-red-400 col-span-3">
+    <div className="grid grid-cols-10 w-full h-screen p-4">
+      <div className=" col-span-1">
         <CardFilterComponent />
       </div>
 
       <div className="col-span-6 ">
         <div className="pt-0">
-          <CardCreateAnnouncement boardId={boardId} />
+          <CardCreateAnnouncement boardId={boardId} boardMember={boardMember} />
         </div>
 
         <div className="space-y-4">

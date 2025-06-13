@@ -7,7 +7,7 @@ import { LetterText, Images, Paperclip } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import CardCreateModal from "./CardCreateModal"
 
-export default function CardCreateAnnouncement({boardId}) {
+export default function CardCreateAnnouncement({boardId, boardMember}) {
     const [isModalOpen, setIsModalOpen] = useState(false)
 
     console.log("CardCreateAnnouncement", boardId);
@@ -21,9 +21,14 @@ export default function CardCreateAnnouncement({boardId}) {
         <CardContent className="p-6">
           {/* Profile and Input Section */}
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-100">
-              <img src="https://i.pinimg.com/736x/8d/95/03/8d9503a77e4c21ebf0ced6c252819a0e.jpg" alt="Profile" className="w-full h-full object-cover" />
-            </div>
+            {boardMember
+            .filter((member) => member.roles?.some(role => role === "ROLE_MANAGER"))
+            .map((member) => (
+              <div key={member.userId} className="w-10 h-10 rounded-full overflow-hidden bg-gray-100">
+              <img src={member.profileImage} alt="Profile" className="w-full h-full object-cover" />
+              </div>
+              ))}
+
             <div className="flex-1">
               <div 
                     className="bg-gray-100 rounded-full px-4 py-3 cursor-pointer hover:bg-gray-200 transition-colors"
