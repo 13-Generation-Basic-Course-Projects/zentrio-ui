@@ -4,6 +4,8 @@ import { ThumbsUp, Bookmark, EllipsisVertical, Pin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import ModalOptionAnnoun from "./ModalOptionAnnoun";
+import { ImageViewer } from "./popupImage";
+import { LikeReactionButton } from "./ModalLikeComponent";
 // import { useState } from "react";
 
 export default function CardPostAnnouncement({ Announcements, }) {

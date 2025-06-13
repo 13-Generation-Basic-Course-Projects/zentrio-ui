@@ -100,8 +100,7 @@ const handleDelete = async (id) => {
                       <Button
                         className="bg-slate-red text-white font-semibold"
                         // onClick={handleDelete(announId)}
-                        onPress={() => handleDelete(announId)}
-                        // onPress={onClose}
+                        onPress={() => handleDelete(announId) && onClose} 
                       >
                         <p className="text-red-500">{massageDo}</p>
                       </Button>
