@@ -174,6 +174,9 @@ export const getAllGanttBarByGanttChartIDService = async ({
 /*
  * create task by boardId and Gantt chart id
  */
+
+/*
+
 export const createTaskByBoardIdAndGanttChartIdService = async ({
   boardId,
   ganttChartId,
@@ -218,7 +221,67 @@ export const createTaskByBoardIdAndGanttChartIdService = async ({
     }
 
     const result = await res.json();
-    //console.log("📥 Backend responded with:", result);
+    console.log("📥 Backend responded with loggg:", result);
+
+    return result;
+  } catch (error) {
+    console.error("Create task service error:", error.message);
+    throw error;
+  }
+};
+
+*/
+
+/**
+ * fix bug
+ */
+
+export const createTaskByBoardIdAndGanttChartIdService = async ({
+  boardId,
+  ganttChartId,
+  data,
+  token,
+}) => {
+  try {
+    const payload = {
+      title: data.title,
+      description: data.description,
+      startedAt: data.startedAt,
+      finishedAt: data.finishedAt,
+      boardId,
+      ganttBarId: data.ganttBarId,
+      leaderId: data.leaderId || null, // Include leaderId
+    };
+    console.log("Service payload:", payload);
+    console.log("Service params:", { boardId, ganttChartId, token });
+    const url = boardRouteGroup.createTaskByBoardIdAndGanttBarId(
+      boardId,
+      ganttChartId
+    );
+    console.log("Request URL:", url);
+
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      let errorMessage = `Failed to create task: ${res.statusText} (${res.status})`;
+      try {
+        const errorData = await res.json();
+        errorMessage = errorData.message || errorMessage;
+      } catch (jsonError) {
+        console.error("Failed to parse error response:", jsonError);
+      }
+      throw new Error(errorMessage);
+    }
+
+    const result = await res.json();
+    console.log("Backend responded with:", JSON.stringify(result, null, 2));
 
     return result;
   } catch (error) {
@@ -371,12 +434,12 @@ export const editCommmentService = async ({ data, token }) => {
  * assign leader
  */
 export const assignUserRoleLeadeerToBoardService = async ({
-  taskid,
+  taskId,
   assignId,
   token,
 }) => {
-  console.log("from service", { taskid, assignId, token });
-  const url = boardRouteGroup.assignUserRoleLeaderToBoard(taskid, assignId);
+  console.log("from service", { taskId, assignId, token });
+  const url = boardRouteGroup.assignUserRoleLeaderToBoard(taskId, assignId);
   console.log(url);
   const res = await fetch(url, {
     method: "POST",
