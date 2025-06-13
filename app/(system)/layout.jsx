@@ -3,10 +3,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { SidebarTest } from "@/components/sidebar/SideBar";
 
 import { auth } from "../../auth";
-import { UserAvatar } from "@/components/testcomponent/Avatar";
 import NavbarWrapper from "@/components/layout/NavbarWrapper";
-import { Suspense } from "react";
-import Loading from "../loading";
 import SidebarRenderer from "@/components/sidebar/SidebarRenderer";
 import { SideBarIcon } from "@/components/icon/everyicon";
 import {
@@ -24,6 +21,10 @@ import {
   getPreviewProfileAction,
 } from "@/action/profile.action";
 import { preventImage } from "@/constant/preventimage";
+import {
+  getNotificationForUserIdAction,
+  sendNotificationToUserIdAction,
+} from "@/action/notification.action";
 //import { LoadingBarContainer } from "react-top-loading-bar";
 export const metadata = {
   title: "Zentrio | Task Mangement",
@@ -65,6 +66,18 @@ export default async function SystemLayout({ children }) {
 
   const getWorKSpaceJoined = await getOtherWorkSpaceJoinedAction();
   console.log("getWorKSpaceJoined", getWorKSpaceJoined);
+
+  const notificationData = await getNotificationForUserIdAction(myUserId);
+
+  // const taskId = "97a2fdb-40d2-4321-9d4f-69e21e79be2a";
+  // const message = "Task is completed ";
+  // const sendNoti = await sendNotificationToUserIdAction(
+  //   myUserId,
+  //   taskId,
+  //   message
+  // );
+  // console.log("sendNoti", sendNoti);
+
   return (
     // <LoadingBarContainer>
     <SidebarProvider className="bg-bgColor">
@@ -85,6 +98,7 @@ export default async function SystemLayout({ children }) {
           <NavbarWrapper
             user={session?.user}
             preventUserImage={preventUserImage}
+            notificationData={notificationData}
           />
           {children}
         </div>
