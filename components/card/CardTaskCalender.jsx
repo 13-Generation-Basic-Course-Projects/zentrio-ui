@@ -15,8 +15,7 @@ const colorMap = [
   { count: 22, value: "bg-orange-500", textColor: "text-orange-500" },
 ];
 
-export default function CardTaskCalender({ tasks, onTaskClick }) {
-
+export default function CardTaskCalender({ tasks, onTaskClick, activeTaskId }) {
   const [checklistCounts, setChecklistCounts] = useState({});
   console.log("Tasks in cardTaskCelendar: ", tasks);
 
@@ -29,7 +28,7 @@ export default function CardTaskCalender({ tasks, onTaskClick }) {
           const checklists = await getChecklistByTaskIdAction(task.id);
           counts[task.id] = checklists?.payload?.length || 0;
         } catch (err) {
-          console.error(`Checklist fetch failed for task ${task.id}`, err); 
+          console.error(`Checklist fetch failed for task ${task.id}`, err);
           counts[task.id] = 0;
         }
       }
@@ -41,8 +40,7 @@ export default function CardTaskCalender({ tasks, onTaskClick }) {
       fetchAllChecklistCounts();
     }
   }, [tasks]);
-  
-  
+
   return (
     <Card className="py-4 rounded-medium bg-white w-full mx-auto shadow-sm h-[350px]">
       <CardHeader className="pb-0 pt-2 px-6 flex-col items-start">
@@ -61,6 +59,8 @@ export default function CardTaskCalender({ tasks, onTaskClick }) {
           tasks.map((el, i) => {
             const color = colorMap[i % colorMap.length];
             const checklistCount = checklistCounts[el.id] ?? "-";
+            const isActive = el.id === activeTaskId;
+ 
             return (
               <div
                 key={el.id}
@@ -69,7 +69,11 @@ export default function CardTaskCalender({ tasks, onTaskClick }) {
                     onTaskClick?.(el.start, el.id);
                   }
                 }}
-                className="py-3 px-3 flex items-center justify-between gap-2 hover:bg-gray-100 rounded-xl cursor-pointer active:bg-gray-100 transition-colors"
+                className={`py-3 px-3 flex items-center justify-between gap-2 rounded-xl cursor-pointer  transition-colors duration-200 ease-in-out ${
+                  isActive
+                    ? "bg-blue-100 shadow  "
+                    : "bg-white hover:bg-gray-50"
+                }`}
               >
                 <div className="flex items-center gap-3 flex-1 min-w-0 text-caption">
                   <span

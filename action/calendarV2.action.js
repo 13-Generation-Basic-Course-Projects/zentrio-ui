@@ -1,6 +1,7 @@
 "use server";
 import { Token } from "@/constant/token";
 import { createNoteInCalendarService, deleteNoteInCalendarService, getAllNoteInCalendarService, getCalendarByBoardIdAndUserIdService, getChecklistByTaskIdService, getGanttBarByGanttChartIdService, getGanttChartByBoardIdService, getNoteInCalendarService, getTaskByBoardIdAndGanttBarIdService } from "@/service/calendarV2.service";
+import { revalidatePath } from "next/cache";
 /*
  * getTaskbyBoardId and GanttbarId
  */
@@ -76,6 +77,7 @@ export const createNoteInCalendarAction = async (
     tillDate,
     taskId,
   });
+  revalidatePath("/createNote");
 
   return result;
 };

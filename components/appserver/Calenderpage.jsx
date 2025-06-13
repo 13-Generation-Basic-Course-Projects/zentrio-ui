@@ -31,11 +31,6 @@ import "react-toastify/dist/ReactToastify.css";
  * Adjust selected end date by subtracting 1 day for inclusiveness.
  */
 
-// function normalizeDateToDay(date) {
-//   const d = new Date(date);
-//   d.setHours(0, 0, 0, 0);
-//   return d.getTime();
-// }
 const normalizeDateToDay = (date) => {
   if (!(date instanceof Date)) {
     date = new Date(date); // convert string or invalid input
@@ -76,6 +71,29 @@ export default function MyCalender({ tasks }) {
       border: "border-orange-500",
     },
   ];
+  const commentColorOptions = [
+    { text: "text-blue-600", light: "bg-blue-100" },
+    { text: "text-green-600", light: "bg-green-100" },
+    { text: "text-yellow-600", light: "bg-yellow-100" },
+    { text: "text-rose-600", light: "bg-rose-100" },
+    { text: "text-purple-600", light: "bg-purple-100" },
+    { text: "text-pink-600", light: "bg-pink-100" },
+    { text: "text-indigo-600", light: "bg-indigo-100" },
+    { text: "text-red-600", light: "bg-red-100" },
+    { text: "text-teal-600", light: "bg-teal-100" },
+    { text: "text-cyan-600", light: "bg-cyan-100" },
+
+    { text: "text-lime-600", light: "bg-lime-100" },
+    { text: "text-emerald-600", light: "bg-emerald-100" },
+    { text: "text-violet-600", light: "bg-violet-100" },
+    { text: "text-fuchsia-600", light: "bg-fuchsia-100" },
+    { text: "text-orange-600", light: "bg-orange-100" },
+    { text: "text-amber-600", light: "bg-amber-100" },
+    { text: "text-sky-600", light: "bg-sky-100" },
+    { text: "text-zinc-600", light: "bg-zinc-100" },
+    { text: "text-gray-600", light: "bg-gray-100" },
+    { text: "text-stone-600", light: "bg-stone-100" },
+  ];
   const calendarRef = useRef(null);
   const [currentTitle, setCurrentTitle] = useState("");
   const [noteValue, setNoteValue] = useState("");
@@ -87,50 +105,39 @@ export default function MyCalender({ tasks }) {
 
   const handleNoteSave = async (
     currentEventId,
-    startDateStr, // from commentBarInput.start (string like '2025-06-13')
-    endDateStr, // from commentBarInput.end
+    startDateStr,
+    endDateStr,
     currentNoteValue,
     initialNoteValue
   ) => {
     const trimmedNoteValue = currentNoteValue.trim();
 
+    // Early exit if nothing is added or changed
     if (!trimmedNoteValue && !initialNoteValue) return;
 
     const isNewNote = !initialNoteValue && trimmedNoteValue;
     const isUpdatedNote =
-      initialNoteValue && initialNoteValue !== trimmedNoteValue;
+      initialNoteValue && trimmedNoteValue !== initialNoteValue;
     const isDeletedNote = initialNoteValue && !trimmedNoteValue;
-
-    /* // Normalize start date to 00:00:00.000Z UTC
-    const startDateObj = new Date(`${startDateStr}T00:00:00.000Z`);
-    const formattedStartDate = startDateObj.toISOString();
-
-    // Normalize end date to 23:59:59.999Z UTC (end of day)
-    // const tillDateObj = new Date(`${endDateStr}T23:59:59.999Z`);
-    const tillDateObj = new Date(`${endDateStr}T00:00:00.000Z`);
-    const formattedTillDate = tillDateObj.toISOString(); */
 
     const startDateObj = new Date(`${startDateStr}T00:00:00.000Z`);
     const endDateObj = new Date(`${endDateStr}T00:00:00.000Z`);
 
-    // 🔍 Adjust tillDate based on whether it's a single-day
-    let tillDateObj;
-    const isSingleDay = startDateStr === endDateStr;
+    // Set tillDate to 23:59:59.999 of end day
+    const tillDateObj = new Date(endDateObj);
+    tillDateObj.setHours(23, 59, 59, 999);
 
-    if (isSingleDay) {
-      // Set to 23:59:59.999 of the same day
-      tillDateObj = new Date(startDateObj);
-      tillDateObj.setHours(0, 0, 0, 0);
-    } else {
-      // Set to full end day
-      tillDateObj = new Date(endDateObj);
-      tillDateObj.setHours(0, 0, 0, 0);
+    // Prevent past-dated notes
+    if (tillDateObj < new Date()) {
+      toast.error("Cannot create or update notes in the past!");
+      return;
     }
 
     const formattedStartDate = startDateObj.toISOString();
     const formattedTillDate = tillDateObj.toISOString();
 
     try {
+      // 📝 Handle create/update
       if (isNewNote || isUpdatedNote) {
         const response = await createNoteInCalendarAction(
           trimmedNoteValue,
@@ -138,22 +145,27 @@ export default function MyCalender({ tasks }) {
           formattedTillDate,
           currentEventId
         );
-        console.log(`Note ${isNewNote ? "created" : "updated"} successfully.`);
-        if (response.error) {
+
+        if (response?.error) {
           toast.error(response.error.detail || "Error saving note");
           return { success: false, message: response.error.detail };
         }
-      } else if (isDeletedNote) {
+
+        console.log(`Note ${isNewNote ? "created" : "updated"} successfully.`);
+      }
+
+      // 🗑️ Handle delete (API call commented out for now)
+      if (isDeletedNote) {
         console.log(
-          `Note deletion for Task ID: ${currentEventId} on ${startDateStr} - ${endDateStr}`
+          `Note deleted for Task ID: ${currentEventId} on ${startDateStr} - ${endDateStr}`
         );
-        // Uncomment and implement if you have a delete API:
         // await deleteNoteInCalendarAction(currentEventId, formattedStartDate, formattedTillDate);
       }
 
-      // Update events state (inject or remove comment event)
+      // 🔁 Update local calendar events
       setEvents((prevEvents) => {
-        const filtered = prevEvents.filter(
+        // Remove old comment (if exists)
+        const updated = prevEvents.filter(
           (ev) =>
             !(
               ev.extendedProps.type === "comment" &&
@@ -162,8 +174,9 @@ export default function MyCalender({ tasks }) {
             )
         );
 
+        // Add new/updated comment if not deleting
         if (!isDeletedNote) {
-          filtered.push({
+          updated.push({
             id: `comment-${currentEventId}-${startDateStr}`,
             title: trimmedNoteValue,
             start: startDateStr,
@@ -172,36 +185,33 @@ export default function MyCalender({ tasks }) {
             extendedProps: {
               type: "comment",
               noted: trimmedNoteValue,
+              sourceTaskId: currentEventId,
               color: {
                 text: "text-green-600",
                 light: "bg-green-100",
               },
-              sourceTaskId: currentEventId,
             },
           });
         }
 
-        return filtered;
+        return updated;
       });
 
-      setNoteRefreshKey((prev) => prev + 1); // Trigger UI refresh if needed
+      // Trigger UI to re-render if needed
+      setNoteRefreshKey((prev) => prev + 1);
 
       return { success: true };
     } catch (error) {
-      console.error("Failed to save/update/delete note via API:", error);
-
-      // Extract meaningful error message if possible
       const errorMsg =
         error?.response?.data?.detail ||
         error?.message ||
         "Unknown error occurred";
-
+      console.error("Failed to save/update/delete note:", error);
       toast.error(errorMsg);
-
       return { success: false, message: errorMsg };
     }
-    
   };
+  
 
   const [notes, setNotes] = useState([]);
 
@@ -255,8 +265,8 @@ export default function MyCalender({ tasks }) {
         mapForCalendar.push({
           id: task.taskId,
           title: task.title,
-          start: task.createdAt,
-          end: task.finishedAt ?? task.createdAt,
+          start: task.startedAt,
+          end: task.finishedAt ?? task.startedAt,
           extendedProps: {
             type: task.type || "task",
             content: task.description,
@@ -277,30 +287,45 @@ export default function MyCalender({ tasks }) {
     };
   }, [tasks, colorList, notes]);
 
+  
+
+  const [activeTaskId, setActiveTaskId] = useState(null);
   const handleTaskClick = (dateStr, taskId) => {
     const task = mappedTasks.find((t) => t.id === taskId);
     if (!task) return;
 
     setSelectedTaskId(taskId); // Triggers useEffect to fetch notes if needed
     setSelectedTask(task);
+    setActiveTaskId(taskId);
     calendarRef.current?.getApi().gotoDate(dateStr);
 
     // Show comment events immediately if notes are already available
     const relatedNotes = notes?.filter((note) => note.taskId === taskId) || [];
 
-    const commentEvents = relatedNotes.map((note, i) => ({
-      id: `${taskId}-comment-${i}`,
-      title: `Note: ${note.noted?.slice(0, 20) || "No Content"}...`,
-      start: note.notedAt,
-      end: note.tillDate,
-      extendedProps: {
-        type: "comment",
-        notes: [note],
-        color: taskColorMap[taskId],
-      },
-      backgroundColor: "transparent",
-      borderColor: "transparent",
-    }));
+   
+    const commentEvents = relatedNotes.map((note, i) => {
+      // Pick a random color from commentColorOptions
+      const randomColor =
+        commentColorOptions[
+          Math.floor(Math.random() * commentColorOptions.length)
+        ];
+
+      return {
+        id: `${taskId}-comment-${i}`,
+        title: `Note: ${note.noted?.slice(0, 20) || "No Content"}...`,
+        start: note.notedAt,
+        end: note.tillDate,
+        extendedProps: {
+          type: "comment",
+          notes: [note],
+          color: randomColor, // <-- different from taskColorMap
+        },
+        backgroundColor: "transparent",
+        borderColor: "transparent",
+      };
+    });
+
+    setEvents([task, ...commentEvents]);
 
     setEvents([task, ...commentEvents]);
   };
@@ -329,31 +354,48 @@ export default function MyCalender({ tasks }) {
     )}`;
 
     if (type === "comment") {
+      if(!isStart){
+        return (
+          <div
+            className={`mt-1 text-[0.7rem] rounded border-4 border-dashed px-2 py-[12px] ${
+              color?.text || "text-blue-600"
+            } ${color?.light || "bg-blue-100"}`}
+            style={{
+              width: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: "1.5rem",
+            }}
+          ></div>
+        );
+      }
+
       return (
         <div
-          className={`mt-1 text-[0.7rem] flex flex-col gap-1 rounded border-2 border-dashed px-2 py-1 ${
+          className={`mt-1 text-[0.7rem] rounded border-4 border-dashed px-2 py-[6px] ${
             color?.text || "text-blue-600"
           } ${color?.light || "bg-blue-100"}`}
-          // style={{ width: "100%" }}
           style={{
             width: "100%",
-            height: "30px", // fixed height
-            display: "grid", // use grid
-            gridTemplateRows: "1fr", // or customize rows
-            rowGap: "4px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: "1.5rem",
           }}
         >
-          <div className="flex flex-row justify-between items-center gap-1">
-            {notes.map((note, i) => (
-              <div key={i} className="truncate">
-                {note.noted}
-              </div>
-            ))}
-            <MessageCircleMore className="w-4 h-4" />
+          <MessageCircleMore className="w-4 h-4 flex-shrink-0 " />
+          <div
+            className="text-[0.7rem] leading-snug break-words whitespace-pre-wrap flex-1"
+            style={{ wordBreak: "break-word" }}
+          >
+            {notes[0]?.noted}
           </div>
         </div>
       );
     }
+    
+    
 
     // TASK BLOCK ONLY
     if (!isStart) {
@@ -363,6 +405,7 @@ export default function MyCalender({ tasks }) {
             color?.border || "border-green-500"
           } p-1`}
         />
+      
       );
     }
     return (
@@ -471,14 +514,15 @@ export default function MyCalender({ tasks }) {
         {/* Calendar Section */}
         <div className="flex-1 overflow-y-auto scrollbar-hidden max-w-[75%]">
           {/* Top navigation */}
-          <div className="flex justify-between items-center mt-4 mb-6 px-2">
-            <button
-              onClick={() => handleDateNav("today")}
-              className="rounded-full px-4 py-1 shadow-sm bg-white text-gray-600 font-medium border border-gray-200 hover:bg-gray-50 transition"
-            >
-              Today
-            </button>
-
+          <div className="grid grid-cols-2 mt-4 mb-6 px-2">
+            <div>
+              <button
+                onClick={() => handleDateNav("today")}
+                className="rounded-full px-4 py-1 shadow-sm bg-white text-gray-600 font-medium border border-gray-200 hover:bg-gray-50 transition"
+              >
+                Today
+              </button>
+            </div>
             <div className="flex items-center gap-4">
               <button
                 onClick={() => handleDateNav("prev")}
@@ -523,6 +567,7 @@ export default function MyCalender({ tasks }) {
         <div className="w-[25%] flex flex-col gap-5 overflow-y-auto scrollbar-hidden absolute top-16 right-1">
           <CardTaskCalender
             tasks={mappedTasks}
+            activeTaskId={activeTaskId}
             onTaskClick={(dateStr, taskId) => handleTaskClick(dateStr, taskId)}
           />
           <CardTCommentCalender
