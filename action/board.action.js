@@ -16,6 +16,7 @@ import {
   getTaskByBoardIdAndGanttBarIdService,
   getTaskByBoardIdService,
   inviteMemberToBoardService,
+  moveTaskOrderService,
   postCommentByCheckListIdService,
 } from "@/service/board.service";
 import { revalidatePath } from "next/cache";
@@ -346,5 +347,17 @@ export const assignMemberInChecklistAction = async (
   revalidatePath("/task");
   // console.log("📥 Backend responded with delete action", result);
 
+  return result;
+};
+
+/*
+ *move the task
+ */
+export const moveTaskOrderAction = async (boardId, newId, oldId) => {
+  const userToken = await Token();
+  const token = userToken?.Credential;
+  const result = await moveTaskOrderService(boardId, newId, oldId, token);
+  revalidatePath("/task");
+  // console.log("📥 Backend responded with delete action", result);
   return result;
 };

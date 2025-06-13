@@ -478,3 +478,32 @@ export const assignMemberInChecklistService = async ({
     throw error;
   }
 };
+/*
+ * assign member in checklist
+ */
+export const moveTaskOrderService = async (boardId, newId, oldId, token) => {
+  try {
+    console.log("from service", {
+      boardId,
+      newId,
+      oldId,
+      token,
+    });
+    const url = boardRouteGroup.moveTaskOrder(boardId, newId, oldId);
+    console.log(url);
+    const res = await fetch(url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const result = await res.json();
+    console.log("📥 Backend responded with moveld:", result);
+
+    return result;
+  } catch (error) {
+    console.error("bug", error.message);
+    throw error;
+  }
+};

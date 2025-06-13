@@ -37,6 +37,6 @@ export const boardRouteGroup = {
 
   //advance
 
-  moveTaskOrder: (taskId) =>
-    `${apiConfig.baseUrl}/checklists/orders/tasks/${taskId}`,
+  moveTaskOrder: (boardId, newId, oldId) =>
+    `${apiConfig.baseUrl}/tasks/board/${boardId}?newOrder=${newId}&oldOrder=${oldId}`,
 };

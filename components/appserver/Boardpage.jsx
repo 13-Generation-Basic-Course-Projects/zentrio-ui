@@ -105,6 +105,7 @@ export default function SystemBoard({
           preventUserImage={preventUserImage}
           boardData={boardData}
           ganttbar={ganttbar}
+          boardId={boardId}
         />
       ),
     },
