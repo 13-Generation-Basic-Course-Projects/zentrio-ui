@@ -10,7 +10,7 @@ export const announcementRouteGroup = {
 
 
     // DELETE
-    deleteAnnouncementById: (announId) => `${apiConfig.baseUrl}announcements/${announId}`,
+    deleteAnnouncementById: (announId) => `${apiConfig.baseUrl}/announcements/${announId}`,
 
 
     // GET members

@@ -108,17 +108,29 @@ const ShareoDcumentIcon = (props) => (
   </svg>
 );
 
-export default function ModalOptionAnnoun({ announId }) {
+export default function ModalOptionAnnoun({ Announcement, announId, onDeleteSuccess }) {
+  // console.log("Announcement",Announcement);
+
   const iconClasses =
     "text-xl text-default-500 pointer-events-none flex-shrink-0";
 
   return (
     <Dropdown className="z-[10px]">
       <DropdownTrigger>
-        <Button variant="" className="p-0 min-w-0 h-auto w-auto ">
-          
+        <Button variant="ghost" className="p-0 min-w-0 h-auto w-auto ">
+          <div className="hover:text-black text-gray-600  px-2 py-1">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-4 h-4"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path d="M10 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4z" />
+            </svg>
+          </div>
         </Button>
       </DropdownTrigger>
+
       <DropdownMenu
         aria-label="Dropdown menu with description"
         variant="faded"
@@ -131,8 +143,9 @@ export default function ModalOptionAnnoun({ announId }) {
           showDivider
           startContent={<EditDocumentIcon className={iconClasses} />}
         >
-          Details
+          Edit
         </DropdownItem>
+
         <DropdownItem
           key="delete"
           className="w-full hover:bg-default-100 mb-1"
@@ -145,12 +158,14 @@ export default function ModalOptionAnnoun({ announId }) {
             icon={<IconpopupDelete />}
             bgcolor={"bg-slate-red"}
             massageDo={"Yes, Delete"}
-            announId={announId}
             accessToken={"jam dak key ..."}
             massageUndo={"No, Cancel"}
+            announId={announId}
+            onDeleteSuccess={announId}
           />
+          
         </DropdownItem>
       </DropdownMenu>
     </Dropdown>
   );
-}
+};
