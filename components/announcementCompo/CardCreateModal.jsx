@@ -57,10 +57,6 @@ export default function CardCreateModal({ onClose, boardId, boardMember, Announc
     }
   };
 
-  // const currentPrivacy = privacyOptions.find(
-  //   (option) => option.value === privacy
-  // );
-  // const PrivacyIcon = currentPrivacy.icon;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
@@ -102,60 +98,7 @@ export default function CardCreateModal({ onClose, boardId, boardMember, Announc
                   
                 </div>
                 <div className="relative">
-                  {/* <button
-                    onClick={() => setShowPrivacyDropdown(!showPrivacyDropdown)}
-                    className="flex items-center space-x-1 text-sm text-gray-600 hover:bg-gray-100 px-2 py-1 rounded-md transition-colors"
-                  >
-                    <PrivacyIcon className="w-3 h-3" />
-                    <span>{currentPrivacy.label}</span>
-                    <ChevronDown className="w-3 h-3" />
-                  </button> */}
-
-                  {/* Privacy Dropdown */}
-                  {/* {showPrivacyDropdown && (
-                    <div className="absolute top-full left-0 mt-1 w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
-                      <div className="p-2">
-                        <div className="text-sm font-semibold text-gray-900 mb-2">
-                          Who can see your announcement?
-                        </div>
-                        {privacyOptions.map((option) => {
-                          const IconComponent = option.icon;
-                          return (
-                            <button
-                              key={option.value}
-                              onClick={() => {
-                                setPrivacy(option.value);
-                                setShowPrivacyDropdown(false);
-                              }}
-                              className={`w-full flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 transition-colors ${
-                                privacy === option.value
-                                  ? "bg-blue-50 border border-blue-200"
-                                  : ""
-                              }`}
-                            >
-                              <div
-                                className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                                  privacy === option.value
-                                    ? "bg-blue-500 text-white"
-                                    : "bg-gray-200 text-gray-600"
-                                }`}
-                              >
-                                <IconComponent className="w-4 h-4" />
-                              </div>
-                              <div className="flex-1 text-left">
-                                <div className="text-sm font-medium text-gray-900">
-                                  {option.label}
-                                </div>
-                                <div className="text-xs text-gray-500">
-                                  {option.description}
-                                </div>
-                              </div>
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )} */}
+                  
                 </div>
               </div>
             </div>
