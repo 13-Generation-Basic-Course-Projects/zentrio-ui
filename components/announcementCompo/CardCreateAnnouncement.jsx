@@ -7,10 +7,10 @@ import { LetterText, Images, Paperclip } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import CardCreateModal from "./CardCreateModal"
 
-export default function CardCreateAnnouncement({boardId, boardMember}) {
+export default function CardCreateAnnouncement({boardId, boardMember, Announcements }) {
     const [isModalOpen, setIsModalOpen] = useState(false)
 
-    console.log("CardCreateAnnouncement", boardId);
+    console.log("CardCreateAnnouncement", boardMember);
 
     const toggleModal = () => {
     setIsModalOpen(!isModalOpen)
@@ -68,7 +68,7 @@ export default function CardCreateAnnouncement({boardId, boardMember}) {
               <span className="text-gray-700 font-medium">Attachments</span>
             </Button>
           </div>
-          {isModalOpen && <CardCreateModal onClose={toggleModal} boardId={boardId} />}
+          {isModalOpen && <CardCreateModal onClose={toggleModal} boardId={boardId} boardMember={boardMember} Announcements={Announcements} />}
         </CardContent>
       </Card>
     </div>

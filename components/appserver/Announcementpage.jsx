@@ -16,7 +16,7 @@ export default function Announcementpage({ boardId, Announcements, boardMember }
 
       <div className="col-span-6 ">
         <div className="pt-0">
-          <CardCreateAnnouncement boardId={boardId} boardMember={boardMember} />
+          <CardCreateAnnouncement boardId={boardId} boardMember={boardMember} Announcements={Announcements}/>
         </div>
 
         <div className="space-y-4">
