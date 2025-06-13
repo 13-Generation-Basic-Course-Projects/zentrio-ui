@@ -5,7 +5,7 @@ import {
   StackedProfiles,
 } from "../icon/everyicon";
 import CalendarIcon from "@/assets/calendarSidebar.png";
-import CommentIcon from "@/assets/CommentIcon.svg";
+import CommentIcon from "@/assets/commentIcon.svg";
 import Image from "next/image";
 
 export const CardCheckList = ({

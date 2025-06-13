@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
-import 'animate.css';
+import "animate.css"
 
 const AnimatedSection = ({ animation = 'animate__fadeInLeft', duration = '3s', children }) => {
   const ref = useRef(null);
