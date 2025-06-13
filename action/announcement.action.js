@@ -1,7 +1,7 @@
 "use server";
 
 import { Token } from "@/constant/token";
-import { createAnnouncementByBoardIdService, deleteAnnouncementByIdService, getAllAnnouncementByBoardIdService, uploadMultiImgByBoardIdService } from "@/service/annoncement.service"
+import { createAnnouncementByBoardIdService, deleteAnnouncementByIdService, getAllAnnouncementByBoardIdService, pinedAnnouncementByIdService, uploadMultiImgByBoardIdService } from "@/service/annoncement.service"
 import { revalidatePath } from "next/cache";
 
 
@@ -59,5 +59,15 @@ export const deleteAnnouncementByIdAction = async (id) => {
         token,
     );
     revalidatePath("/delete");
+    return result;
+};
+
+export const pinedAnnouncementByIdAction = async (announId) => {
+    console.log("pined id",announId);
+
+    const userToken = await Token();
+    const token = userToken.Credential;
+    const result = await pinedAnnouncementByIdService( announId, token );
+    revalidatePath("/update");
     return result;
 };

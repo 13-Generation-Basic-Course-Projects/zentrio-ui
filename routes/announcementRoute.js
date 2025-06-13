@@ -12,6 +12,10 @@ export const announcementRouteGroup = {
     // DELETE
     deleteAnnouncementById: (announId) => `${apiConfig.baseUrl}/announcements/${announId}`,
 
+    // PUT
+    pinedAnnouncementById: (announId) => `${apiConfig.baseUrl}/announcements/${announId}/pinned`,
+    updateAnnouncementById: (announId) => `${apiConfig.baseUrl}/announcements/${announId}`,
+
 
     // GET members
     getAllMembersByBoardId: (boardId) => `${apiConfig.baseUrl}/`,

@@ -87,3 +87,18 @@ export const deleteAnnouncementByIdService = async (id, token) => {
   
   
 };
+
+export const pinedAnnouncementByIdService = async (announId, token) => {
+  console.log("pin id service",announId);
+
+  const url = announcementRouteGroup.pinedAnnouncementById(announId);
+  const res = await fetch(url, {
+    method: "PUT",
+    headers: {
+      "accept": "*/*",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  const data = await res.json();
+  return data;
+};

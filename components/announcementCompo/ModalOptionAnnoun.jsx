@@ -13,6 +13,8 @@ import PopupAction from "@/components/popup/PopupAction";
 import { IconpopupDelete } from "@/components/icon/Iconpopup";
 import { useRouter } from "next/navigation";
 import ModalDeleteAnnoun from "./ModalDeleteAnnoun";
+import ModalPinedAnnoun from "./ModalPinedAnnoun";
+import ModalEditAnnoun from "./ModalEditAnnoun";
 
 // icon components directly in the same file
 const AddNoteIcon = (props) => (
@@ -26,6 +28,22 @@ const AddNoteIcon = (props) => (
   >
     <path
       d="M9 13.599L4.44986 9.05014L5.36014 8.12443L8.35714 11.1214V0H9.64286V11.1214L12.6386 8.12571L13.5501 9.05014L9 13.599ZM2.07771 18C1.48543 18 0.991285 17.802 0.595285 17.406C0.199285 17.01 0.000857143 16.5154 0 15.9223V12.807H1.28571V15.9223C1.28571 16.1203 1.368 16.302 1.53257 16.4674C1.69714 16.6329 1.87843 16.7151 2.07643 16.7143H15.9236C16.1207 16.7143 16.302 16.632 16.4674 16.4674C16.6329 16.3029 16.7151 16.1211 16.7143 15.9223V12.807H18V15.9223C18 16.5146 17.802 17.0087 17.406 17.4047C17.01 17.8007 16.5154 17.9991 15.9223 18H2.07771Z"
+      fill="#143A47"
+    />
+  </svg>
+);
+
+const PinedIcon = (props) => (
+  <svg
+    width="18"
+    height="18"
+    viewBox="0 0 18 18"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"
       fill="#143A47"
     />
   </svg>
@@ -108,8 +126,13 @@ const ShareoDcumentIcon = (props) => (
   </svg>
 );
 
-export default function ModalOptionAnnoun({ Announcement, announId, onDeleteSuccess }) {
+export default function ModalOptionAnnoun({
+  Announcement,
+  announId,
+  onDeleteSuccess,
+}) {
   // console.log("Announcement",Announcement);
+  console.log("zzzz",announId)
 
   const iconClasses =
     "text-xl text-default-500 pointer-events-none flex-shrink-0";
@@ -131,7 +154,6 @@ export default function ModalOptionAnnoun({ Announcement, announId, onDeleteSucc
         </div>
       </DropdownTrigger>
 
-
       <DropdownMenu
         aria-label="Dropdown menu with description"
         variant="faded"
@@ -139,12 +161,41 @@ export default function ModalOptionAnnoun({ Announcement, announId, onDeleteSucc
         closeOnSelect={false}
       >
         <DropdownItem
+          key="pined"
+          className="w-full hover:bg-default-100"
+          showDivider
+          startContent={<PinedIcon className={iconClasses} />}
+        >
+          <ModalPinedAnnoun 
+            title={"Pined"}
+            massageTitle={"Are you sure?"}
+            massageBody={"You want to pined it."}
+            icon={<IconpopupDelete />}
+            bgcolor={"bg-slate-red"}
+            massageDo={"Yes, Pined"}
+            accessToken={"jam dak key ..."}
+            massageUndo={"No, Cancel"}
+            announId={announId}
+          />
+        </DropdownItem>
+
+        <DropdownItem
           key="edit"
           className="w-full hover:bg-default-100"
           showDivider
           startContent={<EditDocumentIcon className={iconClasses} />}
         >
-          Edit
+          <ModalEditAnnoun 
+            title={"Edit"}
+            massageTitle={"Are you sure?"}
+            massageBody={"You want to edit it."}
+            icon={<IconpopupDelete />}
+            bgcolor={"bg-slate-red"}
+            massageDo={"Yes, Edit"}
+            accessToken={"jam dak key ..."}
+            massageUndo={"No, Cancel"}
+            announId={announId}
+          />
         </DropdownItem>
 
         <DropdownItem
@@ -164,9 +215,8 @@ export default function ModalOptionAnnoun({ Announcement, announId, onDeleteSucc
             announId={announId}
             onDeleteSuccess={announId}
           />
-
         </DropdownItem>
       </DropdownMenu>
     </Dropdown>
   );
-};
+}
