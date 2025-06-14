@@ -1,8 +1,20 @@
-
+import SmallCalendar from "../testcomponent/SmallCalendar";
+import CardWelcomeComponent from "../card/CardWelcome";
 import CardBoard from "../card/CardBoard";
 import CardBoardEmpty from "../card/CardBoardAdd";
+import { Link } from "lucide-react";
 import CardMember from "../card/CardMember";
 import Bar from "../bredcrum/Bar";
+
+// Central color mapping
+const colorOptions = [
+  { key: "red", label: "Red", className: "bg-board-red" },
+  { key: "blue", label: "Blue Sky", className: "bg-board-primary" },
+  { key: "green", label: "Green", className: "bg-board-green" },
+  { key: "purple", label: "Purple", className: "bg-board-purple" },
+  { key: "orange", label: "Orange", className: "bg-board-orange" },
+  { key: "violet", label: "Violet", className: "bg-board-violet" },
+];
 
 export default function Myworkspace({
   Workspaceid,
@@ -27,6 +39,11 @@ export default function Myworkspace({
                 .slice() // create a copy to avoid mutating original array
                 .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // sort by createdAt descending
                 .map((board, i) => {
+                  const matchedColor = colorOptions.find(
+                    (c) => c.key === board.cover
+                  );
+                  const colorClass = matchedColor?.className || board.cover;
+                  console.log("Id board in my workspace: ", board.boardId);
                   return (
                     <CardBoard
                       key={i}
@@ -35,7 +52,7 @@ export default function Myworkspace({
                       boardId={board.boardId}
                       // projectId={board.boardId}
                       title={board.title}
-                      image={board.cover}
+                      image={colorClass}
                       isFavourite={board.isFavourite}
                       deleteBoardAction={deleteBoardAction}
                       updateNameBoardAction={updateNameBoardAction}

@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 
 import {
   Modal,
@@ -39,15 +39,6 @@ const svgIconType = encodeURIComponent(`
 
     `);
 
-    const fileToBase64 = (file) => {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result); // base64 string
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-      });
-    };
-    
 export default function ModalCreateBoard({ createBoardAction, Workspaceid }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
@@ -55,13 +46,10 @@ export default function ModalCreateBoard({ createBoardAction, Workspaceid }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [showColors, setShowColors] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
-  const [selectedFiles, setSelectedFiles] = useState([]);
-  const [previewUrl, setPreviewUrl] = useState(null);
-  const inputRef = useRef(null);
+
   const {
     register,
     handleSubmit,
-    setValue,
     reset,
     formState: { errors },
   } = useForm({
@@ -78,22 +66,11 @@ export default function ModalCreateBoard({ createBoardAction, Workspaceid }) {
     setDropdownOpen(false);
   };
 
-  const handleUploadSelect = (event) => {
-    const files = Array.from(event.target.files);
-    setSelectedFiles(files);
-
-    if (files.length > 0) {
-      setPreviewUrl(URL.createObjectURL(files[0]));
-    } else {
-      setPreviewUrl(null);
-    }
-
-    // Set value to hook form
-    setValue("coverFile", files, { shouldValidate: true, shouldDirty: true });
+  const handleUploadSelect = () => {
+    alert("Upload images clicked");
+    setDropdownOpen(false);
   };
 
-  
-  
   const colorOptions = [
     { key: "red", label: "Red", className: "bg-board-red" },
     { key: "blue", label: "Blue Sky", className: "bg-board-primary" },
@@ -103,29 +80,17 @@ export default function ModalCreateBoard({ createBoardAction, Workspaceid }) {
     { key: "violet", label: "Violet", className: "bg-board-violet" },
   ];
 
-
+  // This function will be called when the form is submitted
   const onSubmit = async (data) => {
-    const files = inputRef.current?.files;
-    console.log("📁 Files from inputRef:", files);
-    console.log("inputRef:", inputRef);
-    console.log("inputRef.current:", inputRef.current);
-
     try {
       let cover = "";
 
-      // Handle uploaded image (convert to Base64)
-      if (files && files.length > 0) {
-        cover = await fileToBase64(files[0]);
-        console.log("🖼️ Cover image (base64):", cover);
+      if (data.coverFile && data.coverFile.length > 0) {
+        cover = data.coverFile[0]; // file
       } else if (selectedOption) {
-        // Use selected color keyword if no image
-        cover = selectedOption;
-        console.log("🎨 Cover color:", cover);
-      } else {
-        console.warn("⚠️ No cover image or color selected");
+        cover = selectedOption; // color string
       }
 
-      // Call backend service to create the board
       const response = await createBoardAction({
         title: data.title,
         description: data.description || "",
@@ -133,37 +98,15 @@ export default function ModalCreateBoard({ createBoardAction, Workspaceid }) {
         workspaceId: Workspaceid,
       });
 
-      console.log("✅ Board created:", response);
+      // Optional: you might need to check `response` shape here
+      console.log("Board created:", response);
 
-      reset(); // clear form
-      onOpenChange(false); // close modal/dialog
+      reset();
+      onOpenChange(false);
     } catch (error) {
-      console.error("❌ Error creating board:", error.message || error);
+      console.error(error);
     }
   };
-  
-  // const onSubmit = async (data) => {
-  //   const file = data.coverFile?.[0];
-  //   let cover = "";
-  //   console.log("File selected: ", file);
-
-  //   if (file) {
-  //     cover = await fileToBase64(file);
-  //   }
-
-  //   const response = await createBoardAction({
-  //     title: data.title,
-  //     description: data.description || "",
-  //     cover,
-  //     workspaceId: Workspaceid,
-  //   });
-
-  //   console.log("✅ Board created", response);
-  //   reset();
-  //   onOpenChange(false);
-  // };
-  
-  
 
   return (
     <>
@@ -217,9 +160,6 @@ export default function ModalCreateBoard({ createBoardAction, Workspaceid }) {
                         }}
                         className="text-title/50 text-caption bg-transparent w-full"
                       />
-                      {errors.title && (
-                        <p className="text-red-500">Title is required</p>
-                      )}
                     </div>
                     {/* select option  */}
                     <div className="flex flex-col items-start justify-center space-y-2">
@@ -231,7 +171,7 @@ export default function ModalCreateBoard({ createBoardAction, Workspaceid }) {
                           onClick={() => setDropdownOpen((open) => !open)}
                           type="button"
                         >
-                          {selectedOption && !selectedFiles.length && (
+                          {selectedOption && (
                             <div
                               className={`w-4 h-4 rounded-full ${
                                 colorOptions.find(
@@ -241,10 +181,8 @@ export default function ModalCreateBoard({ createBoardAction, Workspaceid }) {
                             />
                           )}
 
-                          <p className="text-caption-tiny text-title/50 truncate max-w-[120px]">
-                            {selectedFiles.length > 0
-                              ? selectedFiles[0].name // Show the uploaded image filename
-                              : selectedOption
+                          <p className="text-caption-tiny text-title/50">
+                            {selectedOption
                               ? colorOptions.find(
                                   (color) => color.key === selectedOption
                                 )?.label || selectedOption
@@ -271,59 +209,43 @@ export default function ModalCreateBoard({ createBoardAction, Workspaceid }) {
 
                         {dropdownOpen && (
                           <div className="absolute mt-1 w-36 text-caption bg-white border rounded-small shadow-md z-50">
-                            <div className="w-full max-w-sm mx-auto">
-                              {/* Hidden file input */}
-                              <input
-                                type="file"
-                                id="coverFile"
-                                ref={inputRef}
-                                onChange={handleUploadSelect}
-                                accept="image/*"
-                                className="hidden"
-                              />
-                             
-                              {/* Custom label acting as upload button */}
-                              <label
-                                htmlFor="coverFile"
-                                className="flex justify-between items-center px-2 py-2 w-full rounded-md cursor-pointer
-               hover:bg-gray-100 transition-colors duration-200"
+                            <input
+                              type="file"
+                              id="fileUpload"
+                              multiple
+                              accept="image/*"
+                              onChange={handleUploadSelect}
+                              className="hidden"
+                            />
+
+                            <label
+                              htmlFor="fileUpload"
+                              className="w-full px-2 py-2 flex justify-between items-center hover:bg-gray-100 cursor-pointer"
+                            >
+                              <span>Upload images</span>
+                              <svg
+                                width="18"
+                                height="18"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
                               >
-                                <span className="text-gray-700 font-medium">
-                                  Upload Image
-                                </span>
-                                <svg
-                                  className="w-5 h-5 text-primary"
-                                  fill="none"
-                                  stroke="currentColor"
+                                <path
+                                  d="M17.4776 9.01106C17.485 9.01102 17.4925 9.01101 17.5 9.01101C19.9853 9.01101 22 11.0294 22 13.5193C22 15.8398 20.25 17.7508 18 18M17.4776 9.01106C17.4924 8.84606 17.5 8.67896 17.5 8.51009C17.5 5.46695 15.0376 3 12 3C9.12324 3 6.76233 5.21267 6.52042 8.03192M17.4776 9.01106C17.3753 10.1476 16.9286 11.1846 16.2428 12.0165M6.52042 8.03192C3.98398 8.27373 2 10.4139 2 13.0183C2 15.4417 3.71776 17.4632 6 17.9273M6.52042 8.03192C6.67826 8.01687 6.83823 8.00917 7 8.00917C8.12582 8.00917 9.16474 8.38194 10.0005 9.01101"
+                                  stroke="#59BAD5"
                                   strokeWidth="1.5"
                                   strokeLinecap="round"
                                   strokeLinejoin="round"
-                                  viewBox="0 0 24 24"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  aria-hidden="true"
-                                >
-                                  <path d="M17.4776 9.01106C17.485 9.01102 17.4925 9.01101 17.5 9.01101C19.9853 9.01101 22 11.0294 22 13.5193C22 15.8398 20.25 17.7508 18 18M17.4776 9.01106C17.4924 8.84606 17.5 8.67896 17.5 8.51009C17.5 5.46695 15.0376 3 12 3C9.12324 3 6.76233 5.21267 6.52042 8.03192M17.4776 9.01106C17.3753 10.1476 16.9286 11.1846 16.2428 12.0165M6.52042 8.03192C3.98398 8.27373 2 10.4139 2 13.0183C2 15.4417 3.71776 17.4632 6 17.9273M6.52042 8.03192C6.67826 8.01687 6.83823 8.00917 7 8.00917C8.12582 8.00917 9.16474 8.38194 10.0005 9.01101" />
-                                  <path d="M12 13V21M12 13C11.2998 13 9.99153 14.9943 9.5 15.5M12 13C12.7002 13 14.0085 14.9943 14.5 15.5" />
-                                </svg>
-                              </label>
-
-                              {/* Preview area */}
-                              {previewUrl && (
-                                <div className="mt-3 p-2 border border-gray-200 rounded-md bg-gray-50">
-                                  <img
-                                    src={previewUrl}
-                                    alt="Preview"
-                                    className="w-full max-h-40 object-contain rounded-md"
-                                  />
-                                  <p
-                                    className="mt-2 text-sm text-gray-600 truncate"
-                                    title={selectedFiles[0]?.name}
-                                  >
-                                    {selectedFiles[0]?.name}
-                                  </p>
-                                </div>
-                              )}
-                            </div>
+                                />
+                                <path
+                                  d="M12 13V21M12 13C11.2998 13 9.99153 14.9943 9.5 15.5M12 13C12.7002 13 14.0085 14.9943 14.5 15.5"
+                                  stroke="#59BAD5"
+                                  strokeWidth="1.5"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                />
+                              </svg>
+                            </label>
 
                             <div>
                               <button
