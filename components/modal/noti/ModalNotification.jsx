@@ -41,7 +41,7 @@ export default function ModalNotification({ notificationData }) {
           contentObj = JSON.parse(item.content);
         }
       } catch (err) {
-        console.error("Failed to parse content JSON:", item.content, err);
+        // console.error("Failed to parse content JSON:", item.content, err);
       }
 
       return {

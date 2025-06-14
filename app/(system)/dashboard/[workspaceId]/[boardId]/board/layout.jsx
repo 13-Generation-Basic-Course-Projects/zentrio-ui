@@ -46,6 +46,7 @@ export default async function BoardLayout({ children, params }) {
   const FALLBACK_ARRAY = [];
   const FALLBACK_OBJECT = {};
   const boardId = params?.boardId || FALLBACK_STRING;
+  const workspaceId = params?.workspaceId || FALLBACK_STRING;
 
   /*
    * Get ganttChartId using the utility function
@@ -229,6 +230,7 @@ export default async function BoardLayout({ children, params }) {
           ganttChartName={ganttChartName}
           preventUserImage={preventUserImage}
           boardData={boardData}
+          workspaceId={workspaceId}
         />
         <ToastContainer position="top-right" autoClose={3000} />
         <main>{children}</main>
@@ -249,6 +251,7 @@ export default async function BoardLayout({ children, params }) {
           ganttChartName={ganttChartName}
           preventUserImage={preventUserImage}
           boardData={boardData}
+          workspaceId={workspaceId}
         />
         <main>{children}</main>
       </div>

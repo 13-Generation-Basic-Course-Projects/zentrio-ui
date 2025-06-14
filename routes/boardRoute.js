@@ -14,12 +14,12 @@ export const boardRouteGroup = {
 
   //post
   assignUserRoleToBoard: () => `${apiConfig.baseUrl}/boards/assign`,
-  inviteUserToBoard: (boardId) =>
-    `${apiConfig.baseUrl}/boards/${boardId}/users/invite`,
+  inviteUserToBoard: (boardId, workspaceId) =>
+    `${apiConfig.baseUrl}/boards/${boardId}/workspace/${workspaceId}/users/invite`,
   assignUserRoleLeaderToBoard: (taskid, assignId) =>
     `${apiConfig.baseUrl}/tasks/${taskid}/members/${assignId}`, //asign team ld
   assignMemberInChecklist: (checklistId, taskId, assignedBy, assignedTo) =>
-    `${apiConfig.baseUrl}/api/v1/checklists/${checklistId}/tasks/${taskId}/members${assignedBy}/members/${assignedTo}/`,
+    `${apiConfig.baseUrl}/api/v1/checklists/${checklistId}/tasks/${taskId}/members/${assignedBy}/members/${assignedTo}/`,
 
   createTaskByBoardIdAndGanttBarId: () => `${apiConfig.baseUrl}/tasks`, // Created task with boards ID and gantt bars ID
   createCheckListBytaskId: () => `${apiConfig.baseUrl}/checklists`, // Created task with boards ID and gantt bars ID

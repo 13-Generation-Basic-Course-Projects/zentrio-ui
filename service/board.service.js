@@ -86,7 +86,12 @@ export const getMemberByBoardIdService = async ({ boardId, token }) => {
 /*
  * invite member to baord
  */
-export const inviteMemberToBoardService = async ({ boardId, data, token }) => {
+export const inviteMemberToBoardService = async ({
+  boardId,
+  workspaceId,
+  data,
+  token,
+}) => {
   try {
     console.log("from service", { boardId, data, token });
     const url = boardRouteGroup.inviteUserToBoard(boardId);
@@ -99,7 +104,7 @@ export const inviteMemberToBoardService = async ({ boardId, data, token }) => {
       body: JSON.stringify(data), // Send the array of invites
     });
     const result = await res.json();
-    //console.log("📥 Backend responded with:", result);
+    console.log("📥 Backend responded with invite member modal:", result);
 
     // Ensure the response has a consistent structure
     return {

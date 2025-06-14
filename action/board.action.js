@@ -73,7 +73,11 @@ export const getMemberByBoardIdAction = async ({ boardId }) => {
 /*
  * get all  memeber  specific boardId
  */
-export const inviteMemberToBoardAction = async ({ boardId, data }) => {
+export const inviteMemberToBoardAction = async ({
+  boardId,
+  workspaceId,
+  data,
+}) => {
   try {
     const userToken = await Token();
     const token = userToken.Credential;
@@ -81,6 +85,7 @@ export const inviteMemberToBoardAction = async ({ boardId, data }) => {
 
     const result = await inviteMemberToBoardService({
       boardId,
+      workspaceId,
       data,
       token,
     });
