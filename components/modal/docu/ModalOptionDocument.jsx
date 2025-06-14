@@ -8,16 +8,20 @@ import {
   Button,
   cn,
   DropdownSection,
+  Avatar,
 } from "@heroui/react";
 import ModalDelete from "../ModalDelete";
 import PopupAction from "@/components/popup/PopupAction";
 import { IconpopupDelete } from "@/components/icon/Iconpopup";
 import { ModalRenameFileOrFolder } from "./ModalRenameDocu";
-import { deleteDocumentAction, downloadDocumentByDocumentIdAction } from "@/action/document.action";
-import { useRouter } from "next/navigation";
+import {
+  downloadDocumentByDocumentIdAction,
+  downloadAllFilesAsZipAction,
+} from "@/action/document.action";
 import { useState } from "react";
+import ShareDocumentComponent from "./ShareDocument";
 
-// icon components directly in the same file
+// Icon components
 const AddNoteIcon = (props) => (
   <svg
     width="18"
@@ -33,6 +37,21 @@ const AddNoteIcon = (props) => (
     />
   </svg>
 );
+
+export const users = [
+  {
+    id: 1,
+    name: "Tony Reichert",
+    email: "tony.reichert@example.com",
+    avatar: "https://d2u8k2ocievbld.cloudfront.net/memojis/male/1.png",
+  },
+  {
+    id: 2,
+    name: "Jane Doe",
+    email: "jane.doe@example.com",
+    avatar: "https://d2u8k2ocievbld.cloudfront.net/memojis/female/3.png",
+  },
+];
 
 const CopyDocumentIcon = (props) => (
   <svg
@@ -95,7 +114,24 @@ const DeleteDocumentIcon = (props) => (
     />
   </svg>
 );
-const ShareoDcumentIcon = (props) => (
+
+const DownloadZipIcon = (props) => (
+  <svg
+    width="18"
+    height="18"
+    viewBox="0 0 18 18"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      d="M12 2H6C4.895 2 4 2.895 4 4V14C4 15.105 4.895 16 6 16H12C13.105 16 14 15.105 14 14V4C14 2.895 13.105 2 12 2ZM8 3H9V4H8V3ZM9 5V6H8V5H9ZM8 7H9V8H8V7ZM9 9V10H8V9H9ZM7 11H11V13H7V11Z"
+      fill="#143A47"
+    />
+  </svg>
+);
+
+const ShareDocumentIcon = (props) => (
   <svg
     width="15"
     height="15"
@@ -113,30 +149,58 @@ const ShareoDcumentIcon = (props) => (
 
 export default function ModalOptionDocument({ documentId, accessToken }) {
   const [isDownloading, setIsDownloading] = useState(false);
+  const [isDownloadingZip, setIsDownloadingZip] = useState(false);
+  const [showUsers, setShowUsers] = useState(false);
 
   const handleDownload = async () => {
     try {
       setIsDownloading(true);
-      
-      // Get blob from action
-      const { blob, fileName } = await downloadDocumentByDocumentIdAction(
-      documentId, // you should define or pass this
-      accessToken // also passed or fetched beforehand
-    );
 
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = fileName || "document"; // Fallback filename
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    window.URL.revokeObjectURL(url); // Clean up
-      
+      const { blob, fileName } = await downloadDocumentByDocumentIdAction(
+        documentId,
+        accessToken
+      );
+
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = fileName || "document";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Download failed:", error);
+      // You might want to show a user-friendly error message here
     } finally {
       setIsDownloading(false);
+    }
+  };
+
+  const handleDownloadAsZip = async () => {
+    try {
+      setIsDownloadingZip(true);
+
+      const { blob, filename } = await downloadAllFilesAsZipAction(
+        documentId,
+        accessToken
+      );
+
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+
+      // Cleanup
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Download ZIP failed:", error);
+      // You might want to show a user-friendly error message here
+    } finally {
+      setIsDownloadingZip(false);
     }
   };
 
@@ -144,10 +208,10 @@ export default function ModalOptionDocument({ documentId, accessToken }) {
     "text-xl text-default-500 pointer-events-none flex-shrink-0";
 
   return (
-    <Dropdown className="z-[10px]">
+    <Dropdown className="z-[10]">
       <DropdownTrigger>
-        <Button variant="" className="p-0 min-w-0 h-auto w-auto ">
-          <div className="hover:text-black text-gray-600  px-2 py-1">
+        <Button variant="" className="p-0 min-w-0 h-auto w-auto">
+          <div className="hover:text-black text-gray-600 px-2 py-1">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="w-4 h-4"
@@ -159,64 +223,95 @@ export default function ModalOptionDocument({ documentId, accessToken }) {
           </div>
         </Button>
       </DropdownTrigger>
+
       <DropdownMenu
-        aria-label="Dropdown menu with description"
+        aria-label="Document actions"
         variant="faded"
-        className="w-full min-w-[200px] "
+        className="min-w-[220px]"
         closeOnSelect={false}
       >
+        {/* Download Item */}
         <DropdownItem
           key="download"
           className="w-full hover:bg-default-100"
           onClick={handleDownload}
-          isDisabled={isDownloading} // Disable while downloading
+          isDisabled={isDownloading}
           startContent={
             isDownloading ? (
               <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-900"></div>
             ) : (
-              <AddNoteIcon className={iconClasses} />
+              <AddNoteIcon className="w-4 h-4" />
             )
           }
         >
-          {isDownloading ? 'Downloading...' : 'Download'}
+          {isDownloading ? "Downloading..." : "Download"}
         </DropdownItem>
+
+        {/* ZIP Download */}
         <DropdownItem
-          key="copy"
+          key="download-zip"
           className="w-full hover:bg-default-100"
-          startContent={<CopyDocumentIcon className={iconClasses} />}
+          onClick={handleDownloadAsZip}
+          isDisabled={isDownloadingZip}
+          startContent={
+            isDownloadingZip ? (
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-900"></div>
+            ) : (
+              <DownloadZipIcon className="w-4 h-4" />
+            )
+          }
         >
-          <ModalRenameFileOrFolder documentId={documentId} tokenFromGoogle={accessToken} />
+          {isDownloadingZip ? "Downloading ZIP..." : "Download as ZIP"}
         </DropdownItem>
+
+        {/* Rename */}
         <DropdownItem
-          key="edit"
+          key="rename"
+          className="w-full hover:bg-default-100"
+          startContent={<CopyDocumentIcon className="w-4 h-4" />}
+        >
+          <ModalRenameFileOrFolder
+            documentId={documentId}
+            tokenFromGoogle={accessToken}
+          />
+        </DropdownItem>
+
+        {/* Details */}
+        <DropdownItem
+          key="details"
           className="w-full hover:bg-default-100"
           showDivider
-          startContent={<EditDocumentIcon className={iconClasses} />}
+          startContent={<EditDocumentIcon className="w-4 h-4" />}
         >
           Details
         </DropdownItem>
+
+        {/* Delete */}
         <DropdownItem
           key="delete"
-          className="w-full hover:bg-default-100 mb-1"
-          startContent={<DeleteDocumentIcon className={cn(iconClasses)} />}
+          className="w-full hover:bg-default-100"
+          startContent={<DeleteDocumentIcon className="w-4 h-4" />}
         >
           <PopupAction
-            title={"Delete Folder"}
-            massageTitle={"Are you sure?"}
-            massageBody={"You want to delete it."}
+            title="Delete Folder"
+            massageTitle="Are you sure?"
+            massageBody="You want to delete it."
             icon={<IconpopupDelete />}
-            bgcolor={"bg-slate-red"}
-            massageDo={"Yes, Delete"}
+            bgcolor="bg-slate-red"
+            massageDo="Yes, Delete"
+            massageUndo="No, Cancel"
             documentId={documentId}
             accessToken={accessToken}
-            massageUndo={"No, Cancel"}
           />
         </DropdownItem>
-        <DropdownSection className="border-t-1 border-default-200 pt-1">
+
+        {/* Share Section */}
+        <DropdownSection showDivider>
           <DropdownItem
             key="share"
-            className="w-full hover:bg-default-100"
-            startContent={<ShareoDcumentIcon className={cn(iconClasses)} />}
+            className="w-full hover:bg-default-100 relative"
+            onClick={() => setShowUsers((prev) => !prev)}
+            startContent={<ShareDocumentIcon className="w-5 h-5" />}
             endContent={
               <svg
                 width="7"
@@ -232,7 +327,29 @@ export default function ModalOptionDocument({ documentId, accessToken }) {
               </svg>
             }
           >
-            Share
+            <div className="relative">
+              Share
+              {showUsers && (
+                <div className="absolute top-full left-0 mt-2 w-64 bg-white border border-default-200 rounded-lg shadow-md z-50 p-2">
+                  {users.map((user) => (
+                    <div
+                      key={user.id}
+                      className="flex items-center p-2 hover:bg-default-100 rounded-md cursor-pointer"
+                    >
+                      <img
+                        src={user.avatar}
+                        alt={user.name}
+                        className="w-8 h-8 rounded-full mr-3"
+                      />
+                      <div>
+                        <p className="font-medium text-sm">{user.name}</p>
+                        <p className="text-xs text-gray-500">{user.email}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </DropdownItem>
         </DropdownSection>
       </DropdownMenu>

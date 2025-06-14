@@ -13,7 +13,7 @@ export default async function BoardLayout({ children, params }) {
   const publicDocuments = await getPublicDocumentsByBoardAction(boardId);
 
   const tokenFromGoogle =
-    "ya29.a0AW4Xtxj7Lw4OBj1kMkIAqUikhEcubvhOJ-C9AczSrfcm3n84_C_65Efnofn4fhLHOoZkliMIc2B1DLrNAidGB8eZvMu9R5ZOlYAttPIz9ffvZqPqlDhkilI9OOfh_y5Y_vsgU1tERC9S3SBSOpCGkGHN4aejcOAetPW9xXqdOAaCgYKAZYSARcSFQHGX2MiutmZScNksXvNrmMjcpxqmQ0177";
+    "ya29.a0AW4XtxgTTMb9LVHggOipP67Mq-Cs6X3V61fM9EejGFXfqFQX9gK399VyQHqc0eY0BuBZNC9zO-_8OYcUSwmrkgTEtZLv7ohp8HlVEevQdKBcc9QXLiHR9UzXS76o7mvbV54ZE6x7H5qJOXPReSB4EYo8UdaXsGY3tCWH8xYtMwaCgYKAf0SARcSFQHGX2MiWAwhApEpa7Q6FoujsapeAA0177";
   return (
     <div>
       <DocumentAutherize

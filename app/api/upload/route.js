@@ -1,14 +1,15 @@
-// app/api/upload/route.js
-
 export const config = {
   api: {
     bodyParser: false,
-    sizeLimit: "10mb", // or larger
+    sizeLimit: "10mb",
   },
 };
 
 import { Token } from "@/constant/token";
-import { createDocumentByUploadService } from "@/service/document.service";
+import {
+  createDocumentByUploadService,
+  uploadDocumentToFolderServie,
+} from "@/service/document.service";
 
 export async function POST(req) {
   try {
@@ -16,8 +17,9 @@ export async function POST(req) {
     const file = formData.get("multipartFile");
     const accessToken = formData.get("accessToken");
     const boardId = formData.get("boardId");
+    const folderId = formData.get("folderId"); // optionally included
 
-    if (!file || !accessToken || !boardId) {
+    if (!file || !accessToken || (!boardId && !folderId)) {
       return new Response(JSON.stringify({ error: "Missing input" }), {
         status: 400,
         headers: { "Content-Type": "application/json" },
@@ -27,16 +29,26 @@ export async function POST(req) {
     const userToken = await Token();
     const token = userToken.Credential;
 
-    // Create FormData again to pass into your service
-    const reFormData = new FormData();
-    reFormData.append("multipartFile", file);
+    const formPayload = new FormData();
+    formPayload.append("multipartFile", file);
 
-    const result = await createDocumentByUploadService(
-      reFormData,
-      boardId,
-      token,
-      accessToken
-    );
+    let result;
+
+    if (boardId) {
+      result = await createDocumentByUploadService(
+        formPayload,
+        boardId,
+        token,
+        accessToken
+      );
+    } else if (folderId) {
+      result = await uploadDocumentToFolderServie(
+        file,
+        folderId,
+        token,
+        accessToken
+      );
+    }
 
     return new Response(JSON.stringify(result), {
       status: 200,

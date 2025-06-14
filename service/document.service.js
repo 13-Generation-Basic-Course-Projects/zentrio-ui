@@ -94,7 +94,7 @@ export const getFileByFolderIdService = async ({
   }
 };
 
-/**
+/*
  * Download document by document ID
  */
 export const downloadDocumentByDocumentIdService = async ({
@@ -138,6 +138,48 @@ export const downloadDocumentByDocumentIdService = async ({
 };
 
 /*
+ * download all files as zip
+ */
+export const downloadAllFilesAsZipService = async ({
+  documentId,
+  accessToken,
+  token,
+}) => {
+  const url = documentRouteGroup.downloadAllFilesAsZip(documentId, accessToken);
+
+  console.log("Calling backend with:", {
+  url,
+  token,
+});
+
+
+  const res = await fetch(url, {
+  method: "GET",
+  headers: {
+    Authorization: `Bearer ${token}`,
+    Accept: "*/*",
+  },
+});
+
+
+  if (!res.ok) {
+    throw new Error(
+      `Failed to download ZIP file: ${res.status} ${res.statusText}`
+    );
+  }
+
+  const blob = await res.blob();
+
+  const contentDisposition = res.headers.get("Content-Disposition");
+  const filenameMatch = contentDisposition?.match(/filename="(.+?)"/);
+  const filename = filenameMatch
+    ? filenameMatch[1]
+    : `folder-${documentId}.zip`;
+
+  return { blob, filename };
+};
+
+/*
  * delete document by document Id
  */
 export const deleteDocumentService = async ({
@@ -170,7 +212,7 @@ export const deleteDocumentService = async ({
 export const createDocumentService = async (data, token) => {
   const url = documentRouteGroup.createDocument();
 
-  console.log("data", data)
+  console.log("data", data);
 
   const res = await fetch(url, {
     method: "POST",
@@ -183,7 +225,7 @@ export const createDocumentService = async (data, token) => {
 
   if (!res.ok) {
     const errorText = await res.text();
-    console.log('Error details:', errorText);
+    console.log("Error details:", errorText);
     throw new Error(`Failed: ${res.status}`);
   }
 
@@ -256,34 +298,51 @@ export const createDriveFileService = async (
 };
 
 /*
-* Upload file to folder id
-*/
-export const uploadDocumentToBoardServie = async (file, folderId, token, tokenFromGoogle) => {
-  const url = documentRouteGroup.uploadDocumentToFolder(folderId, tokenFromGoogle);
+ * Upload file to folder
+ */
+export const uploadDocumentToFolderServie = async (
+  file,
+  folderId,
+  token,
+  tokenFromGoogle
+) => {
+  const url = documentRouteGroup.uploadDocumentToFolder(
+    folderId,
+    tokenFromGoogle
+  );
 
   const formData = new FormData();
-  formData.append('file', file);
+  formData.append("file", file);
 
   const res = await fetch(url, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,
     },
-    body: formData
+    body: formData,
   });
 
   if (!res.success) {
     console.error("error of post file");
   }
-  
+
   return res.json();
-}
+};
 
 /*
  * Update document name by document id
  */
-export const updateDocumentNameByIdService = async (documentId, newName, token, tokenFromGoogle) => {
-  const url = documentRouteGroup.updateDocumentById(documentId, tokenFromGoogle, newName); // now includes name in URL
+export const updateDocumentNameByIdService = async (
+  documentId,
+  newName,
+  token,
+  tokenFromGoogle
+) => {
+  const url = documentRouteGroup.updateDocumentById(
+    documentId,
+    tokenFromGoogle,
+    newName
+  ); // now includes name in URL
 
   try {
     const res = await fetch(url, {
@@ -297,7 +356,9 @@ export const updateDocumentNameByIdService = async (documentId, newName, token, 
 
     if (!res.ok) {
       const errorData = await res.json().catch(() => null);
-      throw new Error(errorData?.message || `Request failed with status ${res.status}`);
+      throw new Error(
+        errorData?.message || `Request failed with status ${res.status}`
+      );
     }
 
     const updatedDocument = await res.json();
@@ -307,4 +368,3 @@ export const updateDocumentNameByIdService = async (documentId, newName, token, 
     throw error;
   }
 };
-
