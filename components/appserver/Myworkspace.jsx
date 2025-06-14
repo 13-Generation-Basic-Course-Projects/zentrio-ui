@@ -1,12 +1,10 @@
-import SmallCalendar from "../testcomponent/SmallCalendar";
-import CardWelcomeComponent from "../card/CardWelcome";
+
 import CardBoard from "../card/CardBoard";
 import CardBoardEmpty from "../card/CardBoardAdd";
-import { Link } from "lucide-react";
 import CardMember from "../card/CardMember";
 import Bar from "../bredcrum/Bar";
 
-// Central color mapping
+/* 🎨 Central color mapping for predefined background colors */
 const colorOptions = [
   { key: "red", label: "Red", className: "bg-board-red" },
   { key: "blue", label: "Blue Sky", className: "bg-board-primary" },
@@ -29,30 +27,53 @@ export default function Myworkspace({
 
   return (
     <div className="w-full grid grid-cols-12 h-full">
-      {/* board - scrollable */}
+      {/* Main board area - left 9 columns */}
       <div className="col-span-9 flex flex-col overflow-hidden p-3 min-h-0">
         <Bar title={"My Boards"} btn={"see all"} />
-        <div className="grid grid-cols-3 gap-3 scrollbar-hidden px-2 pb-[200px] py-4 overflow-y-auto flex-1 min-h-0 ">
+
+        <div className="grid grid-cols-3 gap-3 scrollbar-hidden px-2 pb-[200px] py-4 overflow-y-auto flex-1 min-h-0">
           {getBoardByWorkspaceId.payload.length > 0 ? (
             <>
               {getBoardByWorkspaceId.payload
-                .slice() // create a copy to avoid mutating original array
-                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // sort by createdAt descending
+                .slice() // avoid mutating original array
+                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // sort by newest
                 .map((board, i) => {
+                  let image = "";
+
                   const matchedColor = colorOptions.find(
                     (c) => c.key === board.cover
                   );
-                  const colorClass = matchedColor?.className || board.cover;
+
+                  if (matchedColor) {
+                    image = matchedColor.className;
+                  } else if (
+                    board.cover?.startsWith("http") ||
+                    board.cover?.startsWith("data:")
+                  ) {
+                    image = board.cover;
+                  } else if (board.cover) {
+                    // ⛳️ New logic for uploaded files
+                    // image = `http://localhost:8080/api/v1/files/${board.cover}`; // or your actual static file URL path
+                   image = `http://localhost:8080/api/v1/boards/${board.boardId}/cover/${board.cover}`;
+
+                  } else {
+                    image = "bg-gray-200";
+                  }
+                  console.log("Final image value for board:", image);
+
+
+                  
+
                   console.log("Id board in my workspace: ", board.boardId);
+
                   return (
                     <CardBoard
                       key={i}
                       role="pm"
                       workspaceId={board.workspaceId}
                       boardId={board.boardId}
-                      // projectId={board.boardId}
                       title={board.title}
-                      image={colorClass}
+                      image={image}
                       isFavourite={board.isFavourite}
                       deleteBoardAction={deleteBoardAction}
                       updateNameBoardAction={updateNameBoardAction}
@@ -61,13 +82,15 @@ export default function Myworkspace({
                     />
                   );
                 })}
-              {/* Add new board card */}
+
+              {/* ➕ Add new board card */}
               <CardBoardEmpty
                 Workspaceid={Workspaceid}
                 createBoardAction={createBoardAction}
               />
             </>
           ) : (
+            /* When there are no boards, still allow creating a new one */
             <CardBoardEmpty
               Workspaceid={Workspaceid}
               createBoardAction={createBoardAction}
@@ -76,7 +99,7 @@ export default function Myworkspace({
         </div>
       </div>
 
-      {/* right side column - fixed */}
+      {/* Right sidebar - member info */}
       <div className="col-span-3 p-2">
         <CardMember />
       </div>

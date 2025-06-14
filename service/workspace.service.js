@@ -420,16 +420,32 @@ export const createBoardService = async ({
   try {
     const url = boardRouteGroup.createBoard();
 
+    // Create FormData to handle file upload properly
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("description", description);
+    formData.append("workspaceId", workspaceId);
+
+    if (cover) {
+      formData.append("cover", cover);
+    }
+    console.log("FormData contents in service:", formData);
+
     const res = await fetch(url, {
       next: {
         tags: ["workspaces"], // ✅ Will be revalidated by revalidateTag()
       },
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({ title, description, cover, workspaceId }),
+      body: JSON.stringify({
+        title,
+        description,
+        cover,
+        workspaceId,
+      }),
     });
 
     if (!res.ok) {
@@ -445,6 +461,7 @@ export const createBoardService = async ({
     throw error;
   }
 };
+
 
 /*
  * 6. Invite users to board

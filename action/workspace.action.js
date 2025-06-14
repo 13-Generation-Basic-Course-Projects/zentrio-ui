@@ -193,15 +193,37 @@ export const getAllBoardsAction = async () => {
  * 5. Create new board by workspace id
  */
 export const createBoardAction = async (payload = {}) => {
-  console.log("Payload  board received:", payload);
-  const { title, description, cover, workspaceId } = payload;
+  const userToken = await Token();
+  const token = userToken.Credential;
+
+  let title, description, cover, workspaceId;
+
+  if (payload instanceof FormData) {
+    title = payload.get("title");
+    description = payload.get("description");
+    cover = payload.get("cover");
+    workspaceId = payload.get("workspaceId");
+
+    console.log("Received FormData payload:", {
+      title,
+      description,
+      cover,
+      workspaceId,
+    });
+  } else {
+    ({ title, description, cover, workspaceId } = payload);
+    console.log("Received object payload:", {
+      title,
+      description,
+      cover,
+      workspaceId,
+    });
+  }
 
   if (!title || !description) {
     throw new Error("title and description are required");
   }
 
-  const userToken = await Token();
-  const token = userToken.Credential;
   const result = await createBoardService({
     title,
     description,
@@ -211,6 +233,7 @@ export const createBoardAction = async (payload = {}) => {
   });
 
   revalidateTag("boards");
+  console.log("Results create board in action:", result);
   return result;
 };
 

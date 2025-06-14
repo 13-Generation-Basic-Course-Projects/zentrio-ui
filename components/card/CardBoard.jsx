@@ -163,14 +163,20 @@ export default function CardBoard({
               className={`rounded-xl w-full h-32 bg-cover bg-center ${image}`}
               aria-label={`Card background for ${title}`}
             />
-          ) : image ? (
+          ) : image &&
+            (image.startsWith("http") || image.startsWith("data:")) ? (
             <img
               src={image}
-              alt={`Card background for ${title}`}
-              className="object-cover rounded-xl w-full h-32"
+              alt={image || "Board cover image"}
+              className="w-full h-32 object-cover rounded-xl"
+            />
+          ) : image ? (
+            <img
+              src={`http://localhost:8080/api/v1/boards/${boardId}/cover`}
+              alt={image || "Board cover image"}
+              className="w-full h-32 object-cover rounded-xl"
             />
           ) : (
-            // No cover at all
             <div
               className="rounded-xl w-full h-32 bg-gray-200"
               aria-label={`No image available for ${title}`}
