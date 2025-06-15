@@ -25,7 +25,8 @@ import LeaveButton from "../button/LeaveButton";
 import PopupAction from "../popup/PopupAction";
 import { Button } from "@heroui/react";
 
-export default function DashboardSidebar() {
+export default function DashboardSidebar(getWorKSpaceJoined) {
+  console.log("workspace join inside bar", getWorKSpaceJoined);
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { toggleSidebar } = useSidebar();
@@ -50,7 +51,7 @@ export default function DashboardSidebar() {
   const items = [
     {
       title: "Board",
-      url: `/dashboard/${workspaceId}/${projectId}/board?role=${role}`,
+      url: `/dashboard/${workspaceId}/${projectId}/board`,
 
       activeIcon: (active) => (
         <svg
@@ -71,7 +72,7 @@ export default function DashboardSidebar() {
     },
     {
       title: "Calendar",
-      url: `/dashboard/${workspaceId}/${projectId}/calendar?role=${role}`,
+      url: `/dashboard/${workspaceId}/${projectId}/calendar`,
 
       activeIcon: (active) => (
         <svg
@@ -160,7 +161,7 @@ export default function DashboardSidebar() {
     },
     {
       title: "Document",
-      url: `/dashboard/${workspaceId}/${projectId}/docu?role=${role}`,
+      url: `/dashboard/${workspaceId}/${projectId}/docu`,
 
       activeIcon: (active) => (
         <svg
@@ -196,7 +197,7 @@ export default function DashboardSidebar() {
     },
     {
       title: "Announcement",
-      url: `/dashboard/${workspaceId}/${projectId}/announcement?role=${role}`,
+      url: `/dashboard/${workspaceId}/${projectId}/announcement`,
       activeIcon: (active) => (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -217,7 +218,7 @@ export default function DashboardSidebar() {
     },
     {
       title: "Members",
-      url: `/dashboard/${workspaceId}/${projectId}/member?role=${role}`,
+      url: `/dashboard/${workspaceId}/${projectId}/member`,
 
       activeIcon: (active) => (
         <svg
@@ -260,7 +261,7 @@ export default function DashboardSidebar() {
     },
     {
       title: "Reports",
-      url: `/dashboard/${workspaceId}/${projectId}/report?role=${role}`,
+      url: `/dashboard/${workspaceId}/${projectId}/report`,
 
       activeIcon: (active) => (
         <svg

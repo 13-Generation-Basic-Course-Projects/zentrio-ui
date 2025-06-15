@@ -14,6 +14,7 @@ import ModalNotification from "../modal/noti/ModalNotification";
 import ModalCreateGanttChart from "../modal/board/ModalCreateGanttChart";
 import ModalCreateGanttBar from "../modal/board/ModalCreateGanttBar";
 import { data } from "autoprefixer";
+import NotFound from "@/app/not-found";
 
 export default function SystemBoard({
   user,
@@ -26,21 +27,54 @@ export default function SystemBoard({
   ganttChartName,
   preventUserImage,
   boardData,
+  matchingBoardForNotPM,
 }) {
-  const pathname = usePathname();
-  const segments = pathname.split("/");
-  const workspaceId = segments[2]; // gets workspaceId from URL like /dashboard/otherworkspace/2/board
-  const searchParams = useSearchParams();
-  const role = searchParams.get("role") || user.role || "ROLE_MEMBER";
+  if (
+    !boardData ||
+    boardData.status >= 400 ||
+    boardData.type === "about:blank"
+  ) {
+    return <NotFound />;
+  }
+
   const [activeTab, setActiveTab] = useState("kanban");
+  console.log(matchingBoardForNotPM, "roleeeeee");
+
+  // Get role from matchingBoardForNotPM with priority logic
+  const getUserRole = (roles) => {
+    if (!roles || roles.length === 0) return "ROLE_MEMBER";
+
+    // If has 3 roles (ROLE_LEADER, ROLE_MEMBER, ROLE_MANAGER), return ROLE_MANAGER
+    if (roles.length === 3 && roles.includes("ROLE_MANAGER")) {
+      return "ROLE_MANAGER";
+    }
+
+    // If has 2 roles (ROLE_LEADER, ROLE_MEMBER), return ROLE_LEADER
+    if (roles.length === 2 && roles.includes("ROLE_LEADER")) {
+      return "ROLE_LEADER";
+    }
+
+    // Default to highest priority role available
+    if (roles.includes("ROLE_MANAGER")) return "ROLE_MANAGER";
+    if (roles.includes("ROLE_LEADER")) return "ROLE_LEADER";
+    return "ROLE_MEMBER";
+  };
+
+  // Updated role assignment
+  const role =
+    matchingBoardForNotPM === null
+      ? "ROLE_MANAGER"
+      : getUserRole(matchingBoardForNotPM?.role) || user.role || "ROLE_MEMBER";
 
   console.log("data board", boardData);
   console.log("data fav", boardData?.payload?.isFavourite);
+  console.log("user role from board:", role);
+
   const favBoard = boardData?.payload?.isFavourite;
 
-  // Conditionally add ModalInviteMember only if workspaceId is NOT 'otherworkspace'
+  // Modal components based on role
   const modalComponents = [
-    (role === "ROLE_LEADER" || role === "pm") && (
+    (role === "ROLE_LEADER" || role === "ROLE_MANAGER") && (
       <ModalCreateTask
         key="create-task"
         boardId={boardId}
@@ -49,7 +83,7 @@ export default function SystemBoard({
         allMemberInBoard={allMemberInBoard}
       />
     ),
-    (role === "tl" || role === "pm") && workspaceId !== "otherworkspace" && (
+    role === "ROLE_MANAGER" && (
       <ModalInviteMember
         key="invite-member"
         boardId={boardId}
@@ -58,6 +92,7 @@ export default function SystemBoard({
     ),
     <StarBoard key="star-board" favBoard={favBoard} />,
   ].filter(Boolean);
+
   // GanttChart modal based on role
   const ganttModal =
     role === "ROLE_MEMBER" || role === "ROLE_LEADER"

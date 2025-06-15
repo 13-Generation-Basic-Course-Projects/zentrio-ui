@@ -20,7 +20,7 @@ export default function Otherworkspace({
             {boards.map((el, index) => (
               <CardBoard
                 key={index}
-                title={el?.boardName}
+                title={el?.title}
                 role={el?.role || "tl"}
                 workspaceId="123"
                 projectId="456"

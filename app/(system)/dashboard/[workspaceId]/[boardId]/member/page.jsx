@@ -8,10 +8,11 @@ import {
 import { preventImage } from "@/constant/preventimage";
 import { getCurrentUserProfileAction } from "@/action/profile.action";
 import { getMemberByBoardIdAction } from "@/action/board.action";
+import { getOtherWorkSpaceJoinedAction } from "@/action/workspace.action";
 
 //useage route : http://localhost:3000/dashboard/1/1/member
 export default async function Member({ params }) {
-  const { boardId } = params;
+  const boardId = params.boardId;
   console.log("Board ID in app:", boardId);
 
   const boardMember = await getBoardMemberAction(boardId);
@@ -24,13 +25,44 @@ export default async function Member({ params }) {
   const imageUser = currentUserProfile?.payload?.user?.profileImage;
   const noImage = preventImage.noProfile;
   const preventUserImage = imageUser == null ? noImage : imageUser;
+  /**
+   * workspace joined
+   */
+  //workspace other
+  const getWorKSpaceJoined = await getOtherWorkSpaceJoinedAction();
+  console.log("getWorKSpaceJoined other", getWorKSpaceJoined);
+  // Search through all workspaces and their otherBoards to find the matching board
+  let matchingBoard = null;
+  let matchingWorkspace = null;
 
+  for (const workspace of getWorKSpaceJoined.payload) {
+    const board = workspace.otherBoards?.find(
+      (board) => board.boardId === boardId
+    );
+
+    if (board) {
+      matchingBoard = board;
+      matchingWorkspace = workspace;
+      break; // Found it, no need to continue searching
+    }
+  }
+
+  console.log("matching board:", matchingBoard);
+  console.log("matching workspace:", matchingWorkspace);
+
+  if (!matchingBoard) {
+    console.log("Board not found with ID:", boardId);
+  } else {
+    console.log("Found board:", matchingBoard);
+    console.log("Board belongs to workspace:", matchingWorkspace.title);
+  }
+  const matchingBoardForNotPM = matchingBoard;
   return (
     <Memberpage
-    boardId={boardId}
+      boardId={boardId}
       boardMember={boardMember}
       preventUserImage={preventUserImage}
-      boardId={boardId}
+      matchingBoardForNotPM={matchingBoardForNotPM}
     />
   );
 }

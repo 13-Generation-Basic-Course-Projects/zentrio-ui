@@ -22,7 +22,39 @@ import { ChevronUp } from "lucide-react";
 import ModalDelete from "../modal/ModalDelete";
 import { preventImage } from "@/constant/preventimage";
 
-export default function Memberpage({ boardMember, boardId, preventUserImage }) {
+export default function Memberpage({
+  boardMember,
+  boardId,
+  preventUserImage,
+  matchingBoardForNotPM,
+}) {
+  if (boardMember.status >= 400 || boardMember.type === "about:blank") {
+    return <NotFound />;
+  }
+
+  // Get role from matchingBoardForNotPM with priority logic
+  const getUserRole = (roles) => {
+    if (!roles || roles.length === 0) return "ROLE_MEMBER";
+
+    // If has 3 roles (ROLE_LEADER, ROLE_MEMBER, ROLE_MANAGER), return ROLE_MANAGER
+    if (roles.length === 3 && roles.includes("ROLE_MANAGER")) {
+      return "ROLE_MANAGER";
+    }
+
+    // If has 2 roles (ROLE_LEADER, ROLE_MEMBER), return ROLE_LEADER
+    if (roles.length === 2 && roles.includes("ROLE_LEADER")) {
+      return "ROLE_LEADER";
+    }
+
+    // Default to highest priority role available
+    if (roles.includes("ROLE_MANAGER")) return "ROLE_MANAGER";
+    if (roles.includes("ROLE_LEADER")) return "ROLE_LEADER";
+    return "ROLE_MEMBER";
+  };
+
+  const role =
+    getUserRole(matchingBoardForNotPM?.role) || user.role || "ROLE_MEMBER";
+
   const [members, setMembers] = useState(
     Array.isArray(boardMember) ? boardMember : []
   ); //call from props
@@ -150,7 +182,7 @@ export default function Memberpage({ boardMember, boardId, preventUserImage }) {
           />
         </div>
         {/* Invite */}
-        <ModalInviteMember boardId={boardId} />
+        {role != "ROLE_MANAGER" ? "" : <ModalInviteMember boardId={boardId} />}
       </div>
 
       <section className="overflow-hidden">
@@ -278,7 +310,6 @@ export default function Memberpage({ boardMember, boardId, preventUserImage }) {
                       )}
                     </div>
                   </td>
-
                   {/* Tasks Popover */}
                   <td className="px-6 py-4 border-none">
                     <div className="flex items-center gap-2 !border-none">
@@ -310,15 +341,19 @@ export default function Memberpage({ boardMember, boardId, preventUserImage }) {
                   </td>
                   {/* Action for delete */}
                   <td className="px-6 py-4">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="w-4 h-4 cursor-pointer"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                      onClick={() => openModal(member.userId)}
-                    >
-                      <path d="M10 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4z" />
-                    </svg>
+                    {role != "ROLE_MANAGER" ? (
+                      ""
+                    ) : (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="w-4 h-4 cursor-pointer"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        onClick={() => openModal(member.userId)}
+                      >
+                        <path d="M10 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4z" />
+                      </svg>
+                    )}
                   </td>
                 </tr>
               ))}
@@ -327,7 +362,6 @@ export default function Memberpage({ boardMember, boardId, preventUserImage }) {
           {/* Render ModalDelete once */}
           {isModalOpen && selectedUserId && (
             <ModalDelete
-           
               isOpen={isModalOpen}
               onClose={closeModal}
               messageTitle="Are you sure?"
@@ -341,7 +375,7 @@ export default function Memberpage({ boardMember, boardId, preventUserImage }) {
                 // Assuming token is available here or passed as prop (otherwise remove)
                 await deleteMemberAction(boardId, userId);
                 console.log("Delete confirmed!");
-                closeModal(); 
+                closeModal();
               }}
             />
           )}
