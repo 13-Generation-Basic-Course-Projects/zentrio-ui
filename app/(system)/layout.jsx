@@ -35,7 +35,7 @@ export const metadata = {
 
 export default async function SystemLayout({ children }) {
   const session = await auth();
-  console.log("aaa", session?.user);
+  // console.log("aaa", session?.user);
 
   /*  call action get all workspace */
   const workspaceData = await getAllWorkspaceAction();

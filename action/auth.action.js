@@ -24,29 +24,30 @@ export async function doLogout() {
 /*
  * login
  */
+
 export async function zentrioLoginCredentailAction(data) {
   try {
     const { email, password } = data;
-    const res = await loginZentrioCredentailService({ email, password });
-    console.log("7777777", res);
-    if (res?.success) {
-      try {
-        const { email, password } = data;
-        await signIn("credentials", {
-          email,
-          password,
-          redirect: false,
-        });
-      } catch (e) {
-        console.log("err at login creadentail", e);
-      }
-      return res;
+
+    const result = await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+    });
+
+    if (result?.error) {
+      console.log("❌ Login failed:", result.error);
+      return { ok: false, error: result.error };
     }
+
+    console.log("✅ Login success");
+    return { ok: true };
   } catch (error) {
     console.log("Login error:", error);
     return { ok: false, error: "Server error" };
   }
 }
+
 
 /*
  * rgister

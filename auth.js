@@ -1,10 +1,11 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+import CredentialsProvider from "next-auth/providers/credentials";
 import {
+  loginGoogleService,
   loginZentrioCredentailService,
-  loginZentrioService,
 } from "./service/auth.service";
-import Credentials from "next-auth/providers/credentials";
+
 export const {
   handlers: { GET, POST },
   auth,
@@ -15,30 +16,37 @@ export const {
     strategy: "jwt",
   },
   providers: [
-    Credentials({
+    CredentialsProvider({
       credentials: {
-        email: {},
-        password: {},
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
       },
       authorize: async (credentials) => {
         const { email, password } = credentials;
-        const res = await loginZentrioCredentailService({ email, password });
-        if (res?.success == false) {
+
+        try {
+          const token = await loginZentrioCredentailService({
+            email,
+            password,
+          });
+
+          if (!token || typeof token !== "string") {
+            console.error("❌ Invalid token from backend:", token);
+            return null;
+          }
+
+          return {
+            id: email,
+            email,
+            backendToken: token,
+          };
+        } catch (error) {
+          console.error("🔴 Authorization failed:", error.message);
           return null;
         }
-        return res;
-        // try {
-        //   const res = await loginZentrioCredentailService({ email, password });
-        //   if (!res?.success) {
-        //     return null;
-        //   }
-        //   return res;
-        // } catch (err) {
-        //   console.error("Login error:", err);
-        //   return null;
-        // }
       },
     }),
+
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
@@ -53,25 +61,35 @@ export const {
       },
     }),
   ],
-  secret: process.env.NEXTAUTH_SECRET,
-  callbacks: {
-    async jwt(token) {
-      // if (account) {
-      //   token.accessToken = account.access_token;
-      //   token.refreshToken = account.refresh_token;
-      //   token.idToken = account.id_token;
-      // }
 
+  callbacks: {
+    async jwt({ token, user, account }) {
+      if (user?.backendToken) {
+        // for credentials login
+        token.backendToken = user.backendToken;
+      } else if (account?.provider === "google" && account.id_token) {
+        try {
+          const backendToken = await loginGoogleService(
+            account.id_token,
+            "GOOGLE"
+          );
+          token.backendToken = backendToken;
+        } catch (error) {
+          console.error("🔴 Google backend login failed:", error.message);
+        }
+      }
       return token;
     },
-    async session(props) {
-      const { token } = props;
-      return token;
+
+    async session({ session, token }) {
+      session.backendToken = token.backendToken;
+      return session;
     },
   },
-  strategy: "jwt",
-  secret: process.env.NEXTAUTH_SECRET,
+
   pages: {
     signIn: "/login",
   },
+
+  secret: process.env.NEXTAUTH_SECRET,
 });

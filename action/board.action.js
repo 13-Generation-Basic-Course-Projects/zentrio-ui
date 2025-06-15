@@ -22,6 +22,7 @@ import {
 import { revalidatePath } from "next/cache";
 import { sendNotificationToUserIdAction } from "./notification.action";
 import { sendNotificationToUserIdService } from "@/service/notification.service";
+import { auth } from "@/auth";
 
 console.log("test actions must create folders");
 /*
@@ -31,8 +32,8 @@ export const getTaskByBoardIdAndGanttBarIdAction = async ({
   boardId,
   ganttbarId,
 }) => {
-  const userToken = await Token();
-  const token = userToken.Credential;
+ const session = await auth();
+   const token = session?.backendToken;
   //console.log(token);
   const result = await getTaskByBoardIdAndGanttBarIdService({
     boardId,
@@ -46,8 +47,8 @@ export const getTaskByBoardIdAndGanttBarIdAction = async ({
  * getChecklist by TaskId
  */
 export const getCheckListByTaskIdAction = async ({ taskId }) => {
-  const userToken = await Token();
-  const token = userToken.Credential;
+const session = await auth();
+  const token = session?.backendToken;
   //console.log(token);
   const result = await getCheckListByTaskIdService({
     taskId,
@@ -60,8 +61,8 @@ export const getCheckListByTaskIdAction = async ({ taskId }) => {
  * get all  memeber  specific boardId
  */
 export const getMemberByBoardIdAction = async ({ boardId }) => {
-  const userToken = await Token();
-  const token = userToken.Credential;
+  const session = await auth();
+    const token = session?.backendToken;
   //console.log(token);
   const result = await getMemberByBoardIdService({
     boardId,
@@ -95,8 +96,7 @@ export const inviteMemberToBoardAction = async ({ boardId, data }) => {
  * get all  comment by CheckList Id
  */
 export const getCommentByCheckListIdAction = async (checklistId) => {
-  const userToken = await Token();
-  const token = userToken.Credential;
+ const token = await Token();;
 
   if (
     !checklistId ||
@@ -143,8 +143,7 @@ export const getCommentByCheckListIdAction = async (checklistId) => {
  * get all  gannt chart
  */
 export const getAllGanttBarByGanttChartIDAction = async ({ ganttChartId }) => {
-  const userToken = await Token();
-  const token = userToken.Credential;
+ const token = await Token();;
   //console.log(token);
   console.log("gantbar by gant chart ", ganttChartId);
   const result = await getAllGanttBarByGanttChartIDService({
@@ -168,8 +167,7 @@ export const createTaskByBoardIdAndGanttChartIdAction = async (
   ganttChartId
 ) => {
   try {
-    const userToken = await Token();
-    const token = userToken?.Credential;
+    const token = await Token();
     if (!token) {
       throw new Error("No authentication token found");
     }
@@ -196,8 +194,7 @@ export const createTaskByBoardIdAndGanttChartIdAction = async (
  */
 export const createGanttChartByBoardIdAction = async (data, boardId) => {
   try {
-    const userToken = await Token();
-    const token = userToken?.Credential;
+    const token = await Token();
     if (!token) {
       throw new Error("No authentication token found");
     }
@@ -221,8 +218,7 @@ export const createGanttChartByBoardIdAction = async (data, boardId) => {
  */
 export const createCheckListAction = async (taskId, data) => {
   try {
-    const userToken = await Token();
-    const token = userToken?.Credential;
+    const token = await Token();
     if (!token) {
       throw new Error("No authentication token found");
     }
@@ -244,8 +240,7 @@ export const createCheckListAction = async (taskId, data) => {
  * getboard
  */
 export const getBoardByBoardIdAction = async (boardId) => {
-  const userToken = await Token();
-  const token = userToken?.Credential;
+  const token = await Token();
   try {
     const result = await getBoardByBoardIdService({
       boardId,
@@ -262,8 +257,7 @@ export const getBoardByBoardIdAction = async (boardId) => {
  * create comment
  */
 export const postCommentByCheckListIdAction = async (data, checklistId) => {
-  const userToken = await Token();
-  const token = userToken?.Credential;
+  const token = await Token();
   //console.log("data create form", data);
   try {
     const result = await postCommentByCheckListIdService({
@@ -282,8 +276,7 @@ export const postCommentByCheckListIdAction = async (data, checklistId) => {
  * edit comment
  */
 export const editCommmentAction = async (data) => {
-  const userToken = await Token();
-  const token = userToken?.Credential;
+  const token = await Token();
   //console.log("data create form", data);
   try {
     const result = await editCommmentService({
@@ -304,8 +297,7 @@ export const editCommmentAction = async (data) => {
 /*
 
 export const assignLeaderAction = async (taskid, assignId) => {
-  const userToken = await Token();
-  const token = userToken?.Credential;
+  const token = await Token();
   //console.log("data create form", taskid, assignId);
 
   const result = await assignUserRoleLeadeerToBoardService({
@@ -323,8 +315,7 @@ export const assignLeaderAction = async (taskid, assignId) => {
  * get task baord id
  */
 export const getTaskByBoardIdAction = async (boardId) => {
-  const userToken = await Token();
-  const token = userToken?.Credential;
+  const token = await Token();
   const result = await getTaskByBoardIdService({
     boardId,
     token,
@@ -335,8 +326,7 @@ export const getTaskByBoardIdAction = async (boardId) => {
  * delete task
  */
 export const deleteTaskAction = async (taskId, boardId, ganttBarId) => {
-  const userToken = await Token();
-  const token = userToken?.Credential;
+  const token = await Token();
   const result = await deleteTaskService(taskId, boardId, ganttBarId, token);
   revalidatePath("/task");
   // console.log("📥 Backend responded with delete action", result);
@@ -352,8 +342,7 @@ export const assignMemberInChecklistAction = async (
   boardId,
   ganttBarId
 ) => {
-  const userToken = await Token();
-  const token = userToken?.Credential;
+  const token = await Token();
   const result = await assignMemberInChecklistService(
     taskId,
     boardId,
@@ -370,8 +359,7 @@ export const assignMemberInChecklistAction = async (
  *move the task
  */
 export const moveTaskOrderAction = async (boardId, newId, oldId) => {
-  const userToken = await Token();
-  const token = userToken?.Credential;
+  const token = await Token();
   const result = await moveTaskOrderService(boardId, newId, oldId, token);
   revalidatePath("/task");
   // console.log("📥 Backend responded with delete action", result);
@@ -388,8 +376,7 @@ export const createTaskByBoardIdAndGanttChartIdAction = async (
   ganttChartId
 ) => {
   try {
-    const userToken = await Token();
-    const token = userToken?.Credential;
+    const token = await Token();
     if (!token) {
       throw new Error("No authentication token found");
     }
@@ -447,8 +434,7 @@ export const createTaskByBoardIdAndGanttChartIdAction = async (
 };
 
 export const assignLeaderAction = async (taskId, assignId) => {
-  const userToken = await Token();
-  const token = userToken?.Credential;
+  const token = await Token();
   if (!token) {
     throw new Error("No authentication token found");
   }
@@ -472,8 +458,7 @@ export const assignLeaderAction = async (taskId, assignId) => {
 
 export const declineLeaderAction = async (taskId, assignId) => {
   try {
-    const userToken = await Token();
-    const token = userToken?.Credential;
+    const token = await Token();
     if (!token) {
       throw new Error("No authentication token found");
     }

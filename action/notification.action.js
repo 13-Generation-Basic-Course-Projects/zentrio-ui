@@ -11,8 +11,7 @@ import {
 import { revalidatePath } from "next/cache";
 
 export const sendNotificationForAllUserAction = async ({ data }) => {
-  const userToken = await Token();
-  const token = userToken.Credential;
+  const token = await Token();
   try {
     const result = await sendNotificationForAllUserService({ data, token });
     return result;
@@ -27,8 +26,7 @@ export const sendNotificationToUserIdAction = async (
   data
 ) => {
   try {
-    const userToken = await Token();
-    const token = userToken.Credential;
+   const token = await Token();;
     // Call the service with token included
     const result = await sendNotificationToUserIdService(
       receiverId,
@@ -46,8 +44,7 @@ export const sendNotificationToUserIdAction = async (
 
 export const getNotificationForUserIdAction = async (userId) => {
   try {
-    const userToken = await Token();
-    const token = userToken.Credential; // Assuming Credential is the property holding the token
+   const token = await Token();; // Assuming Credential is the property holding the token
 
     if (!token) {
       console.error(
@@ -67,8 +64,7 @@ export const getNotificationForUserIdAction = async (userId) => {
 
 export const deleteNotificationByIdAction = async (notificationId) => {
   try {
-    const userToken = await Token();
-    const token = userToken.Credential;
+   const token = await Token();;
 
     if (!token) {
       console.error("Authentication token is missing.");

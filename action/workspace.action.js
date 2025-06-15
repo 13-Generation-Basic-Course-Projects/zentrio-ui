@@ -1,5 +1,6 @@
 "use server";
 
+import { auth } from "@/auth";
 import { Token } from "@/constant/token";
 import { RenameSchema } from "@/lib/schemas/workspaceSchema";
 import {
@@ -31,8 +32,7 @@ export const createWorkspaceAction = async (payload = {}) => {
     throw new Error("title and description are required");
   }
 
-  const userToken = await Token();
-  const token = userToken.Credential;
+  const token = await Token();
   const result = await createWorkspaceService({
     title,
     description,
@@ -48,19 +48,19 @@ export const createWorkspaceAction = async (payload = {}) => {
  *2. action get all workspaces (my workspace)
  */
 export const getAllWorkspaceAction = async () => {
-  const userToken = await Token();
-  const token = userToken.Credential;
-  const result = await getAllWorkspacesService({ token });
 
-  return result;
-};
+  const token = await Token();
+  console.log("token hhhhhhhhhhhhhhhhhh", token);
+  const result = await getAllWorkspacesService({token});
+   return result;
+ };
+
 
 /*
  * 4. for service Delete workspace by id -> deleteWorkspaceById: (id) => `${apiConfig.baseUrl}/workspaces/${id}`,
  */
 export const deleteWorkspaceByIdAction = async (id) => {
-  const userToken = await Token();
-  const token = userToken.Credential;
+  const token = await Token();
   console.log("Delete id action : ", id);
   const result = await deleteWorkspaceByIdService({ id, token });
 
@@ -99,8 +99,7 @@ export const updateWorkspaceByIdAction = async (id, payload = {}) => {
  * 6. for service Get all workspaces for users
  */
 export const getAllWorkspaceForUserAction = async () => {
-  const userToken = await Token();
-  const token = userToken.Credential;
+  const token = await Token();
   const result = await getWorkspacesByUserService({ token });
   return result;
 };
@@ -112,8 +111,7 @@ export const getAllWorkspaceForUserAction = async () => {
  */
 
 export const getBoardByIdAction = async (boardId) => {
-  const userToken = await Token();
-  const token = userToken.Credential;
+  const token = await Token();
 
   const result = await getBoardByIdService({ boardId, token });
 
@@ -135,9 +133,7 @@ export const updateBoardByIdAction = async (boardId, payload = {}) => {
   });
 
   if (!boardId) throw new Error("Board ID is required");
-
-  const userToken = await Token();
-  const token = userToken.Credential;
+  const token = await Token();
 
   const result = await updateBoardByIdService({
     boardId,
@@ -163,8 +159,7 @@ export const updateFavBoardByIdAction = async ({ boardId, isFavourite }) => {
 
   if (!boardId) throw new Error("Board ID is required");
 
-  const userToken = await Token();
-  const token = userToken.Credential;
+  const token = await Token();
 
   console.log("🔐 Using token in action:", token);
 
@@ -182,8 +177,7 @@ export const updateFavBoardByIdAction = async ({ boardId, isFavourite }) => {
  * 4. Get all boards
  */
 export const getAllBoardsAction = async () => {
-  const userToken = await Token();
-  const token = userToken.Credential;
+  const token = await Token();
   const result = await getAllBoardsService({ token });
 
   return result;
@@ -200,8 +194,7 @@ export const createBoardAction = async (payload = {}) => {
     throw new Error("title and description are required");
   }
 
-  const userToken = await Token();
-  const token = userToken.Credential;
+  const token = await Token();
   const result = await createBoardService({
     title,
     description,
@@ -218,8 +211,7 @@ export const createBoardAction = async (payload = {}) => {
  * 13. Get all boards by workspace id
  */
 export const getAllBoardBywWorkspaceIdAction = async (workspaceId) => {
-  const userToken = await Token();
-  const token = userToken.Credential;
+  const token = await Token();
   console.log("workspace id in board action: ", workspaceId);
   const result = await getBoardsByWorkspaceIdService({ workspaceId, token });
   return result;
@@ -229,8 +221,7 @@ export const getAllBoardBywWorkspaceIdAction = async (workspaceId) => {
  * 16. Deleted board by id and workspace id
  */
 export const deleteBoardAction = async (id, workspaceId) => {
-  const userToken = await Token();
-  const token = userToken.Credential;
+  const token = await Token();
   console.log("Delete board id action : ", id);
   console.log("workspaceId board id action : ", workspaceId);
   const result = await deleteBoardService({ id, workspaceId, token });
@@ -245,8 +236,7 @@ export const deleteBoardAction = async (id, workspaceId) => {
  */
 
 export const getFavoriteBoardAction = async (userId) => {
-  const userToken = await Token();
-  const token = userToken.Credential;
+  const token = await Token();
   console.log("from uid", userId);
   const result = await getFavoriteBoardService(userId, token);
   return result;
@@ -256,8 +246,7 @@ export const getFavoriteBoardAction = async (userId) => {
  * other workspace
  */
 export const getOtherWorkSpaceJoinedAction = async () => {
-  const userToken = await Token();
-  const token = userToken.Credential;
+  const token = await Token();
   const result = await getOtherWorkSpaceJoinedService(token);
   return result;
 };

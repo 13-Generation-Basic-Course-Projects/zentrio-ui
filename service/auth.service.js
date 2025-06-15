@@ -57,7 +57,7 @@ export const loginZentrioService = async (email, password) => {
  */
 export const loginZentrioCredentailService = async ({ email, password }) => {
   try {
-    const url = authRoute.loginUserRoute();
+    const url = authRoute.loginUserRoute(); // Define this properly elsewhere
     const res = await fetch(url, {
       method: "POST",
       headers: {
@@ -65,16 +65,20 @@ export const loginZentrioCredentailService = async ({ email, password }) => {
       },
       body: JSON.stringify({ email, password }),
     });
+
     const data = await res.json();
     console.log("📥 Backend responded with:", data);
-    console.log("BBBBB", data?.payload?.token);
 
-    return data; // just return the data, don’t redirect here
+    // ✅ Return token, DO NOT use localStorage here (server side)
+    return data?.payload?.token || null;
   } catch (error) {
-    console.error("Login service error:", error.message);
+    console.error("Login service error:", error?.message);
     throw error;
   }
 };
+
+
+
 
 /*
  * otp
@@ -139,7 +143,7 @@ export const resendOtpZentrioService = async ({ email, otp }) => {
 /*
  * login google
  */
-export const loginGoogleService = async ({ accesToken }) => {
+export const loginGoogleService = async (idToken,provider) => {
   try {
     const url = `${apiConfig.baseUrl}/auths/login/third-party`;
     const res = await fetch(url, {
@@ -147,13 +151,14 @@ export const loginGoogleService = async ({ accesToken }) => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ idToken: accesToken }),
+      body: JSON.stringify({ idToken,provider }),
     });
     const data = await res.json();
     console.log("📥 Backend responded with:", data);
-    console.log("BBBBB", data?.payload?.token);
+    if (!data?.payload?.token)
+      throw new Error("No token returned from backend");
 
-    return data; // just return the data, don’t redirect here
+    return data.payload.token;
   } catch (error) {
     console.error("Login service error:", error.message);
     throw error;

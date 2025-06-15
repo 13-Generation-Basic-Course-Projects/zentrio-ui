@@ -25,6 +25,7 @@ export default function Layout({ children }) {
 
         {/* Onesignal */}
         <OneSignalInitializer />
+        
       </body>
     </html>
   );
