@@ -8,9 +8,18 @@ import { LikeReactionButton } from "./ModalLikeComponent";
 import ImageViewer from "./popupImage";
 // import { useState } from "react";
 
-export default function CardPostAnnouncement({ Announcements }) {
+export default function CardPostAnnouncement({ Announcements,currentUserProfile }) {
   const announcementList = Announcements?.payload || [];
    console.log("announcement", announcementList);
+  console.log("current user", currentUserProfile);
+// Loop through each announcement
+announcementList.forEach((announcement, index) => {
+  console.log(`📢 Announcement ${index + 1}: ${announcement.title}`);
+  
+  // Loop through each react in that announcement
+  announcement.reacts?.forEach((react, i) => {
+    console.log(`  👉 React ${i + 1}:`, react);
+  });});
   // const [localAnnouncements, setLocalAnnouncements] = useState(announcementList);
   // console.log("announcementlist",announcementList);
 
@@ -76,7 +85,7 @@ export default function CardPostAnnouncement({ Announcements }) {
               {/* Actions */}
               <div className="flex items-center justify-between border-t border-gray-100 pt-4">
                 <div className="flex items-center gap-6">
-                  <LikeReactionButton announId={announcement.announcementId} />
+                  <LikeReactionButton announId={announcement?.announcementId}  reacts={announcement?.reacts}  currentUserProfile={currentUserProfile}/>
                   <Button
                     variant="ghost"
                     size="sm"
