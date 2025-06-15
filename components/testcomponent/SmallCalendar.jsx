@@ -1,27 +1,44 @@
 "use client";
-
-import { Calendar } from "@heroui/calendar";
-import { parseDate } from "@internationalized/date";
+import React from "react";
+import { Calendar } from "@heroui/react";
+import { today, getLocalTimeZone } from "@internationalized/date";
 
 export default function SmallCalendar() {
   return (
-    <div className="w-full max-w-none mx-auto  h-[300px]">
+    <div className="max-w-sm w-full overflow-hidden p-2">
       <Calendar
-        aria-label="Date"
-        className="bg-white"
-        pageBehavior="single"
-        firstDayOfWeek="sun"
+        isReadOnly
+        aria-label="Date (Read Only)"
+        value={today(getLocalTimeZone())}
         classNames={{
-          base: "w-full max-w-none  h-full min-h-none bg-yellow-400 flex flex-col",
-          content: "w-full",
-          headerWrapper: "w-full",
-          gridWrapper: "min-w-full",
-          grid: "min-w-full",
-          gridHeader: "w-full",
-          gridHeaderRow: "w-full px-0 xl:px-1 justify-between",
-          gridBodyRow: "w-full px-2 xl:px-4 justify-between",
+          base: "calendar-base",
+          gridBodyRow: "custom-grid-row",
+          gridBody: "custom-grid-body",
+          content: "calendar-base",
         }}
       />
+      <style jsx global>{`
+        .calendar-base {
+          width: 100%;
+          max-width: 300px;
+          border-radius: 0.75rem;
+          box-shadow: 0 1px 3px rgb(0 0 0 / 0.1);
+          overflow-x: hidden;
+          box-sizing: border-box;
+        }
+        .custom-grid-body {
+          width: 100% !important;
+        }
+        .custom-grid-row {
+          height: 42px !important;
+        }
+        .calendar-grid-wrapper {
+          width: 100% !important;
+        }
+        .calendar-grid {
+          width: 100% !important;
+        }
+      `}</style>
     </div>
   );
 }
