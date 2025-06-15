@@ -326,7 +326,7 @@ export default function MyCalender({ tasks }) {
     const adjustedTask = {
       ...task,
       end: new Date(
-        new Date(task.end).setDate(new Date(task.end).getDate() + 1)
+        new Date(task.end).setDate(new Date(task.end).getDate() + 2)
       )
         .toISOString()
         .split("T")[0],
@@ -457,13 +457,13 @@ export default function MyCalender({ tasks }) {
     const selectedStart = new Date(info.startStr);
     const selectedEnd = new Date(info.endStr);
 
-    // Normalize dates to ignore time part
+    // Normalize to ignore time component
     const selStart = normalizeDateToDay(selectedStart);
     const selEnd = normalizeDateToDay(
-      new Date(selectedEnd.getTime() - 24 * 60 * 60 * 1000) // adjust end date to be inclusive
+      new Date(selectedEnd.getTime() - 86400000) // subtract 1 day for inclusive range
     );
 
-    // Ensure a task is selected before allowing comments
+    // Check if a task is selected
     if (!selectedTaskId) {
       toast.error("⚠️ Selection must be within a task duration.", {
         position: "top-right",
@@ -472,13 +472,11 @@ export default function MyCalender({ tasks }) {
       return;
     }
 
-    // Find the selected task from mappedTasks using correct id property
+    // Find matching task
     const matchingTask = mappedTasks.find((task) => {
       if (task.id === selectedTaskId) {
         const taskStart = normalizeDateToDay(new Date(task.start));
         const taskEnd = normalizeDateToDay(new Date(task.end));
-
-        // Check if the selected date range falls within the task duration
         return (
           selStart.getTime() >= taskStart.getTime() &&
           selEnd.getTime() <= taskEnd.getTime()
@@ -487,7 +485,7 @@ export default function MyCalender({ tasks }) {
       return false;
     });
 
-    // If no matching task or date range is outside task duration, show alert
+    // Show error if selection is out of bounds
     if (!matchingTask) {
       toast.error("⚠️ Selection must be within a task duration.", {
         position: "top-right",
@@ -496,21 +494,17 @@ export default function MyCalender({ tasks }) {
       return;
     }
 
-    if (!matchingTask) {
-      toast.error("⚠️ Selection must be within a task duration.", {
-        position: "top-right",
-        autoClose: 4000,
-      });
-      return;
-    }
-
+    // Set comment input bar with corrected end date
     setCommentBarInput({
       visible: true,
       start: info.startStr,
-      end: info.endStr,
+      end: new Date(selectedEnd.getTime() - 86400000)
+        .toISOString()
+        .split("T")[0], // adjusted to be inclusive
       taskId: matchingTask.id,
     });
   };
+  
 
   return (
     <div className="p-4 h-screen flex flex-col overflow-hidden relative">
@@ -591,7 +585,6 @@ export default function MyCalender({ tasks }) {
             const startDate = new Date(commentBarInput.start);
             const rawEndDate = new Date(commentBarInput.end);
 
-            // Adjust endDate for display
             const endDate = new Date(rawEndDate);
             endDate.setMilliseconds(endDate.getMilliseconds() - 1);
 
@@ -599,22 +592,39 @@ export default function MyCalender({ tasks }) {
               startDate.toISOString().slice(0, 10) ===
               endDate.toISOString().slice(0, 10);
 
-            const handleSave = () => {
-              if (!noteValue.trim()) {
-                toast.error("Note cannot be empty!");
-                return;
-              }
+              const handleSave = () => {
+                const trimmed = noteValue.trim();
+                if (!trimmed) {
+                  toast.error("Note cannot be empty!");
+                  return;
+                }
 
-              handleNoteSave(
-                commentBarInput.taskId,
-                commentBarInput.start,
-                commentBarInput.end,
-                noteValue,
-                ""
-              );
-              setCommentBarInput(null);
-              setNoteValue("");
-            };
+                // ✅ Log the data being passed
+                console.log("Saving note with:", {
+                  taskId: commentBarInput.taskId,
+                  start: commentBarInput.start,
+                  end: commentBarInput.end,
+                  note: trimmed,
+                });
+
+                handleNoteSave(
+                  commentBarInput.taskId,
+                  commentBarInput.start,
+                  commentBarInput.end,
+                  trimmed,
+                  ""
+                );
+
+                // Clear and close the bar
+                setCommentBarInput({
+                  visible: false,
+                  start: null,
+                  end: null,
+                  taskId: null,
+                });
+                setNoteValue("");
+              };
+              
 
             return (
               <div className="absolute bottom-20 left-4 right-4 z-50 bg-white rounded-xl shadow-md p-4 border w-[500px] mx-auto">
@@ -626,21 +636,11 @@ export default function MyCalender({ tasks }) {
                   type="text"
                   value={noteValue}
                   onChange={(e) => setNoteValue(e.target.value)}
-                  onBlur={() => {
-                    if (noteValue.trim()) {
-                      handleSave();
-                    } else {
-                      toast.error("Note cannot be empty!");
-                    }
-                  }}
+                  onBlur={handleSave}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
                       e.preventDefault();
-                      if (noteValue.trim()) {
-                        handleSave();
-                      } else {
-                        toast.error("Note cannot be empty!");
-                      }
+                      handleSave();
                     }
                   }}
                   autoFocus
