@@ -15,7 +15,7 @@ export const boardRouteGroup = {
   //post
   assignUserRoleToBoard: () => `${apiConfig.baseUrl}/boards/assign`,
   inviteUserToBoard: (boardId, workspaceId) =>
-    `${apiConfig.baseUrl}/boards/${boardId}/workspace/${workspaceId}/users/invite`,
+    `${apiConfig.baseUrl}/boards/${boardId}/workspaces/${workspaceId}/users/invite`,
   assignUserRoleLeaderToBoard: (taskid, assignId) =>
     `${apiConfig.baseUrl}/tasks/${taskid}/members/${assignId}`, //asign team ld
   assignMemberInChecklist: (checklistId, taskId, assignedBy, assignedTo) =>

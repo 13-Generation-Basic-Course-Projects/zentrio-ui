@@ -28,6 +28,7 @@ export default function SystemBoard({
   preventUserImage,
   boardData,
   matchingBoardForNotPM,
+  workspaceId,
 }) {
   if (
     !boardData ||
@@ -88,6 +89,7 @@ export default function SystemBoard({
         key="invite-member"
         boardId={boardId}
         allMemberInBoard={allMemberInBoard}
+        workspaceId={workspaceId}
       />
     ),
     <StarBoard key="star-board" favBoard={favBoard} />,

@@ -27,6 +27,8 @@ export default function Memberpage({
   boardId,
   preventUserImage,
   matchingBoardForNotPM,
+  workspaceId,
+  allMemberInBoard,
 }) {
   if (boardMember.status >= 400 || boardMember.type === "about:blank") {
     return <NotFound />;
@@ -182,7 +184,15 @@ export default function Memberpage({
           />
         </div>
         {/* Invite */}
-        {role != "ROLE_MANAGER" ? "" : <ModalInviteMember boardId={boardId} />}
+        {role != "ROLE_MANAGER" ? (
+          ""
+        ) : (
+          <ModalInviteMember
+            boardId={boardId}
+            workspaceId={workspaceId}
+            allMemberInBoard={allMemberInBoard}
+          />
+        )}
       </div>
 
       <section className="overflow-hidden">

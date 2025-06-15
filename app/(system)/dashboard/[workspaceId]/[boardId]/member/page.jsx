@@ -13,6 +13,7 @@ import { getOtherWorkSpaceJoinedAction } from "@/action/workspace.action";
 //useage route : http://localhost:3000/dashboard/1/1/member
 export default async function Member({ params }) {
   const boardId = params.boardId;
+  const workspaceId = params.workspaceId;
   console.log("Board ID in app:", boardId);
 
   const boardMember = await getBoardMemberAction(boardId);
@@ -57,12 +58,16 @@ export default async function Member({ params }) {
     console.log("Board belongs to workspace:", matchingWorkspace.title);
   }
   const matchingBoardForNotPM = matchingBoard;
+  const membersResponse = await getMemberByBoardIdAction({ boardId });
+  allMemberInBoard = membersResponse?.payload || [];
   return (
     <Memberpage
       boardId={boardId}
       boardMember={boardMember}
       preventUserImage={preventUserImage}
       matchingBoardForNotPM={matchingBoardForNotPM}
+      workspaceId={workspaceId}
+      allMemberInBoard={allMemberInBoard}
     />
   );
 }

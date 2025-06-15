@@ -94,7 +94,7 @@ export const inviteMemberToBoardService = async ({
 }) => {
   try {
     console.log("from service", { boardId, data, token });
-    const url = boardRouteGroup.inviteUserToBoard(boardId);
+    const url = boardRouteGroup.inviteUserToBoard(boardId, workspaceId);
     const res = await fetch(url, {
       method: "POST", // Changed to POST to send invite data
       headers: {
