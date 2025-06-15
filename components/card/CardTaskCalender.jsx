@@ -3,7 +3,7 @@
 import { Card, CardHeader, CardBody } from "@heroui/react";
 import Image from "next/image";
 import tasklogo from "../../assets/task.png";
-import { getChecklistByTaskIdAction } from "@/action/calendarV2.action";
+import { getAllNoteInCalendarAction, getChecklistByTaskIdAction } from "@/action/calendarV2.action";
 import { useEffect, useState } from "react";
 
 // Define color palette with count mappings
@@ -17,6 +17,7 @@ const colorMap = [
 
 export default function CardTaskCalender({ tasks, onTaskClick, activeTaskId }) {
   const [checklistCounts, setChecklistCounts] = useState({});
+  const [commentCounts, setCommentCounts] = useState({}); // <-- New
   console.log("Tasks in cardTaskCelendar: ", tasks);
 
   useEffect(() => {
@@ -36,9 +37,26 @@ export default function CardTaskCalender({ tasks, onTaskClick, activeTaskId }) {
       setChecklistCounts(counts);
     };
 
+    const fetchAllCommentCounts = async () => {
+      const counts = {};
+      for (const task of tasks) {
+        try {
+          const comments = await getAllNoteInCalendarAction(task.id);
+          counts[task.id] = comments?.payload?.length || 0;
+        } catch (err) {
+          console.error(`Comment fetch failed for task ${task.id}`, err);
+          counts[task.id] = 0;
+        }
+      }
+      setCommentCounts(counts);
+    };
+
     if (tasks.length > 0) {
       fetchAllChecklistCounts();
+      fetchAllCommentCounts();
     }
+
+   
   }, [tasks]);
 
   return (
@@ -59,8 +77,9 @@ export default function CardTaskCalender({ tasks, onTaskClick, activeTaskId }) {
           tasks.map((el, i) => {
             const color = colorMap[i % colorMap.length];
             const checklistCount = checklistCounts[el.id] ?? "-";
+            const commentCount = commentCounts[el.id] ?? "-";
             const isActive = el.id === activeTaskId;
- 
+
             return (
               <div
                 key={el.id}
@@ -84,7 +103,8 @@ export default function CardTaskCalender({ tasks, onTaskClick, activeTaskId }) {
                   </span>
                 </div>
                 <small className="text-title font-medium text-xs flex-shrink-0">
-                  {checklistCount}
+                  {/* {checklistCount} */}
+                  {commentCount} comment{commentCount > 1 ? "s" : ""}
                 </small>
               </div>
             );

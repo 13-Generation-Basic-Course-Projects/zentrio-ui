@@ -240,7 +240,7 @@ export default function MyCalender({ tasks }) {
     }
   }, [tasks]);
 
-  console.log("Use noted to find: ", notes); // ✅ Now logs an array
+  console.log("Use noted to find: ", notes); 
 
   const { mappedTasks, taskColorMap } = useMemo(() => {
     const uniqueIds = new Set();
@@ -453,6 +453,17 @@ export default function MyCalender({ tasks }) {
     setCurrentTitle(calendarApi.view.title);
   };
 
+  const handleCancel = () => {
+    setCommentBarInput({
+      visible: false,
+      start: null,
+      end: null,
+      taskId: null,
+    });
+    setNoteValue("");
+  };
+  
+
   const handleDateSelect = (info) => {
     const selectedStart = new Date(info.startStr);
     const selectedEnd = new Date(info.endStr);
@@ -465,10 +476,12 @@ export default function MyCalender({ tasks }) {
 
     // Check if a task is selected
     if (!selectedTaskId) {
+      handleCancel();
       toast.error("⚠️ Selection must be within a task duration.", {
         position: "top-right",
         autoClose: 4000,
       });
+     
       return;
     }
 
@@ -487,6 +500,7 @@ export default function MyCalender({ tasks }) {
 
     // Show error if selection is out of bounds
     if (!matchingTask) {
+      handleCancel();
       toast.error("⚠️ Selection must be within a task duration.", {
         position: "top-right",
         autoClose: 4000,
@@ -503,9 +517,12 @@ export default function MyCalender({ tasks }) {
         .split("T")[0], // adjusted to be inclusive
       taskId: matchingTask.id,
     });
+    
+    
   };
   
 
+  
   return (
     <div className="p-4 h-screen flex flex-col overflow-hidden relative">
       <BredCrum board="Hikko Design" feature="Calender" header="Calender" />
@@ -585,46 +602,48 @@ export default function MyCalender({ tasks }) {
             const startDate = new Date(commentBarInput.start);
             const rawEndDate = new Date(commentBarInput.end);
 
+            // Inclusive end date: already adjusted in handleDateSelect
             const endDate = new Date(rawEndDate);
-            endDate.setMilliseconds(endDate.getMilliseconds() - 1);
-
             const isSingleDay =
               startDate.toISOString().slice(0, 10) ===
               endDate.toISOString().slice(0, 10);
 
-              const handleSave = () => {
-                const trimmed = noteValue.trim();
-                if (!trimmed) {
-                  toast.error("Note cannot be empty!");
-                  return;
-                }
+            const handleSave = () => {
+              const trimmed = noteValue.trim();
+              if (!trimmed) {
+                handleCancel();
+                toast.error("Note cannot be empty!");
+                return;
+              }
 
-                // ✅ Log the data being passed
-                console.log("Saving note with:", {
-                  taskId: commentBarInput.taskId,
-                  start: commentBarInput.start,
-                  end: commentBarInput.end,
-                  note: trimmed,
-                });
+              // Debug log
+              console.log("Saving note with:", {
+                taskId: commentBarInput.taskId,
+                start: commentBarInput.start,
+                end: commentBarInput.end,
+                note: trimmed,
+              });
 
-                handleNoteSave(
-                  commentBarInput.taskId,
-                  commentBarInput.start,
-                  commentBarInput.end,
-                  trimmed,
-                  ""
-                );
+              handleNoteSave(
+                commentBarInput.taskId,
+                commentBarInput.start,
+                commentBarInput.end,
+                trimmed,
+                ""
+              );
+              handleCancel();
 
-                // Clear and close the bar
-                setCommentBarInput({
-                  visible: false,
-                  start: null,
-                  end: null,
-                  taskId: null,
-                });
-                setNoteValue("");
-              };
-              
+              // Clear state and close input
+              setCommentBarInput({
+                visible: false,
+                start: null,
+                end: null,
+                taskId: null,
+              });
+              setNoteValue("");
+            };
+
+         
 
             return (
               <div className="absolute bottom-20 left-4 right-4 z-50 bg-white rounded-xl shadow-md p-4 border w-[500px] mx-auto">
@@ -636,11 +655,16 @@ export default function MyCalender({ tasks }) {
                   type="text"
                   value={noteValue}
                   onChange={(e) => setNoteValue(e.target.value)}
-                  onBlur={handleSave}
+                  onBlur={(e) => {
+                    // Only save if user hasn't already clicked elsewhere
+                    if (!e.relatedTarget) handleSave();
+                  }}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
                       e.preventDefault();
                       handleSave();
+                    } else if (e.key === "Escape") {
+                      handleCancel();
                     }
                   }}
                   autoFocus
