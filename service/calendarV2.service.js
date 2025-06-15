@@ -145,6 +145,9 @@ export const getAllNoteInCalendarService = async ({ taskId, token }) => {
         accept: "*/*",
         Authorization: `Bearer ${token}`,
       },
+      // next: {
+      //   tags: ["calendar"],
+      // },
     });
     const data = await res.json();
     console.log("Service - getAllNoteInCalendar (successful data):", data);

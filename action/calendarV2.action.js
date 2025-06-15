@@ -1,7 +1,7 @@
 "use server";
 import { Token } from "@/constant/token";
 import { createNoteInCalendarService, deleteNoteInCalendarService, getAllNoteInCalendarService, getCalendarByBoardIdAndUserIdService, getChecklistByTaskIdService, getGanttBarByGanttChartIdService, getGanttChartByBoardIdService, getNoteInCalendarService, getTaskByBoardIdAndGanttBarIdService } from "@/service/calendarV2.service";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 /*
  * getTaskbyBoardId and GanttbarId
  */
@@ -98,6 +98,7 @@ export const getAllNoteInCalendarAction = async (taskId) => {
       taskId: taskId,
       token: token,
     });
+    // revalidateTag("calendar");
     return result; 
   } catch (error) {
     console.error("getNoteInCalendarAction error:", error);

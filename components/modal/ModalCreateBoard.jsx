@@ -9,7 +9,6 @@ import {
   Button,
   useDisclosure,
   Card,
- 
 } from "@heroui/react";
 import { createWorkspaceSchema } from "@/lib/schemas/workspaceSchema";
 import { useForm } from "react-hook-form";
@@ -40,7 +39,6 @@ export default function ModalCreateBoard({ Workspaceid }) {
   const [previewUrl, setPreviewUrl] = useState(null);
   const [selectedFileName, setSelectedFileName] = useState(null);
 
-
   const {
     register,
     handleSubmit,
@@ -61,8 +59,6 @@ export default function ModalCreateBoard({ Workspaceid }) {
     { key: "violet", label: "Violet", className: "bg-board-violet" },
   ];
 
-  
-
   /*  update when file is selected */
   const handlePreview = (e) => {
     const file = e.target.files[0];
@@ -80,7 +76,6 @@ export default function ModalCreateBoard({ Workspaceid }) {
     setShowColors(false);
     setDropdownOpen(false);
   };
-  
 
   const handleFileSelect = (e) => {
     const file = e.target.files[0];
@@ -90,7 +85,6 @@ export default function ModalCreateBoard({ Workspaceid }) {
       setPreviewUrl(URL.createObjectURL(file));
     }
   };
-  
 
   /* This function will be called when the form is submitted */
   const onSubmit = async (data) => {

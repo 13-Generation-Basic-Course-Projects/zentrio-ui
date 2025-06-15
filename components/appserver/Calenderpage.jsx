@@ -83,16 +83,16 @@ export default function MyCalender({ tasks }) {
     { text: "text-teal-600", light: "bg-teal-100" },
     { text: "text-cyan-600", light: "bg-cyan-100" },
 
-    { text: "text-lime-600", light: "bg-lime-100" },
-    { text: "text-emerald-600", light: "bg-emerald-100" },
-    { text: "text-violet-600", light: "bg-violet-100" },
-    { text: "text-fuchsia-600", light: "bg-fuchsia-100" },
-    { text: "text-orange-600", light: "bg-orange-100" },
-    { text: "text-amber-600", light: "bg-amber-100" },
-    { text: "text-sky-600", light: "bg-sky-100" },
-    { text: "text-zinc-600", light: "bg-zinc-100" },
-    { text: "text-gray-600", light: "bg-gray-100" },
-    { text: "text-stone-600", light: "bg-stone-100" },
+    { text: "text-lime-600", light: "bg-lime-200" },
+    { text: "text-emerald-600", light: "bg-emerald-300" },
+    { text: "text-violet-600", light: "bg-violet-400" },
+    { text: "text-fuchsia-600", light: "bg-fuchsia-300" },
+    { text: "text-orange-600", light: "bg-orange-300" },
+    { text: "text-amber-600", light: "bg-amber-200" },
+    { text: "text-sky-600", light: "bg-sky-300" },
+    { text: "text-zinc-600", light: "bg-zinc-300" },
+    { text: "text-gray-600", light: "bg-gray-200" },
+    { text: "text-stone-600", light: "bg-stone-200" },
   ];
   const calendarRef = useRef(null);
   const [currentTitle, setCurrentTitle] = useState("");
@@ -294,17 +294,14 @@ export default function MyCalender({ tasks }) {
     const task = mappedTasks.find((t) => t.id === taskId);
     if (!task) return;
 
-    setSelectedTaskId(taskId); // Triggers useEffect to fetch notes if needed
+    setSelectedTaskId(taskId);
     setSelectedTask(task);
     setActiveTaskId(taskId);
     calendarRef.current?.getApi().gotoDate(dateStr);
 
-    // Show comment events immediately if notes are already available
     const relatedNotes = notes?.filter((note) => note.taskId === taskId) || [];
 
-   
     const commentEvents = relatedNotes.map((note, i) => {
-      // Pick a random color from commentColorOptions
       const randomColor =
         commentColorOptions[
           Math.floor(Math.random() * commentColorOptions.length)
@@ -318,43 +315,54 @@ export default function MyCalender({ tasks }) {
         extendedProps: {
           type: "comment",
           notes: [note],
-          color: randomColor, // <-- different from taskColorMap
+          color: randomColor,
         },
         backgroundColor: "transparent",
         borderColor: "transparent",
       };
     });
 
-    setEvents([task, ...commentEvents]);
+    // ✅ Adjust task end date (+1 day) to show last day
+    const adjustedTask = {
+      ...task,
+      end: new Date(
+        new Date(task.end).setDate(new Date(task.end).getDate() + 1)
+      )
+        .toISOString()
+        .split("T")[0],
+      extendedProps: {
+        ...task.extendedProps,
+        realEnd: task.end,
+      },
+    };
 
-    setEvents([task, ...commentEvents]);
+    setEvents([adjustedTask, ...commentEvents]);
   };
+  
 
   const renderEventContent = ({ event, isStart }) => {
-    const { type, color, notes = [] } = event.extendedProps;
+    const { type, color, notes = [], realEnd } = event.extendedProps;
 
     if (type !== "task" && type !== "comment") return null;
 
     const baseStyle = `h-[70px] p-1 rounded-small border-2 px-2 font-bold ${
       color?.text || "text-green-600"
     } ${color?.light || "bg-green-100"}`;
-    const dayDate = event.range?.start
-      ? new Date(event.range.start)
-      : new Date(event.start);
-    const dayKey = dayDate.toISOString().split("T")[0];
 
     const formatDate = (dateStr) =>
       new Date(dateStr).toLocaleDateString("en-GB", {
         day: "numeric",
-        month: "short",
+        month: "long",
       });
 
+    const displayEnd = new Date(realEnd || event.end); // Use realEnd if available
     const formattedDate = `${formatDate(event.start)} - ${formatDate(
-      event.end
+      displayEnd
     )}`;
 
+    // COMMENT EVENT BLOCK
     if (type === "comment") {
-      if(!isStart){
+      if (!isStart) {
         return (
           <div
             className={`mt-1 text-[0.7rem] rounded border-4 border-dashed px-2 py-[12px] ${
@@ -373,7 +381,7 @@ export default function MyCalender({ tasks }) {
 
       return (
         <div
-          className={`mt-1 text-[0.7rem] rounded border-4 border-dashed px-2 py-[6px] ${
+          className={`mt-1 text-[0.7rem] rounded border-3 border-dashed px-2 py-[6px] ${
             color?.text || "text-blue-600"
           } ${color?.light || "bg-blue-100"}`}
           style={{
@@ -384,20 +392,18 @@ export default function MyCalender({ tasks }) {
             gap: "1.5rem",
           }}
         >
-          <MessageCircleMore className="w-4 h-4 flex-shrink-0 " />
+          <MessageCircleMore className="w-4 h-4 flex-shrink-0" />
           <div
             className="text-[0.7rem] leading-snug break-words whitespace-pre-wrap flex-1"
             style={{ wordBreak: "break-word" }}
           >
-            {notes[0]?.noted}
+            {notes[0]?.noted || event.extendedProps.noted}
           </div>
         </div>
       );
     }
-    
-    
 
-    // TASK BLOCK ONLY
+    // TASK EVENT BLOCK
     if (!isStart) {
       return (
         <div
@@ -405,25 +411,25 @@ export default function MyCalender({ tasks }) {
             color?.border || "border-green-500"
           } p-1`}
         />
-      
       );
     }
+
     return (
       <div className="flex flex-col gap-1">
         <div
           draggable={false}
           onDragStart={(e) => e.preventDefault()}
-          className={`${baseStyle}  border ${
+          className={`${baseStyle} border ${
             color?.border || "border-green-500"
           } rounded-medium`}
           style={{
-            height: "70px", // fixed height
+            height: "70px",
             display: "grid",
-            gridTemplateRows: "auto 1fr", // 2 rows: date + content
+            gridTemplateRows: "auto 1fr",
             gap: 0,
           }}
         >
-          <div className="text-[0.65rem] font-medium bg-white bg-opacity-80 w-fit px-2 py-[2px] rounded-small ">
+          <div className="text-[0.65rem] font-medium bg-white bg-opacity-80 w-fit px-2 py-[2px] rounded-small">
             {formattedDate}
           </div>
           <div className="flex items-center gap-1 text-[0.9rem] h-[60px]">
@@ -434,6 +440,7 @@ export default function MyCalender({ tasks }) {
       </div>
     );
   };
+  
 
   const handleDateNav = (action) => {
     const calendarApi = calendarRef.current?.getApi();

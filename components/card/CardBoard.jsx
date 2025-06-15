@@ -172,7 +172,7 @@ export default function CardBoard({
             />
           ) : image ? (
             <img
-              src={`http://localhost:8080/api/v1/boards/${boardId}/cover`}
+              src={image}
               alt={image || "Board cover image"}
               className="w-full h-32 object-cover rounded-xl"
             />
@@ -201,8 +201,12 @@ export default function CardBoard({
 
           {/* Delete button and confirmation modal */}
           <div className="flex items-center text-progress-red py-5 gap-1">
-            <button onClick={() => setIsDeleteOpen(true)}>
+            <button
+              onClick={() => setIsDeleteOpen(true)}
+              className="flex items-center space-x-2 hover:bg-slate-50 rounded-medium text-caption"
+            >
               <IconDelete />
+              <span>Remove</span>
             </button>
 
             {/* Delete confirmation modal */}

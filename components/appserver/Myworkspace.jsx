@@ -53,16 +53,13 @@ export default function Myworkspace({
                     image = board.cover;
                   } else if (board.cover) {
                     // ⛳️ New logic for uploaded files
-                    // image = `http://localhost:8080/api/v1/files/${board.cover}`; // or your actual static file URL path
-                   image = `http://localhost:8080/api/v1/boards/${board.boardId}/cover/${board.cover}`;
+                    image = `http://localhost:8080/api/v1/files/${board.cover}`; // or your actual static file URL path
+                  //  image = `http://localhost:8080/api/v1/boards/${board.boardId}/cover/${board.cover}`;
 
                   } else {
                     image = "bg-gray-200";
                   }
                   console.log("Final image value for board:", image);
-
-
-                  
 
                   console.log("Id board in my workspace: ", board.boardId);
 

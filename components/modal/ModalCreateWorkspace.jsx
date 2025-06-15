@@ -1,3 +1,6 @@
+// ModalCreateWorkspace.jsx
+"use client";
+
 import React, { useState, useTransition } from "react";
 import {
   Modal,
@@ -16,58 +19,86 @@ import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createWorkspaceSchema } from "@/lib/schemas/workspaceSchema";
 
+const colorOptions = [
+  { key: "red", label: "Red", className: "bg-board-red" },
+  { key: "blue", label: "Blue Sky", className: "bg-board-primary" },
+  { key: "green", label: "Green", className: "bg-board-green" },
+  { key: "purple", label: "Purple", className: "bg-board-purple" },
+  { key: "orange", label: "Orange", className: "bg-board-orange" },
+  { key: "violet", label: "Violet", className: "bg-board-violet" },
+];
+
 export default function ModalCreateWorkspace({ createWorkspace }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [selectedOption, setSelectedOption] = useState(null);
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
-    setValue,
+    watch,
   } = useForm({
     resolver: zodResolver(createWorkspaceSchema),
   });
 
-  const [isPending, startTransition] = useTransition();
+  const watchedTitle = watch("title");
 
-  // Define the color options with the sidebar key colors you want:
-  const colorOptions = [
-    { key: "red", label: "Red", className: "bg-board-red" },
-    { key: "blue", label: "Blue Sky", className: "bg-board-primary" },
-    { key: "green", label: "Green", className: "bg-board-green" },
-    { key: "purple", label: "Purple", className: "bg-board-purple" },
-    { key: "orange", label: "Orange", className: "bg-board-orange" },
-    { key: "violet", label: "Violet", className: "bg-board-violet" },
-  ];
+  // Load color from localStorage when modal opens or title changes
+  React.useEffect(() => {
+    if (isOpen && watchedTitle) {
+      const savedColorClass = localStorage.getItem(
+        `workspaceColor-${watchedTitle}`
+      );
+      if (savedColorClass) {
+        const color = colorOptions.find((c) => c.className === savedColorClass);
+        setSelectedOption(color || null);
+      } else {
+        setSelectedOption(null);
+      }
+    }
+  }, [isOpen, watchedTitle]);
 
-  // On color select:
+  // Reset form and selected color on modal close
+  React.useEffect(() => {
+    if (!isOpen) {
+      setSelectedOption(null);
+      reset();
+    }
+  }, [isOpen, reset]);
+
   const handleColorSelect = (key) => {
     const color = colorOptions.find((c) => c.key === key);
-
     if (color) {
-      if (selectedOption?.key === key) {
-        // Unselect if clicking again
-        setSelectedOption(null);
-        setValue("color", "", { shouldValidate: true });
-      } else {
-        setSelectedOption(color);
-        setValue("color", color.key, { shouldValidate: true });
-      }
+      setSelectedOption((prev) => (prev?.key === key ? null : color));
     }
   };
 
-  // On submit handler
   const onSubmit = async (data) => {
     try {
-      await createWorkspace(data);
+      await createWorkspace(data); // backend create action
+
+      if (selectedOption?.className) {
+        localStorage.setItem(
+          `workspaceColor-${data.title}`,
+          selectedOption.className
+        );
+      }
+      console.log("Color that seleted in workspace: ", selectedOption);
+      console.log(
+        "Saved color in localStorage:",
+        localStorage.getItem(`workspaceColor-${data.title}`)
+      );
+      
+
       reset();
       setSelectedOption(null);
-      onOpenChange(false); // close modal
+      onOpenChange(false);
+
       startTransition(() => {
-        router.refresh(); // or navigate somewhere if needed
+        router.refresh();
       });
     } catch (err) {
       console.error(err);
@@ -94,7 +125,7 @@ export default function ModalCreateWorkspace({ createWorkspace }) {
             <ModalBody>
               <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="grid grid-cols-4 gap-2 text-title">
-                  {/* Title */}
+                  {/* Workspace Title */}
                   <div className="col-span-3 flex flex-col space-y-2">
                     <label className="text-label-sm">Workspace Title</label>
                     <input
@@ -114,7 +145,7 @@ export default function ModalCreateWorkspace({ createWorkspace }) {
                     )}
                   </div>
 
-                  {/* Color */}
+                  {/* Color Picker */}
                   <div className="flex flex-col space-y-2">
                     <label className="text-label-sm">Color</label>
                     <Dropdown>
@@ -136,7 +167,6 @@ export default function ModalCreateWorkspace({ createWorkspace }) {
                               Select color
                             </span>
                           )}
-
                           <svg
                             width="14"
                             height="9"
@@ -174,12 +204,9 @@ export default function ModalCreateWorkspace({ createWorkspace }) {
                         ))}
                       </DropdownMenu>
                     </Dropdown>
-
-                    {/* Hidden input for form */}
-                    <input type="hidden" {...register("color")} />
                   </div>
 
-                  {/* Description */}
+                  {/* Workspace Description */}
                   <div className="col-span-4 space-y-2">
                     <label className="text-label-sm">
                       Workspace Description
@@ -218,6 +245,7 @@ export default function ModalCreateWorkspace({ createWorkspace }) {
     </>
   );
 }
+
 
 // You can keep your SVG icons encoded strings as you had them
 const svgIconInput = encodeURIComponent(`
