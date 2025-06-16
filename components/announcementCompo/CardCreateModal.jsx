@@ -4,10 +4,8 @@ import { useState } from "react";
 import { Card, CardContent } from "../ui/card";
 import { X, Image } from "lucide-react";
 import { Button } from "@heroui/react";
-import {
-  createAnnouncementByBoardIdAction,
-  uploadMultiImgByBoardIdAction,
-} from "@/action/announcement.action";
+import { createAnnouncementByBoardIdAction, uploadMultiImgByBoardIdAction } from "@/action/announcement.action";
+import zentrio from "@/public/image/Zentrio-Logo.png";
 
 export default function CardCreateModal({ onClose, boardId, boardMember }) {
   // max size 10 mb
@@ -61,17 +59,19 @@ export default function CardCreateModal({ onClose, boardId, boardMember }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <Card className="w-[90%] max-w-5xl bg-white rounded-large shadow-lg border-gray-200">
+      <Card className="w-[90%] max-w-5xl bg-white rounded-[30px] shadow-lg border-none">
         <CardContent className="p-0 flex flex-col md:flex-row">
           {/* Left Side - Customizable */}
           <div className="w-full md:w-1/2 border-gray-200">
             {/* Empty for now - customize later */}
             <div className="h-full w-full flex items-center justify-center text-gray-400">
-              <div className=" bg-primary w-full h-full rounded-large rounded-tr-[80px] rounded-br-[80px]">
-                <div className="content text-white font-poppin text-large">
-                  <h2>Zentrio</h2>
-                  <h2>Zentrio</h2>
-                </div>
+              <div className=" bg-primary w-full h-full rounded-[30px] rounded-tr-[80px] rounded-br-[80px]">
+                <Image
+                  src={zentrio}
+                  alt="Announcement preview"
+                  fill
+                  className="object-cover"
+                />
               </div>
             </div>
           </div>
@@ -80,8 +80,8 @@ export default function CardCreateModal({ onClose, boardId, boardMember }) {
           <div className="w-full md:w-1/2 p-5 m-4">
             {/* Header */}
             <div className="p-4 border-b border-gray-200">
-              <div className="flex items-center justify-between mb-3">
-                <h2 className="text-h5 font-semibold text-title">
+              <div className="flex items-center justify-between mb-5">
+                <h2 className="text-h4 font-semibold text-title">
                   Create Announcement
                 </h2>
                 <button
