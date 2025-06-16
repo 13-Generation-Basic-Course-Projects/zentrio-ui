@@ -27,7 +27,7 @@ export default async function OverviewLayout({ children }) {
 
   return (
     <div className="h-screen flex flex-col overflow-y-hidden ">
-      <div className="flex-1 pt-0 flex flex-col overflow-hidden h-[100%] px-2  ">
+      <div className="flex-1 pt-0 flex flex-col overflow-hidden  px-2  ">
         {/* Top section - fixed height */}
         <div className="grid grid-cols-12  gap-2   flex-shrink-0 ">
           <div className="col-span-9 flex flex-col pt-4 overflow-hidden ">
@@ -37,9 +37,8 @@ export default async function OverviewLayout({ children }) {
             <SmallCalendar />
           </div>
         </div>
-
         {/* Children section - takes remaining height */}
-        <div className="overflow-hidden flex-1 min-h-0  ">{children}</div>
+        <div className=" overflow-hidden flex-1 min-h-0  ">{children}</div>
       </div>
     </div>
   );

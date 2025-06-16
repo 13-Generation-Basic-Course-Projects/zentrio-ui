@@ -82,6 +82,8 @@ export default function SystemBoard({
         ganttChartId={ganttChartId}
         ganttbar={ganttbar}
         allMemberInBoard={allMemberInBoard}
+        isGanttChartId={ganttChartId}
+        setActiveTab={setActiveTab}
       />
     ),
     role === "ROLE_MANAGER" && (

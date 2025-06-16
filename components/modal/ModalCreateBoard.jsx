@@ -6,23 +6,14 @@ import {
   ModalContent,
   ModalHeader,
   ModalBody,
-  ModalFooter,
   Button,
   useDisclosure,
   Card,
-  CardHeader,
-  CardBody,
-  Dropdown,
-  DropdownTrigger,
-  DropdownMenu,
-  DropdownItem,
-  Input,
-  Textarea,
 } from "@heroui/react";
-import Image from "next/image";
-import { createWorkspaceSchema } from "@/lib/schemas/workspaceSchema";
+import { createBoardSchema, createWorkspaceSchema } from "@/lib/schemas/workspaceSchema";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { createBoardAction } from "@/action/workspace.action";
 
 const svgIconInput = encodeURIComponent(`
   <svg width="20" height="22" viewBox="0 0 20 22" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -39,25 +30,15 @@ const svgIconType = encodeURIComponent(`
 
     `);
 
-    const fileToBase64 = (file) => {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result); // base64 string
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-      });
-    };
-    
-export default function ModalCreateBoard({ createBoardAction, Workspaceid }) {
+export default function ModalCreateBoard({ Workspaceid }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-  // function for select
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [showColors, setShowColors] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
-  const [selectedFiles, setSelectedFiles] = useState([]);
   const [previewUrl, setPreviewUrl] = useState(null);
-  const inputRef = useRef(null);
+  const [selectedFileName, setSelectedFileName] = useState(null);
+
   const {
     register,
     handleSubmit,
@@ -65,35 +46,13 @@ export default function ModalCreateBoard({ createBoardAction, Workspaceid }) {
     reset,
     formState: { errors },
   } = useForm({
-    resolver: zodResolver(createWorkspaceSchema),
+    resolver: zodResolver(createBoardSchema),
   });
-
+  
   const toggleColors = () => {
     setShowColors((prev) => !prev);
   };
 
-  const handleColorSelect = (colorKey) => {
-    setSelectedOption((prev) => (prev === colorKey ? null : colorKey));
-    setShowColors(false);
-    setDropdownOpen(false);
-  };
-
-  const handleUploadSelect = (event) => {
-    const files = Array.from(event.target.files);
-    setSelectedFiles(files);
-
-    if (files.length > 0) {
-      setPreviewUrl(URL.createObjectURL(files[0]));
-    } else {
-      setPreviewUrl(null);
-    }
-
-    // Set value to hook form
-    setValue("coverFile", files, { shouldValidate: true, shouldDirty: true });
-  };
-
-  
-  
   const colorOptions = [
     { key: "red", label: "Red", className: "bg-board-red" },
     { key: "blue", label: "Blue Sky", className: "bg-board-primary" },
@@ -103,68 +62,83 @@ export default function ModalCreateBoard({ createBoardAction, Workspaceid }) {
     { key: "violet", label: "Violet", className: "bg-board-violet" },
   ];
 
-
-  const onSubmit = async (data) => {
-    const files = inputRef.current?.files;
-    console.log("📁 Files from inputRef:", files);
-    console.log("inputRef:", inputRef);
-    console.log("inputRef.current:", inputRef.current);
-
-    try {
-      let cover = "";
-
-      // Handle uploaded image (convert to Base64)
-      if (files && files.length > 0) {
-        cover = await fileToBase64(files[0]);
-        console.log("🖼️ Cover image (base64):", cover);
-      } else if (selectedOption) {
-        // Use selected color keyword if no image
-        cover = selectedOption;
-        console.log("🎨 Cover color:", cover);
-      } else {
-        console.warn("⚠️ No cover image or color selected");
-      }
-
-      // Call backend service to create the board
-      const response = await createBoardAction({
-        title: data.title,
-        description: data.description || "",
-        cover,
-        workspaceId: Workspaceid,
-      });
-
-      console.log("✅ Board created:", response);
-
-      reset(); // clear form
-      onOpenChange(false); // close modal/dialog
-    } catch (error) {
-      console.error("❌ Error creating board:", error.message || error);
+  /*  update when file is selected */
+  const handlePreview = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setSelectedOption(null); // Unset color if image is selected
+      setPreviewUrl(URL.createObjectURL(file));
     }
   };
+
+  const fileInputRef = useRef(null);
+  const handleColorSelect = (colorKey) => {
+    setPreviewUrl(null);
+    setSelectedFileName(null); // Clear file name if color selected
+    setSelectedOption((prev) => (prev === colorKey ? null : colorKey));
+    setShowColors(false);
+    setDropdownOpen(false);
+    setValue("cover", colorKey); 
+  };
+
+  const handleFileSelect = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setSelectedOption(null); // Clear color if file selected
+      setSelectedFileName(file.name);
+      setPreviewUrl(URL.createObjectURL(file));
+      setValue("cover", file); 
+    }
+  };
+
+  /* This function will be called when the form is submitted */
+  const onSubmit = async (data) => {
+    const file = fileInputRef.current?.files?.[0];
+
+    if (file) {
+      console.log("📂 Selected file from ref:", file.name);
+
+      const formData = new FormData();
+      formData.append("title", data.title);
+      formData.append("description", data.description || "");
+      formData.append("cover", file.name);
+      formData.append("workspaceId", Workspaceid);
+
+      try {
+        await createBoardAction(formData);
+        console.log("✅ Board created with image!");
+      } catch (error) {
+        console.error("❌ Error creating board with image:", error);
+      }
+    } else if (selectedOption) {
+      try {
+        await createBoardAction({
+          title: data.title,
+          description: data.description || "",
+          cover: selectedOption,
+          workspaceId: Workspaceid,
+        });
+
+        console.log("✅ Board created with color!");
+      } catch (error) {
+        console.error("❌ Error creating board with color:", error);
+      }
+    } else {
+      console.warn("⚠️ No image or color selected.");
+    }
+
+    reset();
+    setPreviewUrl(null);
+    setSelectedOption(null);
+    setDropdownOpen(false);
+    setShowColors(false);
+    onOpenChange(false);
+  };
+  const onValid = (data) => {
+    console.log("Creating board with:", data);
+    onClose();
+  };
   
-  // const onSubmit = async (data) => {
-  //   const file = data.coverFile?.[0];
-  //   let cover = "";
-  //   console.log("File selected: ", file);
-
-  //   if (file) {
-  //     cover = await fileToBase64(file);
-  //   }
-
-  //   const response = await createBoardAction({
-  //     title: data.title,
-  //     description: data.description || "",
-  //     cover,
-  //     workspaceId: Workspaceid,
-  //   });
-
-  //   console.log("✅ Board created", response);
-  //   reset();
-  //   onOpenChange(false);
-  // };
-  
-  
-
   return (
     <>
       <Button
@@ -204,7 +178,6 @@ export default function ModalCreateBoard({ createBoardAction, Workspaceid }) {
 
                       <input
                         {...register("title")}
-                        // type="text"
                         placeholder="Type here"
                         style={{
                           backgroundImage: `url("data:image/svg+xml;utf8,${svgIconInput}")`,
@@ -213,12 +186,19 @@ export default function ModalCreateBoard({ createBoardAction, Workspaceid }) {
                           paddingLeft: "36px",
                           height: "40px",
                           borderRadius: "9999px",
-                          border: "1px solid #ccc",
                         }}
-                        className="text-title/50 text-caption bg-transparent w-full"
+                        className={`
+                          w-full bg-transparent text-title/50 text-caption
+                          border border-gray-300
+                          focus:outline-none focus:border-primary
+                          transition-all duration-150 ease-in-out
+                        `}
                       />
+
                       {errors.title && (
-                        <p className="text-red-500">Title is required</p>
+                        <span className="text-red-500 text-caption-tiny">
+                          *{errors.title.message}*
+                        </span>
                       )}
                     </div>
                     {/* select option  */}
@@ -231,7 +211,7 @@ export default function ModalCreateBoard({ createBoardAction, Workspaceid }) {
                           onClick={() => setDropdownOpen((open) => !open)}
                           type="button"
                         >
-                          {selectedOption && !selectedFiles.length && (
+                          {selectedOption && (
                             <div
                               className={`w-4 h-4 rounded-full ${
                                 colorOptions.find(
@@ -241,15 +221,23 @@ export default function ModalCreateBoard({ createBoardAction, Workspaceid }) {
                             />
                           )}
 
-                          <p className="text-caption-tiny text-title/50 truncate max-w-[120px]">
-                            {selectedFiles.length > 0
-                              ? selectedFiles[0].name // Show the uploaded image filename
-                              : selectedOption
-                              ? colorOptions.find(
-                                  (color) => color.key === selectedOption
-                                )?.label || selectedOption
-                              : "Select Cover"}
-                          </p>
+                          <div className="flex flex-col items-start">
+                            <p className="text-caption-tiny text-title/50">
+                              {selectedOption
+                                ? colorOptions.find(
+                                    (color) => color.key === selectedOption
+                                  )?.label || selectedOption
+                                : selectedFileName || "Select Cover"}
+                            </p>
+
+                            {/* {previewUrl && (
+                              <img
+                                src={previewUrl}
+                                className="mt-1 w-32 h-20 object-cover rounded-lg"
+                                alt="Cover Preview"
+                              />
+                            )} */}
+                          </div>
 
                           <svg
                             width="14"
@@ -271,59 +259,43 @@ export default function ModalCreateBoard({ createBoardAction, Workspaceid }) {
 
                         {dropdownOpen && (
                           <div className="absolute mt-1 w-36 text-caption bg-white border rounded-small shadow-md z-50">
-                            <div className="w-full max-w-sm mx-auto">
-                              {/* Hidden file input */}
-                              <input
-                                type="file"
-                                id="coverFile"
-                                ref={inputRef}
-                                onChange={handleUploadSelect}
-                                accept="image/*"
-                                className="hidden"
-                              />
-                             
-                              {/* Custom label acting as upload button */}
-                              <label
-                                htmlFor="coverFile"
-                                className="flex justify-between items-center px-2 py-2 w-full rounded-md cursor-pointer
-               hover:bg-gray-100 transition-colors duration-200"
+                            <input
+                              type="file"
+                              id="fileUpload"
+                              accept="image/*"
+                              ref={fileInputRef}
+                              onChange={handleFileSelect}
+                              className="hidden"
+                            />
+
+                            <label
+                              htmlFor="fileUpload"
+                              className="w-full px-2 py-2 flex justify-between items-center hover:bg-gray-100 cursor-pointer"
+                            >
+                              <span>Upload images</span>
+                              <svg
+                                width="18"
+                                height="18"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
                               >
-                                <span className="text-gray-700 font-medium">
-                                  Upload Image
-                                </span>
-                                <svg
-                                  className="w-5 h-5 text-primary"
-                                  fill="none"
-                                  stroke="currentColor"
+                                <path
+                                  d="M17.4776 9.01106C17.485 9.01102 17.4925 9.01101 17.5 9.01101C19.9853 9.01101 22 11.0294 22 13.5193C22 15.8398 20.25 17.7508 18 18M17.4776 9.01106C17.4924 8.84606 17.5 8.67896 17.5 8.51009C17.5 5.46695 15.0376 3 12 3C9.12324 3 6.76233 5.21267 6.52042 8.03192M17.4776 9.01106C17.3753 10.1476 16.9286 11.1846 16.2428 12.0165M6.52042 8.03192C3.98398 8.27373 2 10.4139 2 13.0183C2 15.4417 3.71776 17.4632 6 17.9273M6.52042 8.03192C6.67826 8.01687 6.83823 8.00917 7 8.00917C8.12582 8.00917 9.16474 8.38194 10.0005 9.01101"
+                                  stroke="#59BAD5"
                                   strokeWidth="1.5"
                                   strokeLinecap="round"
                                   strokeLinejoin="round"
-                                  viewBox="0 0 24 24"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  aria-hidden="true"
-                                >
-                                  <path d="M17.4776 9.01106C17.485 9.01102 17.4925 9.01101 17.5 9.01101C19.9853 9.01101 22 11.0294 22 13.5193C22 15.8398 20.25 17.7508 18 18M17.4776 9.01106C17.4924 8.84606 17.5 8.67896 17.5 8.51009C17.5 5.46695 15.0376 3 12 3C9.12324 3 6.76233 5.21267 6.52042 8.03192M17.4776 9.01106C17.3753 10.1476 16.9286 11.1846 16.2428 12.0165M6.52042 8.03192C3.98398 8.27373 2 10.4139 2 13.0183C2 15.4417 3.71776 17.4632 6 17.9273M6.52042 8.03192C6.67826 8.01687 6.83823 8.00917 7 8.00917C8.12582 8.00917 9.16474 8.38194 10.0005 9.01101" />
-                                  <path d="M12 13V21M12 13C11.2998 13 9.99153 14.9943 9.5 15.5M12 13C12.7002 13 14.0085 14.9943 14.5 15.5" />
-                                </svg>
-                              </label>
-
-                              {/* Preview area */}
-                              {previewUrl && (
-                                <div className="mt-3 p-2 border border-gray-200 rounded-md bg-gray-50">
-                                  <img
-                                    src={previewUrl}
-                                    alt="Preview"
-                                    className="w-full max-h-40 object-contain rounded-md"
-                                  />
-                                  <p
-                                    className="mt-2 text-sm text-gray-600 truncate"
-                                    title={selectedFiles[0]?.name}
-                                  >
-                                    {selectedFiles[0]?.name}
-                                  </p>
-                                </div>
-                              )}
-                            </div>
+                                />
+                                <path
+                                  d="M12 13V21M12 13C11.2998 13 9.99153 14.9943 9.5 15.5M12 13C12.7002 13 14.0085 14.9943 14.5 15.5"
+                                  stroke="#59BAD5"
+                                  strokeWidth="1.5"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                />
+                              </svg>
+                            </label>
 
                             <div>
                               <button
@@ -371,6 +343,11 @@ export default function ModalCreateBoard({ createBoardAction, Workspaceid }) {
                           </div>
                         )}
                       </div>
+                      {errors.cover && (
+                        <span className="text-red-500 text-caption-tiny">
+                          *{errors.cover.message}*
+                        </span>
+                      )}
                     </div>
                     {/* description */}
                     <div className="col-span-4 space-y-2">
@@ -381,17 +358,26 @@ export default function ModalCreateBoard({ createBoardAction, Workspaceid }) {
                         style={{
                           backgroundImage: `url("data:image/svg+xml;utf8,${svgIconType}")`,
                           backgroundRepeat: "no-repeat",
-                          backgroundPosition: "10px calc(1em + 0px)", // push icon down to baseline
+                          backgroundPosition: "10px calc(1em + 0px)",
                           paddingLeft: "36px",
                           paddingTop: "10px",
                           height: "80px",
                           borderRadius: "12px",
-                          border: "1px solid #ccc",
                           lineHeight: "1.4",
                           resize: "none",
                         }}
-                        className="text-title/50 text-caption bg-transparent w-full"
+                        className={`
+                          w-full bg-transparent text-title/50 text-caption
+                          border border-gray-300
+                          focus:outline-none focus:border-primary
+                          transition-all duration-150 ease-in-out
+                        `}
                       />
+                      {errors.description && (
+                        <span className="text-red-500 text-caption-tiny">
+                          *{errors.description.message}*
+                        </span>
+                      )}
                     </div>
                   </div>
                   <div className="mx-[-1rem] border border-bgColor mt-5 mb-2"></div>
@@ -400,7 +386,7 @@ export default function ModalCreateBoard({ createBoardAction, Workspaceid }) {
                     <Button
                       color="primary"
                       radius="full"
-                      onPress={onClose}
+                      onPress={handleSubmit(onValid)} // <-- validate before doing anything
                       type="submit"
                     >
                       Create Board

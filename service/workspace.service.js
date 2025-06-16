@@ -66,7 +66,7 @@ export const getAllWorkspacesService = async ({ token }) => {
     return data;
   } catch (error) {
     console.error("❌ Failed to get all workspaces:", error.message);
-    throw error;
+    // throw error;
   }
 };
 
@@ -420,16 +420,32 @@ export const createBoardService = async ({
   try {
     const url = boardRouteGroup.createBoard();
 
+    // Create FormData to handle file upload properly
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("description", description);
+    formData.append("workspaceId", workspaceId);
+
+    if (cover) {
+      formData.append("cover", cover);
+    }
+    console.log("FormData contents in service:", formData);
+
     const res = await fetch(url, {
       next: {
         tags: ["workspaces"], // ✅ Will be revalidated by revalidateTag()
       },
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({ title, description, cover, workspaceId }),
+      body: JSON.stringify({
+        title,
+        description,
+        cover,
+        workspaceId,
+      }),
     });
 
     if (!res.ok) {
@@ -625,6 +641,7 @@ export const getBoardsByWorkspaceIdService = async ({ workspaceId, token }) => {
 
     const res = await fetch(url, {
       method: "GET",
+      cache: "no-store",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -632,13 +649,15 @@ export const getBoardsByWorkspaceIdService = async ({ workspaceId, token }) => {
     });
 
     if (!res.ok) {
-      throw new Error(`Failed to get boards: ${res.status}`);
+      // Optionally log status-specific messages
+      console.warn(`⚠️ Server responded with status ${res.status}`);
+      return null; // 👈 Return null to indicate failure
     }
 
     return await res.json();
   } catch (error) {
     console.error("❌ Failed to get boards by workspace ID:", error);
-    throw error;
+    return null; // 👈 Prevent undefined
   }
 };
 
