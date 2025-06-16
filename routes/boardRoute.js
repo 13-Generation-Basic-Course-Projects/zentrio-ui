@@ -42,4 +42,7 @@ export const boardRouteGroup = {
 
   assignMemberToChecklist: (checklistId, taskId, assignedBy, assignedTo) =>
     `${apiConfig.baseUrl}/checklists/${checklistId}/tasks/${taskId}/members/${assignedBy}/members/${assignedTo}/`,
+
+  chageStatusCheckListWhenHaveTeamLeader: (checklistId, type) =>
+    `${apiConfig.baseUrl}/checklists/${checklistId}/status?status=${type}`,
 };

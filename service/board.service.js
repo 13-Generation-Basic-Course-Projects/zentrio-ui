@@ -616,3 +616,31 @@ export const assignMemberToChecklistService = async (
     throw error;
   }
 };
+
+/*
+ * cheng status checklist
+ */
+export const chageStatusCheckListService = async (checklistId, token, type) => {
+  try {
+    //console.log("from service ", token);
+    const url = boardRouteGroup.chageStatusCheckListWhenHaveTeamLeader(
+      checklistId,
+      type
+    );
+    console.log(url);
+    const res = await fetch(url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await res.json();
+    console.log("📥 Backend responded with change status:", data);
+
+    return data; // just return the data, don’t redirect here
+  } catch (error) {
+    console.error("bug", error.message);
+    throw error;
+  }
+};

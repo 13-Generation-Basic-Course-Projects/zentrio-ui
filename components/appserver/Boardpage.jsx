@@ -135,6 +135,7 @@ export default function SystemBoard({
       ),
       content: (
         <KanbanBoard
+          role={role}
           modal={modalComponents}
           tasks={tasks}
           checklistbyTaskIds={checklistbyTaskIds}

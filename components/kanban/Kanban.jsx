@@ -117,6 +117,7 @@ export default function KanbanBoard({
   boardData,
   ganttbar,
   boardId,
+  role,
 }) {
   const [columns, setColumns] = useState([]);
   const [draggedItem, setDraggedItem] = useState(null);
@@ -699,6 +700,7 @@ export default function KanbanBoard({
                                   )}
                                 </div>
                                 <ModalOptionTask
+                                  role={role}
                                   key={"apple"}
                                   allMemberInBoard={allMemberInBoard}
                                   taskId={card.id}
@@ -829,6 +831,7 @@ export default function KanbanBoard({
                                               (task) => task.taskId === card.id
                                             )?.teamLeader?.userId || null
                                           }
+                                          role={role}
                                         />
                                       </div>
                                     </div>
@@ -856,7 +859,9 @@ export default function KanbanBoard({
                               />
                               <div className="pb-3 pt-1 px-3">
                                 <div className="grid grid-cols-12">
-                                  <div className="col-span-8 flex items-center">
+                                  <div
+                                    className={`col-span-8 flex items-center`}
+                                  >
                                     <ModalCreateChecklist
                                       buttonText="New checklist"
                                       modalTitle="Create Checklist"
