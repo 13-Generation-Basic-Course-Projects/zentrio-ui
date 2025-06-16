@@ -1,6 +1,6 @@
 "use server";
 import { Token } from "@/constant/token";
-import { createNoteInCalendarService, deleteNoteInCalendarService, getAllNoteInCalendarService, getCalendarByBoardIdAndUserIdService, getChecklistByTaskIdService, getGanttBarByGanttChartIdService, getGanttChartByBoardIdService, getNoteInCalendarService, getTaskByBoardIdAndGanttBarIdService } from "@/service/calendarV2.service";
+import { createNoteInCalendarService, deleteNoteInCalendarService, getAllNoteInCalendarService, getCalendarByBoardIdAndUserIdService, getChecklistByTaskIdService, getGanttBarByGanttChartIdService, getGanttChartByBoardIdService, getNoteInCalendarService, getTaskByBoardIdAndGanttBarIdService, updateNoteByIdService } from "@/service/calendarV2.service";
 import { revalidatePath, revalidateTag } from "next/cache";
 /*
  * getTaskbyBoardId and GanttbarId
@@ -133,31 +133,31 @@ export const deleteNoteInCalendarAction = async (calendarId, taskId) => {
 /*
 * update note in calendar
 */
-export const updateNoteInCalendarAction = async (
-  calendarId,
-  noted,
-  startDate,
-  tillDate,
-  taskId
-) => {
-  try {
-    const userToken = await Token();
-    const token = userToken.Credential;
+// export const updateNoteInCalendarAction = async (
+//   calendarId,
+//   noted,
+//   startDate,
+//   tillDate,
+//   taskId
+// ) => {
+//   try {
+//     const userToken = await Token();
+//     const token = userToken.Credential;
 
-    const result = await deleteNoteInCalendarService({
-      calendarId,
-      noted,
-      startDate,
-      tillDate,
-      taskId,
-      token: token,
-    });
-    return result;
-  } catch (error) {
-    console.error("updateNoteInCalendarAction error:", error);
-    throw error;
-  }
-};
+//     const result = await deleteNoteInCalendarService({
+//       calendarId,
+//       noted,
+//       startDate,
+//       tillDate,
+//       taskId,
+//       token: token,
+//     });
+//     return result;
+//   } catch (error) {
+//     console.error("updateNoteInCalendarAction error:", error);
+//     throw error;
+//   }
+// };
 
 
 /*
@@ -180,4 +180,36 @@ export const getChecklistByTaskIdAction = async (taskId) => {
     console.error("getChecklistByTaskIdAction error:", error);
     throw error;
   }
+};
+
+/*
+* update note in calendar
+*/
+
+export const calendarUpdateNoteAction = async ({
+  noteId,
+  noted,
+  startDate,
+  tillDate,
+  taskId,
+}) => {
+  console.log("testing: ");
+  const userToken = await Token();
+
+  const zentrioToken = userToken.Credential;
+
+  console.log("Token before update:", startDate);
+
+  if (!zentrioToken) throw new Error("Token missing!");
+
+  const result = await updateNoteByIdService({
+    noteId,
+    noted,
+    startDate,
+    tillDate,
+    taskId,
+    zentrioToken,
+  });
+
+  return result;
 };

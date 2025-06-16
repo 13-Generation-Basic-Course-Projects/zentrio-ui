@@ -10,6 +10,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "../../styles/ganttchart.css"; // Ensure this path is correct
 import BredCrum from "../bredcrum/MyBredcrum"; // Ensure this path is correct
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import BredCrumGanttChart from "../bredcrum/BredcrumGanttChart";
 
 // Helper function to calculate duration in days
 const calculateDurationDays = (start, end) => {
@@ -70,9 +71,18 @@ const formatFaceTitle = (face) => {
     .replace(/\b\w/g, (char) => char.toUpperCase()); // Capitalize first letter of each word
 };
 
-export default function GanttChart({ modal, ganttbar, ganttChartName }) {
+export default function GanttChart({
+  modal,
+  ganttbar,
+  ganttChartName,
+  boardId, // add new prop
+  ganttChartId, // add new prop
+}) {
   const calendarRef = useRef(null);
   console.log("log gant bar again ", ganttbar);
+  console.log("log boardId in gannt chart again ", boardId); // new
+  console.log("log ganttChartId in gannt chart again ", ganttChartId);
+  
 
   // Use useMemo to process ganttbar data only when it changes
   const { resources, events, dynamicFaceMap } = useMemo(() => {
@@ -391,14 +401,18 @@ export default function GanttChart({ modal, ganttbar, ganttChartName }) {
   return (
     <div className="flex flex-col h-screen bg-white">
       {/* Assuming BredCrum component exists and props are correct */}
-      <BredCrum
+      {/* what i have update : leap */}
+      <BredCrumGanttChart
         board={"Project Dashboard"} // Example: Make dynamic if needed
         feature={"Gantt Chart"}
         header={
           ganttChartName != "No data available" ? ganttChartName : "Gantt Chart"
         } // Example: Make dynamic if needed
         modal={modal}
+        ganttChartId={ganttChartId}
+        boardId={boardId}
       />
+      {/* --- */}
       <div className="flex items-center justify-between bg-[#F3F7FB] px-6 py-3 rounded-t-[16px] mt-3 border-b border-gray-200">
         {/* Month and Year (Dynamic based on current view center) */}
         <div className="text-lg font-semibold text-gray-800">

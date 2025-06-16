@@ -201,39 +201,71 @@ export const deleteNoteInCalendarService = async ({
 /*
  * update note in calendar
  */
-export const updateNoteInCalendarService = async ({
-  calendarId,
-  noted,
-  startDate,
-  tillDate,
-  taskId,
-  token,
-}) => {
-  try {
-    const url = calendarV2RouteGroup.updateNoteInCalendar(calendarId);
-    console.log("Service - Fetching URL (final):", url);
+// export const updateNoteInCalendarService = async ({
+//   calendarId,
+//   noted,
+//   startDate,
+//   tillDate,
+//   taskId,
+//   token,
+// }) => {
+//   try {
+//     const url = calendarV2RouteGroup.updateNoteInCalendar(calendarId);
+//     console.log("Service - Fetching URL (final):", url);
 
-    const res = await fetch(url, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        noted,
-        startDate,
-        tillDate,
-        taskId,
-      }),
-    });
-    const data = await res.json();
-    console.log("Service - updateNoteInCalendar (successful data):", data);
-    return data;
-  } catch (error) {
-    console.error("Service - Error updateNoteInCalendar :", error.message);
-    throw error;
-  }
+//     const res = await fetch(url, {
+//       method: "PUT",
+//       headers: {
+//         "Content-Type": "application/json",
+//         Authorization: `Bearer ${token}`,
+//       },
+//       body: JSON.stringify({
+//         noted,
+//         startDate,
+//         tillDate,
+//         taskId,
+//       }),
+//     });
+//     const data = await res.json();
+//     console.log("Service - updateNoteInCalendar (successful data):", data);
+//     return data;
+//   } catch (error) {
+//     console.error("Service - Error updateNoteInCalendar :", error.message);
+//     throw error;
+//   }
+// };
+
+export const updateNoteByIdService = async ({ noteId, noted, startDate, tillDate, taskId, zentrioToken }) => {
+    console.log("update service")
+  const url = calendarV2RouteGroup.updateNoteById(noteId);
+
+  console.log("Sending token:",startDate);
+
+
+  console.log("Authorization header:", `Bearer ${zentrioToken}`);
+
+  console.log("URL ", url)
+
+  const res = await fetch(url, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${zentrioToken}`,
+    },
+    body: JSON.stringify({
+      noted,
+      startDate,
+      tillDate,
+      taskId,
+    }),
+  });
+  
+  const data = await res.json();
+
+  console.log("Testing heloo: ",data)
+  return data;
 };
+
 
 /*
  * Get all checklist by task id

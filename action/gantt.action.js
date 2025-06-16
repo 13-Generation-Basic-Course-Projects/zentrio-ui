@@ -88,24 +88,36 @@ export const createGanttBarsByGanttChartIdAction = async ({
 /*
  * update gantchart
  */
-export const updateGantChartBytIdAction = async ({
+export const updateGantChartBytIdAction = async (
   ganttChartId,
   boardId,
-  data,
-}) => {
+  title
+) => {
+  console.log("=== updateGantChartBytIdAction called ===");
+  console.log("ganttChartId:", ganttChartId);
+  console.log("boardId:", boardId);
+  console.log("title received:", title);
+  console.log("title type:", typeof title);
+
   const userToken = await Token();
   const token = userToken.Credential;
-  console.log(token);
+  console.log("token:", token ? "Token exists" : "No token");
 
-  const result = await updateGantChartBytIdService({
-    ganttChartId,
-    boardId,
-    data,
-    token,
-  });
-  return result;
+  try {
+    const result = await updateGantChartBytIdService({
+      ganttChartId,
+      boardId,
+      title,
+      token,
+    });
+
+    console.log("✅ Action completed successfully:", result);
+    return result;
+  } catch (error) {
+    console.error("❌ Error in updateGantChartBytIdAction:", error);
+    throw error;
+  }
 };
-
 /*
  * delete gantt bar
  */

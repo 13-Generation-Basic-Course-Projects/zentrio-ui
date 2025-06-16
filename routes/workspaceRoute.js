@@ -25,7 +25,7 @@ export const boardRouteGroup = {
   createBoard: () => `${apiConfig.baseUrl}/boards`, // Create new board by workspace id
   inviteUserToBoard: (id) => `${apiConfig.baseUrl}/boards/${id}/users/invite`, // Invite user to board
   uploadBoardCover: (id) => `${apiConfig.baseUrl}/boards/${id}/cover`, // Upload cover by board id
-  assignUserRole: `${apiConfig.baseUrl}/boards/assign`, // Assign role to user in board
+  // assignUserRole: `${apiConfig.baseUrl}/boards/assign`, // Assign role to user in board
 
   getBoardsByUserId: (userId) => `${apiConfig.baseUrl}/boards/${userId}/users`, // Get boards by user ID
   getBoardCover: (id, filename) =>
@@ -33,7 +33,7 @@ export const boardRouteGroup = {
   getBoardsByWorkspaceId: (workspaceId) =>
     `${apiConfig.baseUrl}/boards/workspaces/${workspaceId}`, // Get boards by workspace id
   getBoardByTitle: (title) => `${apiConfig.baseUrl}/boards/title/${title}`, // Get board by title
-  getBoardsForCurrentUser: `${apiConfig.baseUrl}/boards/current`, // Boards for current user
+  // getBoardsForCurrentUser: `${apiConfig.baseUrl}/boards/current`, // Boards for current user
   deleteBoard: (id, workspaceId) =>
     `${apiConfig.baseUrl}/boards/${id}/workspaces/${workspaceId}`, // Delete board
 

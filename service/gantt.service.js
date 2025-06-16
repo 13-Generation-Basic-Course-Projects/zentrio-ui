@@ -155,25 +155,31 @@ export const deleteGanttBarsByGanttChartIdService = async ({
 export const updateGantChartBytIdService = async ({
   ganttChartId,
   boardId,
-  data,
+  title,
   token,
 }) => {
   try {
-    console.log("from service", { ganttChartId, boardId, token });
+    console.log("from service", { ganttChartId, boardId, title, token });
 
     const url = ganttRouteGroup.updateGanttChart(ganttChartId);
 
+    // Fixed: moved body outside of headers
     const res = await fetch(url, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
-        body: JSON.stringify({ title: data.title, boardId: boardId }),
       },
+      body: JSON.stringify({ title, boardId }), // Moved here from headers
     });
 
+    // Check if response is ok
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+
     const result = await res.json();
-    //  console.log("📥 Backend responded with:", result);
+    console.log("📥 Backend update gantt chart responded with:", result);
 
     return result;
   } catch (error) {

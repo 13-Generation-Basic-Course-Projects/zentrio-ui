@@ -80,7 +80,7 @@ export default async function Calender({ params }) {
       <div>
         <MyCalender
           tasks={allTasks}
-          createNoteAction={createNoteInCalendarAction}
+          // createNoteAction={createNoteInCalendarAction}
           boardId={boardId}
         />
       </div>

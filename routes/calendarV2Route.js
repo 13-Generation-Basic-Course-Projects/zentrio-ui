@@ -16,8 +16,9 @@ export const calendarV2RouteGroup = {
   deleteNoteInCalendar: (calendarId, taskId) =>
     `${apiConfig.baseUrl}/calendars/${calendarId}/tasks/${taskId}`, // delete note by id from calendar
 
-  updateNoteInCalendar: (calendarId) =>
-    `${apiConfig.baseUrl}/calendars/${calendarId}`, // update note by id from calendar
+  // updateNoteInCalendar: (calendarId) =>
+  //   `${apiConfig.baseUrl}/calendars/${calendarId}`, // update note by id from calendar
+  updateNoteById: (id) => `${apiConfig.baseUrl}/calendars/${id}`,
 
   /* checklist controller */
   getChecklistByTaskId: (taskId) =>

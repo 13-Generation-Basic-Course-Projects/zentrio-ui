@@ -137,7 +137,7 @@ export default function MyCalender({ tasks }) {
     const formattedTillDate = tillDateObj.toISOString();
 
     try {
-      // 📝 Handle create/update
+      //  Handle create/update
       if (isNewNote || isUpdatedNote) {
         const response = await createNoteInCalendarAction(
           trimmedNoteValue,
@@ -154,7 +154,7 @@ export default function MyCalender({ tasks }) {
         console.log(`Note ${isNewNote ? "created" : "updated"} successfully.`);
       }
 
-      // 🗑️ Handle delete (API call commented out for now)
+      //  Handle delete (API call commented out for now)
       if (isDeletedNote) {
         console.log(
           `Note deleted for Task ID: ${currentEventId} on ${startDateStr} - ${endDateStr}`
@@ -162,7 +162,7 @@ export default function MyCalender({ tasks }) {
         // await deleteNoteInCalendarAction(currentEventId, formattedStartDate, formattedTillDate);
       }
 
-      // 🔁 Update local calendar events
+      //  Update local calendar events
       setEvents((prevEvents) => {
         // Remove old comment (if exists)
         const updated = prevEvents.filter(

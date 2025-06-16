@@ -201,6 +201,8 @@ export default function SystemBoard({
           modal={ganttModal}
           ganttbar={ganttbar}
           ganttChartName={ganttChartName}
+          boardId={boardId} // add new
+          ganttChartId={ganttChartId} // add new
         />
       ),
     },
