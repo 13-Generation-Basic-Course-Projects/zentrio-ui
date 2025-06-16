@@ -5,6 +5,8 @@ import {
   assignMemberToChecklistService,
   assignUserRoleLeadeerToBoardService,
   chageStatusCheckListService,
+  changeStageToUnderReviewService,
+  changeStatusTaskService,
   createCheckListService,
   createGanttChartByBoardIdService,
   createTaskByBoardIdAndGanttChartIdService,
@@ -577,5 +579,29 @@ export const chageStatusCheckListAction = async (checklistId, type) => {
   const result = await chageStatusCheckListService(checklistId, token, type);
   revalidatePath("/checklist");
   console.log("status action", checklistId, type);
+  return result;
+};
+
+/*
+ * achange status task
+ */
+export const changeStatusTaskAction = async (taskId, type) => {
+  const userToken = await Token();
+  const token = userToken?.Credential;
+  const result = await changeStatusTaskService(taskId, token, type);
+  revalidatePath("/checklist");
+  console.log("status action", taskId, type);
+  return result;
+};
+
+/*
+ * achange stage task
+ */
+export const changeStageToUnderReviewAction = async (taskId, stage) => {
+  const userToken = await Token();
+  const token = userToken?.Credential;
+  const result = await changeStageToUnderReviewService(taskId, token, stage);
+  revalidatePath("/checklist");
+  //console.log("status action", taskId, stage);
   return result;
 };

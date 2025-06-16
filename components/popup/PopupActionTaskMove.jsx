@@ -12,7 +12,10 @@ import {
   useDraggable,
 } from "@heroui/react";
 import { toast, ToastContainer } from "react-toastify";
-import { deleteTaskAction } from "@/action/board.action";
+import {
+  changeStageToUnderReviewAction,
+  deleteTaskAction,
+} from "@/action/board.action";
 export default function PopupActionTaskMove({
   title,
   icon,
@@ -39,9 +42,12 @@ export default function PopupActionTaskMove({
 
   const handleDelete = async () => {
     try {
-      const result = await deleteTaskAction(taskId, boardId, ganttBarId);
+      const result = await changeStageToUnderReviewAction(
+        taskId,
+        "UNDER_REVIEW"
+      );
       console.log("respon delete", result);
-      toast.success("Task deleted successfully!", {
+      toast.success("Task move stage successfully!", {
         position: "top-right",
         autoClose: 3000,
         hideProgressBar: false,
@@ -51,7 +57,7 @@ export default function PopupActionTaskMove({
       });
     } catch (error) {
       console.error("Delete failed", error);
-      toast.error("Failed to delete task!", {
+      toast.error("Failed to move task!", {
         position: "top-right",
         autoClose: 3000,
         hideProgressBar: false,

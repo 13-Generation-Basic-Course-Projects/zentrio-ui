@@ -184,7 +184,7 @@ export default function Memberpage({
           />
         </div>
         {/* Invite */}
-        {role != "ROLE_MANAGER" ? (
+        {role == "ROLE_LEADER" || role == "MEMBER" ? (
           ""
         ) : (
           <ModalInviteMember
@@ -351,7 +351,7 @@ export default function Memberpage({
                   </td>
                   {/* Action for delete */}
                   <td className="px-6 py-4">
-                    {role != "ROLE_MANAGER" ? (
+                    {role == "ROLE_LEADER" || role == "MEMBER" ? (
                       ""
                     ) : (
                       <svg

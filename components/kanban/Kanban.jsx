@@ -9,7 +9,11 @@ import CardDateChecklist from "../card/CardDateChecklist";
 import ModalCreateChecklist from "../modal/board/ModalCreateChecklist";
 import { EmptyKanban } from "../appserver/EmptyKanban";
 import ModalOptionTask from "../modal/board/ModalOptionTask";
-import { moveTaskOrderAction } from "@/action/board.action";
+import {
+  chageStatusCheckListAction,
+  changeStatusTaskAction,
+  moveTaskOrderAction,
+} from "@/action/board.action";
 
 // Placeholder component
 const UserAvater = ({ image }) => (
@@ -538,7 +542,32 @@ export default function KanbanBoard({
     return <div>Error: {error}</div>;
   }
 
-  console.log("ganttbar data", ganttbar);
+  // console.log("ganttbar data", ganttbar);
+
+  //change status task
+  // Toggle task status: PENDING/OVERDUE -> COMPLETED, COMPLETED -> OVERDUE
+  const handleStatusChange = async (taskId, currentStatus) => {
+    const newStatus = currentStatus === "COMPLETED" ? "OVERDUE" : "COMPLETED";
+    try {
+      const result = await changeStatusTaskAction(taskId, newStatus);
+      if (result.success) {
+        // Update columns state
+        setColumns((prev) =>
+          prev.map((column) => ({
+            ...column,
+            cards: column.cards.map((card) =>
+              card.id === taskId ? { ...card, status: newStatus } : card
+            ),
+          }))
+        );
+      } else {
+        console.error("Failed to update task status:", result.error);
+      }
+    } catch (error) {
+      console.error("Error updating task status:", error.message);
+    }
+  };
+
   return (
     <div className="w-full h-screen flex flex-col">
       <BredCrum
@@ -607,6 +636,7 @@ export default function KanbanBoard({
                         id={card.id}
                         className="mb-3 bg-white rounded-xl px-2"
                       >
+                        {card.id}
                         <div
                           className={`h-2 w-full transition-all duration-300 ease-in-out rounded ${
                             isCardDropZoneHovered
@@ -650,6 +680,7 @@ export default function KanbanBoard({
                         >
                           <div className="p-3 cursor-grab active:cursor-grabbing">
                             <div className="flex items-center justify-between">
+                              {/* name */}
                               <div className="flex-1 min-w-0 mr-2">
                                 <p
                                   className="text-sm font-medium text-gray-800 truncate"
@@ -663,7 +694,7 @@ export default function KanbanBoard({
                                       {task.teamLeader ? (
                                         <p className="text-[10px] text-green-500">
                                           TL {task?.teamLeader?.username}
-                                          {task?.teamLeader?.userId}
+                                          {/* {task?.teamLeader?.userId} */}
                                         </p>
                                       ) : (
                                         <p className="text-[10px] text-red-500">
@@ -674,7 +705,8 @@ export default function KanbanBoard({
                                   ) : null
                                 )}
                               </div>
-                              <div className="flex items-center flex-shrink-0">
+                              {/* action */}
+                              <div className="flex items-center justify-between w-fit  flex-shrink-0">
                                 <div className="flex -space-x-2 mr-2">
                                   {tasks.map((task) =>
                                     task.taskId === card.id ? (
@@ -699,6 +731,69 @@ export default function KanbanBoard({
                                     ) : null
                                   )}
                                 </div>
+                                {/* change status */}
+                                <div className="flex justify-end items-center ">
+                                  <button
+                                    onClick={() =>
+                                      handleStatusChange(
+                                        card.id,
+                                        tasks.find(
+                                          (task) => task.taskId === card.id
+                                        )?.status || "OVERDUE"
+                                      )
+                                    }
+                                    className={` top-[20px] right-5 p-2 rounded-full ${
+                                      (tasks.find(
+                                        (task) => task.taskId === card.id
+                                      )?.status || "OVERDUE") === "COMPLETED"
+                                        ? "bg-green-500 text-white"
+                                        : ""
+                                    }`}
+                                    title={
+                                      (tasks.find(
+                                        (task) => task.taskId === card.id
+                                      )?.status || "OVERDUE") === "COMPLETED"
+                                        ? "Mark as Overdue"
+                                        : "Mark as Completed"
+                                    }
+                                  >
+                                    {(tasks.find(
+                                      (task) => task.taskId === card.id
+                                    )?.status || "OVERDUE") === "COMPLETED" ? (
+                                      <svg
+                                        viewBox="0 0 24 24"
+                                        fill="#0FFF50"
+                                        width={24}
+                                        height={24}
+                                        className="hover:fill-green-500 transition-colors"
+                                      >
+                                        <path
+                                          fillRule="evenodd"
+                                          clipRule="evenodd"
+                                          d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+                                        />
+                                      </svg>
+                                    ) : (
+                                      <svg
+                                        viewBox="0 0 24 24"
+                                        width={24}
+                                        height={24}
+                                        fill="#10B981"
+                                        stroke="#10B981"
+                                        strokeWidth="1"
+                                        className="hover:scale-110 hover:fill-green-400 transition-transform transition-colors duration-200"
+                                        aria-hidden="true"
+                                      >
+                                        <path
+                                          fillRule="evenodd"
+                                          clipRule="evenodd"
+                                          d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+                                        />
+                                      </svg>
+                                    )}
+                                  </button>
+                                </div>
+                                {/* option */}
                                 <ModalOptionTask
                                   role={role}
                                   key={"apple"}

@@ -45,4 +45,10 @@ export const boardRouteGroup = {
 
   chageStatusCheckListWhenHaveTeamLeader: (checklistId, type) =>
     `${apiConfig.baseUrl}/checklists/${checklistId}/status?status=${type}`,
+
+  changeStatusTask: (taskId, type) =>
+    `${apiConfig.baseUrl}/tasks/${taskId}/status?status=${type}`,
+
+  changeStagToUnderReview: (taskId, stage) =>
+    `${apiConfig.baseUrl}/tasks/${taskId}/move?stage=${stage}`,
 };

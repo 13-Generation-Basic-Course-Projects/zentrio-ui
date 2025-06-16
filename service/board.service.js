@@ -644,3 +644,53 @@ export const chageStatusCheckListService = async (checklistId, token, type) => {
     throw error;
   }
 };
+
+/*
+ * cheng status task
+ */
+export const changeStatusTaskService = async (taskId, token, type) => {
+  try {
+    //console.log("from service ", token);
+    const url = boardRouteGroup.changeStatusTask(taskId, type);
+    console.log(url);
+    const res = await fetch(url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await res.json();
+    console.log("📥 Backend responded with change status:", data);
+
+    return data; // just return the data, don’t redirect here
+  } catch (error) {
+    console.error("bug", error.message);
+    throw error;
+  }
+};
+
+/*
+ * cheng  task to underreview
+ */
+export const changeStageToUnderReviewService = async (taskId, token, stage) => {
+  try {
+    //console.log("from service ", token);
+    const url = boardRouteGroup.changeStagToUnderReview(taskId, "UNDER_REVIEW");
+    console.log(url);
+    const res = await fetch(url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await res.json();
+    console.log("📥 Backend responded with change status:", data);
+
+    return data; // just return the data, don’t redirect here
+  } catch (error) {
+    console.error("bug", error.message);
+    throw error;
+  }
+};
