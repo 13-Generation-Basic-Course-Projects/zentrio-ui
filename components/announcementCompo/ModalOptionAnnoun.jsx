@@ -16,6 +16,7 @@ import ModalDeleteAnnoun from "./ModalDeleteAnnoun";
 import ModalPinedAnnoun from "./ModalPinedAnnoun";
 import ModalEditAnnoun from "./ModalEditAnnoun";
 import CardCreateModal from "./CardCreateModal";
+import CardUpdateModal from "./CardUpdateModel";
 
 // icon components directly in the same file
 const AddNoteIcon = (props) => (
@@ -135,8 +136,9 @@ export default function ModalOptionAnnoun({
   Announcements,
   boardMember,
 }) {
-  // console.log("Announcement",Announcement);
-  console.log("zzzz",announId)
+  console.log("Announcement",Announcement);
+  console.log("zzzz", announId);
+  console.log("my boardid",boardId);
 
   const iconClasses =
     "text-xl text-default-500 pointer-events-none flex-shrink-0";
@@ -170,7 +172,7 @@ export default function ModalOptionAnnoun({
           showDivider
           startContent={<PinedIcon className={iconClasses} />}
         >
-          <ModalPinedAnnoun 
+          <ModalPinedAnnoun
             title={"Pined"}
             massageTitle={"Are you sure?"}
             massageBody={"You want to pined it."}
@@ -189,18 +191,27 @@ export default function ModalOptionAnnoun({
           showDivider
           startContent={<EditDocumentIcon className={iconClasses} />}
         >
-          <ModalEditAnnoun 
-            title={"Edit"}
-            massageTitle={"Are you sure?"}
-            massageBody={"You want to edit it."}
-            icon={<IconpopupDelete />}
-            bgcolor={"bg-slate-red"}
-            massageDo={"Yes, Edit"}
-            accessToken={"jam dak key ..."}
-            massageUndo={"No, Cancel"}
+          <ModalEditAnnoun
+            title="Edit"
+            icon={""}
+            bgcolor="bg-blue-100"
             announId={announId}
+            boardId={boardId}
+            Announcement={Announcement}
           />
-          {/* <CardCreateModal boardId={boardId} boardMember={boardMember} Announcements={Announcements}/> */}
+
+          {/* <CardCreateModal 
+            title={"Edite"}
+            boardId={boardId} 
+            boardMember={boardMember} 
+            Announcements={Announcements}
+          /> */}
+          {/* <CardUpdateModal 
+            title={"Edite"}
+            boardId={boardId} 
+            boardMember={boardMember} 
+            Announcements={Announcements}
+          /> */}
         </DropdownItem>
 
         <DropdownItem

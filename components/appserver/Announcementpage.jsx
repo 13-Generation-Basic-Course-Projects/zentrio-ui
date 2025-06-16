@@ -7,7 +7,7 @@ import CardFilterComponent from "../announcementCompo/CardFilterComponent";
 export default function Announcementpage({ boardId, Announcements, boardMember,currentUserProfile }) {
   console.log("All announcement",Announcements);
   console.log("kdet",boardId);
-    console.log("kdet2",boardMember);
+    console.log("kdetko",boardMember);
   return (
     <div className="grid grid-cols-10 w-full h-screen p-4">
       <div className=" col-span-1">
@@ -20,7 +20,7 @@ export default function Announcementpage({ boardId, Announcements, boardMember,c
         </div>
 
         <div className="space-y-4">
-          <CartPostAnnouncement Announcements={Announcements} currentUserProfile={currentUserProfile}/>
+          <CartPostAnnouncement Announcements={Announcements} currentUserProfile={currentUserProfile} boardId={boardId} />
         </div>
       </div>
 

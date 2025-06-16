@@ -77,7 +77,7 @@ export const updateAnnouncementByIdAction = async (announId, description, title,
 
     const userToken = await Token();
     const token = userToken.Credential;
-    const result = await updateAnnouncementByIdService(announId, description, title, boardId, token);
+    const result = await updateAnnouncementByIdService({announId, description, title, boardId, token});
     revalidatePath("/update");
     return result;
 };

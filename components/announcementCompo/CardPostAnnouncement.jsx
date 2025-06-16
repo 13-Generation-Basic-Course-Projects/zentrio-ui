@@ -8,7 +8,8 @@ import { LikeReactionButton } from "./ModalLikeComponent";
 import ImageViewer from "./popupImage";
 // import { useState } from "react";
 
-export default function CardPostAnnouncement({ Announcements,currentUserProfile }) {
+export default function CardPostAnnouncement({ Announcements,currentUserProfile, boardId }) {
+  console.log("bottttt",boardId)
   const announcementList = Announcements?.payload || [];
    console.log("announcement", announcementList);
   console.log("current user", currentUserProfile);
@@ -60,6 +61,7 @@ announcementList.forEach((announcement, index) => {
                   <ModalOptionAnnoun 
                     Announcement={announcement}
                     announId={announcement.announcementId}
+                    boardId={boardId}
                     // onDeleteSuccess={() => handleDeleteSuccess(announcement.id)}
                   />
                 </Button>
