@@ -61,6 +61,9 @@ export default async function Member({ params }) {
   const membersResponse = await getMemberByBoardIdAction({ boardId });
   const allMemberInBoard = membersResponse?.payload || [];
   console.log("vvvv", allMemberInBoard);
+
+  //curent user
+
   return (
     <Memberpage
       boardId={boardId}
@@ -69,6 +72,7 @@ export default async function Member({ params }) {
       matchingBoardForNotPM={matchingBoardForNotPM}
       workspaceId={workspaceId}
       allMemberInBoard={allMemberInBoard}
+      currentUserProfile={currentUserProfile}
     />
   );
 }

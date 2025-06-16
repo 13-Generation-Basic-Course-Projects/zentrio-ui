@@ -29,6 +29,7 @@ export default function Memberpage({
   matchingBoardForNotPM,
   workspaceId,
   allMemberInBoard,
+  currentUserProfile,
 }) {
   if (boardMember.status >= 400 || boardMember.type === "about:blank") {
     return <NotFound />;
@@ -138,6 +139,38 @@ export default function Memberpage({
   const preventProfile = preventImage.noProfile;
 
   console.log("board id in memberpage", boardId);
+  console.log("currentUserProfile", currentUserProfile);
+  // checkrole
+  // Function to find the role for a given boardId
+  const findRoleByBoardId = (boardId, userProfile) => {
+    // Check ownBoards
+    const ownBoard = userProfile.payload.ownBoards.find(
+      (board) => board.boardId === boardId
+    );
+    if (ownBoard) {
+      return ownBoard.role;
+    }
+
+    // Check joinedBoards
+    const joinedBoard = userProfile.payload.joinedBoards.find(
+      (board) => board.boardId === boardId
+    );
+    if (joinedBoard) {
+      return joinedBoard.role;
+    }
+
+    // Return null or a message if boardId is not found
+    return "Board not found";
+  };
+  const userRoleBaseOnCurrentUser = findRoleByBoardId(
+    boardId,
+    currentUserProfile
+  );
+
+  console.log(
+    "role for current user depend on boardid",
+    userRoleBaseOnCurrentUser
+  );
   return (
     <div className="p-4 ">
       {/* Breadcrumb */}
@@ -351,9 +384,8 @@ export default function Memberpage({
                   </td>
                   {/* Action for delete */}
                   <td className="px-6 py-4">
-                    {role == "ROLE_LEADER" || role == "MEMBER" ? (
-                      ""
-                    ) : (
+                    {userRoleBaseOnCurrentUser === "ROLE_MANAGER" &&
+                    member.userId !== currentUserProfile.payload.user.userId ? (
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         className="w-4 h-4 cursor-pointer"
@@ -363,7 +395,7 @@ export default function Memberpage({
                       >
                         <path d="M10 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4z" />
                       </svg>
-                    )}
+                    ) : null}
                   </td>
                 </tr>
               ))}
