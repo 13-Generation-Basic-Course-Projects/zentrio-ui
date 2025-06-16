@@ -1,14 +1,24 @@
 "use client";
 import React, { useState } from "react";
 import MyDatePicker from "../date/Datepicker";
-import publicIcon from "../../assets/public.png";
-import Image from "next/image";
 import BredCrum from "../bredcrum/MyBredcrum";
-import { documentData } from "@/data/docu/documentData";
 import CardFolder, { CardFile } from "../card/CardDoc";
 import { Autocomplete, AutocompleteItem, Input } from "@heroui/react";
-export default function PublicDocument({ modal, documents }) {
-  const data = documentData;
+export default function PublicDocument({ modal, publicDocuments }) {
+  const payload = publicDocuments?.payload || [];
+
+  // if (publicDocuments.status == 404) {
+  //   return <>a</>;
+  // }
+
+  const normalizedData = payload.map((doc) => ({
+    title: doc.description || "Untitled",
+    date: new Date(doc.creationDate).toISOString().split("T")[0],
+    status: doc._private ? "personl" : "public",
+    category: doc.documentType.includes("folder") ? "Folder" : "File",
+    type: doc.documentType,
+    driveUrl: doc.drive_url,
+  }));
 
   const [sortOrder, setSortOrder] = useState("asc");
   const [searchTerm, setSearchTerm] = useState("");
@@ -16,30 +26,22 @@ export default function PublicDocument({ modal, documents }) {
     { key: "asc", label: "A-Z" },
     { key: "desc", label: "Z-A" },
   ];
-  const myFilter = (textValue, inputValue) => {
-    if (inputValue.length === 0) {
-      return true;
-    }
 
+  const myFilter = (textValue, inputValue) => {
+    if (inputValue.length === 0) return true;
     textValue = textValue.normalize("NFC").toLowerCase();
     inputValue = inputValue.normalize("NFC").toLowerCase();
-
     return textValue.startsWith(inputValue);
   };
 
-  const filteredData = [...documentData]
-    .filter((item) => {
-      const isPersonal = item.status === "public";
-      const matchesSearch = myFilter(item.title, searchTerm);
-      return isPersonal && matchesSearch;
-    })
-    .sort((a, b) => {
-      if (sortOrder === "asc") {
-        return a.title.localeCompare(b.title);
-      } else {
-        return b.title.localeCompare(a.title);
-      }
-    });
+  const filteredData = [...normalizedData]
+    .filter((item) => myFilter(item.title, searchTerm))
+    .sort((a, b) =>
+      sortOrder === "asc"
+        ? a.title.localeCompare(b.title)
+        : b.title.localeCompare(a.title)
+    );
+
   return (
     <div className="h-screen flex flex-col">
       <div className="grid grid-cols-1 gap-3 ">
@@ -79,6 +81,7 @@ export default function PublicDocument({ modal, documents }) {
           <div className="w-[340px] rounded-2xl flex justify-center items-center  text-white ">
             <Input
               isClearable
+              onValueChange={(val) => setSearchTerm(val)}
               classNames={{
                 label: "text-black/50 dark:text-white/90",
                 input: [
@@ -105,7 +108,8 @@ export default function PublicDocument({ modal, documents }) {
           <div className="flex items-center justify-between mb-4">
             <p className="text-h5 font-semibold">Folders</p>
             <span className="text-sm text-gray-500">
-              {data?.filter((el) => el.category === "Folder").length || 0}{" "}
+              {normalizedData?.filter((el) => el.category === "Folder")
+                .length || 0}{" "}
               folders
             </span>
           </div>
@@ -132,7 +136,9 @@ export default function PublicDocument({ modal, documents }) {
           <div className="flex items-center justify-between mb-4">
             <p className="text-h5 font-semibold">Files</p>
             <span className="text-sm text-gray-500">
-              {data?.filter((el) => el.category === "File").length || 0} files
+              {normalizedData?.filter((el) => el.category === "File").length ||
+                0}{" "}
+              files
             </span>
           </div>
           <div className="grid grid-cols-6 gap-3  pb-4 pr-2 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
@@ -144,8 +150,9 @@ export default function PublicDocument({ modal, documents }) {
                     key={`file-${i}`}
                     title={el.title || "Untitled File"}
                     status={el.status || "personal"}
-                    date={el.date || "2025-05-25"}
+                    date={el.date}
                     type={el.type}
+                    link={el.driveUrl}
                   />
                 ))
             ) : (

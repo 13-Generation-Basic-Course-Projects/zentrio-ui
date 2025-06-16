@@ -59,7 +59,8 @@ export default async function Member({ params }) {
   }
   const matchingBoardForNotPM = matchingBoard;
   const membersResponse = await getMemberByBoardIdAction({ boardId });
-  allMemberInBoard = membersResponse?.payload || [];
+  const allMemberInBoard = membersResponse?.payload || [];
+  console.log("vvvv", allMemberInBoard);
   return (
     <Memberpage
       boardId={boardId}

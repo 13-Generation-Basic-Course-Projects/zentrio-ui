@@ -45,7 +45,7 @@ export default function AllDocument({ boardId, documents, tokenFromGoogle }) {
 
     return {
       title: doc.description || "Untitled",
-      status: doc._private ? "private" : "personal",
+      status: doc._private ? "public" : "personal",
       id: doc.documentId,
       folderId: doc.folderId,
       date: new Date(doc.creationDate).toISOString().split("T")[0],

@@ -625,7 +625,6 @@ export const getBoardsByWorkspaceIdService = async ({ workspaceId, token }) => {
 
     const res = await fetch(url, {
       method: "GET",
-      cache: 'no-store' ,
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,

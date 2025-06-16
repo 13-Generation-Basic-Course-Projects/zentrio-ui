@@ -2,6 +2,7 @@
 import { Token } from "@/constant/token";
 import {
   assignMemberInChecklistService,
+  assignMemberToChecklistService,
   assignUserRoleLeadeerToBoardService,
   createCheckListService,
   createGanttChartByBoardIdService,
@@ -523,4 +524,27 @@ const declineUserRoleLeaderService = async ({ taskId, assignId, token }) => {
   }
 
   return await res.json();
+};
+
+/*
+ * assignMemberToChecklistService
+ */
+export const assignMemberToChecklistAction = async (
+  checklistId,
+  taskId,
+  assignedBy,
+  assignedTo
+) => {
+  const userToken = await Token();
+  const token = userToken?.Credential;
+  const result = await assignMemberToChecklistService(
+    checklistId,
+    taskId,
+    assignedBy,
+    assignedTo,
+    token
+  );
+  revalidatePath("/checklist");
+  // console.log("📥 Backend responded with delete action", result);
+  return result;
 };

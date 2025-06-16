@@ -1,7 +1,6 @@
 import {
-  createDocumentByUploadAction,
-  deleteDocumentAction,
   getDocumentsByBoardAction,
+  getPublicDocumentsByBoardAction,
 } from "@/action/document.action";
 import { getCurrentUserProfileAction } from "@/action/profile.action";
 import { auth } from "@/auth";
@@ -13,11 +12,10 @@ export default async function BoardLayout({ children, params }) {
   const boardId = params?.boardId;
 
   const getDocuments = await getDocumentsByBoardAction(boardId);
-
-  console.log("doooo", getDocuments);
+  const publicDocuments = await getPublicDocumentsByBoardAction(boardId);
 
   const tokenFromGoogle =
-    "ya29.a0AW4XtxjXCngCVfswyg0VcxVqCBTf07rmNn-25epp2Ry5EAvYeiZU_pEe2YPs_3JJAU0q3QnCzzrQoIG8Yy_-q9lCCZvYtSZwWHvASenPTGv9DZ_O4OXtI-NvQudpF6_HvFeYwrbOcPMFJiZlTe7ARj664JTWmi-7ie4gC9tl4gaCgYKAZkSARYSFQHGX2MiiFBC2xuEwG79tlslJeXSWA0177";
+    "ya29.a0AW4XtxjsYgMBuKRvhBt0IjTTYMnEnIHQ4S1unkB0Ay_hWwquR2w---w9vFESEEClfasfoYW9CXTaujsXT0aWuIiQq5NcIX-7LxJvU-5m_Ma4307C-J9abWX5ksmV1ECe_ylFVsBrqLdeGRGTRBsg_YweD6mWBDt7ElPZaNU3aCgYKAdkSARYSFQHGX2MiQioteA8Dz6kahCx6jlCF_g0175";
 
   //pf
   /*
@@ -27,11 +25,13 @@ export default async function BoardLayout({ children, params }) {
   const imageUser = currentUserProfile?.payload?.user?.profileImage;
   const noImage = preventImage.noProfile;
   const preventUserImage = imageUser == null ? noImage : imageUser;
+
   return (
     <div>
       <DocumentAutherize
         user={session?.user}
         documents={getDocuments}
+        publicDocuments={publicDocuments}
         boardId={boardId}
         tokenFromGoogle={tokenFromGoogle}
         preventUserImage={preventUserImage}

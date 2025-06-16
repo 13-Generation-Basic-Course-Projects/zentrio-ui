@@ -263,6 +263,16 @@ export function StackedProfileChecklist({ member, preventUserImage }) {
           +{member.length - 4}
         </div>
       )}
+      {member.length == 0 && (
+        <div className="w-8 h-8 rounded-full bg-gray-300 text-btn-sm flex items-center justify-center border-2 border-white shadow">
+          <img
+            key={"no member"}
+            src={preventUserImage}
+            alt={"no member"}
+            className="w-8 h-8 rounded-full border-2 border-white shadow"
+          />
+        </div>
+      )}
     </div>
   );
 }

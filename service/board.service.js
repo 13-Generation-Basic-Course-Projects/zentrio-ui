@@ -315,7 +315,7 @@ export const createGanttChartByBoardIdService = async ({
       body: JSON.stringify({ title: data.title, boardId: boardId }),
     });
     const result = await res.json();
-    //console.log("📥 Backend responded with:", result);
+    console.log("📥 Backend responded with gantbar:", result);
 
     return data;
   } catch (error) {
@@ -570,6 +570,43 @@ export const moveTaskOrderService = async (boardId, newId, oldId, token) => {
     console.log("📥 Backend responded with moveld:", result);
 
     return result;
+  } catch (error) {
+    console.error("bug", error.message);
+    throw error;
+  }
+};
+
+/*
+ * assignMemberToChecklistService
+ */
+export const assignMemberToChecklistService = async (
+  checklistId,
+  taskId,
+  assignedBy,
+  assignedTo,
+  token
+) => {
+  try {
+    console.log(
+      "from service",
+      checklistId,
+      taskId,
+      assignedBy,
+      assignedTo,
+      token
+    );
+    const url = boardRouteGroup.assignMemberToChecklist();
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const result = await res.json();
+    console.log("📥 Backend responded with checklist:", result);
+
+    return data;
   } catch (error) {
     console.error("bug", error.message);
     throw error;

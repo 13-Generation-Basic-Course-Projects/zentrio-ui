@@ -18,7 +18,7 @@ import {
   updateFavBoardByIdService,
   updateWorkspaceByIdService,
 } from "@/service/workspace.service";
-import { revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 
 /*
  * 1. action for create workspaces
@@ -40,7 +40,7 @@ export const createWorkspaceAction = async (payload = {}) => {
   });
 
   // revalidate tag related to workspaces
-  revalidateTag("workspaces");
+  revalidatePath("/workspaces");
   return result;
 };
 
@@ -65,7 +65,7 @@ export const deleteWorkspaceByIdAction = async (id) => {
   const result = await deleteWorkspaceByIdService({ id, token });
 
   // revalidate tag related to workspaces
-  revalidateTag("workspaces");
+  revalidatePath("/workspaces");
   return result;
 };
 
@@ -91,7 +91,7 @@ export const updateWorkspaceByIdAction = async (id, payload = {}) => {
   });
 
   // revalidate tag related to workspaces
-  revalidateTag("workspaces");
+  revalidatePath("/workspaces");
   return result;
 };
 
@@ -114,10 +114,7 @@ export const getAllWorkspaceForUserAction = async () => {
 export const getBoardByIdAction = async (boardId) => {
   const userToken = await Token();
   const token = userToken.Credential;
-
   const result = await getBoardByIdService({ boardId, token });
-
-  revalidateTag("boards");
   return result;
 };
 
@@ -148,7 +145,7 @@ export const updateBoardByIdAction = async (boardId, payload = {}) => {
     token,
   });
 
-  revalidateTag("boards");
+  revalidatePath("/boards");
   return result;
 };
 
@@ -174,7 +171,7 @@ export const updateFavBoardByIdAction = async ({ boardId, isFavourite }) => {
     token,
   });
 
-  revalidateTag("boards");
+  revalidatePath("/boards");
   return result;
 };
 
@@ -209,8 +206,7 @@ export const createBoardAction = async (payload = {}) => {
     workspaceId,
     token,
   });
-
-  revalidateTag("boards");
+  revalidatePath("/boards");
   return result;
 };
 
@@ -236,7 +232,7 @@ export const deleteBoardAction = async (id, workspaceId) => {
   const result = await deleteBoardService({ id, workspaceId, token });
 
   // revalidate tag related to workspaces
-  revalidateTag("/boards");
+  revalidatePath("/boards");
   return result;
 };
 /**
