@@ -4,43 +4,71 @@ import MyDatePicker from "../date/Datepicker";
 import BredCrum from "../bredcrum/MyBredcrum";
 import CardFolder, { CardFile } from "../card/CardDoc";
 import { Autocomplete, AutocompleteItem, Input } from "@heroui/react";
-export default function PublicDocument({ modal, publicDocuments }) {
+export default function PublicDocument({
+  modal,
+  publicDocuments,
+  tokenFromGoogle,
+  isHidden,
+}) {
   const payload = publicDocuments?.payload || [];
 
   // if (publicDocuments.status == 404) {
   //   return <>a</>;
   // }
 
-  const normalizedData = payload.map((doc) => ({
-    title: doc.description || "Untitled",
-    date: new Date(doc.creationDate).toISOString().split("T")[0],
-    status: doc._private ? "personl" : "public",
-    category: doc.documentType.includes("folder") ? "Folder" : "File",
-    type: doc.documentType,
-    driveUrl: doc.drive_url,
-  }));
-
   const [sortOrder, setSortOrder] = useState("asc");
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedDate, setSelectedDate] = useState(null);
   const sortOptions = [
     { key: "asc", label: "A-Z" },
     { key: "desc", label: "Z-A" },
   ];
-
   const myFilter = (textValue, inputValue) => {
-    if (inputValue.length === 0) return true;
+    if (inputValue.length === 0) {
+      return true;
+    }
+
     textValue = textValue.normalize("NFC").toLowerCase();
     inputValue = inputValue.normalize("NFC").toLowerCase();
+
     return textValue.startsWith(inputValue);
   };
 
-  const filteredData = [...normalizedData]
-    .filter((item) => myFilter(item.title, searchTerm))
-    .sort((a, b) =>
-      sortOrder === "asc"
-        ? a.title.localeCompare(b.title)
-        : b.title.localeCompare(a.title)
-    );
+  const transformedData = payload.map((doc) => {
+    const docType = doc.documentType || "";
+    const isGoogleDoc = docType.includes("google-apps.document");
+    const isGoogleSheet = docType.includes("google-apps.spreadsheet");
+    const isGoogleSlide = docType.includes("google-apps.presentation");
+    const isFolder =
+      !docType || (!isGoogleDoc && !isGoogleSheet && !isGoogleSlide);
+
+    return {
+      title: doc.description || "Untitled",
+      status: doc._public ? "public" : "personal",
+      id: doc.documentId,
+      folderId: doc.folderId,
+      date: new Date(doc.creationDate).toISOString().split("T")[0],
+      type: isGoogleDoc
+        ? "docx"
+        : isGoogleSheet
+        ? "xlsx"
+        : isGoogleSlide
+        ? "pptx"
+        : "folder",
+      category: isFolder ? "Folder" : "File",
+      link: doc.drive_url || null,
+    };
+  });
+
+  const filteredData = transformedData
+    .filter((doc) => doc.title.toLowerCase().includes(searchTerm.toLowerCase()))
+    .sort((a, b) => {
+      if (sortOrder === "asc") {
+        return a.title.localeCompare(b.title);
+      } else {
+        return b.title.localeCompare(a.title);
+      }
+    });
 
   return (
     <div className="h-screen flex flex-col">
@@ -108,8 +136,8 @@ export default function PublicDocument({ modal, publicDocuments }) {
           <div className="flex items-center justify-between mb-4">
             <p className="text-h5 font-semibold">Folders</p>
             <span className="text-sm text-gray-500">
-              {normalizedData?.filter((el) => el.category === "Folder")
-                .length || 0}{" "}
+              {filteredData?.filter((el) => el.category === "Folder").length ||
+                0}{" "}
               folders
             </span>
           </div>
@@ -123,6 +151,12 @@ export default function PublicDocument({ modal, publicDocuments }) {
                     title={el.title || "Untitled Folder"}
                     status={el.status || "personal"}
                     date={el.date || "2025-05-25"}
+                    link={el?.link}
+                    documentId={el?.id}
+                    folderId={el?.folderId}
+                    isFolder={el?.category === "Folder"}
+                    tokenFromGoogle={tokenFromGoogle}
+                    isHidden={isHidden}
                   />
                 ))
             ) : (
@@ -136,8 +170,7 @@ export default function PublicDocument({ modal, publicDocuments }) {
           <div className="flex items-center justify-between mb-4">
             <p className="text-h5 font-semibold">Files</p>
             <span className="text-sm text-gray-500">
-              {normalizedData?.filter((el) => el.category === "File").length ||
-                0}{" "}
+              {filteredData?.filter((el) => el.category === "File").length || 0}{" "}
               files
             </span>
           </div>
@@ -153,6 +186,10 @@ export default function PublicDocument({ modal, publicDocuments }) {
                     date={el.date}
                     type={el.type}
                     link={el.driveUrl}
+                    documentId={el?.id}
+                    folderId={el?.folderId}
+                    tokenFromGoogle={tokenFromGoogle}
+                    isHidden={isHidden}
                   />
                 ))
             ) : (

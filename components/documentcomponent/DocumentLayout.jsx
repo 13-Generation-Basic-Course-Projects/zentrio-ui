@@ -18,11 +18,11 @@ export default function DocumentLayout({
   tokenFromGoogle,
   boardId,
 }) {
-  const [activeTab, setActiveTab] = useState(null);
+  const [activeTab, setActiveTab] = useState("personal");
 
   const tabItems = [
     {
-      key: "kanban",
+      key: "personal",
       title: "Personal",
       content: <PrivateDocument />,
       icon: (isActive) => (
@@ -41,7 +41,7 @@ export default function DocumentLayout({
       ),
     },
     {
-      key: "calendar",
+      key: "public",
       title: "Public",
       content: <PublicDocument />,
       icon: (isActive) => (
@@ -62,11 +62,7 @@ export default function DocumentLayout({
   ];
 
   const handleTabClick = (tabKey) => {
-    if (activeTab === tabKey) {
-      setActiveTab(null);
-    } else {
-      setActiveTab(tabKey);
-    }
+    setActiveTab(tabKey);
   };
 
   return (
@@ -129,25 +125,28 @@ export default function DocumentLayout({
       {/* Tab Content Area */}
       <main className="p-4 min-h-screen">
         <div className="mx-auto">
-          {activeTab === "kanban" && (
+          {activeTab === "personal" && (
             <PrivateDocument
               documents={documents}
               modal={[<ModalCreateDocu boardId={boardId} />]}
+              tokenFromGoogle={tokenFromGoogle}
+              isHidden={false}
             />
           )}
-          {activeTab === "calendar" && (
+          {activeTab === "public" && (
             <PublicDocument
               publicDocuments={publicDocuments}
-              modal={[<ModalCreateDocu boardId={boardId} />]}
+              modal={[]}
+              isHidden={true}
             />
           )}
-          {activeTab === null && (
+          {/* {activeTab === null && (
             <AllDocument
               documents={documents}
               tokenFromGoogle={tokenFromGoogle}
               boardId={boardId}
             />
-          )}
+          )} */}
         </div>
       </main>
     </>

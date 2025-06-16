@@ -11,8 +11,8 @@ export const documentRouteGroup = {
 
   // Access control
   makeDocumentPrivate: (id) => `${apiConfig.baseUrl}/documents/${id}/private`,
-  makeDocumentPublic: (id) =>
-    `${apiConfig.baseUrl}/documents/public-document/${id}`,
+  makeDocumentPublic: (documentId, accessToken) =>
+    `${apiConfig.baseUrl}/documents/public-document/${documentId}?accessToken=${accessToken}`,
 
   // Create operations
   createDocument: () => `${apiConfig.baseUrl}/documents`,
