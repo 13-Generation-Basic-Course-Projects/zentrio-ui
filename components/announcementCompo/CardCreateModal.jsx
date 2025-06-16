@@ -5,7 +5,6 @@ import { Card, CardContent } from "../ui/card";
 import { X, Image } from "lucide-react";
 import { Button } from "@heroui/react";
 import { createAnnouncementByBoardIdAction, uploadMultiImgByBoardIdAction } from "@/action/announcement.action";
-import zentrio from "@/public/image/Zentrio-Logo.png";
 
 export default function CardCreateModal({ onClose, boardId, boardMember }) {
   // max size 10 mb
@@ -13,7 +12,7 @@ export default function CardCreateModal({ onClose, boardId, boardMember }) {
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [images, setImages] = useState([]); // renamed to images for clarity
+  const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showPrivacyDropdown, setShowPrivacyDropdown] = useState(false);
 
@@ -63,15 +62,12 @@ export default function CardCreateModal({ onClose, boardId, boardMember }) {
         <CardContent className="p-0 flex flex-col md:flex-row">
           {/* Left Side - Customizable */}
           <div className="w-full md:w-1/2 border-gray-200">
-            {/* Empty for now - customize later */}
             <div className="h-full w-full flex items-center justify-center text-gray-400">
-              <div className=" bg-primary w-full h-full rounded-[30px] rounded-tr-[80px] rounded-br-[80px]">
-                <Image
-                  src={zentrio}
-                  alt="Announcement preview"
-                  fill
-                  className="object-cover"
-                />
+              <div className="bg-primary w-full h-full rounded-[30px] rounded-tr-[80px] rounded-br-[80px] flex items-center justify-center">
+                <div className="text-white text-center space-y-2">
+                  <h1 className="text-h2 font-semibold">Welcome!</h1>
+                  <h1 className="text-h2 font-semibold">Zentrio Announcement</h1>
+                </div>
               </div>
             </div>
           </div>
