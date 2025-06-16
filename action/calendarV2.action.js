@@ -120,6 +120,7 @@ export const deleteNoteInCalendarAction = async (calendarId, taskId) => {
       taskId: taskId,
       token: token,
     });
+    revalidateTag ("calendar");
     return result;
   } catch (error) {
     console.error("deleteNoteInCalendarAction error:", error);

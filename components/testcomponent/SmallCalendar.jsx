@@ -43,7 +43,7 @@ export default function SmallCalendar() {
           gridHeaderCell:
             "text-center font-medium text-sm text-gray-600 box-border px-1 py-2 min-w-0 flex-1",
           gridBody: "w-full",
-          gridBodyRow: "flex w-full min-h-[42px]",
+          gridBodyRow: "flex w-full h-[42px]",
           cell: "flex-1 min-w-0 p-2 text-center box-border flex items-center justify-center",
         }}
         style={{

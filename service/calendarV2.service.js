@@ -141,6 +141,9 @@ export const getAllNoteInCalendarService = async ({ taskId, token }) => {
 
     const res = await fetch(url, {
       method: "GET",
+      next:{
+        tags : ["calendar"]
+      },
       headers: {
         accept: "*/*",
         Authorization: `Bearer ${token}`,

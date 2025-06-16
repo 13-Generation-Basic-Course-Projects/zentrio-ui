@@ -104,7 +104,7 @@ export default function CardTaskCalender({ tasks, onTaskClick, activeTaskId }) {
                 </div>
                 <small className="text-title font-medium text-xs flex-shrink-0">
                   {/* {checklistCount} */}
-                  {commentCount} comment{commentCount > 1 ? "s" : ""}
+                  {commentCount} note{commentCount > 1 ? "s" : ""}
                 </small>
               </div>
             );

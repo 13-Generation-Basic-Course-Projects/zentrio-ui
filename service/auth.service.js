@@ -47,6 +47,7 @@ export const loginZentrioService = async (email, password) => {
   try {
     const userData = await loginZentrioService(email, password);
     // login success: redirect without sensitive info
+    console.log("userdata ", u);
   } catch (err) {
     // show error message to user
     console.log(err);
@@ -66,6 +67,7 @@ export const loginZentrioCredentailService = async ({ email, password }) => {
       body: JSON.stringify({ email, password }),
     });
     const data = await res.json();
+    console.log("datahhh ", data);
     console.log("📥 Backend responded with:", data);
     console.log("BBBBB", data?.payload?.token);
 

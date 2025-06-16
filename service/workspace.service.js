@@ -66,7 +66,7 @@ export const getAllWorkspacesService = async ({ token }) => {
     return data;
   } catch (error) {
     console.error("❌ Failed to get all workspaces:", error.message);
-    throw error;
+    // throw error;
   }
 };
 
@@ -642,7 +642,7 @@ export const getBoardsByWorkspaceIdService = async ({ workspaceId, token }) => {
 
     const res = await fetch(url, {
       method: "GET",
-      cache: 'no-store' ,
+      cache: "no-store",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -650,13 +650,15 @@ export const getBoardsByWorkspaceIdService = async ({ workspaceId, token }) => {
     });
 
     if (!res.ok) {
-      throw new Error(`Failed to get boards: ${res.status}`);
+      // Optionally log status-specific messages
+      console.warn(`⚠️ Server responded with status ${res.status}`);
+      return null; // 👈 Return null to indicate failure
     }
 
     return await res.json();
   } catch (error) {
     console.error("❌ Failed to get boards by workspace ID:", error);
-    throw error;
+    return null; // 👈 Prevent undefined
   }
 };
 

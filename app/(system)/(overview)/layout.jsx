@@ -37,9 +37,9 @@ export default async function OverviewLayout({ children }) {
             <SmallCalendar />
           </div>
         </div>
+        {/* Children section - takes remaining height */}
+        <div className=" overflow-hidden flex-1 min-h-0  ">{children}</div>
       </div>
-      {/* Children section - takes remaining height */}
-      <div className=" overflow-hidden flex-1 min-h-0  ">{children}</div>
     </div>
   );
 }
