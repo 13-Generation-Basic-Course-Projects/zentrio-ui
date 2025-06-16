@@ -83,16 +83,16 @@ export default function MyCalender({ tasks }) {
     { text: "text-teal-600", light: "bg-teal-100" },
     { text: "text-cyan-600", light: "bg-cyan-100" },
 
-    { text: "text-lime-600", light: "bg-lime-100" },
-    { text: "text-emerald-600", light: "bg-emerald-100" },
-    { text: "text-violet-600", light: "bg-violet-100" },
-    { text: "text-fuchsia-600", light: "bg-fuchsia-100" },
-    { text: "text-orange-600", light: "bg-orange-100" },
-    { text: "text-amber-600", light: "bg-amber-100" },
-    { text: "text-sky-600", light: "bg-sky-100" },
-    { text: "text-zinc-600", light: "bg-zinc-100" },
-    { text: "text-gray-600", light: "bg-gray-100" },
-    { text: "text-stone-600", light: "bg-stone-100" },
+    { text: "text-lime-600", light: "bg-lime-200" },
+    { text: "text-emerald-600", light: "bg-emerald-300" },
+    { text: "text-violet-600", light: "bg-violet-400" },
+    { text: "text-fuchsia-600", light: "bg-fuchsia-300" },
+    { text: "text-orange-600", light: "bg-orange-300" },
+    { text: "text-amber-600", light: "bg-amber-200" },
+    { text: "text-sky-600", light: "bg-sky-300" },
+    { text: "text-zinc-600", light: "bg-zinc-300" },
+    { text: "text-gray-600", light: "bg-gray-200" },
+    { text: "text-stone-600", light: "bg-stone-200" },
   ];
   const calendarRef = useRef(null);
   const [currentTitle, setCurrentTitle] = useState("");
@@ -211,7 +211,6 @@ export default function MyCalender({ tasks }) {
       return { success: false, message: errorMsg };
     }
   };
-  
 
   const [notes, setNotes] = useState([]);
 
@@ -240,7 +239,7 @@ export default function MyCalender({ tasks }) {
     }
   }, [tasks]);
 
-  console.log("Use noted to find: ", notes); // ✅ Now logs an array
+  console.log("Use noted to find: ", notes);
 
   const { mappedTasks, taskColorMap } = useMemo(() => {
     const uniqueIds = new Set();
@@ -287,24 +286,19 @@ export default function MyCalender({ tasks }) {
     };
   }, [tasks, colorList, notes]);
 
-  
-
   const [activeTaskId, setActiveTaskId] = useState(null);
   const handleTaskClick = (dateStr, taskId) => {
     const task = mappedTasks.find((t) => t.id === taskId);
     if (!task) return;
 
-    setSelectedTaskId(taskId); // Triggers useEffect to fetch notes if needed
+    setSelectedTaskId(taskId);
     setSelectedTask(task);
     setActiveTaskId(taskId);
     calendarRef.current?.getApi().gotoDate(dateStr);
 
-    // Show comment events immediately if notes are already available
     const relatedNotes = notes?.filter((note) => note.taskId === taskId) || [];
 
-   
     const commentEvents = relatedNotes.map((note, i) => {
-      // Pick a random color from commentColorOptions
       const randomColor =
         commentColorOptions[
           Math.floor(Math.random() * commentColorOptions.length)
@@ -318,43 +312,53 @@ export default function MyCalender({ tasks }) {
         extendedProps: {
           type: "comment",
           notes: [note],
-          color: randomColor, // <-- different from taskColorMap
+          color: randomColor,
         },
         backgroundColor: "transparent",
         borderColor: "transparent",
       };
     });
 
-    setEvents([task, ...commentEvents]);
+    // ✅ Adjust task end date (+1 day) to show last day
+    const adjustedTask = {
+      ...task,
+      end: new Date(
+        new Date(task.end).setDate(new Date(task.end).getDate() + 2)
+      )
+        .toISOString()
+        .split("T")[0],
+      extendedProps: {
+        ...task.extendedProps,
+        realEnd: task.end,
+      },
+    };
 
-    setEvents([task, ...commentEvents]);
+    setEvents([adjustedTask, ...commentEvents]);
   };
 
   const renderEventContent = ({ event, isStart }) => {
-    const { type, color, notes = [] } = event.extendedProps;
+    const { type, color, notes = [], realEnd } = event.extendedProps;
 
     if (type !== "task" && type !== "comment") return null;
 
     const baseStyle = `h-[70px] p-1 rounded-small border-2 px-2 font-bold ${
       color?.text || "text-green-600"
     } ${color?.light || "bg-green-100"}`;
-    const dayDate = event.range?.start
-      ? new Date(event.range.start)
-      : new Date(event.start);
-    const dayKey = dayDate.toISOString().split("T")[0];
 
     const formatDate = (dateStr) =>
       new Date(dateStr).toLocaleDateString("en-GB", {
         day: "numeric",
-        month: "short",
+        month: "long",
       });
 
+    const displayEnd = new Date(realEnd || event.end); // Use realEnd if available
     const formattedDate = `${formatDate(event.start)} - ${formatDate(
-      event.end
+      displayEnd
     )}`;
 
+    // COMMENT EVENT BLOCK
     if (type === "comment") {
-      if(!isStart){
+      if (!isStart) {
         return (
           <div
             className={`mt-1 text-[0.7rem] rounded border-4 border-dashed px-2 py-[12px] ${
@@ -373,7 +377,7 @@ export default function MyCalender({ tasks }) {
 
       return (
         <div
-          className={`mt-1 text-[0.7rem] rounded border-4 border-dashed px-2 py-[6px] ${
+          className={`mt-1 text-[0.7rem] rounded border-3 border-dashed px-2 py-[6px] ${
             color?.text || "text-blue-600"
           } ${color?.light || "bg-blue-100"}`}
           style={{
@@ -384,20 +388,18 @@ export default function MyCalender({ tasks }) {
             gap: "1.5rem",
           }}
         >
-          <MessageCircleMore className="w-4 h-4 flex-shrink-0 " />
+          <MessageCircleMore className="w-4 h-4 flex-shrink-0" />
           <div
             className="text-[0.7rem] leading-snug break-words whitespace-pre-wrap flex-1"
             style={{ wordBreak: "break-word" }}
           >
-            {notes[0]?.noted}
+            {notes[0]?.noted || event.extendedProps.noted}
           </div>
         </div>
       );
     }
-    
-    
 
-    // TASK BLOCK ONLY
+    // TASK EVENT BLOCK
     if (!isStart) {
       return (
         <div
@@ -405,25 +407,25 @@ export default function MyCalender({ tasks }) {
             color?.border || "border-green-500"
           } p-1`}
         />
-      
       );
     }
+
     return (
       <div className="flex flex-col gap-1">
         <div
           draggable={false}
           onDragStart={(e) => e.preventDefault()}
-          className={`${baseStyle}  border ${
+          className={`${baseStyle} border ${
             color?.border || "border-green-500"
           } rounded-medium`}
           style={{
-            height: "70px", // fixed height
+            height: "70px",
             display: "grid",
-            gridTemplateRows: "auto 1fr", // 2 rows: date + content
+            gridTemplateRows: "auto 1fr",
             gap: 0,
           }}
         >
-          <div className="text-[0.65rem] font-medium bg-white bg-opacity-80 w-fit px-2 py-[2px] rounded-small ">
+          <div className="text-[0.65rem] font-medium bg-white bg-opacity-80 w-fit px-2 py-[2px] rounded-small">
             {formattedDate}
           </div>
           <div className="flex items-center gap-1 text-[0.9rem] h-[60px]">
@@ -446,32 +448,42 @@ export default function MyCalender({ tasks }) {
     setCurrentTitle(calendarApi.view.title);
   };
 
+  const handleCancel = () => {
+    setCommentBarInput({
+      visible: false,
+      start: null,
+      end: null,
+      taskId: null,
+    });
+    setNoteValue("");
+  };
+
   const handleDateSelect = (info) => {
     const selectedStart = new Date(info.startStr);
     const selectedEnd = new Date(info.endStr);
 
-    // Normalize dates to ignore time part
+    // Normalize to ignore time component
     const selStart = normalizeDateToDay(selectedStart);
     const selEnd = normalizeDateToDay(
-      new Date(selectedEnd.getTime() - 24 * 60 * 60 * 1000) // adjust end date to be inclusive
+      new Date(selectedEnd.getTime() - 86400000) // subtract 1 day for inclusive range
     );
 
-    // Ensure a task is selected before allowing comments
+    // Check if a task is selected
     if (!selectedTaskId) {
+      handleCancel();
       toast.error("⚠️ Selection must be within a task duration.", {
         position: "top-right",
         autoClose: 4000,
       });
+
       return;
     }
 
-    // Find the selected task from mappedTasks using correct id property
+    // Find matching task
     const matchingTask = mappedTasks.find((task) => {
       if (task.id === selectedTaskId) {
         const taskStart = normalizeDateToDay(new Date(task.start));
         const taskEnd = normalizeDateToDay(new Date(task.end));
-
-        // Check if the selected date range falls within the task duration
         return (
           selStart.getTime() >= taskStart.getTime() &&
           selEnd.getTime() <= taskEnd.getTime()
@@ -480,8 +492,9 @@ export default function MyCalender({ tasks }) {
       return false;
     });
 
-    // If no matching task or date range is outside task duration, show alert
+    // Show error if selection is out of bounds
     if (!matchingTask) {
+      handleCancel();
       toast.error("⚠️ Selection must be within a task duration.", {
         position: "top-right",
         autoClose: 4000,
@@ -489,18 +502,13 @@ export default function MyCalender({ tasks }) {
       return;
     }
 
-    if (!matchingTask) {
-      toast.error("⚠️ Selection must be within a task duration.", {
-        position: "top-right",
-        autoClose: 4000,
-      });
-      return;
-    }
-
+    // Set comment input bar with corrected end date
     setCommentBarInput({
       visible: true,
       start: info.startStr,
-      end: info.endStr,
+      end: new Date(selectedEnd.getTime() - 86400000)
+        .toISOString()
+        .split("T")[0], // adjusted to be inclusive
       taskId: matchingTask.id,
     });
   };
@@ -584,28 +592,44 @@ export default function MyCalender({ tasks }) {
             const startDate = new Date(commentBarInput.start);
             const rawEndDate = new Date(commentBarInput.end);
 
-            // Adjust endDate for display
+            // Inclusive end date: already adjusted in handleDateSelect
             const endDate = new Date(rawEndDate);
-            endDate.setMilliseconds(endDate.getMilliseconds() - 1);
-
             const isSingleDay =
               startDate.toISOString().slice(0, 10) ===
               endDate.toISOString().slice(0, 10);
 
             const handleSave = () => {
-              if (!noteValue.trim()) {
+              const trimmed = noteValue.trim();
+              if (!trimmed) {
+                handleCancel();
                 toast.error("Note cannot be empty!");
                 return;
               }
+
+              // Debug log
+              console.log("Saving note with:", {
+                taskId: commentBarInput.taskId,
+                start: commentBarInput.start,
+                end: commentBarInput.end,
+                note: trimmed,
+              });
 
               handleNoteSave(
                 commentBarInput.taskId,
                 commentBarInput.start,
                 commentBarInput.end,
-                noteValue,
+                trimmed,
                 ""
               );
-              setCommentBarInput(null);
+              handleCancel();
+
+              // Clear state and close input
+              setCommentBarInput({
+                visible: false,
+                start: null,
+                end: null,
+                taskId: null,
+              });
               setNoteValue("");
             };
 
@@ -619,21 +643,16 @@ export default function MyCalender({ tasks }) {
                   type="text"
                   value={noteValue}
                   onChange={(e) => setNoteValue(e.target.value)}
-                  onBlur={() => {
-                    if (noteValue.trim()) {
-                      handleSave();
-                    } else {
-                      toast.error("Note cannot be empty!");
-                    }
+                  onBlur={(e) => {
+                    // Only save if user hasn't already clicked elsewhere
+                    if (!e.relatedTarget) handleSave();
                   }}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
                       e.preventDefault();
-                      if (noteValue.trim()) {
-                        handleSave();
-                      } else {
-                        toast.error("Note cannot be empty!");
-                      }
+                      handleSave();
+                    } else if (e.key === "Escape") {
+                      handleCancel();
                     }
                   }}
                   autoFocus

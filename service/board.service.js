@@ -587,15 +587,19 @@ export const assignMemberToChecklistService = async (
   token
 ) => {
   try {
-    console.log(
-      "from service",
+    console.log("from service", {
       checklistId,
       taskId,
       assignedBy,
       assignedTo,
-      token
+      token,
+    });
+    const url = boardRouteGroup.assignMemberToChecklist(
+      checklistId,
+      taskId,
+      assignedBy,
+      assignedTo
     );
-    const url = boardRouteGroup.assignMemberToChecklist();
     const res = await fetch(url, {
       method: "POST",
       headers: {
@@ -606,7 +610,7 @@ export const assignMemberToChecklistService = async (
     const result = await res.json();
     console.log("📥 Backend responded with checklist:", result);
 
-    return data;
+    return result;
   } catch (error) {
     console.error("bug", error.message);
     throw error;

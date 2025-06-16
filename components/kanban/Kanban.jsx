@@ -661,7 +661,8 @@ export default function KanbanBoard({
                                     <div key={task.taskId}>
                                       {task.teamLeader ? (
                                         <p className="text-[10px] text-green-500">
-                                          TL {task.teamLeader.username}
+                                          TL {task?.teamLeader?.username}
+                                          {task?.teamLeader?.userId}
                                         </p>
                                       ) : (
                                         <p className="text-[10px] text-red-500">
@@ -796,6 +797,7 @@ export default function KanbanBoard({
                                         onDragEnd={handleDragEnd}
                                       >
                                         <ModalDetailChecklist
+                                          taskId={card.id}
                                           id={checklist?.checklistId}
                                           taskTitle={card.title}
                                           title={checklist.title}
@@ -821,6 +823,12 @@ export default function KanbanBoard({
                                           finishedAt={checklist.finishedAt}
                                           member={checklist.members}
                                           preventUserImage={preventUserImage}
+                                          allMemberInBoard={allMemberInBoard}
+                                          leaderId={
+                                            tasks.find(
+                                              (task) => task.taskId === card.id
+                                            )?.teamLeader?.userId || null
+                                          }
                                         />
                                       </div>
                                     </div>

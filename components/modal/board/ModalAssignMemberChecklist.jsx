@@ -13,18 +13,18 @@ import {
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { assignLeaderAction } from "@/action/board.action";
+import { assignMemberToChecklistAction } from "@/action/board.action";
 import { toast } from "react-toastify";
 import Image from "next/image";
 import { preventImage } from "@/constant/preventimage";
 
 // Define schema for form validation
-const assignLeaderSchema = z.object({
+const assignMemberSchema = z.object({
   userId: z
     .string()
     .regex(
       /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i,
-      "Please select a valid leader"
+      "Please select a valid member"
     ),
 });
 
@@ -35,6 +35,8 @@ export function ModalAssignMemberToCheckLisk({
   taskId,
   currentLeader,
   onLeaderAssigned,
+  leaderId,
+  checklistId,
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -47,7 +49,7 @@ export function ModalAssignMemberToCheckLisk({
     reset,
     setValue,
   } = useForm({
-    resolver: zodResolver(assignLeaderSchema),
+    resolver: zodResolver(assignMemberSchema),
     defaultValues: {
       userId: currentLeader?.userId || "",
     },
@@ -67,10 +69,15 @@ export function ModalAssignMemberToCheckLisk({
         });
       }
 
-      const result = await assignLeaderAction(taskId, data.userId);
-      console.log("result assignLd", result);
+      const result = await assignMemberToChecklistAction(
+        checklistId,
+        taskId,
+        leaderId, // assignedBy (the leader who is assigning)
+        data.userId // assignedTo (the selected member)
+      );
+      console.log("result assignmember", result);
       if (result.success) {
-        toast.success("Leader assigned successfully!");
+        toast.success("Member assigned successfully!");
         if (onLeaderAssigned && result.updatedTask) {
           onLeaderAssigned(result.updatedTask);
         }
@@ -84,7 +91,7 @@ export function ModalAssignMemberToCheckLisk({
           );
         }
         if (result.error) {
-          toast.error(result.error || "Failed to assign leader");
+          toast.error(result.error || "Failed to assign member");
         }
       }
     } catch (error) {
@@ -111,7 +118,7 @@ export function ModalAssignMemberToCheckLisk({
     <>
       <Button
         onPress={onOpen}
-        className="bg-transparent p-0 m-0 border-none shadow-none min-w-0 h-auto max-w-none w-full flex items-center justify-start gap-2 hover:bg-gray-100"
+        className="bg-transparent p-0 m-0 border-none shadow-none min-w-0 h-auto max-w-none w-8 h-8 rounded-full bg-primary flex items-center justify-center gap-2 hover:bg-gray-100"
         radius="none"
         disableRipple={true}
         disableAnimation
@@ -121,20 +128,21 @@ export function ModalAssignMemberToCheckLisk({
           fill="none"
           viewBox="0 0 24 24"
           strokeWidth="1.5"
-          stroke="currentColor"
-          className="size-4"
+          stroke="white"
+          className="size-6"
         >
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
-            d="M10.05 4.575a1.575 1.575 0 1 0-3.15 0v3m3.15-3v-1.5a1.575 1.575 0 0 1 3.15 0v1.5m-3.15 0 .075 5.925m3.075.75V4.575m0 0a1.575 1.575 0 0 1 3.15 0V15M6.9 7.575a1.575 1.575 0 1 0-3.15 0v8.175a6.75 6.75 0 0 0 6.75 6.75h2.018a5.25 5.25 0 0 0 3.712-1.538l1.732-1.732a5.25 5.25 0 0 0 1.538-3.712l.003-2.024a.668.668 0 0 1 .198-.471 1.575 1.575 0 0 0-2.228-2.228 3.818 3.818 0 0 0-1.12 2.687M6.9 7.575V12m6.27 4.318A4.49 4.49 0 0 1 16.35 15m.002 0h-.002"
+            d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z"
           />
         </svg>
+
         {currentLeader ? (
           <div className="flex items-center gap-2">
             <img
               src={currentLeader.profileImage || preventPf}
-              alt={currentLeader.username || "Leader"}
+              alt={currentLeader.username || "Member"}
               width={20}
               height={20}
               className="rounded-full object-cover"
@@ -142,7 +150,7 @@ export function ModalAssignMemberToCheckLisk({
             <p>{currentLeader.username || "Unknown"}</p>
           </div>
         ) : (
-          <p>Assign Leader</p>
+          ""
         )}
       </Button>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="md">
@@ -150,7 +158,7 @@ export function ModalAssignMemberToCheckLisk({
           {() => (
             <>
               <ModalHeader className="flex flex-col gap-1">
-                Assign Leader
+                Assign Member
               </ModalHeader>
               <ModalBody>
                 <form
@@ -159,11 +167,11 @@ export function ModalAssignMemberToCheckLisk({
                 >
                   <div className="flex flex-col gap-2">
                     <label className="text-sm font-medium text-title">
-                      Select Leader <span className="text-progress-red">*</span>
+                      Select Member <span className="text-progress-red">*</span>
                     </label>
                     <Select
                       {...register("userId")}
-                      placeholder="Select a leader"
+                      placeholder="Select a member"
                       className={`border rounded-small text-caption ${
                         errors.userId
                           ? "border-progress-red"
@@ -178,12 +186,36 @@ export function ModalAssignMemberToCheckLisk({
                       }
                       isInvalid={!!errors.userId}
                       errorMessage={errors.userId?.message}
+                      renderValue={(items) => {
+                        return items.map((item) => {
+                          const member = allMemberInBoard.find(
+                            (m) => m.userId === item.key
+                          );
+                          if (!member) return null;
+
+                          return (
+                            <div
+                              key={item.key}
+                              className="flex items-center gap-2"
+                            >
+                              <img
+                                src={member.profileImage || preventPf}
+                                alt={member.username}
+                                width={24}
+                                height={24}
+                                className="rounded-full object-cover"
+                              />
+                              <span>{member.username}</span>
+                            </div>
+                          );
+                        });
+                      }}
                     >
                       {allMemberInBoard.map((member) => (
                         <SelectItem
                           key={member.userId}
                           value={member.userId}
-                          className="flex items-center gap-2"
+                          textValue={member.username}
                         >
                           <div className="flex items-center gap-2">
                             <img
@@ -193,7 +225,7 @@ export function ModalAssignMemberToCheckLisk({
                               height={24}
                               className="rounded-full object-cover"
                             />
-                            {member.username}
+                            <span>{member.username}</span>
                           </div>
                         </SelectItem>
                       ))}

@@ -8,7 +8,6 @@ import {
 import { auth } from "@/auth";
 import MyCalender from "@/components/appserver/Calenderpage";
 
-
 const FALLBACK_STRING = "No data available";
 const FALLBACK_ARRAY = [];
 const FALLBACK_OBJECT = {};
@@ -25,12 +24,12 @@ async function fetchGanttChartId(boardId) {
 }
 
 export default async function Calender({ params }) {
-  const boardId = await (params).boardId || FALLBACK_STRING;
+  const boardId = (await params.boardId) || FALLBACK_STRING;
   const session = await auth();
 
   try {
     // Step 1: Fetch ganttChartId
-    const ganttchartByBoardId = await getGanttChartByBoardIdAction( boardId );
+    const ganttchartByBoardId = await getGanttChartByBoardIdAction(boardId);
     const ganttChartId = ganttchartByBoardId?.payload?.ganttChartId;
     console.log("✅ GanttChart ID:", ganttChartId);
 
@@ -38,7 +37,7 @@ export default async function Calender({ params }) {
     let allGanttBar = { payload: FALLBACK_ARRAY };
     try {
       if (ganttChartId !== FALLBACK_STRING) {
-        allGanttBar = await getGanttBarByGanttChartIdAction(ganttChartId );
+        allGanttBar = await getGanttBarByGanttChartIdAction(ganttChartId);
       }
     } catch (error) {
       console.error("Error fetching all gantt bars:", error);
@@ -58,7 +57,7 @@ export default async function Calender({ params }) {
       try {
         const tasksResponse = await getTaskByBoardIdAndGanttBarIdAction(
           boardId,
-          ganttBarId,
+          ganttBarId
         );
 
         const taskPayload = tasksResponse?.payload;
@@ -73,9 +72,6 @@ export default async function Calender({ params }) {
       }
     }
     console.log("✅👨‍🏭 All tasks in calendar: ", allTasks);
-    
-
-   
 
     return (
       <div>

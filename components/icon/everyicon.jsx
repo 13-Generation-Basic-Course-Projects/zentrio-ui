@@ -1,3 +1,5 @@
+import { ModalAssignMemberToCheckLisk } from "../modal/board/ModalAssignMemberChecklist";
+
 export function SideBarIcon({ strokwidth, size, color }) {
   return (
     <>
@@ -245,7 +247,14 @@ export function StarIconOutline({ className = "w-6 h-6" }) {
   );
 }
 //dynamic
-export function StackedProfileChecklist({ member, preventUserImage }) {
+export function StackedProfileChecklist({
+  member,
+  taskId,
+  preventUserImage,
+  allMemberInBoard,
+  leaderId,
+  checklistId,
+}) {
   console.log("=====", member);
 
   return (
@@ -273,6 +282,12 @@ export function StackedProfileChecklist({ member, preventUserImage }) {
           />
         </div>
       )}
+      <ModalAssignMemberToCheckLisk
+        allMemberInBoard={allMemberInBoard}
+        taskId={taskId}
+        leaderId={leaderId}
+        checklistId={checklistId}
+      />
     </div>
   );
 }

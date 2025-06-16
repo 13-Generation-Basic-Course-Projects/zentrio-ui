@@ -44,6 +44,9 @@ export default function ModalDetailChecklist({
   hideImage,
   preventUserImage,
   checklistId,
+  taskId,
+  allMemberInBoard,
+  leaderId,
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
@@ -259,6 +262,10 @@ export default function ModalDetailChecklist({
                     <StackedProfileChecklist
                       member={member}
                       preventUserImage={preventUserImage}
+                      taskId={taskId}
+                      allMemberInBoard={allMemberInBoard}
+                      leaderId={leaderId}
+                      checklistId={id}
                     />
                     <div>
                       <div className="w-full max-w-xl flex flex-row gap-4">

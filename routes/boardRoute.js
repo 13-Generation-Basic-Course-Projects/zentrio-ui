@@ -41,5 +41,5 @@ export const boardRouteGroup = {
     `${apiConfig.baseUrl}/tasks/board/${boardId}?newOrder=${newId}&oldOrder=${oldId}`,
 
   assignMemberToChecklist: (checklistId, taskId, assignedBy, assignedTo) =>
-    `${apiConfig.baseUrl}/checklists/${checklistId}/tasks/${taskId}/members/${assignedBy}/members/${assignedTo}`,
+    `${apiConfig.baseUrl}/checklists/${checklistId}/tasks/${taskId}/members/${assignedBy}/members/${assignedTo}/`,
 };

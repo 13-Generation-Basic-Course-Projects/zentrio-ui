@@ -527,7 +527,7 @@ const declineUserRoleLeaderService = async ({ taskId, assignId, token }) => {
 };
 
 /*
- * assignMemberToChecklistService
+ * assignMemberToChecklistAction
  */
 export const assignMemberToChecklistAction = async (
   checklistId,

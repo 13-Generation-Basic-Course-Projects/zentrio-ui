@@ -5,7 +5,11 @@ import commentlogo from "../../assets/Comment.png";
 import profile from "../../public/image/minh.png";
 import { SquarePen, AlarmClock, Trash2 } from "lucide-react";
 import { calendarUpdateNoteAction } from "@/action/calendar.action";
-import { deleteNoteInCalendarAction, getAllNoteInCalendarAction, updateNoteInCalendarAction } from "@/action/calendarV2.action";
+import {
+  deleteNoteInCalendarAction,
+  getAllNoteInCalendarAction,
+  updateNoteInCalendarAction,
+} from "@/action/calendarV2.action";
 import ModalDelete from "../modal/ModalDelete";
 
 export default function CardTCommentCalender({
@@ -62,8 +66,6 @@ export default function CardTCommentCalender({
   useEffect(() => {
     fetchNotesForTask();
   }, [selectedTaskId, noteRefreshKey, fetchNotesForTask]); // Add fetchNotesForTask to dependencies
-
-  
 
   const handleUpdateNoteInline = async (noteData) => {
     if (!editingNoteText.trim()) {
@@ -140,10 +142,13 @@ export default function CardTCommentCalender({
 
     return `${startDate} - ${endDate}`;
   };
-  
+
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [deleteData, setDeleteData] = useState({ calendarId: null, taskId: null });
-  
+  const [deleteData, setDeleteData] = useState({
+    calendarId: null,
+    taskId: null,
+  });
+
   return (
     <>
       <Card className="py-4 h-[400px] flex flex-col rounded-large shadow-sm">
