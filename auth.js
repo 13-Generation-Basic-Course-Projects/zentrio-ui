@@ -83,6 +83,7 @@ export const {
 
     async session({ session, token }) {
       session.backendToken = token.backendToken;
+      console.log("session", session)
       return session;
     },
   },
