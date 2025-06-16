@@ -61,166 +61,175 @@ export default function CardCreateModal({ onClose, boardId, boardMember }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <Card className="w-[90%] max-w-lg bg-white rounded-large shadow-lg border border-gray-200 p-4">
-        <CardContent className="p-0">
-          {/* Header */}
-          <div className="p-4 border-b border-gray-200">
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="text-h5 font-semibold text-title">
-                Create Announcement
-              </h2>
-              <button
-                onClick={onClose}
-                className="text-title hover:text-primary p-1 rounded-full hover:bg-gray-100 transition-colors"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <div className="flex items-center space-x-3">
-              {boardMember
-                .filter((member) =>
-                  member.roles?.some((role) => role === "ROLE_MANAGER")
-                )
-                .map((member) => (
-                  <div
-                    key={member.userId}
-                    className="flex items-center space-x-3"
-                  >
-                    <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-100">
-                      <img
-                        src={member.profileImage}
-                        alt="Profile"
-                        className="w-full h-full object-cover drop-shadow-sm"
-                      />
-                    </div>
-                    <div className="flex-1">
-                      <div className="text-h6 font-semibold text-title text-sm">
-                        {member.username || member.name}
-                      </div>
-                      <div className="relative text-small font-light text-description">
-                        {member.roles?.[0] || "No role"}
-                      </div>
-                    </div>
-                  </div>
-                ))}
+      <Card className="w-[90%] max-w-5xl bg-white rounded-large shadow-lg border-gray-200">
+        <CardContent className="p-0 flex flex-col md:flex-row">
+          {/* Left Side - Customizable */}
+          <div className="w-full md:w-1/2 border-gray-200">
+            {/* Empty for now - customize later */}
+            <div className="h-full w-full flex items-center justify-center text-gray-400">
+              <div className=" bg-primary w-full h-full rounded-large rounded-tr-[80px] rounded-br-[80px]">
+                <div className="content text-white font-poppin text-large">
+                  <h2>Zentrio</h2>
+                  <h2>Zentrio</h2>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Form Content */}
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSubmit();
-            }}
-          >
-            <div className="p-4">
-              {/* Title Input */}
-              <input
-                className="w-full border-none text-title outline-none text-large font-semibold placeholder-gray-500 mb-2"
-                placeholder="Announcement title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                required
-              />
+          {/* Right Side - Form */}
+          <div className="w-full md:w-1/2 p-5 m-4">
+            {/* Header */}
+            <div className="p-4 border-b border-gray-200">
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="text-h5 font-semibold text-title">
+                  Create Announcement
+                </h2>
+                <button
+                  onClick={onClose}
+                  className="text-title hover:text-primary p-1 rounded-full hover:bg-gray-100 transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
 
-              {/* Description Textarea */}
-              <textarea
-                className="w-full resize-none border-none outline-none text-description placeholder-description min-h-auto"
-                placeholder="What would you like to announce?"
-                rows="4"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                required
-              />
-
-              {/* Selected Images Preview */}
-              {images.length > 0 && (
-                <div className="mt-3 space-y-2">
-                  {images.map((file, index) => (
+              <div className="flex items-center space-x-4">
+                {boardMember
+                  .filter((member) => member.roles?.includes("ROLE_MANAGER"))
+                  .map((member) => (
                     <div
-                      key={index}
-                      className="flex items-center justify-between bg-gray-50 p-3 rounded-large"
+                      key={member.userId}
+                      className="flex items-center space-x-3"
                     >
-                      <div className="flex items-center gap-2 min-w-0 max-w-full px-1">
-                        <Image className="w-5 h-5 flex-shrink-0 text-primary" />
-                        <span className="truncate text-sm text-description min-w-0">
-                          {file.name}
-                        </span>
-                        <span className="text-xs text-description flex-shrink-0">
-                          ({(file.size / 1024).toFixed(1)} KB)
-                        </span>
+                      <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-100">
+                        <img
+                          src={member.profileImage}
+                          alt="Profile"
+                          className="w-full h-full object-cover drop-shadow-sm"
+                        />
                       </div>
-                      <button
-                        type="button"
-                        onClick={() => removeImage(index)}
-                        className="text-title hover:text-primary transition-colors text-lg"
-                      >
-                        <X className="w-4 h-4" />
-                      </button>
+                      <div className="flex-1">
+                        <div className="text-body-lg font-semibold text-title">
+                          {member.username || member.name}
+                        </div>
+                        <div className="text-caption font-thin text-description">
+                          {member.roles?.[0] || "No role"}
+                        </div>
+                      </div>
                     </div>
                   ))}
-                </div>
-              )}
-
-              {/* Media Options */}
-              <div className="mt-4 flex items-center justify-between p-2 border border-gray-200 rounded-large">
-                <span className="text-xs font-medium text-description">
-                  Add to your announcement
-                </span>
-                <div className="flex items-center space-x-2">
-                  <label className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-gray-100 transition-colors cursor-pointer">
-                    <Image className="w-5 h-5 text-primary" />
-                    <input
-                      type="file"
-                      className="hidden"
-                      onChange={handleImageChange}
-                      multiple
-                      accept="image/*"
-                    />
-                  </label>
-                </div>
               </div>
             </div>
 
-            {/* Footer Buttons */}
-            <div className="p-4 border-t border-bgColor">
-              <div className="flex space-x-3">
-                <Button
-                  type="button"
-                  className="flex-1 bg-transparent hover:bg-gray-100 text-primary border border-gray-300"
-                  radius="lg"
-                  onPress={onClose}
-                  isDisabled={loading}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  type="submit"
-                  className={`flex-1 font-semibold transition-all ${
-                    title.trim() && description.trim()
-                      ? "bg-primary hover:bg-primary text-white transform hover:scale-[1.02]"
-                      : "bg-gray-200 text-gray-400 cursor-not-allowed"
-                  }`}
-                  radius="lg"
-                  isDisabled={!title.trim() || !description.trim() || loading}
-                  isLoading={loading}
-                >
-                  {loading ? "Creating..." : "Create Announcement"}
-                </Button>
-              </div>
-            </div>
-          </form>
+            {/* Form Content */}
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSubmit();
+              }}
+            >
+              <div className="p-4 space-y-3">
+                <input
+                  className="w-full border-none text-title outline-none text-lg font-semibold placeholder-gray-500 mb-2"
+                  placeholder="Announcement title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  required
+                />
+                <textarea
+                  className="w-full resize-none border-none outline-none text-description placeholder-description min-h-auto"
+                  placeholder="What would you like to announce?"
+                  rows="4"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  required
+                />
 
-          {/* Overlay for dropdown */}
-          {showPrivacyDropdown && (
-            <div
-              className="fixed inset-0 z-40"
-              onClick={() => setShowPrivacyDropdown(false)}
-            />
-          )}
+                {images.length > 0 && (
+                  <div className="mt-3 space-y-2">
+                    {images.map((file, index) => (
+                      <div
+                        key={index}
+                        className="flex items-center justify-between bg-gray-50 p-3 rounded-large"
+                      >
+                        <div className="flex items-center gap-2 min-w-0 max-w-full px-1">
+                          <Image className="w-5 h-5 flex-shrink-0 text-primary" />
+                          <span className="truncate text-sm text-description min-w-0">
+                            {file.name}
+                          </span>
+                          <span className="text-xs text-description flex-shrink-0">
+                            ({(file.size / 1024).toFixed(1)} KB)
+                          </span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => removeImage(index)}
+                          className="text-title hover:text-primary transition-colors text-lg"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <div className="mt-4 flex items-center justify-between p-2 border border-gray-200 rounded-large">
+                  <span className="text-xs font-medium text-description">
+                    Add to your announcement
+                  </span>
+                  <div className="flex items-center space-x-2">
+                    <label className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-gray-100 transition-colors cursor-pointer">
+                      <Image className="w-5 h-5 text-primary" />
+                      <input
+                        type="file"
+                        className="hidden"
+                        onChange={handleImageChange}
+                        multiple
+                        accept="image/*"
+                      />
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              {/* Footer */}
+              <div className="p-4 border-t border-bgColor">
+                <div className="flex space-x-3">
+                  <Button
+                    type="button"
+                    className="flex-1 bg-transparent hover:bg-gray-100 text-primary border border-gray-300"
+                    radius="lg"
+                    onPress={onClose}
+                    isDisabled={loading}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    className={`flex-1 font-semibold transition-all ${
+                      title.trim() && description.trim()
+                        ? "bg-primary hover:bg-primary text-white transform hover:scale-[1.02]"
+                        : "bg-gray-200 text-gray-400 cursor-not-allowed"
+                    }`}
+                    radius="lg"
+                    isDisabled={!title.trim() || !description.trim() || loading}
+                    isLoading={loading}
+                  >
+                    {loading ? "Creating..." : "Create Announcement"}
+                  </Button>
+                </div>
+              </div>
+            </form>
+          </div>
         </CardContent>
       </Card>
+
+      {/* Optional dropdown overlay */}
+      {showPrivacyDropdown && (
+        <div
+          className="fixed inset-0 z-40"
+          onClick={() => setShowPrivacyDropdown(false)}
+        />
+      )}
     </div>
   );
 }
