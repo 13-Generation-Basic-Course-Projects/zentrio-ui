@@ -5,40 +5,23 @@ import { today, getLocalTimeZone } from "@internationalized/date";
 
 export default function SmallCalendar() {
   return (
-    <div className="max-w-sm w-full overflow-hidden p-2">
+    <div className="w-full overflow-hidden ">
       <Calendar
         isReadOnly
         aria-label="Date (Read Only)"
         value={today(getLocalTimeZone())}
         classNames={{
-          base: "calendar-base",
-          gridBodyRow: "custom-grid-row",
-          gridBody: "custom-grid-body",
-          content: "calendar-base",
+          base: "w-full max-w-full rounded-xl shadow-sm overflow-x-hidden box-border",
+          content: "w-full",
+          grid: "w-full table-fixed border-collapse",
+          gridHeader: "w-full",
+          gridHeaderCell:
+            "w-[50px] min-w-[40px] text-center font-medium text-sm text-gray-600 box-border px-1 py-2",
+          gridBody: "w-full",
+          gridBodyRow: "h-[42px]",
+          cell: "w-[50px] min-w-[40px] p-2 text-center box-border",
         }}
       />
-      <style jsx global>{`
-        .calendar-base {
-          width: 100%;
-          max-width: 300px;
-          border-radius: 0.75rem;
-          box-shadow: 0 1px 3px rgb(0 0 0 / 0.1);
-          overflow-x: hidden;
-          box-sizing: border-box;
-        }
-        .custom-grid-body {
-          width: 100% !important;
-        }
-        .custom-grid-row {
-          height: 42px !important;
-        }
-        .calendar-grid-wrapper {
-          width: 100% !important;
-        }
-        .calendar-grid {
-          width: 100% !important;
-        }
-      `}</style>
     </div>
   );
 }
