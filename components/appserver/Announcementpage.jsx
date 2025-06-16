@@ -4,7 +4,7 @@ import CardCreateAnnouncement from "../announcementCompo/CardCreateAnnouncement"
 import CardAllMembers from "../announcementCompo/CardAllMembers";
 import CardFilterComponent from "../announcementCompo/CardFilterComponent";
 
-export default function Announcementpage({ boardId, Announcements, boardMember }) {
+export default function Announcementpage({ boardId, Announcements, boardMember,currentUserProfile }) {
   console.log("All announcement",Announcements);
   console.log("kdet",boardId);
     console.log("kdet2",boardMember);
@@ -20,7 +20,7 @@ export default function Announcementpage({ boardId, Announcements, boardMember }
         </div>
 
         <div className="space-y-4">
-          <CartPostAnnouncement Announcements={Announcements}/>
+          <CartPostAnnouncement Announcements={Announcements} currentUserProfile={currentUserProfile}/>
         </div>
       </div>
 

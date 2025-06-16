@@ -21,6 +21,8 @@ export default function CardCreateModal({ onClose, boardId, boardMember, Announc
   // const announcementList = Announcements?.payload || [];
   console.log("bb",Announcements);
 
+  const MAX_SIZE_MB = 10;
+
   console.log("rkun", boardMember);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -29,11 +31,21 @@ export default function CardCreateModal({ onClose, boardId, boardMember, Announc
   const [privacy, setPrivacy] = useState("public");
   const [showPrivacyDropdown, setShowPrivacyDropdown] = useState(false);
 
-  const handleImageChange = (e) => {
-    const newFiles = Array.from(e.target.files || []);
-    setImages(prev => [...prev, ...newFiles]);
-    e.target.value = null; // Reset input so same file can be selected again
-  };
+const handleImageChange = (e) => {
+  const newFiles = Array.from(e.target.files || []);
+
+  // Check size of each selected file
+  for (const file of newFiles) {
+    if (file.size > MAX_SIZE_MB * 1024 * 1024) {
+      alert(`File "${file.name}" is too large! Maximum size is ${MAX_SIZE_MB}MB.`);
+      return; // stop if any file is too large
+    }
+  }
+
+  setImages(prev => [...prev, ...newFiles]);
+  e.target.value = null; // Reset input so same file can be selected again
+};
+
 
   // Remove single file by index
   const removeImage = (indexToRemove) => {
@@ -98,7 +110,10 @@ export default function CardCreateModal({ onClose, boardId, boardMember, Announc
                   
                 </div>
                 <div className="relative">
+<<<<<<< HEAD
                   
+=======
+>>>>>>> aa898e175e1d5e5228aa863a355ed0eba5d8ae63
                 </div>
               </div>
             </div>
