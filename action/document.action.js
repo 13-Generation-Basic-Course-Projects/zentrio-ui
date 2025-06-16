@@ -11,6 +11,7 @@ import {
   fetchDocumentsByBoardService,
   fetchPublicDocumentsService,
   getFileByFolderIdService,
+  publicDocumentByIdService,
   updateDocumentNameByIdService,
   uploadDocumentToFolderServie,
 } from "@/service/document.service";
@@ -215,3 +216,15 @@ export const updateDocumentNameByIdAction = async (
   );
   return updated;
 };
+
+// public document (update)
+export const publicDocumentByIdAction = async (
+  documentId, tokenFromGoogle
+) => {
+  const userToken = await Token();
+  const token = userToken.Credential;
+  revalidatePath("/document");
+
+  const updated = await publicDocumentByIdService(documentId, token, tokenFromGoogle);
+  return updated;
+}

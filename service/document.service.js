@@ -95,11 +95,7 @@ export const fetchDocumentsByBoardService = async (boardId, token) => {
 /*
  * Get files by folder ID
  */
-export const getFileByFolderIdService = async ({
-  accessToken,
-  folderId,
-  token,
-}) => {
+export const getFileByFolderIdService = async ({ accessToken, folderId, token }) => {
   try {
     const res = await fetch(
       documentRouteGroup.getFileByFolderId(folderId, accessToken),
@@ -441,5 +437,43 @@ export const updateDocumentNameByIdService = async (
   } catch (error) {
     console.error("Error in updateDocumentNameByIdService:", error.message);
     throw error; // Rethrow to handle in action or component
+  }
+};
+
+/*
+ * Public document by document id
+ */
+export const publicDocumentByIdService = async (
+  documentId,
+  token,
+  tokenFromGoogle
+) => {
+  try {
+    const url = documentRouteGroup.makeDocumentPublic(
+      documentId,
+      tokenFromGoogle
+    );
+
+    const res = await fetch(url, {
+      method: "PUT",
+      headers: {
+        Accept: "*/*",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => null);
+      throw new Error(
+        `Failed to update document name: ${res.status} ${
+          errorData?.message || ""
+        }`
+      );
+    }
+
+    return await res.json();
+  } catch (error) {
+    console.error("Error in publicDocumentByIdService: ", error.message);
+    throw error;
   }
 };
