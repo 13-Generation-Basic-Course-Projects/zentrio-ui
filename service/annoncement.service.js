@@ -102,3 +102,24 @@ export const pinedAnnouncementByIdService = async (announId, token) => {
   const data = await res.json();
   return data;
 };
+
+export const updateAnnouncementByIdService = async (announId, description, title, boardId, token) => {
+  console.log("update announ",announId, description, title, boardId, token);
+
+  const url = announcementRouteGroup.updateAnnouncementById(announId);
+  const res = await fetch(url, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      description,
+      title,
+      boardId,
+    })
+  });
+  const data = await res.json();
+  console.log("update data", data);
+  return data; 
+};

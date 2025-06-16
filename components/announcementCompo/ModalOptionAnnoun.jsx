@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import ModalDeleteAnnoun from "./ModalDeleteAnnoun";
 import ModalPinedAnnoun from "./ModalPinedAnnoun";
 import ModalEditAnnoun from "./ModalEditAnnoun";
+import CardCreateModal from "./CardCreateModal";
 
 // icon components directly in the same file
 const AddNoteIcon = (props) => (
@@ -130,6 +131,9 @@ export default function ModalOptionAnnoun({
   Announcement,
   announId,
   onDeleteSuccess,
+  boardId,
+  Announcements,
+  boardMember,
 }) {
   // console.log("Announcement",Announcement);
   console.log("zzzz",announId)
@@ -196,6 +200,7 @@ export default function ModalOptionAnnoun({
             massageUndo={"No, Cancel"}
             announId={announId}
           />
+          {/* <CardCreateModal boardId={boardId} boardMember={boardMember} Announcements={Announcements}/> */}
         </DropdownItem>
 
         <DropdownItem
