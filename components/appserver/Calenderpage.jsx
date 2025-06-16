@@ -1,6 +1,12 @@
 "use client";
 
-import React, { useRef, useState, useMemo, useEffect } from "react";
+import React, {
+  useRef,
+  useState,
+  useMemo,
+  useEffect,
+  useCallback,
+} from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -26,19 +32,22 @@ import {
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-/*
- * Use normalizeDateToDay to compare dates ignoring time.
- * Adjust selected end date by subtracting 1 day for inclusiveness.
- */
+// ========================================
+// UTILITY FUNCTIONS
+// ========================================
 
 const normalizeDateToDay = (date) => {
   if (!(date instanceof Date)) {
-    date = new Date(date); // convert string or invalid input
+    date = new Date(date);
   }
   return new Date(date.getFullYear(), date.getMonth(), date.getDate());
 };
 
+
+
 export default function MyCalender({ tasks }) {
+  
+
   const colorList = [
     {
       bg: "bg-red-500",
@@ -71,6 +80,7 @@ export default function MyCalender({ tasks }) {
       border: "border-orange-500",
     },
   ];
+
   const commentColorOptions = [
     { text: "text-blue-600", light: "bg-blue-100" },
     { text: "text-green-600", light: "bg-green-100" },
@@ -82,7 +92,6 @@ export default function MyCalender({ tasks }) {
     { text: "text-red-600", light: "bg-red-100" },
     { text: "text-teal-600", light: "bg-teal-100" },
     { text: "text-cyan-600", light: "bg-cyan-100" },
-
     { text: "text-lime-600", light: "bg-lime-200" },
     { text: "text-emerald-600", light: "bg-emerald-300" },
     { text: "text-violet-600", light: "bg-violet-400" },
@@ -94,15 +103,193 @@ export default function MyCalender({ tasks }) {
     { text: "text-gray-600", light: "bg-gray-200" },
     { text: "text-stone-600", light: "bg-stone-200" },
   ];
+ 
+
   const calendarRef = useRef(null);
   const [currentTitle, setCurrentTitle] = useState("");
   const [noteValue, setNoteValue] = useState("");
-  const [commentBarInput, setCommentBarInput] = useState(null); // { visible, start, end }
+  const [commentBarInput, setCommentBarInput] = useState(null);
   const [selectedTaskId, setSelectedTaskId] = useState(null);
   const [selectedTask, setSelectedTask] = useState(null);
-  const [noteRefreshKey, setNoteRefreshKey] = useState(0); // NEW STATE: To trigger comment card refresh
+  const [noteRefreshKey, setNoteRefreshKey] = useState(0);
   const [events, setEvents] = useState([]);
+  const [notes, setNotes] = useState([]);
+  const [activeTaskId, setActiveTaskId] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
+  /**
+   * Fetches all notes for all tasks and updates local state
+   */
+  const fetchAllNotes = useCallback(async () => {
+    if (!tasks || tasks.length === 0) return;
+
+    setIsLoading(true);
+    try {
+      const allNotes = [];
+
+      for (const task of tasks) {
+        try {
+          const response = await getAllNoteInCalendarAction(task.taskId);
+          const taskNotes = Array.isArray(response?.payload)
+            ? response?.payload
+            : [];
+          allNotes.push(...taskNotes);
+        } catch (error) {
+          console.error(
+            " Error fetching notes for task:",
+            task.taskId,
+            error
+          );
+        }
+      }
+
+      setNotes(allNotes);
+      console.log(" Fetched all notes:", allNotes);
+    } catch (error) {
+      console.error(" Error in fetchAllNotes:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [tasks]);
+
+  /**
+   * Refetches notes for a specific task after note operations
+   */
+  const refetchTaskNotes = useCallback(async (taskId) => {
+    try {
+      const response = await getAllNoteInCalendarAction(taskId);
+      const taskNotes = Array.isArray(response?.payload)
+        ? response.payload
+        : [];
+
+      // Update notes state by replacing notes for this specific task
+      setNotes((prevNotes) => {
+        const otherTaskNotes = prevNotes.filter(
+          (note) => note.taskId !== taskId
+        );
+        return [...otherTaskNotes, ...taskNotes];
+      });
+
+      console.log(` Refetched notes for task ${taskId}:`, taskNotes);
+      return taskNotes;
+    } catch (error) {
+      console.error(` Error refetching notes for task ${taskId}:`, error);
+      return [];
+    }
+  }, []);
+
+  const { mappedTasks, taskColorMap } = useMemo(() => {
+    const uniqueIds = new Set();
+    const mapForCalendar = [];
+    const mapForColors = {};
+
+    let colorIndex = 0;
+
+    tasks.forEach((task) => {
+      if (!uniqueIds.has(task?.taskId)) {
+        uniqueIds.add(task?.taskId);
+        const color = colorList[colorIndex % colorList.length];
+        colorIndex++;
+
+        mapForColors[task?.taskId] = color;
+        const relatedNotes =
+          notes?.filter((note) => note?.taskId === task?.taskId) || [];
+
+        mapForCalendar.push({
+          id: task.taskId,
+          title: task.title,
+          start: task.startedAt,
+          end: task.finishedAt ?? task.startedAt,
+          extendedProps: {
+            type: task.type || "task",
+            content: task.description,
+            color,
+            notes: relatedNotes,
+          },
+          backgroundColor: color.bg.replace("bg-", "#"),
+          borderColor: color.border.replace("border-", "#"),
+        });
+      }
+    });
+
+    return {
+      mappedTasks: mapForCalendar,
+      taskColorMap: mapForColors,
+    };
+  }, [tasks, colorList, notes]);
+
+  // Initial data fetch
+  useEffect(() => {
+    fetchAllNotes();
+  }, [fetchAllNotes]);
+
+  // Update events when active task changes
+  useEffect(() => {
+    if (activeTaskId && selectedTask) {
+      updateEventsForTask(activeTaskId);
+    }
+  }, [notes, activeTaskId, selectedTask]);
+
+  
+
+  /**
+   * Updates calendar events for a specific task
+   */
+  const updateEventsForTask = useCallback(
+    (taskId) => {
+      const task = mappedTasks.find((t) => t.id === taskId);
+      if (!task) return;
+
+      const relatedNotes =
+        notes?.filter((note) => note.taskId === taskId) || [];
+
+      const commentEvents = relatedNotes.map((note, i) => {
+        const randomColor =
+          commentColorOptions[
+            Math.floor(Math.random() * commentColorOptions.length)
+          ];
+
+        return {
+          id: `${taskId}-comment-${i}`,
+          title: `Note: ${note.noted?.slice(0, 20) || "No Content"}...`,
+          start: note.notedAt,
+          end: note.tillDate,
+          extendedProps: {
+            type: "comment",
+            notes: [note],
+            color: randomColor,
+            noted: note.noted,
+            sourceTaskId: taskId,
+          },
+          backgroundColor: "transparent",
+          borderColor: "transparent",
+        };
+      });
+
+      // Adjust task end date (+1 day) to show last day
+      const adjustedTask = {
+        ...task,
+        end: new Date(
+          new Date(task.end).setDate(new Date(task.end).getDate() + 2)
+        )
+          .toISOString()
+          .split("T")[0],
+        extendedProps: {
+          ...task.extendedProps,
+          realEnd: task.end,
+        },
+      };
+
+      setEvents([adjustedTask, ...commentEvents]);
+    },
+    [notes, mappedTasks, commentColorOptions]
+  );
+
+ 
+
+  /**
+   * Handles saving/updating/deleting notes with real-time updates
+   */
   const handleNoteSave = async (
     currentEventId,
     startDateStr,
@@ -126,6 +313,10 @@ export default function MyCalender({ tasks }) {
     // Set tillDate to 23:59:59.999 of end day
     const tillDateObj = new Date(endDateObj);
     tillDateObj.setHours(23, 59, 59, 999);
+    // const tillDateObj = new Date(endDateObj);
+    // tillDateObj.setDate(tillDateObj.getDate() - 1);
+    // tillDateObj.setHours(23, 59, 59, 999);
+   
 
     // Prevent past-dated notes
     if (tillDateObj < new Date()) {
@@ -137,7 +328,9 @@ export default function MyCalender({ tasks }) {
     const formattedTillDate = tillDateObj.toISOString();
 
     try {
-      // 📝 Handle create/update
+      setIsLoading(true);
+
+      // Handle create/update
       if (isNewNote || isUpdatedNote) {
         const response = await createNoteInCalendarAction(
           trimmedNoteValue,
@@ -151,53 +344,28 @@ export default function MyCalender({ tasks }) {
           return { success: false, message: response.error.detail };
         }
 
-        console.log(`Note ${isNewNote ? "created" : "updated"} successfully.`);
-      }
-
-      // 🗑️ Handle delete (API call commented out for now)
-      if (isDeletedNote) {
+        toast.success(
+          `Note ${isNewNote ? "created" : "updated"} successfully!`,
+          {
+            position: "top-right",
+            autoClose: 4000,
+          }
+        );
         console.log(
-          `Note deleted for Task ID: ${currentEventId} on ${startDateStr} - ${endDateStr}`
+          `✅ Note ${isNewNote ? "created" : "updated"} successfully.`
         );
-        // await deleteNoteInCalendarAction(currentEventId, formattedStartDate, formattedTillDate);
       }
 
-      // 🔁 Update local calendar events
-      setEvents((prevEvents) => {
-        // Remove old comment (if exists)
-        const updated = prevEvents.filter(
-          (ev) =>
-            !(
-              ev.extendedProps.type === "comment" &&
-              ev.extendedProps.sourceTaskId === currentEventId &&
-              ev.start === startDateStr
-            )
-        );
+      // Handle delete (when implemented)
+      if (isDeletedNote) {
+        console.log(` Note deleted for Task ID: ${currentEventId}`);
+        toast.success("Note deleted successfully!");
+      }
 
-        // Add new/updated comment if not deleting
-        if (!isDeletedNote) {
-          updated.push({
-            id: `comment-${currentEventId}-${startDateStr}`,
-            title: trimmedNoteValue,
-            start: startDateStr,
-            end: endDateStr,
-            allDay: true,
-            extendedProps: {
-              type: "comment",
-              noted: trimmedNoteValue,
-              sourceTaskId: currentEventId,
-              color: {
-                text: "text-green-600",
-                light: "bg-green-100",
-              },
-            },
-          });
-        }
+      //  CRITICAL: Refetch notes for this specific task to get latest data
+      await refetchTaskNotes(currentEventId);
 
-        return updated;
-      });
-
-      // Trigger UI to re-render if needed
+      // Trigger refresh of note components
       setNoteRefreshKey((prev) => prev + 1);
 
       return { success: true };
@@ -206,87 +374,18 @@ export default function MyCalender({ tasks }) {
         error?.response?.data?.detail ||
         error?.message ||
         "Unknown error occurred";
-      console.error("Failed to save/update/delete note:", error);
+      console.error("❌ Failed to save/update/delete note:", error);
       toast.error(errorMsg);
       return { success: false, message: errorMsg };
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const [notes, setNotes] = useState([]);
+  // ========================================
+  // EVENT HANDLERS
+  // ========================================
 
-  useEffect(() => {
-    const fetchAllNotes = async () => {
-      const allNotes = [];
-
-      for (const task of tasks) {
-        try {
-          const response = await getAllNoteInCalendarAction(task.taskId);
-          const taskNotes = Array.isArray(response?.payload)
-            ? response.payload
-            : [];
-
-          allNotes.push(...taskNotes);
-        } catch (error) {
-          console.error("Error fetching notes for task:", task.taskId, error);
-        }
-      }
-
-      setNotes(allNotes);
-    };
-
-    if (tasks.length > 0) {
-      fetchAllNotes();
-    }
-  }, [tasks]);
-
-  console.log("Use noted to find: ", notes);
-
-  const { mappedTasks, taskColorMap } = useMemo(() => {
-    const uniqueIds = new Set();
-    const mapForCalendar = [];
-    const mapForColors = {}; // This will be our taskColorMap
-
-    let colorIndex = 0; // Keep track of color for unique tasks
-
-    tasks.forEach((task) => {
-      // Ensure we only process each unique task ID once for color assignment
-      if (!uniqueIds.has(task.taskId)) {
-        uniqueIds.add(task.taskId);
-        const color = colorList[colorIndex % colorList.length];
-        colorIndex++; // Move to next color for the next unique task
-
-        // Store the color for this taskId in our mapForColors
-        mapForColors[task.taskId] = color;
-        const relatedNotes =
-          notes?.filter((note) => note.taskId === task.taskId) || [];
-
-        // Add to mapped tasks for FullCalendar
-        mapForCalendar.push({
-          id: task.taskId,
-          title: task.title,
-          start: task.startedAt,
-          end: task.finishedAt ?? task.startedAt,
-          extendedProps: {
-            type: task.type || "task",
-            content: task.description,
-            color, // Assign color to the FullCalendar event
-            notes: relatedNotes,
-          },
-          // You might also want to set backgroundColor, borderColor for FullCalendar events
-          // based on your color object if you want them visible on the calendar itself
-          backgroundColor: color.bg.replace("bg-", "#"), // FullCalendar expects hex or name
-          borderColor: color.border.replace("border-", "#"),
-        });
-      }
-    });
-
-    return {
-      mappedTasks: mapForCalendar,
-      taskColorMap: mapForColors, // Return the generated map
-    };
-  }, [tasks, colorList, notes]);
-
-  const [activeTaskId, setActiveTaskId] = useState(null);
   const handleTaskClick = (dateStr, taskId) => {
     const task = mappedTasks.find((t) => t.id === taskId);
     if (!task) return;
@@ -296,46 +395,84 @@ export default function MyCalender({ tasks }) {
     setActiveTaskId(taskId);
     calendarRef.current?.getApi().gotoDate(dateStr);
 
-    const relatedNotes = notes?.filter((note) => note.taskId === taskId) || [];
-
-    const commentEvents = relatedNotes.map((note, i) => {
-      const randomColor =
-        commentColorOptions[
-          Math.floor(Math.random() * commentColorOptions.length)
-        ];
-
-      return {
-        id: `${taskId}-comment-${i}`,
-        title: `Note: ${note.noted?.slice(0, 20) || "No Content"}...`,
-        start: note.notedAt,
-        end: note.tillDate,
-        extendedProps: {
-          type: "comment",
-          notes: [note],
-          color: randomColor,
-        },
-        backgroundColor: "transparent",
-        borderColor: "transparent",
-      };
-    });
-
-    // ✅ Adjust task end date (+1 day) to show last day
-    const adjustedTask = {
-      ...task,
-      end: new Date(
-        new Date(task.end).setDate(new Date(task.end).getDate() + 2)
-      )
-        .toISOString()
-        .split("T")[0],
-      extendedProps: {
-        ...task.extendedProps,
-        realEnd: task.end,
-      },
-    };
-
-    setEvents([adjustedTask, ...commentEvents]);
+    // Update events will be handled by useEffect
   };
 
+  const handleDateNav = (action) => {
+    const calendarApi = calendarRef.current?.getApi();
+    if (!calendarApi) return;
+
+    if (action === "today") calendarApi.today();
+    else if (action === "prev") calendarApi.prev();
+    else if (action === "next") calendarApi.next();
+
+    setCurrentTitle(calendarApi.view.title);
+  };
+
+  const handleCancel = () => {
+    setCommentBarInput({
+      visible: false,
+      start: null,
+      end: null,
+      taskId: null,
+    });
+    setNoteValue("");
+  };
+
+  const handleDateSelect = (info) => {
+    const selectedStart = new Date(info.startStr);
+    const selectedEnd = new Date(info.endStr);
+
+    const selStart = normalizeDateToDay(selectedStart);
+    const selEnd = normalizeDateToDay(
+      new Date(selectedEnd.getTime() - 86400000)
+    );
+
+    if (!selectedTaskId) {
+      handleCancel();
+      toast.error("⚠️ Selection must be within a task duration.", {
+        position: "top-right",
+        autoClose: 4000,
+      });
+      return;
+    }
+
+    const matchingTask = mappedTasks.find((task) => {
+      if (task.id === selectedTaskId) {
+        const taskStart = normalizeDateToDay(new Date(task.start));
+        const taskEnd = normalizeDateToDay(new Date(task.end));
+        return (
+          selStart.getTime() >= taskStart.getTime() &&
+          selEnd.getTime() <= taskEnd.getTime()
+        );
+      }
+      return false;
+    });
+
+    if (!matchingTask) {
+      handleCancel();
+      toast.error("⚠️ Selection must be within a task duration.", {
+        position: "top-right",
+        autoClose: 4000,
+      });
+      return;
+    }
+
+    setCommentBarInput({
+      visible: true,
+      start: info.startStr,
+      end: new Date(selectedEnd.getTime() - 86400000)
+        .toISOString()
+        .split("T")[0],
+      taskId: matchingTask.id,
+    });
+  };
+
+  // ========================================
+  // RENDER FUNCTIONS
+  // ========================================
+
+ 
   const renderEventContent = ({ event, isStart }) => {
     const { type, color, notes = [], realEnd } = event.extendedProps;
 
@@ -351,7 +488,7 @@ export default function MyCalender({ tasks }) {
         month: "long",
       });
 
-    const displayEnd = new Date(realEnd || event.end); // Use realEnd if available
+    const displayEnd = new Date(realEnd || event.end);
     const formattedDate = `${formatDate(event.start)} - ${formatDate(
       displayEnd
     )}`;
@@ -437,86 +574,25 @@ export default function MyCalender({ tasks }) {
     );
   };
 
-  const handleDateNav = (action) => {
-    const calendarApi = calendarRef.current?.getApi();
-    if (!calendarApi) return;
-
-    if (action === "today") calendarApi.today();
-    else if (action === "prev") calendarApi.prev();
-    else if (action === "next") calendarApi.next();
-
-    setCurrentTitle(calendarApi.view.title);
-  };
-
-  const handleCancel = () => {
-    setCommentBarInput({
-      visible: false,
-      start: null,
-      end: null,
-      taskId: null,
-    });
-    setNoteValue("");
-  };
-
-  const handleDateSelect = (info) => {
-    const selectedStart = new Date(info.startStr);
-    const selectedEnd = new Date(info.endStr);
-
-    // Normalize to ignore time component
-    const selStart = normalizeDateToDay(selectedStart);
-    const selEnd = normalizeDateToDay(
-      new Date(selectedEnd.getTime() - 86400000) // subtract 1 day for inclusive range
-    );
-
-    // Check if a task is selected
-    if (!selectedTaskId) {
-      handleCancel();
-      toast.error("⚠️ Selection must be within a task duration.", {
-        position: "top-right",
-        autoClose: 4000,
-      });
-
-      return;
-    }
-
-    // Find matching task
-    const matchingTask = mappedTasks.find((task) => {
-      if (task.id === selectedTaskId) {
-        const taskStart = normalizeDateToDay(new Date(task.start));
-        const taskEnd = normalizeDateToDay(new Date(task.end));
-        return (
-          selStart.getTime() >= taskStart.getTime() &&
-          selEnd.getTime() <= taskEnd.getTime()
-        );
-      }
-      return false;
-    });
-
-    // Show error if selection is out of bounds
-    if (!matchingTask) {
-      handleCancel();
-      toast.error("⚠️ Selection must be within a task duration.", {
-        position: "top-right",
-        autoClose: 4000,
-      });
-      return;
-    }
-
-    // Set comment input bar with corrected end date
-    setCommentBarInput({
-      visible: true,
-      start: info.startStr,
-      end: new Date(selectedEnd.getTime() - 86400000)
-        .toISOString()
-        .split("T")[0], // adjusted to be inclusive
-      taskId: matchingTask.id,
-      
-    });
-  };
+  // ========================================
+  // MAIN RENDER
+  // ========================================
 
   return (
     <div className="p-4 h-screen flex flex-col overflow-hidden relative">
       <BredCrum board="Hikko Design" feature="Calender" header="Calender" />
+
+      {/* Loading overlay */}
+      {/* {isLoading && (
+        <div className="absolute inset-0 bg-black bg-opacity-20 flex items-center justify-center z-50">
+          <div className="bg-white p-4 rounded-lg shadow-lg">
+            <div className="flex items-center gap-2">
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+              <span>Updating calendar...</span>
+            </div>
+          </div>
+        </div>
+      )} */}
 
       {/* Main content grid */}
       <div className="flex flex-1 overflow-hidden scrollbar-hidden gap-4">
@@ -550,6 +626,7 @@ export default function MyCalender({ tasks }) {
               </button>
             </div>
           </div>
+
           <div className="relative">
             <FullCalendar
               ref={calendarRef}
@@ -568,7 +645,6 @@ export default function MyCalender({ tasks }) {
               height="auto"
               contentHeight={200}
               selectable={true}
-              // selectMirror={true}
               select={(info, jsEvent) => handleDateSelect({ ...info, jsEvent })}
               displayEventTime={false}
             />
@@ -587,22 +663,21 @@ export default function MyCalender({ tasks }) {
             selectedTask={selectedTask}
             taskColorMap={taskColorMap}
             noteRefreshKey={noteRefreshKey}
+            onNoteUpdate={refetchTaskNotes} // Pass the refetch function
           />
         </div>
 
-        {/* Dropdown-style note input */}
+        {/* Note input overlay */}
         {commentBarInput?.visible &&
           (() => {
             const startDate = new Date(commentBarInput.start);
             const rawEndDate = new Date(commentBarInput.end);
-
-            // Inclusive end date: already adjusted in handleDateSelect
             const endDate = new Date(rawEndDate);
             const isSingleDay =
               startDate.toISOString().slice(0, 10) ===
               endDate.toISOString().slice(0, 10);
 
-            const handleSave = () => {
+            const handleSave = async () => {
               const trimmed = noteValue.trim();
               if (!trimmed) {
                 handleCancel();
@@ -610,48 +685,29 @@ export default function MyCalender({ tasks }) {
                 return;
               }
 
-              // Debug log
-              console.log("Saving note with:", {
-                taskId: commentBarInput.taskId,
-                start: commentBarInput.start,
-                end: commentBarInput.end,
-                note: trimmed,
-              });
-
-              handleNoteSave(
+              const result = await handleNoteSave(
                 commentBarInput.taskId,
                 commentBarInput.start,
                 commentBarInput.end,
                 trimmed,
                 ""
               );
-              handleCancel();
 
-              // Clear state and close input
-              setCommentBarInput({
-                visible: false,
-                start: null,
-                end: null,
-                taskId: null,
-              
-              });
-              setNoteValue("");
+              if (result?.success) {
+                handleCancel();
+              }
             };
 
             return (
-              <div className="absolute z-50 w-[73.5%] bottom-20">
-                <h2 className="text-body-sm mb-2 text-primary font-semibold">
+              <div className="absolute z-50 w-[50%] bottom-32 left-0 right-36 mx-auto">
+                {/* <h2 className="text-body-sm mb-2 text-primary font-semibold">
                   Add note for {startDate.toLocaleDateString()}{" "}
                   {!isSingleDay && `- ${endDate.toLocaleDateString()}`}
-                </h2>
+                </h2> */}
                 <input
                   type="text"
                   value={noteValue}
                   onChange={(e) => setNoteValue(e.target.value)}
-                  onBlur={(e) => {
-                    // Only save if user hasn't already clicked elsewhere
-                    if (!e.relatedTarget) handleSave();
-                  }}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
                       e.preventDefault();
@@ -661,9 +717,28 @@ export default function MyCalender({ tasks }) {
                     }
                   }}
                   autoFocus
-                  placeholder="Write your note here..."
+                  placeholder={`Add note for ${startDate.toLocaleDateString()}${
+                    !isSingleDay ? ` - ${endDate.toLocaleDateString()}` : ""
+                  }`}
                   className="w-full px-3 py-2 text-body-sm border border-gray-300 rounded-medium outline-none text-sm focus:ring-2 focus:ring-primary"
+                  disabled={isLoading}
                 />
+                {/* <div className="flex gap-2 mt-2">
+                  <button
+                    onClick={handleSave}
+                    disabled={isLoading || !noteValue.trim()}
+                    className="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 disabled:opacity-50"
+                  >
+                    {isLoading ? "Saving..." : "Save"}
+                  </button>
+                  <button
+                    onClick={handleCancel}
+                    disabled={isLoading}
+                    className="px-3 py-1 bg-gray-300 text-gray-700 rounded text-sm hover:bg-gray-400 disabled:opacity-50"
+                  >
+                    Cancel
+                  </button>
+                </div> */}
               </div>
             );
           })()}

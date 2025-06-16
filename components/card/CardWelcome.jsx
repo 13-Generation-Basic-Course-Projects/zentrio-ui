@@ -72,7 +72,7 @@ export default function CardWelcomeComponent() {
         // src={backgroundImg}
         src={`https://i.pinimg.com/736x/49/98/82/499882ec269b59924a749ada5fb88dcf.jpg`}
         alt="background in workspace"
-        priority
+        // priority
       />
 
       {/* Overlay Content */}
