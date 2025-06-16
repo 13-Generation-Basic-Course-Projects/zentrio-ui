@@ -1,57 +1,47 @@
-import React, { useState } from "react";
+"use client";
+
+import { useState } from "react";
 import { Card, CardContent } from "../ui/card";
-import {
-  X,
-  Camera,
-  Image,
-  MapPin,
-  Smile,
-  Users,
-  Globe,
-  Lock,
-  ChevronDown,
-} from "lucide-react";
-import { Input, Textarea, Button } from "@heroui/react";
+import { X, Image } from "lucide-react";
+import { Button } from "@heroui/react";
 import {
   createAnnouncementByBoardIdAction,
   uploadMultiImgByBoardIdAction,
 } from "@/action/announcement.action";
 
-export default function CardCreateModal({ onClose, boardId, boardMember, Announcements }) {
-  // const announcementList = Announcements?.payload || [];
-  console.log("bb",Announcements);
-
+export default function CardCreateModal({ onClose, boardId, boardMember }) {
+  // max size 10 mb
   const MAX_SIZE_MB = 10;
 
-  console.log("rkun", boardMember);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [images, setImages] = useState([]); // renamed to images for clarity
   const [loading, setLoading] = useState(false);
-  const [privacy, setPrivacy] = useState("public");
   const [showPrivacyDropdown, setShowPrivacyDropdown] = useState(false);
 
-const handleImageChange = (e) => {
-  const newFiles = Array.from(e.target.files || []);
+  const handleImageChange = (e) => {
+    const newFiles = Array.from(e.target.files || []);
 
-  // Check size of each selected file
-  for (const file of newFiles) {
-    if (file.size > MAX_SIZE_MB * 1024 * 1024) {
-      alert(`File "${file.name}" is too large! Maximum size is ${MAX_SIZE_MB}MB.`);
-      return; // stop if any file is too large
+    // Check size of each selected file
+    for (const file of newFiles) {
+      if (file.size > MAX_SIZE_MB * 1024 * 1024) {
+        alert(
+          `File "${file.name}" is too large! Maximum size is ${MAX_SIZE_MB}MB.`
+        );
+        return; // stop if any file is too large
+      }
     }
-  }
 
-  setImages(prev => [...prev, ...newFiles]);
-  e.target.value = null; // Reset input so same file can be selected again
-};
-
+    setImages((prev) => [...prev, ...newFiles]);
+    e.target.value = null; // Reset input so same file can be selected again
+  };
 
   // Remove single file by index
   const removeImage = (indexToRemove) => {
-    setImages(prev => prev.filter((_, index) => index !== indexToRemove));
+    setImages((prev) => prev.filter((_, index) => index !== indexToRemove));
   };
 
+  // handle submit call from action
   const handleSubmit = async () => {
     if (!title || !description) return;
 
@@ -69,20 +59,19 @@ const handleImageChange = (e) => {
     }
   };
 
-
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <Card className="w-[90%] max-w-lg bg-white rounded-large shadow-lg border border-gray-200">
+      <Card className="w-[90%] max-w-lg bg-white rounded-large shadow-lg border border-gray-200 p-4">
         <CardContent className="p-0">
           {/* Header */}
           <div className="p-4 border-b border-gray-200">
             <div className="flex items-center justify-between mb-3">
-              <h2 className="text-lg font-semibold text-title">
+              <h2 className="text-h5 font-semibold text-title">
                 Create Announcement
               </h2>
               <button
                 onClick={onClose}
-                className="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 transition-colors"
+                className="text-title hover:text-primary p-1 rounded-full hover:bg-gray-100 transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -96,23 +85,25 @@ const handleImageChange = (e) => {
                 .map((member) => (
                   <div
                     key={member.userId}
-                    className="w-10 h-10 rounded-full overflow-hidden bg-gray-100"
+                    className="flex items-center space-x-3"
                   >
-                    <img
-                      src={member.profileImage}
-                      alt="Profile"
-                      className="w-full h-full object-cover"
-                    />
+                    <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-100">
+                      <img
+                        src={member.profileImage}
+                        alt="Profile"
+                        className="w-full h-full object-cover drop-shadow-sm"
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <div className="text-h6 font-semibold text-title text-sm">
+                        {member.username || member.name}
+                      </div>
+                      <div className="relative text-small font-light text-description">
+                        {member.roles?.[0] || "No role"}
+                      </div>
+                    </div>
                   </div>
                 ))}
-              <div className="flex-1">
-                <div className="font-semibold text-gray-900 text-sm">
-                  
-                </div>
-                <div className="relative">
-                  
-                </div>
-              </div>
             </div>
           </div>
 
@@ -126,7 +117,7 @@ const handleImageChange = (e) => {
             <div className="p-4">
               {/* Title Input */}
               <input
-                className="w-full border-none outline-none text-lg font-semibold placeholder-gray-500 mb-2"
+                className="w-full border-none text-title outline-none text-large font-semibold placeholder-gray-500 mb-2"
                 placeholder="Announcement title"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
@@ -135,9 +126,9 @@ const handleImageChange = (e) => {
 
               {/* Description Textarea */}
               <textarea
-                className="w-full resize-none border-none outline-none text-base placeholder-gray-500 min-h-[80px]"
+                className="w-full resize-none border-none outline-none text-description placeholder-description min-h-auto"
                 placeholder="What would you like to announce?"
-                rows="3"
+                rows="4"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 required
@@ -151,21 +142,21 @@ const handleImageChange = (e) => {
                       key={index}
                       className="flex items-center justify-between bg-gray-50 p-3 rounded-large"
                     >
-                      <div className="flex items-center space-x-2">
-                        <Image className="w-5 h-5 text-primary" />
-                        <span className="text-sm text-gray-700">
+                      <div className="flex items-center gap-2 min-w-0 max-w-full px-1">
+                        <Image className="w-5 h-5 flex-shrink-0 text-primary" />
+                        <span className="truncate text-sm text-description min-w-0">
                           {file.name}
                         </span>
-                        <span className="text-xs text-gray-500">
+                        <span className="text-xs text-description flex-shrink-0">
                           ({(file.size / 1024).toFixed(1)} KB)
                         </span>
                       </div>
                       <button
                         type="button"
                         onClick={() => removeImage(index)}
-                        className="text-gray-400 hover:text-red-500 transition-colors text-lg"
+                        className="text-title hover:text-primary transition-colors text-lg"
                       >
-                        ×
+                        <X className="w-4 h-4" />
                       </button>
                     </div>
                   ))}
@@ -173,8 +164,8 @@ const handleImageChange = (e) => {
               )}
 
               {/* Media Options */}
-              <div className="mt-4 flex items-center justify-between p-3 border border-gray-200 rounded-large">
-                <span className="text-sm font-medium text-gray-700">
+              <div className="mt-4 flex items-center justify-between p-2 border border-gray-200 rounded-large">
+                <span className="text-xs font-medium text-description">
                   Add to your announcement
                 </span>
                 <div className="flex items-center space-x-2">
@@ -193,11 +184,11 @@ const handleImageChange = (e) => {
             </div>
 
             {/* Footer Buttons */}
-            <div className="p-4 border-t border-gray-200">
+            <div className="p-4 border-t border-bgColor">
               <div className="flex space-x-3">
                 <Button
                   type="button"
-                  className="flex-1 bg-transparent hover:bg-gray-100 text-gray-600 border border-gray-300"
+                  className="flex-1 bg-transparent hover:bg-gray-100 text-primary border border-gray-300"
                   radius="lg"
                   onPress={onClose}
                   isDisabled={loading}
@@ -224,7 +215,7 @@ const handleImageChange = (e) => {
           {/* Overlay for dropdown */}
           {showPrivacyDropdown && (
             <div
-              className="fixed inset-0 z-0"
+              className="fixed inset-0 z-40"
               onClick={() => setShowPrivacyDropdown(false)}
             />
           )}

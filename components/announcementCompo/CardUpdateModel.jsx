@@ -1,14 +1,14 @@
 "use client";
-import React, { useState, useEffect } from "react";
+
+import React, { useState } from "react";
 import { Card, CardContent } from "../ui/card";
 import { X, Image } from "lucide-react";
 import { Button } from "@heroui/react";
-import {
-  updateAnnouncementByIdAction,
-  uploadMultiImgByBoardIdAction,
-} from "@/action/announcement.action";
+import { updateAnnouncementByIdAction, uploadMultiImgByBoardIdAction } from "@/action/announcement.action";
+
 
 export default function CardUpdateModal({ onClose, boardId, announcement, Announcements }) {
+  
   const MAX_SIZE_MB = 10;
   const [title, setTitle] = useState(announcement?.title || "");
   const [description, setDescription] = useState(announcement?.description || "");
