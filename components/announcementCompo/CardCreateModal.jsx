@@ -110,10 +110,7 @@ const handleImageChange = (e) => {
                   
                 </div>
                 <div className="relative">
-<<<<<<< HEAD
                   
-=======
->>>>>>> aa898e175e1d5e5228aa863a355ed0eba5d8ae63
                 </div>
               </div>
             </div>
