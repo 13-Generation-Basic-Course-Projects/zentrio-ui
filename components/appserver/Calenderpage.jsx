@@ -211,7 +211,6 @@ export default function MyCalender({ tasks }) {
       return { success: false, message: errorMsg };
     }
   };
-  
 
   const [notes, setNotes] = useState([]);
 
@@ -240,7 +239,7 @@ export default function MyCalender({ tasks }) {
     }
   }, [tasks]);
 
-  console.log("Use noted to find: ", notes); 
+  console.log("Use noted to find: ", notes);
 
   const { mappedTasks, taskColorMap } = useMemo(() => {
     const uniqueIds = new Set();
@@ -286,8 +285,6 @@ export default function MyCalender({ tasks }) {
       taskColorMap: mapForColors, // Return the generated map
     };
   }, [tasks, colorList, notes]);
-
-  
 
   const [activeTaskId, setActiveTaskId] = useState(null);
   const handleTaskClick = (dateStr, taskId) => {
@@ -338,7 +335,6 @@ export default function MyCalender({ tasks }) {
 
     setEvents([adjustedTask, ...commentEvents]);
   };
-  
 
   const renderEventContent = ({ event, isStart }) => {
     const { type, color, notes = [], realEnd } = event.extendedProps;
@@ -365,7 +361,7 @@ export default function MyCalender({ tasks }) {
       if (!isStart) {
         return (
           <div
-            className={`mt-1 text-[0.7rem] rounded border-4 border-dashed px-2 py-[12px] ${
+            className={`mt-1 text-[0.7rem] rounded-small border-2 border-dashed px-2 py-[12px] ${
               color?.text || "text-blue-600"
             } ${color?.light || "bg-blue-100"}`}
             style={{
@@ -381,7 +377,7 @@ export default function MyCalender({ tasks }) {
 
       return (
         <div
-          className={`mt-1 text-[0.7rem] rounded border-3 border-dashed px-2 py-[6px] ${
+          className={`mt-1 text-[0.7rem] rounded-small border-2 border-dashed px-2 py-[6px] ${
             color?.text || "text-blue-600"
           } ${color?.light || "bg-blue-100"}`}
           style={{
@@ -440,7 +436,6 @@ export default function MyCalender({ tasks }) {
       </div>
     );
   };
-  
 
   const handleDateNav = (action) => {
     const calendarApi = calendarRef.current?.getApi();
@@ -462,7 +457,6 @@ export default function MyCalender({ tasks }) {
     });
     setNoteValue("");
   };
-  
 
   const handleDateSelect = (info) => {
     const selectedStart = new Date(info.startStr);
@@ -481,7 +475,7 @@ export default function MyCalender({ tasks }) {
         position: "top-right",
         autoClose: 4000,
       });
-     
+
       return;
     }
 
@@ -516,13 +510,10 @@ export default function MyCalender({ tasks }) {
         .toISOString()
         .split("T")[0], // adjusted to be inclusive
       taskId: matchingTask.id,
+      
     });
-    
-    
   };
-  
 
-  
   return (
     <div className="p-4 h-screen flex flex-col overflow-hidden relative">
       <BredCrum board="Hikko Design" feature="Calender" header="Calender" />
@@ -559,26 +550,29 @@ export default function MyCalender({ tasks }) {
               </button>
             </div>
           </div>
-          <FullCalendar
-            ref={calendarRef}
-            plugins={[
-              resourceTimelinePlugin,
-              dayGridPlugin,
-              interactionPlugin,
-              timeGridPlugin,
-            ]}
-            headerToolbar={false}
-            initialView="dayGridMonth"
-            dayHeaderFormat={{ weekday: "long" }}
-            events={events}
-            eventContent={renderEventContent}
-            datesSet={(arg) => setCurrentTitle(arg.view.title)}
-            height="auto"
-            contentHeight={200}
-            selectable={true}
-            select={(info, jsEvent) => handleDateSelect({ ...info, jsEvent })}
-            displayEventTime={false}
-          />
+          <div className="relative">
+            <FullCalendar
+              ref={calendarRef}
+              plugins={[
+                resourceTimelinePlugin,
+                dayGridPlugin,
+                interactionPlugin,
+                timeGridPlugin,
+              ]}
+              headerToolbar={false}
+              initialView="dayGridMonth"
+              dayHeaderFormat={{ weekday: "long" }}
+              events={events}
+              eventContent={renderEventContent}
+              datesSet={(arg) => setCurrentTitle(arg.view.title)}
+              height="auto"
+              contentHeight={200}
+              selectable={true}
+              // selectMirror={true}
+              select={(info, jsEvent) => handleDateSelect({ ...info, jsEvent })}
+              displayEventTime={false}
+            />
+          </div>
         </div>
 
         {/* Sidebar Section */}
@@ -639,15 +633,14 @@ export default function MyCalender({ tasks }) {
                 start: null,
                 end: null,
                 taskId: null,
+              
               });
               setNoteValue("");
             };
 
-         
-
             return (
-              <div className="absolute bottom-20 left-4 right-4 z-50 bg-white rounded-xl shadow-md p-4 border w-[500px] mx-auto">
-                <h2 className="text-sm mb-2 text-primary font-semibold">
+              <div className="absolute z-50 w-[73.5%] bottom-20">
+                <h2 className="text-body-sm mb-2 text-primary font-semibold">
                   Add note for {startDate.toLocaleDateString()}{" "}
                   {!isSingleDay && `- ${endDate.toLocaleDateString()}`}
                 </h2>
@@ -669,7 +662,7 @@ export default function MyCalender({ tasks }) {
                   }}
                   autoFocus
                   placeholder="Write your note here..."
-                  className="w-full px-3 py-2 border border-gray-300 rounded-medium outline-none text-sm focus:ring-2 focus:ring-primary"
+                  className="w-full px-3 py-2 text-body-sm border border-gray-300 rounded-medium outline-none text-sm focus:ring-2 focus:ring-primary"
                 />
               </div>
             );
