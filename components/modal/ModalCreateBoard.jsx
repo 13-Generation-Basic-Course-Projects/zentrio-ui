@@ -10,7 +10,7 @@ import {
   useDisclosure,
   Card,
 } from "@heroui/react";
-import { createWorkspaceSchema } from "@/lib/schemas/workspaceSchema";
+import { createBoardSchema, createWorkspaceSchema } from "@/lib/schemas/workspaceSchema";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createBoardAction } from "@/action/workspace.action";
@@ -42,10 +42,13 @@ export default function ModalCreateBoard({ Workspaceid }) {
   const {
     register,
     handleSubmit,
+    setValue,
     reset,
     formState: { errors },
-  } = useForm();
-
+  } = useForm({
+    resolver: zodResolver(createBoardSchema),
+  });
+  
   const toggleColors = () => {
     setShowColors((prev) => !prev);
   };
@@ -75,6 +78,7 @@ export default function ModalCreateBoard({ Workspaceid }) {
     setSelectedOption((prev) => (prev === colorKey ? null : colorKey));
     setShowColors(false);
     setDropdownOpen(false);
+    setValue("cover", colorKey); 
   };
 
   const handleFileSelect = (e) => {
@@ -83,6 +87,7 @@ export default function ModalCreateBoard({ Workspaceid }) {
       setSelectedOption(null); // Clear color if file selected
       setSelectedFileName(file.name);
       setPreviewUrl(URL.createObjectURL(file));
+      setValue("cover", file); 
     }
   };
 
@@ -129,7 +134,11 @@ export default function ModalCreateBoard({ Workspaceid }) {
     setShowColors(false);
     onOpenChange(false);
   };
-
+  const onValid = (data) => {
+    console.log("Creating board with:", data);
+    onClose();
+  };
+  
   return (
     <>
       <Button
@@ -169,7 +178,6 @@ export default function ModalCreateBoard({ Workspaceid }) {
 
                       <input
                         {...register("title")}
-                        // type="text"
                         placeholder="Type here"
                         style={{
                           backgroundImage: `url("data:image/svg+xml;utf8,${svgIconInput}")`,
@@ -178,10 +186,20 @@ export default function ModalCreateBoard({ Workspaceid }) {
                           paddingLeft: "36px",
                           height: "40px",
                           borderRadius: "9999px",
-                          border: "1px solid #ccc",
                         }}
-                        className="text-title/50 text-caption bg-transparent w-full"
+                        className={`
+                          w-full bg-transparent text-title/50 text-caption
+                          border border-gray-300
+                          focus:outline-none focus:border-primary
+                          transition-all duration-150 ease-in-out
+                        `}
                       />
+
+                      {errors.title && (
+                        <span className="text-red-500 text-caption-tiny">
+                          *{errors.title.message}*
+                        </span>
+                      )}
                     </div>
                     {/* select option  */}
                     <div className="flex flex-col items-start justify-center space-y-2">
@@ -325,6 +343,11 @@ export default function ModalCreateBoard({ Workspaceid }) {
                           </div>
                         )}
                       </div>
+                      {errors.cover && (
+                        <span className="text-red-500 text-caption-tiny">
+                          *{errors.cover.message}*
+                        </span>
+                      )}
                     </div>
                     {/* description */}
                     <div className="col-span-4 space-y-2">
@@ -335,17 +358,26 @@ export default function ModalCreateBoard({ Workspaceid }) {
                         style={{
                           backgroundImage: `url("data:image/svg+xml;utf8,${svgIconType}")`,
                           backgroundRepeat: "no-repeat",
-                          backgroundPosition: "10px calc(1em + 0px)", // push icon down to baseline
+                          backgroundPosition: "10px calc(1em + 0px)",
                           paddingLeft: "36px",
                           paddingTop: "10px",
                           height: "80px",
                           borderRadius: "12px",
-                          border: "1px solid #ccc",
                           lineHeight: "1.4",
                           resize: "none",
                         }}
-                        className="text-title/50 text-caption bg-transparent w-full"
+                        className={`
+                          w-full bg-transparent text-title/50 text-caption
+                          border border-gray-300
+                          focus:outline-none focus:border-primary
+                          transition-all duration-150 ease-in-out
+                        `}
                       />
+                      {errors.description && (
+                        <span className="text-red-500 text-caption-tiny">
+                          *{errors.description.message}*
+                        </span>
+                      )}
                     </div>
                   </div>
                   <div className="mx-[-1rem] border border-bgColor mt-5 mb-2"></div>
@@ -354,7 +386,7 @@ export default function ModalCreateBoard({ Workspaceid }) {
                     <Button
                       color="primary"
                       radius="full"
-                      onPress={onClose}
+                      onPress={handleSubmit(onValid)} // <-- validate before doing anything
                       type="submit"
                     >
                       Create Board

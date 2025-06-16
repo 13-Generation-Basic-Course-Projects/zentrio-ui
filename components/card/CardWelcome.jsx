@@ -66,10 +66,11 @@ export default function CardWelcomeComponent() {
   }, []);
 
   return (
-    <div className="relative rounded-large mt-[-32px] mb-2 overflow-hidden ">
-      <Image
-        className="w-full "
-        src={backgroundImg}
+    <div className="relative rounded-large  mt-5 mb-2 overflow-hidden ">
+      <img
+        className="w-full h-[330px]"
+        // src={backgroundImg}
+        src={`https://i.pinimg.com/736x/49/98/82/499882ec269b59924a749ada5fb88dcf.jpg`}
         alt="background in workspace"
         priority
       />
@@ -80,7 +81,7 @@ export default function CardWelcomeComponent() {
         <div>
           <h1 className="text-h4 text-white font-bold mb-2 leading-tight">
             Hello, welcome to <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600 font-semibold animate-textZoom drop-shadow-md">
+            <span>
               Zentrio System
             </span>
           </h1>
@@ -97,7 +98,7 @@ export default function CardWelcomeComponent() {
         </div>
 
         {/* Right: Animated Character */}
-        <div className="w-[150px] animate-float">
+        <div className="absolute w-[250px] animate-float z-10 right-0 ">
           <Image className="w-full" src={happyWoman} alt="happy woman" />
         </div>
       </div>

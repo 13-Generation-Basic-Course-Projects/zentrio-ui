@@ -34,6 +34,11 @@ export default function Myworkspace({
         <div className="grid grid-cols-3 gap-3 scrollbar-hidden px-2 pb-[200px] py-4 overflow-y-auto flex-1 min-h-0">
           {getBoardByWorkspaceId.payload.length > 0 ? (
             <>
+              {/* ➕ Add new board card */}
+              <CardBoardEmpty
+                Workspaceid={Workspaceid}
+                createBoardAction={createBoardAction}
+              />
               {getBoardByWorkspaceId.payload
                 .slice() // avoid mutating original array
                 .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // sort by newest
@@ -54,9 +59,8 @@ export default function Myworkspace({
                   } else if (board.cover) {
                     // ⛳️ New logic for uploaded files
                     // image = `http://localhost:8080/api/v1/files/${board.cover}`; // or your actual static file URL path
-                   image = `http://localhost:8080/api/v1/boards/${board.boardId}/cover/${board.cover}`;
-                  // image = `D:\\Albums\\Pictures\\${board.cover}`;
-
+                    image = `http://localhost:8080/api/v1/boards/${board.boardId}/cover/${board.cover}`;
+                    // image = `D:\\Albums\\Pictures\\${board.cover}`;
                   } else {
                     image = "bg-gray-200";
                   }
@@ -68,11 +72,11 @@ export default function Myworkspace({
                     <CardBoard
                       key={i}
                       role="pm"
-                      workspaceId={board.workspaceId}
-                      boardId={board.boardId}
-                      title={board.title}
+                      workspaceId={board?.workspaceId}
+                      boardId={board?.boardId}
+                      title={board?.title}
                       image={image}
-                      isFavourite={board.isFavourite}
+                      isFavourite={board?.isFavourite}
                       deleteBoardAction={deleteBoardAction}
                       updateNameBoardAction={updateNameBoardAction}
                       getBoardByIdAction={getBoardByIdAction}
@@ -80,12 +84,6 @@ export default function Myworkspace({
                     />
                   );
                 })}
-
-              {/* ➕ Add new board card */}
-              <CardBoardEmpty
-                Workspaceid={Workspaceid}
-                createBoardAction={createBoardAction}
-              />
             </>
           ) : (
             /* When there are no boards, still allow creating a new one */

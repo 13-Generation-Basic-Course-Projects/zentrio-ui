@@ -91,7 +91,6 @@ export default function ModalCreateWorkspace({ createWorkspace }) {
         "Saved color in localStorage:",
         localStorage.getItem(`workspaceColor-${data.title}`)
       );
-      
 
       reset();
       setSelectedOption(null);
@@ -103,6 +102,10 @@ export default function ModalCreateWorkspace({ createWorkspace }) {
     } catch (err) {
       console.error(err);
     }
+  };
+  const onValid = (data) => {
+    console.log("Creating board with:", data);
+    onClose();
   };
 
   return (
@@ -131,15 +134,21 @@ export default function ModalCreateWorkspace({ createWorkspace }) {
                     <input
                       {...register("title")}
                       placeholder="Type here"
-                      className="text-title/50 text-caption bg-transparent w-full border border-gray-300 rounded-full px-9 h-10"
+                      className={`
+                        w-full bg-transparent text-title/50 text-caption
+                        border border-gray-300 rounded-full px-9 h-10
+                        focus:outline-none focus:border-primary
+                        transition-all duration-150 ease-in-out
+                      `}
                       style={{
                         backgroundImage: `url("data:image/svg+xml;utf8,${svgIconInput}")`,
                         backgroundRepeat: "no-repeat",
                         backgroundPosition: "8px center",
                       }}
                     />
+
                     {errors.title && (
-                      <p className="text-red-500 text-caption">
+                      <p className="text-red-500 text-caption-tiny">
                         *{errors.title.message}*
                       </p>
                     )}
@@ -214,7 +223,12 @@ export default function ModalCreateWorkspace({ createWorkspace }) {
                     <textarea
                       {...register("description")}
                       placeholder="Type here"
-                      className="text-title/50 text-caption bg-transparent w-full border border-gray-300 rounded-xl p-3 resize-none h-20"
+                      className={`
+                        w-full bg-transparent text-title/50 text-caption
+                        border border-gray-300 rounded-full px-9 h-10
+                        focus:outline-none focus:border-primary
+                        transition-all duration-150 ease-in-out
+                      `}
                       style={{
                         backgroundImage: `url("data:image/svg+xml;utf8,${svgIconType}")`,
                         backgroundRepeat: "no-repeat",
@@ -224,6 +238,11 @@ export default function ModalCreateWorkspace({ createWorkspace }) {
                       }}
                     />
                   </div>
+                  {errors.description && (
+                    <p className="text-red-500 text-caption-tiny">
+                      *{errors.description.message}*
+                    </p>
+                  )}
                 </div>
 
                 <div className="border border-bgColor my-4"></div>
@@ -232,6 +251,7 @@ export default function ModalCreateWorkspace({ createWorkspace }) {
                   <button
                     type="submit"
                     disabled={isPending}
+                    onPress={handleSubmit(onValid)} // <-- validate before doing anything
                     className="bg-primary text-white px-4 py-2 rounded-full"
                   >
                     {isPending ? "Creating..." : "Create Workspace"}
@@ -245,7 +265,6 @@ export default function ModalCreateWorkspace({ createWorkspace }) {
     </>
   );
 }
-
 
 // You can keep your SVG icons encoded strings as you had them
 const svgIconInput = encodeURIComponent(`

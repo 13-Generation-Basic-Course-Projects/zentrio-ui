@@ -42,7 +42,7 @@ export default function CardBoard({
 
   /* State to manage editing mode and edited title */
   const [editing, setEditing] = useState(false);
-  const [newTitle, setNewTitle] = useState(title);
+  const [newTitle, setNewTitle] = useState("");
 
   /* Function to handle rename confirmation */
 
@@ -123,7 +123,7 @@ export default function CardBoard({
             onClick={() => setEditing(true)}
             title="Click to rename"
           >
-            {newTitle}
+            {title}
           </p>
         )}
 
