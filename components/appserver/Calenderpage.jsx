@@ -213,7 +213,6 @@ export default function MyCalender({ tasks }) {
   };
 
   const [notes, setNotes] = useState([]);
-
   useEffect(() => {
     const fetchAllNotes = async () => {
       const allNotes = [];
@@ -237,6 +236,7 @@ export default function MyCalender({ tasks }) {
     if (tasks.length > 0) {
       fetchAllNotes();
     }
+    
   }, [tasks]);
 
   console.log("Use noted to find: ", notes);
@@ -249,7 +249,7 @@ export default function MyCalender({ tasks }) {
     let colorIndex = 0; // Keep track of color for unique tasks
 
     tasks.forEach((task) => {
-      // Ensure we only process each unique task ID once for color assignment
+      
       if (!uniqueIds.has(task.taskId)) {
         uniqueIds.add(task.taskId);
         const color = colorList[colorIndex % colorList.length];
@@ -571,6 +571,9 @@ export default function MyCalender({ tasks }) {
               // selectMirror={true}
               select={(info, jsEvent) => handleDateSelect({ ...info, jsEvent })}
               displayEventTime={false}
+              // viewDidMount={() => {
+              //   fetchAllNotes();
+              // }}
             />
           </div>
         </div>
@@ -606,7 +609,11 @@ export default function MyCalender({ tasks }) {
               const trimmed = noteValue.trim();
               if (!trimmed) {
                 handleCancel();
-                toast.error("Note cannot be empty!");
+
+                toast.error("⚠️ Note cannot be empty!", {
+                  position: "top-right",
+                  autoClose: 4000,
+                });
                 return;
               }
 
@@ -618,6 +625,7 @@ export default function MyCalender({ tasks }) {
                 note: trimmed,
               });
 
+              handleCancel();
               handleNoteSave(
                 commentBarInput.taskId,
                 commentBarInput.start,
@@ -633,7 +641,6 @@ export default function MyCalender({ tasks }) {
                 start: null,
                 end: null,
                 taskId: null,
-              
               });
               setNoteValue("");
             };

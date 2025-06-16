@@ -69,10 +69,8 @@ export default function CardWelcomeComponent() {
     <div className="relative rounded-large  mt-5 mb-2 overflow-hidden ">
       <img
         className="w-full h-[330px]"
-        // src={backgroundImg}
-        src={`https://i.pinimg.com/736x/49/98/82/499882ec269b59924a749ada5fb88dcf.jpg`}
+        src="https://i.pinimg.com/736x/49/98/82/499882ec269b59924a749ada5fb88dcf.jpg"
         alt="background in workspace"
-        priority
       />
 
       {/* Overlay Content */}
@@ -81,9 +79,7 @@ export default function CardWelcomeComponent() {
         <div>
           <h1 className="text-h4 text-white font-bold mb-2 leading-tight">
             Hello, welcome to <br />
-            <span>
-              Zentrio System
-            </span>
+            <span>Zentrio System</span>
           </h1>
 
           <div className="text-white text-sm">

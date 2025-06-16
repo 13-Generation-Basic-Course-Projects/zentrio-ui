@@ -1,5 +1,6 @@
 "use server";
 
+import { Token } from "@/constant/token";
 import { calendarV2RouteGroup } from "@/routes/calendarV2Route";
 
 /*
@@ -41,7 +42,10 @@ export const getTaskByBoardIdAndGanttBarIdService = async ({
 /*
  * get ganttbar by ganntchart Id
  */
-export const getGanttBarByGanttChartIdService = async ({ ganttChartId, token }) => {
+export const getGanttBarByGanttChartIdService = async ({
+  ganttChartId,
+  token,
+}) => {
   try {
     const url = calendarV2RouteGroup.getAllGanttBarByGanttChartID(ganttChartId);
     const res = await fetch(url, {
@@ -65,7 +69,7 @@ export const getGanttBarByGanttChartIdService = async ({ ganttChartId, token }) 
  * get ganttchart by spacific board
  */
 export const getGanttChartByBoardIdService = async ({ boardId, token }) => {
-    // console.log("BoardId in getGanttChartByBoardIdService : ", boardId);
+  // console.log("BoardId in getGanttChartByBoardIdService : ", boardId);
   try {
     const url = calendarV2RouteGroup.getGanttChartByBoardId(boardId);
     const res = await fetch(url, {
@@ -86,9 +90,9 @@ export const getGanttChartByBoardIdService = async ({ boardId, token }) => {
 };
 
 /* calendar controller */
-/* 
-* create noted in calendar 
-*/
+/*
+ * create noted in calendar
+ */
 export const createNoteInCalendarService = async ({
   token,
   noted,
@@ -119,21 +123,23 @@ export const createNoteInCalendarService = async ({
     const data = await res.json();
     console.log("📥📝 Backend service responded create note with:", data);
 
-    return data; s
+    return data;
+    s;
   } catch (error) {
     console.error("Create note service error📝🤔:", error.message);
     throw error;
   }
 };
 
-
 /*
-* Get note in calendar
-*/
+ * Get note in calendar
+ */
 // service\calendarV2.service.js
 
-export const getAllNoteInCalendarService = async ({ taskId, token }) => { 
+export const getAllNoteInCalendarService = async ({ taskId }) => {
   console.log("Service - Received taskId (should be string):", taskId);
+  const userToken = await Token();
+  const token = userToken.Credential;
 
   try {
     const url = calendarV2RouteGroup.getAllNoteInCalendar(taskId);
@@ -141,8 +147,8 @@ export const getAllNoteInCalendarService = async ({ taskId, token }) => {
 
     const res = await fetch(url, {
       method: "GET",
-      next:{
-        tags : ["calendar"]
+      next: {
+        tags: ["calendar"],
       },
       headers: {
         accept: "*/*",
@@ -161,17 +167,23 @@ export const getAllNoteInCalendarService = async ({ taskId, token }) => {
   }
 };
 
-
 /*
-* delete note in calendar
-*/
-export const deleteNoteInCalendarService = async ({calendarId, taskId, token }) => {
+ * delete note in calendar
+ */
+export const deleteNoteInCalendarService = async ({
+  calendarId,
+  taskId,
+  token,
+}) => {
   try {
     const url = calendarV2RouteGroup.deleteNoteInCalendar(calendarId, taskId);
     console.log("Service - Fetching URL (final):", url);
 
     const res = await fetch(url, {
       method: "DELETE",
+      next: {
+        tags: ["calendar"],
+      },
       headers: {
         accept: "*/*",
         Authorization: `Bearer ${token}`,
@@ -187,8 +199,8 @@ export const deleteNoteInCalendarService = async ({calendarId, taskId, token }) 
 };
 
 /*
-* update note in calendar
-*/
+ * update note in calendar
+ */
 export const updateNoteInCalendarService = async ({
   calendarId,
   noted,
@@ -223,12 +235,10 @@ export const updateNoteInCalendarService = async ({
   }
 };
 
-
 /*
  * Get all checklist by task id
  */
 export const getChecklistByTaskIdService = async ({ taskId, token }) => {
- 
   try {
     const url = calendarV2RouteGroup.getChecklistByTaskId(taskId);
     const res = await fetch(url, {

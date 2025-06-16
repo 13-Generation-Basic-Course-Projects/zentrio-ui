@@ -7,6 +7,7 @@ import {
 } from "@/action/calendarV2.action";
 import { auth } from "@/auth";
 import MyCalender from "@/components/appserver/Calenderpage";
+import { getAllNoteInCalendarService } from "@/service/calendarV2.service";
 
 
 const FALLBACK_STRING = "No data available";
@@ -74,8 +75,6 @@ export default async function Calender({ params }) {
     }
     console.log("✅👨‍🏭 All tasks in calendar: ", allTasks);
     
-
-   
 
     return (
       <div>

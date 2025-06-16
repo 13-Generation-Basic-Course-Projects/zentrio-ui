@@ -78,6 +78,7 @@ export const createNoteInCalendarAction = async (
     taskId,
   });
   revalidatePath("/createNote");
+  revalidateTag("calendar");
 
   return result;
 };
@@ -124,7 +125,7 @@ export const deleteNoteInCalendarAction = async (calendarId, taskId) => {
     return result;
   } catch (error) {
     console.error("deleteNoteInCalendarAction error:", error);
-    throw error;
+    // throw error;
   }
 };
 
