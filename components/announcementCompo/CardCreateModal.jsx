@@ -30,7 +30,6 @@ export default function CardCreateModal({
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [images, setImages] = useState([]);
-  const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showPrivacyDropdown, setShowPrivacyDropdown] = useState(false);
   const [focusedField, setFocusedField] = useState(null);
@@ -296,7 +295,7 @@ export default function CardCreateModal({
                     type="submit"
                     className={`flex-1 font-semibold transition-all duration-200 ${
                       isFormValid && !loading
-                        ? "bg-gradient-to-r  bg-gradient-to-br from-primary via-primary to-white text-white transform hover:scale-[1.02] shadow-lg hover:shadow-xl"
+                        ? "bg-gradient-to-r from-primary via-primary to-white text-white transform hover:scale-[1.02] shadow-lg hover:shadow-xl"
                         : "bg-gray-300 text-gray-500 cursor-not-allowed"
                     }`}
                     radius="lg"
