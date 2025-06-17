@@ -14,6 +14,9 @@ export const workspaceRouteGroup = {
 
   //new
   getOtherWorkSpaceJoined: () => `${apiConfig.baseUrl}/workspaces/other`, // Get other workspaces that users has joined
+  
+  getMemeberByBoardId: (boardId) =>
+    `${apiConfig.baseUrl}/boards/${boardId}/members`, // get member by board id
 };
 
 export const boardRouteGroup = {
@@ -40,4 +43,7 @@ export const boardRouteGroup = {
   //new
   getFavoriteBoard: (userId) =>
     `${apiConfig.baseUrl}/boards/favourite/users/${userId}`, // getfavorite board
+
+  //new
+ 
 };

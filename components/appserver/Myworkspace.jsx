@@ -21,9 +21,11 @@ export default function Myworkspace({
   updateNameBoardAction,
   getBoardByIdAction,
   updateFavAction,
+  memberData,
 }) {
   console.log("Workspace id in myworkspace: ", Workspaceid);
 
+  console.log("Data in my workspace: ", memberData);
   return (
     <>
       {getBoardByWorkspaceId?.status === 404 ||
@@ -37,7 +39,6 @@ export default function Myworkspace({
             <div className="flex flex-col items-center justify-center flex-1 py-10 text-center">
               <div className="w-[127px] h-[127px] mb-4">
                 <svg
-                  
                   viewBox="0 0 32 32"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -171,10 +172,10 @@ export default function Myworkspace({
               )}
             </div>
           </div>
-
           {/* Right sidebar - member info */}
+
           <div className="col-span-3 p-2">
-            <CardMember />
+            <CardMember members={memberData} />
           </div>
         </div>
       )}

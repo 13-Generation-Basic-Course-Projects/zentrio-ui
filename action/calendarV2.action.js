@@ -6,10 +6,10 @@ import { revalidatePath, revalidateTag } from "next/cache";
  * getTaskbyBoardId and GanttbarId
  */
 export const getTaskByBoardIdAndGanttBarIdAction = async (boardId, ganttBarId) => {
-  console.log(
-    "ganttBarId in getTaskByBoardIdAndGanttBarIdAction: ",
-    ganttBarId
-  );
+  // console.log(
+  //   "ganttBarId in getTaskByBoardIdAndGanttBarIdAction: ",
+  //   ganttBarId
+  // );
   const userToken = await Token();
   const token = userToken.Credential;
   //console.log(token);
@@ -26,7 +26,7 @@ export const getTaskByBoardIdAndGanttBarIdAction = async (boardId, ganttBarId) =
  * get ganttbar by gantt chart id
  */
 export const getGanttBarByGanttChartIdAction = async (ganttChartId) => {
-  console.log("ganttchartId  in calendar: ", ganttChartId);
+  // console.log("ganttchartId  in calendar: ", ganttChartId);
   const userToken = await Token();
   const token = userToken.Credential;
   console.log(token);
@@ -41,7 +41,7 @@ export const getGanttBarByGanttChartIdAction = async (ganttChartId) => {
  * get ganttchart by boardId
  */
 export const getGanttChartByBoardIdAction = async (boardId) => {
-    console.log("BoardId ingetGanttChartByBoardIdAction: ", boardId);
+    // console.log("BoardId ingetGanttChartByBoardIdAction: ", boardId);
   const userToken = await Token();
   const token = userToken.Credential;
   console.log(token);
@@ -89,7 +89,7 @@ export const createNoteInCalendarAction = async (
 
 
 export const getAllNoteInCalendarAction = async (taskId) => {
-  console.log("Action - Received taskId (should be string):", taskId);
+  // console.log("Action - Received taskId (should be string):", taskId);
   try {
     const userToken = await Token();
     const token = userToken.Credential;

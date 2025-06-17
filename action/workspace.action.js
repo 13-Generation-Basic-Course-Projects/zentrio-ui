@@ -12,6 +12,7 @@ import {
   getBoardByIdService,
   getBoardsByWorkspaceIdService,
   getFavoriteBoardService,
+  getMemeberByBoardIdService,
   getOtherWorkSpaceJoinedService,
   getWorkspacesByUserService,
   updateBoardByIdService,
@@ -279,5 +280,18 @@ export const getOtherWorkSpaceJoinedAction = async () => {
   const userToken = await Token();
   const token = userToken.Credential;
   const result = await getOtherWorkSpaceJoinedService(token);
+  return result;
+};
+
+
+/* new
+ * get member by board id
+ */
+
+export const getMemeberByBoardIdAction = async (boardId) => {
+  const userToken = await Token();
+  const token = userToken.Credential;
+  const result = await getMemeberByBoardIdService({boardId,token});
+  console.log("Get member in action : ", result);
   return result;
 };
