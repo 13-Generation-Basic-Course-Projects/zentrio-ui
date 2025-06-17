@@ -1,6 +1,5 @@
 "use client";
-import React from "react";
-
+import React, { useState } from "react";
 import {
   Modal,
   ModalContent,
@@ -10,12 +9,11 @@ import {
   Button,
   useDisclosure,
   useDraggable,
+  Input, // Import Input component from @heroui/react
 } from "@heroui/react";
 import { toast, ToastContainer } from "react-toastify";
-import {
-  changeStageToUnderReviewAction,
-  deleteTaskAction,
-} from "@/action/board.action";
+import { FeedBackAction } from "@/action/board.action";
+
 export default function PopupActionTaskMoveInProgress({
   title,
   icon,
@@ -26,12 +24,12 @@ export default function PopupActionTaskMoveInProgress({
   massageDo,
   color,
   swapButton,
-  action,
   ganttBarId,
   taskId,
   boardId,
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [comment, setComment] = useState(""); // State to store input value
 
   const targetRef = React.useRef(null);
   const { moveProps } = useDraggable({
@@ -40,14 +38,9 @@ export default function PopupActionTaskMoveInProgress({
     isDisabled: !isOpen,
   });
 
-  const handleChange = async () => {
-    try {
-      const result = await changeStageToUnderReviewAction(
-        taskId,
-        "IN_PROGRESS"
-      );
-      console.log("respon delete", result);
-      toast.success("Task move stage successfully!", {
+  const handleSubmit = async () => {
+    if (!comment.trim()) {
+      toast.error("Please enter a comment!", {
         position: "top-right",
         autoClose: 3000,
         hideProgressBar: false,
@@ -55,9 +48,23 @@ export default function PopupActionTaskMoveInProgress({
         pauseOnHover: true,
         draggable: true,
       });
+      return;
+    }
+
+    try {
+      const result = await FeedBackAction(taskId, { comment, taskId });
+      toast.success("Feedback submitted successfully!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+      onOpenChange(false); // Close modal on success
     } catch (error) {
-      console.error("Delete failed", error);
-      toast.error("Failed to move task!", {
+      console.error("Feedback submission failed", error);
+      toast.error("Failed to submit feedback!", {
         position: "top-right",
         autoClose: 3000,
         hideProgressBar: false,
@@ -72,7 +79,7 @@ export default function PopupActionTaskMoveInProgress({
     <>
       <Button
         onPress={onOpen}
-        className="bg-transparent h-auto  flex items-center cursor-pointer  !p-0 !border-0 w-full"
+        className="bg-transparent h-auto flex items-center cursor-pointer !p-0 !border-0 w-full"
         disableRipple={true}
         disableAnimation
       >
@@ -90,71 +97,49 @@ export default function PopupActionTaskMoveInProgress({
       >
         <ModalContent
           {...moveProps}
-          className="flex  flex-col justify-center items-center z-[50px]"
+          className="flex flex-col justify-center items-center z-[50px]"
         >
           {(onClose) => (
             <>
               <ModalHeader>
                 <div
-                  className={`w-8 h-8 rounded-full ${bgcolor}  flex justify-center items-center `}
+                  className={`w-8 h-8 rounded-full ${bgcolor} flex justify-center items-center`}
                 >
                   {icon}
                 </div>
               </ModalHeader>
               <ModalHeader>{massageTitle}</ModalHeader>
               <ModalBody>
-                <p className="   text-center break-words text-balance">
+                <p className="text-center break-words text-balance">
                   {massageBody}
                 </p>
+                <Input
+                  placeholder="Enter your feedback"
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                  className="mt-4"
+                />
               </ModalBody>
-
-              {massageDo || massageUndo != null ? (
-                swapButton ? (
-                  <ModalFooter>
-                    <form action={action}>
-                      <Button
-                        className="bg-green-500 text-white font-semibold"
-                        // onPress={onClose}
-                      >
-                        <p className="text-red-500">{massageDo}</p>
-                      </Button>
-                    </form>
-                    <Button
-                      className={`bg-slate-blue-more text-white font-semibold`}
-                      variant="light"
-                      onPress={onClose}
-                    >
-                      <p className="text-blue-500">{massageUndo}</p>
-                    </Button>
-                  </ModalFooter>
-                ) : (
-                  <ModalFooter>
-                    <Button
-                      className={`bg-slate-blue-more text-white font-semibold`}
-                      variant="light"
-                      onPress={onClose}
-                    >
-                      <p className="text-blue-500">{massageUndo}</p>
-                    </Button>
-                    <form action={action}>
-                      <Button
-                        className="bg-green-300 text-white font-semibold"
-                        onPress={onClose}
-                        onClick={handleChange}
-                        // onPress={onClose}
-                      >
-                        <p className="text-white">{massageDo}</p>
-                      </Button>
-                    </form>
-                  </ModalFooter>
-                )
-              ) : (
-                <div className="h-5"></div>
-              )}
+              <ModalFooter>
+                <Button
+                  className="bg-slate-blue-more text-white font-semibold"
+                  variant="light"
+                  onPress={onClose}
+                >
+                  <p className="text-blue-500">{massageUndo}</p>
+                </Button>
+                <Button
+                  className="bg-green-300 text-white font-semibold"
+                  onPress={handleSubmit}
+                >
+                  <p className="text-white">{massageDo}</p>
+                </Button>
+              </ModalFooter>
             </>
           )}
         </ModalContent>
       </Modal>
+      <ToastContainer />
     </>
   );
 }

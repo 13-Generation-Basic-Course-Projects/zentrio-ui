@@ -49,14 +49,24 @@ export default function ModalCreateWorkspace({ createWorkspace }) {
   // Load color from localStorage when modal opens or title changes
   React.useEffect(() => {
     if (isOpen && watchedTitle) {
-      const savedColorClass = localStorage.getItem(
-        `workspaceColor-${watchedTitle}`
-      );
-      if (savedColorClass) {
-        const color = colorOptions.find((c) => c.className === savedColorClass);
-        setSelectedOption(color || null);
-      } else {
-        setSelectedOption(null);
+      // Only access localStorage on client side
+      if (typeof window !== "undefined") {
+        try {
+          const savedColorClass = localStorage.getItem(
+            `workspaceColor-${watchedTitle}`
+          );
+          if (savedColorClass) {
+            const color = colorOptions.find(
+              (c) => c.className === savedColorClass
+            );
+            setSelectedOption(color || null);
+          } else {
+            setSelectedOption(null);
+          }
+        } catch (error) {
+          console.warn("Failed to access localStorage:", error);
+          setSelectedOption(null);
+        }
       }
     }
   }, [isOpen, watchedTitle]);
@@ -77,20 +87,30 @@ export default function ModalCreateWorkspace({ createWorkspace }) {
   };
 
   const onSubmit = async (data) => {
+    if (!createWorkspace) {
+      console.error("createWorkspace function is not provided");
+      return;
+    }
+
     try {
       await createWorkspace(data); // backend create action
 
-      if (selectedOption?.className) {
-        localStorage.setItem(
-          `workspaceColor-${data.title}`,
-          selectedOption.className
-        );
+      // Only access localStorage on client side
+      if (typeof window !== "undefined" && selectedOption?.className) {
+        try {
+          localStorage.setItem(
+            `workspaceColor-${data.title}`,
+            selectedOption.className
+          );
+          console.log("Color that selected in workspace: ", selectedOption);
+          console.log(
+            "Saved color in localStorage:",
+            localStorage.getItem(`workspaceColor-${data.title}`)
+          );
+        } catch (error) {
+          console.warn("Failed to save to localStorage:", error);
+        }
       }
-      console.log("Color that seleted in workspace: ", selectedOption);
-      console.log(
-        "Saved color in localStorage:",
-        localStorage.getItem(`workspaceColor-${data.title}`)
-      );
 
       reset();
       setSelectedOption(null);
@@ -100,12 +120,8 @@ export default function ModalCreateWorkspace({ createWorkspace }) {
         router.refresh();
       });
     } catch (err) {
-      console.error(err);
+      console.error("Error creating workspace:", err);
     }
-  };
-  const onValid = (data) => {
-    console.log("Creating board with:", data);
-    // onClose();
   };
 
   return (
@@ -225,24 +241,24 @@ export default function ModalCreateWorkspace({ createWorkspace }) {
                       placeholder="Type here"
                       className={`
                         w-full bg-transparent text-title/50 text-caption
-                        border border-gray-300 rounded-full px-9 h-10
+                        border border-gray-300 rounded-2xl px-9 py-3 min-h-[80px]
                         focus:outline-none focus:border-primary
-                        transition-all duration-150 ease-in-out
+                        transition-all duration-150 ease-in-out resize-none
                       `}
                       style={{
                         backgroundImage: `url("data:image/svg+xml;utf8,${svgIconType}")`,
                         backgroundRepeat: "no-repeat",
-                        backgroundPosition: "10px calc(1em + 0px)",
+                        backgroundPosition: "10px 15px",
                         paddingLeft: "36px",
                         lineHeight: "1.4",
                       }}
                     />
+                    {errors.description && (
+                      <p className="text-red-500 text-caption-tiny">
+                        *{errors.description.message}*
+                      </p>
+                    )}
                   </div>
-                  {errors.description && (
-                    <p className="text-red-500 text-caption-tiny">
-                      *{errors.description.message}*
-                    </p>
-                  )}
                 </div>
 
                 <div className="border border-bgColor my-4"></div>
@@ -251,8 +267,7 @@ export default function ModalCreateWorkspace({ createWorkspace }) {
                   <button
                     type="submit"
                     disabled={isPending}
-                    onPress={handleSubmit(onValid)} // <-- validate before doing anything
-                    className="bg-primary text-white px-4 py-2 rounded-full"
+                    className="bg-primary text-white px-4 py-2 rounded-full hover:bg-primary/90 transition-colors disabled:opacity-50"
                   >
                     {isPending ? "Creating..." : "Create Workspace"}
                   </button>

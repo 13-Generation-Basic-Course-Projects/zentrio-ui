@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import logo from "@/public/image/Zentrio-Logo.png";
 
@@ -46,27 +46,31 @@ export default function WorkSpaceSideBar({
   const pathname = usePathname();
   const { toggleSidebar } = useSidebar();
   const [selectedId, setSelectedId] = useState("");
+  const [isClient, setIsClient] = useState(false);
+  const [workspaceColors, setWorkspaceColors] = useState({});
 
-  /*
-  const workspaceColors = {};
-  if (Array.isArray(workspaceData?.payload)) {
-    workspaceData.payload.forEach((ws) => {
-      // Try to get saved color from localStorage using workspace title (or workspaceId if you prefer)
-      const savedColor = localStorage.getItem(`workspaceColor-${ws.title}`);
-      console.log("Save color at sidebar: ", savedColor);
+  // Initialize client-side rendering flag
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
-      if (savedColor) {
-        workspaceColors[ws.workspaceId] = savedColor;
-      } else {
-        // fallback: assign color by index or default color
-        const index = workspaceData.payload.indexOf(ws);
-        workspaceColors[ws.workspaceId] =
-          colorOptions[index % colorOptions.length].className;
-      }
-    });
-  }
-  */
+  // Calculate workspace colors only on client side
+  useEffect(() => {
+    if (isClient && Array.isArray(workspaceData?.payload)) {
+      const colors = {};
+      workspaceData.payload.forEach((ws, index) => {
+        colors[ws.workspaceId] = getWorkspaceColor(ws, index);
+      });
+      setWorkspaceColors(colors);
+    }
+  }, [isClient, workspaceData]);
+
   const getWorkspaceColor = (workspace, index) => {
+    // Only access localStorage on client side
+    if (typeof window === "undefined") {
+      return colorOptions[index % colorOptions.length].className;
+    }
+
     try {
       const savedColor = localStorage.getItem(
         `workspaceColor-${workspace.title}`
@@ -78,14 +82,10 @@ export default function WorkSpaceSideBar({
     }
   };
 
-  const workspaceColors = {};
-  if (Array.isArray(workspaceData?.payload)) {
-    workspaceData.payload.forEach((ws, index) => {
-      workspaceColors[ws.workspaceId] = getWorkspaceColor(ws, index);
-    });
-  } else {
-    console.warn("workspaceData.payload is not an array or is undefined");
-  }
+  // Don't render the full component until client-side hydration is complete
+  // But still render the basic structure to avoid hydration issues
+  const shouldShowColors = isClient;
+
   return (
     <Sidebar collapsible="icon" className="border-none rounded-tr-2xl bg-white">
       <SidebarContent className="h-screen flex flex-col !border-0 overflow-hidden">
@@ -136,10 +136,9 @@ export default function WorkSpaceSideBar({
                   .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
                   .map((item, i) => {
                     const isActive = pathname.includes(item?.workspaceId);
-                    const bgColor = workspaceColors[item.workspaceId]
-                      ?.toLowerCase()
-                      .startsWith("bg-")
-                      ? workspaceColors[item.workspaceId]
+                    const bgColor = shouldShowColors
+                      ? workspaceColors[item.workspaceId] ||
+                        colorOptions[i % colorOptions.length].className
                       : colorOptions[i % colorOptions.length].className;
 
                     return (
