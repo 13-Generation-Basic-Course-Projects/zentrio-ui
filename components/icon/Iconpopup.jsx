@@ -42,3 +42,48 @@ export function IconpopupDelete() {
     </div>
   );
 }
+
+export function IconPopupEdit() {
+  return (
+    <div>
+      <svg
+        width="18"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M15.2322 5.23223L18.7678 8.76777L8.5 19.0355L4 20L4.96447 15.5L15.2322 5.23223ZM20.0711 7.46447C20.4626 7.07294 20.4626 6.43978 20.0711 6.04825L17.9518 3.92893C17.5603 3.53741 16.9271 3.53741 16.5356 3.92893L15.1213 5.34315L18.6569 8.87868L20.0711 7.46447Z"
+          fill="#143A47"
+        />
+      </svg>
+    </div>
+  );
+}
+
+export function IconPopupPined() {
+  return (
+    <div>
+      <svg
+        width="18"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        stroke="#339fff"
+        strokeWidth="1.5"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="m15 11.25 1.5 1.5.75-.75V8.758l2.276-.61a3 3 0 1 0-3.675-3.675l-.61 2.277H12l-.75.75 1.5 1.5M15 11.25l-8.47 8.47c-.34.34-.8.53-1.28.53s-.94.19-1.28.53l-.97.97-.75-.75.97-.97c.34-.34.53-.8.53-1.28s.19-.94.53-1.28L12.75 9M15 11.25 12.75 9"
+          fill="#339fff"
+        />
+      </svg>
+    </div>
+  );
+}
+
+
+
