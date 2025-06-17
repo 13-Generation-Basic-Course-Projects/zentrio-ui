@@ -132,7 +132,7 @@ export const createNoteInCalendarService = async ({
 */
 // service\calendarV2.service.js
 
-export const getAllNoteInCalendarService = async ({ taskId, token }) => { 
+export const getAllNoteInCalendarService = async ({ taskId, token }) => {
   console.log("Service - Received taskId (should be string):", taskId);
 
   try {
@@ -141,21 +141,39 @@ export const getAllNoteInCalendarService = async ({ taskId, token }) => {
 
     const res = await fetch(url, {
       method: "GET",
-      next:{
-        tags : ["calendar"]
+      next: {
+        tags: ["calendar"],
       },
       headers: {
         accept: "*/*",
         Authorization: `Bearer ${token}`,
       },
-      // next: {
-      //   tags: ["calendar"],
-      // },
     });
+
+    
+    if (res.status === 404) {
+      console.log("Service - No notes found for taskId:", taskId);
+     
+      return { data: [], message: "No notes found" };
+    }
+
+    if (!res.ok) {
+      // Handle other HTTP errors (500, 403, etc.)
+      const errorText = await res.text();
+      console.error(`Service - HTTP Error ${res.status}:`, errorText);
+      throw new Error(`HTTP ${res.status}: ${errorText}`);
+    }
+
     const data = await res.json();
     console.log("Service - getAllNoteInCalendar (successful data):", data);
     return data;
   } catch (error) {
+    // Handle network errors and other exceptions
+    if (error.name === "TypeError" && error.message.includes("fetch")) {
+      console.error("Service - Network error:", error.message);
+      throw new Error("Network connection failed");
+    }
+
     console.error("Service - Error fetching note in Calendar:", error.message);
     throw error;
   }

@@ -87,3 +87,39 @@ export const deleteAnnouncementByIdService = async (id, token) => {
   
   
 };
+
+export const pinedAnnouncementByIdService = async (announId, token) => {
+  console.log("pin id service",announId);
+
+  const url = announcementRouteGroup.pinedAnnouncementById(announId);
+  const res = await fetch(url, {
+    method: "PUT",
+    headers: {
+      "accept": "*/*",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  const data = await res.json();
+  return data;
+};
+
+export const updateAnnouncementByIdService = async ({announId, description, title, boardId, token}) => {
+  console.log("update announ service",announId, description, title, boardId, token);
+  const payload={
+    description: description,
+    title: title,
+    boardId: boardId
+  }
+  const url = announcementRouteGroup.updateAnnouncementById(announId);
+  const res = await fetch(url, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload)
+  });
+  const data = await res.json();
+  console.log("update data", data);
+  return data; 
+};

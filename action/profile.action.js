@@ -6,6 +6,7 @@ import {
   getPreviewProfileService,
   getUserAchievementService,
   updateAchievementService,
+  updateProfileImageService,
   updateUserProfileService,
 } from "@/service/profile.service";
 import { revalidatePath } from "next/cache";
@@ -73,5 +74,16 @@ export const getPreviewProfileAction = async () => {
   const result = await getPreviewProfileService({
     token,
   });
+  return result;
+};
+
+
+
+export const updateProfileImageAction = async ({formData}) => {
+  console.log("paylaod data", formData);
+  const userToken = await Token();
+  const token = userToken.Credential;
+  const result = await updateProfileImageService({ token, formData });
+  revalidatePath("/updateProfile");
   return result;
 };
