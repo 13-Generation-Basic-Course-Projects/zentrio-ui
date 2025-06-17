@@ -5,8 +5,13 @@ import commentlogo from "../../assets/Comment.png";
 import profile from "../../public/image/minh.png";
 import { SquarePen, AlarmClock, Trash2 } from "lucide-react";
 import { calendarUpdateNoteAction } from "@/action/calendar.action";
-import { deleteNoteInCalendarAction, getAllNoteInCalendarAction, updateNoteInCalendarAction } from "@/action/calendarV2.action";
+import {
+  deleteNoteInCalendarAction,
+  getAllNoteInCalendarAction,
+  updateNoteInCalendarAction,
+} from "@/action/calendarV2.action";
 import ModalDelete from "../modal/ModalDelete";
+import { toast } from "react-toastify";
 
 export default function CardTCommentCalender({
   selectedTaskId,
@@ -36,18 +41,18 @@ export default function CardTCommentCalender({
     }
 
     try {
-      console.log(
-        "CardTCommentCalender - Fetching notes for Task ID:",
-        selectedTaskId
-      );
+      // console.log(
+      //   "CardTCommentCalender - Fetching notes for Task ID:",
+      //   selectedTaskId
+      // );
 
       const response = await getAllNoteInCalendarAction(selectedTaskId);
 
       setNotes(response?.payload || []);
-      console.log(
-        "CardTCommentCalender - Notes fetched successfully:",
-        response?.payload
-      );
+      // console.log(
+      //   "CardTCommentCalender - Notes fetched successfully:",
+      //   response?.payload
+      // );
     } catch (err) {
       console.error(
         "CardTCommentCalender - Error fetching notes for task:",
@@ -62,8 +67,6 @@ export default function CardTCommentCalender({
   useEffect(() => {
     fetchNotesForTask();
   }, [selectedTaskId, noteRefreshKey, fetchNotesForTask]); // Add fetchNotesForTask to dependencies
-
-  
 
   const handleUpdateNoteInline = async (noteData) => {
     if (!editingNoteText.trim()) {
@@ -80,7 +83,7 @@ export default function CardTCommentCalender({
         taskId: noteData.taskId,
       });
 
-      console.log("Note updated successfully:", result);
+      // console.log("Note updated successfully:", result);
 
       // Update the note locally
       setNotes((prevNotes) =>
@@ -105,29 +108,34 @@ export default function CardTCommentCalender({
     }
 
     try {
-      console.log("Deleting note:", { calendarId, taskId });
-
       const result = await deleteNoteInCalendarAction(calendarId, taskId);
 
-      console.log("Note deleted successfully:", result);
-      await fetchNotesForTask();
-
-      setSelectedNote(null);
-      setEditedNoteText("");
+      if (result !== "error") {
+        toast.success("Note deleted successfully!", {
+          position: "top-right",
+          autoClose: 4000,
+        });
+        await fetchNotesForTask();
+        setSelectedNote(null);
+        setEditedNoteText("");
+      } else {
+        toast.error("Failed to delete the note.");
+      }
     } catch (err) {
       console.error("Failed to delete note:", err);
+      toast.error("An unexpected error occurred while deleting the note.");
     }
   };
 
   const displayedComments = notes;
   const formatDate = (dateStr) => {
     const d = new Date(dateStr);
-    console.log("Inside formatDate - Date Str:", dateStr);
-    console.log("Inside formatDate - Date Object (toString):", d.toString());
-    console.log(
-      "Inside formatDate - Date Object (toISOString):",
-      d.toISOString()
-    );
+    // console.log("Inside formatDate - Date Str:", dateStr);
+    // console.log("Inside formatDate - Date Object (toString):", d.toString());
+    // console.log(
+    //   "Inside formatDate - Date Object (toISOString):",
+    //   d.toISOString()
+    // );
     return d.toLocaleDateString("en-GB", {
       day: "numeric",
       month: "short",
@@ -140,10 +148,13 @@ export default function CardTCommentCalender({
 
     return `${startDate} - ${endDate}`;
   };
-  
+
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [deleteData, setDeleteData] = useState({ calendarId: null, taskId: null });
-  
+  const [deleteData, setDeleteData] = useState({
+    calendarId: null,
+    taskId: null,
+  });
+
   return (
     <>
       <Card className="py-4 h-[400px] flex flex-col rounded-large shadow-sm">

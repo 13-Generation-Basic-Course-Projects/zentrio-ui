@@ -144,7 +144,7 @@ export default function MyCalender({ tasks }) {
       }
 
       setNotes(allNotes);
-      console.log(" Fetched all notes:", allNotes);
+      // console.log(" Fetched all notes:", allNotes);
     } catch (error) {
       console.error(" Error in fetchAllNotes:", error);
     } finally {
@@ -170,7 +170,7 @@ export default function MyCalender({ tasks }) {
         return [...otherTaskNotes, ...taskNotes];
       });
 
-      console.log(` Refetched notes for task ${taskId}:`, taskNotes);
+      // console.log(` Refetched notes for task ${taskId}:`, taskNotes);
       return taskNotes;
     } catch (error) {
       console.error(` Error refetching notes for task ${taskId}:`, error);
@@ -316,10 +316,21 @@ export default function MyCalender({ tasks }) {
     // const tillDateObj = new Date(endDateObj);
     // tillDateObj.setDate(tillDateObj.getDate() - 1);
     // tillDateObj.setHours(23, 59, 59, 999);
-   
+
+    // Get the selected date for note creation
+    const selectedDate = new Date(`${endDateStr}T00:00:00.000Z`);
+    // Prevent creating notes on the last day of the task period
+    // Compare the selected date with the task end date
+    if (selectedDate.getTime() === endDateObj.getTime()) {
+      toast.error("Cannot create notes on the last day of the task period!", {
+        position: "top-right",
+        autoClose: 4000,
+      });
+      return;
+    }
 
     // Prevent past-dated notes
-    if (tillDateObj < new Date()) {
+    if (endDateStr > tillDateObj) {
       toast.error("Cannot create or update notes in the past!");
       return;
     }
@@ -351,14 +362,14 @@ export default function MyCalender({ tasks }) {
             autoClose: 4000,
           }
         );
-        console.log(
-          `✅ Note ${isNewNote ? "created" : "updated"} successfully.`
-        );
+        // console.log(
+        //   `✅ Note ${isNewNote ? "created" : "updated"} successfully.`
+        // );
       }
 
       // Handle delete (when implemented)
       if (isDeletedNote) {
-        console.log(` Note deleted for Task ID: ${currentEventId}`);
+        // console.log(` Note deleted for Task ID: ${currentEventId}`);
         toast.success("Note deleted successfully!");
       }
 
@@ -382,9 +393,9 @@ export default function MyCalender({ tasks }) {
     }
   };
 
-  // ========================================
-  // EVENT HANDLERS
-  // ========================================
+  /* 
+   EVENT HANDLERS
+  */
 
   const handleTaskClick = (dateStr, taskId) => {
     const task = mappedTasks.find((t) => t.id === taskId);
@@ -468,9 +479,9 @@ export default function MyCalender({ tasks }) {
     });
   };
 
-  // ========================================
-  // RENDER FUNCTIONS
-  // ========================================
+  /* 
+   RENDER FUNCTIONS
+  */
 
  
   const renderEventContent = ({ event, isStart }) => {
@@ -652,7 +663,7 @@ export default function MyCalender({ tasks }) {
         </div>
 
         {/* Sidebar Section */}
-        <div className="w-[25%] flex flex-col gap-5 overflow-y-auto scrollbar-hidden absolute top-16 right-1">
+        <div className="w-[25%] flex flex-col gap-5 overflow-y-auto scrollbar-hidden absolute top-12 right-1 p-4">
           <CardTaskCalender
             tasks={mappedTasks}
             activeTaskId={activeTaskId}

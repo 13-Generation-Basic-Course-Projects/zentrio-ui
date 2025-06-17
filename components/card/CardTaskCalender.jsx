@@ -18,7 +18,7 @@ const colorMap = [
 export default function CardTaskCalender({ tasks, onTaskClick, activeTaskId }) {
   const [checklistCounts, setChecklistCounts] = useState({});
   const [commentCounts, setCommentCounts] = useState({}); // <-- New
-  console.log("Tasks in cardTaskCelendar: ", tasks);
+  // console.log("Tasks in cardTaskCelendar: ", tasks);
 
   useEffect(() => {
     const fetchAllChecklistCounts = async () => {
@@ -94,7 +94,7 @@ export default function CardTaskCalender({ tasks, onTaskClick, activeTaskId }) {
                     : "bg-white hover:bg-gray-50"
                 }`}
               >
-                <div className="flex items-center gap-3 flex-1 min-w-0 text-caption">
+                <div className="flex items-center gap-3 flex-1 min-w-0 text-body-sm">
                   <span
                     className={`w-3 h-3 rounded-full ${color.value} flex-shrink-0`}
                   />
