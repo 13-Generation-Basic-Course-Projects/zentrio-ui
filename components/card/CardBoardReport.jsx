@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { generateReportByBoardIdAction } from "@/action/report.action";
 
@@ -18,19 +20,29 @@ const files = [
 ];
 
 export default function CardBoardReport() {
+  const [isGenerating, setIsGenerating] = useState(false);
 
-  const handleGenerate = async () => {
-    const boardId = `d4f6ed17-3f68-48b4-9cbb-fa141a2d2000`;
-    const { blob, fileName } = await generateReportByBoardIdAction(boardId);
+  const handleGenerate = async (  ) => {
+  if (isGenerating) return;
+  setIsGenerating(true);
+  try {
+    const boardId = "d4f6ed17-3f68-48b4-9cbb-fa141a2d2000";
+    // Remove the second parameter
+    const { blob, fileName } = await generateReportByBoardIdAction({ boardId });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = fileName || "pdf"; // Fallback filename
+    a.download = fileName || "document"; // Fallback filename
     document.body.appendChild(a);
     a.click();
     a.remove();
-    window.URL.revokeObjectURL(url);
+    window.URL.revokeObjectURL(url); // Clean up
+  } catch (error) {
+    console.error("Download failed:", error);
+  } finally {
+    setIsGenerating(false);
   }
+};
   return (
     <div className="bg-white text-title text-h6 p-5 border border-gray-200  rounded-large w-full max-w-md">
       <header className="mb-4 text-h6 font-semibold">My Report Board</header>
@@ -56,9 +68,10 @@ export default function CardBoardReport() {
             <Button
               variant="ghost"
               className={`hover:text-blueActive hover:bg-transparent p-0 text-body-sm`}
-              onClick={handleGenerate}
+              onClick={() => handleGenerate(file)}
+              disabled={isGenerating}
             >
-              Generate Now
+              {isGenerating ? "Generating..." : "Generate Now"}
             </Button>
           </div>
         ))}
