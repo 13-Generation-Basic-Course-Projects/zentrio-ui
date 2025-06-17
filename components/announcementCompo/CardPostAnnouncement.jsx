@@ -115,7 +115,7 @@ export default function CardPostAnnouncement({
               )}
 
               {/* Actions */}
-              <div className="flex items-center justify-between border-t border-gray-100 pt-4">
+              <div className="flex items-center justify-between border-t border-gray-100 pt-1">
                 <div className="flex items-center gap-6">
                   <LikeReactionButton
                     announId={announcement?.announcementId}

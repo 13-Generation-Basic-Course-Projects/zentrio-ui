@@ -1,5 +1,7 @@
 import { profileRouteGroup } from "@/routes/profileRoute";
 
+
+
 // call route to config
 export const getCurrentUserProfileService = async ({ token }) => {
   const response = await fetch(profileRouteGroup.getCurrentUserProfile(), {
@@ -120,5 +122,29 @@ export const getPreviewProfileService = async ({ token }) => {
   }
 
   const data = await response.json();
+  return data;
+};
+
+
+
+
+export const updateProfileImageService = async ({ token, formData }) => {
+  const url =profileRouteGroup.updateProfileImgae();
+  console.log("url", url);
+  console.log("datakakak", formData);
+  const response = await fetch(url,{
+    method: "POST",
+    headers: {
+    
+      Authorization: `Bearer ${token}`,
+    },
+    body: formData,
+  });
+   if (!response.ok) {
+    throw new Error("Failed to fetch user profile");
+  }
+
+  const data = await response.json();
+  console.log("vit_profile",data)
   return data;
 };
