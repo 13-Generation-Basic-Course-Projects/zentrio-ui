@@ -267,6 +267,7 @@ export default async function BoardLayout({ children, params }) {
           workspaceId={workspaceId}
           getWorKSpaceJoined={getWorKSpaceJoined}
           matchingBoardForNotPM={matchingBoardForNotPM}
+          currentUserProfile={currentUserProfile}
         />
         <ToastContainer position="top-right" autoClose={3000} />
         <main>{children}</main>
@@ -274,6 +275,7 @@ export default async function BoardLayout({ children, params }) {
     );
   } catch (error) {
     console.error("Critical error in BoardLayout:", error);
+
     return (
       <div>
         <SystemBoard
@@ -290,6 +292,7 @@ export default async function BoardLayout({ children, params }) {
           workspaceId={workspaceId}
           getWorKSpaceJoined={getWorKSpaceJoined}
           matchingBoardForNotPM={matchingBoardForNotPM}
+          currentUserProfile={currentUserProfile}
         />
         <main>{children}</main>
       </div>
