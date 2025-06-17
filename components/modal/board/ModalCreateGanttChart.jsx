@@ -17,7 +17,7 @@ import { IconAdd } from "../../icon/everyicon";
 import { ganttChartSchema } from "@/lib/schemas/ganttChartSchema";
 import { createGanttChartByBoardIdAction } from "@/action/board.action";
 
-export default function ModalCreateGanttChart({ boardId }) {
+export default function ModalCreateGanttChart({ boardId, ganttChartId }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   // React Hook Form setup with Zod resolver
@@ -47,48 +47,52 @@ export default function ModalCreateGanttChart({ boardId }) {
     reset();
     onOpenChange();
   };
-
+  console.log("modal create gantchat", ganttChartId);
   return (
     <>
-      <Button
-        onPress={onOpen}
-        className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-primary border border-gray-300 rounded-[8px] shadow-sm hover:bg-[#000] h-[50px]"
-        fullWidth="true"
-      >
-        <IconAdd />
-        Create
-      </Button>
+      {!ganttChartId.includes("No data available") ? (
+        ""
+      ) : (
+        <>
+          <Button
+            onPress={onOpen}
+            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-primary border border-gray-300 rounded-[8px] shadow-sm hover:bg-[#000] h-[50px]"
+            fullWidth="true"
+          >
+            <IconAdd />
+            Create
+          </Button>
 
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="xl">
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex flex-col gap-1">
-                Create Gantt Chart
-              </ModalHeader>
-              <ModalBody>
-                <form
-                  onSubmit={handleSubmit(onSubmit)}
-                  className="flex flex-col gap-4"
-                >
-                  {/* Title Field */}
-                  <div>
-                    <Controller
-                      name="title"
-                      control={control}
-                      render={({ field }) => (
-                        <Input
-                          {...field}
-                          isRequired
-                          label="Title"
-                          labelPlacement="outside"
-                          placeholder="Input your title"
-                          type="text"
-                          isInvalid={!!errors.title}
-                          errorMessage={errors.title?.message}
-                          classNames={{
-                            label: "text-sm font-medium text-title",
-                            inputWrapper: `
+          <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="xl">
+            <ModalContent>
+              {(onClose) => (
+                <>
+                  <ModalHeader className="flex flex-col gap-1">
+                    Create Gantt Chart
+                  </ModalHeader>
+                  <ModalBody>
+                    <form
+                      onSubmit={handleSubmit(onSubmit)}
+                      className="flex flex-col gap-4"
+                    >
+                      {/* Title Field */}
+                      <div>
+                        <Controller
+                          name="title"
+                          control={control}
+                          render={({ field }) => (
+                            <Input
+                              {...field}
+                              isRequired
+                              label="Title"
+                              labelPlacement="outside"
+                              placeholder="Input your title"
+                              type="text"
+                              isInvalid={!!errors.title}
+                              errorMessage={errors.title?.message}
+                              classNames={{
+                                label: "text-sm font-medium text-title",
+                                inputWrapper: `
                               bg-white 
                               border
                               border-gray-300
@@ -105,39 +109,41 @@ export default function ModalCreateGanttChart({ boardId }) {
                               py-3
                               ${errors.title ? "border-red-500" : ""}
                             `,
-                            input: "text-caption",
-                          }}
+                                input: "text-caption",
+                              }}
+                            />
+                          )}
                         />
-                      )}
-                    />
-                  </div>
+                      </div>
 
-                  {/* Action Buttons */}
-                  <div className="grid grid-cols-2 gap-3 pt-2">
-                    <Button
-                      type="button"
-                      className="bg-transparent border-1 border-bgColor"
-                      radius="full"
-                      onPress={handleClose}
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      type="submit"
-                      color="primary"
-                      radius="full"
-                      isLoading={isSubmitting}
-                      disabled={isSubmitting}
-                    >
-                      {isSubmitting ? "Creating..." : "Save"}
-                    </Button>
-                  </div>
-                </form>
-              </ModalBody>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
+                      {/* Action Buttons */}
+                      <div className="grid grid-cols-2 gap-3 pt-2">
+                        <Button
+                          type="button"
+                          className="bg-transparent border-1 border-bgColor"
+                          radius="full"
+                          onPress={handleClose}
+                        >
+                          Cancel
+                        </Button>
+                        <Button
+                          type="submit"
+                          color="primary"
+                          radius="full"
+                          isLoading={isSubmitting}
+                          disabled={isSubmitting}
+                        >
+                          {isSubmitting ? "Creating..." : "Save"}
+                        </Button>
+                      </div>
+                    </form>
+                  </ModalBody>
+                </>
+              )}
+            </ModalContent>
+          </Modal>
+        </>
+      )}
     </>
   );
 }

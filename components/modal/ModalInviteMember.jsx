@@ -51,7 +51,11 @@ const getInitial = (str) => {
   return str.charAt(0).toUpperCase();
 };
 
-export default function ModalInviteMember({ boardId, allMemberInBoard }) {
+export default function ModalInviteMember({
+  boardId,
+  allMemberInBoard,
+  workspaceId,
+}) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [newMembers, setNewMembers] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
@@ -74,7 +78,7 @@ export default function ModalInviteMember({ boardId, allMemberInBoard }) {
   });
 
   // const boardId = "feb6d22e-b2d6-4105-b3ad-663c7148c337";
-  //console.log("+++log boardId", boardId);
+  console.log("+++log workspaceId", workspaceId);
   // Watch form values to determine button text and state
   const watchedEmail = watch("email");
   const watchedRole = watch("role");
@@ -114,6 +118,7 @@ export default function ModalInviteMember({ boardId, allMemberInBoard }) {
 
       const result = await inviteMemberToBoardAction({
         boardId,
+        workspaceId,
         data: inviteData,
       });
       if (result.success) {

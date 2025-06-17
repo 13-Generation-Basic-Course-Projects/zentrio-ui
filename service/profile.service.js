@@ -2,14 +2,11 @@ import { profileRouteGroup } from "@/routes/profileRoute";
 
 // call route to config
 export const getCurrentUserProfileService = async ({ token }) => {
-  const response = await fetch(
-    profileRouteGroup.getCurrentUserProfile(),
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+  const response = await fetch(profileRouteGroup.getCurrentUserProfile(), {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
   if (!response.ok) {
     throw new Error("Failed to fetch user profile");
@@ -20,24 +17,18 @@ export const getCurrentUserProfileService = async ({ token }) => {
 };
 
 export const updateUserProfileService = async ({ token, userData }) => {
-  const response = await fetch(
-    profileRouteGroup.updateCurrentUserProfile(),
-    {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(userData),
-    }
-  );
+  const response = await fetch(profileRouteGroup.updateCurrentUserProfile(), {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(userData),
+  });
 
   const data = await response.json();
   return data;
 };
-
-
-
 
 export const getUserAchievementService = async ({ token }) => {
   const response = await fetch(profileRouteGroup.getCurrentUserAchievement(), {
@@ -49,10 +40,7 @@ export const getUserAchievementService = async ({ token }) => {
   return data;
 };
 
-
-
 export const updateAchievementService = async ({ token, payload }) => {
-  console.log("payload", payload);
 
   let method = "POST";
   let endpoint = profileRouteGroup.setUpAchievementCurrentUser({ token });
@@ -119,3 +107,18 @@ export const updateAchievementService = async ({ token, payload }) => {
   return result;
 };
 
+// call route to config
+export const getPreviewProfileService = async ({ token }) => {
+  const response = await fetch(profileRouteGroup.getPreviewProfile(), {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch user profile");
+  }
+
+  const data = await response.json();
+  return data;
+};

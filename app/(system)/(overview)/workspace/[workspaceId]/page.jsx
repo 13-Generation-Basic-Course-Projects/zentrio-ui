@@ -1,4 +1,5 @@
 import {
+  
   createBoardAction,
   deleteBoardAction,
   getAllBoardBywWorkspaceIdAction,
@@ -18,10 +19,7 @@ export default async function WorkspaceSpcific({ params }) {
   const getBoardByWorkspaceId = await getAllBoardBywWorkspaceIdAction(
     workspaceId
   );
-  /* 
-  *test call endpoint upload image action 
-  */
- 
+  
 
   return (
     <>

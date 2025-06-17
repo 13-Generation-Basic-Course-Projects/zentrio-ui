@@ -12,12 +12,12 @@ import ProgressBar from "./ProgressBar";
 function ProfileDetailsCard({ currentUserProfile }) {
   const userDetails = currentUserProfile?.payload?.user || {};
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 overflow-y-auto">
       <div className="p-4 rounded-xl shadow bg-white">
         <h3 className="text-md font-semibold mb-2">
           Overall Board Completeness
         </h3>
-        <ProgressBar/>
+        <ProgressBar />
       </div>
 
       <div className="rounded-xl shadow bg-white">
@@ -31,13 +31,18 @@ function ProfileDetailsCard({ currentUserProfile }) {
               Personal Details
             </p>
             <p className="flex items-center gap-2">
-              <IconUser strokeWidth={1.5} size={4} /> {userDetails.username || "N/A"}
+              <IconUser strokeWidth={1.5} size={4} />{" "}
+              {userDetails.username || "N/A"}
             </p>
             <p className="flex items-center gap-2">
-              <Shield className="w-4 h-4" /> {userDetails.gender === "OTHER"? "Other" : userDetails.gender || "N/A"}
+              <Shield className="w-4 h-4" />{" "}
+              {userDetails.gender === "OTHER"
+                ? "Other"
+                : userDetails.gender || "N/A"}
             </p>
             <p className="flex items-center gap-2">
-              <IconJob strokeWidth={1.5} size={4} /> {userDetails?.position || "N/A"}
+              <IconJob strokeWidth={1.5} size={4} />{" "}
+              {userDetails?.position || "N/A"}
             </p>
             <p className="flex items-center gap-2">
               <IconMap strokeWidth={1.5} size={4} color={"currentColor"} />{" "}
@@ -56,7 +61,12 @@ function ProfileDetailsCard({ currentUserProfile }) {
             <p className="font-semibold text-description mb-2">Contacts</p>
             <p className="flex items-center gap-2">
               <IconPhone strokeWidth={1.5} size={4} color={"currentColor"} />{" "}
-              +855 {userDetails?.contact ? userDetails?.contact?.startsWith("0") ? userDetails.contact.slice(1) : userDetails.contact : "N/A"}
+              +855{" "}
+              {userDetails?.contact
+                ? userDetails?.contact?.startsWith("0")
+                  ? userDetails.contact.slice(1)
+                  : userDetails.contact
+                : "N/A"}
             </p>
             <p className="flex items-center gap-2">
               <IconMail strokeWidth={1.5} size={4} color={"currentColor"} />{" "}

@@ -11,43 +11,72 @@ import {
   useDisclosure,
 } from "@heroui/react";
 import { IconFolder } from "../../icon/everyicon";
-import { CardFile } from "../../card/CardDoc";
+import CardFolder, { CardFile } from "../../card/CardDoc";
 import { getFileByFolderIdAction } from "@/action/document.action";
+import NoFilesFound from "./NoFilesFound";
+import ModalCreateDocuInFolder from "./ModalCreateDocuInFolder";
 
-export default function ModalFolderList({ title, folderId, accessToken }) {
+export default function ModalFolderList({
+  title,
+  folderId,
+  boardId,
+  accessToken,
+}) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [data, setData] = useState([]); // State to store fetched data
-  const [loading, setLoading] = useState(true); // State to handle loading
-  const [error, setError] = useState(null); // State to handle errors
+  const [currentFolderId, setCurrentFolderId] = useState(folderId);
+  const [folderStack, setFolderStack] = useState([folderId]); // for "back" navigation
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Fetch data when component mounts or folderId changes
+  // Check if we're in a subfolder (not the root folder)
+  const isInSubfolder = folderStack.length > 1;
+
+  const goToFolder = (newFolderId) => {
+    setFolderStack((prev) => [...prev, newFolderId]);
+    setCurrentFolderId(newFolderId);
+  };
+
+  const goBack = () => {
+    if (folderStack.length > 1) {
+      const updatedStack = [...folderStack];
+      updatedStack.pop(); // remove current folder
+      const prevFolder = updatedStack[updatedStack.length - 1];
+      setFolderStack(updatedStack);
+      setCurrentFolderId(prevFolder);
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const result = await getFileByFolderIdAction(accessToken, folderId);
-        console.log("Fetched result:", result); // Debug: Log the result
-
-        // Ensure result.payload is an array, fallback to empty array
+        const result = await getFileByFolderIdAction(accessToken, currentFolderId);
         const payload = Array.isArray(result?.payload) ? result.payload : [];
         setData(payload);
         setLoading(false);
       } catch (err) {
         console.error("Error fetching files:", err);
         setError("Failed to fetch files");
-        setData([]); // Ensure data is an array even on error
+        setData([]);
         setLoading(false);
       }
     };
 
-    if (folderId) {
+    if (currentFolderId) {
       fetchData();
-    } else {
-      console.warn("No folderId provided"); // Debug: Warn if folderId is missing
-      setData([]);
-      setLoading(false);
     }
-  }, [folderId, accessToken]);
+  }, [currentFolderId, accessToken]);
+
+  // Determine grid layout based on whether we're in a subfolder
+  const getGridLayout = () => {
+    if (isInSubfolder) {
+      // Different layout for subfolder - could be list view, different grid, etc.
+      return "grid grid-cols-2 gap-6"; // 2 columns instead of 4
+      // Or use: "flex flex-col space-y-3" for list view
+    }
+    return "grid grid-cols-4 gap-4"; // Default 4-column grid for root
+  };
 
   return (
     <>
@@ -63,6 +92,7 @@ export default function ModalFolderList({ title, folderId, accessToken }) {
           </p>
         </div>
       </Button>
+
       <Modal
         isOpen={isOpen}
         onOpenChange={onOpenChange}
@@ -70,8 +100,6 @@ export default function ModalFolderList({ title, folderId, accessToken }) {
         scrollBehavior="inside"
         classNames={{
           base: "overflow-hidden",
-          backdrop: "overflow-hidden",
-          wrapper: "overflow-hidden",
           body: "overflow-hidden",
         }}
         isDismissable={false}
@@ -80,47 +108,78 @@ export default function ModalFolderList({ title, folderId, accessToken }) {
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">{title}</ModalHeader>
+              <ModalHeader className="flex justify-between items-center">
+                <div className="flex gap-2 items-center">
+                  {folderStack.length > 1 && (
+                    <button
+                      onClick={goBack}
+                      className="text-sm px-2 py-1 bg-gray-100 hover:bg-gray-200 rounded"
+                    >
+                      ← Back
+                    </button>
+                  )}
+                  <span className="text-lg font-bold">
+                    {title}
+                    {isInSubfolder && " - Subfolder View"}
+                  </span>
+                </div>
+              </ModalHeader>
+
               <ModalBody>
                 {loading ? (
                   <p>Loading...</p>
                 ) : error ? (
                   <p className="text-red-500">{error}</p>
                 ) : data.length === 0 ? (
-                  <p>No files found</p>
+                  <NoFilesFound />
                 ) : (
-                  <div className="grid grid-cols-4 gap-4 overflow-y-auto scrollbar-hidden pb-[250px] p-2">
+                  <div className={`${getGridLayout()} overflow-y-auto pb-[250px] p-2`}>
                     {data.map((el, i) => {
-                      // Skip folders based on mimeType
-                      if (
-                        el.mimeType === "application/vnd.google-apps.folder"
-                      ) {
-                        return null;
-                      }
-                      // Map backend fields to CardFile props
-                      const fileType =
-                        el.mimeType.split("application/vnd.google-apps.")[1] ||
-                        el.mimeType.split("/")[1] ||
-                        "file";
-                      return (
+                      const isFolder = el.mimeType === "application/vnd.google-apps.folder";
+                      const fileType = el.mimeType.includes("document")
+                        ? "docx"
+                        : el.mimeType.includes("spreadsheet")
+                        ? "xlsx"
+                        : el.mimeType.includes("presentation")
+                        ? "pptx"
+                        : el.mimeType.includes("folder")
+                        ? "folder"
+                        : el.mimeType.split("/")[1] || "file";
+
+                      return isFolder ? (
+                        <CardFolder
+                          key={`folder-${i}`}
+                          title={el.name || "Untitled Folder"}
+                          status={el.status || "personal"}
+                          date={new Date().toISOString().split("T")[0]}
+                          link={el.webViewLink}
+                          documentId={el.id}
+                          folderId={el.id}
+                          tokenFromGoogle={accessToken}
+                          onClick={() => goToFolder(el.id)} // change folder content inside modal
+                        />
+                      ) : (
                         <CardFile
-                          key={el.id || i} // Use id for unique key
-                          title={el.name} // Map name to title
-                          status="public" // Default status
-                          date={new Date().toISOString().split("T")[0]} // Default date
-                          type={fileType} // Extract file type
-                          webViewLink={el.webViewLink} // Optional
+                          key={el.id || i}
+                          title={el.name}
+                          status={el.status || "personal"}
+                          date={new Date().toISOString().split("T")[0]}
+                          type={fileType}
+                          link={el.webViewLink}
                         />
                       );
                     })}
                   </div>
                 )}
+
+                <ModalCreateDocuInFolder
+                  folderId={currentFolderId}
+                  boardId={boardId}
+                  tokenFromGoogle={accessToken}
+                />
               </ModalBody>
-              <ModalFooter>
-                <Button color="danger" variant="light" onPress={onClose}>
-                  Close
-                </Button>
-              </ModalFooter>
+
+              <ModalFooter />
             </>
           )}
         </ModalContent>

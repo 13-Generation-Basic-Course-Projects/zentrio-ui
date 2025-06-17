@@ -3,7 +3,7 @@ import Image from "next/image";
 import notification from "../../assets/notification.png";
 import Link from "next/link";
 import React, { useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import KanbanBoard from "../kanban/Kanban";
 import GanttChart from "../Gantt/GanttChart";
 import userProfile from "@/assets/profile.png";
@@ -13,6 +13,8 @@ import ModalCreateTask from "../modal/board/ModalCreateTask";
 import ModalNotification from "../modal/noti/ModalNotification";
 import ModalCreateGanttChart from "../modal/board/ModalCreateGanttChart";
 import ModalCreateGanttBar from "../modal/board/ModalCreateGanttBar";
+import { data } from "autoprefixer";
+import NotFound from "@/app/not-found";
 
 export default function SystemBoard({
   user,
@@ -24,34 +26,93 @@ export default function SystemBoard({
   ganttChartId,
   ganttChartName,
   preventUserImage,
+  boardData,
+  matchingBoardForNotPM,
+  workspaceId,
 }) {
-  const pathname = usePathname();
-  const segments = pathname.split("/");
-  const workspaceId = segments[2]; // gets workspaceId from URL like /dashboard/otherworkspace/2/board
+  if (
+    !boardData ||
+    boardData.status >= 400 ||
+    boardData.type === "about:blank"
+  ) {
+    return <NotFound />;
+  }
 
   const [activeTab, setActiveTab] = useState("kanban");
+  console.log(matchingBoardForNotPM, "roleeeeee");
 
-  console.log("board id for passing prop", ganttChartId);
+  // Get role from matchingBoardForNotPM with priority logic
+  const getUserRole = (roles) => {
+    if (!roles || roles.length === 0) return "ROLE_MEMBER";
 
-  // Conditionally add ModalInviteMember only if workspaceId is NOT 'otherworkspace'
+    // If has 3 roles (ROLE_LEADER, ROLE_MEMBER, ROLE_MANAGER), return ROLE_MANAGER
+    if (roles.length === 3 && roles.includes("ROLE_MANAGER")) {
+      return "ROLE_MANAGER";
+    }
+
+    // If has 2 roles (ROLE_LEADER, ROLE_MEMBER), return ROLE_LEADER
+    if (roles.length === 2 && roles.includes("ROLE_LEADER")) {
+      return "ROLE_LEADER";
+    }
+
+    // Default to highest priority role available
+    if (roles.includes("ROLE_MANAGER")) return "ROLE_MANAGER";
+    if (roles.includes("ROLE_LEADER")) return "ROLE_LEADER";
+    return "ROLE_MEMBER";
+  };
+
+  // Updated role assignment
+  const role =
+    matchingBoardForNotPM === null
+      ? "ROLE_MANAGER"
+      : getUserRole(matchingBoardForNotPM?.role) || user.role || "ROLE_MEMBER";
+
+  console.log("data board", boardData);
+  console.log("data fav", boardData?.payload?.isFavourite);
+  console.log("user role from board:", role);
+
+  const favBoard = boardData?.payload?.isFavourite;
+
+  // Modal components based on role
   const modalComponents = [
-    <ModalCreateTask
-      key="create-task"
-      boardId={boardId}
-      ganttChartId={ganttChartId}
-      ganttbar={ganttbar}
-      allMemberInBoard={allMemberInBoard}
-    />,
-    workspaceId !== "otherworkspace" && (
+    (role === "ROLE_LEADER" || role === "ROLE_MANAGER") && (
+      <ModalCreateTask
+        key="create-task"
+        boardId={boardId}
+        ganttChartId={ganttChartId}
+        ganttbar={ganttbar}
+        allMemberInBoard={allMemberInBoard}
+        isGanttChartId={ganttChartId}
+        setActiveTab={setActiveTab}
+      />
+    ),
+    role === "ROLE_MANAGER" && (
       <ModalInviteMember
         key="invite-member"
         boardId={boardId}
         allMemberInBoard={allMemberInBoard}
+        workspaceId={workspaceId}
       />
     ),
-    <StarBoard key="star-board" />,
+    <StarBoard key="star-board" favBoard={favBoard} />,
   ].filter(Boolean);
 
+  // GanttChart modal based on role
+  const ganttModal =
+    role === "ROLE_MEMBER" || role === "ROLE_LEADER"
+      ? []
+      : [
+          <ModalCreateGanttChart
+            key="create-gantt-chart"
+            boardId={boardId}
+            ganttChartId={ganttChartId}
+          />,
+          <ModalCreateGanttBar
+            key="create-gantt-bar"
+            boardId={boardId}
+            ganttChartId={ganttChartId}
+          />,
+        ];
   const tabItems = [
     {
       key: "kanban",
@@ -76,11 +137,15 @@ export default function SystemBoard({
       ),
       content: (
         <KanbanBoard
+          role={role}
           modal={modalComponents}
           tasks={tasks}
           checklistbyTaskIds={checklistbyTaskIds}
           allMemberInBoard={allMemberInBoard}
           preventUserImage={preventUserImage}
+          boardData={boardData}
+          ganttbar={ganttbar}
+          boardId={boardId}
         />
       ),
     },
@@ -173,17 +238,7 @@ export default function SystemBoard({
 
       content: (
         <GanttChart
-          modal={[
-            <ModalCreateGanttChart
-              key="create-gantt-chart"
-              boardId={boardId}
-            />,
-            <ModalCreateGanttBar
-              key="create-gantt-bar"
-              boardId={boardId}
-              ganttChartId={ganttChartId}
-            />,
-          ]}
+          modal={ganttModal}
           ganttbar={ganttbar}
           ganttChartName={ganttChartName}
         />

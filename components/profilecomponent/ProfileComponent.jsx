@@ -11,7 +11,7 @@ export default function ProfileComponent({
     <div className="min-h-screen p-2">
       <div className="grid grid-cols-1 md:grid-cols-[43%_55%] gap-2 ">
         {/* Left Column: Profile Details */}
-        <div className="p-2">
+        <div className="max-h-[calc(100vh-12rem)] overflow-y-auto scrollbar-hidden  pb-[350px] p-2">
           <ProfileDetailsCard currentUserProfile={currentUserProfile} />
         </div>
 

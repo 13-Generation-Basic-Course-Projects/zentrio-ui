@@ -11,17 +11,29 @@ import {
 import iconMember from "@/assets/memberSideBar.png";
 import Image from "next/image";
 import ModalDelete from "../modal/ModalDelete";
+import { usePathname, useSearchParams } from "next/navigation";
 
 // Props expected: title, image, isFavourite, boardId, workspaceId, updateFavAction, deleteBoardAction
 export default function CardBoardFavorite({
   title,
   image,
   boardId,
-  workspaceId,
+  // workspaceId,
   isFavourite,
   updateFavAction,
   deleteBoardAction,
+  role,
 }) {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  /* Extract workspaceId and projectId from the current URL */
+  const pathSegments = pathname.split("/");
+  const workspaceId = pathSegments[2] || "defaultWorkspace";
+  const projectId = pathSegments[3] || "defaultProject";
+
+  const userRole = role || searchParams.get("role") || "pm";
+
   const [favorited, setFavorited] = useState(isFavourite);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
@@ -66,7 +78,7 @@ export default function CardBoardFavorite({
 
       {/* Body */}
       <CardBody className="overflow-visible py-2">
-        <Link href={`/dashboard/1/1/board`}>
+        <Link href={`/dashboard/${workspaceId}/${boardId}/board?role=${role}`}>
           {image && image.startsWith("bg-") ? (
             <div
               className={`rounded-xl w-full h-32 bg-cover bg-center ${image}`}

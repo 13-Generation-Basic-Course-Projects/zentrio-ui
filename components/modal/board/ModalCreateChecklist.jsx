@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useMemo, useCallback } from "react";
 import {
   Modal,
   ModalContent,
@@ -8,46 +8,155 @@ import {
   ModalFooter,
   Button,
   useDisclosure,
-  Card,
+  DateRangePicker,
 } from "@heroui/react";
-import { IconAdd } from "../../icon/everyicon";
+import { useForm, Controller } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { parseDate, getLocalTimeZone, today } from "@internationalized/date";
+import { checklistSchema } from "@/lib/schemas/createCheckListSchema";
+import { createCheckListAction } from "@/action/board.action";
+import { toast, ToastContainer } from "react-toastify";
 
 export default function ModalCreateChecklist({
-  input,
   onSubmit,
   buttonText = "Create",
   modalTitle = "Create Checklist",
+  taskid,
+  finishedAt,
+  startedAt,
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [formData, setFormData] = useState({
-    title: "",
-    duration: "",
-    description: "",
+
+  // Memoize all computed values to prevent recalculation
+  const {
+    taskStartDate,
+    taskEndDate,
+    todayDate,
+    defaultStart,
+    defaultEnd,
+    minValue,
+    maxValue,
+    memoizedSchema,
+    defaultValues,
+  } = useMemo(() => {
+    // Convert the task dates to the correct format for default values
+    const taskStartDate = startedAt ? startedAt.split("T")[0] : null;
+    const taskEndDate = finishedAt ? finishedAt.split("T")[0] : null;
+
+    // Get today's date in the local timezone
+    const todayDate = today(getLocalTimeZone());
+
+    // Set default values based on task dates or fallback to today + 7 days
+    const defaultStart = taskStartDate || todayDate.toString();
+    const defaultEnd = taskEndDate || todayDate.add({ days: 7 }).toString();
+
+    // Set minValue: if task has a start date, use that; otherwise use today
+    const minValue = taskStartDate ? parseDate(taskStartDate) : todayDate;
+
+    // Create the schema
+    const memoizedSchema = checklistSchema({
+      taskStartedAt: startedAt,
+      taskFinishedAt: finishedAt,
+    });
+
+    // Create default values
+    const defaultValues = {
+      title: "",
+      duration: {
+        start: defaultStart,
+        end: defaultEnd,
+      },
+      description: "",
+    };
+
+    // Create maxValue for DateRangePicker
+    const maxValue = taskEndDate ? parseDate(taskEndDate) : undefined;
+
+    return {
+      taskStartDate,
+      taskEndDate,
+      todayDate,
+      defaultStart,
+      defaultEnd,
+      minValue,
+      maxValue,
+      memoizedSchema,
+      defaultValues,
+    };
+  }, [startedAt, finishedAt]);
+
+  // Initialize React Hook Form with memoized values
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    control,
+    reset,
+  } = useForm({
+    resolver: zodResolver(memoizedSchema),
+    defaultValues,
   });
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (onSubmit && formData.title.trim()) {
-      onSubmit({
-        title: formData.title.trim(),
-        duration: formData.duration,
-        description: formData.description || "New checklist item",
-      });
-      // Reset form
-      setFormData({
-        title: "",
-        duration: "",
-        description: "",
-      });
-      onOpenChange(false);
-    }
-  };
+  // Memoize the date range change handler to prevent recreation
+  const handleDateRangeChange = useCallback((field) => {
+    return (value) => {
+      if (value && value.start && value.end) {
+        field.onChange({
+          start: value.start.toString(),
+          end: value.end.toString(),
+        });
+      }
+    };
+  }, []);
 
-  const handleInputChange = (field, value) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
+  // Handle form submission
+  const onFormSubmit = async (data) => {
+    try {
+      // Transform the data to match the backend's expected format
+      const transformedData = {
+        title: data.title,
+        description: data.description || "",
+        startedAt: new Date(
+          data.duration.start + "T00:00:00.000Z"
+        ).toISOString(),
+        finishedAt: new Date(
+          data.duration.end + "T23:59:59.999Z"
+        ).toISOString(),
+        taskId: taskid,
+      };
+
+      console.log("Transformed submit data", transformedData);
+
+      // Call the createCheckListAction
+      const result = await createCheckListAction(taskid, transformedData);
+      console.log("hello checklist result", result);
+      console.log("result form", result);
+      if (result.status == 200) {
+        // Show success toast
+        toast.success("Checklist created successfully!");
+      } else if (result.status === 403) {
+        console.log("err mss", result);
+        toast.error(`Error: ${result?.detail}`);
+      }
+
+      // Call onSubmit prop if provided
+      if (onSubmit) onSubmit(transformedData);
+
+      // Close modal and reset form on success
+      reset();
+      onOpenChange(false); // Explicitly close modal
+    } catch (error) {
+      console.error("Form submission error:", error);
+
+      // Extract error message from backend response or use a default
+      const errorMessage = error.response?.data?.detail
+        ? error.response.data.detail
+        : error.message || "An unexpected error occurred.";
+
+      // Show error toast
+      toast.error(`Error: ${errorMessage}`);
+    }
   };
 
   return (
@@ -68,78 +177,72 @@ export default function ModalCreateChecklist({
                 {modalTitle}
               </ModalHeader>
               <ModalBody>
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit(onFormSubmit)}>
                   <div className="flex flex-col gap-3">
                     <label className="text-sm font-medium text-title">
                       Title <span className="text-progress-red">*</span>
                     </label>
                     <input
-                      className="border text-caption border-gray-300 rounded-small px-3 py-3 "
+                      className="border text-caption border-gray-300 rounded-small px-3 py-3"
                       placeholder="Input your title"
-                      value={formData.title}
-                      onChange={(e) =>
-                        handleInputChange("title", e.target.value)
-                      }
-                      required
+                      {...register("title")}
                     />
+                    {errors.title && (
+                      <p className="text-progress-red text-xs">
+                        {errors.title.message}
+                      </p>
+                    )}
                   </div>
 
                   <div className="relative w-full flex flex-col gap-3 mt-3">
                     <label className="text-sm font-medium text-title">
                       Duration <span className="text-progress-red">*</span>
                     </label>
+                    <Controller
+                      name="duration"
+                      control={control}
+                      render={({ field }) => {
+                        // Safely parse the field values
+                        let startValue, endValue;
+                        try {
+                          startValue = field.value?.start
+                            ? parseDate(field.value.start)
+                            : parseDate(defaultStart);
+                          endValue = field.value?.end
+                            ? parseDate(field.value.end)
+                            : parseDate(defaultEnd);
+                        } catch (error) {
+                          console.error("Date parsing error:", error);
+                          startValue = parseDate(defaultStart);
+                          endValue = parseDate(defaultEnd);
+                        }
 
-                    <input
-                      type="date"
-                      className="border text-caption border-gray-300 rounded-small px-3 py-3  w-full pr-12"
-                      placeholder="choose your date"
-                      value={formData.duration}
-                      onChange={(e) =>
-                        handleInputChange("duration", e.target.value)
-                      }
-                      required
-                      style={{
-                        appearance: "none",
-                        WebkitAppearance: "none",
-                        MozAppearance: "none",
-                        cursor: "pointer",
+                        return (
+                          <DateRangePicker
+                            isRequired
+                            className="max-w-none"
+                            minValue={minValue}
+                            maxValue={maxValue}
+                            value={{
+                              start: startValue,
+                              end: endValue,
+                            }}
+                            onChange={handleDateRangeChange(field)}
+                            label="Stay duration"
+                          />
+                        );
                       }}
                     />
-
-                    {/* Custom calendar icon container */}
-                    <div
-                      className="absolute right-3 top-1/2 transform -translate-y-0 flex items-center justify-center rounded bg-opacity-10 p-1.5 cursor-pointer"
-                      onClick={() => {
-                        // Optional: programmatically open date picker if needed
-                        document
-                          .querySelector('input[type="date"]')
-                          ?.showPicker?.();
-                      }}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5 text-primary"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth={2}
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                        />
-                      </svg>
-                    </div>
-
-                    <style jsx>{`
-                      /* Hide native calendar icon */
-                      input[type="date"]::-webkit-calendar-picker-indicator {
-                        opacity: 0;
-                        pointer-events: none;
-                        display: none;
-                      }
-                    `}</style>
+                    {errors.duration?.start && (
+                      <p className="text-progress-red text-xs">
+                        {errors.duration.start.message}
+                      </p>
+                    )}
+                    {errors.duration?.end && (
+                      <p className="text-progress-red text-xs">
+                        {errors.duration.end.message}
+                      </p>
+                    )}
                   </div>
 
                   <div className="flex flex-col gap-3 mt-3">
@@ -147,27 +250,25 @@ export default function ModalCreateChecklist({
                       Description
                     </label>
                     <textarea
-                      className="border text-caption border-gray-300 rounded-small px-3 py-3  resize-none"
+                      className="border text-caption border-gray-300 rounded-small px-3 py-3 resize-none"
                       placeholder="Add a description (optional)"
                       rows={3}
-                      value={formData.description}
-                      onChange={(e) =>
-                        handleInputChange("description", e.target.value)
-                      }
+                      {...register("description")}
                     />
+                    {errors.description && (
+                      <p className="text-progress-red text-xs">
+                        {errors.description.message}
+                      </p>
+                    )}
                   </div>
-                  {/* button */}
+
                   <div className="grid grid-cols-2 gap-3 pt-2 py-4">
                     <Button
                       type="button"
                       className="bg-transparent border-1 border-bgColor"
                       radius="full"
                       onPress={() => {
-                        setFormData({
-                          title: "",
-                          duration: "",
-                          description: "",
-                        });
+                        reset();
                         onClose();
                       }}
                     >
@@ -177,7 +278,8 @@ export default function ModalCreateChecklist({
                       type="submit"
                       color="primary"
                       radius="full"
-                      isDisabled={!formData.title.trim()}
+                      isDisabled={isSubmitting || !!errors.title}
+                      isLoading={isSubmitting}
                     >
                       Save
                     </Button>
@@ -188,6 +290,15 @@ export default function ModalCreateChecklist({
           )}
         </ModalContent>
       </Modal>
+      <ToastContainer
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar={false}
+        closeOnClick
+        pauseOnHover
+        draggable
+        theme="colored"
+      />
     </>
   );
 }

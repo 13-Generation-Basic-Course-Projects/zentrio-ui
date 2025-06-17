@@ -6,11 +6,17 @@ import BredCrum from "../bredcrum/MyBredcrum";
 import { documentData } from "@/data/docu/documentData";
 import CardFolder, { CardFile } from "../card/CardDoc";
 import { Autocomplete, AutocompleteItem, Input, link } from "@heroui/react";
-export default function Privatedocument({ modal, documents }) {
+export default function Privatedocument({
+  modal,
+  documents,
+  tokenFromGoogle,
+  isHidden,
+}) {
   const data = documents || [];
 
   const [sortOrder, setSortOrder] = useState("asc");
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedDate, setSelectedDate] = useState(null);
   const sortOptions = [
     { key: "asc", label: "A-Z" },
     { key: "desc", label: "Z-A" },
@@ -36,8 +42,9 @@ export default function Privatedocument({ modal, documents }) {
 
     return {
       title: doc.description || "Untitled",
-      status: doc._private ? "private" : "personal",
+      status: doc._public ? "public" : "personal",
       id: doc.documentId,
+      folderId: doc.folderId,
       date: new Date(doc.creationDate).toISOString().split("T")[0],
       type: isGoogleDoc
         ? "docx"
@@ -141,6 +148,12 @@ export default function Privatedocument({ modal, documents }) {
                     title={el.title || "Untitled Folder"}
                     status={el.status || "personal"}
                     date={el.date || "2025-05-25"}
+                    link={el?.link}
+                    documentId={el?.id}
+                    folderId={el?.folderId}
+                    isFolder={el?.category === "Folder"}
+                    tokenFromGoogle={tokenFromGoogle}
+                    isHidden={isHidden}
                   />
                 ))
             ) : (
@@ -170,7 +183,10 @@ export default function Privatedocument({ modal, documents }) {
                     date={el.date || "2025-05-25"}
                     type={el.type}
                     link={el.link}
-                    documentId={el.id}
+                    documentId={el?.id}
+                    folderId={el?.folderId}
+                    tokenFromGoogle={tokenFromGoogle}
+                    isHidden={isHidden}
                   />
                 ))
             ) : (
