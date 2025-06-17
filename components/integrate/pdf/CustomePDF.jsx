@@ -367,21 +367,36 @@ export const PDFPreviewer = ({ report }) => {
                           style={{
                             height: "28px",
                             backgroundColor: "#59BAD5",
-                            color: "white",
                           }}
                         >
                           <tr>
-                            <td style={{ width: "120px" }}>Board Name</td>
-                            <td style={{ width: "120px" }}>Task</td>
-                            <td style={{ width: "120px" }}>Version</td>
-                            <td style={{ width: "120px" }}>Date</td>
+                            <td style={{ width: "120px" }}>
+                              <span className="text-white">
+                                Board Name
+                              </span>
+                            </td>
+                            <td style={{ width: "120px" }} className="border-x-1 border-black">
+                              <span className="text-white">
+                                Task
+                              </span>
+                            </td> 
+                            <td style={{ width: "120px" }} className="border-r border-black">
+                              <span className="text-white">
+                                Version
+                              </span>
+                            </td>
+                            <td style={{ width: "120px" }}>
+                              <span className="text-white">
+                                Date
+                              </span>
+                            </td>
                           </tr>
                         </thead>
                         <tbody style={{ height: "40px" }}>
                           <tr style={{ borderTop: "1px solid black" }}>
                             <td>{report?.payload?.boardData?.title}</td>
-                            <td>{task.todo + task.progress + task.review + task.done}</td>
-                            <td>{report?.payload?.version}</td>
+                            <td className="border-x-1 border-black">{task.todo + task.progress + task.review + task.done}</td>
+                            <td className="border-r border-black">{report?.payload?.version}</td>
                             <td>{report?.payload?.creationDate}</td>
                           </tr>
                         </tbody>
@@ -503,7 +518,7 @@ export const PDFPreviewer = ({ report }) => {
                       This section provides a structured overview of the
                       project's workflow distribution across four stages: To Do,
                       Progress, Under Review, and Completed.
-                    </p>
+                    </p>                   
                     <div
                       style={{
                         width: "100%",
