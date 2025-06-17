@@ -9,14 +9,25 @@ import Link from "next/link";
 import { otpSchema } from "../../../../lib/schemas/otpSchema";
 import { zentrioOtpAction } from "../../../../action/auth.action";
 import { useAuthStore } from "../../../../lib/store";
+import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { otpZentrioService } from "@/service/auth.service";
 
 // Zod schema for OTP
 
-export const OtpForm = ({ emailProp }) => {
+export const OtpForm = () => {
+
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const email = searchParams.get("email");
+  const type = searchParams.get("type") || "VERIFY"; 
+
+
   const [otpValues, setOtpValues] = useState(Array(6).fill(""));
 
   const registeredEmail = useAuthStore((state) => state.registeredEmail);
-  console.log("adsdasdasdasdasd", emailProp);
+
   const {
     register,
     handleSubmit,
@@ -50,7 +61,23 @@ export const OtpForm = ({ emailProp }) => {
   };
 
   const onSubmit = async (data) => {
-    await zentrioOtpAction({ otp: data.otp, email: emailProp });
+    try {
+      const result = await otpZentrioService({
+        email,
+        otp: data.otp,
+        type,
+      });
+
+      if (result?.success) {
+        if (type === "RESET") {
+          router.push(`/setnewpassword?email=${encodeURIComponent(email)}`);
+        } else {
+          router.push(`/login`);
+        }
+      }
+    } catch (err) {
+      console.error("OTP verification failed:", err);
+    }
   };
 
   return (
@@ -95,7 +122,7 @@ export const OtpForm = ({ emailProp }) => {
               </p>
               <p className="text-body text-primary">
                 We’ve sent a code to <span> </span>
-                {emailProp}.
+                {email}.
               </p>
             </div>
           </div>
@@ -126,7 +153,7 @@ export const OtpForm = ({ emailProp }) => {
           <div className="w-full flex flex-col gap-[10px]">
             <Button
               type="submit"
-              className="w-full bg-primary text-white max-w-none"
+              className="w-full bg-primary text-white max-w-none rounded-[10px] h-[48px] text-[20px] capitalize font-semibold"
             >
               Submit
             </Button>

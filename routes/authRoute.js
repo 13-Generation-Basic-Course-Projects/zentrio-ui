@@ -7,4 +7,8 @@ export const authRoute = {
   resendOtpUserRoute: () => `${apiConfig.baseUrl}/auths/resend`,
   //3party
   loginThirtPartyRoute: () => `${apiConfig.baseUrl}/auths/login/third-party`,
+  resetPasswordRoute: (email) =>
+    `${apiConfig.baseUrl}/auths/reset-password?email=${encodeURIComponent(
+      email
+    )}`,
 };

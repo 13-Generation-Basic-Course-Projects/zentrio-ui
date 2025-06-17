@@ -1,14 +1,15 @@
 "use server";
 import { signIn, signOut } from "@/auth";
 import {
+  forgotPasswordService,
   loginZentrioCredentailService,
-  loginZentrioService,
   otpZentrioService,
   registerZentrioService,
+  resetPasswordService,
 } from "../service/auth.service";
-import { useAuthStore } from "../lib/store";
+
 import { redirect } from "next/navigation";
-import { loginGoogleService } from "../service/auth.service";
+
 //google login
 export async function doSocialLogin(formData) {
   const action = formData.get("action");
@@ -88,5 +89,26 @@ export async function zentrioLoginWithGoogle(idToken, provider) {
   } catch (error) {
     console.error("Login with Google failed:", error.message);
     return null;
+  }
+}
+
+/* 
+* forgot password
+*/
+
+export async function zentrioForgotPasswordAction({ email, password, confirmPassword }) {
+  try { 
+    const result = await forgotPasswordService({
+      email,
+      password,
+      confirmPassword,
+    });
+    if (!result.ok) {
+      throw new error("failed to reset the new password");
+    }
+    return { success: true };
+  } catch (error) {
+    console.error("can't reset the new password ");
+    return { success: false };
   }
 }
