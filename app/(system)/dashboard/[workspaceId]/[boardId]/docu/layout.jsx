@@ -15,7 +15,7 @@ export default async function BoardLayout({ children, params }) {
   const publicDocuments = await getPublicDocumentsByBoardAction(boardId);
 
   const tokenFromGoogle =
-    "ya29.a0AW4XtxhTVWs5Dyisz75gT-gdXWn-I5RRAf6md5RZW9C0umn8dblkuPMDmLcLrL3pakUeGcFyw3lYKqP7QtasgUdpl5aaxwKh8OZ0g4Ev1k58HMM-NJ-PZLFsiRUlbxkG4m4062-98vgvCkjcJQu0EJKXUreCjWKl5NpVYtFNdAaCgYKAU4SARcSFQHGX2MiE4VRjwn_er0CT4mba35bYg0177";
+    "ya29.a0AS3H6Nzbjh32qvhl_6x6lB4Sc-deRqQWGAwlno2kRP12WXQMdT0O0mSc-dnhwCAJq86FM5I9Lr_jxq9HxG1WNcymcRQr6buT3BZ3q6qzh3dtRnbrGMgR7NFFgZ0kLgqX02yzWBRi8sfBIT-cJM6WBJRV0LxlnizajtCjPp3yaCgYKAcASARISFQHGX2MiTzZdG1Q7lfkVyv7TuNOW3Q0175";
 
   //pf
   /*
