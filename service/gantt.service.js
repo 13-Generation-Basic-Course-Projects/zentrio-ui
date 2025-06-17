@@ -18,7 +18,7 @@ export const getGanttBarService = async ({ token }) => {
       },
     });
     const data = await res.json();
-    console.log("📥 Backend responded with:", data);
+    //// console.log("📥 Backend responded with:", data);
 
     return data; // just return the data, don’t redirect here
   } catch (error) {
@@ -43,7 +43,7 @@ export const getGanttBarByGanttChartIdService = async ({
       },
     });
     const data = await res.json();
-    console.log("📥 Backend responded with:", data);
+    // console.log("📥 Backend responded with:", data);
 
     return data; // just return the data, don’t redirect here
   } catch (error) {
@@ -70,7 +70,7 @@ export const getGanttChartByBoardIdService = async ({ boardId, token }) => {
       },
     });
     const data = await res.json();
-    console.log("📥 Backend responded with:", data);
+    // console.log("📥 Backend responded with:", data);
 
     return data; // just return the data, don’t redirect here
   } catch (error) {
@@ -109,7 +109,7 @@ export const createGanttBarsByGanttChartIdService = async ({
     });
 
     const result = await res.json();
-    console.log("📥 Backend responded with:", result);
+    // console.log("📥 Backend responded with:", result);
 
     return result;
   } catch (error) {
@@ -123,13 +123,13 @@ export const createGanttBarsByGanttChartIdService = async ({
  */
 export const deleteGanttBarsByGanttChartIdService = async ({
   ganttChartId,
-  data,
+  ganttbarId,
   token,
 }) => {
   try {
-    console.log("from service", { ganttChartId, boardId, token });
+    console.log("from service", { ganttChartId, ganttbarId, token });
 
-    const url = ganttRouteGroup.deleteGanttBar(ganttChartId, boardId);
+    const url = ganttRouteGroup.deleteGanttBar(ganttbarId, ganttChartId);
 
     const res = await fetch(url, {
       method: "DELETE",
@@ -140,7 +140,40 @@ export const deleteGanttBarsByGanttChartIdService = async ({
     });
 
     const result = await res.json();
-    console.log("📥 Backend responded with:", result);
+    //console.log("📥 Backend responded with:", result);
+
+    return result;
+  } catch (error) {
+    console.error("🐞 Error:", error.message);
+    throw error;
+  }
+};
+
+/*
+ * create gantt bar by GantchartId
+ */
+export const updateGantChartBytIdService = async ({
+  ganttChartId,
+  boardId,
+  data,
+  token,
+}) => {
+  try {
+    console.log("from service", { ganttChartId, boardId, token });
+
+    const url = ganttRouteGroup.updateGanttChart(ganttChartId);
+
+    const res = await fetch(url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+        body: JSON.stringify({ title: data.title, boardId: boardId }),
+      },
+    });
+
+    const result = await res.json();
+    //  console.log("📥 Backend responded with:", result);
 
     return result;
   } catch (error) {

@@ -20,6 +20,7 @@ export default function AllDocument({ boardId, documents, tokenFromGoogle }) {
 
   const [sortOrder, setSortOrder] = useState("asc");
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedDate, setSelectedDate] = useState(null);
   const sortOptions = [
     { key: "asc", label: "A-Z" },
     { key: "desc", label: "Z-A" },
@@ -45,7 +46,7 @@ export default function AllDocument({ boardId, documents, tokenFromGoogle }) {
 
     return {
       title: doc.description || "Untitled",
-      status: doc._private ? "private" : "personal",
+      status: doc._public ? "public" : "personal",
       id: doc.documentId,
       folderId: doc.folderId,
       date: new Date(doc.creationDate).toISOString().split("T")[0],
@@ -91,7 +92,7 @@ export default function AllDocument({ boardId, documents, tokenFromGoogle }) {
         <div className="flex items-center justify-between pb-5">
           <div className="flex flex-row items-end gap-4 mb-4">
             <div className="flex-1">
-              <MyDatePicker className="h-12" />
+              <MyDatePicker className="h-12"/>
             </div>
 
             <div className="w-40">
@@ -161,6 +162,7 @@ export default function AllDocument({ boardId, documents, tokenFromGoogle }) {
                       link={el?.link}
                       documentId={el?.id}
                       folderId={el?.folderId}
+                      isFolder={el?.category === "Folder"}
                       tokenFromGoogle={tokenFromGoogle}
                     />
                   ))
@@ -192,6 +194,7 @@ export default function AllDocument({ boardId, documents, tokenFromGoogle }) {
                       type={el.type}
                       link={el.link}
                       documentId={el?.id}
+                      folderId={el?.folderId}
                       tokenFromGoogle={tokenFromGoogle}
                     />
                   ))

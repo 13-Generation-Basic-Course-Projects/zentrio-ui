@@ -11,12 +11,14 @@ import {
   getAllWorkspacesService,
   getBoardByIdService,
   getBoardsByWorkspaceIdService,
+  getFavoriteBoardService,
+  getOtherWorkSpaceJoinedService,
   getWorkspacesByUserService,
   updateBoardByIdService,
   updateFavBoardByIdService,
   updateWorkspaceByIdService,
 } from "@/service/workspace.service";
-import { revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 
 /*
  * 1. action for create workspaces
@@ -38,7 +40,7 @@ export const createWorkspaceAction = async (payload = {}) => {
   });
 
   // revalidate tag related to workspaces
-  revalidateTag("workspaces");
+  revalidatePath("/workspaces");
   return result;
 };
 
@@ -63,7 +65,7 @@ export const deleteWorkspaceByIdAction = async (id) => {
   const result = await deleteWorkspaceByIdService({ id, token });
 
   // revalidate tag related to workspaces
-  revalidateTag("workspaces");
+  revalidatePath("/workspaces");
   return result;
 };
 
@@ -89,7 +91,7 @@ export const updateWorkspaceByIdAction = async (id, payload = {}) => {
   });
 
   // revalidate tag related to workspaces
-  revalidateTag("workspaces");
+  revalidatePath("/workspaces");
   return result;
 };
 
@@ -112,14 +114,9 @@ export const getAllWorkspaceForUserAction = async () => {
 export const getBoardByIdAction = async (boardId) => {
   const userToken = await Token();
   const token = userToken.Credential;
-
-  const result = await getBoardByIdService({ boardId, token }); 
-
-  revalidateTag("boards");
+  const result = await getBoardByIdService({ boardId, token });
   return result;
 };
-
-
 
 /*
  * 2. Update board by board Id and workspace id
@@ -148,15 +145,14 @@ export const updateBoardByIdAction = async (boardId, payload = {}) => {
     token,
   });
 
-  revalidateTag("boards");
+  revalidatePath("/boards");
   return result;
 };
-
 
 /*
  * 3. Updated favourite of board by id
  */
-export const updateFavBoardByIdAction = async ({boardId, isFavourite}) => {
+export const updateFavBoardByIdAction = async ({ boardId, isFavourite }) => {
   console.log("🔁 Sending update favorite payload in action:", {
     boardId,
     isFavourite,
@@ -175,10 +171,9 @@ export const updateFavBoardByIdAction = async ({boardId, isFavourite}) => {
     token,
   });
 
-  revalidateTag("boards");
+  revalidatePath("/boards");
   return result;
 };
-
 
 /*
  * 4. Get all boards
@@ -195,15 +190,37 @@ export const getAllBoardsAction = async () => {
  * 5. Create new board by workspace id
  */
 export const createBoardAction = async (payload = {}) => {
-  console.log("Payload  board received:", payload);
-  const { title, description, cover, workspaceId } = payload;
+  const userToken = await Token();
+  const token = userToken.Credential;
+
+  let title, description, cover, workspaceId;
+
+  if (payload instanceof FormData) {
+    title = payload.get("title");
+    description = payload.get("description");
+    cover = payload.get("cover");
+    workspaceId = payload.get("workspaceId");
+
+    console.log("Received FormData payload:", {
+      title,
+      description,
+      cover,
+      workspaceId,
+    });
+  } else {
+    ({ title, description, cover, workspaceId } = payload);
+    console.log("Received object payload:", {
+      title,
+      description,
+      cover,
+      workspaceId,
+    });
+  }
 
   if (!title || !description) {
     throw new Error("title and description are required");
   }
 
-  const userToken = await Token();
-  const token = userToken.Credential;
   const result = await createBoardService({
     title,
     description,
@@ -212,10 +229,10 @@ export const createBoardAction = async (payload = {}) => {
     token,
   });
 
-  revalidateTag("boards");
+  revalidatePath("boards");
+  console.log("Results create board in action:", result);
   return result;
 };
-
 
 /*
  * 13. Get all boards by workspace id
@@ -228,8 +245,6 @@ export const getAllBoardBywWorkspaceIdAction = async (workspaceId) => {
   return result;
 };
 
-
-
 /*
  * 16. Deleted board by id and workspace id
  */
@@ -241,6 +256,28 @@ export const deleteBoardAction = async (id, workspaceId) => {
   const result = await deleteBoardService({ id, workspaceId, token });
 
   // revalidate tag related to workspaces
-  revalidateTag("boards");
+  revalidatePath("/boards");
+  return result;
+};
+/**
+ *
+ * favorite
+ */
+
+export const getFavoriteBoardAction = async (userId) => {
+  const userToken = await Token();
+  const token = userToken.Credential;
+  console.log("from uid", userId);
+  const result = await getFavoriteBoardService(userId, token);
+  return result;
+};
+
+/**
+ * other workspace
+ */
+export const getOtherWorkSpaceJoinedAction = async () => {
+  const userToken = await Token();
+  const token = userToken.Credential;
+  const result = await getOtherWorkSpaceJoinedService(token);
   return result;
 };

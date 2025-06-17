@@ -2,9 +2,11 @@
 import { Token } from "@/constant/token";
 import {
   createGanttBarsByGanttChartIdService,
+  deleteGanttBarsByGanttChartIdService,
   getGanttBarByGanttChartIdService,
   getGanttBarService,
   getGanttChartByBoardIdService,
+  updateGantChartBytIdService,
 } from "@/service/gantt.service";
 import { revalidatePath } from "next/cache";
 console.log("test actions must create folders");
@@ -82,4 +84,43 @@ export const createGanttBarsByGanttChartIdAction = async ({
     // Re-throw the error or handle it as appropriate for your application
     throw error;
   }
+};
+/*
+ * update gantchart
+ */
+export const updateGantChartBytIdAction = async ({
+  ganttChartId,
+  boardId,
+  data,
+}) => {
+  const userToken = await Token();
+  const token = userToken.Credential;
+  console.log(token);
+
+  const result = await updateGantChartBytIdService({
+    ganttChartId,
+    boardId,
+    data,
+    token,
+  });
+  return result;
+};
+
+/*
+ * delete gantt bar
+ */
+export const deleteGanttBarsByGanttChartIdAction = async ({
+  ganttChartId,
+  ganttbarId,
+}) => {
+  const userToken = await Token();
+  const token = userToken.Credential;
+  console.log(token);
+
+  const result = await deleteGanttBarsByGanttChartIdService({
+    ganttChartId,
+    ganttbarId,
+    token,
+  });
+  return result;
 };

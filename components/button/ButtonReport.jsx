@@ -12,6 +12,7 @@ import {
 import React from "react";
 import dynamic from "next/dynamic";
 import PDFPreview from "../integrate/pdf/PreviewPDF";
+import { PDFPreviewer } from "../integrate/pdf/CustomePDF";
 
 // const PDFPreview = dynamic(() => import("../integrate/pdf/PreviewPD"), {
 //   ssr: false,
@@ -42,7 +43,7 @@ export const BtnPreview = () => {
         <ModalContent>
           {(onClose) => (
             <>
-              <PDFPreview />
+              <PDFPreviewer />
             </>
           )}
         </ModalContent>

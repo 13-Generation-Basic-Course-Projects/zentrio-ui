@@ -1,3 +1,5 @@
+import { ModalAssignMemberToCheckLisk } from "../modal/board/ModalAssignMemberChecklist";
+
 export function SideBarIcon({ strokwidth, size, color }) {
   return (
     <>
@@ -245,8 +247,17 @@ export function StarIconOutline({ className = "w-6 h-6" }) {
   );
 }
 //dynamic
-export function StackedProfileChecklist({ member }) {
+export function StackedProfileChecklist({
+  member,
+  taskId,
+  preventUserImage,
+  allMemberInBoard,
+  leaderId,
+  checklistId,
+  hidden,
+}) {
   console.log("=====", member);
+
   return (
     <div className="flex items-center space-x-[-14px]">
       {member.slice(0, 4).map((user, index) => (
@@ -262,6 +273,26 @@ export function StackedProfileChecklist({ member }) {
           +{member.length - 4}
         </div>
       )}
+      {member.length == 0 && (
+        <div className="w-8 h-8 rounded-full bg-gray-300 text-btn-sm flex items-center justify-center border-2 border-white shadow">
+          <img
+            key={"no member"}
+            src={preventUserImage}
+            alt={"no member"}
+            className="w-8 h-8 rounded-full border-2 border-white shadow"
+          />
+        </div>
+      )}
+      {hidden != null ? (
+        ""
+      ) : (
+        <ModalAssignMemberToCheckLisk
+          allMemberInBoard={allMemberInBoard}
+          taskId={taskId}
+          leaderId={leaderId}
+          checklistId={checklistId}
+        />
+      )}
     </div>
   );
 }
@@ -272,22 +303,22 @@ export function StackedProfiles({ member }) {
       <img
         src="https://i.pinimg.com/736x/6f/a3/6a/6fa36aa2c367da06b2a4c8ae1cf9ee02.jpg"
         alt="User 1"
-        className="w-8 h-8 rounded-full border-2 border-white shadow"
+        className="w-8 h-8 rounded-full border-2 border-white shadow object-contain"
       />
       <img
         src="https://i.pinimg.com/736x/24/da/2b/24da2becc842bf52b464a2dde81087b5.jpg"
         alt="User 2"
-        className="w-8 h-8 rounded-full border-2 border-white shadow"
+        className="w-8 h-8 rounded-full border-2 border-white shadow object-contain"
       />
       <img
         src="https://i.pinimg.com/736x/62/aa/2f/62aa2f605b932349808c41c6fadd76b6.jpg"
         alt="User 3"
-        className="w-8 h-8 rounded-full border-2 border-white shadow"
+        className="w-8 h-8 rounded-full border-2 border-white shadow object-contain"
       />
       <img
         src="https://i.pinimg.com/736x/b8/b4/d9/b8b4d9220922fffbd151103ef1c215f6.jpg"
         alt="User 4"
-        className="w-8 h-8 rounded-full border-2 border-white shadow"
+        className="w-8 h-8 rounded-full border-2 border-white shadow object-contain"
       />
       <div className="w-8 h-8 rounded-full bg-gray-300 text-btn-sm flex items-center justify-center border-2 border-white shadow">
         +4

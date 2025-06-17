@@ -22,17 +22,27 @@ export default function CardFolder({
   link,
   documentId,
   folderId,
+  isFolder,
   tokenFromGoogle,
+  onClick,
+  isHidden,
 }) {
   return (
-    <Card className="rounded-xl text-blue-400 cursor-pointer hover:bg-blue-50 transition sm:w-[160px] md:w-full h-[160px] shadow-sm ">
+    <Card
+      onClick={() => onClick?.(folderId)}
+      className="rounded-xl text-blue-400 cursor-pointer hover:bg-blue-50 transition sm:w-[160px] md:w-full h-[160px] shadow-sm "
+    >
       {/* Header */}
       <CardHeader className="pb-0 pt-2 px-4 flex justify-end">
         <div className="hover:text-black text-gray-600">
-          <ModalOptionDocument
-            documentId={documentId}
-            accessToken={tokenFromGoogle}
-          />
+          {isHidden == true ? (
+            ""
+          ) : (
+            <ModalOptionDocument
+              documentId={documentId}
+              accessToken={tokenFromGoogle}
+            />
+          )}
         </div>
       </CardHeader>
       <CardBody>
@@ -105,16 +115,21 @@ export function CardFile({
   link,
   documentId,
   tokenFromGoogle,
+  isHidden,
 }) {
   return (
     <Card className="rounded-xl text-blue-400 cursor-pointer hover:bg-blue-50 transition sm:w-[160px] md:w-full h-[160px] shadow-sm">
       {/* Header */}
-      <CardHeader className="pb-0 pt-2 px-4 flex justify-end">
+      <CardHeader className={`pb-0 pt-2 px-4 flex justify-end  ${isHidden ? `pt-6`: ``}`}>
         <div className="hover:text-black text-gray-600">
-          <ModalOptionDocument
-            documentId={documentId}
-            accessToken={tokenFromGoogle}
-          />
+          {isHidden == true ? (
+            ""
+          ) : (
+            <ModalOptionDocument
+              documentId={documentId}
+              accessToken={tokenFromGoogle}
+            />
+          )}
         </div>
       </CardHeader>
 

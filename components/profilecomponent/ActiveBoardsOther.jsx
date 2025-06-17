@@ -140,10 +140,10 @@ export default function ActiveBoardsOther({
       ? 10
       : 0;
     const randomVariation = Math.floor(Math.random() * 20) - 10;
-    const percent = Math.min(
-      100,
-      Math.max(0, baseProgress + roleBonus + randomVariation)
-    );
+    // Force 0% for specific tasks (e.g., for testing)
+    const percent = task.toLowerCase().includes("test-zero") // Example condition
+      ? 0
+      : Math.min(100, Math.max(0, baseProgress + roleBonus + randomVariation));
 
     return {
       id: `task-${index}`,

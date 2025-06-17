@@ -10,7 +10,10 @@ import {
 import { IconAdd } from "../../icon/everyicon";
 import ModalCreateFolder from "./ModalCreateFolder";
 import ModalUploadFile from "./ModalUploadfile";
-import { createDocumentByUploadAction } from "@/action/document.action";
+import {
+  createDocumentByUploadAction,
+  createFileAction,
+} from "@/action/document.action";
 
 export default function ModalCreateDocu({ boardId, tokenFromGoogle }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -76,14 +79,66 @@ export default function ModalCreateDocu({ boardId, tokenFromGoogle }) {
     },
   ];
 
-  const handleItemClick = (key) => {
+  const handleItemClick = async (key) => {
     setIsDropdownOpen(false);
+
     if (key === "create") {
       setIsCreateFolderOpen(true);
     } else if (key === "upload") {
       setIsUploadModalOpen(true);
+    } else if (["doc", "slide", "sheet"].includes(key)) {
+      try {
+        const mimeTypes = {
+          doc: "DOC",
+          slide: "SLIDE",
+          sheet: "SHEET",
+        };
+
+        const defaultNames = {
+          doc: "Untitled Document",
+          slide: "Untitled Presentation",
+          sheet: "Untitled Spreadsheet",
+        };
+
+        const data = {
+          name: defaultNames[key],
+          mimeType: mimeTypes[key],
+          boardId,
+          token: tokenFromGoogle,
+        };
+
+        console.log("Creating Google file with data:", data);
+
+        const result = await createFileAction(data);
+        console.log("Create file result:", result);
+
+        // The backend returns the Google Drive URL directly in drive_url
+        const driveUrl = result?.payload?.drive_url;
+
+        console.log("drive url: ", driveUrl)
+
+        if (driveUrl) {
+          console.log("Opening Google Drive URL:", driveUrl);
+          window.open(driveUrl, "_blank");
+        } else {
+          console.error("Drive URL missing from result:", result);
+          alert("Drive URL missing. Could not open editor.");
+        }
+      } catch (error) {
+        console.error("Error creating Google file:", error);
+        alert(
+          `Failed to create Google ${
+            key === "doc"
+              ? "document"
+              : key === "slide"
+              ? "presentation"
+              : "spreadsheet"
+          }: ${error.message}`
+        );
+      }
     }
   };
+
   console.log("board in modal create doc", boardId);
   return (
     <>
