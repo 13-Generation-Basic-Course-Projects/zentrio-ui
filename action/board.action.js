@@ -5,6 +5,7 @@ import {
   assignMemberToChecklistService,
   assignUserRoleLeadeerToBoardService,
   changeStageToUnderReviewService,
+  checkEmailForClearService,
   createCheckListService,
   createGanttChartByBoardIdService,
   createTaskByBoardIdAndGanttChartIdService,
@@ -581,5 +582,12 @@ export const deleteMemberAction = async (boardId, userId) => {
   const token = userToken?.Credential;
   const result = await deleteMemberService(boardId, userId, token);
   revalidatePath("/member");
+  return result;
+};
+/*
+ * checkEmail
+ */
+export const checkEmailForClearAction = async (email) => {
+  const result = await checkEmailForClearService(email);
   return result;
 };

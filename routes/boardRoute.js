@@ -55,4 +55,6 @@ export const boardRouteGroup = {
 
   deleteMemberByBoardId: (boardId, userId) =>
     `${apiConfig.baseUrl}/boards/${boardId}/users/${userId}`,
+  checkEmailForClearToken: (email) =>
+    `${apiConfig.baseUrl}/users/email/${email}`,
 };

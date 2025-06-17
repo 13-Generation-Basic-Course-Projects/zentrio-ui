@@ -721,7 +721,7 @@ export const FeedBackService = async (taskId, token, comment) => {
   }
 };
 /*
- * delete task
+ * delete member
  */
 export const deleteMemberService = async (boardId, userId, token) => {
   try {
@@ -736,6 +736,52 @@ export const deleteMemberService = async (boardId, userId, token) => {
     });
     const data = await res.json();
     console.log("📥 Backend responded with delete user:", data);
+
+    return data; // just return the data, don’t redirect here
+  } catch (error) {
+    console.error("bug", error.message);
+    throw error;
+  }
+};
+
+/*
+ * checkEmail
+ */
+export const checkEmailService = async (email) => {
+  try {
+    console.log("from service ", boardId, userId);
+    const url = boardRouteGroup.deleteMemberByBoardId(boardId, userId);
+    const res = await fetch(url, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await res.json();
+    console.log("📥 Backend responded with delete user:", data);
+
+    return data; // just return the data, don’t redirect here
+  } catch (error) {
+    console.error("bug", error.message);
+    throw error;
+  }
+};
+/*
+ * checkEmail
+ */
+export const checkEmailForClearService = async (email) => {
+  try {
+    console.log("from service ", email);
+    const url = boardRouteGroup.checkEmailForClearToken(email);
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = await res.json();
+    console.log("📥 Backend responded with check user:", data);
 
     return data; // just return the data, don’t redirect here
   } catch (error) {
