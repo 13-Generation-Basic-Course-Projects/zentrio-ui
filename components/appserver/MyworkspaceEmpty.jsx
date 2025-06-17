@@ -11,7 +11,6 @@ import CardMember from "../card/CardMember";
 import Bar from "../bredcrum/Bar";
 
 export default function MyworkspaceEmpty() {
-
   const features = [
     {
       icon: BarChart3,
@@ -51,8 +50,6 @@ export default function MyworkspaceEmpty() {
     <div className="w-full grid grid-cols-12 h-full">
       {/* board - this one scrolls */}
       <div className="col-span-9 flex flex-col overflow-hidden p-3 min-h-0">
-        
-
         {/* Feature Showcase Section - Right under Bar */}
         <div className="relative bg-gradient-to-r from-blue-50 via-purple-50 to-emerald-50 rounded-2xl p-6 mb-4 overflow-hidden h-[400px]">
           {/* Animated Background Elements */}
@@ -116,8 +113,6 @@ export default function MyworkspaceEmpty() {
             </div>
           </div>
         </div>
-
-       
       </div>
 
       {/* event - no scroll */}
@@ -126,6 +121,4 @@ export default function MyworkspaceEmpty() {
       </div>
     </div>
   );
-
-  
 }
