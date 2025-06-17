@@ -4,14 +4,13 @@ import {
   assignMemberInChecklistService,
   assignMemberToChecklistService,
   assignUserRoleLeadeerToBoardService,
-  chageStatusCheckListService,
   changeStageToUnderReviewService,
-  changeStatusTaskService,
   createCheckListService,
   createGanttChartByBoardIdService,
   createTaskByBoardIdAndGanttChartIdService,
   deleteTaskService,
   editCommmentService,
+  FeedBackService,
   getAllGanttBarByGanttChartIDService,
   getBoardByBoardIdService,
   getCheckListByTaskIdService,
@@ -26,7 +25,6 @@ import {
 import { revalidatePath } from "next/cache";
 import { sendNotificationToUserIdAction } from "./notification.action";
 import { sendNotificationToUserIdService } from "@/service/notification.service";
-import { teamLeader } from "@/data/board/teamleader";
 
 console.log("test actions must create folders");
 /*
@@ -552,48 +550,6 @@ export const assignMemberToChecklistAction = async (
   // console.log("📥 Backend responded with delete action", result);
   return result;
 };
-
-/*
- * assignMemberToChecklistAction leader
- */
-export const chageStatusCheckListWhenHaveTeamLeaderAction = async (
-  checklistId,
-  leaderId
-) => {
-  if (leaderId != null) {
-    const userToken = await Token();
-    const token = userToken?.Credential;
-    const result = await chageStatusCheckListService(checklistId, token);
-    revalidatePath("/checklist");
-    // console.log("📥 Backend responded with delete action", result);
-    return result;
-  }
-};
-
-/*
- * achange status
- */
-export const chageStatusCheckListAction = async (checklistId, type) => {
-  const userToken = await Token();
-  const token = userToken?.Credential;
-  const result = await chageStatusCheckListService(checklistId, token, type);
-  revalidatePath("/checklist");
-  console.log("status action", checklistId, type);
-  return result;
-};
-
-/*
- * achange status task
- */
-export const changeStatusTaskAction = async (taskId, type) => {
-  const userToken = await Token();
-  const token = userToken?.Credential;
-  const result = await changeStatusTaskService(taskId, token, type);
-  revalidatePath("/checklist");
-  console.log("status action", taskId, type);
-  return result;
-};
-
 /*
  * achange stage task
  */
@@ -601,6 +557,17 @@ export const changeStageToUnderReviewAction = async (taskId, stage) => {
   const userToken = await Token();
   const token = userToken?.Credential;
   const result = await changeStageToUnderReviewService(taskId, token, stage);
+  revalidatePath("/checklist");
+  //console.log("status action", taskId, stage);
+  return result;
+};
+/*
+ * achange stage task
+ */
+export const FeedBackAction = async (taskId, comment) => {
+  const userToken = await Token();
+  const token = userToken?.Credential;
+  const result = await FeedBackService(taskId, token, comment);
   revalidatePath("/checklist");
   //console.log("status action", taskId, stage);
   return result;

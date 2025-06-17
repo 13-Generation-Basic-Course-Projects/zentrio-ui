@@ -636,7 +636,7 @@ export const chageStatusCheckListService = async (checklistId, token, type) => {
       },
     });
     const data = await res.json();
-    console.log("📥 Backend responded with change status:", data);
+    console.log("📥 Backend responded with change status checklist:", data);
 
     return data; // just return the data, don’t redirect here
   } catch (error) {
@@ -683,6 +683,32 @@ export const changeStageToUnderReviewService = async (taskId, token, stage) => {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await res.json();
+    console.log("📥 Backend responded with change status:", data);
+
+    return data; // just return the data, don’t redirect here
+  } catch (error) {
+    console.error("bug", error.message);
+    throw error;
+  }
+};
+
+export const FeedBackService = async (taskId, token, comment) => {
+  try {
+    console.log("from service ", taskId, token, comment);
+    const url = boardRouteGroup.changeStageToInProgress();
+    console.log(url);
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+        body: JSON.stringify({
+          comment: comment,
+          taskId: taskId,
+        }),
       },
     });
     const data = await res.json();
