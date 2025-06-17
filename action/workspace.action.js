@@ -12,6 +12,7 @@ import {
   getBoardByIdService,
   getBoardsByWorkspaceIdService,
   getFavoriteBoardService,
+  getMemberByBoardIdService,
   getMemeberByBoardIdService,
   getOtherWorkSpaceJoinedService,
   getWorkspacesByUserService,
@@ -288,10 +289,10 @@ export const getOtherWorkSpaceJoinedAction = async () => {
  * get member by board id
  */
 
-export const getMemeberByBoardIdAction = async (boardId) => {
+export const getMemberByBoardIdAction = async (boardId) => {
   const userToken = await Token();
   const token = userToken.Credential;
-  const result = await getMemeberByBoardIdService({boardId,token});
+  const result = await getMemberByBoardIdService({boardId,token});
   console.log("Get member in action : ", result);
   return result;
 };

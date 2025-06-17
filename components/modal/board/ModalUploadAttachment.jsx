@@ -133,6 +133,7 @@ const ModalUploadAttachment = ({ isOpen, onClose }) => {
               <div className="text-title">
                 <div className="flex flex-wrap items-center justify-between">
                   <p className="text-h6 text-title/80">Choose file here</p>
+                  {/* for searching */}
                   <div>
                     <Input
                       isClearable

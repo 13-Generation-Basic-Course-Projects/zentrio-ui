@@ -792,7 +792,7 @@ export const getOtherWorkSpaceJoinedService = async (token) => {
  * get member by board id
  */
 
-export const getMemeberByBoardIdService = async ({boardId, token}) => {
+export const getMemberByBoardIdService = async ({boardId, token}) => {
   const url = workspaceRouteGroup.getMemeberByBoardId(boardId);
   try {
     console.log(url);
