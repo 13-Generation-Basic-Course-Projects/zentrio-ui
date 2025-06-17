@@ -43,11 +43,7 @@ const normalizeDateToDay = (date) => {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate());
 };
 
-
-
 export default function MyCalender({ tasks }) {
-  
-
   const colorList = [
     {
       bg: "bg-red-500",
@@ -103,7 +99,6 @@ export default function MyCalender({ tasks }) {
     { text: "text-gray-600", light: "bg-gray-200" },
     { text: "text-stone-600", light: "bg-stone-200" },
   ];
- 
 
   const calendarRef = useRef(null);
   const [currentTitle, setCurrentTitle] = useState("");
@@ -135,11 +130,7 @@ export default function MyCalender({ tasks }) {
             : [];
           allNotes.push(...taskNotes);
         } catch (error) {
-          console.error(
-            " Error fetching notes for task:",
-            task.taskId,
-            error
-          );
+          console.error(" Error fetching notes for task:", task.taskId, error);
         }
       }
 
@@ -230,8 +221,6 @@ export default function MyCalender({ tasks }) {
     }
   }, [notes, activeTaskId, selectedTask]);
 
-  
-
   /**
    * Updates calendar events for a specific task
    */
@@ -284,8 +273,6 @@ export default function MyCalender({ tasks }) {
     },
     [notes, mappedTasks, commentColorOptions]
   );
-
- 
 
   /**
    * Handles saving/updating/deleting notes with real-time updates

@@ -122,19 +122,19 @@ export default function ProfileLayout({
           </div>
         </div>
 
-        <div className="text-center mt-16">
-          <h1 className="text-h4 font-bold">{data?.username || "N/A"}</h1>
+        <div className="text-center mt-16 text-body-sm">
+          <h1 className="text-body-sm font-bold">{data?.username || "N/A"}</h1>
           <div className="flex justify-center gap-6 text-sm text-gray-600 mt-2">
             <p className="flex items-center gap-1">
-              <IconJob strokeWidth={1} size={5} color={"currentColor"} />
+              <IconJob strokeWidth={1} size={4} color={"currentColor"} />
               {data?.position || "N/A"}
             </p>
             <p className="flex items-center gap-1">
-              <IconMap strokeWidth={1} size={5} color={"currentColor"} />{" "}
+              <IconMap strokeWidth={1} size={4} color={"currentColor"} />{" "}
               {data?.location || "N/A"}
             </p>
             <p className="flex items-center gap-1">
-              <IconDate strokeWidth={1} size={5} color={"currentColor"} />
+              <IconDate strokeWidth={1} size={4} color={"currentColor"} />
               {data.createdAt ? data.createdAt.split("T")[0] : " "}
             </p>
           </div>

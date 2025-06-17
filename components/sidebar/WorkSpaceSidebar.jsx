@@ -47,7 +47,7 @@ export default function WorkSpaceSideBar({
   const { toggleSidebar } = useSidebar();
   const [selectedId, setSelectedId] = useState("");
 
- 
+  /*
   const workspaceColors = {};
   if (Array.isArray(workspaceData?.payload)) {
     workspaceData.payload.forEach((ws) => {
@@ -65,8 +65,27 @@ export default function WorkSpaceSideBar({
       }
     });
   }
+  */
+  const getWorkspaceColor = (workspace, index) => {
+    try {
+      const savedColor = localStorage.getItem(
+        `workspaceColor-${workspace.title}`
+      );
+      return savedColor || colorOptions[index % colorOptions.length].className;
+    } catch (e) {
+      console.warn("Failed to access localStorage:", e);
+      return colorOptions[index % colorOptions.length].className;
+    }
+  };
 
-
+  const workspaceColors = {};
+  if (Array.isArray(workspaceData?.payload)) {
+    workspaceData.payload.forEach((ws, index) => {
+      workspaceColors[ws.workspaceId] = getWorkspaceColor(ws, index);
+    });
+  } else {
+    console.warn("workspaceData.payload is not an array or is undefined");
+  }
   return (
     <Sidebar collapsible="icon" className="border-none rounded-tr-2xl bg-white">
       <SidebarContent className="h-screen flex flex-col !border-0 overflow-hidden">

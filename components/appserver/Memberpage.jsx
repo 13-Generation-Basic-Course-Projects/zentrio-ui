@@ -21,8 +21,44 @@ import Link from "next/link";
 import { ChevronUp } from "lucide-react";
 import ModalDelete from "../modal/ModalDelete";
 import { preventImage } from "@/constant/preventimage";
+import { formatRole } from "@/lib/roleFormart";
 
-export default function Memberpage({ boardMember, boardId, preventUserImage }) {
+export default function Memberpage({
+  boardMember,
+  boardId,
+  preventUserImage,
+  matchingBoardForNotPM,
+  workspaceId,
+  allMemberInBoard,
+  currentUserProfile,
+}) {
+  if (boardMember.status >= 400 || boardMember.type === "about:blank") {
+    return <NotFound />;
+  }
+
+  // Get role from matchingBoardForNotPM with priority logic
+  const getUserRole = (roles) => {
+    if (!roles || roles.length === 0) return "ROLE_MEMBER";
+
+    // If has 3 roles (ROLE_LEADER, ROLE_MEMBER, ROLE_MANAGER), return ROLE_MANAGER
+    if (roles.length === 3 && roles.includes("ROLE_MANAGER")) {
+      return "ROLE_MANAGER";
+    }
+
+    // If has 2 roles (ROLE_LEADER, ROLE_MEMBER), return ROLE_LEADER
+    if (roles.length === 2 && roles.includes("ROLE_LEADER")) {
+      return "ROLE_LEADER";
+    }
+
+    // Default to highest priority role available
+    if (roles.includes("ROLE_MANAGER")) return "ROLE_MANAGER";
+    if (roles.includes("ROLE_LEADER")) return "ROLE_LEADER";
+    return "ROLE_MEMBER";
+  };
+
+  const role =
+    getUserRole(matchingBoardForNotPM?.role) || user.role || "ROLE_MEMBER";
+
   const [members, setMembers] = useState(
     Array.isArray(boardMember) ? boardMember : []
   ); //call from props
@@ -104,6 +140,38 @@ export default function Memberpage({ boardMember, boardId, preventUserImage }) {
   const preventProfile = preventImage.noProfile;
 
   console.log("board id in memberpage", boardId);
+  console.log("currentUserProfile", currentUserProfile);
+  // checkrole
+  // Function to find the role for a given boardId
+  const findRoleByBoardId = (boardId, userProfile) => {
+    // Check ownBoards
+    const ownBoard = userProfile.payload.ownBoards.find(
+      (board) => board.boardId === boardId
+    );
+    if (ownBoard) {
+      return ownBoard.role;
+    }
+
+    // Check joinedBoards
+    const joinedBoard = userProfile.payload.joinedBoards.find(
+      (board) => board.boardId === boardId
+    );
+    if (joinedBoard) {
+      return joinedBoard.role;
+    }
+
+    // Return null or a message if boardId is not found
+    return "Board not found";
+  };
+  const userRoleBaseOnCurrentUser = findRoleByBoardId(
+    boardId,
+    currentUserProfile
+  );
+
+  console.log(
+    "role for current user depend on boardid",
+    userRoleBaseOnCurrentUser
+  );
   return (
     <div className="p-4 ">
       {/* Breadcrumb */}
@@ -150,7 +218,15 @@ export default function Memberpage({ boardMember, boardId, preventUserImage }) {
           />
         </div>
         {/* Invite */}
-        <ModalInviteMember boardId={boardId} />
+        {role == "ROLE_LEADER" || role == "MEMBER" ? (
+          ""
+        ) : (
+          <ModalInviteMember
+            boardId={boardId}
+            workspaceId={workspaceId}
+            allMemberInBoard={allMemberInBoard}
+          />
+        )}
       </div>
 
       <section className="overflow-hidden">
@@ -242,6 +318,7 @@ export default function Memberpage({ boardMember, boardId, preventUserImage }) {
                     <div className="flex items-center gap-2">
                       <span className="text-gray-700 group-hover:text-blue-700 transition-colors duration-200">
                         {member.roles[0]}
+                        {/* {formatRole(role)} */}
                       </span>
                       {member.roles.length > 1 && (
                         <Popover
@@ -278,7 +355,6 @@ export default function Memberpage({ boardMember, boardId, preventUserImage }) {
                       )}
                     </div>
                   </td>
-
                   {/* Tasks Popover */}
                   <td className="px-6 py-4 border-none">
                     <div className="flex items-center gap-2 !border-none">
@@ -310,15 +386,18 @@ export default function Memberpage({ boardMember, boardId, preventUserImage }) {
                   </td>
                   {/* Action for delete */}
                   <td className="px-6 py-4">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="w-4 h-4 cursor-pointer"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                      onClick={() => openModal(member.userId)}
-                    >
-                      <path d="M10 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4z" />
-                    </svg>
+                    {userRoleBaseOnCurrentUser === "ROLE_MANAGER" &&
+                    member.userId !== currentUserProfile.payload.user.userId ? (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="w-4 h-4 cursor-pointer"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        onClick={() => openModal(member.userId)}
+                      >
+                        <path d="M10 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4z" />
+                      </svg>
+                    ) : null}
                   </td>
                 </tr>
               ))}
@@ -327,7 +406,6 @@ export default function Memberpage({ boardMember, boardId, preventUserImage }) {
           {/* Render ModalDelete once */}
           {isModalOpen && selectedUserId && (
             <ModalDelete
-           
               isOpen={isModalOpen}
               onClose={closeModal}
               messageTitle="Are you sure?"
@@ -341,7 +419,7 @@ export default function Memberpage({ boardMember, boardId, preventUserImage }) {
                 // Assuming token is available here or passed as prop (otherwise remove)
                 await deleteMemberAction(boardId, userId);
                 console.log("Delete confirmed!");
-                closeModal(); 
+                closeModal();
               }}
             />
           )}

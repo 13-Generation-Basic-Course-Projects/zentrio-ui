@@ -7,6 +7,7 @@ import {
 import CalendarIcon from "@/assets/calendarSidebar.png";
 import CommentIcon from "@/assets/commentIcon.svg";
 import Image from "next/image";
+import { chageStatusCheckListWhenHaveTeamLeaderAction } from "@/action/board.action";
 
 export const CardCheckList = ({
   title,
@@ -19,17 +20,10 @@ export const CardCheckList = ({
   id,
   finishedAt,
   commentCount,
-  onStatusChange, // New prop for handling status changes
+  leaderId,
 }) => {
   const finishedAtRaw = finishedAt;
   const FormattedFinishDate = finishedAtRaw.split("T")[0];
-
-  // Handler for check circle click to set status to "Completed"
-  const handleStatusChange = () => {
-    if (onStatusChange) {
-      onStatusChange(id, "Completed"); // Pass the id and new status to the callback
-    }
-  };
 
   return (
     <div>
@@ -38,35 +32,6 @@ export const CardCheckList = ({
         <CardHeader className="pb-0 pt-2 px-4 flex items-start flex-col">
           <div className="flex w-full justify-between items-center">
             <p className="text-h6 font-semibold text-title truncate">{title}</p>
-            {/* Check Circle Button for Changing Status */}
-            <button
-              onClick={handleStatusChange}
-              className="focus:outline-none"
-              title="Mark as Completed"
-            >
-              <svg
-                viewBox="0 0 15 15"
-                fill={status === "Completed" ? "#00f576" : "#d1d5db"} // Green if completed, gray otherwise
-                xmlns="http://www.w3.org/2000/svg"
-                width={20}
-                height={20}
-                className="hover:fill-green-500 transition-colors"
-              >
-                <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
-                <g
-                  id="SVGRepo_tracerCarrier"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                ></g>
-                <g id="SVGRepo_iconCarrier">
-                  <path
-                    fillRule="evenodd"
-                    clipRule="evenodd"
-                    d="M0 7.5C0 3.35786 3.35786 0 7.5 0C11.6421 0 15 3.35786 15 7.5C15 11.6421 11.6421 15 7.5 15C3.35786 15 0 11.6421 0 7.5ZM7.0718 10.7106L11.3905 5.31232L10.6096 4.68762L6.92825 9.2893L4.32012 7.11586L3.67993 7.88408L7.0718 10.7106Z"
-                  />
-                </g>
-              </svg>
-            </button>
           </div>
           <p className="text-caption font-semibold text-title/50 truncate mt-2">
             Start Date: {startDate}
@@ -155,7 +120,7 @@ export const CardCheckList = ({
           <div className="bg-primary/50 p-2 text-label rounded-small text-blueActive">
             {label}
           </div>
-          <StackedProfileChecklist member={member} />
+          <StackedProfileChecklist member={member} hidden={1} />
         </div>
 
         <div className="border-b m-4 items-center border-2"></div>

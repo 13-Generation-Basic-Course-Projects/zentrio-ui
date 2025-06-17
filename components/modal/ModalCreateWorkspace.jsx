@@ -105,7 +105,7 @@ export default function ModalCreateWorkspace({ createWorkspace }) {
   };
   const onValid = (data) => {
     console.log("Creating board with:", data);
-    onClose();
+    // onClose();
   };
 
   return (

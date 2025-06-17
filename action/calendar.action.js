@@ -2,55 +2,113 @@
 
 import { Token } from "@/constant/token";
 import {
-  getTaskbyBoardIdService,
-  getNotebyTaskIdService,
-  updateNoteByIdService,
+  getCalendarByBoardIdAndUserIdService,
+  getAllNotesFromCalendarByCurrentUserService,
+  getNoteInCalendarService,
+  createNoteInCalendarService,
+  updateNoteByIdFromCalendarService,
 } from "@/service/calendar.service";
 
-export const calendarAction = async () => {
-  const userToken = await Token();
-  const zentrioToken = userToken.Credential;
-  // define boardId
-  const boardId = "0a3d4af8-d4dd-4a67-88cc-7bd7cc06a59f";
+/*
+ * Action for Get calendar by board id and user id
+ */
+export const getCalendarByBoardIdAndUserIdAction = async (boardId) => {
+  try {
+    const userToken = await Token();
+    const token = userToken.Credential;
 
-  const result = await getTaskbyBoardIdService({ boardId, zentrioToken });
-  return result;
+    const result = await getCalendarByBoardIdAndUserIdService({ boardId, token });
+    return result;
+  } catch (error) {
+    console.error("getCalendarByBoardIdAndUserIdAction error:", error);
+    throw error;
+  }
 };
 
-export const calendarNoteAction = async () => {
-  const userToken = await Token();
-  const zentrioToken = userToken.Credential;
-  //define taskId
-  const taskId = "0a3d4af8-d4dd-4a67-88cc-7bd7cc06a59f";
+/*
+ * Action for Get note in calendar
+ */
+export const getNoteInCalendarAction = async (calendarId) => {
+  try {
+    const userToken = await Token();
+    const token = userToken.Credential;
 
-  const result = await getNotebyTaskIdService({ taskId, zentrioToken });
-  return result;
+    const result = await getNoteInCalendarService({ calendarId, token });
+    return result;
+  } catch (error) {
+    console.error("getNoteInCalendarAction error:", error);
+    throw error;
+  }
 };
 
-export const calendarUpdateNoteAction = async ({
-  noteId,
+/*
+ * Action for Get all notes from calendar by current user
+ */
+export const getAllNotesFromCalendarByCurrentUserAction = async (taskId) => {
+  try {
+    const userToken = await Token();
+    const token = userToken.Credential;
+
+    const result = await getAllNotesFromCalendarByCurrentUserService({ taskId, token });
+    return result;
+  } catch (error) {
+    console.error("getAllNotesFromCalendarByCurrentUserAction error:", error);
+    throw error;
+  }
+};
+
+/*
+ * Action for Create note in calendar
+ */
+export const createNoteInCalendarAction = async ({
   noted,
   startDate,
   tillDate,
   taskId,
 }) => {
-  console.log("testing: ");
-  const userToken = await Token();
+  try {
+    const userToken = await Token();
+    const token = userToken.Credential;
 
-  const zentrioToken = userToken.Credential;
+    const result = await createNoteInCalendarService({
+      noted,
+      startDate,
+      tillDate,
+      taskId,
+      token,
+    });
+    return result;
+  } catch (error) {
+    console.error("createNoteInCalendarAction error:", error);
+    throw error;
+  }
+};
 
-  console.log("Token before update:", startDate);
+/*
+ * Action for Update note by id from calendar
+ */
+export const updateNoteByIdFromCalendarAction = async ({
+  calendarId,
+  noted,
+  startDate,
+  tillDate,
+  taskId,
+}) => {
+  try {
+    const userToken = await Token();
+    const token = userToken.Credential;
 
-  if (!zentrioToken) throw new Error("Token missing!");
-
-  const result = await updateNoteByIdService({
-    noteId,
-    noted,
-    startDate,
-    tillDate,
-    taskId,
-    zentrioToken,
-  });
-
-  return result;
+    const result = await updateNoteByIdFromCalendarService({
+      calendarId,
+      noted,
+      startDate,
+      tillDate,
+      taskId,
+      token,
+    });
+    return result;
+  } catch (error) {
+    console.error("updateNoteByIdFromCalendarAction error:", error);
+    throw error;
+  }
 };

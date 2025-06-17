@@ -462,7 +462,6 @@ export const createBoardService = async ({
   }
 };
 
-
 /*
  * 6. Invite users to board
  */

@@ -15,7 +15,6 @@
 //     }
 // }
 
-
 import OneSignal from "react-onesignal";
 
 export default async function initOneSignal(externalUserId) {

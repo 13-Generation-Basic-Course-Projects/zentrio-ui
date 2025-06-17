@@ -86,10 +86,15 @@ export const getMemberByBoardIdService = async ({ boardId, token }) => {
 /*
  * invite member to baord
  */
-export const inviteMemberToBoardService = async ({ boardId, data, token }) => {
+export const inviteMemberToBoardService = async ({
+  boardId,
+  workspaceId,
+  data,
+  token,
+}) => {
   try {
     console.log("from service", { boardId, data, token });
-    const url = boardRouteGroup.inviteUserToBoard(boardId);
+    const url = boardRouteGroup.inviteUserToBoard(boardId, workspaceId);
     const res = await fetch(url, {
       method: "POST", // Changed to POST to send invite data
       headers: {
@@ -99,7 +104,7 @@ export const inviteMemberToBoardService = async ({ boardId, data, token }) => {
       body: JSON.stringify(data), // Send the array of invites
     });
     const result = await res.json();
-    //console.log("📥 Backend responded with:", result);
+    console.log("📥 Backend responded with invite member modal:", result);
 
     // Ensure the response has a consistent structure
     return {
@@ -310,7 +315,7 @@ export const createGanttChartByBoardIdService = async ({
       body: JSON.stringify({ title: data.title, boardId: boardId }),
     });
     const result = await res.json();
-    //console.log("📥 Backend responded with:", result);
+    console.log("📥 Backend responded with gantbar:", result);
 
     return data;
   } catch (error) {
@@ -565,6 +570,125 @@ export const moveTaskOrderService = async (boardId, newId, oldId, token) => {
     console.log("📥 Backend responded with moveld:", result);
 
     return result;
+  } catch (error) {
+    console.error("bug", error.message);
+    throw error;
+  }
+};
+
+/*
+ * assignMemberToChecklistService
+ */
+export const assignMemberToChecklistService = async (
+  checklistId,
+  taskId,
+  assignedBy,
+  assignedTo,
+  token
+) => {
+  try {
+    console.log("from service", {
+      checklistId,
+      taskId,
+      assignedBy,
+      assignedTo,
+      token,
+    });
+    const url = boardRouteGroup.assignMemberToChecklist(
+      checklistId,
+      taskId,
+      assignedBy,
+      assignedTo
+    );
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const result = await res.json();
+    console.log("📥 Backend responded with checklist:", result);
+
+    return result;
+  } catch (error) {
+    console.error("bug", error.message);
+    throw error;
+  }
+};
+
+/*
+ * cheng status checklist
+ */
+export const chageStatusCheckListService = async (checklistId, token, type) => {
+  try {
+    //console.log("from service ", token);
+    const url = boardRouteGroup.chageStatusCheckListWhenHaveTeamLeader(
+      checklistId,
+      type
+    );
+    console.log(url);
+    const res = await fetch(url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await res.json();
+    console.log("📥 Backend responded with change status:", data);
+
+    return data; // just return the data, don’t redirect here
+  } catch (error) {
+    console.error("bug", error.message);
+    throw error;
+  }
+};
+
+/*
+ * cheng status task
+ */
+export const changeStatusTaskService = async (taskId, token, type) => {
+  try {
+    //console.log("from service ", token);
+    const url = boardRouteGroup.changeStatusTask(taskId, type);
+    console.log(url);
+    const res = await fetch(url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await res.json();
+    console.log("📥 Backend responded with change status:", data);
+
+    return data; // just return the data, don’t redirect here
+  } catch (error) {
+    console.error("bug", error.message);
+    throw error;
+  }
+};
+
+/*
+ * cheng  task to underreview
+ */
+export const changeStageToUnderReviewService = async (taskId, token, stage) => {
+  try {
+    //console.log("from service ", token);
+    const url = boardRouteGroup.changeStagToUnderReview(taskId, "UNDER_REVIEW");
+    console.log(url);
+    const res = await fetch(url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await res.json();
+    console.log("📥 Backend responded with change status:", data);
+
+    return data; // just return the data, don’t redirect here
   } catch (error) {
     console.error("bug", error.message);
     throw error;

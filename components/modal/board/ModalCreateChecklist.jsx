@@ -163,7 +163,7 @@ export default function ModalCreateChecklist({
     <>
       <Button
         onPress={onOpen}
-        className="flex items-center gap-2 px-4 py-1 text-sm font-medium text-primary bg-slate-blue border border-blue-300 rounded-[8px] shadow-sm hover:bg-[#000] h-[30px]"
+        className="flex items-center gap-2 pxj-4 py-1 text-sm font-medium text-primary bg-slate-blue border border-blue-300 rounded-[8px] shadow-sm hover:bg-[#000] h-[30px]"
         fullWidth="true"
       >
         <p className="px-2">+</p>

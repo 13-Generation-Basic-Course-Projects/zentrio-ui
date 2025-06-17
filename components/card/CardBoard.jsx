@@ -157,7 +157,7 @@ export default function CardBoard({
 
       {/* Card Body: background image or placeholder */}
       <CardBody className="overflow-visible py-2">
-        <Link href={`/dashboard/${workspaceId}/${boardId}/board?role=${role}`}>
+        <Link href={`/dashboard/${workspaceId}/${boardId}/board`}>
           {image && image.startsWith("bg-") ? (
             <div
               className={`rounded-xl w-full h-32 bg-cover bg-center ${image}`}

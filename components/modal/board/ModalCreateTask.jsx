@@ -22,6 +22,7 @@ import { IconAdd } from "../../icon/everyicon";
 import { taskFormSchema } from "@/lib/schemas/createTaskSchema";
 import { createTaskByBoardIdAndGanttChartIdAction } from "@/action/board.action";
 import { toast } from "react-toastify";
+import PopupActionNoGanttChart from "@/components/popup/PopupActionNoGanttChart";
 
 export default function ModalCreateTask({
   input,
@@ -29,6 +30,7 @@ export default function ModalCreateTask({
   ganttChartId,
   ganttbar,
   allMemberInBoard,
+  setActiveTab,
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [apiError, setApiError] = useState(null);
@@ -166,7 +168,12 @@ export default function ModalCreateTask({
     !ganttbar?.payload?.length ||
     (ganttChartId ?? "") === "No data available"
   ) {
-    return <p className="text-red-500">No Gantt bars or chart available.</p>;
+    return (
+      <PopupActionNoGanttChart
+        ganttChartId={ganttChartId}
+        setActiveTab={setActiveTab}
+      />
+    );
   }
 
   return (

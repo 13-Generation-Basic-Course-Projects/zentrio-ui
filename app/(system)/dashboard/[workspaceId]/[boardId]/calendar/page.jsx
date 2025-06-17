@@ -7,10 +7,8 @@ import {
 import { auth } from "@/auth";
 import MyCalender from "@/components/appserver/Calenderpage";
 
-
 const FALLBACK_STRING = "No data available";
 const FALLBACK_ARRAY = [];
-
 
 export default async function Calendar({ params }) {
   // Extract boardId from route parameters

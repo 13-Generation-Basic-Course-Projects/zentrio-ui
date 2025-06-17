@@ -14,12 +14,12 @@ export const boardRouteGroup = {
 
   //post
   assignUserRoleToBoard: () => `${apiConfig.baseUrl}/boards/assign`,
-  inviteUserToBoard: (boardId) =>
-    `${apiConfig.baseUrl}/boards/${boardId}/users/invite`,
+  inviteUserToBoard: (boardId, workspaceId) =>
+    `${apiConfig.baseUrl}/boards/${boardId}/workspaces/${workspaceId}/users/invite`,
   assignUserRoleLeaderToBoard: (taskid, assignId) =>
     `${apiConfig.baseUrl}/tasks/${taskid}/members/${assignId}`, //asign team ld
   assignMemberInChecklist: (checklistId, taskId, assignedBy, assignedTo) =>
-    `${apiConfig.baseUrl}/api/v1/checklists/${checklistId}/tasks/${taskId}/members${assignedBy}/members/${assignedTo}/`,
+    `${apiConfig.baseUrl}/api/v1/checklists/${checklistId}/tasks/${taskId}/members/${assignedBy}/members/${assignedTo}/`,
 
   createTaskByBoardIdAndGanttBarId: () => `${apiConfig.baseUrl}/tasks`, // Created task with boards ID and gantt bars ID
   createCheckListBytaskId: () => `${apiConfig.baseUrl}/checklists`, // Created task with boards ID and gantt bars ID
@@ -39,4 +39,16 @@ export const boardRouteGroup = {
 
   moveTaskOrder: (boardId, newId, oldId) =>
     `${apiConfig.baseUrl}/tasks/board/${boardId}?newOrder=${newId}&oldOrder=${oldId}`,
+
+  assignMemberToChecklist: (checklistId, taskId, assignedBy, assignedTo) =>
+    `${apiConfig.baseUrl}/checklists/${checklistId}/tasks/${taskId}/members/${assignedBy}/members/${assignedTo}/`,
+
+  chageStatusCheckListWhenHaveTeamLeader: (checklistId, type) =>
+    `${apiConfig.baseUrl}/checklists/${checklistId}/status?status=${type}`,
+
+  changeStatusTask: (taskId, type) =>
+    `${apiConfig.baseUrl}/tasks/${taskId}/status?status=${type}`,
+
+  changeStagToUnderReview: (taskId, stage) =>
+    `${apiConfig.baseUrl}/tasks/${taskId}/move?stage=${stage}`,
 };
