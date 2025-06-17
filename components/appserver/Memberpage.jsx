@@ -21,6 +21,7 @@ import Link from "next/link";
 import { ChevronUp } from "lucide-react";
 import ModalDelete from "../modal/ModalDelete";
 import { preventImage } from "@/constant/preventimage";
+import { formatRole } from "@/lib/roleFormart";
 
 export default function Memberpage({
   boardMember,
@@ -317,6 +318,7 @@ export default function Memberpage({
                     <div className="flex items-center gap-2">
                       <span className="text-gray-700 group-hover:text-blue-700 transition-colors duration-200">
                         {member.roles[0]}
+                        {/* {formatRole(role)} */}
                       </span>
                       {member.roles.length > 1 && (
                         <Popover

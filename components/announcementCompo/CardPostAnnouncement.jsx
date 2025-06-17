@@ -8,19 +8,24 @@ import { LikeReactionButton } from "./ModalLikeComponent";
 import ImageViewer from "./popupImage";
 // import { useState } from "react";
 
-export default function CardPostAnnouncement({ Announcements,currentUserProfile, boardId }) {
-  console.log("bottttt",boardId)
+export default function CardPostAnnouncement({
+  Announcements,
+  currentUserProfile,
+  boardId,
+}) {
+  console.log("bottttt", boardId);
   const announcementList = Announcements?.payload || [];
-   console.log("announcement", announcementList);
+  console.log("announcement", announcementList);
   console.log("current user", currentUserProfile);
-// Loop through each announcement
-announcementList.forEach((announcement, index) => {
-  console.log(`📢 Announcement ${index + 1}: ${announcement.title}`);
-  
-  // Loop through each react in that announcement
-  announcement.reacts?.forEach((react, i) => {
-    console.log(`  👉 React ${i + 1}:`, react);
-  });});
+  // Loop through each announcement
+  announcementList.forEach((announcement, index) => {
+    console.log(`📢 Announcement ${index + 1}: ${announcement.title}`);
+
+    // Loop through each react in that announcement
+    announcement.reacts?.forEach((react, i) => {
+      console.log(`  👉 React ${i + 1}:`, react);
+    });
+  });
   // const [localAnnouncements, setLocalAnnouncements] = useState(announcementList);
   // console.log("announcementlist",announcementList);
 
@@ -30,8 +35,8 @@ announcementList.forEach((announcement, index) => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto h-screen overflow-hidden p-4">
-      <div className="h-full overflow-y-auto space-y-4 scroll-container pb-[400px]">
+    <div className=" mx-auto h-screen overflow-hidden p-4">
+      <div className="h-full overflow-y-auto space-y-4 scroll-container pb-[400px] ">
         {announcementList.map((announcement, index) => (
           <Card
             key={index}
@@ -49,8 +54,12 @@ announcementList.forEach((announcement, index) => {
                     />
                   </div>
                   <div>
-                    <h3 className="font-bold text-title">{announcement.createdBy?.username}</h3>
-                    <p className="text-sm text-gray-500">{announcement.createdAt}</p>
+                    <h3 className="font-bold text-title">
+                      {announcement.createdBy?.username}
+                    </h3>
+                    <p className="text-sm text-gray-500">
+                      {announcement.createdAt}
+                    </p>
                   </div>
                 </div>
                 <Button
@@ -58,7 +67,7 @@ announcementList.forEach((announcement, index) => {
                   size="sm"
                   className="text-title hover:text-primary"
                 >
-                  <ModalOptionAnnoun 
+                  <ModalOptionAnnoun
                     Announcement={announcement}
                     announId={announcement.announcementId}
                     boardId={boardId}
@@ -87,7 +96,11 @@ announcementList.forEach((announcement, index) => {
               {/* Actions */}
               <div className="flex items-center justify-between border-t border-gray-100 pt-4">
                 <div className="flex items-center gap-6">
-                  <LikeReactionButton announId={announcement?.announcementId}  reacts={announcement?.reacts}  currentUserProfile={currentUserProfile}/>
+                  <LikeReactionButton
+                    announId={announcement?.announcementId}
+                    reacts={announcement?.reacts}
+                    currentUserProfile={currentUserProfile}
+                  />
                   <Button
                     variant="ghost"
                     size="sm"
