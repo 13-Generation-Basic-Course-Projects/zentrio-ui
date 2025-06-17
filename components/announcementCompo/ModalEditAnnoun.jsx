@@ -64,9 +64,6 @@ export default function ModalEditAnnoun({ icon, bgcolor, title, announId, boardI
                   <div className={`w-8 h-8 rounded-full ${bgcolor} flex justify-center items-center`}>{icon}</div>
                   <span className="text-lg font-semibold">Edit Announcement</span>
                 </div>
-                {/* <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
-                  <X className="w-5 h-5" />
-                </button> */}
               </ModalHeader>
 
               <ModalBody className="space-y-4">

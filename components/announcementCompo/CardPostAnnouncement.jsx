@@ -35,33 +35,53 @@ export default function CardPostAnnouncement({
   };
 
   return (
-    <div className=" mx-auto h-screen overflow-hidden p-4">
-      <div className="h-full overflow-y-auto space-y-4 scroll-container pb-[400px] ">
+    <div className="mx-auto h-screen overflow-hidden px-2 py-1">
+      <div className="h-full overflow-y-auto scrollbar-hidden space-y-4 scroll-container pb-[400px]">
         {announcementList.map((announcement, index) => (
           <Card
             key={index}
-            className="w-full bg-white shadow-sm border border-gray-200"
+            className="w-full bg-white shadow-lg border-1 rounded-xl overflow-hidden"
           >
             <CardContent className="p-6">
               {/* Header */}
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-200">
-                    <img
-                      src={announcement.createdBy?.imageUrl}
-                      alt="img"
-                      className="w-full h-full object-cover"
-                    />
+                  <div className="relative">
+                  <div className="w-12 h-12 rounded-full overflow-hidden bg-gradient-to-r from-[#59BAD5] to-[#4AB5D1] p-0.5">
+                    <div className="w-full h-full rounded-full overflow-hidden bg-white p-0.5">
+                      <img
+                        src={announcement.createdBy?.imageUrl}
+                        alt="Profile"
+                        className="w-full h-full object-cover rounded-full"
+                      />
+                    </div>
                   </div>
+                  {/* Online indicator */}
+                  <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 rounded-full border-2 border-white flex items-center justify-center">
+                    <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+                  </div>
+                </div>
                   <div>
-                    <h3 className="font-bold text-title">
+                    <h3 className="flex font-bold text-title">
                       {announcement.createdBy?.username}
                     </h3>
                     <p className="text-sm text-gray-500">
-                      {announcement.createdAt}
+                      {new Date(announcement.createdAt).toLocaleString("en-US", {
+                        year: "numeric",
+                        month: "short",
+                        day: "2-digit",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        hour12: false,
+                      })}
                     </p>
                   </div>
                 </div>
+                {/* add icon pin if ispined=true */}
+                <div className="flex items-center">
+                {announcement.isPinned && (
+                  <Pin className="w-13 h-13 text-primary" />
+                )}
                 <Button
                   variant="ghost"
                   size="sm"
@@ -74,6 +94,7 @@ export default function CardPostAnnouncement({
                     // onDeleteSuccess={() => handleDeleteSuccess(announcement.id)}
                   />
                 </Button>
+                </div>
               </div>
 
               {/* Title */}
@@ -101,16 +122,16 @@ export default function CardPostAnnouncement({
                     reacts={announcement?.reacts}
                     currentUserProfile={currentUserProfile}
                   />
-                  <Button
+                  {/* <Button
                     variant="ghost"
                     size="sm"
                     className="text-title hover:text-primary p-0"
                   >
                     <Bookmark className="w-4 h-4 mr-2" />
                     Bookmark
-                  </Button>
+                  </Button> */}
                 </div>
-                <span className="text-sm text-title">{"Read 11"}</span>
+                {/* <span className="text-sm text-title">{"Read 11"}</span> */}
               </div>
             </CardContent>
           </Card>

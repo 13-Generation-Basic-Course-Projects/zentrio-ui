@@ -16,7 +16,10 @@ import {
   Paperclip,
 } from "lucide-react";
 import { Button } from "@heroui/react";
-import { createAnnouncementByBoardIdAction, uploadMultiImgByBoardIdAction } from "@/action/announcement.action";
+import {
+  createAnnouncementByBoardIdAction,
+  uploadMultiImgByBoardIdAction,
+} from "@/action/announcement.action";
 
 export default function CardCreateModal({
   onClose,
@@ -81,16 +84,43 @@ export default function CardCreateModal({
   const isFormValid = title.trim() && description.trim();
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <Card className="w-[90%] max-w-5xl bg-white rounded-[30px] shadow-lg border-none">
-        <CardContent className="p-0 flex flex-col md:flex-row">
-          {/* Left Side - Customizable */}
-          <div className="w-full md:w-1/2 border-gray-200">
-            <div className="h-full w-full flex items-center justify-center text-gray-400">
-              <div className="bg-primary w-full h-full rounded-[30px] rounded-tr-[80px] rounded-br-[80px] flex items-center justify-center">
-                <div className="text-white text-center space-y-2">
-                  <h1 className="text-h2 font-semibold">Welcome!</h1>
-                  <h1 className="text-h2 font-semibold">Zentrio Announcement</h1>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+      <Card className="w-full max-w-6xl bg-white rounded-3xl shadow-2xl border-0 overflow-hidden transform transition-all duration-300 scale-100 animate-in slide-in-from-bottom-4">
+        <CardContent className="p-0 flex flex-col lg:flex-row min-h-[600px]">
+          {/* Left Side - Modern Brand Section */}
+          <div className="w-full lg:w-2/5 relative overflow-hidden">
+            {/* <div className="h-full bg-gradient-to-br from-primary via-primary to-white relative"> */}
+            <div className="h-full bg-gradient-to-br from-primary via-primary to-white relative">
+              <div className="absolute inset-0 bg-white/20 backdrop-blur-md z-0" />
+
+              <Image src={preImage} className="h-auto w-full absolute" alt="" />
+              <Image
+                src={thumbup}
+                className="h-auto w-full bottom-5 left-3 absolute"
+                alt=""
+              />
+              <Image
+                src={logo}
+                alt="logo"
+                className="h-[30px] w-auto  object-contain bottom-5 right-5 absolute"
+              />
+
+              {/* Animated background pattern */}
+              <div className="absolute inset-0 opacity-10">
+                <div className="absolute top-10 left-10 w-20 h-20 bg-white rounded-full animate-pulse"></div>
+                <div className="absolute top-32 right-8 w-16 h-16 bg-white/20 rounded-lg rotate-45 animate-bounce"></div>
+                <div className="absolute bottom-20 left-8 w-12 h-12 bg-white/30 rounded-full animate-pulse delay-300"></div>
+                <div className="absolute bottom-40 right-12 w-8 h-8 bg-white/40 rounded-full animate-ping delay-700"></div>
+              </div>
+
+              {/* Content */}
+              <div className="relative z-10 h-full flex flex-col justify-center p-12 text-white">
+                <div className="mb-8">
+                  <div className="inline-flex items-center px-4 py-2 bg-white/20 rounded-full text-sm font-medium mb-6 backdrop-blur-sm">
+                    <Zap className="w-4 h-4 mr-2" />
+                    Work smart with Zentrio <br />
+                    젠트리오와 함께 스마트하게 일하세요
+                  </div>
                 </div>
               </div>
             </div>
@@ -99,17 +129,13 @@ export default function CardCreateModal({
           {/* Right Side - Modern Form */}
           <div className="w-full  lg:w-3/5 flex flex-col">
             {/* Header */}
-            <div className="p-4 border-b border-gray-200">
-              <div className="flex items-center justify-between mb-5">
-                <h2 className="text-h4 font-semibold text-title">
-                  Create Announcement
-                </h2>
-                <button
-                  onClick={onClose}
-                  className="text-title hover:text-primary p-1 rounded-full hover:bg-gray-100 transition-colors"
-                >
-                  <X className="w-5 h-5" />
-                </button>
+            <div className="px-2 py-2 border-b border-gray-100 ">
+              <div className="flex items-center justify-between mb-2 hidden">
+                <div className="flex items-center space-x-3">
+                  <div className="w-[90px] h-[90px] rounded-xl flex items-center justify-center">
+                    <Image src={logo} alt="logo" className=" " />
+                  </div>
+                </div>
               </div>
               {/* Author info */}
               {managerMember && (
@@ -222,8 +248,30 @@ export default function CardCreateModal({
                           className="flex items-center justify-between p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors group"
                         >
                           <div className="flex items-center gap-3 min-w-0">
-                            <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                              <Image className="w-4 h-4 text-indigo-600" />
+                            <div className="w-8 h-8 bg-indigo-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                className="lucide lucide-image-icon lucide-image text-primary"
+                              >
+                                <rect
+                                  width="18"
+                                  height="18"
+                                  x="3"
+                                  y="3"
+                                  rx="2"
+                                  ry="2"
+                                />
+                                <circle cx="9" cy="9" r="2" />
+                                <path d="M21 15l-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
+                              </svg>
                             </div>
                             <div className="min-w-0">
                               <div className="truncate text-sm font-medium text-gray-900">
@@ -237,7 +285,7 @@ export default function CardCreateModal({
                           <button
                             type="button"
                             onClick={() => removeImage(index)}
-                            className="w-8 h-8 rounded-lg bg-red-100 hover:bg-red-200 flex items-center justify-center transition-colors opacity-0 group-hover:opacity-100"
+                            className="w-8 h-8 rounded-xl bg-red-100 hover:bg-red-200 flex items-center justify-center transition-colors opacity-0 group-hover:opacity-100"
                           >
                             <X className="w-4 h-4 text-red-600" />
                           </button>
@@ -295,7 +343,7 @@ export default function CardCreateModal({
                     type="submit"
                     className={`flex-1 font-semibold transition-all duration-200 ${
                       isFormValid && !loading
-                        ? "bg-gradient-to-r from-primary via-primary to-white text-white transform hover:scale-[1.02] shadow-lg hover:shadow-xl"
+                        ? "bg-gradient-to-r  bg-gradient-to-br from-primary via-primary to-white text-white transform hover:scale-[1.02] shadow-lg hover:shadow-xl"
                         : "bg-gray-300 text-gray-500 cursor-not-allowed"
                     }`}
                     radius="lg"
