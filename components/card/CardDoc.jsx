@@ -114,6 +114,7 @@ export function CardFile({
   type,
   link,
   documentId,
+  fileId,
   tokenFromGoogle,
   isHidden,
 }) {
@@ -127,6 +128,7 @@ export function CardFile({
           ) : (
             <ModalOptionDocument
               documentId={documentId}
+              fileId={fileId}
               accessToken={tokenFromGoogle}
             />
           )}

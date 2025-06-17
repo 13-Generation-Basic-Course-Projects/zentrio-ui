@@ -10,6 +10,7 @@ import userProfile from "@/assets/profile.png";
 import ModalNotification from "../modal/noti/ModalNotification";
 import AllDocument from "./AllDocument";
 import ModalCreateDocu from "../modal/docu/ModalCreateDocu";
+import WelcomePage from "../modal/docu/EmptyDocumentPage";
 
 export default function DocumentLayout({
   user,
@@ -123,32 +124,41 @@ export default function DocumentLayout({
       </div>
 
       {/* Tab Content Area */}
-      <main className="p-4 min-h-screen">
-        <div className="mx-auto">
-          {activeTab === "personal" && (
-            <PrivateDocument
-              documents={documents}
-              modal={[<ModalCreateDocu boardId={boardId} />]}
-              tokenFromGoogle={tokenFromGoogle}
-              isHidden={false}
-            />
-          )}
-          {activeTab === "public" && (
-            <PublicDocument
-              publicDocuments={publicDocuments}
-              modal={[]}
-              isHidden={true}
-            />
-          )}
-          {/* {activeTab === null && (
+      {tokenFromGoogle === undefined ? (
+        <WelcomePage />
+      ) : (
+        <main className="p-4 min-h-screen">
+          <div className="mx-auto">
+            {activeTab === "personal" && (
+              <PrivateDocument
+                documents={documents}
+                modal={[
+                  <ModalCreateDocu
+                    boardId={boardId}
+                    tokenFromGoogle={tokenFromGoogle}
+                  />,
+                ]}
+                tokenFromGoogle={tokenFromGoogle}
+                isHidden={false}
+              />
+            )}
+            {activeTab === "public" && (
+              <PublicDocument
+                publicDocuments={publicDocuments}
+                modal={[]}
+                isHidden={true}
+              />
+            )}
+            {/* {activeTab === null && (
             <AllDocument
               documents={documents}
               tokenFromGoogle={tokenFromGoogle}
               boardId={boardId}
             />
           )} */}
-        </div>
-      </main>
+          </div>
+        </main>
+      )}
     </>
   );
 }

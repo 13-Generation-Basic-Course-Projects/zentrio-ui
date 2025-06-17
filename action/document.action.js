@@ -142,6 +142,7 @@ export const createDocumentByUploadAction = async (
     token,
     tokenFromGoogle
   );
+  revalidatePath("/document");
   return document;
 };
 
@@ -165,22 +166,35 @@ export const uploadDocumentToFolderAction = async (
   return document;
 };
 
-export const createDriveFileAction = async (
+export const createDriveFileAction = async ({
   name,
   folderId,
   fileType,
-  tokenFromGoogle
-) => {
-  const userToken = await Token();
-  const token = userToken.Credential;
-  const document = await createDriveFileService(
-    name,
-    folderId,
-    fileType,
-    token,
-    tokenFromGoogle
-  );
-  return document;
+  token: tokenFromGoogle,
+}) => {
+  try {
+    const userToken = await Token();
+    const token = userToken.Credential;
+
+    const data = {
+      accessToken: tokenFromGoogle,
+      name: name,
+      folderId: folderId,
+      fileType: fileType
+    }
+
+    const document = await createDriveFileService(
+      name,
+      folderId,
+      fileType,
+      token,
+      tokenFromGoogle
+    );
+    return document;
+  } catch (error) {
+    console.error("Error creting file: ", error);
+    throw error;
+  }
 };
 
 // Delete
@@ -218,13 +232,15 @@ export const updateDocumentNameByIdAction = async (
 };
 
 // public document (update)
-export const publicDocumentByIdAction = async (
-  documentId, tokenFromGoogle
-) => {
+export const publicDocumentByIdAction = async (documentId, tokenFromGoogle) => {
   const userToken = await Token();
   const token = userToken.Credential;
   revalidatePath("/document");
 
-  const updated = await publicDocumentByIdService(documentId, token, tokenFromGoogle);
+  const updated = await publicDocumentByIdService(
+    documentId,
+    token,
+    tokenFromGoogle
+  );
   return updated;
-}
+};

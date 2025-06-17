@@ -128,11 +128,7 @@ export const getFileByFolderIdService = async ({ accessToken, folderId, token })
 /*
  * Download document by document ID
  */
-export const downloadDocumentByDocumentIdService = async ({
-  documentId,
-  accessToken,
-  token,
-}) => {
+export const downloadDocumentByDocumentIdService = async ({ documentId, accessToken, token}) => {
   try {
     const url = documentRouteGroup.downloadDocumentByDocumentId(
       documentId,
@@ -180,11 +176,7 @@ export const downloadDocumentByDocumentIdService = async ({
 /*
  * Download all files as zip
  */
-export const downloadAllFilesAsZipService = async ({
-  documentId,
-  accessToken,
-  token,
-}) => {
+export const downloadAllFilesAsZipService = async ({ documentId, accessToken, token }) => {
   try {
     const url = documentRouteGroup.downloadAllFilesAsZip(
       documentId,
@@ -227,11 +219,7 @@ export const downloadAllFilesAsZipService = async ({
 /*
  * Delete document by document ID
  */
-export const deleteDocumentService = async ({
-  accessToken,
-  documentId,
-  token,
-}) => {
+export const deleteDocumentService = async ({ accessToken, documentId, token }) => {
   try {
     const res = await fetch(
       documentRouteGroup.deleteDocumentById(documentId, accessToken),
@@ -294,12 +282,7 @@ export const createDocumentService = async (data, token) => {
 /*
  * Create new document by file upload
  */
-export const createDocumentByUploadService = async (
-  formData,
-  boardId,
-  token,
-  tokenFromGoogle
-) => {
+export const createDocumentByUploadService = async (formData, boardId, token, tokenFromGoogle) => {
   try {
     const res = await fetch(
       documentRouteGroup.uploadDocumentToBoard(boardId, tokenFromGoogle),
@@ -328,13 +311,7 @@ export const createDocumentByUploadService = async (
 /*
  * Create drive file
  */
-export const createDriveFileService = async (
-  name,
-  folderId,
-  fileType,
-  token,
-  tokenFromGoogle
-) => {
+export const createDriveFileService = async ( name, folderId, fileType, token, tokenFromGoogle) => {
   try {
     const url = documentRouteGroup.createDriveFile(
       name,
@@ -366,12 +343,7 @@ export const createDriveFileService = async (
 /*
  * Upload file to folder
  */
-export const uploadDocumentToFolderServie = async (
-  file,
-  folderId,
-  token,
-  tokenFromGoogle
-) => {
+export const uploadDocumentToFolderServie = async (file, folderId, token, tokenFromGoogle) => {
   try {
     const url = documentRouteGroup.uploadDocumentToFolder(
       folderId,
@@ -404,12 +376,7 @@ export const uploadDocumentToFolderServie = async (
 /*
  * Update document name by document ID
  */
-export const updateDocumentNameByIdService = async (
-  documentId,
-  newName,
-  token,
-  tokenFromGoogle
-) => {
+export const updateDocumentNameByIdService = async ( documentId, newName, token, tokenFromGoogle) => {
   try {
     const url = documentRouteGroup.updateDocumentById(
       documentId,
@@ -443,11 +410,7 @@ export const updateDocumentNameByIdService = async (
 /*
  * Public document by document id
  */
-export const publicDocumentByIdService = async (
-  documentId,
-  token,
-  tokenFromGoogle
-) => {
+export const publicDocumentByIdService = async ( documentId, token, tokenFromGoogle) => {
   try {
     const url = documentRouteGroup.makeDocumentPublic(
       documentId,

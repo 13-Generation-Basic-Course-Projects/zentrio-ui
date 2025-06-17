@@ -8,6 +8,7 @@ export const documentRouteGroup = {
 
   deleteDocumentById: (documentId, accessToken) =>
     `${apiConfig.baseUrl}/documents/${documentId}?accessToken=${accessToken}`,
+  
 
   // Access control
   makeDocumentPrivate: (id) => `${apiConfig.baseUrl}/documents/${id}/private`,
