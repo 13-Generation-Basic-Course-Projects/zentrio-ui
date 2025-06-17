@@ -1,5 +1,6 @@
 "use client";
 
+import { getAllDocumentByBoardIdAction } from "@/action/document.action";
 // import { SearchIcon } from "@/components/documentcomponent/AllDocument";
 import { documentData } from "@/data/docu/documentData";
 import {
@@ -10,9 +11,9 @@ import {
   useDraggable,
 } from "@heroui/modal";
 import { Button, Input } from "@heroui/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
-const ModalUploadAttachment = ({ isOpen, onClose }) => {
+const ModalUploadAttachment = ({ isOpen, onClose, boardId }) => {
   if (!isOpen) return null;
   const targetRef = React.useRef(null);
   const { moveProps } = useDraggable({
@@ -20,6 +21,7 @@ const ModalUploadAttachment = ({ isOpen, onClose }) => {
     canOverflow: true,
     isDisabled: !isOpen,
   });
+  console.log("boardIIIId ", boardId);
 
   const [link, setLink] = useState(""); // input value
   const [appliedLinks, setAppliedLinks] = useState([]); // store multiple links
@@ -37,27 +39,92 @@ const ModalUploadAttachment = ({ isOpen, onClose }) => {
   };
 
   const data = documentData;
+  // Utility function to format dates
+  const formatDate = (dateString) => {
+    if (!dateString) return "No date";
 
-  const icons = {
-    pdf: "https://cdn-icons-png.flaticon.com/128/4726/4726010.png",
-    docx: "https://cdn-icons-png.flaticon.com/128/2991/2991108.png",
-    xlsx: "https://cdn-icons-png.flaticon.com/128/2504/2504768.png",
-    pptx: "https://cdn-icons-png.flaticon.com/128/2875/2875416.png",
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return "Invalid date";
+
+      return new Intl.DateTimeFormat("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      }).format(date);
+    } catch (error) {
+      return "Invalid date";
+    }
   };
-  function FileIcon({ type, size = 20 }) {
-    // Get the matching icon based on type, fallback to a default icon if not found
-    const src = icons[type] || icons.docx; // Fallback to 'docx' icon as default
+
+  // Utility function to extract simple document type from MIME type
+  const getSimpleDocumentType = (documentType) => {
+    if (!documentType) return "docx"; // default fallback
+
+    // Handle Google Apps types
+    if (documentType.includes("google-apps")) {
+      if (documentType.includes("presentation")) return "pptx";
+      if (documentType.includes("spreadsheet")) return "xlsx";
+      if (documentType.includes("document")) return "docx";
+      return "docx";
+    }
+
+    // Handle standard MIME types
+    if (documentType.includes("pdf")) return "pdf";
+    if (documentType.includes("word") || documentType.includes("msword"))
+      return "docx";
+    if (documentType.includes("excel") || documentType.includes("spreadsheet"))
+      return "xlsx";
+    if (
+      documentType.includes("powerpoint") ||
+      documentType.includes("presentation")
+    )
+      return "pptx";
+    if (documentType.includes("text")) return "txt";
+    if (documentType.includes("image")) return "img";
+
+    // Extract extension from MIME type
+    const parts = documentType.split("/");
+    if (parts.length > 1) {
+      const subtype = parts[1];
+      if (subtype.includes("pdf")) return "pdf";
+      if (subtype.includes("doc")) return "docx";
+      if (subtype.includes("sheet")) return "xlsx";
+      if (subtype.includes("presentation")) return "pptx";
+    }
+
+    return "docx"; // fallback
+  };
+
+  // File Icon Component (using your existing structure)
+  function FileIcon({ documentType, size = 20 }) {
+    // Mock icons object - replace with your actual icons
+    const icons = {
+      pdf: "https://cdn-icons-png.flaticon.com/128/4726/4726010.png",
+      docx: "https://cdn-icons-png.flaticon.com/128/2991/2991108.png",
+      xlsx: "https://cdn-icons-png.flaticon.com/128/2504/2504768.png",
+      pptx: "https://cdn-icons-png.flaticon.com/128/2875/2875416.png",
+      
+    };
+
+    const simpleType = getSimpleDocumentType(documentType);
+    const src = icons[simpleType] || icons.docx;
 
     return (
       <img
         src={src}
-        alt={`${type || "folder"} icon`}
+        alt={`${simpleType || "document"} icon`}
         width={size}
         height={size}
         className="object-contain"
       />
     );
   }
+
+  
+ 
   const [selectedFiles, setSelectedFiles] = useState([]);
 
   const handleSelect = (file) => {
@@ -78,6 +145,30 @@ const ModalUploadAttachment = ({ isOpen, onClose }) => {
       prev.filter((file) => file.title !== fileToRemove.title)
     );
   };
+
+  const [documents, setDocuments] = useState([]);
+  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    const fetchDocuments = async () => {
+      if (boardId) {
+        setLoading(true);
+        try {
+          const allDocument = await getAllDocumentByBoardIdAction(boardId);
+          console.log("Fetched documents: ", allDocument);
+          setDocuments(allDocument || []);
+        } catch (error) {
+          console.error("Error fetching documents:", error);
+          setDocuments([]);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchDocuments();
+  }, [boardId, isOpen]);
+  
+  console.log("handleGetAllDocuemnt: ", documents);
   return (
     <Modal
       isOpen={isOpen}
@@ -158,7 +249,7 @@ const ModalUploadAttachment = ({ isOpen, onClose }) => {
                 {/* data that have map */}
                 <div>
                   <div className="border-1 rounded-large p-5 mt-6 h-[250px] overflow-auto scrollbar-hidden text-caption">
-                    {data.map((item, index) => (
+                    {documents?.payload?.map((item, index) => (
                       <div
                         key={index}
                         className={`flex flex-col mb-4 cursor-pointer ${
@@ -168,13 +259,15 @@ const ModalUploadAttachment = ({ isOpen, onClose }) => {
                         }`}
                         onClick={() => handleSelect(item)}
                       >
-                        <div className="flex justify-between items-center">
-                          <div className="flex items-center space-x-2">
-                            <FileIcon type={item.type} />
-                            <p>{item.title}</p>
+                        <div className="flex justify-between items-center text-h6">
+                          <div className="flex items-center space-x-2 flex-1 min-w-0">
+                            <FileIcon documentType={item?.documentType} />
+                            <p className="truncate" title={item?.description}>
+                              {item?.description || "Untitled Document"}
+                            </p>
                           </div>
-                          <p className="text-title/50 text-caption-tiny">
-                            {item.date}
+                          <p className="text-title/50 text-caption-tiny ml-2 flex-shrink-0">
+                            {formatDate(item?.creationDate)}
                           </p>
                         </div>
                       </div>

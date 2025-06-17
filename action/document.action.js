@@ -10,6 +10,7 @@ import {
   downloadDocumentByDocumentIdService,
   fetchDocumentsByBoardService,
   fetchPublicDocumentsService,
+  getAllDocumentByBoardIdSerivce,
   getFileByFolderIdService,
   publicDocumentByIdService,
   updateDocumentNameByIdService,
@@ -218,13 +219,31 @@ export const updateDocumentNameByIdAction = async (
 };
 
 // public document (update)
-export const publicDocumentByIdAction = async (
-  documentId, tokenFromGoogle
-) => {
+export const publicDocumentByIdAction = async (documentId, tokenFromGoogle) => {
   const userToken = await Token();
   const token = userToken.Credential;
   revalidatePath("/document");
 
-  const updated = await publicDocumentByIdService(documentId, token, tokenFromGoogle);
+  const updated = await publicDocumentByIdService(
+    documentId,
+    token,
+    tokenFromGoogle
+  );
   return updated;
-}
+};
+
+/* new add
+ * get all document by board id
+ */
+export const getAllDocumentByBoardIdAction = async (boardId) => {
+  const userToken = await Token();
+  const token = userToken.Credential;
+  revalidatePath("/document");
+
+  const getAllDocument = await getAllDocumentByBoardIdSerivce({
+    boardId,
+    token,
+  });
+  console.log("Get all doucemnt action : ", getAllDocument);
+  return getAllDocument;
+};

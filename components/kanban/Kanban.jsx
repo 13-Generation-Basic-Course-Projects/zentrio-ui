@@ -900,6 +900,7 @@ export default function KanbanBoard({
                                         onDragEnd={handleDragEnd}
                                       >
                                         <ModalDetailChecklist
+                                          boardId={boardId} //new add
                                           taskId={card.id}
                                           id={checklist?.checklistId}
                                           taskTitle={card.title}

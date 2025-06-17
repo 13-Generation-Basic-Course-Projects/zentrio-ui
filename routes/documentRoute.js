@@ -23,7 +23,6 @@ export const documentRouteGroup = {
     `${apiConfig.baseUrl}/files/create/${fileType}?accessToken=${accessToken}&name=${name}&folderId=${folderId}`,
   uploadDocumentToFolder: (folderId, accessToken) =>
     `${apiConfig.baseUrl}/files/upload-image-to-drive?token=${accessToken}&folderId=${folderId}`,
-  
 
   // Get documents (public/private/filters)
   getPublicDocumentsByBoard: (boardId) =>
@@ -31,7 +30,11 @@ export const documentRouteGroup = {
   downloadDocumentByDocumentId: (documentId, accessToken) =>
     `${apiConfig.baseUrl}/documents/download/${documentId}?accessToken=${accessToken}`,
   downloadAllFilesAsZip: (documentId, accessToken) =>
-    `${apiConfig.baseUrl}/documents/download-folder/${documentId}?accessToken=${encodeURIComponent(accessToken)}`,
+    `${
+      apiConfig.baseUrl
+    }/documents/download-folder/${documentId}?accessToken=${encodeURIComponent(
+      accessToken
+    )}`,
   getAllDocumentsByBoard: (boardId) =>
     `${apiConfig.baseUrl}/documents/boards/${boardId}`,
   getDocumentsByType: (boardId, mineType) =>
@@ -41,4 +44,8 @@ export const documentRouteGroup = {
 
   getFileByFolderId: (folderId, accessToken) =>
     `${apiConfig.baseUrl}/files/getFileBy-FolderID?accessToken=${accessToken}&folderId=${folderId}`,
+
+  //new add route
+  getAllDocumentByBoardId: (boardId) =>
+    `${apiConfig.baseUrl}/documents/boards/${boardId}`,
 };
