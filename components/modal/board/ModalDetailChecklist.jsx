@@ -172,10 +172,12 @@ export default function ModalDetailChecklist({
               // <span className="text-body-sm font-semibold">DONE</span>
               <svg
                 viewBox="0 0 24 24"
-                fill="#0FFF50"
                 width={24}
                 height={24}
-                className="hover:fill-green-500 transition-colors"
+                fill="#10B981"
+                stroke="#10B981"
+                strokeWidth="1"
+                aria-hidden="true"
               >
                 <path
                   fillRule="evenodd"

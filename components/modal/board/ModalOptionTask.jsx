@@ -22,6 +22,8 @@ import { useState } from "react";
 import PopupActionTask from "@/components/popup/PopupActionTask";
 import { ModalAssignLeaderTask } from "./ModalAssignLeaderTask";
 import PopupActionTaskMove from "@/components/popup/PopupActionTaskMove";
+import PopupActionTaskMoveComplete from "@/components/popup/PopupActionTaskMoveCompleted";
+import PopupActionTaskMoveInProgress from "@/components/popup/PopupActionTaskMoveInProgress";
 
 // icon components directly in the same file
 const AddNoteIcon = (props) => (
@@ -126,6 +128,7 @@ export default function ModalOptionTask({
   tasks,
   boardId,
   role,
+  stage,
 }) {
   const iconClasses =
     "text-xl text-default-500 pointer-events-none flex-shrink-0";
@@ -200,40 +203,22 @@ export default function ModalOptionTask({
           />
           {/* {taskId} */}
         </DropdownItem>
-        <DropdownItem
-          key="move"
-          className={`w-full hover:bg-default-100 mb-1  ${
-            role == "ROLE_MEMBER" || role == "ROLE_MANGER" ? `hidden` : ``
-          }`}
-          startContent={
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 25 25"
-              strokeWidth="1.5"
-              stroke="currentColor"
-              className="size-5"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M8.25 7.5V6.108c0-1.135.845-2.098 1.976-2.192.373-.03.748-.057 1.123-.08M15.75 18H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08M15.75 18.75v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5A3.375 3.375 0 0 0 6.375 7.5H5.25m11.9-3.664A2.251 2.251 0 0 0 15 2.25h-1.5a2.251 2.251 0 0 0-2.15 1.586m5.8 0c.065.21.1.433.1.664v.75h-6V4.5c0-.231.035-.454.1-.664M6.75 7.5H4.875c-.621 0-1.125.504-1.125 1.125v12c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V16.5a9 9 0 0 0-9-9Z"
-              />
-            </svg>
-          }
-        >
-          <PopupActionTaskMove
-            title={"move to under review"}
-            massageTitle={"Are you sure?"}
-            massageBody={"You want to move to Under Review ?"}
-            icon={
+        {stage == "TO DO" ? (
+          ""
+        ) : (
+          <DropdownItem
+            key="move"
+            className={`w-full hover:bg-default-100 mb-1  ${
+              role == "ROLE_MEMBER" || role == "ROLE_MANGER" ? `hidden` : ``
+            }`}
+            startContent={
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
-                viewBox="0 0 24 24"
+                viewBox="0 0 25 25"
                 strokeWidth="1.5"
                 stroke="currentColor"
-                className="size-6"
+                className="size-5"
               >
                 <path
                   strokeLinecap="round"
@@ -242,21 +227,116 @@ export default function ModalOptionTask({
                 />
               </svg>
             }
-            bgcolor={"bg-slate-red"}
-            massageDo={"Yes, Move"}
-            documentId={documentId}
-            accessToken={accessToken}
-            massageUndo={"No, Cancel"}
-            taskId={taskId}
-            ganttBarId={currentGanttBarId}
-            boardId={boardId}
-          />
-          {/* {taskId} */}
-        </DropdownItem>
+          >
+            {stage == "UNDER_REVIEW" ? (
+              <PopupActionTaskMoveComplete
+                title={"move to completed"}
+                massageTitle={"Are you sure?"}
+                massageBody={"You want to move to Completed ?"}
+                icon={
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth="1.5"
+                    stroke="currentColor"
+                    className="size-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M8.25 7.5V6.108c0-1.135.845-2.098 1.976-2.192.373-.03.748-.057 1.123-.08M15.75 18H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08M15.75 18.75v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5A3.375 3.375 0 0 0 6.375 7.5H5.25m11.9-3.664A2.251 2.251 0 0 0 15 2.25h-1.5a2.251 2.251 0 0 0-2.15 1.586m5.8 0c.065.21.1.433.1.664v.75h-6V4.5c0-.231.035-.454.1-.664M6.75 7.5H4.875c-.621 0-1.125.504-1.125 1.125v12c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V16.5a9 9 0 0 0-9-9Z"
+                    />
+                  </svg>
+                }
+                bgcolor={"bg-slate-red"}
+                massageDo={"Yes, Move"}
+                documentId={documentId}
+                accessToken={accessToken}
+                massageUndo={"No, Cancel"}
+                taskId={taskId}
+                ganttBarId={currentGanttBarId}
+                boardId={boardId}
+              />
+            ) : stage == "IN_PROGRESS" ? (
+              <PopupActionTaskMove
+                title={"move to under review"}
+                massageTitle={"Are you sure?"}
+                massageBody={"You want to move to Under Review ?"}
+                icon={
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth="1.5"
+                    stroke="currentColor"
+                    className="size-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M8.25 7.5V6.108c0-1.135.845-2.098 1.976-2.192.373-.03.748-.057 1.123-.08M15.75 18H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08M15.75 18.75v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5A3.375 3.375 0 0 0 6.375 7.5H5.25m11.9-3.664A2.251 2.251 0 0 0 15 2.25h-1.5a2.251 2.251 0 0 0-2.15 1.586m5.8 0c.065.21.1.433.1.664v.75h-6V4.5c0-.231.035-.454.1-.664M6.75 7.5H4.875c-.621 0-1.125.504-1.125 1.125v12c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V16.5a9 9 0 0 0-9-9Z"
+                    />
+                  </svg>
+                }
+                bgcolor={"bg-slate-red"}
+                massageDo={"Yes, Move"}
+                documentId={documentId}
+                accessToken={accessToken}
+                massageUndo={"No, Cancel"}
+                taskId={taskId}
+                ganttBarId={currentGanttBarId}
+                boardId={boardId}
+              />
+            ) : (
+              ""
+            )}
+            {stage === "COMPLETED" ? (
+              <PopupActionTaskMoveInProgress
+                title={"move to in progress"}
+                massageTitle={"Are you sure?"}
+                massageBody={"You want to report to in progress ?"}
+                icon={
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth="1.5"
+                    stroke="currentColor"
+                    className="size-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M8.25 7.5V6.108c0-1.135.845-2.098 1.976-2.192.373-.03.748-.057 1.123-.08M15.75 18H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08M15.75 18.75v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5A3.375 3.375 0 0 0 6.375 7.5H5.25m11.9-3.664A2.251 2.251 0 0 0 15 2.25h-1.5a2.251 2.251 0 0 0-2.15 1.586m5.8 0c.065.21.1.433.1.664v.75h-6V4.5c0-.231.035-.454.1-.664M6.75 7.5H4.875c-.621 0-1.125.504-1.125 1.125v12c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V16.5a9 9 0 0 0-9-9Z"
+                    />
+                  </svg>
+                }
+                bgcolor={"bg-slate-red"}
+                massageDo={"Yes, Move"}
+                documentId={documentId}
+                accessToken={accessToken}
+                massageUndo={"No, Cancel"}
+                taskId={taskId}
+                ganttBarId={currentGanttBarId}
+                boardId={boardId}
+              />
+            ) : (
+              ""
+            )}
+
+            {/* {taskId} */}
+          </DropdownItem>
+        )}
 
         <DropdownSection
           className={`border-t-1 border-default-200 pt-1 ${
-            role == "ROLE_MEMBER" || role == "ROLE_LEADER" ? `hidden` : ``
+            role == "ROLE_MEMBER" ||
+            stage !== "TO DO" ||
+            role == "ROLE_LEADER" ||
+            stage !== "TO DO"
+              ? `hidden`
+              : ``
           }`}
         >
           <DropdownItem className="w-full hover:bg-default-100">

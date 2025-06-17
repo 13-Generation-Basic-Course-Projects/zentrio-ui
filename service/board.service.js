@@ -676,7 +676,7 @@ export const changeStatusTaskService = async (taskId, token, type) => {
 export const changeStageToUnderReviewService = async (taskId, token, stage) => {
   try {
     //console.log("from service ", token);
-    const url = boardRouteGroup.changeStagToUnderReview(taskId, "UNDER_REVIEW");
+    const url = boardRouteGroup.changeStagToUnderReview(taskId, stage);
     console.log(url);
     const res = await fetch(url, {
       method: "PUT",
