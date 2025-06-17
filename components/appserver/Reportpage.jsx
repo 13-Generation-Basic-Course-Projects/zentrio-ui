@@ -1,6 +1,5 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
 import BredCrum from "../bredcrum/MyBredcrum";
 import HorizontalChart from "../chart/HorizontalChart";
 // import VerticalChart from "../chart/VerticalChart";
@@ -11,7 +10,6 @@ const VerticalChartNoSSR = dynamic(() => import("../chart/VerticalChart"), {
 });
 
 export default function Reportpage({ modal, report }) {
-
   const task = {
     todo: 0,
     progress: 0,
@@ -22,20 +20,22 @@ export default function Reportpage({ modal, report }) {
   const userRole = {
     pm: 0,
     tl: 0,
-    m: 0
+    m: 0,
   };
 
-  report?.payload?.allTasks.forEach((item) => {
-    if (item.task == "TO DO") {
-      ++task.todo;
-    } else if (item.task == "IN_PROGRESS") {
-      ++task.progress;
-    } else if (item.task == "UNDER_REVIEW") {
-      ++task.review;
-    } else {
-      ++task.done;
-    }
+  report?.payload?.groupedTasks.forEach((item) => {
+    if (item.stage == "TO DO") {
+        task.todo = task.todo + item.count;
+      } else if (item.stage == "IN_PROGRESS") {
+        task.progress = task.progress + item.count;
+      } else if (item.stage == "UNDER_REVIEW") {
+        task.review = task.review + item.count;
+      } else {
+        task.done = task.done + item.count;
+      }
   });
+
+  console.log(report?.payload)
 
   const tasks = [
     {
@@ -76,14 +76,14 @@ export default function Reportpage({ modal, report }) {
 
   // this use to count amount of project manager, team leader, member
   report?.payload?.allMembers.forEach((item) => {
-        if (item.roleName === "ROLE_MANAGER") {
-          ++userRole.pm;
-        } else if (item.roleName === "ROLE_LEADER") {
-          ++userRole.tl;
-        } else if (item.roleName === "ROLE_MEMBER") {
-          ++userRole.m;
-        }
-      });
+    if (item.roleName === "ROLE_MANAGER") {
+      userRole.pm = item.total;
+    } else if (item.roleName === "ROLE_LEADER") {
+      userRole.tl = item.total;
+    } else if (item.roleName === "ROLE_MEMBER") {
+      userRole.m = item.total;
+    }
+  });
 
   const maximum = report?.payload?.version;
   const allVersion = Array.from({ length: maximum }, (_, i) => i + 1);
@@ -95,140 +95,26 @@ export default function Reportpage({ modal, report }) {
     inDone: 0,
   };
 
-  report?.payload?.allTasks.forEach((item) => {
+  report?.payload?.groupedTasks.forEach((item) => {
     if (item.task == "TO DO") {
-      cheklist.inTodo = cheklist.inTodo + item.checklist.length;
+      cheklist.inTodo = cheklist.inTodo + item?.tasks?.allChecklists?.length || 0;
     } else if (item.task == "IN_PROGRESS") {
-      cheklist.inProgress = cheklist.inProgress + item.checklist.length;
+      cheklist.inProgress = cheklist.inProgress + item?.tasks?.allChecklists?.length || 0;
     } else if (item.task == "UNDER_REVIEW") {
-      cheklist.inReview = cheklist.inReview + item.checklist.length;
+      cheklist.inReview = cheklist.inReview + item?.tasks?.allChecklists?.length || 0;
     } else {
-      cheklist.inDone = cheklist.inDone + item.checklist.length;
+      cheklist.inDone = cheklist.inDone + item?.tasks?.allChecklists?.length || 0;
     }
   });
 
-  // Start Code
-  // Function to get the start of the week (Monday) for a given date
-const getWeekStart = (date) => {
-  const d = new Date(date);
-  const day = d.getDay();
-  const diff = d.getDate() - day + (day === 0 ? -6 : 1); // Adjust when day is Sunday
-  return new Date(d.setDate(diff));
-};
-
-// Function to format date as YYYY-MM-DD
-const formatDate = (date) => date.toISOString().split('T')[0];
-
-// Function to get week key for grouping (still use Monday for grouping)
-const getWeekKey = (date) => {
-  const weekStart = getWeekStart(new Date(date));
-  return formatDate(weekStart);
-};
-
-// Function to get week number of the year (ISO week)
-const getWeekNumber = (date) => {
-  const d = new Date(date);
-  const yearStart = new Date(d.getFullYear(), 0, 1);
-  const weekStart = getWeekStart(d);
-  const weekStartOfYear = getWeekStart(yearStart);
+  // all version of report
+  const getVersion = report?.payload;
+  console.log("Version: ", getVersion)
   
-  const diffTime = weekStart - weekStartOfYear;
-  const diffWeeks = Math.floor(diffTime / (7 * 24 * 60 * 60 * 1000));
-  return diffWeeks + 1;
-};
 
-// Function to get just the week number
-const getWeekNumberOnly = (date) => {
-  return getWeekNumber(date);
-};
+  // this for vertical chart
+  const groupedTasks = report?.payload?.groupedTasks;
 
-// Function to map task status to stage names
-const mapTaskToStage = (taskStatus) => {
-  const statusMap = {
-    'TODO': 'Todo',
-    'IN_PROGRESS': 'On Progress', 
-    'COMPLETED': 'Done',
-    'UNDER_REVIEW': 'Under Review'
-  };
-  return statusMap[taskStatus] || taskStatus;
-};
-
-// Helper function to calculate monthly totals
-const calculateMonthlyTotal = (allTasks, weekStart, targetStage) => {
-  const weekDate = new Date(weekStart);
-  const monthStart = new Date(weekDate.getFullYear(), weekDate.getMonth(), 1);
-  const monthEnd = new Date(weekDate.getFullYear(), weekDate.getMonth() + 1, 0);
-  
-  return allTasks.filter(task => {
-    const taskDate = new Date(task.startAt);
-    const stage = mapTaskToStage(task.task);
-    return taskDate >= monthStart && 
-           taskDate <= monthEnd && 
-           stage === targetStage;
-  }).length;
-};
-
-// Main function to process tasks into weekly chart data
-const processTasksToWeeklyData = (allTasks) => {
-  // Group tasks by week and status, but keep original dates
-  const weeklyGroups = {};
-
-  if (!allTasks || !Array.isArray(allTasks)) {
-    return weeklyGroups;
-  }
-  
-  allTasks.forEach(task => {
-    const startWeek = getWeekKey(task.startAt); // Use for grouping only
-    const stage = mapTaskToStage(task.task);
-    const originalDate = formatDate(new Date(task.startAt)); // Keep original date
-    
-    if (!weeklyGroups[startWeek]) {
-      weeklyGroups[startWeek] = {
-        tasks: [],
-        stages: {}
-      };
-    }
-    
-    if (!weeklyGroups[startWeek].stages[stage]) {
-      weeklyGroups[startWeek].stages[stage] = 0;
-    }
-    
-    weeklyGroups[startWeek].stages[stage]++;
-    weeklyGroups[startWeek].tasks.push({
-      ...task,
-      originalDate,
-      stage
-    });
-  });
-  
-  // Convert to chart data format using original task dates
-  const chartData = [];
-  
-  Object.keys(weeklyGroups).sort().forEach(weekStart => {
-    const weekData = weeklyGroups[weekStart];
-    
-    // Create entries for each stage in this week
-    Object.keys(weekData.stages).forEach(stage => {
-      // Get the first task of this stage in this week for the date
-      const firstTaskOfStage = weekData.tasks.find(task => task.stage === stage);
-      
-      chartData.push({
-        date: firstTaskOfStage.originalDate, // Use original task date, not Monday
-        week: getWeekNumberOnly(firstTaskOfStage.startAt),
-        stage: stage,
-        weekly: weekData.stages[stage],
-        monthly: calculateMonthlyTotal(allTasks, weekStart, stage)
-      });
-    });
-  });
-  
-  return chartData;
-};
-  
-  const weeklyChartData = processTasksToWeeklyData(report?.payload?.allTasks);
-
-  // console.log("ReportPage: ", report)
-  // End Code
   return (
     <>
       <div className="p-5">
@@ -275,12 +161,19 @@ const processTasksToWeeklyData = (allTasks) => {
                 ))}
               </div>
               {/* Show chart vertical chart */}
-              <div className="mt-10">
+              {/* <div className="mt-10">
                 <VerticalChartNoSSR
                   totalTask={totalTask}
-                  chartData={weeklyChartData}
+                  chartData={weekly(groupedTasks)}
+                />
+              </div> */}
+
+              <div className="mt-10">
+                <VerticalChartNoSSR
+                  report={report}
                 />
               </div>
+
               {/* Show chart horizontal chart */}
               <div className="mt-5">
                 <HorizontalChart
@@ -305,7 +198,9 @@ const processTasksToWeeklyData = (allTasks) => {
                 <div className="relative w-[200px] h-[200px] mx-auto">
                   {/* Big Blue Circle */}
                   <div className="absolute w-[160px] h-[160px] bg-blue-500 rounded-full border-3 border-bgColor flex items-center justify-center">
-                    <p className="text-h3 text-white font-semibold">{userRole.m}</p>
+                    <p className="text-h3 text-white font-semibold">
+                      {userRole.m}
+                    </p>
                   </div>
 
                   {/* Medium Purple Circle */}
@@ -313,7 +208,9 @@ const processTasksToWeeklyData = (allTasks) => {
                     className="absolute w-[100px] h-[100px] bg-purple-500 rounded-full border-3 border-bgColor flex items-center justify-center"
                     style={{ top: "20px", left: "120px" }}
                   >
-                    <p className="text-h5 text-white font-semibold">{userRole.tl}</p>
+                    <p className="text-h5 text-white font-semibold">
+                      {userRole.tl}
+                    </p>
                   </div>
 
                   {/* Small Black Circle */}
@@ -321,7 +218,9 @@ const processTasksToWeeklyData = (allTasks) => {
                     className="absolute w-[80px] h-[80px] bg-black rounded-full border-3 border-bgColor flex items-center justify-center"
                     style={{ top: "80px", left: "110px" }}
                   >
-                    <p className="text-h6 text-white font-semibold">{userRole.pm}</p>
+                    <p className="text-h6 text-white font-semibold">
+                      {userRole.pm}
+                    </p>
                   </div>
                 </div>
                 <div className="flex justify-between text-title/50 text-caption items-center">
@@ -363,7 +262,7 @@ const processTasksToWeeklyData = (allTasks) => {
 
                   {/* Content with z-index to be on top */}
                   <div className="flex flex-col space-y-8 relative z-10">
-                    {/* Version 1 */}
+                    {/* All Version */}
                     {allVersion.map((item, index) => (
                       <div className="flex items-start space-x-4" key={index}>
                         <div className="flex-shrink-0 w-[40px] h-[30px] bg-primary text-white rounded-full flex items-center justify-center font-semibold text-caption">
@@ -372,7 +271,7 @@ const processTasksToWeeklyData = (allTasks) => {
                         <div className="flex flex-col space-y-1">
                           <p className="text-h6">ZenTrio Reporting Document</p>
                           <p className="text-caption-tiny text-title/50">
-                            Ny Fong · 1 hour ago
+                            {report?.payload?.boardData?.createdBy?.username} · 1 hour ago
                           </p>
                         </div>
                       </div>

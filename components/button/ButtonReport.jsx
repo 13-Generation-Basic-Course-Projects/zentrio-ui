@@ -17,7 +17,7 @@ import { PDFPreviewer } from "../integrate/pdf/CustomePDF";
 // const PDFPreview = dynamic(() => import("../integrate/pdf/PreviewPD"), {
 //   ssr: false,
 // });
-export const BtnPreview = () => {
+export const BtnPreview = ({ report }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   return (
@@ -43,7 +43,7 @@ export const BtnPreview = () => {
         <ModalContent>
           {(onClose) => (
             <>
-              <PDFPreviewer />
+              <PDFPreviewer report={report}/>
             </>
           )}
         </ModalContent>

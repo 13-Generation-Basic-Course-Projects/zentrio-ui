@@ -55,7 +55,7 @@ export default function CardBoardReport() {
             </div>
             <Button
               variant="ghost"
-              className="hover:text-blueActive hover:bg-transparent p-0 text-body-sm"
+              className={`hover:text-blueActive hover:bg-transparent p-0 text-body-sm`}
               onClick={handleGenerate}
             >
               Generate Now

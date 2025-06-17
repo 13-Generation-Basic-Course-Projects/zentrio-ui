@@ -1,3 +1,5 @@
+"use server"
+
 import { Token } from "@/constant/token"
 import { generateReportByBoardIdService, getReportService } from "@/service/report.service"
 

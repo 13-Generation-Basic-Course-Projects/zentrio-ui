@@ -18,7 +18,7 @@ import React from "react";
     <>
       <Reportpage
         modal={[
-          <BtnPreview key="btn-preview" />, 
+          <BtnPreview key="btn-preview" report={reportData}/>, 
           <ModalSaveAs key="modal-save-as" />,
         ]}
         report={reportData}

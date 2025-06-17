@@ -6,5 +6,5 @@ export const reportRouteGroup = {
     getReportByBoardId: (id) => `${apiConfig.baseUrl}/reports/boards/${id}`,
 
     // get report from board by board id and generate it
-    getReportInPDFByBoardId: (id) => `${apiConfig.baseUrl}/reports/pdf/boards/${id}`
+    generateReportInPDFByBoardId: (id) => `${apiConfig.baseUrl}/reports/pdf/boards/${id}`
 }
