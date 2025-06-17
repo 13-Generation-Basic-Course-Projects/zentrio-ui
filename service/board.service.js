@@ -712,7 +712,30 @@ export const FeedBackService = async (taskId, token, comment) => {
       },
     });
     const data = await res.json();
-    console.log("📥 Backend responded with change status:", data);
+    // console.log("📥 Backend responded with change status:", data);
+
+    return data; // just return the data, don’t redirect here
+  } catch (error) {
+    console.error("bug", error.message);
+    throw error;
+  }
+};
+/*
+ * delete task
+ */
+export const deleteMemberService = async (boardId, userId, token) => {
+  try {
+    console.log("from service ", boardId, userId);
+    const url = boardRouteGroup.deleteMemberByBoardId(boardId, userId);
+    const res = await fetch(url, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await res.json();
+    console.log("📥 Backend responded with delete user:", data);
 
     return data; // just return the data, don’t redirect here
   } catch (error) {

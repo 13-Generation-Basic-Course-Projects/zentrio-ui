@@ -8,6 +8,7 @@ import {
   createCheckListService,
   createGanttChartByBoardIdService,
   createTaskByBoardIdAndGanttChartIdService,
+  deleteMemberService,
   deleteTaskService,
   editCommmentService,
   FeedBackService,
@@ -570,5 +571,15 @@ export const FeedBackAction = async (taskId, comment) => {
   const result = await FeedBackService(taskId, token, comment);
   revalidatePath("/checklist");
   //console.log("status action", taskId, stage);
+  return result;
+};
+/*
+ * delete member action
+ */
+export const deleteMemberAction = async (boardId, userId) => {
+  const userToken = await Token();
+  const token = userToken?.Credential;
+  const result = await deleteMemberService(boardId, userId, token);
+  revalidatePath("/member");
   return result;
 };
