@@ -80,7 +80,7 @@ const getGreetingData = () => {
 // Background images data
 const backgroundImages = [
   {
-    url: "https://images.unsplash.com/photo-1631972756622-b2d9164c0e53?q=80&w=705&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    url: "https://images.unsplash.com/photo-1542626991-cbc4e32524cc?q=80&w=1169&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     // overlay:
     //   "bg-gradient-to-br from-blue-500/60 via-purple-500/40 to-indigo-600/60",
   },
@@ -137,7 +137,7 @@ export default function TeamWelcomeCard() {
   return (
     <div className="relative overflow-hidden rounded-2xl mt-6 mb-4 shadow-lg hover:shadow-xl transition-all duration-300 border border-white/20">
       {/* Background Images Slideshow */}
-      <div className="h-[320px] w-full relative overflow-hidden">
+      <div className="h-[330px] w-full relative overflow-hidden">
         {backgroundImages.map((bg, index) => (
           <div
             key={index}

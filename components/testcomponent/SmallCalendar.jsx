@@ -1,66 +1,138 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { Calendar } from "@heroui/react";
-import { today, getLocalTimeZone } from "@internationalized/date";
+import React, { useState } from "react";
 
-export default function SmallCalendar() {
-  const [zoomLevel, setZoomLevel] = useState(1);
+export default function HeroUICalendar() {
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
-  useEffect(() => {
-    const handleResize = () => {
-      // Force a re-render by updating zoom level
-      setZoomLevel(window.devicePixelRatio || 1);
-    };
+  const generateCalendar = () => {
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+    const firstDay = new Date(year, month, 1);
+    const startDate = new Date(firstDay);
+    startDate.setDate(startDate.getDate() - firstDay.getDay());
 
-    // Listen for resize events (which trigger on zoom)
-    window.addEventListener("resize", handleResize);
+    const days = [];
+    const today = new Date();
 
-    // Also listen for visual viewport changes (better zoom detection)
-    if (window.visualViewport) {
-      window.visualViewport.addEventListener("resize", handleResize);
+    for (let i = 0; i < 42; i++) {
+      const date = new Date(startDate);
+      date.setDate(startDate.getDate() + i);
+
+      days.push({
+        date,
+        day: date.getDate(),
+        isCurrentMonth: date.getMonth() === month,
+        isToday: date.toDateString() === today.toDateString(),
+        isSelected: date.toDateString() === selectedDate.toDateString(),
+      });
     }
+    return days;
+  };
 
-    return () => {
-      window.removeEventListener("resize", handleResize);
-      if (window.visualViewport) {
-        window.visualViewport.removeEventListener("resize", handleResize);
-      }
-    };
-  }, []);
+  const navigateMonth = (direction) => {
+    const newDate = new Date(currentDate);
+    newDate.setMonth(currentDate.getMonth() + direction);
+    setCurrentDate(newDate);
+  };
+
+  const days = generateCalendar();
+  const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const monthYear = currentDate.toLocaleDateString("en-US", {
+    month: "long",
+    year: "numeric",
+  });
 
   return (
-    <div className="w-full p-2">
-      <Calendar
-        isReadOnly
-        aria-label="Date (Read Only)"
-        value={today(getLocalTimeZone())}
-        key={zoomLevel} // Force re-render on zoom change
-        classNames={{
-          base: "w-full max-w-full rounded-2xl shadow-lg border border-gray-200/50 bg-white/95 backdrop-blur-sm overflow-hidden box-border flex flex-col",
-          content: "w-full flex-1 p-4",
-          grid: "w-full border-collapse table rounded-xl overflow-hidden",
-          gridHeader:
-            "w-full bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-xl",
-          gridHeaderCell:
-            "text-center font-semibold text-sm text-gray-700 box-border px-3 py-3 min-w-0 flex-1 first:rounded-tl-xl last:rounded-tr-xl border-b border-gray-100",
-          gridBody: "w-full bg-white",
-          gridBodyRow:
-            "flex w-full h-[40px] border-b border-gray-50 last:border-b-0 last:rounded-b-xl overflow-hidden",
-          cell: "flex-1 min-w-0 p-0 text-center box-border flex items-center justify-center hover:bg-blue-50/50 transition-colors duration-200 first:rounded-l-lg last:rounded-r-lg",
-          cellButton:
-            "w-full h-full h-[40px] rounded-full m-1 flex items-center justify-center font-medium text-gray-700 hover:bg-blue-100 hover:text-blue-700 transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-1",
-          todayButton:
-            "bg-blue-500 p-2 rounded-full text-white shadow-md hover:bg-blue-600 hover:text-white hover:shadow-lg",
-          selectedButton: "bg-blue-600 text-white shadow-lg hover:bg-blue-700",
-          disabledButton:
-            "text-gray-300 hover:bg-transparent hover:text-gray-300 hover:scale-100 cursor-not-allowed",
-        }}
-        style={{
-          // Use CSS custom properties for better zoom responsiveness
-          "--calendar-cell-min-width": "max(30px, 4vw)",
-          "--calendar-cell-height": "42px",
-        }}
-      />
+    <div className="w-full  mx-auto ">
+      <div className="bg-white shadow-lg rounded-2xl border border-gray-200 p-4">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-4">
+          <button
+            onClick={() => navigateMonth(-1)}
+            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+          >
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 19l-7-7 7-7"
+              />
+            </svg>
+          </button>
+          <h2 className="text-lg font-semibold text-gray-700">{monthYear}</h2>
+          <button
+            onClick={() => navigateMonth(1)}
+            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+          >
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
+          </button>
+        </div>
+
+        {/* Week Days */}
+        <div className="grid grid-cols-7 mb-2">
+          {weekDays.map((day) => (
+            <div
+              key={day}
+              className="h-8 flex items-center justify-center text-sm font-medium text-gray-500"
+            >
+              {day}
+            </div>
+          ))}
+        </div>
+
+        {/* Calendar Grid */}
+        <div className="space-y-1">
+          {Array.from({ length: 6 }, (_, weekIndex) => (
+            <div key={weekIndex} className="grid grid-cols-7 gap-1">
+              {days
+                .slice(weekIndex * 7, (weekIndex + 1) * 7)
+                .map((dayInfo, dayIndex) => (
+                  <div key={dayIndex} className="relative">
+                    <button
+                      className={`
+                      w-8 h-8 rounded-full flex items-center justify-center text-sm font-normal transition-all
+                      ${
+                        dayInfo.isToday
+                          ? "bg-primary text-white font-semibold shadow-md hover:bg-primary "
+                          : dayInfo.isSelected
+                          ? "bg-blue-600 text-white font-semibold shadow-md hover:bg-blue-700"
+                          : dayInfo.isCurrentMonth
+                          ? "text-gray-700 hover:bg-gray-100"
+                          : "text-gray-300 cursor-default opacity-50"
+                      }
+                    `}
+                      onClick={() =>
+                        dayInfo.isCurrentMonth && setSelectedDate(dayInfo.date)
+                      }
+                      disabled={!dayInfo.isCurrentMonth}
+                    >
+                      {dayInfo.day}
+                    </button>
+                  </div>
+                ))}
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
