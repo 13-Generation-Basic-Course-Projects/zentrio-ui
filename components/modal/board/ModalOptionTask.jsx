@@ -177,6 +177,7 @@ export default function ModalOptionTask({
             documentId={documentId}
             tokenFromGoogle={accessToken}
             taskId={taskId}
+            boardId={boardId} //add new prop
           />
         </DropdownItem>
 

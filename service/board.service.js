@@ -3,6 +3,7 @@
 import { boardRouteGroup } from "@/routes/boardRoute";
 import { checklistRouteGroup } from "@/routes/checklistRoute";
 import { ganttRouteGroup } from "@/routes/ganttRoute";
+import { taskRouteGroup } from "@/routes/taskRoute";
 import { workspaceRouteGroup } from "@/routes/workspaceRoute";
 
 /*
@@ -789,4 +790,57 @@ export const checkEmailForClearService = async (email) => {
     console.error("bug", error.message);
     throw error;
   }
+};
+
+/*
+ * new add
+ * Update task by Id with board id and gantt bar id
+ */
+export const updateTaskByIdService = async ({
+  taskId,
+  title,
+  description,
+  startedAt,
+  finishedAt,
+  boardId,
+  ganttBarId,
+  token,
+}) => {
+  console.log(" taskId in updateTask service: ", taskId);
+  console.log("Data get for updateTaskByIdService:", {
+    taskId,
+    title,
+    description,
+    startedAt,
+    finishedAt,
+    boardId,
+    ganttBarId,
+  });
+
+  const url = taskRouteGroup.updateTaskById(taskId);
+
+  const response = await fetch(url, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      title,
+      description,
+      startedAt,
+      finishedAt,
+      boardId,
+      ganttBarId,
+    }),
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    throw new Error(
+      error.message || `Failed to update task: ${response.status}`
+    );
+  }
+
+  return response.json();
 };
