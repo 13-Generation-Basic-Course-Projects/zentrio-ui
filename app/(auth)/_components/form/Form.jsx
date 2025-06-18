@@ -6,18 +6,22 @@ import { AuthInput } from "./input";
 import { Button } from "@heroui/react";
 import { useForm } from "react-hook-form";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Eye } from "lucide-react";
-import { zentrioForgotPasswordAction } from "@/action/auth.action";
+import { Eye, EyeOff } from "lucide-react";
+import { resendOtpForgotPasswordAction, zentrioForgotPasswordAction } from "@/action/auth.action";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { resetPasswordSchema } from "@/lib/schemas/resetPasswordSchema";
-import { resendOtpForgotPasswordService, resendOtpForResetPasswordService } from "@/service/auth.service";
+
 
 export const ForgetPass = () => {
   const [formData, setFormData] = useState({
     email: "",
   });
 
-  const { register, handleSubmit, formState: { errors } } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
   const router = useRouter();
 
   const handleChange = (e) => {
@@ -29,11 +33,12 @@ export const ForgetPass = () => {
   };
 
   const onSubmit = async (email) => {
+    const type = "RESET";
     try {
-      const result = await resendOtpForgotPasswordService(email);
+      const result = await resendOtpForgotPasswordAction({ email, type });
 
       if (result?.success) {
-        router.push(`/verify?email=${encodeURIComponent(email.email)}&type=RESET`);
+        router.push(`/verify?email=${encodeURIComponent(email)}&type=RESET`);
       }
     } catch (err) {
       console.error("Submit failed", err);
@@ -45,21 +50,18 @@ export const ForgetPass = () => {
     <div className="w-full h-screen flex items-center justify-center">
       <div className="w-[1728px] h-[1117px]  flex items-center justify-center">
         <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="w-[640px] h-fit bg-forgot-gradient px-[55px] py-[40px] rounded-[20px] shadow-sm gap-[50px]"
-        >
+          onSubmit={handleSubmit((data) => onSubmit(data.email))}
+          className="w-[640px] h-fit bg-forgot-gradient px-[55px] py-[40px] rounded-[20px] shadow-sm gap-[50px]">
           <div>
             <Link
               href="/login"
-              className="flex items-center gap-3 pb-[5%] text-body-sm text-primary"
-            >
+              className="flex items-center gap-3 pb-[5%] text-body-sm text-primary">
               <svg
                 width="18"
                 height="12"
                 viewBox="0 0 18 12"
                 fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
+                xmlns="http://www.w3.org/2000/svg">
                 <path
                   d="M2 6L17 5.99976"
                   stroke="#59BAD5"
@@ -79,9 +81,9 @@ export const ForgetPass = () => {
             </Link>
             <div className="flex flex-col gap-4">
               <p className="text-h1 text-primary">
-                <span className="font-bold">Forgot Password</span>
+                <span className="font-semibold text-[40px]">Forgot your password?</span>
               </p>
-              <p className="text-body text-[#787486]">
+              <p className="text-body text-[#787486] mb-14">
                 Don’t worry, happens to all of us. Enter your email below to
                 recover your password
               </p>
@@ -98,23 +100,25 @@ export const ForgetPass = () => {
                   placeholder="Email"
                   className="text-foreground"
                   {...register("email", {
-                    required: "Email cannot be empty.",
+                    required: "Email is required",
                     pattern: {
-                      value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-                      message: "Invalid email address.",
+                      value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                      message: "Invalid email format",
                     },
                   })}
                 />
-                 {errors?.email?.message && (
-                <MyErrorText label={errors?.email?.message} />
-              )}
+                {errors.email && (
+                  <p className="text-sm text-red-500 mt-1">
+                    {errors.email.message}
+                  </p>
+                )}
               </div>
             </div>
           </div>
 
           <Button
             type="submit"
-            className="w-full bg-primary text-white max-w-none border-none">
+            className="w-full bg-primary text-white max-w-none border-none mt-12 h-[48px] rounded-[10px] capitalize font-semibold text-[20px]">
               <p className="text-h6">Submit</p>
           </Button>
         </form>
@@ -179,10 +183,10 @@ export const SetNewPass = () => {
 
   return (
     <div className="w-full h-screen flex items-center justify-center">
-      <div className="w-[1728px] h-[1117px]  flex items-center justify-center">
+      <div className="w-[1728px] h-[1117px]  flex items-center justify-center ">
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="w-[640px] h-fit bg-gradient-to-br from-[#9BDBFD]/30 to-[#FFFFFF] px-[55px] py-[40px] rounded-[20px] shadow-lg gap-[50px]">
+          className="w-[640px] h-fit bg-resetpass-gradient px-[55px] py-[40px] rounded-[20px] shadow-lg gap-[50px]">
           <div>
             <Link
               href="/forgot-password"
@@ -214,7 +218,7 @@ export const SetNewPass = () => {
               <p className="text-h1 text-primary">
                 <span className="font-bold">Set a password</span>
               </p>
-              <p className="text-body text-[#787486]">
+              <p className="text-body text-[#787486] mb-14">
                 Your previous password has been reseted. Please set a new
                 password for your account.
               </p>
@@ -231,7 +235,7 @@ export const SetNewPass = () => {
                 className="text-foreground"
                 endContent={
                   <button
-                    className="focus:outline-none bg-transparent border-none"
+                    className="focus:outline-none bg-transparent border-none p-0 mr-0 transition-colors"
                     type="button"
                     onClick={() => toggleVisibility("confirm")}>
                     {isVisible.confirm ? (
@@ -259,7 +263,7 @@ export const SetNewPass = () => {
                 className="text-foreground"
                 endContent={
                   <button
-                    className="focus:outline-none bg-transparent border-none"
+                    className="focus:outline-none bg-transparent border-none p-0 mr-0 transition-colors"
                     type="button"
                     onClick={() => toggleVisibility("confirm2")}>
                     {isVisible.confirm2 ? (
@@ -281,7 +285,7 @@ export const SetNewPass = () => {
           <div className="w-full gap-[10px] flex flex-col">
             <Button
               type="submit"
-              className="w-full max-w-none bg-primary text-white">
+              className="w-full bg-primary text-white max-w-none border-none mt-12 h-[48px] rounded-[10px] capitalize font-semibold text-[20px]">
               Save Password
             </Button>
           </div>

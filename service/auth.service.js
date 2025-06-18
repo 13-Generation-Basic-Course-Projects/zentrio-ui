@@ -47,7 +47,6 @@ export const loginZentrioService = async (email, password) => {
   try {
     const userData = await loginZentrioService(email, password);
     // login success: redirect without sensitive info
-    console.log("userdata ", u);
   } catch (err) {
     // show error message to user
     console.log(err);
@@ -67,7 +66,6 @@ export const loginZentrioCredentailService = async ({ email, password }) => {
       body: JSON.stringify({ email, password }),
     });
     const data = await res.json();
-    console.log("datahhh ", data);
     console.log("📥 Backend responded with:", data);
     console.log("BBBBB", data?.payload?.token);
 
@@ -96,10 +94,6 @@ export const otpZentrioService = async ({ email, otp, type }) => {
       },
     });
     const data = await res.json();
-    console.log("📥 Backend responded with:", data);
-    // if (res?.status === 200 || res?.success) {
-    //   redirect(`/login`);
-    // }
     return data;
   } catch (error) {
     console.error(" Failed to create board:", error.message);
@@ -109,33 +103,44 @@ export const otpZentrioService = async ({ email, otp, type }) => {
 /*
  * resend otp
  */
-export const resendOtpZentrioService = async ({ email, otp }) => {
-  console.log("email:", email, "otp:", otp);
-  //const url = authRoute.otpUserRoute();
-  const urlResendOTP = authRoute.resendOtpUserRoute();
-  console.log("OTP API URL:", url);
+export const resendOtpZentrioService = async ({ email, type }) => {
+  console.log("emaillllllllllllllllllllllll", email);
+  console.log("type in service", type);
+
+  const url = authRoute.resendOtpUserRoute();
+
   try {
     const res = await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ email, otp, type: "VERIFY" }),
+      body: JSON.stringify({ email, type }),
     });
+
     const data = await res.json();
+
     console.log("Backend response status:", res.status, "data:", data);
+
     if (res.status === 201 || data?.success) {
-      redirect("/workspace");
       return { success: true };
     } else {
-      console.error("OTP verification failed:", data);
-      return { success: false, error: data.message || "Invalid OTP" };
+      console.error("OTP resend failed:", data);
+      return {
+        success: false,
+        error: data.detail || data.message || "Failed to resend OTP",
+      };
     }
   } catch (err) {
-    console.error("OTP request error:", err);
-    return { success: false, error: "Failed to verify OTP. Please try again." };
+    console.error("OTP resend request error:", err);
+    return {
+      success: false,
+      error: "Failed to resend OTP. Please try again.",
+    };
   }
 };
+
+
 
 /*
  * login google
@@ -162,22 +167,10 @@ export const loginGoogleService = async ({ accesToken }) => {
 };
 
 /*
- * forgot password
- */
+* resend otp forgot
+*/
 
-// export const forgotPasswordService = async ({ email }) => {
-//   try {
-//     await resendOtpZentrioService({ email, type: "RESET" });
-//   } catch (error) {
-//     console.error("Can't reset password", error);
-//     throw error;
-//   }
-// };
-
-export const resendOtpForgotPasswordService = async (data) => {
-  const { email } = data;
-  const type = "RESET";
-
+export const resendOtpForgotPasswordService = async ({email,type}) => {
   try {
     const res = await fetch(
       `${authRoute.resendOtpUserRoute()}?email=${encodeURIComponent(
