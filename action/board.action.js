@@ -23,6 +23,7 @@ import {
   inviteMemberToBoardService,
   moveTaskOrderService,
   postCommentByCheckListIdService,
+  updateTaskByIdService,
 } from "@/service/board.service";
 import { revalidatePath } from "next/cache";
 import { sendNotificationToUserIdAction } from "./notification.action";
@@ -589,5 +590,35 @@ export const deleteMemberAction = async (boardId, userId) => {
  */
 export const checkEmailForClearAction = async (email) => {
   const result = await checkEmailForClearService(email);
+  return result;
+};
+
+/*
+* new add
+* Update task by Id with board id and gantt bar id 
+*/
+export const updateTaskByIdAction = async (
+  taskId,
+  title,
+  description,
+  startedAt,
+  finishedAt,
+  boardId,
+  ganttBarId
+) => {
+  console.log("👉 taskId in updateTask action: ", taskId);
+  const userToken = await Token();
+  const token = userToken?.Credential;
+  const result = await updateTaskByIdService({
+    taskId,
+    title,
+    description,
+    startedAt,
+    finishedAt,
+    boardId,
+    ganttBarId,
+    token,
+  });
+  revalidatePath("/member");
   return result;
 };

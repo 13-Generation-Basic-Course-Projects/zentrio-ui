@@ -8,6 +8,8 @@ export const taskRouteGroup = {
     `${apiConfig.baseUrl}/tasks/boards/${boardId}/gantt-bars/${ganttbarId}`, //Get all task by specific board ID with gantt bar ID
   //put
   moveTaskStags: (taskId) => `${apiConfig.baseUrl}/tasks/${taskId}/move`, // Enum Moved task to another stage with specific tasks ID
+  /* new add */
+  updateTaskById: (taskId) => `${apiConfig.baseUrl}/tasks/${taskId}`, //Update task by Id with board id and gantt bar id
   //delete
   deleteTaskByTaskId: (taskId, boardId, ganttBarId) =>
     `${apiConfig.baseUrl}/tasks/${taskId}/boards/${boardId}/gantt-bars/${ganttBarId}`, //Deleted task by ID with boards ID and gantt bars ID
