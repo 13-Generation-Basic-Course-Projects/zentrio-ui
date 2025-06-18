@@ -477,3 +477,35 @@ export const publicDocumentByIdService = async (
     throw error;
   }
 };
+
+/* new add
+* get all document by board id 
+*/
+export const getAllDocumentByBoardIdSerivce = async({boardId, token}) =>{
+  try {
+    const url = documentRouteGroup.getAllDocumentByBoardId(boardId);
+
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        Accept: "*/*",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => null);
+      throw new Error(
+        `Failed to get all document by boardId: ${res.status} ${
+          errorData?.message || ""
+        }`
+      );
+    }
+
+    return await res.json();
+  } catch (error) {
+    console.error("Error in getAllDocumentByBoardIdSerivce: ", error.message);
+   
+  }
+
+}

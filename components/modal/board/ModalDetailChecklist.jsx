@@ -52,6 +52,7 @@ export default function ModalDetailChecklist({
   allMemberInBoard,
   leaderId,
   role,
+  boardId,//new add
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
@@ -152,7 +153,7 @@ export default function ModalDetailChecklist({
         console.error("Failed to update status:", result.error);
       }
     } catch (error) {
-      console.error("Error updating status:", error.message);
+      // console.error("Error updating status:", error.message);
     }
   };
   return (
@@ -467,6 +468,7 @@ export default function ModalDetailChecklist({
                           </div>
                           {isModalOpen && (
                             <ModalUploadAttachment
+                              boardId={boardId} //new add
                               isOpen={isModalOpen}
                               onClose={() => setIsModalOpen(false)}
                             />
