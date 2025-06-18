@@ -549,6 +549,7 @@ export const postAttactmentService = async ({
 export const getAttactmentService = async ({ checklistId, token }) => {
   try {
     const url = documentRouteGroup.getAttactment(checklistId);
+    console.log("Fetching from URL:", url);
 
     const res = await fetch(url, {
       method: "GET",
@@ -559,10 +560,34 @@ export const getAttactmentService = async ({ checklistId, token }) => {
       },
     });
 
+    console.log("Response status:", res.status);
+    console.log("Response ok:", res.ok);
+
+    // Check if the response is ok (status 200-299)
+    if (!res.ok) {
+      if (res.status === 404) {
+        return {
+          success: false,
+          error: "No attachments found",
+          status: res.status,
+        };
+      } else {
+        return {
+          success: false,
+          error: `HTTP ${res.status}: ${res.statusText}`,
+          status: res.status,
+        };
+      }
+    }
+
     const result = await res.json();
     console.log("in serviceee fetch data", result);
     return result;
   } catch (error) {
-    console.error("Error : ", error.message);
+    console.error("Network error:", error.message);
+    return {
+      success: false,
+      error: `Network error: ${error.message}`,
+    };
   }
 };

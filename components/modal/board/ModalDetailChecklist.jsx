@@ -21,10 +21,10 @@ import { preventImage } from "@/constant/preventimage";
 import {
   chageStatusCheckListAction,
   getCommentByCheckListIdAction,
-  getAttactmentAction,
 } from "@/action/board.action";
 import PostCommentChecklist from "./PostCommentChecklist";
 import CommentChecklistSec from "./CommentChecklistSec";
+import { getAttactmentAction } from "@/action/document.action";
 
 export default function ModalDetailChecklist({
   id,
@@ -130,7 +130,11 @@ export default function ModalDetailChecklist({
       if (result.success) {
         setComments(result.data || []);
       } else {
-        setError(result.error || "Failed to load comments");
+        setError(
+          result.error?.includes("404")
+            ? "No comments yet"
+            : result.error || "Failed to load comments"
+        );
       }
     } catch (err) {
       console.error(
@@ -139,7 +143,11 @@ export default function ModalDetailChecklist({
         ":",
         err
       );
-      setError("An unexpected error occurred");
+      setError(
+        err.message?.includes("404")
+          ? "No comments yet"
+          : "An unexpected error occurred"
+      );
     } finally {
       setLoading(false);
       fetchingRef.current = false;
@@ -546,14 +554,22 @@ export default function ModalDetailChecklist({
                           <PostCommentChecklist checklistId={checklistId} />
                         </div>
                         {error ? (
-                          <div className="text-red-500 text-center py-4">
+                          <div
+                            className={`text-center py-4 ${
+                              error === "No comments yet"
+                                ? "text-gray-500"
+                                : "text-red-500"
+                            }`}
+                          >
                             {error}
-                            <Button
-                              onClick={fetchComments}
-                              className="ml-2 text-sm bg-primary text-white"
-                            >
-                              Retry
-                            </Button>
+                            {error !== "No comments yet" && (
+                              <Button
+                                onClick={fetchComments}
+                                className="ml-2 text-sm bg-primary text-white"
+                              >
+                                Retry
+                              </Button>
+                            )}
                           </div>
                         ) : (
                           <CommentChecklistSec
@@ -575,12 +591,14 @@ export default function ModalDetailChecklist({
                         {attachmentError ? (
                           <div className="text-red-500 text-center py-4">
                             {attachmentError}
-                            <Button
-                              onClick={fetchAttachments}
-                              className="ml-2 text-sm bg-primary text-white"
-                            >
-                              Retry
-                            </Button>
+                            {attachmentError !== "No attachments found" && (
+                              <Button
+                                onClick={fetchAttachments}
+                                className="ml-2 text-sm bg-primary text-white"
+                              >
+                                Retry
+                              </Button>
+                            )}
                           </div>
                         ) : attachments.length === 0 ? (
                           <div className="text-center py-4">
