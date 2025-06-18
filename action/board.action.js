@@ -9,6 +9,7 @@ import {
   createCheckListService,
   createGanttChartByBoardIdService,
   createTaskByBoardIdAndGanttChartIdService,
+  deleteCheckListByTaskIdService,
   deleteMemberService,
   deleteTaskService,
   editCommmentService,
@@ -23,6 +24,7 @@ import {
   inviteMemberToBoardService,
   moveTaskOrderService,
   postCommentByCheckListIdService,
+  updateCheckListByIdAndTaskIdService,
   updateTaskByIdService,
 } from "@/service/board.service";
 import { revalidatePath } from "next/cache";
@@ -594,9 +596,9 @@ export const checkEmailForClearAction = async (email) => {
 };
 
 /*
-* new add
-* Update task by Id with board id and gantt bar id 
-*/
+ * new add
+ * Update task by Id with board id and gantt bar id
+ */
 export const updateTaskByIdAction = async (
   taskId,
   title,
@@ -617,6 +619,52 @@ export const updateTaskByIdAction = async (
     finishedAt,
     boardId,
     ganttBarId,
+    token,
+  });
+  revalidatePath("/member");
+  return result;
+};
+
+/*
+ * new add
+ * Delete checklist by specific tasks ID
+ */
+export const deleteCheckListByTaskIdAction = async (checkListId, taskId) => {
+  console.log("checkListId in delete action task id delete: ", checkListId);
+  console.log("taskId in delete action task id delete: ", taskId);
+  const userToken = await Token();
+  const token = userToken?.Credential;
+  const result = await deleteCheckListByTaskIdService({
+    checkListId,
+    taskId,
+    token,
+  });
+  revalidatePath("/member");
+  return result;
+};
+
+/*
+ * new add
+ * update checklist by specific tasks ID and checklist id
+ */
+export const updateCheckListByIdAndTaskIdAction = async ({
+  checkListId,
+  title,
+  description,
+  startedAt,
+  finishedAt,
+  taskId,
+ 
+}) => {
+  const userToken = await Token();
+  const token = userToken?.Credential;
+  const result = await updateCheckListByIdAndTaskIdService({
+    checkListId,
+    title,
+    description,
+    startedAt,
+    finishedAt,
+    taskId,
     token,
   });
   revalidatePath("/member");

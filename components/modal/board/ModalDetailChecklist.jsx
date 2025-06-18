@@ -30,9 +30,13 @@ import {
   chageStatusCheckListAction,
   chageStatusCheckListWhenHaveTeamLeaderAction,
   getCommentByCheckListIdAction,
+  getTaskByBoardIdAction,
+  updateCheckListByIdAndTaskIdAction,
 } from "@/action/board.action";
 import PostCommentChecklist from "./PostCommentChecklist";
 import CommentChecklistSec from "./CommentChecklistSec";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 export default function ModalDetailChecklist({
   id,
@@ -52,7 +56,7 @@ export default function ModalDetailChecklist({
   allMemberInBoard,
   leaderId,
   role,
-  boardId,//new add
+  boardId, //new add
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
@@ -154,6 +158,101 @@ export default function ModalDetailChecklist({
       }
     } catch (error) {
       // console.error("Error updating status:", error.message);
+    }
+  };
+
+  /* for upate description checklist */
+
+  const router = useRouter();
+  const [isEditing, setIsEditing] = useState(false);
+  const [newDescription, setNewDescription] = useState("");
+  const [taskData, setTaskData] = useState(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      const fetchTask = async () => {
+        try {
+          const response = await getCheckListByTaskIdAction(taskId);
+          const task = response?.payload?.[0]; // Take first checklist (adjust if multiple)
+          if (!task) throw new Error("Checklist not found");
+          setTaskData(task);
+          setNewDescription(task.description || "");
+        } catch (err) {
+          setError(err.message);
+          toast.error("Failed to load checklist data: " + err.message, {
+            position: "top-right",
+            autoClose: 4000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            theme: "colored",
+            style: {
+              background: "linear-gradient(135deg, #EF4444 0%, #DC2626 100%)",
+              color: "#ffffff",
+              borderRadius: "16px",
+              fontSize: "14px",
+              fontWeight: "500",
+              padding: "16px 20px",
+              boxShadow:
+                "0 20px 25px -5px rgba(239, 68, 68, 0.3), 0 10px 10px -5px rgba(239, 68, 68, 0.2)",
+              border: "1px solid rgba(255, 255, 255, 0.1)",
+              backdropFilter: "blur(10px)",
+            },
+            progressStyle: {
+              background: "rgba(255, 255, 255, 0.3)",
+            },
+          });
+        }
+      };
+      fetchTask();
+    }
+  }, [isOpen, taskId]); // Remove boardId from dependencies
+
+  const handleEditClick = () => {
+    setIsEditing(true);
+  };
+
+  const handleDescriptionChange = (e) => {
+    setNewDescription(e.target.value);
+  };
+
+  const handleSubmit = async (e) => {
+    if (e.key === "Enter" && newDescription.trim()) {
+      try {
+        const result = await updateCheckListByIdAndTaskIdAction({
+          checklistId, // Use backend casing
+          title: taskData?.title || initialTitle,
+          description: newDescription,
+          startedAt: taskData?.startedAt || initialStartedAt,
+          finishedAt: taskData?.finishedAt || initialFinishedAt,
+          taskId,
+          token, // Pass token explicitly
+        });
+        if (result?.success || result) {
+          // Adjust based on action response
+          toast.success("Description updated successfully", {
+            position: "top-right",
+            duration: 4000,
+          });
+          setIsEditing(false);
+          router.refresh();
+        } else {
+          throw new Error("Update failed unexpectedly");
+        }
+      } catch (error) {
+        console.error("Update description failed:", error);
+        toast.error(
+          `Failed to update description: ${error.message || "Unknown error"}`,
+          {
+            position: "top-right",
+            duration: 4000,
+          }
+        );
+      }
+    } else if (e.key === "Escape") {
+      setIsEditing(false);
+      setNewDescription(taskData?.description || initialDescription || "");
     }
   };
   return (
@@ -334,6 +433,8 @@ export default function ModalDetailChecklist({
                         bgcolor={"bg-slate-red"}
                         massageDo={"Yes, Delete"}
                         massageUndo={"No, Cancel"}
+                        checkListId={id}
+                        taskId={taskId}
                       />
                     </div>
                     <div className="flex flex-wrap justify-between items-center mt-5">
@@ -364,7 +465,12 @@ export default function ModalDetailChecklist({
                       <p className="text-h6 text-title font-semibold">
                         Description test id == {id}
                       </p>
-                      <div>
+                      <div
+                        className="cursor-pointer"
+                        onClick={handleEditClick}
+                        role="button"
+                        aria-label="Edit description"
+                      >
                         <svg
                           width="15"
                           height="15"
@@ -396,10 +502,21 @@ export default function ModalDetailChecklist({
                         </svg>
                       </div>
                     </div>
-                    <p className="text-title/50 text-caption break-words max-w-full">
-                      {description ||
-                        "The Task Management System is a web-based application designed to help individuals and teams effectively manage their daily activity"}
-                    </p>
+                    {isEditing ? (
+                      <input
+                        type="text"
+                        value={newDescription}
+                        onChange={handleDescriptionChange}
+                        onKeyDown={handleSubmit}
+                        className="text-title/50 text-caption break-words max-w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        autoFocus
+                      />
+                    ) : (
+                      <p className="text-title/50 text-caption break-words max-w-full">
+                        {description ||
+                          "The Task Management System is a web-based application designed to help individuals and teams effectively manage their daily activity"}
+                      </p>
+                    )}
                   </div>
 
                   {/* two tab add attachment and all attachment */}
