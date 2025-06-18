@@ -86,8 +86,7 @@ export const SigninForm = () => {
                     className="focus:outline-none bg-transparent border-none p-0 mr-0 transition-colors"
                     aria-label={
                       isPasswordVisible ? "Hide password" : "Show password"
-                    }
-                  >
+                    }>
                     {isPasswordVisible ? (
                       <EyeOff className="text-2xl text-primary pointer-events-none" />
                     ) : (
