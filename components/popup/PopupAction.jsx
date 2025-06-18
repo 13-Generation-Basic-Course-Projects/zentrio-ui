@@ -12,6 +12,7 @@ import {
 import { IconpopupDelete } from "@/components/icon/Iconpopup";
 import { useRouter } from "next/navigation";
 import { deleteDocumentAction } from "@/action/document.action";
+import { deleteFileByFileIdAction } from "@/action/drive.action";
 export default function PopupAction({
   title,
   icon,
@@ -21,6 +22,7 @@ export default function PopupAction({
   massageUndo,
   massageDo,
   documentId,
+  fileId,
   accessToken,
   color,
   swapButton,
@@ -28,17 +30,22 @@ export default function PopupAction({
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-  console.log(accessToken);
   const router = useRouter();
 
   const handleDelete = async () => {
     try {
-      await deleteDocumentAction(accessToken, documentId);
+      if (documentId) {
+        await deleteDocumentAction(accessToken, documentId);
+      }
+      if (fileId) {
+        await deleteFileByFileIdAction(fileId, accessToken);
+      }
       router.refresh();
     } catch (error) {
       console.error("Delete failed", error);
     }
   };
+
 
   return (
     <>

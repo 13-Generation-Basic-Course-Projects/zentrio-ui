@@ -29,7 +29,7 @@ export const getTaskByBoardIdAndGanttBarIdService = async ({
     const data = await res.json();
     //console.log("📥 Backend responded with:", data);
 
-    return data; // just return the data, don’t redirect here
+    return data;
   } catch (error) {
     console.error("bug", error.message);
     throw error;
@@ -53,7 +53,7 @@ export const getCheckListByTaskIdService = async ({ taskId, token }) => {
     const data = await res.json();
     console.log("📥 Backend responded with:", data);
 
-    return data; // just return the data, don’t redirect here
+    return data;
   } catch (error) {
     console.error("bug", error.message);
     throw error;
@@ -77,7 +77,7 @@ export const getMemberByBoardIdService = async ({ boardId, token }) => {
     const data = await res.json();
     //console.log("📥 Backend responded with:", data);
 
-    return data; // just return the data, don’t redirect here
+    return data;
   } catch (error) {
     console.error("bug", error.message);
     throw error;
@@ -169,7 +169,7 @@ export const getAllGanttBarByGanttChartIDService = async ({
     const data = await res.json();
     console.log("📥 Backend responded with:", data);
 
-    return data; // just return the data, don’t redirect here
+    return data;
   } catch (error) {
     console.error("bug", error.message);
     throw error;
@@ -371,7 +371,7 @@ export const getBoardByBoardIdService = async ({ boardId, token }) => {
     const data = await res.json();
     // console.log("📥 Backend responded with board:", data);
 
-    return data; // just return the data, don’t redirect here
+    return data;
   } catch (error) {
     console.error("bug", error.message);
     throw error;
@@ -475,7 +475,7 @@ export const getTaskByBoardIdService = async ({ boardId, token }) => {
     const data = await res.json();
     //console.log("📥 Backend responded with boardtask:", data);
 
-    return data; // just return the data, don’t redirect here
+    return data;
   } catch (error) {
     console.error("bug", error.message);
     throw error;
@@ -499,7 +499,7 @@ export const deleteTaskService = async (taskId, boardId, ganttbarId, token) => {
     const data = await res.json();
     // console.log("📥 Backend responded with delete:", data);
 
-    return data; // just return the data, don’t redirect here
+    return data;
   } catch (error) {
     console.error("bug", error.message);
     throw error;
@@ -638,7 +638,7 @@ export const chageStatusCheckListService = async (checklistId, token, type) => {
     const data = await res.json();
     console.log("📥 Backend responded with change status checklist:", data);
 
-    return data; // just return the data, don’t redirect here
+    return data;
   } catch (error) {
     console.error("bug", error.message);
     throw error;
@@ -663,7 +663,7 @@ export const changeStatusTaskService = async (taskId, token, type) => {
     const data = await res.json();
     console.log("📥 Backend responded with change status:", data);
 
-    return data; // just return the data, don’t redirect here
+    return data;
   } catch (error) {
     console.error("bug", error.message);
     throw error;
@@ -688,7 +688,7 @@ export const changeStageToUnderReviewService = async (taskId, token, stage) => {
     const data = await res.json();
     console.log("📥 Backend responded with change status:", data);
 
-    return data; // just return the data, don’t redirect here
+    return data;
   } catch (error) {
     console.error("bug", error.message);
     throw error;
@@ -697,7 +697,8 @@ export const changeStageToUnderReviewService = async (taskId, token, stage) => {
 
 export const FeedBackService = async (taskId, token, comment) => {
   try {
-    console.log("from service ", taskId, token, comment);
+    console.log("from service of ", taskId);
+    console.log("from service of ", comment.comment);
     const url = boardRouteGroup.changeStageToInProgress();
     console.log(url);
     const res = await fetch(url, {
@@ -712,9 +713,9 @@ export const FeedBackService = async (taskId, token, comment) => {
       },
     });
     const data = await res.json();
-    // console.log("📥 Backend responded with change status:", data);
+    console.log("📥 Backend responded with change feedback:", data);
 
-    return data; // just return the data, don’t redirect here
+    return data;
   } catch (error) {
     console.error("bug", error.message);
     throw error;
@@ -737,7 +738,7 @@ export const deleteMemberService = async (boardId, userId, token) => {
     const data = await res.json();
     console.log("📥 Backend responded with delete user:", data);
 
-    return data; // just return the data, don’t redirect here
+    return data;
   } catch (error) {
     console.error("bug", error.message);
     throw error;
@@ -761,7 +762,7 @@ export const checkEmailService = async (email) => {
     const data = await res.json();
     console.log("📥 Backend responded with delete user:", data);
 
-    return data; // just return the data, don’t redirect here
+    return data;
   } catch (error) {
     console.error("bug", error.message);
     throw error;
@@ -783,7 +784,7 @@ export const checkEmailForClearService = async (email) => {
     const data = await res.json();
     console.log("📥 Backend responded with check user:", data);
 
-    return data; // just return the data, don’t redirect here
+    return data;
   } catch (error) {
     console.error("bug", error.message);
     throw error;

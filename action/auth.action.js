@@ -8,18 +8,19 @@ import {
   resendOtpForgotPasswordService,
   resendOtpZentrioService,
 } from "../service/auth.service";
+import { cookies } from "next/headers";
 
 import { redirect } from "next/navigation";
 
 //google login
 export async function doSocialLogin(formData) {
   const action = formData.get("action");
-  await signIn(action, { redirectTo: "/test" });
+  await signIn(action, { redirectTo: "/workspace" });
 }
 //google logout
-export async function doLogout() {
-  await signOut({ redirectTo: "/" });
-}
+// export async function doLogout() {
+//   await signOut({ redirectTo: "/" });
+// }
 
 //creadentail zentrio
 
@@ -164,3 +165,18 @@ export async function zentrioForgotPasswordAction({
     return { success: false };
   }
 }
+
+export const doLogout = async () => {
+  const cookieStore = cookies();
+
+  // Get all cookies and clear them
+  cookieStore.getAll().forEach((cookie) => {
+    cookieStore.delete(cookie.name);
+  });
+
+  // Perform NextAuth signout
+  await signOut({ redirect: false });
+
+  // Redirect to login page
+  redirect("/");
+};

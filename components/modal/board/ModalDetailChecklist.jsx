@@ -1,38 +1,30 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import member from "@/assets/memberSideBar.png";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import Image from "next/image";
 import {
   Modal,
   ModalContent,
   ModalHeader,
   ModalBody,
-  ModalFooter,
   Button,
   useDisclosure,
   Card,
   DateRangePicker,
-  Input,
 } from "@heroui/react";
-import {
-  IconAdd,
-  StackedProfileChecklist,
-  StackedProfiles,
-} from "../../icon/everyicon";
+import { IconAdd, StackedProfileChecklist } from "../../icon/everyicon";
 import ModalUploadAttachment from "./ModalUploadAttachment";
-import { allAttachment } from "@/data/board/allAttachment";
-import { CardCheckList } from "@/components/card/CardChecklist";
+import { CardCheckList } from "@/components/card/CardCheckList";
 import Trash from "@/components/button/Trash";
 import PopupAction from "@/components/popup/PopupAction";
 import { IconpopupDelete } from "@/components/icon/Iconpopup";
 import { preventImage } from "@/constant/preventimage";
 import {
   chageStatusCheckListAction,
-  chageStatusCheckListWhenHaveTeamLeaderAction,
   getCommentByCheckListIdAction,
 } from "@/action/board.action";
 import PostCommentChecklist from "./PostCommentChecklist";
 import CommentChecklistSec from "./CommentChecklistSec";
+import { getAttactmentAction } from "@/action/document.action";
 
 export default function ModalDetailChecklist({
   id,
@@ -52,124 +44,190 @@ export default function ModalDetailChecklist({
   allMemberInBoard,
   leaderId,
   role,
+  boardId,
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-
-  const [activeTab, setActiveTab] = useState("add"); // 'add' or 'all'
+  const [activeTab, setActiveTab] = useState("add");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedAttachment, setSelectedAttachment] = useState(null);
+  const shouldStayOpen = useRef(false);
+  const fetchingRef = useRef(false);
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
-  //fetch
   const [comments, setComments] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const data = allAttachment;
+  const [currentStatus, setCurrentStatus] = useState(status);
+  const [attachments, setAttachments] = useState([]);
+  const [attachmentError, setAttachmentError] = useState(null);
+
   const icons = {
     pdf: "https://cdn-icons-png.flaticon.com/128/4726/4726010.png",
     docx: "https://cdn-icons-png.flaticon.com/128/2991/2991108.png",
     xlsx: "https://cdn-icons-png.flaticon.com/128/2504/2504768.png",
     pptx: "https://cdn-icons-png.flaticon.com/128/2875/2875416.png",
   };
+
   const getFileIcon = (filename) => {
-    const extension = filename.split(".").pop().toLowerCase();
+    const extension = filename?.split(".").pop()?.toLowerCase();
     return (
       icons[extension] ||
       "https://cdn-icons-png.flaticon.com/128/833/833524.png"
-    ); // Default icon
+    );
   };
-  console.log("member", member);
 
-  //comment
-  console.log("is this the id of checklist", id);
-  const prevnetCheckListImage = preventImage.noChecklistImage;
-  //fetch comment
-  useEffect(() => {
-    let isMounted = true;
+  const handleAttachmentSelected = (attachment) => {
+    console.log("Attachment selected in ModalDetailChecklist:", attachment);
+    setSelectedAttachment(attachment);
+    closeModal();
+  };
 
-    const fetchComments = async () => {
-      if (!id) {
-        console.warn("Checklist ID is missing");
-        setError("Checklist ID is required");
-        setLoading(false);
-        return;
+  const fetchAttachments = useCallback(async () => {
+    if (!checklistId || fetchingRef.current) return;
+    console.log("Fetching attachments for checklistId:", checklistId);
+    fetchingRef.current = true;
+    shouldStayOpen.current = true;
+    setLoading(true);
+    setAttachmentError(null);
+    setAttachments([]);
+    try {
+      const result = await getAttactmentAction(checklistId);
+      console.log("Fetched attachments:", result);
+      if (result.success) {
+        setAttachments([result.payload]);
+        console.log("Set attachments:", [result.payload]);
+      } else {
+        setAttachmentError(result.error || "Failed to load attachments");
+        console.log("Attachment error:", result.error);
       }
+    } catch (err) {
+      console.error("Error fetching attachments:", err);
+      setAttachmentError(
+        err.status === 404
+          ? "No attachments found"
+          : "An unexpected error occurred"
+      );
+    } finally {
+      setLoading(false);
+      fetchingRef.current = false;
+      shouldStayOpen.current = false;
+    }
+  }, [checklistId]);
 
-      setLoading(true);
-      setError(null);
-      try {
-        const result = await getCommentByCheckListIdAction(id);
-        console.log("Fetch result:", result); // Log the result
-        if (isMounted) {
-          if (result.success) {
-            setComments(result.data);
-          } else {
-            setError(result.error || "Failed to load comments");
-          }
-        }
-      } catch (err) {
-        if (isMounted) {
-          setError("An unexpected error occurred");
-        }
-      } finally {
-        if (isMounted) {
-          setLoading(false);
-        }
+  const fetchComments = useCallback(async () => {
+    if (!checklistId || fetchingRef.current) return;
+    console.log("Fetching comments for checklistId:", checklistId);
+    fetchingRef.current = true;
+    shouldStayOpen.current = true;
+    setLoading(true);
+    setError(null);
+    setComments([]);
+    try {
+      const result = await getCommentByCheckListIdAction(checklistId);
+      console.log("Fetch comments for checklistId", checklistId, ":", result);
+      if (result.success) {
+        setComments(result.data || []);
+      } else {
+        setError(
+          result.error?.includes("404")
+            ? "No comments yet"
+            : result.error || "Failed to load comments"
+        );
       }
-    };
+    } catch (err) {
+      console.error(
+        "Error fetching comments for checklistId",
+        checklistId,
+        ":",
+        err
+      );
+      setError(
+        err.message?.includes("404")
+          ? "No comments yet"
+          : "An unexpected error occurred"
+      );
+    } finally {
+      setLoading(false);
+      fetchingRef.current = false;
+      shouldStayOpen.current = false;
+    }
+  }, [checklistId]);
 
-    fetchComments();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [id]);
-
-  // Separate useEffect for logging comments
   useEffect(() => {
-    console.log("Updated comments state:", comments);
-  }, [comments]);
+    console.log(
+      "useEffect triggered: isOpen=",
+      isOpen,
+      "checklistId=",
+      checklistId
+    );
+    if (isOpen && checklistId && !fetchingRef.current) {
+      fetchComments();
+      fetchAttachments();
+    }
+  }, [isOpen, checklistId, fetchComments, fetchAttachments]);
 
-  //  // Handler for check circle click to set status to "Completed"
-  // Handler for toggling status
-
-  //status inprogress
-
-  console.log("id id in checklist", id);
-
-  // Toggle status between IN_PROGRESS and DONE
-  const [currentStatus, setCurrentStatus] = useState(status); // Initialize with status (PENDING)
-
-  // Toggle status: PENDING/IN_PROGRESS -> DONE, DONE -> IN_PROGRESS
-  const handleStatusChange = async () => {
+  const handleStatusChange = useCallback(async () => {
+    shouldStayOpen.current = true;
     const newStatus = currentStatus === "DONE" ? "IN_PROGRESS" : "DONE";
     try {
-      const result = await chageStatusCheckListAction(id, newStatus);
+      const result = await chageStatusCheckListAction(checklistId, newStatus);
       if (result.success) {
-        setCurrentStatus(newStatus); // Update UI on success
+        setCurrentStatus(newStatus);
       } else {
         console.error("Failed to update status:", result.error);
       }
     } catch (error) {
-      console.error("Error updating status:", error.message);
+      console.error("Error updating status:", error);
+    } finally {
+      shouldStayOpen.current = false;
     }
-  };
+  }, [checklistId, currentStatus]);
+
+  const handleOpenChange = useCallback(
+    (open) => {
+      if (!open && shouldStayOpen.current) {
+        console.log("Preventing modal close");
+        return;
+      }
+      onOpenChange(open);
+      if (!open) {
+        setComments([]);
+        setError(null);
+        setActiveTab("add");
+        setSelectedAttachment(null);
+        setAttachments([]);
+        setAttachmentError(null);
+      }
+    },
+    [onOpenChange]
+  );
+
+  const handleCommentsUpdated = useCallback((dataOrUpdater) => {
+    shouldStayOpen.current = true;
+    if (typeof dataOrUpdater === "function") {
+      setComments((prev) => dataOrUpdater(prev));
+    } else {
+      setComments(dataOrUpdater || []);
+    }
+    setTimeout(() => {
+      shouldStayOpen.current = false;
+    }, 100);
+  }, []);
+
   return (
     <>
       <div>
-        {/* Check Circle Button for Changing Status */}
-
         <div className="flex justify-end items-center relative">
           <button
             onClick={handleStatusChange}
-            className={`focus:outline-none absolute top-[20px] z-20 right-5 p-2 rounded-full transition-colors `}
+            className="focus:outline-none absolute top-[20px] z-20 right-5 p-2 rounded-full transition-colors"
             title={
               currentStatus === "DONE" ? "Mark as In Progress" : "Mark as Done"
             }
           >
             {currentStatus === "DONE" ? (
-              // <span className="text-body-sm font-semibold">DONE</span>
               <svg
                 viewBox="0 0 24 24"
                 width={24}
@@ -202,13 +260,12 @@ export default function ModalDetailChecklist({
             )}
           </button>
         </div>
-        {/* modal */}
         <Button
           onPress={onOpen}
           className="h-full w-full p-0 shadow-sm"
           fullWidth="true"
         >
-          <div className="h-full w-full  max-w-none !px-0 bg-pink-300">
+          <div className="h-full w-full max-w-none !px-0 bg-pink-300">
             <CardCheckList
               status={currentStatus}
               title={title}
@@ -227,16 +284,16 @@ export default function ModalDetailChecklist({
         </Button>
         <Modal
           isOpen={isOpen}
-          onOpenChange={onOpenChange}
+          onOpenChange={handleOpenChange}
           size="5xl"
-          className="overflow-y-auto scrollbar-hidden  max-h-[760px]"
+          className="overflow-y-auto scrollbar-hidden max-h-[760px]"
           isDismissable={false}
           isKeyboardDismissDisabled={true}
+          closeButton={false}
         >
           <ModalContent>
             {(onClose) => (
               <>
-                {/* Modal Header with Close Button */}
                 <ModalHeader className="flex flex-row justify-between items-center sticky top-0 z-10 bg-white">
                   <div className="flex flex-wrap justify-start items-center gap-2">
                     <svg
@@ -281,10 +338,11 @@ export default function ModalDetailChecklist({
                       {taskTitle || "task name"}
                     </p>
                   </div>
-
-                  {/* Close Button */}
                   <button
-                    onClick={onClose}
+                    onClick={() => {
+                      shouldStayOpen.current = false;
+                      onClose();
+                    }}
                     className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200 ml-auto"
                     aria-label="Close modal"
                   >
@@ -306,24 +364,24 @@ export default function ModalDetailChecklist({
                     </svg>
                   </button>
                 </ModalHeader>
-
-                {/* Modal Body */}
                 <ModalBody>
-                  {/* for show image of task */}
-                  <div className=" border rounded-medium flex justify-center items-center">
+                  {loading && (
+                    <div className="absolute inset-0 bg-white/50 flex justify-center items-center z-20">
+                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary" />
+                    </div>
+                  )}
+                  <div className="border rounded-medium flex justify-center items-center">
                     <img
-                      src={image || prevnetCheckListImage}
+                      src={image || preventImage.noChecklistImage}
                       alt="Dynamic ERD"
                       className="w-full h-40 object-cover rounded-medium"
                     />
                   </div>
-                  {/* for show sub title of task */}
-                  <div className="flex flex-col ">
+                  <div className="flex flex-col">
                     <div className="flex flex-wrap justify-between items-center">
                       <p className="text-title text-h6 underline font-normal break-words max-w-full">
                         {title || "title of checklist"}
                       </p>
-
                       <PopupAction
                         title={<Trash />}
                         color={"text-blue-600"}
@@ -342,13 +400,12 @@ export default function ModalDetailChecklist({
                         taskId={taskId}
                         allMemberInBoard={allMemberInBoard}
                         leaderId={leaderId}
-                        checklistId={id}
+                        checklistId={checklistId}
                       />
                       <div>
                         <div className="w-full max-w-xl flex flex-row gap-4">
                           <DateRangePicker
                             showMonthAndYearPickers
-                            //   label="Birth Date"
                             variant="none"
                             size="md"
                           />
@@ -356,12 +413,10 @@ export default function ModalDetailChecklist({
                       </div>
                     </div>
                   </div>
-
-                  {/* for description */}
                   <div className="flex flex-col space-y-3">
                     <div className="flex flex-wrap justify-between items-center">
                       <p className="text-h6 text-title font-semibold">
-                        Description test id == {id}
+                        Description test id == {checklistId}
                       </p>
                       <div>
                         <svg
@@ -400,9 +455,34 @@ export default function ModalDetailChecklist({
                         "The Task Management System is a web-based application designed to help individuals and teams effectively manage their daily activity"}
                     </p>
                   </div>
-
-                  {/* two tab add attachment and all attachment */}
-                  {/* Tabs */}
+                  {selectedAttachment && (
+                    <div className="mt-4 p-3 border rounded">
+                      <p className="font-medium">
+                        Selected Attachment: {selectedAttachment.description}
+                      </p>
+                      <div className="flex items-center space-x-2">
+                        <img
+                          src={getFileIcon(selectedAttachment.description)}
+                          alt={selectedAttachment.description}
+                          className="w-5 h-5"
+                        />
+                        <a
+                          href={selectedAttachment.drive_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600"
+                        >
+                          View
+                        </a>
+                        <Button
+                          onClick={() => setSelectedAttachment(null)}
+                          className="ml-2 text-sm bg-red-500 text-white"
+                        >
+                          Remove
+                        </Button>
+                      </div>
+                    </div>
+                  )}
                   <div className="flex space-x-4 border-b border-gray-300 mt-6">
                     <button
                       className={`py-2 px-4 ${
@@ -422,25 +502,20 @@ export default function ModalDetailChecklist({
                       }`}
                       onClick={() => setActiveTab("all")}
                     >
-                      All Attachments ({data.length})
+                      All Attachments ({attachments.length})
                     </button>
                   </div>
-
-                  {/* Tab Content */}
-                  <div className="mt-4  mb-5 ">
+                  <div className="mt-4 mb-5">
                     {activeTab === "add" && (
-                      <div className="space-y-6 ">
+                      <div className="space-y-6">
                         <div className="space-y-2">
-                          <label className="block text-title ">Uploading</label>
+                          <label className="block text-title">Uploading</label>
                           <div
-                            className="w-full text-title/50 text-caption p-4 border-1 rounded-medium border-gray-400  flex justify-between items-center cursor-pointer"
+                            className="w-full text-title/50 text-caption p-4 border-1 rounded-medium border-gray-400 flex justify-between items-center cursor-pointer"
                             onClick={openModal}
                           >
                             Choose file here...
-                            <div
-                              className="inline-block cursor-pointer ml-2"
-                              onClick={openModal}
-                            >
+                            <div className="inline-block cursor-pointer ml-2">
                               <svg
                                 width="18"
                                 height="20"
@@ -467,71 +542,102 @@ export default function ModalDetailChecklist({
                           </div>
                           {isModalOpen && (
                             <ModalUploadAttachment
+                              boardId={boardId}
+                              checklistId={checklistId}
                               isOpen={isModalOpen}
-                              onClose={() => setIsModalOpen(false)}
+                              onClose={closeModal}
+                              onAttachmentSelected={handleAttachmentSelected}
                             />
                           )}
                         </div>
                         <div className="space-y-2">
-                          <PostCommentChecklist checklistId={id} />
+                          <PostCommentChecklist checklistId={checklistId} />
                         </div>
-
-                        {/* comment */}
-                        <CommentChecklistSec
-                          comments={comments}
-                          checklistId={id}
-                          onCommentsUpdated={(dataOrUpdater) => {
-                            if (typeof dataOrUpdater === "function") {
-                              setComments((prev) => dataOrUpdater(prev));
-                            } else {
-                              setComments(dataOrUpdater);
-                            }
-                          }}
-                        />
+                        {error ? (
+                          <div
+                            className={`text-center py-4 ${
+                              error === "No comments yet"
+                                ? "text-gray-500"
+                                : "text-red-500"
+                            }`}
+                          >
+                            {error}
+                            {error !== "No comments yet" && (
+                              <Button
+                                onClick={fetchComments}
+                                className="ml-2 text-sm bg-primary text-white"
+                              >
+                                Retry
+                              </Button>
+                            )}
+                          </div>
+                        ) : (
+                          <CommentChecklistSec
+                            comments={comments}
+                            checklistId={checklistId}
+                            onCommentsUpdated={handleCommentsUpdated}
+                          />
+                        )}
                       </div>
                     )}
-
                     {activeTab === "all" && (
                       <div className="h-[400px] overflow-auto scrollbar-hidden">
-                        {data.map((item) => (
-                          <div
-                            key={item.id}
-                            className="mb-4 p-3 border rounded"
-                          >
-                            <p className="text-sm text-gray-500">
-                              Created by {item.createBy} on {item.date}
-                            </p>
-                            {item.fileSaved.map((file, idx) => (
-                              <div
-                                key={idx}
-                                className="mt-1 cursor-pointer hover:text-blueActive/50 flex items-center space-x-2"
+                        {console.log(
+                          "Rendering attachments tab:",
+                          attachments,
+                          "error:",
+                          attachmentError
+                        )}
+                        {attachmentError ? (
+                          <div className="text-red-500 text-center py-4">
+                            {attachmentError}
+                            {attachmentError !== "No attachments found" && (
+                              <Button
+                                onClick={fetchAttachments}
+                                className="ml-2 text-sm bg-primary text-white"
                               >
+                                Retry
+                              </Button>
+                            )}
+                          </div>
+                        ) : attachments.length === 0 ? (
+                          <div className="text-center py-4">
+                            No attachments available
+                          </div>
+                        ) : (
+                          attachments.map((item) => (
+                            <div
+                              key={item.attachmentId}
+                              className="mb-4 p-3 border rounded"
+                            >
+                              <p className="text-sm text-gray-500">
+                                Created on{" "}
+                                {new Date(item.createdAt).toLocaleString()}
+                              </p>
+                              <div className="mt-1 flex items-center space-x-2">
                                 <img
-                                  src={getFileIcon(file)}
-                                  alt={file}
+                                  src={getFileIcon(item.details.fileName)}
+                                  alt={item.details.fileName}
                                   className="w-5 h-5"
                                 />
-                                <span>{file}</span>
+                                {item.drive_url ? (
+                                  <a
+                                    href={item.drive_url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-blue-600 hover:text-blueActive/50"
+                                  >
+                                    {item.details.fileName}
+                                  </a>
+                                ) : (
+                                  <span className="text-gray-600">
+                                    {item.details.fileName} (No link available)
+                                  </span>
+                                )}
                               </div>
-                            ))}
-
-                            {item.linkAttached.map((file, idx) => (
-                              <div
-                                key={idx}
-                                className="mt-1 flex items-center space-x-2"
-                              >
-                                <a
-                                  href={item.linkAttached[idx]}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="text-blue-600 underline"
-                                >
-                                  {file}
-                                </a>
-                              </div>
-                            ))}
-                          </div>
-                        ))}
+                            </div>
+                          ))
+                        )}
                       </div>
                     )}
                   </div>

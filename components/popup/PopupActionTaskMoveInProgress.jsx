@@ -9,9 +9,9 @@ import {
   Button,
   useDisclosure,
   useDraggable,
-  Input, // Import Input component from @heroui/react
+  Input,
 } from "@heroui/react";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { FeedBackAction } from "@/action/board.action";
 
 export default function PopupActionTaskMoveInProgress({
@@ -29,13 +29,13 @@ export default function PopupActionTaskMoveInProgress({
   boardId,
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [comment, setComment] = useState(""); // State to store input value
+  const [comment, setComment] = useState("");
 
   const targetRef = React.useRef(null);
   const { moveProps } = useDraggable({
     targetRef,
     canOverflow: true,
-    isDisabled: !isOpen,
+    isDisabled: true,
   });
 
   const handleSubmit = async () => {
@@ -46,7 +46,8 @@ export default function PopupActionTaskMoveInProgress({
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
-        draggable: true,
+        draggable: false,
+        // Remove onClose callback to avoid the undefined error
       });
       return;
     }
@@ -59,8 +60,10 @@ export default function PopupActionTaskMoveInProgress({
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
-        draggable: true,
+        draggable: false,
+        // Remove onClose callback to avoid the undefined error
       });
+      setComment(""); // Clear the comment field
       onOpenChange(false); // Close modal on success
     } catch (error) {
       console.error("Feedback submission failed", error);
@@ -70,7 +73,8 @@ export default function PopupActionTaskMoveInProgress({
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
-        draggable: true,
+        draggable: false,
+        // Remove onClose callback to avoid the undefined error
       });
     }
   };
@@ -139,7 +143,7 @@ export default function PopupActionTaskMoveInProgress({
           )}
         </ModalContent>
       </Modal>
-      <ToastContainer />
+      {/* Remove ToastContainer from here - it should only be in your root layout */}
     </>
   );
 }

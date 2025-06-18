@@ -4,6 +4,7 @@ import {
   assignMemberInChecklistService,
   assignMemberToChecklistService,
   assignUserRoleLeadeerToBoardService,
+  chageStatusCheckListService,
   changeStageToUnderReviewService,
   checkEmailForClearService,
   createCheckListService,
@@ -589,5 +590,16 @@ export const deleteMemberAction = async (boardId, userId) => {
  */
 export const checkEmailForClearAction = async (email) => {
   const result = await checkEmailForClearService(email);
+  return result;
+};
+/*
+ * achange status
+ */
+export const chageStatusCheckListAction = async (checklistId, type) => {
+  const userToken = await Token();
+  const token = userToken?.Credential;
+  const result = await chageStatusCheckListService(checklistId, token, type);
+  revalidatePath("/checklist");
+  console.log("status action", checklistId, type);
   return result;
 };

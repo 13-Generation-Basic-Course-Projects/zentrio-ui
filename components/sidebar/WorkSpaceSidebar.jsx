@@ -24,6 +24,7 @@ import { LeaveIcon } from "../icon/everyicon";
 import SaveWorkspace from "../button/SaveWorkspace";
 import ModalCreateWorkspace from "../modal/ModalCreateWorkspace";
 import ModalOptionWorkspace from "../modal/workspace/ModalOptionWorkspace";
+import Logout from "@/app/(auth)/_components/Logout";
 
 // Workspace colors for visual tags
 const colorOptions = [
@@ -97,7 +98,7 @@ export default function WorkSpaceSideBar({
           <Button
             isIconOnly
             onClick={toggleSidebar}
-            className="bg-transparent min-w-fit w-fit h-fit rounded-none !px-0 !py-0"
+            className="hidden bg-transparent min-w-fit w-fit h-fit rounded-none !px-0 !py-0"
           >
             {/* Sidebar toggle icon */}
             <svg
@@ -257,16 +258,7 @@ export default function WorkSpaceSideBar({
         {/* BOTTOM MENU */}
         <SidebarMenu className="!border-0 p-0 px-5 py-2 flex flex-col gap-2">
           <SidebarMenuItem className="!border-0 p-0">
-            <SidebarMenuButton
-              className="!border-0 p-0 flex gap-2 text-gray-600 hover:text-error hover:bg-error/10 transition-colors duration-150"
-              onClick={() => {
-                localStorage.clear();
-                window.location.reload();
-              }}
-            >
-              <LeaveIcon />
-              Log Out
-            </SidebarMenuButton>
+            <Logout />
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarContent>
