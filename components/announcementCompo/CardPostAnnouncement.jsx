@@ -12,6 +12,8 @@ export default function CardPostAnnouncement({
   Announcements,
   currentUserProfile,
   boardId,
+  boardMember
+
 }) {
   console.log("bottttt", boardId);
   const announcementList = Announcements?.payload || [];
@@ -33,6 +35,18 @@ export default function CardPostAnnouncement({
     // console.log("id to delete: ", deletedId)
     // setLocalAnnouncements(prev => prev.filter(ann => ann.id !== deletedId));
   };
+
+  
+    const currentUserBoardInfo = boardMember.find(
+      (member) => member.userId === currentUserProfile?.payload?.user?.userId
+    );
+    console.log("gggg",currentUserProfile?.payload?.user?.userId)
+    console.log("info",currentUserBoardInfo);
+    const currentUserRoles = currentUserBoardInfo?.roles || [];
+    console.log("ss",currentUserRoles)
+    const isProjectManager = currentUserRoles.includes("ROLE_MANAGER");
+    console.log("rolemamam",isProjectManager)
+    
 
   return (
     <div className="mx-auto h-screen overflow-hidden px-2 py-1">
@@ -87,12 +101,14 @@ export default function CardPostAnnouncement({
                   size="sm"
                   className="text-title hover:text-primary"
                 >
-                  <ModalOptionAnnoun
+                  {isProjectManager && (
+                    <ModalOptionAnnoun
                     Announcement={announcement}
                     announId={announcement.announcementId}
                     boardId={boardId}
                     // onDeleteSuccess={() => handleDeleteSuccess(announcement.id)}
                   />
+                  )}
                 </Button>
                 </div>
               </div>

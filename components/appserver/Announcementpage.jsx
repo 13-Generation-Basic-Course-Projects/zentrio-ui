@@ -49,6 +49,7 @@ export default function Announcementpage({
               currentUserProfile={currentUserProfile}
               boardId={boardId}
               preventUserImage={preventUserImage}
+              boardMember={boardMember}
             />
           </div>
         </div>
