@@ -22,5 +22,5 @@ export const profileRouteGroup = {
   getPreviewProfile: () => `${apiConfig.baseUrl}/profiles/preview-profile`,
 
   //updateCurrentProfile
-  updateProfileImgae:()=>`${apiConfig.baseUrl}/files/upload-file`
+  updateProfileImage: () => `${apiConfig.baseUrl}/files/upload-file`,
 };
