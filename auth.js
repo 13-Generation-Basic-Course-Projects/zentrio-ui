@@ -1,6 +1,7 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import {
+  loginGoogleService,
   loginZentrioCredentailService,
   loginZentrioService,
 } from "./service/auth.service";
@@ -27,16 +28,6 @@ export const {
           return null;
         }
         return res;
-        // try {
-        //   const res = await loginZentrioCredentailService({ email, password });
-        //   if (!res?.success) {
-        //     return null;
-        //   }
-        //   return res;
-        // } catch (err) {
-        //   console.error("Login error:", err);
-        //   return null;
-        // }
       },
     }),
     GoogleProvider({
@@ -54,13 +45,39 @@ export const {
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET,
+  // callbacks: {
+  //   async jwt(token) {
+  //     // if (account) {
+  //     //   token.accessToken = account.access_token;
+  //     //   token.refreshToken = account.refresh_token;
+  //     //   token.idToken = account.id_token;
+  //     // }
+
+  //     return token;
+  //   },
   callbacks: {
-    async jwt(token) {
-      // if (account) {
-      //   token.accessToken = account.access_token;
-      //   token.refreshToken = account.refresh_token;
-      //   token.idToken = account.id_token;
-      // }
+    async jwt({ token, account, profile }) {
+      // When the user signs in with Google, `account` contains the tokens
+      if (account) {
+        token.idToken = account.id_token; // Store Google's id_token
+        token.accessToken = account.access_token; // Optional: Store access token
+        token.refreshToken = account.refresh_token; // Optional: Store refresh token
+
+        // Call backend to authenticate with idToken
+        try {
+          const backendResponse = await loginGoogleService({
+            accesToken: account.id_token, // Pass id_token to service
+          });
+
+          if (backendResponse?.success) {
+            token.backendToken = backendResponse.payload.token; // Store backend token
+          } else {
+            console.error("Backend login failed:", backendResponse?.message);
+          }
+        } catch (error) {
+          console.error("Error calling loginGoogleService:", error.message);
+        }
+      }
 
       return token;
     },

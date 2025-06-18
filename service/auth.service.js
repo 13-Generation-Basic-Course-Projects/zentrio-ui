@@ -1,6 +1,9 @@
+"use server";
+
 import { redirect } from "next/navigation";
 import { authRoute } from "../routes/authRoute";
 import { apiConfig } from "@/constant/baseurl";
+
 /*
  * register
  */
@@ -143,16 +146,16 @@ export const resendOtpZentrioService = async ({ email, otp }) => {
 export const loginGoogleService = async ({ accesToken }) => {
   try {
     const url = `${apiConfig.baseUrl}/auths/login/third-party`;
+    console.log("login3party", accesToken);
     const res = await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ idToken: accesToken }),
+      body: JSON.stringify({ idToken: accesToken, provider: "google" }),
     });
     const data = await res.json();
     console.log("📥 Backend responded with:", data);
-    console.log("BBBBB", data?.payload?.token);
 
     return data; // just return the data, don’t redirect here
   } catch (error) {
@@ -200,11 +203,14 @@ export const resendOtpForgotPasswordService = async (data) => {
   }
 };
 
-
 /*
  * reset password service
  */
-export const forgotPasswordService = async ({ email, password, confirmPassword }) => {
+export const forgotPasswordService = async ({
+  email,
+  password,
+  confirmPassword,
+}) => {
   try {
     const res = await fetch(authRoute.resetPasswordRoute(email), {
       method: "POST",

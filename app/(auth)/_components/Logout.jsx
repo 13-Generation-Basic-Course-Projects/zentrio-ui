@@ -1,4 +1,5 @@
-import { doLogout } from "@/action/auth";
+"use client";
+import { doLogout } from "@/action/auth.action";
 import "@/styles/logout.css";
 const Logout = () => {
   return (
