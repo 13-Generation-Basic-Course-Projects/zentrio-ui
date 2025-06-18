@@ -95,7 +95,11 @@ export const fetchDocumentsByBoardService = async (boardId, token) => {
 /*
  * Get files by folder ID
  */
-export const getFileByFolderIdService = async ({ accessToken, folderId, token }) => {
+export const getFileByFolderIdService = async ({
+  accessToken,
+  folderId,
+  token,
+}) => {
   try {
     const res = await fetch(
       documentRouteGroup.getFileByFolderId(folderId, accessToken),
@@ -479,9 +483,9 @@ export const publicDocumentByIdService = async (
 };
 
 /* new add
-* get all document by board id 
-*/
-export const getAllDocumentByBoardIdSerivce = async({boardId, token}) =>{
+ * get all document by board id
+ */
+export const getAllDocumentByBoardIdSerivce = async ({ boardId, token }) => {
   try {
     const url = documentRouteGroup.getAllDocumentByBoardId(boardId);
 
@@ -505,7 +509,60 @@ export const getAllDocumentByBoardIdSerivce = async({boardId, token}) =>{
     return await res.json();
   } catch (error) {
     console.error("Error in getAllDocumentByBoardIdSerivce: ", error.message);
-   
   }
+};
 
-}
+/* new add
+ * post attactment
+ */
+export const postAttactmentService = async ({
+  checklistId,
+  details,
+  token,
+}) => {
+  try {
+    const url = documentRouteGroup.postAttactment(checklistId);
+
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        Accept: "*/*",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+        body: JSON.stringify({
+          details: details,
+        }),
+      },
+    });
+
+    const result = await res.json();
+
+    return result;
+  } catch (error) {
+    console.error("Error : ", error.message);
+  }
+};
+
+/* new add
+ * post attactment
+ */
+export const getAttactmentService = async ({ checklistId, token }) => {
+  try {
+    const url = documentRouteGroup.getAttactment(checklistId);
+
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        Accept: "*/*",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const result = await res.json();
+    console.log("in serviceee fetch data", result);
+    return result;
+  } catch (error) {
+    console.error("Error : ", error.message);
+  }
+};

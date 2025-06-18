@@ -11,7 +11,9 @@ import {
   fetchDocumentsByBoardService,
   fetchPublicDocumentsService,
   getAllDocumentByBoardIdSerivce,
+  getAttactmentService,
   getFileByFolderIdService,
+  postAttactmentService,
   publicDocumentByIdService,
   updateDocumentNameByIdService,
   uploadDocumentToFolderServie,
@@ -238,12 +240,37 @@ export const publicDocumentByIdAction = async (documentId, tokenFromGoogle) => {
 export const getAllDocumentByBoardIdAction = async (boardId) => {
   const userToken = await Token();
   const token = userToken.Credential;
-  revalidatePath("/document");
-
   const getAllDocument = await getAllDocumentByBoardIdSerivce({
     boardId,
     token,
   });
   console.log("Get all doucemnt action : ", getAllDocument);
   return getAllDocument;
+};
+/* new add
+ * post attactment
+ */
+export const postAttactmentAction = async (checklistId, details) => {
+  const userToken = await Token();
+  const token = userToken.Credential;
+  const result = await postAttactmentService({
+    checklistId,
+    details,
+    token,
+  });
+  console.log("Get all attachments action : ", result);
+  return result;
+};
+/* new add
+ * get attactment
+ */
+export const getAttactmentAction = async (checklistId) => {
+  const userToken = await Token();
+  const token = userToken.Credential;
+  const result = await getAttactmentService({
+    checklistId,
+    token,
+  });
+  console.log("Get all attachments action : ", result);
+  return result;
 };
