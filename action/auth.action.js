@@ -5,7 +5,8 @@ import {
   loginZentrioCredentailService,
   otpZentrioService,
   registerZentrioService,
-  resetPasswordService,
+  resendOtpForgotPasswordService,
+  resendOtpZentrioService,
 } from "../service/auth.service";
 
 import { redirect } from "next/navigation";
@@ -69,10 +70,54 @@ export async function zentrioRegisterAction(data) {
  * otp
  */
 
-export async function zentrioOtpAction(data) {
-  const { email, otp } = data; // Destructure both email and otp from data
-  await otpZentrioService({ email, otp }); // Pass email and otp to the service
+export async function zentrioOtpAction({ email, otp, type }) {
+  try {
+    const result = await otpZentrioService({ email, otp, type });
+    if (!result?.ok) {
+      console.error("Failed to verify the otp");
+    }
+    return result;
+  } catch (error) {
+    console.error("Failed to verify the otp");
+  }
 }
+
+
+/*
+* resend otp
+*/
+
+export async function zentrioResendOtpAction({ email, type }) {
+  console.log("email in the action", email);
+
+  try {
+    const result = await resendOtpZentrioService({ email, type });
+    if (!result?.success) {
+      console.error("Failed to resend otp");
+    }
+    return result;
+  } catch (error) {
+    console.error("Failed to resend otp for VERIFY or RESET", error);
+    return { success: false, error: "Unexpected error" };
+  }
+}
+
+
+export async function resendOtpForgotPasswordAction({ email, type }) {
+  try {
+    const result = await resendOtpForgotPasswordService({ email, type });
+    if (!result?.success) {
+      console.error("Failed to resend otp");
+    }
+    return result;
+  } catch (error) {
+    console.error("Failed to resend otp for VERIFY or RESET", error);
+    return { success: false,};
+  }
+}
+
+
+// export asy
 
 // google login
 export async function zentrioLoginWithGoogle(idToken, provider) {
@@ -92,12 +137,16 @@ export async function zentrioLoginWithGoogle(idToken, provider) {
   }
 }
 
-/* 
-* forgot password
-*/
+/*
+ * forgot password
+ */
 
-export async function zentrioForgotPasswordAction({ email, password, confirmPassword }) {
-  try { 
+export async function zentrioForgotPasswordAction({
+  email,
+  password,
+  confirmPassword,
+}) {
+  try {
     const result = await forgotPasswordService({
       email,
       password,
