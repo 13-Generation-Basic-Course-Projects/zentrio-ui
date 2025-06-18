@@ -167,17 +167,8 @@ export const loginGoogleService = async ({ accesToken }) => {
 };
 
 /*
- * forgot password
- */
-
-// export const forgotPasswordService = async ({ email }) => {
-//   try {
-//     await resendOtpZentrioService({ email, type: "RESET" });
-//   } catch (error) {
-//     console.error("Can't reset password", error);
-//     throw error;
-//   }
-// };
+* resend otp forgot
+*/
 
 export const resendOtpForgotPasswordService = async ({email,type}) => {
   try {

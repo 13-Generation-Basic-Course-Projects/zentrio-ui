@@ -103,6 +103,9 @@ export async function zentrioResendOtpAction({ email, type }) {
 }
 
 
+/*
+* resendotpForgotAction
+*/
 export async function resendOtpForgotPasswordAction({ email, type }) {
   try {
     const result = await resendOtpForgotPasswordService({ email, type });

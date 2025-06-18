@@ -55,13 +55,13 @@ export const SignUpForm = () => {
 
   return (
     <div className="w-full h-fit flex items-center justify-center">
-      <div className="w-[580px] bg-signup-gradient px-[55px] py-[40px] rounded-[20px] shadow-sm gap-[50px]">
+      <div className="w-[580px] bg-signup-gradient px-[40px] rounded-[20px] shadow-sm gap-[50px]">
         <Form onSubmit={handleSubmit(onSubmit)}>
           <div>
             <p className="text-h1 text-primary">
-              <span className="font-bold">Sign up</span>
+              <span className="font-bold text-[55px]">Sign up</span>
             </p>
-            <p className="text-body text-[#787486]">
+            <p className="text-body text-[#787486] mb-10">
               Let’s get you all set up so you can access your personal account
             </p>
           </div>
@@ -113,9 +113,8 @@ export const SignUpForm = () => {
                   endContent={
                     <button
                       type="button"
-                      className="border-none  !bg-transparent"
-                      onClick={() => toggleVisibility("password")}
-                    >
+                      className="focus:outline-none bg-transparent border-none p-0 mr-0 transition-colors"
+                      onClick={() => toggleVisibility("password")}>
                       {isVisible.password ? (
                         <EyeOff className="text-2xl text-primary" />
                       ) : (
@@ -143,9 +142,8 @@ export const SignUpForm = () => {
                   endContent={
                     <button
                       type="button"
-                      className="border-none  !bg-transparent"
-                      onClick={() => toggleVisibility("confirmPassword")}
-                    >
+                      className="focus:outline-none bg-transparent border-none p-0 mr-0 transition-colors"
+                      onClick={() => toggleVisibility("confirmPassword")}>
                       {isVisible.confirmPassword ? (
                         <EyeOff className="text-2xl text-primary" />
                       ) : (
@@ -163,20 +161,20 @@ export const SignUpForm = () => {
               </div>
 
               {/* Terms Checkbox */}
-              <div className="flex items-center gap-[25px]">
-                <input
+              <div className="flex items-center gap-7 -mt-[10px]">
+                <Checkbox
                   type="checkbox"
                   id="terms"
-                  className="w-[12px]"
+                  className="text-[16px] w-[12px] text-description cursor-pointer"
                   {...register("termsAccepted")}
                 />
-                <label htmlFor="terms" className="text-[#787486] text-body-sm">
+                <label htmlFor="terms" className="text-[#787486] text-[16px]">
                   I agree to all the <span className="text-primary">Terms</span>{" "}
                   and <span className="text-primary">Privacy Policies</span>
                 </label>
               </div>
               {errors.termsAccepted && (
-                <p className="text-red-500 text-sm mt-1">
+                <p className="text-red-500 text-sm -mt-4">
                   {errors.termsAccepted.message}
                 </p>
               )}
@@ -186,12 +184,11 @@ export const SignUpForm = () => {
             <div className="flex flex-col gap-[10px]">
               <Button
                 type="submit"
-                className="w-full bg-primary text-bgColor max-w-none border-none"
-              >
+                className="w-full bg-primary text-bgColor text-[20px] max-w-none border-none rounded-[10px] h-[48px] capitalize font-semibold">
                 <span className="text-h6">Create account</span>
               </Button>
 
-              <p className="text-center text-body my-5">
+              <p className="text-center text-body my-1">
                 Have an account?{" "}
                 <Link href="/login" className="text-primary text-body">
                   Sign in

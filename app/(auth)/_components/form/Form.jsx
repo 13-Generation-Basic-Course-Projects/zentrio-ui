@@ -6,7 +6,7 @@ import { AuthInput } from "./input";
 import { Button } from "@heroui/react";
 import { useForm } from "react-hook-form";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Eye } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import { resendOtpForgotPasswordAction, zentrioForgotPasswordAction } from "@/action/auth.action";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { resetPasswordSchema } from "@/lib/schemas/resetPasswordSchema";
@@ -118,7 +118,7 @@ export const ForgetPass = () => {
 
           <Button
             type="submit"
-            className="w-full bg-primary text-white max-w-none border-none">
+            className="w-full bg-primary text-white max-w-none border-none mt-12 h-[48px] rounded-[10px] capitalize font-semibold text-[20px]">
             <p className="text-h6">Submit</p>
           </Button>
         </form>
@@ -186,7 +186,7 @@ export const SetNewPass = () => {
       <div className="w-[1728px] h-[1117px]  flex items-center justify-center">
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="w-[640px] h-fit bg-gradient-to-br from-[#9BDBFD]/30 to-[#FFFFFF] px-[55px] py-[40px] rounded-[20px] shadow-lg gap-[50px]">
+          className="w-[640px] h-fit bg-resetpass-gradient px-[55px] py-[40px] rounded-[20px] shadow-lg gap-[50px]">
           <div>
             <Link
               href="/forgot-password"
@@ -218,7 +218,7 @@ export const SetNewPass = () => {
               <p className="text-h1 text-primary">
                 <span className="font-bold">Set a password</span>
               </p>
-              <p className="text-body text-[#787486]">
+              <p className="text-body text-[#787486] mb-14">
                 Your previous password has been reseted. Please set a new
                 password for your account.
               </p>
@@ -235,7 +235,7 @@ export const SetNewPass = () => {
                 className="text-foreground"
                 endContent={
                   <button
-                    className="focus:outline-none bg-transparent border-none"
+                    className="focus:outline-none bg-transparent border-none p-0 mr-0 transition-colors"
                     type="button"
                     onClick={() => toggleVisibility("confirm")}>
                     {isVisible.confirm ? (
@@ -263,7 +263,7 @@ export const SetNewPass = () => {
                 className="text-foreground"
                 endContent={
                   <button
-                    className="focus:outline-none bg-transparent border-none"
+                    className="focus:outline-none bg-transparent border-none p-0 mr-0 transition-colors"
                     type="button"
                     onClick={() => toggleVisibility("confirm2")}>
                     {isVisible.confirm2 ? (
@@ -285,7 +285,7 @@ export const SetNewPass = () => {
           <div className="w-full gap-[10px] flex flex-col">
             <Button
               type="submit"
-              className="w-full max-w-none bg-primary text-white">
+              className="w-full bg-primary text-white max-w-none border-none mt-12 h-[48px] rounded-[10px] capitalize font-semibold text-[20px]">
               Save Password
             </Button>
           </div>

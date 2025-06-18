@@ -170,7 +170,7 @@ export const OtpForm = () => {
           <div className="w-full flex flex-col gap-[10px]">
             <Button
               type="submit"
-              className="w-full bg-primary text-white max-w-none">
+              className="w-full bg-primary text-white max-w-none rounded-[10px] h-[48px] text-[20px] capitalize font-semibold">
               Submit
             </Button>
           </div>

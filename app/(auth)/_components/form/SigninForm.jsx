@@ -42,8 +42,8 @@ export const SigninForm = () => {
       <div className="w-[540px] p-[40px] rounded-[20px] shadow-sm bg-login-gradient flex flex-col gap-[50px]">
         <Form onSubmit={handleSubmit(onSubmit)} noValidate>
           <div>
-            <p className="text-h1 text-primary font-bold">Login</p>
-            <p className="text-body text-[#787486]">
+            <p className="text-[55px] text-primary font-bold">Login</p>
+            <p className="text-body text-[#787486] mb-10">
               Login to access your Zentrio account
             </p>
           </div>
@@ -83,11 +83,10 @@ export const SigninForm = () => {
                   <button
                     type="button"
                     onClick={() => setIsPasswordVisible((v) => !v)}
-                    className="focus:outline-none bg-transparent border-none"
+                    className="focus:outline-none bg-transparent border-none p-0 mr-0 transition-colors"
                     aria-label={
                       isPasswordVisible ? "Hide password" : "Show password"
-                    }
-                  >
+                    }>
                     {isPasswordVisible ? (
                       <EyeOff className="text-2xl text-primary pointer-events-none" />
                     ) : (
@@ -104,16 +103,17 @@ export const SigninForm = () => {
             </div>
 
             {/* Remember Me and Forgot Password */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
+            <div className="flex items-center justify-between -mt-[10px]">
+              <div className="flex items-center gap-7 text-description">
                 <Checkbox
                   label="Remember Me"
                   {...register("rememberMe")}
-                  className="text-sm w-[12px]"
+                  className="text-[16px] w-[12px] text-description"
                 />
+                Remember Me
                 {/* Removed extra 'Remember me' text since checkbox label handles it */}
               </div>
-              <Link href="/forgot-password" className="text-sm text-danger">
+              <Link href="/forgot-password" className="text-[16px] text-danger">
                 Forgot Password?
               </Link>
             </div>
@@ -123,8 +123,7 @@ export const SigninForm = () => {
           <div className="flex flex-col gap-[10px] w-full">
             <Button
               type="submit"
-              className="w-full max-w-none bg-primary text-white border-none"
-            >
+              className="w-full h-[48px] max-w-none bg-primary text-white border-none text-[20px] capitalize font-semibold rounded-[10px]">
               Login
             </Button>
 
@@ -138,14 +137,14 @@ export const SigninForm = () => {
             <div className="text-center">
               <div className="flex items-center gap-2">
                 <hr className="flex-grow border-t border-gray-300" />
-                <p className="text-body-sm text-[#787486]">Or Login with</p>
+                <p className="text-[16px] text-[#787486]">Or Login with</p>
                 <hr className="flex-grow border-t border-gray-300" />
               </div>
             </div>
           </div>
         </Form>
 
-        <div className="flex justify-center">
+        <div className="flex justify-center -mt-10">
           <GoogleLogin />
         </div>
       </div>
