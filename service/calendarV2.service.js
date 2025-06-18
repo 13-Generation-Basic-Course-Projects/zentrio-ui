@@ -133,11 +133,11 @@ export const createNoteInCalendarService = async ({
 // service\calendarV2.service.js
 
 export const getAllNoteInCalendarService = async ({ taskId, token }) => {
-  console.log("Service - Received taskId (should be string):", taskId);
+  // console.log("Service - Received taskId (should be string):", taskId);
 
   try {
     const url = calendarV2RouteGroup.getAllNoteInCalendar(taskId);
-    console.log("Service - Fetching URL (final):", url);
+    // console.log("Service - Fetching URL (final):", url);
 
     const res = await fetch(url, {
       method: "GET",
@@ -152,7 +152,7 @@ export const getAllNoteInCalendarService = async ({ taskId, token }) => {
 
     
     if (res.status === 404) {
-      console.log("Service - No notes found for taskId:", taskId);
+      // console.log("Service - No notes found for taskId:", taskId);
      
       return { data: [], message: "No notes found" };
     }
@@ -165,7 +165,7 @@ export const getAllNoteInCalendarService = async ({ taskId, token }) => {
     }
 
     const data = await res.json();
-    console.log("Service - getAllNoteInCalendar (successful data):", data);
+    // console.log("Service - getAllNoteInCalendar (successful data):", data);
     return data;
   } catch (error) {
     // Handle network errors and other exceptions
@@ -186,7 +186,7 @@ export const getAllNoteInCalendarService = async ({ taskId, token }) => {
 export const deleteNoteInCalendarService = async ({calendarId, taskId, token }) => {
   try {
     const url = calendarV2RouteGroup.deleteNoteInCalendar(calendarId, taskId);
-    console.log("Service - Fetching URL (final):", url);
+    // console.log("Service - Fetching URL (final):", url);
 
     const res = await fetch(url, {
       method: "DELETE",
@@ -196,10 +196,10 @@ export const deleteNoteInCalendarService = async ({calendarId, taskId, token }) 
       },
     });
     const data = await res.json();
-    console.log("Service - deleteNoteInCalendar (successful data):", data);
+    // console.log("Service - deleteNoteInCalendar (successful data):", data);
     return data;
   } catch (error) {
-    console.error("Service - Error deleteNoteInCalendar :", error.message);
+    // console.error("Service - Error deleteNoteInCalendar :", error.message);
     throw error;
   }
 };
@@ -217,7 +217,7 @@ export const updateNoteInCalendarService = async ({
 }) => {
   try {
     const url = calendarV2RouteGroup.updateNoteInCalendar(calendarId);
-    console.log("Service - Fetching URL (final):", url);
+    // console.log("Service - Fetching URL (final):", url);
 
     const res = await fetch(url, {
       method: "PUT",
@@ -233,7 +233,7 @@ export const updateNoteInCalendarService = async ({
       }),
     });
     const data = await res.json();
-    console.log("Service - updateNoteInCalendar (successful data):", data);
+    // console.log("Service - updateNoteInCalendar (successful data):", data);
     return data;
   } catch (error) {
     console.error("Service - Error updateNoteInCalendar :", error.message);

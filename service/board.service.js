@@ -29,7 +29,7 @@ export const getTaskByBoardIdAndGanttBarIdService = async ({
     const data = await res.json();
     //console.log("📥 Backend responded with:", data);
 
-    return data; // just return the data, don’t redirect here
+    return data;
   } catch (error) {
     console.error("bug", error.message);
     throw error;
@@ -53,7 +53,7 @@ export const getCheckListByTaskIdService = async ({ taskId, token }) => {
     const data = await res.json();
     console.log("📥 Backend responded with:", data);
 
-    return data; // just return the data, don’t redirect here
+    return data;
   } catch (error) {
     console.error("bug", error.message);
     throw error;
@@ -77,7 +77,7 @@ export const getMemberByBoardIdService = async ({ boardId, token }) => {
     const data = await res.json();
     //console.log("📥 Backend responded with:", data);
 
-    return data; // just return the data, don’t redirect here
+    return data;
   } catch (error) {
     console.error("bug", error.message);
     throw error;
@@ -169,7 +169,7 @@ export const getAllGanttBarByGanttChartIDService = async ({
     const data = await res.json();
     console.log("📥 Backend responded with:", data);
 
-    return data; // just return the data, don’t redirect here
+    return data;
   } catch (error) {
     console.error("bug", error.message);
     throw error;
@@ -371,7 +371,7 @@ export const getBoardByBoardIdService = async ({ boardId, token }) => {
     const data = await res.json();
     // console.log("📥 Backend responded with board:", data);
 
-    return data; // just return the data, don’t redirect here
+    return data;
   } catch (error) {
     console.error("bug", error.message);
     throw error;
@@ -475,7 +475,7 @@ export const getTaskByBoardIdService = async ({ boardId, token }) => {
     const data = await res.json();
     //console.log("📥 Backend responded with boardtask:", data);
 
-    return data; // just return the data, don’t redirect here
+    return data;
   } catch (error) {
     console.error("bug", error.message);
     throw error;
@@ -499,7 +499,7 @@ export const deleteTaskService = async (taskId, boardId, ganttbarId, token) => {
     const data = await res.json();
     // console.log("📥 Backend responded with delete:", data);
 
-    return data; // just return the data, don’t redirect here
+    return data;
   } catch (error) {
     console.error("bug", error.message);
     throw error;
@@ -636,9 +636,9 @@ export const chageStatusCheckListService = async (checklistId, token, type) => {
       },
     });
     const data = await res.json();
-    console.log("📥 Backend responded with change status:", data);
+    console.log("📥 Backend responded with change status checklist:", data);
 
-    return data; // just return the data, don’t redirect here
+    return data;
   } catch (error) {
     console.error("bug", error.message);
     throw error;
@@ -663,7 +663,7 @@ export const changeStatusTaskService = async (taskId, token, type) => {
     const data = await res.json();
     console.log("📥 Backend responded with change status:", data);
 
-    return data; // just return the data, don’t redirect here
+    return data;
   } catch (error) {
     console.error("bug", error.message);
     throw error;
@@ -676,7 +676,7 @@ export const changeStatusTaskService = async (taskId, token, type) => {
 export const changeStageToUnderReviewService = async (taskId, token, stage) => {
   try {
     //console.log("from service ", token);
-    const url = boardRouteGroup.changeStagToUnderReview(taskId, "UNDER_REVIEW");
+    const url = boardRouteGroup.changeStagToUnderReview(taskId, stage);
     console.log(url);
     const res = await fetch(url, {
       method: "PUT",
@@ -688,7 +688,103 @@ export const changeStageToUnderReviewService = async (taskId, token, stage) => {
     const data = await res.json();
     console.log("📥 Backend responded with change status:", data);
 
-    return data; // just return the data, don’t redirect here
+    return data;
+  } catch (error) {
+    console.error("bug", error.message);
+    throw error;
+  }
+};
+
+export const FeedBackService = async (taskId, token, comment) => {
+  try {
+    console.log("from service of ", taskId);
+    console.log("from service of ", comment.comment);
+    const url = boardRouteGroup.changeStageToInProgress();
+    console.log(url);
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+        body: JSON.stringify({
+          comment: comment,
+          taskId: taskId,
+        }),
+      },
+    });
+    const data = await res.json();
+    console.log("📥 Backend responded with change feedback:", data);
+
+    return data;
+  } catch (error) {
+    console.error("bug", error.message);
+    throw error;
+  }
+};
+/*
+ * delete member
+ */
+export const deleteMemberService = async (boardId, userId, token) => {
+  try {
+    console.log("from service ", boardId, userId);
+    const url = boardRouteGroup.deleteMemberByBoardId(boardId, userId);
+    const res = await fetch(url, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await res.json();
+    console.log("📥 Backend responded with delete user:", data);
+
+    return data;
+  } catch (error) {
+    console.error("bug", error.message);
+    throw error;
+  }
+};
+
+/*
+ * checkEmail
+ */
+export const checkEmailService = async (email) => {
+  try {
+    console.log("from service ", boardId, userId);
+    const url = boardRouteGroup.deleteMemberByBoardId(boardId, userId);
+    const res = await fetch(url, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await res.json();
+    console.log("📥 Backend responded with delete user:", data);
+
+    return data;
+  } catch (error) {
+    console.error("bug", error.message);
+    throw error;
+  }
+};
+/*
+ * checkEmail
+ */
+export const checkEmailForClearService = async (email) => {
+  try {
+    console.log("from service ", email);
+    const url = boardRouteGroup.checkEmailForClearToken(email);
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = await res.json();
+    console.log("📥 Backend responded with check user:", data);
+
+    return data;
   } catch (error) {
     console.error("bug", error.message);
     throw error;

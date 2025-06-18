@@ -746,7 +746,7 @@ export default function KanbanBoard({
                                       (tasks.find(
                                         (task) => task.taskId === card.id
                                       )?.status || "OVERDUE") === "COMPLETED"
-                                        ? "bg-green-500 text-white"
+                                        ? "text-white"
                                         : ""
                                     }`}
                                     title={
@@ -762,10 +762,12 @@ export default function KanbanBoard({
                                     )?.status || "OVERDUE") === "COMPLETED" ? (
                                       <svg
                                         viewBox="0 0 24 24"
-                                        fill="#0FFF50"
                                         width={24}
                                         height={24}
-                                        className="hover:fill-green-500 transition-colors"
+                                        fill="#6B7280"
+                                        stroke="#6B7280"
+                                        strokeWidth="1"
+                                        aria-hidden="true"
                                       >
                                         <path
                                           fillRule="evenodd"
@@ -781,7 +783,6 @@ export default function KanbanBoard({
                                         fill="#10B981"
                                         stroke="#10B981"
                                         strokeWidth="1"
-                                        className="hover:scale-110 hover:fill-green-400 transition-transform transition-colors duration-200"
                                         aria-hidden="true"
                                       >
                                         <path
@@ -804,6 +805,11 @@ export default function KanbanBoard({
                                   }
                                   ganttbarData={ganttbar}
                                   tasks={tasks}
+                                  stage={
+                                    tasks.find(
+                                      (task) => task.taskId === card.id
+                                    )?.stage || "TO_DO"
+                                  }
                                 />
                               </div>
                             </div>
@@ -894,6 +900,7 @@ export default function KanbanBoard({
                                         onDragEnd={handleDragEnd}
                                       >
                                         <ModalDetailChecklist
+                                          boardId={boardId} //new add
                                           taskId={card.id}
                                           id={checklist?.checklistId}
                                           taskTitle={card.title}
@@ -963,6 +970,11 @@ export default function KanbanBoard({
                                       taskid={card.id}
                                       startedAt={card.startedAt}
                                       finishedAt={card.finishedAt}
+                                      stage={
+                                        tasks.find(
+                                          (task) => task.taskId === card.id
+                                        )?.stage || "TO_DO"
+                                      }
                                     />
                                   </div>
                                   <div className="col-span-4 p-2">

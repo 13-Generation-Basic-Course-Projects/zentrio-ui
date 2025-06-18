@@ -51,4 +51,10 @@ export const boardRouteGroup = {
 
   changeStagToUnderReview: (taskId, stage) =>
     `${apiConfig.baseUrl}/tasks/${taskId}/move?stage=${stage}`,
+  changeStageToInProgress: () => `${apiConfig.baseUrl}/feedback/tasks`,
+
+  deleteMemberByBoardId: (boardId, userId) =>
+    `${apiConfig.baseUrl}/boards/${boardId}/users/${userId}`,
+  checkEmailForClearToken: (email) =>
+    `${apiConfig.baseUrl}/users/email/${email}`,
 };
