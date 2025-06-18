@@ -17,13 +17,13 @@ export const metadata = {
 //sss
 
 export default async function OverviewLayout({ children }) {
-  const session = await auth();
-  if (session?.accessToken) {
-    const res = await loginThirdPartyService({
-      accessToken: session.accessToken,
-    });
-    console.log("Backend response in /test:", res);
-  }
+  // const session = await auth();
+  // if (session?.accessToken) {
+  //   const res = await loginThirdPartyService({
+  //     accessToken: session.accessToken,
+  //   });
+  //   console.log("Backend response in /test:", res);
+  // }
 
   return (
     <div className="h-screen flex flex-col overflow-y-hidden ">
