@@ -11,12 +11,18 @@ import ModalNotification from "../modal/noti/ModalNotification";
 import AllDocument from "./AllDocument";
 import ModalCreateDocu from "../modal/docu/ModalCreateDocu";
 
-export default function DocumentLayout({ user }) {
-  const [activeTab, setActiveTab] = useState(null);
+export default function DocumentLayout({
+  user,
+  documents,
+  publicDocuments,
+  tokenFromGoogle,
+  boardId,
+}) {
+  const [activeTab, setActiveTab] = useState("personal");
 
   const tabItems = [
     {
-      key: "kanban",
+      key: "personal",
       title: "Personal",
       content: <PrivateDocument />,
       icon: (isActive) => (
@@ -35,7 +41,7 @@ export default function DocumentLayout({ user }) {
       ),
     },
     {
-      key: "calendar",
+      key: "public",
       title: "Public",
       content: <PublicDocument />,
       icon: (isActive) => (
@@ -56,11 +62,7 @@ export default function DocumentLayout({ user }) {
   ];
 
   const handleTabClick = (tabKey) => {
-    if (activeTab === tabKey) {
-      setActiveTab(null);
-    } else {
-      setActiveTab(tabKey);
-    }
+    setActiveTab(tabKey);
   };
 
   return (
@@ -82,7 +84,9 @@ export default function DocumentLayout({ user }) {
                         : "text-gray-600 hover:text-gray-900"
                     }`}
                   >
-                    <span className="mr-2">{tab.icon(activeTab === tab.key)}</span>
+                    <span className="mr-2">
+                      {tab.icon(activeTab === tab.key)}
+                    </span>
                     {tab.title}
                   </li>
                 ))}
@@ -97,7 +101,10 @@ export default function DocumentLayout({ user }) {
                   <span className="sr-only">Toggle dashboard menu</span>
                   {user?.image != null ? (
                     <img
-                      src={user?.image || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzyLc8LMQIrviNz6u2EP3TtPRZZt3OlhrhHA&s"}
+                      src={
+                        user?.image ||
+                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzyLc8LMQIrviNz6u2EP3TtPRZZt3OlhrhHA&s"
+                      }
                       alt={user?.name || "User"}
                       className="size-10 object-cover hover:scale-105 transition-transform duration-200"
                     />
@@ -118,9 +125,28 @@ export default function DocumentLayout({ user }) {
       {/* Tab Content Area */}
       <main className="p-4 min-h-screen">
         <div className="mx-auto">
-          {activeTab === "kanban" && <PrivateDocument modal={[<ModalCreateDocu />]} />}
-          {activeTab === "calendar" && <PublicDocument modal={[<ModalCreateDocu />]} />}
-          {activeTab === null && <AllDocument />}
+          {activeTab === "personal" && (
+            <PrivateDocument
+              documents={documents}
+              modal={[<ModalCreateDocu boardId={boardId} />]}
+              tokenFromGoogle={tokenFromGoogle}
+              isHidden={false}
+            />
+          )}
+          {activeTab === "public" && (
+            <PublicDocument
+              publicDocuments={publicDocuments}
+              modal={[]}
+              isHidden={true}
+            />
+          )}
+          {/* {activeTab === null && (
+            <AllDocument
+              documents={documents}
+              tokenFromGoogle={tokenFromGoogle}
+              boardId={boardId}
+            />
+          )} */}
         </div>
       </main>
     </>

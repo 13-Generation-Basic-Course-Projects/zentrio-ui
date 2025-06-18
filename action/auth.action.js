@@ -1,12 +1,13 @@
 "use server";
 import { signIn, signOut } from "@/auth";
 import {
+  forgotPasswordService,
   loginZentrioCredentailService,
-  loginZentrioService,
   otpZentrioService,
   registerZentrioService,
+  resetPasswordService,
 } from "../service/auth.service";
-import { useAuthStore } from "../lib/store";
+
 import { redirect } from "next/navigation";
 
 //google login
@@ -71,4 +72,43 @@ export async function zentrioRegisterAction(data) {
 export async function zentrioOtpAction(data) {
   const { email, otp } = data; // Destructure both email and otp from data
   await otpZentrioService({ email, otp }); // Pass email and otp to the service
+}
+
+// google login
+export async function zentrioLoginWithGoogle(idToken, provider) {
+  try {
+    const token = await loginWithGoogleZentrioService({ idToken, provider });
+    // token is the JWT from backend on success
+    if (token) {
+      // You can save token to localStorage, context, or use it directly
+      redirect("/workspace");
+    } else {
+      console.error("Login failed: No token received");
+      return null;
+    }
+  } catch (error) {
+    console.error("Login with Google failed:", error.message);
+    return null;
+  }
+}
+
+/* 
+* forgot password
+*/
+
+export async function zentrioForgotPasswordAction({ email, password, confirmPassword }) {
+  try { 
+    const result = await forgotPasswordService({
+      email,
+      password,
+      confirmPassword,
+    });
+    if (!result.ok) {
+      throw new error("failed to reset the new password");
+    }
+    return { success: true };
+  } catch (error) {
+    console.error("can't reset the new password ");
+    return { success: false };
+  }
 }

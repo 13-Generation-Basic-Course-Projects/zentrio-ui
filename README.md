@@ -1,3 +1,7 @@
+this branch am using the local backend sen
+
+http://localhost:8080/swagger-ui/index.html#/
+
 the .env
 ```
 NEXT_PUBLIC_BASE_URL=http://localhost:3000

@@ -13,20 +13,46 @@ import iconMember from "@/assets/memberSideBar.png";
 import Image from "next/image";
 import { icon } from "../icon/allicon";
 import ModalOptionDocument from "../modal/docu/ModalOptionDocument";
+import Link from "next/link";
 
-export default function CardFolder({ title, status, date }) {
+export default function CardFolder({
+  title,
+  status,
+  date,
+  link,
+  documentId,
+  folderId,
+  isFolder,
+  tokenFromGoogle,
+  onClick,
+  isHidden,
+}) {
   return (
-    <Card className="rounded-xl text-blue-400 cursor-pointer hover:bg-blue-50 transition sm:w-[160px] md:w-full h-[160px] shadow-sm ">
+    <Card
+      onClick={() => onClick?.(folderId)}
+      className="rounded-xl text-blue-400 cursor-pointer hover:bg-blue-50 transition sm:w-[160px] md:w-full h-[160px] shadow-sm "
+    >
       {/* Header */}
       <CardHeader className="pb-0 pt-2 px-4 flex justify-end">
         <div className="hover:text-black text-gray-600">
-          <ModalOptionDocument />
+          {isHidden == true ? (
+            ""
+          ) : (
+            <ModalOptionDocument
+              documentId={documentId}
+              accessToken={tokenFromGoogle}
+            />
+          )}
         </div>
       </CardHeader>
       <CardBody>
-        <ModalFolderList title={title} />
+        <ModalFolderList
+          folderId={folderId}
+          accessToken={tokenFromGoogle}
+          link={link}
+          title={title}
+        />
       </CardBody>
-
       {/* Body */}
 
       {/* Footer */}
@@ -81,26 +107,43 @@ function FileIcon({ type, size = 45 }) {
   );
 }
 
-export function CardFile({ title, status, date, type }) {
+export function CardFile({
+  title,
+  status,
+  date,
+  type,
+  link,
+  documentId,
+  tokenFromGoogle,
+  isHidden,
+}) {
   return (
     <Card className="rounded-xl text-blue-400 cursor-pointer hover:bg-blue-50 transition sm:w-[160px] md:w-full h-[160px] shadow-sm">
       {/* Header */}
-      <CardHeader className="pb-0 pt-2 px-4 flex justify-end">
+      <CardHeader className={`pb-0 pt-2 px-4 flex justify-end  ${isHidden ? `pt-6`: ``}`}>
         <div className="hover:text-black text-gray-600">
-          <ModalOptionDocument />
+          {isHidden == true ? (
+            ""
+          ) : (
+            <ModalOptionDocument
+              documentId={documentId}
+              accessToken={tokenFromGoogle}
+            />
+          )}
         </div>
       </CardHeader>
 
       {/* Body */}
-      <CardBody className="overflow-visible py-2 flex flex-col items-center space-y-2">
-        <FileIcon type={type} />
-        <div className="flex items-center w-full">
-          <p className="truncate text-base font-semibold text-title/80 text-center px-2">
-            {title} .{type}
-          </p>
-        </div>
-      </CardBody>
-
+      <Link href={link || ""} target="_blank">
+        <CardBody className="overflow-visible py-2 flex flex-col items-center space-y-2">
+          <FileIcon type={type} />
+          <div className="flex items-center justify-center w-full">
+            <p className="truncate text-base font-semibold text-title/80 text-center px-2">
+              {title}.{type}
+            </p>
+          </div>
+        </CardBody>
+      </Link>
       {/* Footer */}
       <CardFooter className="pt-2 px-4">
         <div className="flex justify-between items-center w-full text-[10px] text-title/50">

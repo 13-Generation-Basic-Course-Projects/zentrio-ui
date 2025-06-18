@@ -9,14 +9,15 @@ import {
 } from "../icon/everyicon";
 import ProgressBar from "./ProgressBar";
 
-function ProfileDetailsCard() {
+function ProfileDetailsCard({ currentUserProfile }) {
+  const userDetails = currentUserProfile?.payload?.user || {};
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 overflow-y-auto">
       <div className="p-4 rounded-xl shadow bg-white">
         <h3 className="text-md font-semibold mb-2">
           Overall Board Completeness
         </h3>
-        <ProgressBar/>
+        <ProgressBar />
       </div>
 
       <div className="rounded-xl shadow bg-white">
@@ -30,21 +31,28 @@ function ProfileDetailsCard() {
               Personal Details
             </p>
             <p className="flex items-center gap-2">
-              <IconUser strokeWidth={1.5} size={4} /> Skan
+              <IconUser strokeWidth={1.5} size={4} />{" "}
+              {userDetails.username || "N/A"}
             </p>
             <p className="flex items-center gap-2">
-              <Shield className="w-4 h-4" /> Male
+              <Shield className="w-4 h-4" />{" "}
+              {userDetails.gender === "OTHER"
+                ? "Other"
+                : userDetails.gender || "N/A"}
             </p>
             <p className="flex items-center gap-2">
-              <IconJob strokeWidth={1.5} size={4} /> Front-end Developer
+              <IconJob strokeWidth={1.5} size={4} />{" "}
+              {userDetails?.position || "N/A"}
             </p>
             <p className="flex items-center gap-2">
               <IconMap strokeWidth={1.5} size={4} color={"currentColor"} />{" "}
-              Phnom Penh
+              {userDetails?.location || "N/A"}
             </p>
             <p className="flex items-center gap-2">
               <IconDate strokeWidth={1.5} size={4} color={"currentColor"} />{" "}
-              Started 07-May-2025
+              {userDetails.createdAt
+                ? userDetails.createdAt.split("T")[0]
+                : "N/A"}
             </p>
           </div>
 
@@ -53,11 +61,16 @@ function ProfileDetailsCard() {
             <p className="font-semibold text-description mb-2">Contacts</p>
             <p className="flex items-center gap-2">
               <IconPhone strokeWidth={1.5} size={4} color={"currentColor"} />{" "}
-              +855 123 456 789
+              +855{" "}
+              {userDetails?.contact
+                ? userDetails?.contact?.startsWith("0")
+                  ? userDetails.contact.slice(1)
+                  : userDetails.contact
+                : "N/A"}
             </p>
             <p className="flex items-center gap-2">
               <IconMail strokeWidth={1.5} size={4} color={"currentColor"} />{" "}
-              zentrio@gmail.com
+              {userDetails.email || "N/A"}
             </p>
           </div>
         </div>

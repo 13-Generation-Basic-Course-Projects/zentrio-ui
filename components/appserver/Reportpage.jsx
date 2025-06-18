@@ -25,14 +25,14 @@ export default function Reportpage({ modal, report }) {
 
   report?.payload?.groupedTasks.forEach((item) => {
     if (item.stage == "TO DO") {
-        task.todo = task.todo + item.count;
-      } else if (item.stage == "IN_PROGRESS") {
-        task.progress = task.progress + item.count;
-      } else if (item.stage == "UNDER_REVIEW") {
-        task.review = task.review + item.count;
-      } else {
-        task.done = task.done + item.count;
-      }
+      task.todo = task.todo + item.count;
+    } else if (item.stage == "IN_PROGRESS") {
+      task.progress = task.progress + item.count;
+    } else if (item.stage == "UNDER_REVIEW") {
+      task.review = task.review + item.count;
+    } else {
+      task.done = task.done + item.count;
+    }
   });
 
   console.log(report?.payload)

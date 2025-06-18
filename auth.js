@@ -53,6 +53,7 @@ export const {
       },
     }),
   ],
+  secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     async jwt(token) {
       // if (account) {
@@ -65,11 +66,11 @@ export const {
     },
     async session(props) {
       const { token } = props;
-      console.log("this is  the token", token);
       return token;
     },
   },
   strategy: "jwt",
+  secret: process.env.NEXTAUTH_SECRET,
   pages: {
     signIn: "/login",
   },

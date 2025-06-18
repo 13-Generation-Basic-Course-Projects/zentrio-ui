@@ -1,25 +1,19 @@
 "use client";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 
 import {
   Modal,
   ModalContent,
   ModalHeader,
   ModalBody,
-  ModalFooter,
   Button,
   useDisclosure,
   Card,
-  CardHeader,
-  CardBody,
-  Dropdown,
-  DropdownTrigger,
-  DropdownMenu,
-  DropdownItem,
-  Input,
-  Textarea,
 } from "@heroui/react";
-import Image from "next/image";
+import { createBoardSchema, createWorkspaceSchema } from "@/lib/schemas/workspaceSchema";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { createBoardAction } from "@/action/workspace.action";
 
 const svgIconInput = encodeURIComponent(`
   <svg width="20" height="22" viewBox="0 0 20 22" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -36,29 +30,28 @@ const svgIconType = encodeURIComponent(`
 
     `);
 
-export default function ModalCreateBoard() {
+export default function ModalCreateBoard({ Workspaceid }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-  // function for select
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [showColors, setShowColors] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const [selectedFileName, setSelectedFileName] = useState(null);
 
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(createBoardSchema),
+  });
+  
   const toggleColors = () => {
     setShowColors((prev) => !prev);
   };
-
-  const handleColorSelect = (color) => {
-    setSelectedOption((prev) => (prev === color ? null : color));
-    setShowColors(false);
-    setDropdownOpen(false);
-  };
-  
-  const handleUploadSelect = () => {
-    alert("Upload images clicked");
-    setDropdownOpen(false);
-  };
-
 
   const colorOptions = [
     { key: "red", label: "Red", className: "bg-board-red" },
@@ -68,11 +61,89 @@ export default function ModalCreateBoard() {
     { key: "orange", label: "Orange", className: "bg-board-orange" },
     { key: "violet", label: "Violet", className: "bg-board-violet" },
   ];
+
+  /*  update when file is selected */
+  const handlePreview = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setSelectedOption(null); // Unset color if image is selected
+      setPreviewUrl(URL.createObjectURL(file));
+    }
+  };
+
+  const fileInputRef = useRef(null);
+  const handleColorSelect = (colorKey) => {
+    setPreviewUrl(null);
+    setSelectedFileName(null); // Clear file name if color selected
+    setSelectedOption((prev) => (prev === colorKey ? null : colorKey));
+    setShowColors(false);
+    setDropdownOpen(false);
+    setValue("cover", colorKey); 
+  };
+
+  const handleFileSelect = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setSelectedOption(null); // Clear color if file selected
+      setSelectedFileName(file.name);
+      setPreviewUrl(URL.createObjectURL(file));
+      setValue("cover", file); 
+    }
+  };
+
+  /* This function will be called when the form is submitted */
+  const onSubmit = async (data) => {
+    const file = fileInputRef.current?.files?.[0];
+
+    if (file) {
+      console.log("📂 Selected file from ref:", file.name);
+
+      const formData = new FormData();
+      formData.append("title", data.title);
+      formData.append("description", data.description || "");
+      formData.append("cover", file.name);
+      formData.append("workspaceId", Workspaceid);
+
+      try {
+        await createBoardAction(formData);
+        console.log("✅ Board created with image!");
+      } catch (error) {
+        console.error("❌ Error creating board with image:", error);
+      }
+    } else if (selectedOption) {
+      try {
+        await createBoardAction({
+          title: data.title,
+          description: data.description || "",
+          cover: selectedOption,
+          workspaceId: Workspaceid,
+        });
+
+        console.log("✅ Board created with color!");
+      } catch (error) {
+        console.error("❌ Error creating board with color:", error);
+      }
+    } else {
+      console.warn("⚠️ No image or color selected.");
+    }
+
+    reset();
+    setPreviewUrl(null);
+    setSelectedOption(null);
+    setDropdownOpen(false);
+    setShowColors(false);
+    onOpenChange(false);
+  };
+  const onValid = (data) => {
+    console.log("Creating board with:", data);
+    onClose();
+  };
+  
   return (
     <>
       <Button
         onPress={onOpen}
-        className="bg-transparent h-[340px]  "
+        className="bg-transparent h-[340px] !p-0 "
         fullWidth="true "
       >
         <Card className="bg-transparent w-full h-full  shadow-none border-none">
@@ -99,14 +170,14 @@ export default function ModalCreateBoard() {
               </ModalHeader>
               <div className="border-1 mt-2 mb-4 border-bgColor "></div>
               <ModalBody>
-                <form action="">
+                <form onSubmit={handleSubmit(onSubmit)}>
                   <div className="grid grid-cols-4 gap-2 text-title">
                     {/* title */}
                     <div className="col-span-3 flex flex-col items-start justify-center space-y-2">
                       <label className="text-label-sm">Board Title</label>
 
                       <input
-                        type="text"
+                        {...register("title")}
                         placeholder="Type here"
                         style={{
                           backgroundImage: `url("data:image/svg+xml;utf8,${svgIconInput}")`,
@@ -115,10 +186,20 @@ export default function ModalCreateBoard() {
                           paddingLeft: "36px",
                           height: "40px",
                           borderRadius: "9999px",
-                          border: "1px solid #ccc",
                         }}
-                        className="text-title/50 text-caption bg-transparent w-full"
+                        className={`
+                          w-full bg-transparent text-title/50 text-caption
+                          border border-gray-300
+                          focus:outline-none focus:border-primary
+                          transition-all duration-150 ease-in-out
+                        `}
                       />
+
+                      {errors.title && (
+                        <span className="text-red-500 text-caption-tiny">
+                          *{errors.title.message}*
+                        </span>
+                      )}
                     </div>
                     {/* select option  */}
                     <div className="flex flex-col items-start justify-center space-y-2">
@@ -140,13 +221,23 @@ export default function ModalCreateBoard() {
                             />
                           )}
 
-                          <p className="text-caption-tiny text-title/50">
-                            {selectedOption
-                              ? colorOptions.find(
-                                  (color) => color.key === selectedOption
-                                )?.label || selectedOption
-                              : "Select Cover"}
-                          </p>
+                          <div className="flex flex-col items-start">
+                            <p className="text-caption-tiny text-title/50">
+                              {selectedOption
+                                ? colorOptions.find(
+                                    (color) => color.key === selectedOption
+                                  )?.label || selectedOption
+                                : selectedFileName || "Select Cover"}
+                            </p>
+
+                            {/* {previewUrl && (
+                              <img
+                                src={previewUrl}
+                                className="mt-1 w-32 h-20 object-cover rounded-lg"
+                                alt="Cover Preview"
+                              />
+                            )} */}
+                          </div>
 
                           <svg
                             width="14"
@@ -171,9 +262,9 @@ export default function ModalCreateBoard() {
                             <input
                               type="file"
                               id="fileUpload"
-                              multiple
                               accept="image/*"
-                              onChange={handleUploadSelect}
+                              ref={fileInputRef}
+                              onChange={handleFileSelect}
                               className="hidden"
                             />
 
@@ -252,33 +343,52 @@ export default function ModalCreateBoard() {
                           </div>
                         )}
                       </div>
+                      {errors.cover && (
+                        <span className="text-red-500 text-caption-tiny">
+                          *{errors.cover.message}*
+                        </span>
+                      )}
                     </div>
-
                     {/* description */}
                     <div className="col-span-4 space-y-2">
                       <label className="text-label-sm">Board Description</label>
                       <textarea
+                        {...register("description")}
                         placeholder="Type here"
                         style={{
                           backgroundImage: `url("data:image/svg+xml;utf8,${svgIconType}")`,
                           backgroundRepeat: "no-repeat",
-                          backgroundPosition: "10px calc(1em + 0px)", // push icon down to baseline
+                          backgroundPosition: "10px calc(1em + 0px)",
                           paddingLeft: "36px",
                           paddingTop: "10px",
                           height: "80px",
                           borderRadius: "12px",
-                          border: "1px solid #ccc",
                           lineHeight: "1.4",
                           resize: "none",
                         }}
-                        className="text-title/50 text-caption bg-transparent w-full"
+                        className={`
+                          w-full bg-transparent text-title/50 text-caption
+                          border border-gray-300
+                          focus:outline-none focus:border-primary
+                          transition-all duration-150 ease-in-out
+                        `}
                       />
+                      {errors.description && (
+                        <span className="text-red-500 text-caption-tiny">
+                          *{errors.description.message}*
+                        </span>
+                      )}
                     </div>
                   </div>
                   <div className="mx-[-1rem] border border-bgColor mt-5 mb-2"></div>
 
                   <div className="flex justify-end items-center pt-2 py-4">
-                    <Button color="primary" radius="full" onPress={onClose}>
+                    <Button
+                      color="primary"
+                      radius="full"
+                      onPress={handleSubmit(onValid)} // <-- validate before doing anything
+                      type="submit"
+                    >
                       Create Board
                     </Button>
                   </div>

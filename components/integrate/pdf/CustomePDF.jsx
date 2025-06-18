@@ -1,4 +1,4 @@
-import Laptop from "@/assets/intergrating/image/computerImg.png";
+import Laptop from "@/assets/intergrating/laptop.png";
 import Image from "next/image";
 import GanttChart from "@/assets/calendarlanding.svg";
 import { getReportAction } from "@/action/report.action";
@@ -33,19 +33,19 @@ export const PDFPreviewer = ({ report }) => {
     done: 0,
   }
 
-  report?.payload?.allTasks.forEach((item) => {
+  report?.payload?.groupedTasks.forEach((item) => {
     if (item.task == "TO DO") {
       ++task.todo;
-      checkList.todo = checkList.todo + item?.checklist.length;
+      checkList.todo = checkList.todo + item?.tasks?.allChecklists?.length || 0;
     } else if (item.task == "IN_PROGRESS") {
       ++task.progress;
-      checkList.progress = checkList.progress + item?.checklist.length;
+      checkList.progress = checkList.progress + item?.tasks?.allChecklists?.length || 0;
     } else if (item.task == "UNDER_REVIEW") {
       ++task.review;
-      checkList.review = checkList.review + item?.checklist.length;
+      checkList.review = checkList.review + item?.tasks?.allChecklists?.length || 0;
     } else {
       ++task.done;
-      checkList.done = checkList.done + item?.checklist.length;
+      checkList.done = checkList.done + item?.tasks?.allChecklists?.length || 0;
     }
   });
 

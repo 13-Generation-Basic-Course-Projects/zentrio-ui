@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { authRoute } from "../routes/authRoute";
+import { apiConfig } from "@/constant/baseurl";
 /*
  * register
  */
@@ -21,7 +22,7 @@ export const registerZentrioService = async ({
       },
       body: JSON.stringify({
         username,
-        gender: "RATHER_NOT_TO_SAY",
+        gender: "OTHER",
         email,
         password,
         profileImage,
@@ -46,6 +47,7 @@ export const loginZentrioService = async (email, password) => {
   try {
     const userData = await loginZentrioService(email, password);
     // login success: redirect without sensitive info
+    console.log("userdata ", u);
   } catch (err) {
     // show error message to user
     console.log(err);
@@ -65,6 +67,7 @@ export const loginZentrioCredentailService = async ({ email, password }) => {
       body: JSON.stringify({ email, password }),
     });
     const data = await res.json();
+    console.log("datahhh ", data);
     console.log("📥 Backend responded with:", data);
     console.log("BBBBB", data?.payload?.token);
 
@@ -78,9 +81,8 @@ export const loginZentrioCredentailService = async ({ email, password }) => {
 /*
  * otp
  */
-export const otpZentrioService = async ({ email, otp }) => {
+export const otpZentrioService = async ({ email, otp, type }) => {
   console.log("email:", email, "otp:", otp);
-  const type = " VERIFY";
   try {
     // Get endpoint URL from your route builder
     const url = `${authRoute.otpUserRoute()}?email=${email}&otp=${otp}&type=${type}`;
@@ -95,9 +97,9 @@ export const otpZentrioService = async ({ email, otp }) => {
     });
     const data = await res.json();
     console.log("📥 Backend responded with:", data);
-    if (res?.status === 200 || res?.success) {
-      redirect(`/login`);
-    }
+    // if (res?.status === 200 || res?.success) {
+    //   redirect(`/login`);
+    // }
     return data;
   } catch (error) {
     console.error(" Failed to create board:", error.message);
@@ -132,5 +134,97 @@ export const resendOtpZentrioService = async ({ email, otp }) => {
   } catch (err) {
     console.error("OTP request error:", err);
     return { success: false, error: "Failed to verify OTP. Please try again." };
+  }
+};
+
+/*
+ * login google
+ */
+export const loginGoogleService = async ({ accesToken }) => {
+  try {
+    const url = `${apiConfig.baseUrl}/auths/login/third-party`;
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ idToken: accesToken }),
+    });
+    const data = await res.json();
+    console.log("📥 Backend responded with:", data);
+    console.log("BBBBB", data?.payload?.token);
+
+    return data; // just return the data, don’t redirect here
+  } catch (error) {
+    console.error("Login service error:", error.message);
+    throw error;
+  }
+};
+
+/*
+ * forgot password
+ */
+
+// export const forgotPasswordService = async ({ email }) => {
+//   try {
+//     await resendOtpZentrioService({ email, type: "RESET" });
+//   } catch (error) {
+//     console.error("Can't reset password", error);
+//     throw error;
+//   }
+// };
+
+export const resendOtpForgotPasswordService = async (data) => {
+  const { email } = data;
+  const type = "RESET";
+
+  try {
+    const res = await fetch(
+      `${authRoute.resendOtpUserRoute()}?email=${encodeURIComponent(
+        email
+      )}&type=${type}`,
+      {
+        method: "POST",
+      }
+    );
+
+    if (!res.ok) {
+      throw new Error("Failed to send OTP");
+    }
+    const data = await res.json();
+    console.log("OTP sent response:", data);
+    return data;
+  } catch (error) {
+    console.error("Can't reset password", error);
+    throw error;
+  }
+};
+
+
+/*
+ * reset password service
+ */
+export const forgotPasswordService = async ({ email, password, confirmPassword }) => {
+  try {
+    const res = await fetch(authRoute.resetPasswordRoute(email), {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email,
+        password,
+        confirmPassword,
+      }),
+    });
+
+    if (!res.ok) {
+      throw new Error("Failed to send OTP");
+    }
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error("Can't reset password", error);
+    throw error;
   }
 };

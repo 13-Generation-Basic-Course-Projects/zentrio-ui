@@ -249,8 +249,10 @@ a.fc-event {
   background-color: transparent !important;
 }
 
-/* ChartWeek */
-/* #chart{
-  border-radius: 100px 0px;
-  border: 1px solid black;
-} */
+/* gant chat  */
+.fixed-slot-height {
+  height: 80px !important; /* Match slotMinHeight */
+  min-height: 80px !important;
+  max-height: 80px !important;
+  overflow: hidden; /* Prevent content from expanding the slot */
+}

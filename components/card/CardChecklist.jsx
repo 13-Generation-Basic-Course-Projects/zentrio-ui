@@ -1,9 +1,14 @@
-//-> Card for in Checklist
 import { Card, CardHeader, CardBody, CardFooter } from "@heroui/card";
-import { IconDelete, StackedProfiles } from "../icon/everyicon";
+import {
+  IconDelete,
+  StackedProfileChecklist,
+  StackedProfiles,
+} from "../icon/everyicon";
 import CalendarIcon from "@/assets/calendarSidebar.png";
 import CommentIcon from "@/assets/commentIcon.svg";
 import Image from "next/image";
+import { chageStatusCheckListWhenHaveTeamLeaderAction } from "@/action/board.action";
+
 export const CardCheckList = ({
   title,
   startDate,
@@ -11,15 +16,25 @@ export const CardCheckList = ({
   image,
   label,
   comment,
+  member,
+  id,
+  finishedAt,
+  commentCount,
+  leaderId,
 }) => {
+  const finishedAtRaw = finishedAt;
+  const FormattedFinishDate = finishedAtRaw.split("T")[0];
+
   return (
     <div>
       <Card className="py-4 rounded-xl cursor-pointer hover:bg-blue-50 transition shadow-sm w-full">
         {/* Header */}
         <CardHeader className="pb-0 pt-2 px-4 flex items-start flex-col">
-          <p className="text-h6 font-semibold text-title truncate">{title}</p>
+          <div className="flex w-full justify-between items-center">
+            <p className="text-h6 font-semibold text-title truncate">{title}</p>
+          </div>
           <p className="text-caption font-semibold text-title/50 truncate mt-2">
-            Start Date : {startDate}
+            Start Date: {startDate}
           </p>
           <div className="text-body-sm mt-4 flex flex-row items-center space-x-2">
             <div>
@@ -38,7 +53,7 @@ export const CardCheckList = ({
               {status === "Completed" && (
                 <svg
                   viewBox="0 0 15 15"
-                  fill="none"
+                  fill="#00f576" // Green for Completed
                   xmlns="http://www.w3.org/2000/svg"
                   width={20}
                   height={20}
@@ -101,12 +116,11 @@ export const CardCheckList = ({
         )}
 
         {/* Footer */}
-
         <div className="flex justify-between items-center p-4">
-          <div className="bg-primary/50 p-2 text-label rounded-small text-blueActive ">
+          <div className="bg-primary/50 p-2 text-label rounded-small text-blueActive">
             {label}
           </div>
-          <StackedProfiles />
+          <StackedProfileChecklist member={member} hidden={1} />
         </div>
 
         <div className="border-b m-4 items-center border-2"></div>
@@ -119,15 +133,15 @@ export const CardCheckList = ({
                 className="w-[16px] h-[16px]"
                 alt="Comments icon"
               />
-              <p className="text-body-sm font-semibold">{comment}</p>
+              <p className="text-body-sm font-semibold">{commentCount}</p>
             </div>
             <div className="flex flex-row justify-center items-center space-x-2">
               <Image
                 src={CalendarIcon}
                 className="w-[16px] h-[16px]"
-                alt="Comments icon"
+                alt="Calendar icon"
               />
-              <p className="text-body-sm/50 ">Date</p>
+              <p className="text-body-sm/50">{FormattedFinishDate}</p>
             </div>
           </div>
         </CardFooter>

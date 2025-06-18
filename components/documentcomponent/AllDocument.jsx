@@ -4,7 +4,6 @@ import BredCrum from "../bredcrum/MyBredcrum";
 import MyDatePicker from "../date/DatePicker";
 import CardFolder, { CardFile } from "../card/CardDoc";
 import ModalCreateDocu from "../modal/docu/ModalCreateDocu";
-import { documentData } from "@/data/docu/documentData";
 import { Input } from "@heroui/input";
 import {
   Autocomplete,
@@ -14,12 +13,14 @@ import {
 } from "@heroui/react";
 import { useState } from "react";
 
-export default function AllDocument() {
-  const data = documentData;
-  console.log("Received data in all:", data);
+export default function AllDocument({ boardId, documents, tokenFromGoogle }) {
+  // const data = documentData;
+  const data = documents || [];
+  console.log("document in all document", documents);
 
   const [sortOrder, setSortOrder] = useState("asc");
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedDate, setSelectedDate] = useState(null);
   const sortOptions = [
     { key: "asc", label: "A-Z" },
     { key: "desc", label: "Z-A" },
@@ -35,12 +36,34 @@ export default function AllDocument() {
     return textValue.startsWith(inputValue);
   };
 
-  // Sort and filter documentData
-  const filteredData = [...documentData]
-    .filter((item) => {
-      // Filter by title or other fields if you want
-      return myFilter(item.title, searchTerm);
-    })
+  const transformedData = data.payload.map((doc) => {
+    const docType = doc.documentType || "";
+    const isGoogleDoc = docType.includes("google-apps.document");
+    const isGoogleSheet = docType.includes("google-apps.spreadsheet");
+    const isGoogleSlide = docType.includes("google-apps.presentation");
+    const isFolder =
+      !docType || (!isGoogleDoc && !isGoogleSheet && !isGoogleSlide);
+
+    return {
+      title: doc.description || "Untitled",
+      status: doc._public ? "public" : "personal",
+      id: doc.documentId,
+      folderId: doc.folderId,
+      date: new Date(doc.creationDate).toISOString().split("T")[0],
+      type: isGoogleDoc
+        ? "docx"
+        : isGoogleSheet
+        ? "xlsx"
+        : isGoogleSlide
+        ? "pptx"
+        : "folder",
+      category: isFolder ? "Folder" : "File",
+      link: doc.drive_url || null,
+    };
+  });
+
+  const filteredData = transformedData
+    .filter((doc) => doc.title.toLowerCase().includes(searchTerm.toLowerCase()))
     .sort((a, b) => {
       if (sortOrder === "asc") {
         return a.title.localeCompare(b.title);
@@ -57,14 +80,19 @@ export default function AllDocument() {
             board={"Hikko Design"}
             feature={"Document"}
             header={"Document"}
-            modal={[<ModalCreateDocu />]}
+            modal={[
+              <ModalCreateDocu
+                tokenFromGoogle={tokenFromGoogle}
+                boardId={boardId}
+              />,
+            ]}
           />
         </div>
 
         <div className="flex items-center justify-between pb-5">
           <div className="flex flex-row items-end gap-4 mb-4">
             <div className="flex-1">
-              <MyDatePicker className="h-12" />
+              <MyDatePicker className="h-12"/>
             </div>
 
             <div className="w-40">
@@ -91,6 +119,7 @@ export default function AllDocument() {
           <div className="w-[340px] rounded-2xl flex justify-center items-center  text-white ">
             <Input
               isClearable
+              onValueChange={(val) => setSearchTerm(val)}
               classNames={{
                 label: "text-black/50 dark:text-white/90",
                 input: [
@@ -111,11 +140,12 @@ export default function AllDocument() {
 
         <div className="w-full  max-h-screen overflow-y-auto scrollbar-hidden  pb-[300px] px-5  pt-10 ">
           {/* Folders Section */}
-          <div className="mb-8 ">
+          <div className="mb-8">
             <div className="flex items-center justify-between mb-4">
               <p className="text-h5 font-semibold">Folders</p>
               <span className="text-sm text-gray-500">
-                {data?.filter((el) => el.category === "Folder").length || 0}{" "}
+                {filteredData?.filter((el) => el.category === "Folder")
+                  .length || 0}{" "}
                 folders
               </span>
             </div>
@@ -129,6 +159,11 @@ export default function AllDocument() {
                       title={el.title || "Untitled Folder"}
                       status={el.status || "personal"}
                       date={el.date || "2025-05-25"}
+                      link={el?.link}
+                      documentId={el?.id}
+                      folderId={el?.folderId}
+                      isFolder={el?.category === "Folder"}
+                      tokenFromGoogle={tokenFromGoogle}
                     />
                   ))
               ) : (
@@ -136,26 +171,31 @@ export default function AllDocument() {
               )}
             </div>
           </div>
-
           {/* Files Section */}
           <div>
             <div className="flex items-center justify-between mb-4">
               <p className="text-h5 font-semibold">Files</p>
               <span className="text-sm text-gray-500">
-                {data?.filter((el) => el.category === "File").length || 0} files
+                {filteredData?.filter((el) => el.category === "File").length ||
+                  0}{" "}
+                files
               </span>
             </div>
-            <div className="grid grid-cols-6 gap-3  pb-4 pr-2 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
+            <div className="grid grid-cols-6 gap-3 pb-4 pr-2 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
               {filteredData && filteredData.length > 0 ? (
                 filteredData
                   .filter((el) => el.category === "File")
                   .map((el, i) => (
                     <CardFile
                       key={`file-${i}`}
-                      title={el.title || "Untitled File"}
-                      status={el.status || "personal"}
-                      date={el.date || "2025-05-25"}
+                      title={el.title}
+                      status={el.status}
+                      date={el.date}
                       type={el.type}
+                      link={el.link}
+                      documentId={el?.id}
+                      folderId={el?.folderId}
+                      tokenFromGoogle={tokenFromGoogle}
                     />
                   ))
               ) : (

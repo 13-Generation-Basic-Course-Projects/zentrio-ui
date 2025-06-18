@@ -49,9 +49,7 @@ export const SignUpForm = () => {
       setEmail(result.email);
     }
     setEmail(result.email);
-    if (success) {
-      redirect;
-    }
+
     return { success: true, email: result.email }; // Return to indicate success
   };
 

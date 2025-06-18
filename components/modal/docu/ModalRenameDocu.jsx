@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Modal,
   ModalContent,
@@ -8,9 +8,29 @@ import {
   Button,
   useDisclosure,
 } from "@heroui/react";
+import { updateDocumentNameByIdAction } from "@/action/document.action";
 
-export default function ModalRenameFileOrFolder() {
+/* rename foc in document */
+export function ModalRenameFileOrFolder({
+  documentId,
+  tokenFromGoogle,
+}) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [newName, setNewName] = useState("");
+
+  const handleSave = async (close) => {
+    try {
+      const updatedDoc = await updateDocumentNameByIdAction(
+        documentId,
+        newName,
+        tokenFromGoogle
+      );
+      close();
+    } catch (error) {
+      console.error("Rename failed:", error);
+    }
+  };
+
   return (
     <>
       <Button
@@ -29,7 +49,7 @@ export default function ModalRenameFileOrFolder() {
             <>
               <ModalHeader className="flex flex-col gap-1">Rename</ModalHeader>
               <ModalBody>
-                <form>
+                <form onSubmit={(e) => e.preventDefault()}>
                   <div className="flex flex-col gap-3">
                     <label className="text-sm font-medium text-title">
                       Title <span className="text-progress-red">*</span>
@@ -38,6 +58,11 @@ export default function ModalRenameFileOrFolder() {
                       className="border text-caption border-gray-300 rounded-small px-3 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
                       placeholder="Input your title"
                       required
+                      value={newName}
+                      onChange={(e) => {
+                        setNewName(e.target.value);
+                        console.log("Input changed to:", e.target.value);
+                      }}
                     />
                   </div>
 
@@ -47,7 +72,6 @@ export default function ModalRenameFileOrFolder() {
                       radius="full"
                       onPress={() => {
                         close();
-                        
                       }}
                     >
                       Cancel
@@ -55,11 +79,7 @@ export default function ModalRenameFileOrFolder() {
                     <Button
                       color="primary"
                       radius="full"
-                      onPress={() => {
-                        // handle save logic here
-                        close();
-                        
-                      }}
+                      onPress={() => handleSave(close)}
                     >
                       Save
                     </Button>
