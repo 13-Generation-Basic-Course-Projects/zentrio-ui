@@ -787,3 +787,29 @@ export const getOtherWorkSpaceJoinedService = async (token) => {
     throw error;
   }
 };
+
+/* new
+ * get member by board id
+ */
+
+export const getMemberByBoardIdService = async ({boardId, token}) => {
+  const url = workspaceRouteGroup.getMemeberByBoardId(boardId);
+  try {
+    console.log(url);
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+
+    });
+    const data = await res.json();
+    console.log("📥 Backend responded with member by board id:", data);
+
+    return data; // just return the data, don’t redirect here
+  } catch (error) {
+    console.error("bug", error.message);
+    throw error;
+  }
+};

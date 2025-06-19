@@ -21,6 +21,8 @@ import Link from "next/link";
 import { ChevronUp } from "lucide-react";
 import ModalDelete from "../modal/ModalDelete";
 import { preventImage } from "@/constant/preventimage";
+import { formatRole } from "@/lib/roleFormart";
+import { deleteMemberAction } from "@/action/board.action";
 
 export default function Memberpage({
   boardMember,
@@ -317,6 +319,7 @@ export default function Memberpage({
                     <div className="flex items-center gap-2">
                       <span className="text-gray-700 group-hover:text-blue-700 transition-colors duration-200">
                         {member.roles[0]}
+                        {/* {formatRole(role)} */}
                       </span>
                       {member.roles.length > 1 && (
                         <Popover
@@ -413,12 +416,10 @@ export default function Memberpage({
               } from the board?`}
               messageUndo="No, Cancel"
               messageDo="Yes, Delete"
-              action={async () => {
-                // Assuming token is available here or passed as prop (otherwise remove)
-                await deleteMemberAction(boardId, userId);
-                console.log("Delete confirmed!");
-                closeModal();
-              }}
+              action={deleteMemberAction}
+              boardId={boardId}
+              userId={selectedUserId}
+              onDeleteSuccess={deleteMemberById}
             />
           )}
         </div>

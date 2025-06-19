@@ -6,12 +6,14 @@ import {
   assignUserRoleLeadeerToBoardService,
   chageStatusCheckListService,
   changeStageToUnderReviewService,
-  changeStatusTaskService,
+  checkEmailForClearService,
   createCheckListService,
   createGanttChartByBoardIdService,
   createTaskByBoardIdAndGanttChartIdService,
+  deleteMemberService,
   deleteTaskService,
   editCommmentService,
+  FeedBackService,
   getAllGanttBarByGanttChartIDService,
   getBoardByBoardIdService,
   getCheckListByTaskIdService,
@@ -22,11 +24,11 @@ import {
   inviteMemberToBoardService,
   moveTaskOrderService,
   postCommentByCheckListIdService,
+  updateTaskByIdService,
 } from "@/service/board.service";
 import { revalidatePath } from "next/cache";
 import { sendNotificationToUserIdAction } from "./notification.action";
 import { sendNotificationToUserIdService } from "@/service/notification.service";
-import { teamLeader } from "@/data/board/teamleader";
 
 console.log("test actions must create folders");
 /*
@@ -552,24 +554,45 @@ export const assignMemberToChecklistAction = async (
   // console.log("📥 Backend responded with delete action", result);
   return result;
 };
-
 /*
- * assignMemberToChecklistAction leader
+ * achange stage task
  */
-export const chageStatusCheckListWhenHaveTeamLeaderAction = async (
-  checklistId,
-  leaderId
-) => {
-  if (leaderId != null) {
-    const userToken = await Token();
-    const token = userToken?.Credential;
-    const result = await chageStatusCheckListService(checklistId, token);
-    revalidatePath("/checklist");
-    // console.log("📥 Backend responded with delete action", result);
-    return result;
-  }
+export const changeStageToUnderReviewAction = async (taskId, stage) => {
+  const userToken = await Token();
+  const token = userToken?.Credential;
+  const result = await changeStageToUnderReviewService(taskId, token, stage);
+  revalidatePath("/checklist");
+  //console.log("status action", taskId, stage);
+  return result;
 };
-
+/*
+ * achange stage task
+ */
+export const FeedBackAction = async (taskId, comment) => {
+  const userToken = await Token();
+  const token = userToken?.Credential;
+  const result = await FeedBackService(taskId, token, comment);
+  revalidatePath("/checklist");
+  //console.log("status action", taskId, stage);
+  return result;
+};
+/*
+ * delete member action
+ */
+export const deleteMemberAction = async (boardId, userId) => {
+  const userToken = await Token();
+  const token = userToken?.Credential;
+  const result = await deleteMemberService(boardId, userId, token);
+  revalidatePath("/member");
+  return result;
+};
+/*
+ * checkEmail
+ */
+export const checkEmailForClearAction = async (email) => {
+  const result = await checkEmailForClearService(email);
+  return result;
+};
 /*
  * achange status
  */
@@ -583,25 +606,31 @@ export const chageStatusCheckListAction = async (checklistId, type) => {
 };
 
 /*
- * achange status task
+ * new add
+ * Update task by Id with board id and gantt bar id
  */
-export const changeStatusTaskAction = async (taskId, type) => {
+export const updateTaskByIdAction = async (
+  taskId,
+  title,
+  description,
+  startedAt,
+  finishedAt,
+  boardId,
+  ganttBarId
+) => {
+  console.log("👉 taskId in updateTask action: ", taskId);
   const userToken = await Token();
   const token = userToken?.Credential;
-  const result = await changeStatusTaskService(taskId, token, type);
-  revalidatePath("/checklist");
-  console.log("status action", taskId, type);
-  return result;
-};
-
-/*
- * achange stage task
- */
-export const changeStageToUnderReviewAction = async (taskId, stage) => {
-  const userToken = await Token();
-  const token = userToken?.Credential;
-  const result = await changeStageToUnderReviewService(taskId, token, stage);
-  revalidatePath("/checklist");
-  //console.log("status action", taskId, stage);
+  const result = await updateTaskByIdService({
+    taskId,
+    title,
+    description,
+    startedAt,
+    finishedAt,
+    boardId,
+    ganttBarId,
+    token,
+  });
+  revalidatePath("/member");
   return result;
 };
