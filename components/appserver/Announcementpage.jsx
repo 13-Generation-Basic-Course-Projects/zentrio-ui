@@ -5,6 +5,8 @@ import CardAllMembers from "../announcementCompo/CardAllMembers";
 import CardFilterComponent from "../announcementCompo/CardFilterComponent";
 import { preventImage } from "@/constant/preventimage";
 import ClockWeather from "../announcementCompo/ClockWheather";
+import Image from "next/image";
+import nothing from "@/assets/nothingbox.png"
 
 export default function Announcementpage({
   boardId,
@@ -45,13 +47,20 @@ export default function Announcementpage({
 
         <div className="w-full h-full">
           <div>
-            <CartPostAnnouncement
-              Announcements={Announcements}
-              currentUserProfile={currentUserProfile}
-              boardId={boardId}
-              preventUserImage={preventUserImage}
-              boardMember={boardMember}
-            />
+            {Announcements?.payload && Announcements?.payload.length > 0 ? (
+              <CartPostAnnouncement
+                Announcements={Announcements}
+                currentUserProfile={currentUserProfile}
+                boardId={boardId}
+                preventUserImage={preventUserImage}
+                boardMember={boardMember}
+              />
+            ) : (
+              <div className="flex flex-col items-center justify-center h-[70vh] text-gray-500">
+                <Image src={nothing} alt="No Announcements" width={100} height={100} />
+                <p className="text-xl text-primary font-medium mt-4">Nothing has announcement</p>
+              </div>
+            )}
           </div>
         </div>
       </div>
