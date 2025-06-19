@@ -9,7 +9,9 @@ export const Token = async () => {
     Credential: session?.backendToken
       ? session.backendToken
       : session?.token?.user?.payload?.token,
-    GoogleDocumentToken: session?.user?.idToken ? session?.user?.idToken : null,
+    GoogleDocumentToken: session?.googleAuth?.accessToken
+      ? session?.googleAuth?.accessToken
+      : null,
   };
 
   return UserToken;
