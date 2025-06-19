@@ -104,7 +104,7 @@ export default async function WorkspaceSpcific({ params }) {
     } else {
       console.log("No boards found in workspace.");
     }
-
+   
    
   return (
     <>
