@@ -169,6 +169,8 @@ const useDescriptionEditor = (taskId, checklistId, isOpen) => {
   const [checklistData, setChecklistData] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [isEditingTitle, setIsEditingTitle] = useState(false);
+  const [newTitle, setNewTitle] = useState("");
   
 
   useEffect(() => {
@@ -201,42 +203,60 @@ const useDescriptionEditor = (taskId, checklistId, isOpen) => {
     setIsEditing(true);
     setError(null);
   };
+  const handleEditTitleClick = () => {
+    setIsEditingTitle(true);
+    setError(null);
+  };
   const handleCancel = () => {
     console.log("Cancel clicked - reverting changes");
     setIsEditing(false);
     setNewDescription(checklistData?.description || "");
+    setNewTitle(checklistData?.title || "");
     setError(null);
   };
 
-  const handleDescriptionChange = (e) => {
+  const handleDescriptionChange = useCallback((e) => {
     setNewDescription(e.target.value);
-  };
+    setError(null);
+  }, []);
 
-  const handleSave = async () => {
-    if (!newDescription.trim()) {
+  const handleTitleChange = useCallback((e) => {
+    setNewTitle(e.target.value);
+    setError(null);
+  }, []);
+
+  const handleSave = useCallback(async () => {
+    if (!newTitle?.trim()) {
+      setError("Title cannot be empty.");
+      toast.error("Title cannot be empty", {
+        position: "top-right",
+        autoClose: 4000,
+      });
+      return false;
+    }
+    if (!newDescription?.trim()) {
+      setError("Description cannot be empty.");
       toast.error("Description cannot be empty", {
         position: "top-right",
         autoClose: 4000,
       });
-      return;
+      return false;
     }
-
     if (!checklistData) {
+      setError("Checklist data not loaded.");
       toast.error("Checklist data not loaded", {
         position: "top-right",
         autoClose: 4000,
       });
-      return;
+      return false;
     }
 
     setIsLoading(true);
     setError(null);
-    
 
     try {
-      // Prepare data for updateTaskByIdAction
-      const title = checklistData.title;
-      const description = newDescription || "";
+      const title = newTitle.trim();
+      const description = newDescription.trim();
       const startedAt = checklistData.startedAt.endsWith("Z")
         ? checklistData.startedAt
         : `${checklistData.startedAt}Z`;
@@ -244,18 +264,6 @@ const useDescriptionEditor = (taskId, checklistId, isOpen) => {
         ? checklistData.finishedAt
         : `${checklistData.finishedAt}Z`;
       const taskIdToUpdate = checklistData.taskId;
-
-      console.log(
-        "Sending update payload to updateCheckListByIdAndTaskIdAction:",
-        {
-          checklistId,
-          title,
-          description,
-          startedAt,
-          finishedAt,
-          taskId: taskIdToUpdate,
-        }
-      );
 
       const result = await updateCheckListByIdAndTaskIdAction(
         checklistId,
@@ -266,7 +274,8 @@ const useDescriptionEditor = (taskId, checklistId, isOpen) => {
         taskIdToUpdate
       );
 
-      toast.success("Checklist description updated successfully✅", {
+      setChecklistData({ ...checklistData, title, description });
+      toast.success("Checklist updated successfully ✅", {
         position: "top-right",
         autoClose: 2500,
       });
@@ -274,48 +283,55 @@ const useDescriptionEditor = (taskId, checklistId, isOpen) => {
       setIsEditing(false);
       return result;
     } catch (err) {
-      console.error("Update error:", err, "Response:", err.message);
-      setError(err.message);
-      toast.error(`Failed to update task: ${err.message || "Bad Request"}`, {
-        position: "top-right",
-        autoClose: 4000,
-      });
-      throw err;
+      setError(err.message || "Bad Request");
+      toast.error(
+        `Failed to update checklist: ${err.message || "Bad Request"}`,
+        {
+          position: "top-right",
+          autoClose: 4000,
+        }
+      );
+      return false;
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [checklistData, newTitle, newDescription, checklistId]);
 
-  const handleSubmit = (e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSave();
-    } else if (e.key === "Escape") {
-      setIsEditing(false);
-      setNewDescription(checklistData?.description || "");
-      setError(null);
-    }
-  };
+  const handleSubmit = useCallback(
+    (e) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        handleSave();
+      } else if (e.key === "Escape") {
+        e.preventDefault();
+        handleCancel();
+      }
+    },
+    [handleSave, handleCancel]
+  );
 
   const handleBlur = () => {
-    // Optionally auto-save on blur, or just cancel editing
-    // For now, let's just cancel editing and revert changes
     setIsEditing(false);
     setNewDescription(checklistData?.description || "");
+    setNewTitle(checklistData?.title || "");
     setError(null);
   };
 
   return {
     taskData: checklistData, // Renamed to match component usage
     newDescription,
+    newTitle,
     isEditing,
+    isEditingTitle,
     loading: isLoading, // Renamed to match component usage
     error,
     handleEditClick,
+    handleEditTitleClick,
     handleDescriptionChange,
     handleSubmit,
     handleBlur,
     handleSave,
+    handleTitleChange,
     handleCancel,
   };
 };
@@ -349,14 +365,18 @@ const ModalDetailChecklist = ({
   const {
     taskData,
     newDescription,
+    newTitle,
     isEditing,
+    isEditingTitle,
     loading,
     error,
     handleEditClick,
+    handleEditTitleClick,
     handleDescriptionChange,
     handleSubmit,
     handleBlur,
     handleSave,
+    handleTitleChange,
     handleCancel,
   } = useDescriptionEditor(taskId, checklistId, isOpen);
 
@@ -592,10 +612,38 @@ const ModalDetailChecklist = ({
                   />
                 </div>
                 <div className="flex flex-col">
+                  {/* Title checklist section */}
                   <div className="flex flex-wrap justify-between items-center">
-                    <p className="text-title text-h6 underline font-normal break-words max-w-full">
-                      {title || "Checklist Title"}
-                    </p>
+                    {isEditingTitle ? (
+                      <div className="space-y-3">
+                        <input
+                          type="text"
+                          value={newTitle}
+                          onChange={handleTitleChange}
+                          onKeyDown={handleSubmit}
+                          className="w-full p-3 text-lg font-normal text-gray-900 underline bg-gray-50 border-none focus:border-none focus:ring-0 rounded-md"
+                          placeholder="Enter checklist title..."
+                          autoFocus
+                          disabled={loading}
+                          aria-label="Checklist title input"
+                        />
+                      </div>
+                    ) : (
+                      <div
+                        onClick={handleEditTitleClick}
+                        className="cursor-pointer hover:bg-gray-50 p-2 rounded-md"
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={(e) =>
+                          e.key === "Enter" && handleEditTitleClick()
+                        }
+                        aria-label="Edit checklist title"
+                      >
+                        <p className="text-lg text-gray-900 underline font-normal break-words max-w-full">
+                          {title || "Checklist Title"}
+                        </p>
+                      </div>
+                    )}
 
                     <PopupAction
                       title={<Trash />}
@@ -610,6 +658,8 @@ const ModalDetailChecklist = ({
                       taskId={taskId}
                     />
                   </div>
+                  {/* ------------------------ */}
+
                   <div className="flex flex-wrap justify-between items-center mt-5">
                     <StackedProfileChecklist
                       member={member}
@@ -628,6 +678,7 @@ const ModalDetailChecklist = ({
                     </div>
                   </div>
                 </div>
+
                 {/* Description Section */}
                 <div className="flex flex-col space-y-3">
                   <div className="flex flex-wrap justify-between items-center">
@@ -776,6 +827,7 @@ const ModalDetailChecklist = ({
                     </>
                   )}
                 </div>
+                {/* --------------------------- */}
 
                 {state.selectedAttachment && (
                   <div className="mt-4 p-3 border rounded">
