@@ -11,7 +11,9 @@ import {
   fetchDocumentsByBoardService,
   fetchPublicDocumentsService,
   getAllDocumentByBoardIdSerivce,
+  getAttactmentService,
   getFileByFolderIdService,
+  postAttactmentService,
   publicDocumentByIdService,
   updateDocumentNameByIdService,
   uploadDocumentToFolderServie,
@@ -143,6 +145,7 @@ export const createDocumentByUploadAction = async (
     token,
     tokenFromGoogle
   );
+  revalidatePath("/document");
   return document;
 };
 
@@ -166,22 +169,35 @@ export const uploadDocumentToFolderAction = async (
   return document;
 };
 
-export const createDriveFileAction = async (
+export const createDriveFileAction = async ({
   name,
   folderId,
   fileType,
-  tokenFromGoogle
-) => {
-  const userToken = await Token();
-  const token = userToken.Credential;
-  const document = await createDriveFileService(
-    name,
-    folderId,
-    fileType,
-    token,
-    tokenFromGoogle
-  );
-  return document;
+  token: tokenFromGoogle,
+}) => {
+  try {
+    const userToken = await Token();
+    const token = userToken.Credential;
+
+    const data = {
+      accessToken: tokenFromGoogle,
+      name: name,
+      folderId: folderId,
+      fileType: fileType,
+    };
+
+    const document = await createDriveFileService(
+      name,
+      folderId,
+      fileType,
+      token,
+      tokenFromGoogle
+    );
+    return document;
+  } catch (error) {
+    console.error("Error creting file: ", error);
+    throw error;
+  }
 };
 
 // Delete
@@ -238,8 +254,6 @@ export const publicDocumentByIdAction = async (documentId, tokenFromGoogle) => {
 export const getAllDocumentByBoardIdAction = async (boardId) => {
   const userToken = await Token();
   const token = userToken.Credential;
-  revalidatePath("/document");
-
   const getAllDocument = await getAllDocumentByBoardIdSerivce({
     boardId,
     token,
@@ -247,3 +261,31 @@ export const getAllDocumentByBoardIdAction = async (boardId) => {
   console.log("Get all doucemnt action : ", getAllDocument);
   return getAllDocument;
 };
+/* new add
+ * post attactment
+ */
+export const postAttactmentAction = async (checklistId, details) => {
+  const userToken = await Token();
+  const token = userToken.Credential;
+  const result = await postAttactmentService({
+    checklistId,
+    details,
+    token,
+  });
+  console.log("Get all attachments action : ", result);
+  return result;
+};
+/* new add
+ * get attactment
+ */
+export const getAttactmentAction = async (checklistId) => {
+  const userToken = await Token();
+  const token = userToken.Credential;
+  const result = await getAttactmentService({
+    checklistId,
+    token,
+  });
+  console.log("Get all attachments action : ", result);
+  return result;
+};
+///

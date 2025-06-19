@@ -7,11 +7,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@heroui/react";
 import Link from "next/link";
 import { otpSchema } from "../../../../lib/schemas/otpSchema";
-import { zentrioOtpAction } from "../../../../action/auth.action";
 import { useAuthStore } from "../../../../lib/store";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
-import { otpZentrioService } from "@/service/auth.service";
+import { otpZentrioService, resendOtpZentrioService } from "@/service/auth.service";
+import { CountdownTimer } from "./CountdownTimer";
+import { zentrioOtpAction, zentrioResendOtpAction } from "@/action/auth.action";
 
 // Zod schema for OTP
 
@@ -27,6 +28,9 @@ export const OtpForm = () => {
   const [otpValues, setOtpValues] = useState(Array(6).fill(""));
 
   const registeredEmail = useAuthStore((state) => state.registeredEmail);
+
+  const [resendLoading, setResendLoading] = useState(false);
+
 
   const {
     register,
@@ -61,12 +65,15 @@ export const OtpForm = () => {
   };
 
   const onSubmit = async (data) => {
+
     try {
-      const result = await otpZentrioService({
+      const result = await zentrioOtpAction({
         email,
         otp: data.otp,
         type,
       });
+
+      console.log("result after submit", result);
 
       if (result?.success) {
         if (type === "RESET") {
@@ -80,25 +87,35 @@ export const OtpForm = () => {
     }
   };
 
+
+  const handleResend = async () => {
+    console.log("Resend button  click !!!");
+    try {
+      await zentrioResendOtpAction({ email, type });
+      console.log("OTP resent");
+    } catch (error) {
+      console.error("Resend OTP failed", error);
+    }
+  };
+  
+
+
   return (
     <div className="w-full h-screen flex items-center justify-center">
       <div className="w-[1728px] h-[1117px] flex items-center justify-center">
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="w-[640px] h-fit bg-verify-gradient px-[55px] py-[40px] rounded-[20px] shadow-lg flex flex-col gap-[50px] shadow-sm"
-        >
+          className="w-[640px] h-fit bg-verify-gradient px-[55px] py-[40px] rounded-[20px] shadow-lg flex flex-col gap-[50px] shadow-sm">
           <div>
             <Link
               href="/login"
-              className="flex items-center gap-3 pb-[5%] text-body-sm text-primary"
-            >
+              className="flex items-center gap-3 pb-[5%] text-body-sm text-primary">
               <svg
                 width="18"
                 height="12"
                 viewBox="0 0 18 12"
                 fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
+                xmlns="http://www.w3.org/2000/svg">
                 <path
                   d="M2 6L17 5.99976"
                   stroke="#59BAD5"
@@ -153,16 +170,16 @@ export const OtpForm = () => {
           <div className="w-full flex flex-col gap-[10px]">
             <Button
               type="submit"
-              className="w-full bg-primary text-white max-w-none"
+              className="w-full bg-primary text-white max-w-none rounded-[10px] h-[48px] text-[20px] capitalize font-semibold"
             >
               Submit
             </Button>
           </div>
 
           <div className="w-full">
-            <p className="font-bold text-description text-center">
-              <span className="text-body">Send Code again : 03:12</span>
-            </p>
+            <div className="text-center text-semibold">
+              <CountdownTimer duration={180} onResend={handleResend} />
+            </div>
           </div>
         </form>
       </div>

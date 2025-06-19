@@ -95,7 +95,11 @@ export const fetchDocumentsByBoardService = async (boardId, token) => {
 /*
  * Get files by folder ID
  */
-export const getFileByFolderIdService = async ({ accessToken, folderId, token }) => {
+export const getFileByFolderIdService = async ({
+  accessToken,
+  folderId,
+  token,
+}) => {
   try {
     const res = await fetch(
       documentRouteGroup.getFileByFolderId(folderId, accessToken),
@@ -128,11 +132,7 @@ export const getFileByFolderIdService = async ({ accessToken, folderId, token })
 /*
  * Download document by document ID
  */
-export const downloadDocumentByDocumentIdService = async ({
-  documentId,
-  accessToken,
-  token,
-}) => {
+export const downloadDocumentByDocumentIdService = async ({ documentId, accessToken, token}) => {
   try {
     const url = documentRouteGroup.downloadDocumentByDocumentId(
       documentId,
@@ -180,11 +180,7 @@ export const downloadDocumentByDocumentIdService = async ({
 /*
  * Download all files as zip
  */
-export const downloadAllFilesAsZipService = async ({
-  documentId,
-  accessToken,
-  token,
-}) => {
+export const downloadAllFilesAsZipService = async ({ documentId, accessToken, token }) => {
   try {
     const url = documentRouteGroup.downloadAllFilesAsZip(
       documentId,
@@ -227,11 +223,7 @@ export const downloadAllFilesAsZipService = async ({
 /*
  * Delete document by document ID
  */
-export const deleteDocumentService = async ({
-  accessToken,
-  documentId,
-  token,
-}) => {
+export const deleteDocumentService = async ({ accessToken, documentId, token }) => {
   try {
     const res = await fetch(
       documentRouteGroup.deleteDocumentById(documentId, accessToken),
@@ -294,12 +286,7 @@ export const createDocumentService = async (data, token) => {
 /*
  * Create new document by file upload
  */
-export const createDocumentByUploadService = async (
-  formData,
-  boardId,
-  token,
-  tokenFromGoogle
-) => {
+export const createDocumentByUploadService = async (formData, boardId, token, tokenFromGoogle) => {
   try {
     const res = await fetch(
       documentRouteGroup.uploadDocumentToBoard(boardId, tokenFromGoogle),
@@ -328,13 +315,7 @@ export const createDocumentByUploadService = async (
 /*
  * Create drive file
  */
-export const createDriveFileService = async (
-  name,
-  folderId,
-  fileType,
-  token,
-  tokenFromGoogle
-) => {
+export const createDriveFileService = async ( name, folderId, fileType, token, tokenFromGoogle) => {
   try {
     const url = documentRouteGroup.createDriveFile(
       name,
@@ -366,12 +347,7 @@ export const createDriveFileService = async (
 /*
  * Upload file to folder
  */
-export const uploadDocumentToFolderServie = async (
-  file,
-  folderId,
-  token,
-  tokenFromGoogle
-) => {
+export const uploadDocumentToFolderServie = async (file, folderId, token, tokenFromGoogle) => {
   try {
     const url = documentRouteGroup.uploadDocumentToFolder(
       folderId,
@@ -404,12 +380,7 @@ export const uploadDocumentToFolderServie = async (
 /*
  * Update document name by document ID
  */
-export const updateDocumentNameByIdService = async (
-  documentId,
-  newName,
-  token,
-  tokenFromGoogle
-) => {
+export const updateDocumentNameByIdService = async ( documentId, newName, token, tokenFromGoogle) => {
   try {
     const url = documentRouteGroup.updateDocumentById(
       documentId,
@@ -443,11 +414,7 @@ export const updateDocumentNameByIdService = async (
 /*
  * Public document by document id
  */
-export const publicDocumentByIdService = async (
-  documentId,
-  token,
-  tokenFromGoogle
-) => {
+export const publicDocumentByIdService = async ( documentId, token, tokenFromGoogle) => {
   try {
     const url = documentRouteGroup.makeDocumentPublic(
       documentId,
@@ -479,9 +446,9 @@ export const publicDocumentByIdService = async (
 };
 
 /* new add
-* get all document by board id 
-*/
-export const getAllDocumentByBoardIdSerivce = async({boardId, token}) =>{
+ * get all document by board id
+ */
+export const getAllDocumentByBoardIdSerivce = async ({ boardId, token }) => {
   try {
     const url = documentRouteGroup.getAllDocumentByBoardId(boardId);
 
@@ -505,7 +472,85 @@ export const getAllDocumentByBoardIdSerivce = async({boardId, token}) =>{
     return await res.json();
   } catch (error) {
     console.error("Error in getAllDocumentByBoardIdSerivce: ", error.message);
-   
   }
+};
 
-}
+/* new add
+ * post attactment
+ */
+export const postAttactmentService = async ({
+  checklistId,
+  details,
+  token,
+}) => {
+  try {
+    const url = documentRouteGroup.postAttactment(checklistId);
+
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        Accept: "*/*",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+        body: JSON.stringify({
+          details: details,
+        }),
+      },
+    });
+
+    const result = await res.json();
+
+    return result;
+  } catch (error) {
+    console.error("Error : ", error.message);
+  }
+};
+
+/* new add
+ * post attactment
+ */
+export const getAttactmentService = async ({ checklistId, token }) => {
+  try {
+    const url = documentRouteGroup.getAttactment(checklistId);
+    console.log("Fetching from URL:", url);
+
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        Accept: "*/*",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    console.log("Response status:", res.status);
+    console.log("Response ok:", res.ok);
+
+    // Check if the response is ok (status 200-299)
+    if (!res.ok) {
+      if (res.status === 404) {
+        return {
+          success: false,
+          error: "No attachments found",
+          status: res.status,
+        };
+      } else {
+        return {
+          success: false,
+          error: `HTTP ${res.status}: ${res.statusText}`,
+          status: res.status,
+        };
+      }
+    }
+
+    const result = await res.json();
+    console.log("in serviceee fetch data", result);
+    return result;
+  } catch (error) {
+    console.error("Network error:", error.message);
+    return {
+      success: false,
+      error: `Network error: ${error.message}`,
+    };
+  }
+};

@@ -12,6 +12,7 @@ import {
 import { IconpopupDelete } from "@/components/icon/Iconpopup";
 import { useRouter } from "next/navigation";
 import { deleteDocumentAction } from "@/action/document.action";
+import { deleteFileByFileIdAction } from "@/action/drive.action";
 import { deleteCheckListByTaskIdAction } from "@/action/board.action";
 import { toast } from "react-toastify";
 export default function PopupAction({
@@ -23,6 +24,7 @@ export default function PopupAction({
   massageUndo,
   massageDo,
   documentId,
+  fileId,
   accessToken,
   color,
   swapButton,
@@ -33,13 +35,18 @@ export default function PopupAction({
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-  console.log(accessToken);
   const router = useRouter();
   const handleDelete = async () => {
     try {
-      const result = await deleteCheckListByTaskIdAction(checkListId, taskId); 
+      if (documentId) {
+        await deleteDocumentAction(accessToken, documentId);
+      }
+      if (fileId) {
+        await deleteFileByFileIdAction(fileId, accessToken);
+      }
+      router.refresh();
+      const result = await deleteCheckListByTaskIdAction(checkListId, taskId);
       if (result?.status === "success" || result?.success) {
-        
         toast.success("You have deleted the checklist successfully", {
           position: "top-right",
           duration: 4000,
