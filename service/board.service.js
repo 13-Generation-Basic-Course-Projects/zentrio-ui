@@ -844,3 +844,90 @@ export const updateTaskByIdService = async ({
 
   return response.json();
 };
+
+/*
+ * new add
+ * Delete checklist by specific tasks ID
+ */
+export const deleteCheckListByTaskIdService = async ({
+  checkListId,
+  taskId,
+  token,
+}) => {
+  console.log("Token in delete service task id delete: ", token);
+
+  const url = checklistRouteGroup.deleteCheckListByTaskId(checkListId, taskId);
+
+  const response = await fetch(url, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    throw new Error(
+      error.message || `Failed to delete checklist: ${response.status}`
+    );
+  }
+
+  return response.json(); // Note: DELETE typically doesn't return a body, so this may not be needed
+};
+
+/*
+ * new add
+ * update checklist by specific tasks ID and checklist id
+ */
+export const updateCheckListByIdAndTaskIdService = async ({
+  checklistId,
+  title,
+  description,
+  startedAt,
+  finishedAt,
+  taskId,
+  token,
+}) => {
+  console.log("Token in update checklist service: ", token);
+  console.log(
+    "Request URL: ",
+    checklistRouteGroup.updateCheckListByIdAndTaskId(checklistId)
+  );
+  console.log("Request Body: ", {
+    title,
+    description,
+    startedAt,
+    finishedAt,
+    taskId,
+  });
+
+  const url = checklistRouteGroup.updateCheckListByIdAndTaskId(checklistId);
+
+  const response = await fetch(url, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      title,
+      description,
+      startedAt,
+      finishedAt,
+      taskId,
+    }),
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    console.error("Backend error response: ", error);
+    if (response.status === 401 || response.status === 403) {
+      throw new Error("Authentication required or token is invalid");
+    }
+    throw new Error(
+      error.message || `Failed to update checklist: ${response.status}`
+    );
+  }
+
+  return response.status === 204 ? { success: true } : response.json();
+};
