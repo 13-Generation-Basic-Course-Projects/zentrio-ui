@@ -61,6 +61,7 @@ export default async function WorkspaceSpcific({ params }) {
     console.log("No boards found in workspace.");
   } */
     let allMembers = [];
+
     if (
       Array.isArray(getBoardByWorkspaceId?.payload) &&
       getBoardByWorkspaceId.payload.length > 0
@@ -116,6 +117,7 @@ export default async function WorkspaceSpcific({ params }) {
         getBoardByIdAction={getBoardByIdAction}
         updateFavAction={updateFavBoardByIdAction}
         memberData={allMembers}
+       
       />
       ;
     </>

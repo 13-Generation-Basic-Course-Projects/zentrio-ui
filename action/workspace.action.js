@@ -19,6 +19,7 @@ import {
   updateBoardByIdService,
   updateFavBoardByIdService,
   updateWorkspaceByIdService,
+  uploadBoardCoverService,
 } from "@/service/workspace.service";
 import { revalidatePath } from "next/cache";
 
@@ -294,5 +295,19 @@ export const getMemberByBoardIdAction = async (boardId) => {
   const token = userToken.Credential;
   const result = await getMemberByBoardIdService({boardId,token});
   console.log("Get member in action : ", result);
+  return result;
+};
+
+
+/*
+ * 7. Upload cover by board id
+ */
+export const uploadBoardCoverAction = async (boardId, file) => {
+  console.log("upload boardId in action : ", boardId);
+  console.log("upload file in action : ", file);
+  const userToken = await Token();
+  const token = userToken.Credential;
+  const result = await uploadBoardCoverService({ boardId, file, token });
+  console.log("upload cover in action : ", result);
   return result;
 };
