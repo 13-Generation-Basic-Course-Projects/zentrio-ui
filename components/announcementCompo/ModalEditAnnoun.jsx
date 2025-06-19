@@ -2,34 +2,17 @@
 
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure } from "@heroui/react"
 import { useState } from "react"
-import { X, ImageIcon } from "lucide-react"
 import { updateAnnouncementByIdAction } from "@/action/announcement.action"
 
-export default function ModalEditAnnoun({ icon, bgcolor, title, announId, boardId, Announcement }) {
-  // max size 10 mb
-  const MAX_SIZE_MB = 10
+export default function ModalEditAnnoun({ title, announId, boardId, Announcement }) {
+
 
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure()
   const [titleState, setTitleState] = useState(Announcement?.title || "")
   const [description, setDescription] = useState(Announcement?.description || "")
-  const [images, setImages] = useState([])
   const [loading, setLoading] = useState(false)
 
-  const handleImageChange = (e) => {
-    const newFiles = Array.from(e.target.files || [])
-    for (const file of newFiles) {
-      if (file.size > MAX_SIZE_MB * 1024 * 1024) {
-        alert(`"${file.name}" exceeds 10MB.`)
-        return
-      }
-    }
-    setImages((prev) => [...prev, ...newFiles])
-    e.target.value = null
-  }
 
-  const removeImage = (index) => {
-    setImages((prev) => prev.filter((_, i) => i !== index))
-  }
 
   const handleUpdate = async () => {
     if (!titleState || !description) return
@@ -61,7 +44,6 @@ export default function ModalEditAnnoun({ icon, bgcolor, title, announId, boardI
             >
               <ModalHeader className="flex justify-between items-center">
                 <div className="flex items-center space-x-2">
-                  <div className={`w-8 h-8 rounded-full ${bgcolor} flex justify-center items-center`}>{icon}</div>
                   <span className="text-lg font-semibold">Edit Announcement</span>
                 </div>
               </ModalHeader>
@@ -83,37 +65,6 @@ export default function ModalEditAnnoun({ icon, bgcolor, title, announId, boardI
                   required
                 />
 
-                {images.length > 0 && (
-                  <div className="space-y-2">
-                    {images.map((file, index) => (
-                      <div
-                        key={index}
-                        className="flex items-center justify-between p-2 border border-gray-200 rounded-lg"
-                      >
-                        <div className="flex items-center gap-2">
-                          <ImageIcon className="w-4 h-4 text-blue-500" />
-                          <span className="text-sm">{file.name}</span>
-                          <span className="text-xs text-gray-400">({(file.size / 1024).toFixed(1)} KB)</span>
-                        </div>
-                        <button
-                          type="button"
-                          className="text-red-500 hover:text-red-700 transition-colors"
-                          onClick={() => removeImage(index)}
-                        >
-                          <X className="w-4 h-4" />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                <div className="flex justify-between items-center border p-3 rounded-lg">
-                  <span className="text-sm text-gray-600">Add images</span>
-                  <label className="cursor-pointer hover:bg-gray-100 p-2 rounded-full transition-colors">
-                    <ImageIcon className="w-5 h-5 text-primary" />
-                    <input type="file" className="hidden" onChange={handleImageChange} multiple accept="image/*" />
-                  </label>
-                </div>
               </ModalBody>
 
               <ModalFooter className="space-x-3">
