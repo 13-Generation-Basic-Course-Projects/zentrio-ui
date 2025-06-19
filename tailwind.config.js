@@ -54,6 +54,15 @@ module.exports = {
     // Define responsive breakpoints
 
     extend: {
+      keyframes: {
+        shine: {
+          '0%': { transform: 'translateX(-100%) rotate(12deg)' },
+          '100%': { transform: 'translateX(300%) rotate(12deg)' },
+        },
+      },
+      animation: {
+        shine: 'shine 1.8s cubic-bezier(0.4, 0, 0.2, 1)',
+      },
       // Gradient Color
       backgroundImage: {
         "custom-gradient": "linear-gradient(90deg, #59BAD5, #ABAAFF, #59BAD5)",

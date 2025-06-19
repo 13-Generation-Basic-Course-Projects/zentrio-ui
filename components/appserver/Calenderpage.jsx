@@ -597,7 +597,7 @@ export default function MyCalender({ tasks }) {
         {/* Calendar Section */}
         <div className="flex-1 overflow-y-auto scrollbar-hidden max-w-[75%]">
           {/* Top navigation */}
-          <div className="grid grid-cols-2 mt-4 mb-6 px-2">
+          <div className="grid grid-cols-2 mt-4 mb-6 px-2 sticky top-0 z-10 bg-white">
             <div>
               <button
                 onClick={() => handleDateNav("today")}
