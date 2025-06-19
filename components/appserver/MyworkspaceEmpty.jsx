@@ -7,6 +7,10 @@ import {
   ArrowRight,
 } from "lucide-react";
 
+import Image from "next/image";
+import image from "@/assets/C19_3.png";
+import icon from "@/assets/image1010.png";
+
 import CardMember from "../card/CardMember";
 import Bar from "../bredcrum/Bar";
 
@@ -47,69 +51,39 @@ export default function MyworkspaceEmpty() {
   ];
 
   return (
-    <div className="w-full grid grid-cols-12 h-full">
+    <div className="w-full grid grid-cols-12 h-full bg-pink-400">
       {/* board - this one scrolls */}
       <div className="col-span-9 flex flex-col overflow-hidden p-3 min-h-0">
         {/* Feature Showcase Section - Right under Bar */}
-        <div className="relative bg-gradient-to-r from-blue-50 via-purple-50 to-emerald-50 rounded-2xl p-6 mb-4 overflow-hidden h-[400px]">
-          {/* Animated Background Elements */}
-          <div className="absolute inset-0 opacity-10">
-            <div className="absolute top-4 left-8 w-12 h-12 bg-blue-400 rounded-full animate-bounce delay-100"></div>
-            <div className="absolute top-8 right-12 w-8 h-8 bg-purple-400 rounded-full animate-pulse delay-300"></div>
-            <div className="absolute bottom-6 left-16 w-6 h-6 bg-emerald-400 rounded-full animate-ping delay-500"></div>
-            <div className="absolute bottom-4 right-20 w-10 h-10 bg-orange-400 rounded-full animate-bounce delay-700"></div>
-          </div>
-
-          {/* Content */}
-          <div className="relative z-10">
-            <div className="text-center mb-6">
-              <h3 className="text-xl font-bold text-gray-800 mb-2">
-                Powerful Project Management Tools
-              </h3>
-              <p className="text-sm text-gray-600">
-                Everything you need to manage your projects efficiently
-              </p>
+        <div className="relative z-10 h-full flex items-center">
+          <div className="grid grid-cols-2 gap-2 w-full items-center">
+            {/* Left Side - Woman Illustration */}
+            <div className="flex justify-center">
+              <div className="relative">
+                <Image
+                  src={image}
+                  alt="Professional woman in blue outfit"
+                  className="w-50 h-auto object-contain"
+                />
+              </div>
             </div>
 
-            {/* Feature Cards - Horizontal Layout */}
-            <div className="grid grid-cols-4 gap-4">
-              {features.map((feature, index) => {
-                const IconComponent = feature.icon;
-                return (
-                  <div
-                    key={index}
-                    className={`group relative ${feature.bgColor} ${feature.borderColor} border rounded-xl p-4 hover:shadow-lg transition-all duration-500 cursor-pointer hover:scale-110 hover:-translate-y-2`}
-                    style={{
-                      animationDelay: `${index * 150}ms`,
-                      animation: `slideInUp 0.6s ease-out forwards ${
-                        index * 150
-                      }ms`,
-                    }}
-                  >
-                    {/* Hover Glow Effect */}
-                    <div
-                      className={`absolute inset-0 bg-gradient-to-r ${feature.color} opacity-0 group-hover:opacity-20 rounded-xl transition-opacity duration-300`}
-                    ></div>
+            {/* Right Side - Text Content */}
+            <div className="space-y-6">
+              <div>
+                <h1 className="text-h5 font-bold text-gray-900 leading-tight">
+                  Getting <span className="text-purple-500">start</span> of your tasks
+                  <br />
+                  with <span className="text-blue-500">Zentrio</span>.
+                </h1>
+              </div>
 
-                    <div className="relative z-10 text-center">
-                      <div
-                        className={`w-12 h-12 bg-gradient-to-r ${feature.color} rounded-lg flex items-center justify-center mx-auto mb-3 shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:rotate-12`}
-                      >
-                        <IconComponent className="w-6 h-6 text-white" />
-                      </div>
-                      <h4 className="text-sm font-semibold text-gray-900 mb-1">
-                        {feature.title}
-                      </h4>
-                      <p className="text-xs text-gray-600">
-                        {feature.description}
-                      </p>
-                    </div>
-
-                    {/* Sparkle Effect on Hover */}
-                    <div className="absolute top-2 right-2 w-2 h-2 bg-yellow-400 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-opacity duration-300"></div>
-                  </div>
-                );
-              })}
+              <div>
+                <p className="text-gray-600 leading-relaxed text-h6 max-w-md">
+                  Zentrio is your all-in-one task management platform designed to streamline your workflow, boost
+                  productivity, and help you stay focused on what matters most.
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -118,6 +92,10 @@ export default function MyworkspaceEmpty() {
       {/* event - no scroll */}
       <div className="col-span-3 p-2">
         <CardMember data={"null"} />
+        <Image 
+        src={icon}
+        className="w-25"
+        />
       </div>
     </div>
   );
