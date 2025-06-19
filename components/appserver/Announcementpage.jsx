@@ -4,6 +4,7 @@ import CardCreateAnnouncement from "../announcementCompo/CardCreateAnnouncement"
 import CardAllMembers from "../announcementCompo/CardAllMembers";
 import CardFilterComponent from "../announcementCompo/CardFilterComponent";
 import { preventImage } from "@/constant/preventimage";
+import ClockWeather from "../announcementCompo/ClockWheather";
 
 export default function Announcementpage({
   boardId,
@@ -60,6 +61,7 @@ export default function Announcementpage({
           boardMember={boardMember}
           preventUserImage={preventUserImage}
         />
+        <ClockWeather />
       </div>
     </div>
   );
