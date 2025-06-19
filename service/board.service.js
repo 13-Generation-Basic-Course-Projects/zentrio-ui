@@ -886,10 +886,10 @@ export const updateCheckListByIdAndTaskIdService = async (
   startedAt,
   finishedAt,
   taskId,
-  token,
+  token
 ) => {
   console.log("Token in update checklist service: ", token);
-  
+
   console.log("Request Body in update service: ", {
     checklistId,
     title,
@@ -900,9 +900,7 @@ export const updateCheckListByIdAndTaskIdService = async (
   });
 
   const url = checklistRouteGroup.updateCheckListByIdAndTaskId(checklistId);
-  console.log(
-    "Request URL",url
-  );
+  console.log("Request URL", url);
   const response = await fetch(url, {
     method: "PUT",
     headers: {
