@@ -148,16 +148,16 @@ export const resendOtpZentrioService = async ({ email, type }) => {
 /*
  * login google
  */
-export const loginGoogleService = async ({ accesToken }) => {
+export const loginGoogleService = async ({ idToken }) => {
   try {
     const url = `${apiConfig.baseUrl}/auths/login/third-party`;
-    console.log("login3party", accesToken);
+    console.log("login3party", idToken);
     const res = await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ idToken: accesToken, provider: "google" }),
+      body: JSON.stringify({ idToken: idToken, provider: "google" }),
     });
     const data = await res.json();
     console.log("📥 Backend responded with:", data);
@@ -227,3 +227,5 @@ export const forgotPasswordService = async ({
     throw error;
   }
 };
+
+

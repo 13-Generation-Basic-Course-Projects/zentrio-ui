@@ -24,16 +24,8 @@ export const {
       authorize: async (credentials) => {
         const { email, password } = credentials;
         const res = await loginZentrioCredentailService({ email, password });
-        if (!res?.success) {
-          return null; // Return null if login fails
-        }
-        // Return user data and token to be used in jwt callback
-        return {
-          id: res.payload.user?.userId || res.payload.sub, // Adjust based on your response structure
-          email: res.payload.user?.email || credentials.email,
-          backendToken: res.payload.token, // Store backend token
-          ...res.payload.user, // Spread other user data
-        };
+        if (res?.success === false) return null;
+        return res;
       },
     }),
     GoogleProvider({
@@ -52,51 +44,45 @@ export const {
   ],
   callbacks: {
     async jwt({ token, account, user }) {
-      // Handle Credentials login (user is populated from authorize)
-      if (user) {
-        token.id = user.id;
-        token.email = user.email;
-        token.backendToken = user.backendToken; // Store backend token
-        // Add other user properties as needed
-        token.username = user.username || token.username;
+  // Google
+  if (account?.provider === "google") {
+    token.idToken = account.id_token;
+    token.accessToken = account.access_token;
+    token.refreshToken = account.refresh_token;
+
+    try {
+      const backendResponse = await loginGoogleService({
+        idToken: account.id_token,
+      });
+
+      if (backendResponse?.success) {
+        token.backendToken = backendResponse.payload.token;
       }
+    } catch (error) {
+      console.error("Google login error:", error.message);
+    }
+  }
 
-      // Handle Google login (account is populated)
-      if (account && account.provider === "google") {
-        token.idToken = account.id_token;
-        token.accessToken = account.access_token;
-        token.refreshToken = account.refresh_token;
+  // Credentials
+  if (account?.provider === "credentials" && user) {
+    token.backendToken = user?.payload?.token;
+    token.email = user?.payload?.email;
+  }
 
-        try {
-          const backendResponse = await loginGoogleService({
-            idToken: account.id_token, // Pass id_token to backend
-          });
+  return token;
+}
+,
 
-          if (backendResponse?.success) {
-            token.backendToken = backendResponse.payload.token;
-            token.id = backendResponse.payload.user?.userId || token.sub;
-            token.email = backendResponse.payload.user?.email || token.email;
-            token.username =
-              backendResponse.payload.user?.username || token.username;
-          } else {
-            console.error("Backend login failed:", backendResponse?.message);
-          }
-        } catch (error) {
-          console.error("Error calling loginGoogleService:", error.message);
-        }
-      }
-
-      return token;
-    },
     async session({ session, token }) {
-      // Shape the session object
+      console.log("SESSION CALLBACK", token);
       session.user = {
         id: token.id,
         email: token.email,
         username: token.username,
         backendToken: token.backendToken,
       };
-      session.backendToken = token.backendToken; // Optional: Store at root level
+      session.accessToken = token.accessToken;
+      session.error = token.error;
       return session;
     },
   },
