@@ -40,7 +40,9 @@ export default function CardFolder({
           ) : (
             <ModalOptionDocument
               documentId={documentId}
+              isFolder={isFolder}
               accessToken={tokenFromGoogle}
+              status={status}
             />
           )}
         </div>
@@ -51,6 +53,7 @@ export default function CardFolder({
           accessToken={tokenFromGoogle}
           link={link}
           title={title}
+          isFolder={isFolder}
         />
       </CardBody>
       {/* Body */}
@@ -132,6 +135,7 @@ export function CardFile({
               documentId={documentId}
               fileId={fileId}
               accessToken={tokenFromGoogle}
+              status={status}
             />
           )}
         </div>

@@ -14,6 +14,7 @@ import {
   getAttactmentService,
   getFileByFolderIdService,
   postAttactmentService,
+  privateDocumentByIdService,
   publicDocumentByIdService,
   updateDocumentNameByIdService,
   uploadDocumentToFolderServie,
@@ -82,26 +83,44 @@ export const downloadAllFilesAsZipAction = async (
   const userToken = await Token();
   const token = userToken.Credential;
 
-  // Call service to get blob and filename
-  const { blob, filename } = await downloadAllFilesAsZipService({
+  const { status, blob, filename } = await downloadAllFilesAsZipService({
     documentId,
     accessToken: accessTokenFromGoogle,
     token,
   });
 
-  console.log("document id: ", documentId, accessTokenFromGoogle, token);
+  console.log(
+    "document id:",
+    documentId,
+    accessTokenFromGoogle,
+    token,
+    "Status:",
+    status
+  );
 
-  return { blob, filename };
+  return { status, blob, filename };
 };
 
 // Create
-export const createFolderAction = async (data) => {
+export const createFolderAction = async (accessTokenFromGoogle, name, types, boardId) => {
   const userToken = await Token();
   const token = userToken.Credential;
-  console.log("post pending data", data);
-  const folder = await createDocumentService(data, token);
+
+  const folderData = {
+    accessToken: accessTokenFromGoogle,
+    folderName: name,
+    types, // e.g. "FOLDER"
+    boardId,
+  };
+
+  console.log("Payload to service:", folderData);
+
+  const folder = await createDocumentService(folderData, token);
+
+  revalidatePath("/document")
   return folder;
 };
+
 
 // Create
 export const createFileAction = async ({
@@ -247,6 +266,16 @@ export const publicDocumentByIdAction = async (documentId, tokenFromGoogle) => {
   );
   return updated;
 };
+
+// Private document (update)
+export const privateDocumentByIdAction = async (documentId, tokenFromGoogle) => {
+  const userToken = await Token();
+  const token = userToken.Credential;
+  revalidatePath("/document");
+
+  const updated = await privateDocumentByIdService(documentId, token, tokenFromGoogle);
+  return updated;
+}
 
 /* new add
  * get all document by board id
