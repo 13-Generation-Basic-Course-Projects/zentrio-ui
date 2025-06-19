@@ -21,9 +21,10 @@ export default async function BoardLayout({ children, params }) {
   // console.log("refresh token ", refresh_token)
   const userToken = await Token();
   const token = userToken.GoogleDocumentToken;
-  console.log("token cre", userToken.Credential);
+
   const tokenFromGoogle = token;
 
+  console.log("debug", tokenFromGoogle);
   //pf
   /*
    * This function is the main entry point for the profile page.

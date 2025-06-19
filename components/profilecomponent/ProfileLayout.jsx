@@ -11,7 +11,7 @@ import {
   IconMap,
   IconReturnLeft,
 } from "../icon/everyicon";
-import { getUploadProfileImageAction } from "@/action/profile.action";
+import { getUploadProfileImageAction, updateProfileImageAction, updateUserProfileAction } from "@/action/profile.action";
 
 export default function ProfileLayout({
   user,
@@ -33,7 +33,7 @@ export default function ProfileLayout({
       content: acheivment,
     },
   ];
-
+  const [previewUrl, setPreviewUrl] = useState(null);
   const [activeTab, setActiveTab] = useState("profile");
 
   const currentTab = tabItems.find((tab) => tab.key === activeTab);
@@ -51,16 +51,30 @@ export default function ProfileLayout({
     return [];
   };
 
-  const [previewUrl, setPreviewUrl] = useState(null);
-  const handleImageChange = async (e) => {
-    // try {
-    //   //const response = await getUploadProfileImageAction();
-    //   console.log("Upload response", response);
-    // } catch (err) {
-    //   console.error("upload failed", err);
-    // }
-    console.log("bro u forgot to create service how can u call an action");
-  };
+
+const handleImageChange = async (e) => {
+  const file = e.target.files?.[0];
+  if (!file) {
+    console.log("No file selected.");
+    return;
+  }
+
+  console.log("Selected image file:", file);
+
+  // Optional: Validate file type or size
+  const maxSizeMB = 5;
+  if (file.size > maxSizeMB * 1024 * 1024) {
+    console.error("File is too large (max 5MB allowed).");
+    return;
+  }
+
+  // Prepare for upload
+  const formData = new FormData();
+  formData.append("file", file);
+  await updateProfileImageAction({formData});
+
+};
+
 
   return (
     <>

@@ -10,14 +10,20 @@ import {
 import { IconAdd } from "../../icon/everyicon";
 import ModalCreateFolder from "./ModalCreateFolder";
 import ModalUploadFile from "./ModalUploadfile";
-import { createDocumentByUploadAction, createDriveFileAction } from "@/action/document.action";
+import {
+  createDocumentByUploadAction,
+  createDriveFileAction,
+} from "@/action/document.action";
 
-export default function ModalCreateDocuInFolder({ boardId, folderId, tokenFromGoogle }) {
+export default function ModalCreateDocuInFolder({
+  boardId,
+  folderId,
+  tokenFromGoogle,
+}) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isCreateFolderOpen, setIsCreateFolderOpen] = useState(false);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const fileInputRef = useRef(null);
-
 
   const items = [
     {
@@ -89,20 +95,25 @@ export default function ModalCreateDocuInFolder({ boardId, folderId, tokenFromGo
           doc: "DOC",
           slide: "SLIDE",
           sheet: "SHEET",
-        }
+        };
 
         const defaultNames = {
           doc: "Untitled Document",
           slide: "Untitled Presentation",
           sheet: "Untitled Spreadsheet",
-        }
+        };
 
         const data = {
           name: defaultNames[key],
+
           folderId: folderId,
           fileType: mimeTypes[key],
           token: tokenFromGoogle,
-        }
+
+          folderId: folderId,
+          fileType: mimeTypes[key],
+          token: tokenFromGoogle,
+        };
 
         console.log("Creating Google file with data: ", data);
 

@@ -146,14 +146,13 @@ const PublicIcon = (props) => (
 export default function ModalOptionDocument({
   documentId,
   fileId,
+
   accessToken,
   isFolder,
 }) {
   const [isDownloading, setIsDownloading] = useState(false);
   const [isDownloadingZip, setIsDownloadingZip] = useState(false);
   const [showUsers, setShowUsers] = useState(false);
-
-
   const handleDownload = async () => {
     try {
       setIsDownloading(true);
@@ -210,9 +209,9 @@ export default function ModalOptionDocument({
     try {
       await publicDocumentByIdAction(documentId, accessToken);
     } catch (error) {
-      console.error("Public document failed: ",error);
+      console.error("Public document failed: ", error);
     }
-  }
+  };
 
   return (
     <Dropdown className="z-[10]">

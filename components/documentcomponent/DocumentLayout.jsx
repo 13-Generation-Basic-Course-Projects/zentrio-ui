@@ -124,7 +124,7 @@ export default function DocumentLayout({
       </div>
 
       {/* Tab Content Area */}
-      {tokenFromGoogle == null ? (
+      {tokenFromGoogle === null ? (
         <WelcomePage />
       ) : (
         <main className="p-4 min-h-screen">

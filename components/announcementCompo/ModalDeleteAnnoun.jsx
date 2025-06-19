@@ -1,4 +1,5 @@
 "use client";
+
 import {
   Modal,
   ModalContent,
@@ -8,12 +9,8 @@ import {
   Button,
   useDisclosure,
 } from "@heroui/react";
-import { useState } from "react";
 import { deleteAnnouncementByIdAction } from "@/action/announcement.action";
 
-import { IconpopupDelete } from "../icon/Iconpopup";
-import { useRouter } from "next/navigation";
-import { deleteDocumentAction } from "@/action/document.action";
 export default function ModalDeleteAnnoun({
   title,
   icon,
@@ -22,25 +19,16 @@ export default function ModalDeleteAnnoun({
   massageBody,
   massageUndo,
   massageDo,
-  documentId,
-  accessToken,
   color,
   swapButton,
   action,
   announId,
-  onDeleteSuccess,
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [error, setError] = useState(null);
 
-  console.log(accessToken);
-  // const router = useRouter();
-
-const handleDelete = async (id) => {
-  console.log("modal delete announce id: ", id);
-  await deleteAnnouncementByIdAction(id);
-};
+  const handleDelete = async (id) => {
+    await deleteAnnouncementByIdAction(id);
+  };
 
   return (
     <>
@@ -74,7 +62,6 @@ const handleDelete = async (id) => {
                     <form action={action}>
                       <Button
                         className="bg-slate-red text-white font-semibold"
-                        // onPress={onClose}
                       >
                         <p className="text-red-500">{massageDo}</p>
                       </Button>
@@ -99,7 +86,6 @@ const handleDelete = async (id) => {
                     <form action={action}>
                       <Button
                         className="bg-slate-red text-white font-semibold"
-                        // onClick={handleDelete(announId)}
                         onPress={() => handleDelete(announId) && onClose} 
                       >
                         <p className="text-red-500">{massageDo}</p>

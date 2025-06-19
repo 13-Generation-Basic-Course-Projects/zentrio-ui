@@ -20,4 +20,7 @@ export const profileRouteGroup = {
 
   //Fetches the details of the currently authenticated user.
   getPreviewProfile: () => `${apiConfig.baseUrl}/profiles/preview-profile`,
+
+  //updateCurrentProfile
+  updateProfileImgae:()=>`${apiConfig.baseUrl}/files/upload-file`
 };

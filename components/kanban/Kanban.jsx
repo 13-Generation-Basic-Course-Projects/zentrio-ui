@@ -12,7 +12,6 @@ import ModalOptionTask from "../modal/board/ModalOptionTask";
 import {
   chageStatusCheckListAction,
   changeStatusTaskAction,
-  moveTaskOrderAction,
 } from "@/action/board.action";
 
 // Placeholder component
@@ -133,36 +132,58 @@ export default function KanbanBoard({
   const [isUpdating, setIsUpdating] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
 
+  // Load columns from local storage or transform API data
   useEffect(() => {
-    console.log("KanbanBoard props:", {
-      boardId,
-      boardDataBoardId: boardData?.payload?.boardId,
-      tasksBoardId: tasks[0]?.boardId,
-    });
-    console.log(
-      "TO DO tasks:",
-      transformApiToColumns(tasks, checklistbyTaskIds)
-        .find((c) => c.id === "todo")
-        ?.cards.map((c) => ({ id: c.id, order: c.order }))
-    );
-
     if (!boardId) {
       setError("Board ID is missing");
       setLoading(false);
       return;
     }
 
-    if (tasks) {
-      const transformedColumns = transformApiToColumns(
-        tasks,
-        checklistbyTaskIds
-      );
-      setColumns(transformedColumns);
-      setLoading(false);
+    // Check local storage for saved columns
+    const savedColumns = localStorage.getItem(`kanban-columns-${boardId}`);
+    if (savedColumns) {
+      try {
+        const parsedColumns = JSON.parse(savedColumns);
+        setColumns(parsedColumns);
+        setLoading(false);
+      } catch (err) {
+        console.error("Failed to parse saved columns:", err);
+        // Fallback to API data if local storage is corrupted
+        if (tasks) {
+          const transformedColumns = transformApiToColumns(
+            tasks,
+            checklistbyTaskIds
+          );
+          setColumns(transformedColumns);
+          localStorage.setItem(
+            `kanban-columns-${boardId}`,
+            JSON.stringify(transformedColumns)
+          );
+          setLoading(false);
+        } else {
+          setError("No tasks available and failed to load saved data");
+          setLoading(false);
+        }
+      }
     } else {
-      setLoading(false);
+      // No saved data, use API data
+      if (tasks) {
+        const transformedColumns = transformApiToColumns(
+          tasks,
+          checklistbyTaskIds
+        );
+        setColumns(transformedColumns);
+        localStorage.setItem(
+          `kanban-columns-${boardId}`,
+          JSON.stringify(transformedColumns)
+        );
+        setLoading(false);
+      } else {
+        setLoading(false);
+      }
     }
-  }, [tasks, JSON.stringify(checklistbyTaskIds), boardId, boardData]);
+  }, [tasks, JSON.stringify(checklistbyTaskIds), boardId]);
 
   const findChecklistDetails = (checklistId) => {
     for (let colIndex = 0; colIndex < columns.length; colIndex++) {
@@ -203,6 +224,8 @@ export default function KanbanBoard({
         ),
       }))
     );
+    // Save updated columns to local storage
+    localStorage.setItem(`kanban-columns-${boardId}`, JSON.stringify(columns));
   };
 
   const addChecklist = (cardId, checklistData) => {
@@ -241,6 +264,8 @@ export default function KanbanBoard({
         ),
       }))
     );
+    // Save updated columns to local storage
+    localStorage.setItem(`kanban-columns-${boardId}`, JSON.stringify(columns));
     setNewSubtaskText("");
     setNewSubtaskCardId(null);
   };
@@ -422,17 +447,6 @@ export default function KanbanBoard({
         const maxIndex = targetCol.cards.length;
         const insertIndex = Math.max(0, Math.min(targetIndex, maxIndex));
 
-        // Calculate oldOrder BEFORE modifying the array
-        // Use the original taskOrder of the moved task as default
-        let oldOrder = itemToMove.order;
-        if (
-          insertIndex < targetCol.cards.length &&
-          insertIndex !== sourceIndex
-        ) {
-          // Use the order of the task at the target position if it exists and it’s not a self-drop
-          oldOrder = targetCol.cards[insertIndex]?.order || itemToMove.order;
-        }
-
         // Insert the dragged task at the target index
         targetCol.cards.splice(insertIndex, 0, itemToMove);
 
@@ -445,51 +459,17 @@ export default function KanbanBoard({
         // Update the state
         setColumns(newColumns);
 
-        // Calculate newOrder (1-based position)
-        const newOrder = insertIndex + 1;
+        // Save updated columns to local storage
+        localStorage.setItem(
+          `kanban-columns-${boardId}`,
+          JSON.stringify(newColumns)
+        );
 
-        console.log("Calling moveTaskOrderAction:", {
-          boardId,
-          newOrder,
-          oldOrder,
-          draggedId,
-          targetIndex,
-          insertIndex,
-          sourceIndex,
-          targetColCards: targetCol.cards.map((c) => ({
-            id: c.id,
-            order: c.order,
-          })),
-        });
-
-        if (!boardId) {
-          setErrorMessage("Board ID is missing. Cannot update task order.");
-          setColumns(columns); // Revert to original state
-          throw new Error("Board ID is missing");
-        }
-
-        try {
-          setIsUpdating(true);
-          setErrorMessage(null);
-          await moveTaskOrderAction(boardId, newOrder, oldOrder);
-          console.log(
-            `Task order updated: moved task ${draggedId} to order ${newOrder}${
-              oldOrder
-                ? ` (displaced task with order ${oldOrder})`
-                : " (moved to end)"
-            }`
-          );
-        } catch (error) {
-          console.error(
-            "Failed to update task order on backend:",
-            error.message
-          );
-          setErrorMessage("Failed to update task order. Please try again.");
-          setColumns(columns); // Revert to previous state
-          throw error;
-        } finally {
-          setIsUpdating(false);
-        }
+        console.log(
+          `Task order updated locally: moved task ${draggedId} to order ${
+            insertIndex + 1
+          }`
+        );
       } else if (
         draggedType === "checklist" &&
         dropTargetType === "checklist"
@@ -514,7 +494,14 @@ export default function KanbanBoard({
           })
         );
 
+        // Update the state
         setColumns(newColumns);
+
+        // Save updated columns to local storage
+        localStorage.setItem(
+          `kanban-columns-${boardId}`,
+          JSON.stringify(newColumns)
+        );
       } else {
         console.warn("Invalid drop combination detected in handleDrop");
         handleDragEnd(e);
@@ -522,7 +509,9 @@ export default function KanbanBoard({
       }
     } catch (error) {
       console.error("Error during drop:", error.message);
-      // Optionally revert state here if needed
+      setErrorMessage("Failed to update task order locally. Please try again.");
+      // Revert to previous state
+      setColumns(columns);
     }
 
     handleDragEnd(e);
@@ -542,9 +531,6 @@ export default function KanbanBoard({
     return <div>Error: {error}</div>;
   }
 
-  // console.log("ganttbar data", ganttbar);
-
-  //change status task
   // Toggle task status: PENDING/OVERDUE -> COMPLETED, COMPLETED -> OVERDUE
   const handleStatusChange = async (taskId, currentStatus) => {
     const newStatus = currentStatus === "COMPLETED" ? "OVERDUE" : "COMPLETED";
@@ -559,6 +545,11 @@ export default function KanbanBoard({
               card.id === taskId ? { ...card, status: newStatus } : card
             ),
           }))
+        );
+        // Save updated columns to local storage
+        localStorage.setItem(
+          `kanban-columns-${boardId}`,
+          JSON.stringify(columns)
         );
       } else {
         console.error("Failed to update task status:", result.error);
@@ -680,7 +671,6 @@ export default function KanbanBoard({
                         >
                           <div className="p-3 cursor-grab active:cursor-grabbing">
                             <div className="flex items-center justify-between">
-                              {/* name */}
                               <div className="flex-1 min-w-0 mr-2">
                                 <p
                                   className="text-sm font-medium text-gray-800 truncate"
@@ -694,7 +684,6 @@ export default function KanbanBoard({
                                       {task.teamLeader ? (
                                         <p className="text-[10px] text-green-500">
                                           TL {task?.teamLeader?.username}
-                                          {/* {task?.teamLeader?.userId} */}
                                         </p>
                                       ) : (
                                         <p className="text-[10px] text-red-500">
@@ -705,8 +694,7 @@ export default function KanbanBoard({
                                   ) : null
                                 )}
                               </div>
-                              {/* action */}
-                              <div className="flex items-center justify-between w-fit  flex-shrink-0">
+                              <div className="flex items-center justify-between w-fit flex-shrink-0">
                                 <div className="flex -space-x-2 mr-2">
                                   {tasks.map((task) =>
                                     task.taskId === card.id ? (
@@ -731,7 +719,6 @@ export default function KanbanBoard({
                                     ) : null
                                   )}
                                 </div>
-                                {/* change status */}
                                 <div className="flex justify-end items-center ">
                                   <button
                                     onClick={() =>
@@ -742,7 +729,7 @@ export default function KanbanBoard({
                                         )?.status || "OVERDUE"
                                       )
                                     }
-                                    className={` top-[20px] right-5 p-2 rounded-full ${
+                                    className={`top-[20px] right-5 p-2 rounded-full ${
                                       (tasks.find(
                                         (task) => task.taskId === card.id
                                       )?.status || "OVERDUE") === "COMPLETED"
@@ -794,7 +781,6 @@ export default function KanbanBoard({
                                     )}
                                   </button>
                                 </div>
-                                {/* option */}
                                 <ModalOptionTask
                                   role={role}
                                   key={"apple"}
@@ -900,7 +886,7 @@ export default function KanbanBoard({
                                         onDragEnd={handleDragEnd}
                                       >
                                         <ModalDetailChecklist
-                                          boardId={boardId} //new add
+                                          boardId={boardId}
                                           taskId={card.id}
                                           id={checklist?.checklistId}
                                           taskTitle={card.title}
@@ -920,7 +906,7 @@ export default function KanbanBoard({
                                               : card.assignees[0] || ""
                                           }
                                           description={checklist.description}
-                                          checklistId={checklist.checklistId}
+                                          checklistId={checklist?.checklistId}
                                           members={checklist.members || []}
                                           createdAt={checklist.createdAt}
                                           updatedAt={checklist.updatedAt}
