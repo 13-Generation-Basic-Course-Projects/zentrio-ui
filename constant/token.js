@@ -9,7 +9,8 @@ export const Token = async () => {
     Credential: session?.backendToken
       ? session.backendToken
       : session?.token?.user?.payload?.token,
-    GoogleDocumentToken: session?.accessToken ? session?.accessToken : null, //for when document
+    GoogleDocumentToken: session?.user?.idToken ? session?.user?.idToken : null,
   };
+
   return UserToken;
 };
