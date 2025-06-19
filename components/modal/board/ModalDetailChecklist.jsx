@@ -29,6 +29,7 @@ import CommentChecklistSec from "./CommentChecklistSec";
 import { getAttachmentAction } from "@/action/document.action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import { CameraIcon } from "lucide-react";
 
 const initialState = {
   activeTab: "add",
@@ -361,6 +362,12 @@ const ModalDetailChecklist = ({
     checklistId,
     isOpen
   );
+  // Image upload state and ref
+  const [previewImage, setPreviewImage] = useState(
+    image || preventImage.noChecklistImage
+  );
+  const fileInputRef = useRef(null);
+  const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB in bytes
 
   const {
     taskData,
@@ -449,6 +456,79 @@ const ModalDetailChecklist = ({
     },
     [state.comments]
   );
+
+  /* for upload image */
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith("image/")) {
+        toast.error("Please select a valid image file.", {
+          position: "top-right",
+          autoClose: 4000,
+        });
+        return;
+      }
+      // Validate file size
+      if (file.size > MAX_FILE_SIZE) {
+        toast.error("File size exceeds 5MB limit.", {
+          position: "top-right",
+          autoClose: 4000,
+        });
+        return;
+      }
+      // Create local URL for preview
+      const imageUrl = URL.createObjectURL(file);
+      setPreviewImage(imageUrl);
+
+      // Optional: Upload to server
+      // uploadImageToServer(file);
+    }
+  };
+
+  const triggerFileInput = () => {
+    fileInputRef.current.click();
+  };
+
+  // Clean up object URL to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      if (previewImage && previewImage.startsWith("blob:")) {
+        URL.revokeObjectURL(previewImage);
+      }
+    };
+  }, [previewImage]);
+
+  // Optional: Server upload function
+  const uploadImageToServer = async (file) => {
+    const formData = new FormData();
+    formData.append("image", file);
+    try {
+      const response = await fetch(
+        `/api/checklists/${checklistId}/upload-image`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+      const data = await response.json();
+      if (data.success) {
+        setPreviewImage(data.imageUrl); // Update with server URL
+        toast.success("Image uploaded successfully!", {
+          position: "top-right",
+          autoClose: 4000,
+        });
+      } else {
+        throw new Error(data.message || "Upload failed");
+      }
+    } catch (error) {
+      toast.error("Failed to upload image.", {
+        position: "top-right",
+        autoClose: 4000,
+      });
+      setPreviewImage(image || preventImage.noChecklistImage); // Revert to original
+    }
+  };
 
   return (
     <div>
@@ -604,12 +684,26 @@ const ModalDetailChecklist = ({
                     <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary" />
                   </div>
                 )}
-                <div className="border rounded-medium flex justify-center items-center">
+                <div className="border rounded-medium flex justify-center items-center relative w-full h-40">
                   <img
-                    src={image || preventImage.noChecklistImage}
+                    src={previewImage}
                     alt="Checklist Image"
                     className="w-full h-40 object-cover rounded-medium"
                   />
+                  <input
+                    type="file"
+                    accept="image/*"
+                    ref={fileInputRef}
+                    className="hidden"
+                    onChange={handleImageUpload}
+                  />
+                  <button
+                    onClick={triggerFileInput}
+                    className="absolute bottom-2 right-2 bg-white p-2 rounded-full shadow-md hover:bg-gray-100"
+                    aria-label="Upload Image"
+                  >
+                    <CameraIcon className="h-6 w-6 text-gray-600" />
+                  </button>
                 </div>
                 <div className="flex flex-col">
                   {/* Title checklist section */}
