@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useReducer, useCallback, useRef } from "react";
+import React, { useEffect, useReducer, useCallback, useRef, useState } from "react";
 import Image from "next/image";
 import {
   Modal,
@@ -29,6 +29,7 @@ import CommentChecklistSec from "./CommentChecklistSec";
 import { getAttachmentAction } from "@/action/document.action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import { CameraIcon } from "lucide-react";
 
 const initialState = {
   activeTab: "add",
@@ -43,8 +44,8 @@ const initialState = {
   isEditing: false,
   newDescription: "",
   taskData: null,
+  
 };
-
 const reducer = (state, action) => {
   switch (action.type) {
     case "SET_ACTIVE_TAB":
@@ -71,6 +72,9 @@ const reducer = (state, action) => {
       return { ...state, newDescription: action.payload };
     case "SET_TASK_DATA":
       return { ...state, taskData: action.payload };
+   
+    case "RESET_STATE": 
+      return { ...initialState };
     default:
       return state;
   }
@@ -159,99 +163,177 @@ const useChecklistData = (checklistId, isOpen) => {
   return { state, dispatch, shouldStayOpen };
 };
 
-const useDescriptionEditor = (taskId, isOpen, token) => {
-  const [state, dispatch] = useReducer(reducer, initialState);
-  const router = useRouter();
+
+const useDescriptionEditor = (taskId, checklistId, isOpen) => {
+  const [newDescription, setNewDescription] = useState("");
+  const [error, setError] = useState();
+  const [checklistData, setChecklistData] = useState();
+  const [isLoading, setIsLoading] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [isEditingTitle, setIsEditingTitle] = useState(false);
+  const [newTitle, setNewTitle] = useState("");
+  
 
   useEffect(() => {
     if (isOpen) {
       const fetchTask = async () => {
         try {
-          const response = await getCheckListByTaskIdAction(taskId);
-          const task = response?.payload?.[0];
-          if (!task) throw new Error("Checklist not found");
-          dispatch({ type: "SET_TASK_DATA", payload: task });
-          dispatch({
-            type: "SET_NEW_DESCRIPTION",
-            payload: task.description || "",
-          });
+          setIsLoading(true);
+          const response = await getCheckListByTaskIdAction({taskId});
+          const checklist = response?.payload?.find(
+            (ch) => ch.checklistId === checklistId
+          );
+          if (!checklist) throw new Error("checklist not found");
+          setChecklistData(checklist);
+          setNewDescription(checklist.description || ""); // Fixed: should be setNewDescription
         } catch (err) {
-          dispatch({ type: "SET_ERROR", payload: err.message });
-          toast.error(`Failed to load checklist data: ${err.message}`, {
+          setError(err.message);
+          toast.error("Failed to load checklist data: " + err.message, {
             position: "top-right",
             autoClose: 4000,
-            theme: "colored",
-            style: {
-              background: "linear-gradient(135deg, #EF4444 0%, #DC2626 100%)",
-              color: "#ffffff",
-              borderRadius: "16px",
-              fontSize: "14px",
-              fontWeight: "500",
-              padding: "16px 20px",
-              boxShadow: "0 20px 25px -5px rgba(239, 68, 68, 0.3)",
-              border: "1px solid rgba(255, 255, 255, 0.1)",
-            },
           });
+        } finally {
+          setIsLoading(false);
         }
       };
       fetchTask();
     }
-  }, [isOpen, taskId]);
+  }, [isOpen, taskId, checklistId]);
 
   const handleEditClick = () => {
-    dispatch({ type: "SET_IS_EDITING", payload: true });
+    setIsEditing(true);
+    setError(null);
+  };
+  const handleEditTitleClick = () => {
+    setIsEditingTitle(true);
+    setError(null);
+  };
+  const handleCancel = () => {
+    console.log("Cancel clicked - reverting changes");
+    setIsEditing(false);
+    setNewDescription(checklistData?.description || "");
+    setNewTitle(checklistData?.title || "");
+    setError(null);
   };
 
-  const handleDescriptionChange = (e) => {
-    dispatch({ type: "SET_NEW_DESCRIPTION", payload: e.target.value });
-  };
+  const handleDescriptionChange = useCallback((e) => {
+    setNewDescription(e.target.value);
+    setError(null);
+  }, []);
 
-  const handleSubmit = async (e) => {
-    if (e.key === "Enter" && state.newDescription.trim()) {
-      try {
-        const result = await updateCheckListByIdAndTaskIdAction({
-          checklistId: taskId,
-          title: state.taskData?.title,
-          description: state.newDescription,
-          startedAt: state.taskData?.startedAt,
-          finishedAt: state.taskData?.finishedAt,
-          taskId,
-          token,
-        });
-        if (result?.success) {
-          toast.success("Description updated successfully", {
-            position: "top-right",
-            autoClose: 4000,
-          });
-          dispatch({ type: "SET_IS_EDITING", payload: false });
-          router.refresh();
-        } else {
-          throw new Error("Update failed unexpectedly");
-        }
-      } catch (error) {
-        toast.error(
-          `Failed to update description: ${error.message || "Unknown error"}`,
-          {
-            position: "top-right",
-            autoClose: 4000,
-          }
-        );
-      }
-    } else if (e.key === "Escape") {
-      dispatch({ type: "SET_IS_EDITING", payload: false });
-      dispatch({
-        type: "SET_NEW_DESCRIPTION",
-        payload: state.taskData?.description || "",
+  const handleTitleChange = useCallback((e) => {
+    setNewTitle(e.target.value);
+    setError(null);
+  }, []);
+
+  const handleSave = useCallback(async () => {
+    if (!newTitle?.trim()) {
+      setError("Title cannot be empty.");
+      toast.error("Title cannot be empty", {
+        position: "top-right",
+        autoClose: 4000,
       });
+      return false;
     }
+    if (!newDescription?.trim()) {
+      setError("Description cannot be empty.");
+      toast.error("Description cannot be empty", {
+        position: "top-right",
+        autoClose: 4000,
+      });
+      return false;
+    }
+    if (!checklistData) {
+      setError("Checklist data not loaded.");
+      toast.error("Checklist data not loaded", {
+        position: "top-right",
+        autoClose: 4000,
+      });
+      return false;
+    }
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const title = newTitle.trim();
+      const description = newDescription.trim();
+      const startedAt = checklistData.startedAt.endsWith("Z")
+        ? checklistData.startedAt
+        : `${checklistData.startedAt}Z`;
+      const finishedAt = checklistData.finishedAt.endsWith("Z")
+        ? checklistData.finishedAt
+        : `${checklistData.finishedAt}Z`;
+      const taskIdToUpdate = checklistData.taskId;
+
+      const result = await updateCheckListByIdAndTaskIdAction(
+        checklistId,
+        title,
+        description,
+        startedAt,
+        finishedAt,
+        taskIdToUpdate
+      );
+
+      setChecklistData({ ...checklistData, title, description });
+      toast.success("Checklist updated successfully ✅", {
+        position: "top-right",
+        autoClose: 2500,
+      });
+
+      setIsEditing(false);
+      return result;
+    } catch (err) {
+      setError(err.message || "Bad Request");
+      toast.error(
+        `Failed to update checklist: ${err.message || "Bad Request"}`,
+        {
+          position: "top-right",
+          autoClose: 4000,
+        }
+      );
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  }, [checklistData, newTitle, newDescription, checklistId]);
+
+  const handleSubmit = useCallback(
+    (e) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        handleSave();
+      } else if (e.key === "Escape") {
+        e.preventDefault();
+        handleCancel();
+      }
+    },
+    [handleSave, handleCancel]
+  );
+
+  const handleBlur = () => {
+    setIsEditing(false);
+    setNewDescription(checklistData?.description || "");
+    setNewTitle(checklistData?.title || "");
+    setError(null);
   };
 
   return {
-    state,
-    dispatch,
+    taskData: checklistData, // Renamed to match component usage
+    newDescription,
+    newTitle,
+    isEditing,
+    isEditingTitle,
+    loading: isLoading, // Renamed to match component usage
+    error,
     handleEditClick,
+    handleEditTitleClick,
     handleDescriptionChange,
     handleSubmit,
+    handleBlur,
+    handleSave,
+    handleTitleChange,
+    handleCancel,
   };
 };
 
@@ -280,14 +362,32 @@ const ModalDetailChecklist = ({
     checklistId,
     isOpen
   );
+  // Image upload state and ref
+  const [previewImage, setPreviewImage] = useState(
+    image || preventImage.noChecklistImage
+  );
+  const fileInputRef = useRef(null);
+  const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB in bytes
+
   const {
-    state: editorState,
-    dispatch: editorDispatch,
+    taskData,
+    newDescription,
+    newTitle,
+    isEditing,
+    isEditingTitle,
+    loading,
+    error,
     handleEditClick,
+    handleEditTitleClick,
     handleDescriptionChange,
     handleSubmit,
-  } = useDescriptionEditor(taskId, isOpen, "your-token-here");
+    handleBlur,
+    handleSave,
+    handleTitleChange,
+    handleCancel,
+  } = useDescriptionEditor(taskId, checklistId, isOpen);
 
+  console.log("Title checklist get in modal detail checklist: ", title);
   const fileIcons = {
     pdf: "https://cdn-icons-png.flaticon.com/128/4726/4726010.png",
     docx: "https://cdn-icons-png.flaticon.com/128/2991/2991108.png",
@@ -356,6 +456,79 @@ const ModalDetailChecklist = ({
     },
     [state.comments]
   );
+
+  /* for upload image */
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith("image/")) {
+        toast.error("Please select a valid image file.", {
+          position: "top-right",
+          autoClose: 4000,
+        });
+        return;
+      }
+      // Validate file size
+      if (file.size > MAX_FILE_SIZE) {
+        toast.error("File size exceeds 5MB limit.", {
+          position: "top-right",
+          autoClose: 4000,
+        });
+        return;
+      }
+      // Create local URL for preview
+      const imageUrl = URL.createObjectURL(file);
+      setPreviewImage(imageUrl);
+
+      // Optional: Upload to server
+      // uploadImageToServer(file);
+    }
+  };
+
+  const triggerFileInput = () => {
+    fileInputRef.current.click();
+  };
+
+  // Clean up object URL to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      if (previewImage && previewImage.startsWith("blob:")) {
+        URL.revokeObjectURL(previewImage);
+      }
+    };
+  }, [previewImage]);
+
+  // Optional: Server upload function
+  const uploadImageToServer = async (file) => {
+    const formData = new FormData();
+    formData.append("image", file);
+    try {
+      const response = await fetch(
+        `/api/checklists/${checklistId}/upload-image`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+      const data = await response.json();
+      if (data.success) {
+        setPreviewImage(data.imageUrl); // Update with server URL
+        toast.success("Image uploaded successfully!", {
+          position: "top-right",
+          autoClose: 4000,
+        });
+      } else {
+        throw new Error(data.message || "Upload failed");
+      }
+    } catch (error) {
+      toast.error("Failed to upload image.", {
+        position: "top-right",
+        autoClose: 4000,
+      });
+      setPreviewImage(image || preventImage.noChecklistImage); // Revert to original
+    }
+  };
 
   return (
     <div>
@@ -511,18 +684,60 @@ const ModalDetailChecklist = ({
                     <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary" />
                   </div>
                 )}
-                <div className="border rounded-medium flex justify-center items-center">
+                <div className="border rounded-medium flex justify-center items-center relative w-full h-40">
                   <img
-                    src={image || preventImage.noChecklistImage}
+                    src={previewImage}
                     alt="Checklist Image"
                     className="w-full h-40 object-cover rounded-medium"
                   />
+                  <input
+                    type="file"
+                    accept="image/*"
+                    ref={fileInputRef}
+                    className="hidden"
+                    onChange={handleImageUpload}
+                  />
+                  <button
+                    onClick={triggerFileInput}
+                    className="absolute bottom-2 right-2 bg-white p-2 rounded-full shadow-md hover:bg-gray-100"
+                    aria-label="Upload Image"
+                  >
+                    <CameraIcon className="h-6 w-6 text-gray-600" />
+                  </button>
                 </div>
                 <div className="flex flex-col">
+                  {/* Title checklist section */}
                   <div className="flex flex-wrap justify-between items-center">
-                    <p className="text-title text-h6 underline font-normal break-words max-w-full">
-                      {title || "Checklist Title"}
-                    </p>
+                    {isEditingTitle ? (
+                      <div className="space-y-3">
+                        <input
+                          type="text"
+                          value={newTitle}
+                          onChange={handleTitleChange}
+                          onKeyDown={handleSubmit}
+                          className="w-full p-3 text-lg font-normal text-gray-900 underline bg-gray-50 border-none focus:border-none focus:ring-0 rounded-md"
+                          placeholder="Enter checklist title..."
+                          autoFocus
+                          disabled={loading}
+                          aria-label="Checklist title input"
+                        />
+                      </div>
+                    ) : (
+                      <div
+                        onClick={handleEditTitleClick}
+                        className="cursor-pointer hover:bg-gray-50 p-2 rounded-md"
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={(e) =>
+                          e.key === "Enter" && handleEditTitleClick()
+                        }
+                        aria-label="Edit checklist title"
+                      >
+                        <p className="text-lg text-gray-900 underline font-normal break-words max-w-full">
+                          {title || "Checklist Title"}
+                        </p>
+                      </div>
+                    )}
 
                     <PopupAction
                       title={<Trash />}
@@ -537,6 +752,8 @@ const ModalDetailChecklist = ({
                       taskId={taskId}
                     />
                   </div>
+                  {/* ------------------------ */}
+
                   <div className="flex flex-wrap justify-between items-center mt-5">
                     <StackedProfileChecklist
                       member={member}
@@ -546,7 +763,7 @@ const ModalDetailChecklist = ({
                       leaderId={leaderId}
                       checklistId={checklistId}
                     />
-                    <div className="w-full max-w-xl flex flex-row gap-4">
+                    <div className=" max-w-xl flex flex-row gap-4">
                       <DateRangePicker
                         showMonthAndYearPickers
                         variant="none"
@@ -555,13 +772,15 @@ const ModalDetailChecklist = ({
                     </div>
                   </div>
                 </div>
+
+                {/* Description Section */}
                 <div className="flex flex-col space-y-3">
                   <div className="flex flex-wrap justify-between items-center">
                     <p className="text-h6 text-title font-semibold">
                       Description
                     </p>
                     <div
-                      className="cursor-pointer"
+                      className="cursor-pointer hover:bg-gray-100 p-1 rounded"
                       onClick={handleEditClick}
                       role="button"
                       aria-label="Edit description"
@@ -597,22 +816,113 @@ const ModalDetailChecklist = ({
                       </svg>
                     </div>
                   </div>
-                  {editorState.isEditing ? (
-                    <input
-                      type="text"
-                      value={editorState.newDescription}
-                      onChange={handleDescriptionChange}
-                      onKeyDown={handleSubmit}
-                      className="text-title/50 text-caption break-words max-w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      autoFocus
-                    />
-                  ) : (
-                    <p className="text-title/50 text-caption break-words max-w-full">
-                      {editorState.newDescription ||
-                        "The Task Management System is a web-based application designed to help individuals and teams effectively manage their daily activity"}
-                    </p>
+
+                  {/* Loading state for initial data fetch */}
+                  {loading && !taskData && (
+                    <div className="text-sm text-gray-500 flex items-center">
+                      <div className="animate-spin rounded-full h-4 w-4 mr-2"></div>
+                      Loading checklist data...
+                    </div>
+                  )}
+
+                  {/* Error state for data fetch */}
+                  {error && !isEditing && (
+                    <div className="text-sm text-red-500 bg-red-50 p-2 rounded">
+                      Error: {error}
+                    </div>
+                  )}
+
+                  {(!loading || taskData) && (
+                    <>
+                      {isEditing ? (
+                        <div className="space-y-3">
+                          <textarea
+                            value={newDescription}
+                            onChange={handleDescriptionChange}
+                            onKeyDown={handleSubmit}
+                            className="w-full p-3 resize-none border-none focus:border-none focus:ring-0 text-gray-700 text-sm rounded-md bg-gray-50"
+                            rows={2}
+                            placeholder="Enter description..."
+                            autoFocus
+                            disabled={loading}
+                            variant="none"
+                          />
+
+                          {/* Action buttons */}
+                          <div className="flex items-center justify-between">
+                            <div className="flex space-x-2">
+                              <button
+                                onClick={handleSave}
+                                disabled={loading || !newDescription.trim()}
+                                className="text-btn-sm px-4 py-1 bg-primary text-white text-sm font-medium rounded-large hover:bg-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+                              >
+                                {loading ? (
+                                  <>
+                                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2 "></div>
+                                    Saving...
+                                  </>
+                                ) : (
+                                  <>Save</>
+                                )}
+                              </button>
+
+                              <button
+                                onClick={handleCancel}
+                                disabled={loading}
+                                className="text-btn-sm px-4 py-1 bg-gray-400 text-white text-sm font-medium rounded-large  focus:outline-none focus:ring-2 focus:ring-gray-200 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* Error state during editing */}
+                          {error && (
+                            <div className="text-sm text-red-500 bg-red-50 p-3 rounded-md border border-red-200">
+                              <div className="flex items-center">
+                                <svg
+                                  className="w-4 h-4 mr-2 text-red-500"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                  />
+                                </svg>
+                                Error: {error}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <div
+                          onClick={handleEditClick}
+                          className="w-full p-3  min-h-[80px] cursor-pointer transition-colors group"
+                        >
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              {taskData?.description ? (
+                                <p className="text-gray-700 whitespace-pre-wrap">
+                                  {taskData.description}
+                                </p>
+                              ) : (
+                                <p className="text-gray-400 italic">
+                                  Click to add description...
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </>
                   )}
                 </div>
+                {/* --------------------------- */}
+
                 {state.selectedAttachment && (
                   <div className="mt-4 p-3 border rounded">
                     <p className="font-medium">

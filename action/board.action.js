@@ -57,11 +57,12 @@ export const getTaskByBoardIdAndGanttBarIdAction = async ({
 export const getCheckListByTaskIdAction = async ({ taskId }) => {
   const userToken = await Token();
   const token = userToken.Credential;
-  //console.log(token);
+
   const result = await getCheckListByTaskIdService({
     taskId,
     token,
   });
+  console.log("Result in getCheckListByTaskIdAction: ", result);
   return result;
 };
 
@@ -659,17 +660,29 @@ export const deleteCheckListByTaskIdAction = async (checkListId, taskId) => {
  * new add
  * update checklist by specific tasks ID and checklist id
  */
-export const updateCheckListByIdAndTaskIdAction = async ({
+
+export const updateCheckListByIdAndTaskIdAction = async (
   checkListId,
   title,
   description,
   startedAt,
   finishedAt,
-  taskId,
-}) => {
+  taskId
+) => {
   const userToken = await Token();
   const token = userToken?.Credential;
-  const result = await updateCheckListByIdAndTaskIdService({
+
+  console.log("Checklist in upateChecklistByIdAndTaskIdAction: ", checkListId);
+  console.log("title in upateChecklistByIdAndTaskIdAction: ", title);
+  console.log(
+    "description in upateChecklistByIdAndTaskIdAction: ",
+    description
+  );
+  console.log("startedAt in upateChecklistByIdAndTaskIdAction: ", startedAt);
+  console.log("finishedAt in upateChecklistByIdAndTaskIdAction: ", finishedAt);
+  console.log("taskId in upateChecklistByIdAndTaskIdAction: ", taskId);
+
+  const result = await updateCheckListByIdAndTaskIdService(
     checkListId,
     title,
     description,
@@ -677,7 +690,8 @@ export const updateCheckListByIdAndTaskIdAction = async ({
     finishedAt,
     taskId,
     token,
-  });
+  );
+
   revalidatePath("/member");
   return result;
 };

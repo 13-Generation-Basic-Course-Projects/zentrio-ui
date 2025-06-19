@@ -137,8 +137,9 @@ export default function Myworkspace({
                       } else if (board.cover) {
                         // ⛳️ New logic for uploaded files
                         // image = `http://localhost:8080/api/v1/files/${board.cover}`; // or your actual static file URL path
-                        image = `http://localhost:8080/api/v1/boards/${board.boardId}/cover/${board.cover}`;
+                        // image = `http://localhost:8080/api/v1/boards/${board.boardId}/cover/${board.cover}`;
                         // image = `D:\\Albums\\Pictures\\${board.cover}`;
+                        image = `http://localhost:8080/api/v1/files/preview-file/${board.cover}`;
                       } else {
                         image = "bg-gray-200";
                       }

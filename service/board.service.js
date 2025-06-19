@@ -879,7 +879,7 @@ export const deleteCheckListByTaskIdService = async ({
  * new add
  * update checklist by specific tasks ID and checklist id
  */
-export const updateCheckListByIdAndTaskIdService = async ({
+export const updateCheckListByIdAndTaskIdService = async (
   checklistId,
   title,
   description,
@@ -887,13 +887,11 @@ export const updateCheckListByIdAndTaskIdService = async ({
   finishedAt,
   taskId,
   token,
-}) => {
+) => {
   console.log("Token in update checklist service: ", token);
-  console.log(
-    "Request URL: ",
-    checklistRouteGroup.updateCheckListByIdAndTaskId(checklistId)
-  );
-  console.log("Request Body: ", {
+  
+  console.log("Request Body in update service: ", {
+    checklistId,
     title,
     description,
     startedAt,
@@ -902,7 +900,9 @@ export const updateCheckListByIdAndTaskIdService = async ({
   });
 
   const url = checklistRouteGroup.updateCheckListByIdAndTaskId(checklistId);
-
+  console.log(
+    "Request URL",url
+  );
   const response = await fetch(url, {
     method: "PUT",
     headers: {
