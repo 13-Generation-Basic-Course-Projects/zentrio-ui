@@ -121,7 +121,9 @@ export function CardFile({
   return (
     <Card className="rounded-xl text-blue-400 cursor-pointer hover:bg-blue-50 transition sm:w-[160px] md:w-full h-[160px] shadow-sm">
       {/* Header */}
-      <CardHeader className={`pb-0 pt-2 px-4 flex justify-end  ${isHidden ? `pt-6`: ``}`}>
+      <CardHeader
+        className={`pb-0 pt-2 px-4 flex justify-end  ${isHidden ? `pt-6` : ``}`}
+      >
         <div className="hover:text-black text-gray-600">
           {isHidden == true ? (
             ""

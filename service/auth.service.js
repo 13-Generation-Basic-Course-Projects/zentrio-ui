@@ -3,7 +3,6 @@
 import { redirect } from "next/navigation";
 import { authRoute } from "../routes/authRoute";
 import { apiConfig } from "@/constant/baseurl";
-
 /*
  * register
  */
@@ -143,8 +142,6 @@ export const resendOtpZentrioService = async ({ email, type }) => {
   }
 };
 
-
-
 /*
  * login google
  */
@@ -170,10 +167,10 @@ export const loginGoogleService = async ({ accesToken }) => {
 };
 
 /*
-* resend otp forgot
-*/
+ * resend otp forgot
+ */
 
-export const resendOtpForgotPasswordService = async ({email,type}) => {
+export const resendOtpForgotPasswordService = async ({ email, type }) => {
   try {
     const res = await fetch(
       `${authRoute.resendOtpUserRoute()}?email=${encodeURIComponent(
