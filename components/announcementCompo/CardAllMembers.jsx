@@ -28,13 +28,13 @@ export default function CardAllMembers({ boardMember, preventUserImage }) {
   };
 
   return (
-    <div className=" mx-auto p-4">
-      <Card className="shadow-lg border-0 bg-white">
+    <div className=" mx-auto p-2">
+      <Card className="shadow-lg border-1 bg-white rounded-xl">
         <CardContent className="p-6">
           {/* Header */}
           <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-100">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-[#59BAD5] rounded-lg">
+              <div className="p-2 bg-[#59BAD5] rounded-xl">
                 <UsersRound className="w-5 h-5 text-white" />
               </div>
               <div>

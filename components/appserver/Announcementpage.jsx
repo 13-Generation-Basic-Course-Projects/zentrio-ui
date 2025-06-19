@@ -4,6 +4,7 @@ import CardCreateAnnouncement from "../announcementCompo/CardCreateAnnouncement"
 import CardAllMembers from "../announcementCompo/CardAllMembers";
 import CardFilterComponent from "../announcementCompo/CardFilterComponent";
 import { preventImage } from "@/constant/preventimage";
+import ClockWeather from "../announcementCompo/ClockWheather";
 
 export default function Announcementpage({
   boardId,
@@ -12,28 +13,44 @@ export default function Announcementpage({
   currentUserProfile,
 }) {
   console.log("All announcement", Announcements);
-  console.log("kdet", boardId);
-  console.log("kdetko", boardMember);
+  console.log("kdetttt", boardId);
+  console.log("kdetkoooo", boardMember);
+  console.log("user",currentUserProfile)
   const preventUserImage = preventImage.noProfile;
+
+  const currentUserBoardInfo = boardMember.find(
+    (member) => member.userId === currentUserProfile?.payload?.user?.userId
+  );
+  console.log("gggg",currentUserProfile?.payload?.user?.userId)
+  console.log("info",currentUserBoardInfo);
+  const currentUserRoles = currentUserBoardInfo?.roles || [];
+  console.log("ss",currentUserRoles)
+  const isProjectManager = currentUserRoles.includes("ROLE_MANAGER");
+  console.log("rolemamam",isProjectManager)
+  
+
   return (
     <div className="grid grid-cols-12 w-full h-screen p-2">
       <div className="col-span-8 ">
         <div className="pt-0 ">
-          <CardCreateAnnouncement
-            boardId={boardId}
-            boardMember={boardMember}
-            Announcements={Announcements}
-            preventUserImage={preventUserImage}
-          />
+          {isProjectManager && (
+            <CardCreateAnnouncement
+              boardId={boardId}
+              boardMember={boardMember}
+              Announcements={Announcements}
+              preventUserImage={preventUserImage}
+            />
+          )}
         </div>
 
-        <div className="w-full h-full ">
-          <div className="space-y-4 px-2 py-4">
+        <div className="w-full h-full">
+          <div>
             <CartPostAnnouncement
               Announcements={Announcements}
               currentUserProfile={currentUserProfile}
               boardId={boardId}
               preventUserImage={preventUserImage}
+              boardMember={boardMember}
             />
           </div>
         </div>
@@ -44,6 +61,7 @@ export default function Announcementpage({
           boardMember={boardMember}
           preventUserImage={preventUserImage}
         />
+        <ClockWeather />
       </div>
     </div>
   );
