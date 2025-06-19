@@ -33,10 +33,10 @@ export const metadata = {
 
 //this layout is use for everything of workspace, and dashbaord .......
 
-export default async function SystemLayout({ children }) {
+export default async function SystemLayout({ children, params }) {
   const session = await auth();
   console.log("aaa", session?.user);
-
+  const boardId = params.id;
   /*  call action get all workspace */
   const workspaceData = await getAllWorkspaceAction();
   /*  call action get all workspace for users */
@@ -68,15 +68,6 @@ export default async function SystemLayout({ children }) {
   console.log("getWorKSpaceJoined", getWorKSpaceJoined);
 
   const notificationData = await getNotificationForUserIdAction(myUserId);
-
-  // const taskId = "97a2fdb-40d2-4321-9d4f-69e21e79be2a";
-  // const message = "Task is completed ";
-  // const sendNoti = await sendNotificationToUserIdAction(
-  //   myUserId,
-  //   taskId,
-  //   message
-  // );
-  // console.log("sendNoti", sendNoti);
 
   return (
     // <LoadingBarContainer>

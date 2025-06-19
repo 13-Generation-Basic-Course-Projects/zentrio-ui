@@ -99,9 +99,9 @@ export default function ModalCreateDocuInFolder({ boardId, folderId, tokenFromGo
 
         const data = {
           name: defaultNames[key],
-          folderId,
+          folderId: folderId,
           fileType: mimeTypes[key],
-          tokenFromGoogle
+          token: tokenFromGoogle,
         }
 
         console.log("Creating Google file with data: ", data);

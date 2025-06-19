@@ -165,6 +165,8 @@ export default function ModalFolderList({
                           status={el.status || "personal"}
                           date={new Date().toISOString().split("T")[0]}
                           type={fileType}
+                          fileId={el.id}
+                          tokenFromGoogle={accessToken}
                           link={el.webViewLink}
                         />
                       );

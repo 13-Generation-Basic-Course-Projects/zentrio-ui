@@ -49,9 +49,11 @@ export default function HorizontalChart({
               maxVisitors > 0
                 ? (item.visitors / maxVisitors) * barAreaWidth
                 : 0;
-            const percent =
-              ((item.visitors / maxVisitors) * 100).toFixed(1) + "%";
+            const visitors = item.visitors || 0;
+            const max = maxVisitors || 1; // Use 1 to avoid division by zero
+            const percent = ((visitors / max) * 100).toFixed(1) + "%";
             const y = index * (barHeight + barGap);
+            const textAnchor = barLength > 50 ? "end" : "start";
             return (
               <g key={item.browser} transform={`translate(0, ${y})`}>
                 {/* Status Label */}
@@ -69,7 +71,7 @@ export default function HorizontalChart({
                 <rect
                   x={labelWidth}
                   y={0}
-                  width={barLength}
+                  width={barLength - 60}
                   height={barHeight}
                   fill={item.color}
                   rx={4}
@@ -82,6 +84,7 @@ export default function HorizontalChart({
                   alignmentBaseline="middle"
                   fontSize="12"
                   fill="#0f172a"
+                  textAnchor={textAnchor}
                 >
                   {item.visitors} ({percent})
                 </text>

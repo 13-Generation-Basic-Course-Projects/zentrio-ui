@@ -17,6 +17,7 @@ import { NavbarLanding } from "@/components/layout/Navbar";
 import Link from "next/link";
 import "animate.css";
 import AnimatedSection from "@/components/animation/AnimatedSection";
+import Logout from "../(auth)/_components/Logout";
 
 //useage : http://localhost:3000/
 
@@ -39,6 +40,9 @@ export default function Home() {
   return (
     <div className="w-full">
       <section className="relative h-auto bg-gradient-to-b from-[#bdeffc] to-slate overflow-hidden">
+        {/* <div className="absolute top-4 right-10 hidden">
+          <Logout />
+        </div> */}
         <div className=" lg:mx-[50px] relative z-50 max-w-screen-xl xl:mx-auto">
           <NavbarLanding />
         </div>
@@ -169,7 +173,7 @@ export default function Home() {
                 one place.
               </p>
             </div>
-            <Link href="/login">
+            <Link href="/workspace">
               <Button className="text-body w-[168.06px] h-[50.06px] font-semibold tracking-wide sm:text-sm lg:text-body bg-primary text-white px-4 sm:px-6 py-2 sm:py-3 rounded-[8px]">
                 <span>Get Started</span>
                 <svg
@@ -327,25 +331,25 @@ export default function Home() {
 
         <AnimatedSection animation="animate__zoomIn">
           <section className="mt-16">
-          <div className="grid grid-cols-1 gap-y-6 items-center justify-items-center">
-            <div className="text-center">
-              <h2 className="text-h2 font-semibold">
-                <span className="bg-gradient-to-r from-[#59BAD5] via-[#ABAAFF] to-[#59BAD5] bg-clip-text text-transparent">
-                  Visualizing,
-                </span>
-                Your Time-Line
-              </h2>
-              <p className="text-description">
-                Streamline your workflow with powerful, intuitive tools that
-                ensure every team member stays organized, aligned, and focused
-                on their tasks.
-              </p>
+            <div className="grid grid-cols-1 gap-y-6 items-center justify-items-center">
+              <div className="text-center">
+                <h2 className="text-h2 font-semibold">
+                  <span className="bg-gradient-to-r from-[#59BAD5] via-[#ABAAFF] to-[#59BAD5] bg-clip-text text-transparent">
+                    Visualizing,
+                  </span>
+                  Your Time-Line
+                </h2>
+                <p className="text-description">
+                  Streamline your workflow with powerful, intuitive tools that
+                  ensure every team member stays organized, aligned, and focused
+                  on their tasks.
+                </p>
+              </div>
+              <div className="">
+                <Image alt="four states" src={daigramImg} className="" />
+              </div>
             </div>
-            <div className="">
-              <Image alt="four states" src={daigramImg} className="" />
-            </div>
-          </div>
-        </section>
+          </section>
         </AnimatedSection>
       </div>
     </div>

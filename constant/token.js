@@ -6,8 +6,10 @@ import { auth } from "@/auth";
 export const Token = async () => {
   const session = await auth();
   const UserToken = {
-    Credential: `${session?.token?.user?.payload?.token}`,
-    Google: `${session?.token?.user?.payload?.token}`,
+    Credential: session?.backendToken
+      ? session.backendToken
+      : session?.token?.user?.payload?.token,
+    GoogleDocumentToken: session?.accessToken ? session?.accessToken : null, //for when document
   };
   return UserToken;
 };

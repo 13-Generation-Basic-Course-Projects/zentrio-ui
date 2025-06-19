@@ -6,6 +6,7 @@ import { getCurrentUserProfileAction } from "@/action/profile.action";
 import { auth } from "@/auth";
 import DocumentAutherize from "@/components/appserver/Documentpage";
 import { preventImage } from "@/constant/preventimage";
+import { Token } from "@/constant/token";
 
 export default async function BoardLayout({ children, params }) {
   const session = await auth();
@@ -14,8 +15,14 @@ export default async function BoardLayout({ children, params }) {
   const getDocuments = await getDocumentsByBoardAction(boardId);
   const publicDocuments = await getPublicDocumentsByBoardAction(boardId);
 
-  const tokenFromGoogle =
-    "ya29.a0AS3H6Nzbjh32qvhl_6x6lB4Sc-deRqQWGAwlno2kRP12WXQMdT0O0mSc-dnhwCAJq86FM5I9Lr_jxq9HxG1WNcymcRQr6buT3BZ3q6qzh3dtRnbrGMgR7NFFgZ0kLgqX02yzWBRi8sfBIT-cJM6WBJRV0LxlnizajtCjPp3yaCgYKAcASARISFQHGX2MiTzZdG1Q7lfkVyv7TuNOW3Q0175";
+  // const refresh_token = session?.user?.google?.refreshToken;
+  // const tokenFromGoogle = await refreshAccessToken(refresh_token);
+
+  // console.log("refresh token ", refresh_token)
+  const userToken = await Token();
+  const token = userToken.GoogleDocumentToken;
+
+  const tokenFromGoogle = token;
 
   //pf
   /*
