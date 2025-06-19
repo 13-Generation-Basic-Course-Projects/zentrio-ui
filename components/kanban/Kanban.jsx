@@ -920,7 +920,7 @@ export default function KanbanBoard({
                                               : card.assignees[0] || ""
                                           }
                                           description={checklist.description}
-                                          checklistId={checklist.checklistId}
+                                          checklistId={checklist?.checklistId}
                                           members={checklist.members || []}
                                           createdAt={checklist.createdAt}
                                           updatedAt={checklist.updatedAt}

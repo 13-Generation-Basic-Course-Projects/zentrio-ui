@@ -50,7 +50,6 @@ export const {
       },
     }),
   ],
-  secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     async jwt({ token, account, user }) {
       // Handle Credentials login (user is populated from authorize)
