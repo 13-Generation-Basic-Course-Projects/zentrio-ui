@@ -1,238 +1,291 @@
 "use client";
 
 import React, { useState, useMemo, useRef, useEffect } from "react";
+// import {
+//   BarChart,
+//   Bar,
+//   CartesianGrid,
+//   XAxis,
+//   Tooltip,
+//   YAxis,
+//   Cell,
+// } from "recharts";
+
 import {
-  BarChart,
-  Bar,
-  CartesianGrid,
-  XAxis,
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  BarElement,
+  Title,
   Tooltip,
-  YAxis,
-  Cell,
-} from "recharts";
+  Filler,
+} from "chart.js";
+import { Bar } from "react-chartjs-2";
 
-// Fixed soft colors for 4 stages
-const stageColors = {
-  Todo: "hsl(210, 70%, 85%)", // Soft blue
-  "On Progress": "hsl(40, 70%, 85%)", // Soft yellow
-  "Under Review": "hsl(260, 70%, 85%)", // Soft purple
-  Done: "hsl(160, 70%, 85%)", // Soft green
-};
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  BarElement,
+  Title,
+  Tooltip,
+  Filler
+);
 
-export default function VerticalChart({ weeknum, totalTask, chartData }) {
-  // const chartData = [
-  //   { date: "2024-01-10", stage: "Todo", weekly: 2, monthly: 6 },
-  //   { date: "2024-02-12", stage: "On Progress", weekly: 3, monthly: 7 },
-  //   { date: "2024-03-15", stage: "Done", weekly: 1, monthly: 4 },
-  //   { date: "2024-04-18", stage: "Under Review", weekly: 2, monthly: 5 },
-  //   { date: "2024-05-20", stage: "Todo", weekly: 4, monthly: 8 },
-  //   { date: "2024-06-22", stage: "On Progress", weekly: 3, monthly: 6 },
-  //   { date: "2024-07-24", stage: "Done", weekly: 2, monthly: 7 },
-  //   { date: "2024-08-26", stage: "Under Review", weekly: 1, monthly: 3 },
-  //   { date: "2024-09-10", stage: "Todo", weekly: 2, monthly: 4 },
-  //   { date: "2024-10-14", stage: "On Progress", weekly: 3, monthly: 5 },
-  //   { date: "2024-11-17", stage: "Done", weekly: 2, monthly: 6 },
-  //   { date: "2024-12-19", stage: "Under Review", weekly: 1, monthly: 2 },
-  // ];
+const WeeklyChartBar = () => {};
 
-  const [activeChart, setActiveChart] = useState("weekly");
-  const chartContainerRef = useRef(null);
-  const [chartWidth, setChartWidth] = useState(0);
-
-  // Group data by week/month and stage, accumulate counts for stacking
-  const groupedData = useMemo(() => {
-    const groups = {};
-
-    chartData.forEach(({ date, stage, weekly, monthly }) => {
-      const d = new Date(date);
-      const day = d.getDate();
-      const weekNum = Math.ceil(day / 7);
-
-      let groupKey = "";
-      if (activeChart === "weekly") {
-        groupKey = `Week ${weekNum}`;
-      } else {
-        const month = d.toLocaleString("default", { month: "long" });
-        groupKey = month;
-      }
-
-      if (!groups[groupKey]) {
-        groups[groupKey] = {
-          name: groupKey,
-          Todo: 0,
-          "On Progress": 0,
-          "Under Review": 0,
-          Done: 0,
-        };
-      }
-
-      groups[groupKey][stage] += activeChart === "weekly" ? weekly : monthly;
-    });
-
-    return Object.values(groups);
-  }, [activeChart]);
-
-  // Calculate total tasks for the active chart
-  const total = useMemo(() => {
-    return chartData.reduce(
-      (acc, item) =>
-        acc + (activeChart === "weekly" ? item.weekly : item.monthly),
-      0
-    );
-  }, [activeChart]);
-
-  // Update chart width on mount and resize
-  useEffect(() => {
-    const updateWidth = () => {
-      if (chartContainerRef.current) {
-        // Use getBoundingClientRect to account for padding/margins
-        setChartWidth(chartContainerRef.current.getBoundingClientRect().width);
-      }
-    };
-
-    // Run after layout is complete
-    const timeoutId = setTimeout(updateWidth, 0);
-    window.addEventListener("resize", updateWidth);
-    return () => {
-      clearTimeout(timeoutId);
-      window.removeEventListener("resize", updateWidth);
-    };
-  }, []);
+const MonthyChartBar = () => {
+  const labels = ["Jan", "Feb", "Mar", "April", "May", "June", "July", "Aug"];
+  const datasets = [12, 45, 67, 43, 89, 34, 67, 43];
+  const data = {
+    labels: labels,
+    datasets: [
+      {
+        // Title of Graph
+        label: "My Bar Chart",
+        data: datasets,
+        backgroundColor: [
+          "rgba(255, 99, 132, 0.2)",
+          "rgba(255, 159, 64, 0.2)",
+          "rgba(255, 205, 86, 0.2)",
+          "rgba(75, 192, 192, 0.2)",
+        ],
+        borderColor: [
+          "rgb(255, 99, 132)",
+          "rgb(255, 159, 64)",
+          "rgb(255, 205, 86)",
+          "rgb(75, 192, 192)",
+        ],
+        borderWidth: 1,
+        barPercentage: 1,
+        borderRadius: {
+          topLeft: 5,
+          topRight: 5,
+        },
+      },
+      // insert similar in dataset object for making multi bar chart
+    ],
+  };
+  const options = {
+    scales: {
+      y: {
+        title: {
+          display: true,
+        },
+        display: true,
+        beginAtZero: true,
+        max: 100,
+      },
+      x: {
+        title: {
+          display: true,
+        },
+        display: true,
+      },
+    },
+  };
 
   return (
-    <div className="w-full p-2 bg-white shadow-sm rounded-xl shadow-md grid grid-cols-12 gap-2">
-      {/* Left chart area */}
-      <div className="flex-1 col-span-10">
-        <div className="grid grid-cols-1 gap-2">
-          {/* Header */}
-          <div className="flex justify-between items-center mb-4">
-            <div>
-              <p className="text-sm text-description">Detail</p>
-              <div className="text-h5 font-bold">
-                Total task: <span className="font-semibold">{total}</span>
-              </div>
-            </div>
-            <div className="flex gap-2 bg-title/5 p-2 rounded-small">
-              <button
-                className={`px-3 py-1 rounded ${
-                  activeChart === "weekly"
-                    ? "bg-black text-white"
-                    : "bg-gray-200 text-gray-800"
-                }`}
-                onClick={() => setActiveChart("weekly")}
-              >
-                weekly
-              </button>
-              <button
-                className={`px-3 py-1 rounded ${
-                  activeChart === "monthly"
-                    ? "bg-black text-white"
-                    : "bg-gray-200 text-gray-800"
-                }`}
-                onClick={() => setActiveChart("monthly")}
-              >
-                monthly
-              </button>
-            </div>
-          </div>
-          {/* Chart */}
-          <div ref={chartContainerRef} className="w-full">
-            <BarChart
-              width={chartWidth}
-              height={350}
-              data={chartData}
-              margin={{ top: 0, right: 0, left: 0, bottom: 0 }}
-            >
-              <defs>
-                <linearGradient id="barGradient" x1="0" y1="0" x2="1" y2="0">
-                  <stop offset="0%" stopColor="#FFFFFF" />
-                  <stop offset="50%" stopColor="#59BAD5" />
-                  <stop offset="100%" stopColor="#59BAD5" />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} />
-              <YAxis />
-              <XAxis
-                dataKey="date"
-                tickFormatter={(date) => {
-                  const d = new Date(date);
-                  if (activeChart === "weekly") {
-                    const weekNum = Math.ceil(d.getDate() / 7);
-                    return `Week ${weekNum}`;
-                  } else {
-                    return d.toLocaleDateString("en-US", { month: "short" });
-                  }
-                }}
-                tick={{ fontSize: 10 }}
-              />
-              <Tooltip
-                content={({ active, payload, label }) => {
-                  if (!active || !payload || payload.length === 0) return null;
-                  return (
-                    <div
-                      style={{
-                        border: "1px solid #ccc",
-                        padding: 8,
-                        borderRadius: 8,
-                      }}
-                    >
-                      <div style={{ fontWeight: "semibold", marginBottom: 6 }}>
-                        Date: {label}
-                      </div>
-                      {payload.map((entry) => (
-                        <div
-                          key={entry.dataKey}
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            marginBottom: 4,
-                          }}
-                        >
-                          <span style={{ color: entry.color, fontWeight: 300 }}>
-                            {entry.payload.stage || entry.name}
-                          </span>
-                          <span>{entry.value} tasks</span>
-                        </div>
-                      ))}
-                    </div>
-                  );
-                }}
-              />
-              <Bar dataKey={activeChart} radius={[5, 5, 0, 0]}>
-                {chartData.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={
-                      activeChart === "monthly"
-                        ? "url(#barGradient)"
-                        : stageColors[entry.stage]
-                    }
-                  />
-                ))}
-              </Bar>
-            </BarChart>
-          </div>
-        </div>
-      </div>
-
-      {/* Right side 4 stage container */}
-      <div className="col-span-2 border-l-1 rounded flex justify-center items-center flex-col">
-        <div className="relative mb-2 font-semibold text-primary text-caption bg-bgColor py-2.5 ps-11 pe-8 border-primary border-1 rounded-full flex items-center">
-          <div className="absolute left-5 w-3 h-3 bg-primary rounded-full"></div>
-          All Category
-        </div>
-        <ul className="space-y-3 text-title text-caption-tiny">
-          {Object.entries(stageColors).map(([stage, color]) => (
-            <li key={stage} className="flex items-center gap-2">
-              <span
-                className="inline-block w-4 h-4 rounded-full"
-                style={{ border: `2px solid ${color}` }}
-              ></span>
-              {stage}
-            </li>
-          ))}
-        </ul>
-      </div>
+    <div style={{ width: "1000px" }}>
+      <Bar data={data} options={options} />
     </div>
+  );
+};
+
+export default function VerticalChart({ report }) {
+  const [weeklyClick, setWeeklyClick] = useState(false);
+  const [monthlyClick, setMonthlyClick] = useState(false);
+
+  const task = {
+    todo: 0,
+    progress: 0,
+    review: 0,
+    done: 0,
+  };
+
+  report?.payload?.groupedTasks.forEach((item) => {
+    if (item.stage == "TO DO") {
+      task.todo = task.todo + item.count;
+    } else if (item.stage == "IN_PROGRESS") {
+      task.progress = task.progress + item.count;
+    } else if (item.stage == "UNDER_REVIEW") {
+      task.review = task.review + item.count;
+    } else {
+      task.done = task.done + item.count;
+    }
+  });
+
+  return (
+    <>
+      <div className="w-full h-[426px] flex pb-[1.50%]">
+        <div className="w-[70%]">
+          <div className="w-full h-[17.5%] flex items-center">
+            <div className="w-[70%]">
+              <p className="text-[14px] text-black/40">Detail</p>
+              <p className="text-[17px] text-black font-bold">Total Task</p>
+            </div>
+            <div className="flex rounded-[16px] bg-black/5 px-[1.5%] py-[1%]">
+              <p
+                className={`px-[11px] pt-[7px] cursor-pointer pb-[8px] ${
+                  weeklyClick ? "bg-black text-white" : "text-black/40"
+                } text-[11px] rounded-[10px]`}
+                onClick={() => {
+                  setWeeklyClick(true);
+                  setMonthlyClick(false);
+                }}
+              >
+                Weekly
+              </p>
+              <p
+                className={`px-[11px] pt-[7px] cursor-pointer pb-[8px] ${
+                  monthlyClick ? "bg-black text-white" : "text-black/40"
+                } text-[11px] rounded-[10px]`}
+                onClick={() => {
+                  setMonthlyClick(true);
+                  setWeeklyClick(false);
+                }}
+              >
+                Monthly
+              </p>
+            </div>
+          </div>
+          <div className="w-[97.5%] border-t h-[85%] flex justify-end ">
+            <div className="w-[98.25%] h-[90%] flex justify-center items-center">
+              <MonthyChartBar />
+            </div>
+          </div>
+        </div>
+        <div className="w-[30%] border-l-1 border-gray-200 flex justify-center items-center">
+          {/* Start code line amount of all task */}
+          <div className="w-[140px] text-[11px] flex flex-col justify-center gap-[7.5%] h-[50%]">
+            <div className="text-primary h-[35px] bg-[#59BAD5]/10 rounded-full w-full border-primary border flex items-center justify-center">
+              <svg
+                width="12"
+                height="13"
+                viewBox="0 0 12 13"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle cx="6.05255" cy="6.92951" r="5.9549" fill="#59BAD5" />
+              </svg>
+              <p className="pl-[7.5%]">All Categories</p>
+            </div>
+            {/* Start code line amount of todo task */}
+            <div className="flex items-center w-full px-[10%]">
+              <div className="flex items-center w-[60%]">
+                <svg
+                  width="13"
+                  height="13"
+                  viewBox="0 0 13 13"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle
+                    cx="6.42755"
+                    cy="6.50373"
+                    r="5.35941"
+                    stroke="hsl(210, 70%, 85%)"
+                    strokeWidth="1.19098"
+                  />
+                </svg>
+                <p className="pl-[7.5%] text-[9px]">To Do</p>
+              </div>
+              {weeklyClick ? (
+                <p className="w-[40%] text-right text-[9px]">{task.todo}</p>
+              ) : (
+                <p className="w-[40%] text-right text-[9px]">0</p>
+              )}
+            </div>
+            {/* End code line amount of todo task */}
+
+            {/* Start code line amount of todo task */}
+            <div className="flex items-center w-full px-[10%]">
+              <div className="flex items-center w-[60%]">
+                <svg
+                  width="13"
+                  height="13"
+                  viewBox="0 0 13 13"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle
+                    cx="6.42755"
+                    cy="6.50373"
+                    r="5.35941"
+                    stroke="hsl(40, 70%, 85%)"
+                    strokeWidth="1.19098"
+                  />
+                </svg>
+                <p className="pl-[7.5%] text-[9px]">In Progress</p>
+              </div>
+              {weeklyClick ? (
+                <p className="w-[40%] text-right text-[9px]">{task.progress}</p>
+              ) : (
+                <p className="w-[40%] text-right text-[9px]">0</p>
+              )}
+            </div>
+            {/* End code line amount of todo task */}
+
+            {/* Start code line amount of todo task */}
+            <div className="flex items-center w-full px-[10%]">
+              <div className="flex items-center w-[100%]">
+                <svg
+                  width="13"
+                  height="13"
+                  viewBox="0 0 13 13"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle
+                    cx="6.42755"
+                    cy="6.50373"
+                    r="5.35941"
+                    stroke="hsl(160, 70%, 85%)"
+                    strokeWidth="1.19098"
+                  />
+                </svg>
+                <p className="pl-[7.5%] text-[9px]">Under Review</p>
+              </div>
+              {weeklyClick ? (
+                <p className="w-[40%] text-right text-[9px]">{task.review}</p>
+              ) : (
+                <p className="w-[40%] text-right text-[9px]">0</p>
+              )}
+            </div>
+            {/* End code line amount of todo task */}
+
+            {/* Start code line amount of todo task */}
+            <div className="flex items-center w-full px-[10%]">
+              <div className="flex items-center w-[60%]">
+                <svg
+                  width="13"
+                  height="13"
+                  viewBox="0 0 13 13"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle
+                    cx="6.42755"
+                    cy="6.50373"
+                    r="5.35941"
+                    stroke="hsl(260, 70%, 85%)"
+                    strokeWidth="1.19098"
+                  />
+                </svg>
+                <p className="pl-[7.5%] text-[9px]">Done</p>
+              </div>
+              {weeklyClick ? (
+                <p className="w-[40%] text-right text-[9px]">{task.done}</p>
+              ) : (
+                <p className="w-[40%] text-right text-[9px]">0</p>
+              )}
+            </div>
+            {/* End code line amount of todo task */}
+          </div>
+          {/* End code line amount of all task */}
+        </div>
+      </div>
+    </>
   );
 }

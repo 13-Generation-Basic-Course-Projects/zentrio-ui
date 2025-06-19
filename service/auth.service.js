@@ -3,7 +3,6 @@
 import { redirect } from "next/navigation";
 import { authRoute } from "../routes/authRoute";
 import { apiConfig } from "@/constant/baseurl";
-
 /*
  * register
  */

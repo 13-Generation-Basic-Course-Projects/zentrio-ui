@@ -6,7 +6,10 @@ import BredCrum from "../bredcrum/MyBredcrum";
 import { documentData } from "@/data/docu/documentData";
 import CardFolder, { CardFile } from "../card/CardDoc";
 import { Autocomplete, AutocompleteItem, Input, link } from "@heroui/react";
+<<<<<<< HEAD
 import ModalCreateDocu from "../modal/docu/ModalCreateDocu";
+=======
+>>>>>>> 151029998ae3d16f224abcfda07639a28d49bf94
 export default function Privatedocument({
   modal,
   documents,
@@ -186,7 +189,10 @@ export default function Privatedocument({
                     link={el.link}
                     documentId={el?.id}
                     folderId={el?.folderId}
+<<<<<<< HEAD
                     fileId={""}
+=======
+>>>>>>> 151029998ae3d16f224abcfda07639a28d49bf94
                     tokenFromGoogle={tokenFromGoogle}
                     isHidden={isHidden}
                   />

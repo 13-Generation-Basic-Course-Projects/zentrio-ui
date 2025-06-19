@@ -124,6 +124,7 @@ export default function DocumentLayout({
       </div>
 
       {/* Tab Content Area */}
+<<<<<<< HEAD
       {tokenFromGoogle == null ? (
         <WelcomePage />
       ) : (
@@ -150,15 +151,40 @@ export default function DocumentLayout({
               />
             )}
             {/* {activeTab === null && (
+=======
+      <main className="p-4 min-h-screen">
+        <div className="mx-auto">
+          {activeTab === "personal" && (
+            <PrivateDocument
+              documents={documents}
+              modal={[<ModalCreateDocu boardId={boardId} />]}
+              tokenFromGoogle={tokenFromGoogle}
+              isHidden={false}
+            />
+          )}
+          {activeTab === "public" && (
+            <PublicDocument
+              publicDocuments={publicDocuments}
+              modal={[]}
+              isHidden={true}
+            />
+          )}
+          {/* {activeTab === null && (
+>>>>>>> 151029998ae3d16f224abcfda07639a28d49bf94
             <AllDocument
               documents={documents}
               tokenFromGoogle={tokenFromGoogle}
               boardId={boardId}
             />
           )} */}
+<<<<<<< HEAD
           </div>
         </main>
       )}
+=======
+        </div>
+      </main>
+>>>>>>> 151029998ae3d16f224abcfda07639a28d49bf94
     </>
   );
 }

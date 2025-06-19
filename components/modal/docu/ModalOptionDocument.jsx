@@ -145,7 +145,10 @@ const PublicIcon = (props) => (
 
 export default function ModalOptionDocument({
   documentId,
+<<<<<<< HEAD
   fileId,
+=======
+>>>>>>> 151029998ae3d16f224abcfda07639a28d49bf94
   accessToken,
   isFolder,
 }) {
@@ -153,7 +156,10 @@ export default function ModalOptionDocument({
   const [isDownloadingZip, setIsDownloadingZip] = useState(false);
   const [showUsers, setShowUsers] = useState(false);
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 151029998ae3d16f224abcfda07639a28d49bf94
   const handleDownload = async () => {
     try {
       setIsDownloading(true);
@@ -308,7 +314,10 @@ export default function ModalOptionDocument({
             massageDo="Yes, Delete"
             massageUndo="No, Cancel"
             documentId={documentId}
+<<<<<<< HEAD
             fileId={fileId}
+=======
+>>>>>>> 151029998ae3d16f224abcfda07639a28d49bf94
             accessToken={accessToken}
           />
         </DropdownItem>

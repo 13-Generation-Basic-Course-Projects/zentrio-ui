@@ -114,7 +114,10 @@ export function CardFile({
   type,
   link,
   documentId,
+<<<<<<< HEAD
   fileId,
+=======
+>>>>>>> 151029998ae3d16f224abcfda07639a28d49bf94
   tokenFromGoogle,
   isHidden,
 }) {
@@ -128,7 +131,10 @@ export function CardFile({
           ) : (
             <ModalOptionDocument
               documentId={documentId}
+<<<<<<< HEAD
               fileId={fileId}
+=======
+>>>>>>> 151029998ae3d16f224abcfda07639a28d49bf94
               accessToken={tokenFromGoogle}
             />
           )}
