@@ -29,6 +29,7 @@ import { preventImage } from "@/constant/preventimage";
 import {
   chageStatusCheckListAction,
   chageStatusCheckListWhenHaveTeamLeaderAction,
+  getCheckListByTaskIdAction,
   getCommentByCheckListIdAction,
   getTaskByBoardIdAction,
   updateCheckListByIdAndTaskIdAction,
@@ -167,47 +168,55 @@ export default function ModalDetailChecklist({
   const [isEditing, setIsEditing] = useState(false);
   const [newDescription, setNewDescription] = useState("");
   const [taskData, setTaskData] = useState(null);
+ 
 
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && taskId) {
       const fetchTask = async () => {
+        setLoading(true);
+        setError(null);
         try {
+          console.log("Fetching checklist for taskId:", taskId);
           const response = await getCheckListByTaskIdAction(taskId);
-          const task = response?.payload?.[0]; // Take first checklist (adjust if multiple)
-          if (!task) throw new Error("Checklist not found");
+
+          // Debug the actual response structure
+          console.log("Full API response:", response);
+
+          // Handle different possible response structures
+          let task;
+          if (response?.payload && Array.isArray(response.payload)) {
+            task = response.payload[0];
+          } else if (response?.data && Array.isArray(response.data)) {
+            task = response.data[0];
+          } else if (Array.isArray(response)) {
+            task = response[0];
+          } else {
+            task = response;
+          }
+
+          console.log("Extracted task data:", task);
+
+          if (!task) {
+            throw new Error("Checklist not found or empty response");
+          }
+
           setTaskData(task);
           setNewDescription(task.description || "");
         } catch (err) {
-          setError(err.message);
-          toast.error("Failed to load checklist data: " + err.message, {
+          console.error("Error fetching checklist:", err);
+          setError(err.message || "Failed to fetch checklist");
+          toast.error(`Failed to load checklist: ${err.message}`, {
             position: "top-right",
-            autoClose: 4000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            theme: "colored",
-            style: {
-              background: "linear-gradient(135deg, #EF4444 0%, #DC2626 100%)",
-              color: "#ffffff",
-              borderRadius: "16px",
-              fontSize: "14px",
-              fontWeight: "500",
-              padding: "16px 20px",
-              boxShadow:
-                "0 20px 25px -5px rgba(239, 68, 68, 0.3), 0 10px 10px -5px rgba(239, 68, 68, 0.2)",
-              border: "1px solid rgba(255, 255, 255, 0.1)",
-              backdropFilter: "blur(10px)",
-            },
-            progressStyle: {
-              background: "rgba(255, 255, 255, 0.3)",
-            },
+            duration: 4000,
           });
+        } finally {
+          setLoading(false);
         }
       };
+
       fetchTask();
     }
-  }, [isOpen, taskId]); // Remove boardId from dependencies
+  }, [isOpen, taskId]);
 
   const handleEditClick = () => {
     setIsEditing(true);
@@ -219,26 +228,52 @@ export default function ModalDetailChecklist({
 
   const handleSubmit = async (e) => {
     if (e.key === "Enter" && newDescription.trim()) {
+      setLoading(true);
       try {
-        const result = await updateCheckListByIdAndTaskIdAction({
-          checklistId, // Use backend casing
-          title: taskData?.title || initialTitle,
+        console.log("Updating checklist with data:", {
+          checklistId,
+          title: taskData?.title ,
           description: newDescription,
-          startedAt: taskData?.startedAt || initialStartedAt,
-          finishedAt: taskData?.finishedAt || initialFinishedAt,
+          startedAt: taskData?.startedAt ,
+          finishedAt: taskData?.finishedAt ,
           taskId,
-          token, // Pass token explicitly
         });
-        if (result?.success || result) {
-          // Adjust based on action response
+
+        const result = await updateCheckListByIdAndTaskIdAction({
+          checklistId,
+          title: taskData?.title ,
+          description: newDescription,
+          startedAt: taskData?.startedAt ,
+          finishedAt: taskData?.finishedAt ,
+          taskId,
+          token, // Make sure token is available in scope
+        });
+
+        console.log("Update result:", result);
+
+        
+        const isSuccess =
+          result?.success === true ||
+          result?.status === "success" ||
+          (result && !result.error);
+
+        if (isSuccess) {
+         
+          setTaskData((prev) => ({
+            ...prev,
+            description: newDescription,
+          }));
+
           toast.success("Description updated successfully", {
             position: "top-right",
             duration: 4000,
           });
           setIsEditing(false);
-          router.refresh();
+
+          // Optional: refresh the page if needed
+          // router.refresh();
         } else {
-          throw new Error("Update failed unexpectedly");
+          throw new Error(result?.message || result?.error || "Update failed");
         }
       } catch (error) {
         console.error("Update description failed:", error);
@@ -249,12 +284,41 @@ export default function ModalDetailChecklist({
             duration: 4000,
           }
         );
+      } finally {
+        setLoading(false);
       }
     } else if (e.key === "Escape") {
       setIsEditing(false);
       setNewDescription(taskData?.description || initialDescription || "");
     }
   };
+
+  // Add error display in your JSX
+  if (error && !taskData) {
+    return (
+      <div className="flex justify-center items-center p-4">
+        <div className="text-red-500">
+          Error loading checklist: {error}
+          <button
+            onClick={() => window.location.reload()}
+            className="ml-2 text-blue-500 underline"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (loading && !taskData) {
+    return (
+      <div className="flex justify-center items-center p-4">
+        <div>Loading checklist...</div>
+      </div>
+    );
+  }
+
+ 
   return (
     <>
       <div>
