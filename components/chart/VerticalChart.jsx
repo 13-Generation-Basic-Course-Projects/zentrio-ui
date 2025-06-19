@@ -1,18 +1,32 @@
 "use client";
 
-import React, { useState, useMemo, useRef, useEffect } from "react";
+import { Chart } from "chart.js/auto";
+
 import {
-  BarChart,
-  Bar,
-  CartesianGrid,
-  XAxis,
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  BarElement,
+  Title,
   Tooltip,
-  YAxis,
-  Cell,
-} from "recharts";
+  Filler,
+} from "chart.js";
+import { Bar } from "react-chartjs-2";
+import { useEffect, useRef, useState } from "react";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  BarElement,
+  Title,
+  Tooltip,
+  Filler
+);
 
 export default function VerticalChart({ report }) {
-  const [weeklyClick, setWeeklyClick] = useState(false);
+  const [weeklyClick, setWeeklyClick] = useState(true);
   const [monthlyClick, setMonthlyClick] = useState(false);
 
   const task = {
@@ -24,549 +38,15 @@ export default function VerticalChart({ report }) {
 
   report?.payload?.groupedTasks.forEach((item) => {
     if (item.stage == "TO DO") {
-        task.todo = task.todo + item.count;
-      } else if (item.stage == "IN_PROGRESS") {
-        task.progress = task.progress + item.count;
-      } else if (item.stage == "UNDER_REVIEW") {
-        task.review = task.review + item.count;
-      } else {
-        task.done = task.done + item.count;
-      }
+      task.todo = task.todo + item.count;
+    } else if (item.stage == "IN_PROGRESS") {
+      task.progress = task.progress + item.count;
+    } else if (item.stage == "UNDER_REVIEW") {
+      task.review = task.review + item.count;
+    } else {
+      task.done = task.done + item.count;
+    }
   });
-
-  const calculateTasksBySimpleWeekWithDateFilter = (
-    allDataOfTask,
-    filterMonth = "current"
-  ) => {
-    const weeklyTasks = {};
-
-    const isValidDate = (date) => {
-      const d = new Date(date);
-      return d instanceof Date && !isNaN(d.getTime());
-    };
-
-    const isInTargetMonth = (date) => {
-      const taskDate = new Date(date);
-      const currentDate = new Date();
-
-      if (filterMonth === "current") {
-        return (
-          taskDate.getFullYear() === currentDate.getFullYear() &&
-          taskDate.getMonth() === currentDate.getMonth()
-        );
-      } else if (filterMonth === "all") {
-        return true; // No filtering
-      } else if (
-        typeof filterMonth === "object" &&
-        filterMonth.year &&
-        typeof filterMonth.month === "number"
-      ) {
-        // Custom month filter: { year: 2024, month: 5 } (month is 0-indexed)
-        return (
-          taskDate.getFullYear() === filterMonth.year &&
-          taskDate.getMonth() === filterMonth.month
-        );
-      }
-
-      return true; // Default: no filtering
-    };
-
-    const getWeekNumber = (date) => {
-      const d = new Date(date);
-
-      if (!isValidDate(date)) {
-        throw new Error(`Invalid date: ${date}`);
-      }
-
-      const year = d.getFullYear();
-      const firstDay = new Date(year, 0, 1);
-      const daysSinceFirstDay = Math.floor(
-        (d - firstDay) / (24 * 60 * 60 * 1000)
-      );
-      const weekNumber = Math.ceil(
-        (daysSinceFirstDay + firstDay.getDay() + 1) / 7
-      );
-
-      return `${year}-WEEK${weekNumber}`;
-    };
-
-    // Process all tasks first
-    allDataOfTask?.forEach((item, index) => {
-      const taskDate = item.startAt;
-
-      if (!taskDate || !isValidDate(taskDate) || !isInTargetMonth(taskDate)) {
-        return;
-      }
-
-      try {
-        const weekKey = getWeekNumber(taskDate);
-
-        if (!weeklyTasks[weekKey]) {
-          weeklyTasks[weekKey] = {
-            todo: 0,
-            progress: 0,
-            review: 0,
-            done: 0,
-            total: 0,
-          };
-        }
-
-        const taskStatus = (item.task || item.status || item.state || "")
-          .toLowerCase()
-          .trim();
-
-        if (
-          taskStatus.includes("todo") ||
-          taskStatus.includes("to_do") ||
-          taskStatus.includes("to do")
-        ) {
-          weeklyTasks[weekKey].todo++;
-        } else if (
-          taskStatus.includes("progress") ||
-          taskStatus.includes("in_progress") ||
-          taskStatus.includes("in progress")
-        ) {
-          weeklyTasks[weekKey].progress++;
-        } else if (
-          taskStatus.includes("review") ||
-          taskStatus.includes("under_review") ||
-          taskStatus.includes("under review")
-        ) {
-          weeklyTasks[weekKey].review++;
-        } else if (
-          taskStatus.includes("done") ||
-          taskStatus.includes("completed") ||
-          taskStatus.includes("complete")
-        ) {
-          weeklyTasks[weekKey].done++;
-        } else {
-          weeklyTasks[weekKey].done++;
-        }
-
-        weeklyTasks[weekKey].total++;
-      } catch (error) {
-        console.error(`Error processing task at index ${index}:`, error);
-      }
-    });
-
-    // Get the date range for the filter
-    const getDateRange = () => {
-      const currentDate = new Date();
-
-      if (filterMonth === "current") {
-        const year = currentDate.getFullYear();
-        const month = currentDate.getMonth();
-        return {
-          startDate: new Date(year, month, 1),
-          endDate: new Date(year, month + 1, 0),
-        };
-      } else if (filterMonth === "all") {
-        // For "all", we'll use the range of existing tasks
-        const taskDates = allDataOfTask
-          ?.filter((item) => item.startAt && isValidDate(item.startAt))
-          .map((item) => new Date(item.startAt))
-          .sort((a, b) => a - b);
-
-        if (taskDates && taskDates.length > 0) {
-          return {
-            startDate: taskDates[0],
-            endDate: taskDates[taskDates.length - 1],
-          };
-        }
-        return null;
-      } else if (
-        typeof filterMonth === "object" &&
-        filterMonth.year &&
-        typeof filterMonth.month === "number"
-      ) {
-        return {
-          startDate: new Date(filterMonth.year, filterMonth.month, 1),
-          endDate: new Date(filterMonth.year, filterMonth.month + 1, 0),
-        };
-      }
-
-      return null;
-    };
-
-    // Generate all weeks in the date range
-    const dateRange = getDateRange();
-    if (dateRange) {
-      const { startDate, endDate } = dateRange;
-      const current = new Date(startDate);
-
-      while (current <= endDate) {
-        const weekKey = getWeekNumber(current);
-
-        if (!weeklyTasks[weekKey]) {
-          weeklyTasks[weekKey] = {
-            todo: 0,
-            progress: 0,
-            review: 0,
-            done: 0,
-            total: 0,
-          };
-        }
-
-        // Move to next week
-        current.setDate(current.getDate() + 7);
-      }
-    }
-
-    // Sort weeks chronologically and renumber them sequentially
-    const sortedWeeks = Object.keys(weeklyTasks).sort();
-    const renumberedTasks = {};
-
-    // Limit to only 4 weeks
-    sortedWeeks.slice(0, 4).forEach((weekKey, index) => {
-      renumberedTasks[`WEEK${index + 1}`] = weeklyTasks[weekKey];
-    });
-
-    // If less than 4 weeks exist, fill the remaining with empty weeks
-    for (let i = sortedWeeks.length; i < 4; i++) {
-      renumberedTasks[`WEEK${i + 1}`] = {
-        todo: 0,
-        progress: 0,
-        review: 0,
-        done: 0,
-        total: 0,
-      };
-    }
-
-    return renumberedTasks;
-  };
-
-  // Usage examples:
-  const currentMonthTasks = calculateTasksBySimpleWeekWithDateFilter(
-    report?.payload?.groupedTasks,
-    "current"
-  );
-
-  const groupedTasks = calculateTasksBySimpleWeekWithDateFilter(
-    report?.payload?.groupedTasks,
-    "all"
-  );
-
-  const specificMonthTasks = calculateTasksBySimpleWeekWithDateFilter(
-    report?.payload?.groupedTasks,
-    { year: 2024, month: 5 } // June 2024 (month is 0-indexed)
-  );
-
-  const calculateTasksByMonthWithDateFilter = (
-    allDataOfTask,
-    filterYear = "current"
-  ) => {
-    const monthlyTasks = {};
-
-    const isValidDate = (date) => {
-      const d = new Date(date);
-      return d instanceof Date && !isNaN(d.getTime());
-    };
-
-    const isInTargetYear = (date) => {
-      const taskDate = new Date(date);
-      const currentDate = new Date();
-
-      if (filterYear === "current") {
-        return taskDate.getFullYear() === currentDate.getFullYear();
-      } else if (filterYear === "all") {
-        return true; // No filtering
-      } else if (typeof filterYear === "number") {
-        // Specific year filter: 2024
-        return taskDate.getFullYear() === filterYear;
-      }
-
-      return true; // Default: no filtering
-    };
-
-    const getMonthKey = (date) => {
-      const d = new Date(date);
-
-      if (!isValidDate(date)) {
-        throw new Error(`Invalid date: ${date}`);
-      }
-
-      const year = d.getFullYear();
-      const month = d.getMonth();
-
-      return `${year}-${month}`;
-    };
-
-    const getMonthName = (monthIndex) => {
-      const months = [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December",
-      ];
-      return months[monthIndex];
-    };
-
-    // Get the date range for the filter
-    const getDateRange = () => {
-      const currentDate = new Date();
-
-      if (filterYear === "current") {
-        const year = currentDate.getFullYear();
-        return {
-          startDate: new Date(year, 0, 1),
-          endDate: new Date(year, 11, 31),
-        };
-      } else if (filterYear === "all") {
-        // For "all", we'll use the range of existing tasks
-        const taskDates = allDataOfTask
-          ?.filter((item) => item.startAt && isValidDate(item.startAt))
-          .map((item) => new Date(item.startAt))
-          .sort((a, b) => a - b);
-
-        if (taskDates && taskDates.length > 0) {
-          return {
-            startDate: taskDates[0],
-            endDate: taskDates[taskDates.length - 1],
-          };
-        }
-        return null;
-      } else if (typeof filterYear === "number") {
-        return {
-          startDate: new Date(filterYear, 0, 1),
-          endDate: new Date(filterYear, 11, 31),
-        };
-      }
-
-      return null;
-    };
-
-    // Generate all months in the date range
-    const dateRange = getDateRange();
-    if (dateRange) {
-      const { startDate, endDate } = dateRange;
-      const current = new Date(startDate);
-
-      while (current <= endDate) {
-        const monthKey = getMonthKey(current);
-
-        if (!monthlyTasks[monthKey]) {
-          monthlyTasks[monthKey] = {
-            todo: 0,
-            progress: 0,
-            review: 0,
-            done: 0,
-            total: 0,
-          };
-        }
-
-        // Move to next month
-        current.setMonth(current.getMonth() + 1);
-      }
-    }
-
-    // Process all tasks
-    allDataOfTask?.forEach((item, index) => {
-      const taskDate = item.startAt;
-
-      if (!taskDate || !isValidDate(taskDate) || !isInTargetYear(taskDate)) {
-        return;
-      }
-
-      try {
-        const monthKey = getMonthKey(taskDate);
-
-        if (!monthlyTasks[monthKey]) {
-          monthlyTasks[monthKey] = {
-            todo: 0,
-            progress: 0,
-            review: 0,
-            done: 0,
-            total: 0,
-          };
-        }
-
-        const taskStatus = (item.task || item.status || item.state || "")
-          .toLowerCase()
-          .trim();
-
-        if (
-          taskStatus.includes("todo") ||
-          taskStatus.includes("to_do") ||
-          taskStatus.includes("to do")
-        ) {
-          monthlyTasks[monthKey].todo++;
-        } else if (
-          taskStatus.includes("progress") ||
-          taskStatus.includes("in_progress") ||
-          taskStatus.includes("in progress")
-        ) {
-          monthlyTasks[monthKey].progress++;
-        } else if (
-          taskStatus.includes("review") ||
-          taskStatus.includes("under_review") ||
-          taskStatus.includes("under review")
-        ) {
-          monthlyTasks[monthKey].review++;
-        } else if (
-          taskStatus.includes("done") ||
-          taskStatus.includes("completed") ||
-          taskStatus.includes("complete")
-        ) {
-          monthlyTasks[monthKey].done++;
-        } else {
-          monthlyTasks[monthKey].done++;
-        }
-
-        monthlyTasks[monthKey].total++;
-      } catch (error) {
-        console.error(`Error processing task at index ${index}:`, error);
-      }
-    });
-
-    // Sort months chronologically and use real month names
-    const sortedMonths = Object.keys(monthlyTasks).sort();
-    const renumberedTasks = {};
-
-    sortedMonths.slice(0, 12).forEach((monthKey) => {
-      const [year, monthIndex] = monthKey.split("-");
-      const monthName = getMonthName(parseInt(monthIndex));
-      renumberedTasks[monthName] = monthlyTasks[monthKey];
-    });
-
-    // If we need to fill remaining months (for current year view)
-    if (filterYear === "current" || typeof filterYear === "number") {
-      const targetYear =
-        filterYear === "current" ? new Date().getFullYear() : filterYear;
-
-      for (let i = 0; i < 12; i++) {
-        const monthName = getMonthName(i);
-        if (!renumberedTasks[monthName]) {
-          renumberedTasks[monthName] = {
-            todo: 0,
-            progress: 0,
-            review: 0,
-            done: 0,
-            total: 0,
-          };
-        }
-      }
-    }
-
-    return renumberedTasks;
-  };
-
-  // Usage examples:
-  const currentYearTasks = calculateTasksByMonthWithDateFilter(
-    report?.payload?.groupedTasks,
-    "current"
-  );
-
-  const specificYearTasks = calculateTasksByMonthWithDateFilter(
-    report?.payload?.groupedTasks,
-    2024
-  );
-
-  // console.log("Current year monthly tasks:", currentYearTasks);  
-  // console.log("ChartData: ", chartDataMonth)
-
-
-  // Data matching the image exactly
-  const [chartData] = useState([
-    {
-      week: "WEEK1",
-      values: [
-        0,
-        currentMonthTasks.WEEK1.todo,
-        currentMonthTasks.WEEK1.progress,
-        currentMonthTasks.WEEK1.review,
-        currentMonthTasks.WEEK1.done,
-        0,
-      ],
-    },
-    {
-      week: "WEEK2",
-      values: [
-        0,
-        currentMonthTasks.WEEK2.todo,
-        currentMonthTasks.WEEK2.progress,
-        currentMonthTasks.WEEK2.review,
-        currentMonthTasks.WEEK2.done,
-        0,
-      ],
-    },
-    {
-      week: "WEEK3",
-      values: [
-        0,
-        currentMonthTasks.WEEK3.todo,
-        currentMonthTasks.WEEK3.progress,
-        currentMonthTasks.WEEK3.review,
-        currentMonthTasks.WEEK3.done,
-        0,
-      ],
-    },
-    {
-      week: "WEEK4",
-      values: [
-        0,
-        currentMonthTasks.WEEK4.todo,
-        currentMonthTasks.WEEK4.progress,
-        currentMonthTasks.WEEK4.review,
-        currentMonthTasks.WEEK4.done,
-        0,
-      ],
-    },
-  ]);
-
-  const [animationTriggered, setAnimationTriggered] = useState(false);
-  const [hoveredBar, setHoveredBar] = useState(null);
-
-  //   const stageColors = {
-  //     Todo: "hsl(210, 70%, 85%)", // Soft blue
-  //     "On Progress": "hsl(40, 70%, 85%)", // Soft yellow
-  //     "Under Review": "hsl(260, 70%, 85%)", // Soft purple
-  //     Done: "hsl(160, 70%, 85%)", // Soft green
-  //   };
-
-  // Exact colors from the image
-  const colors = [
-    "", // Light blue
-    "hsl(210, 70%, 85%)", // Soft blue
-    "hsl(40, 70%, 85%)", // Soft yellow
-    "hsl(260, 70%, 85%)", // Soft purple
-    "hsl(160, 70%, 85%)", // Soft green
-    "", // Light yellow
-  ];
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setAnimationTriggered(true);
-    }, 200);
-    return () => clearTimeout(timer);
-  }, []);
-
-  const allValues = chartData.flatMap((week) => week.values);
-  const rawMax = Math.max(...allValues);
-  const minValue = 0; // start chart from 0
-
-  const maxValue = Math.ceil((rawMax * 1.1) / 10) * 10;
-
-  const steps = 4;
-  const stepSize = (maxValue - minValue) / steps;
-
-  const values = Array.from({ length: steps + 1 }, (_, i) =>
-    Math.round(minValue + i * stepSize)
-  );
-
-  const chartHeight = 320;
-  const barWidth = 18;
-  const barSpacing = 3;
-  const groupSpacing = 45;
-  const leftPadding = 50;
-  const bottomPadding = 60;
 
   return (
     <>
@@ -603,13 +83,18 @@ export default function VerticalChart({ report }) {
             </div>
           </div>
           <div className="w-[97.5%] border-t h-[85%] flex justify-end">
-            <div className="w-[98.25%] h-[90%] flex justify-end">
-              {/* This is Chart */}
+            <div className="w-[98.25%] h-[90%] flex justify-center items-center pt-[12.5%] pr-[5%]">
+              {}
+              {monthlyClick ? (
+                <MonthlyChart report={report} />
+              ) : (
+                <WeeklyChart report={report} />
+              )}
             </div>
           </div>
         </div>
         <div className="w-[30%] border-l-1 border-gray-200 flex justify-center items-center">
-          {/* Start code line amount of all task */}
+          {}
           <div className="w-[140px] text-[11px] flex flex-col justify-center gap-[7.5%] h-[50%]">
             <div className="text-primary h-[35px] bg-[#59BAD5]/10 rounded-full w-full border-primary border flex items-center justify-center">
               <svg
@@ -623,7 +108,7 @@ export default function VerticalChart({ report }) {
               </svg>
               <p className="pl-[7.5%]">All Categories</p>
             </div>
-            {/* Start code line amount of todo task */}
+            {}
             <div className="flex items-center w-full px-[10%]">
               <div className="flex items-center w-[60%]">
                 <svg
@@ -644,16 +129,14 @@ export default function VerticalChart({ report }) {
                 <p className="pl-[7.5%] text-[9px]">To Do</p>
               </div>
               {weeklyClick ? (
-                <p className="w-[40%] text-right text-[9px]">
-                  {task.todo}
-                </p>
+                <p className="w-[40%] text-right text-[9px]">{task.todo}</p>
               ) : (
                 <p className="w-[40%] text-right text-[9px]">0</p>
               )}
             </div>
-            {/* End code line amount of todo task */}
+            {}
 
-            {/* Start code line amount of todo task */}
+            {}
             <div className="flex items-center w-full px-[10%]">
               <div className="flex items-center w-[60%]">
                 <svg
@@ -674,48 +157,16 @@ export default function VerticalChart({ report }) {
                 <p className="pl-[7.5%] text-[9px]">In Progress</p>
               </div>
               {weeklyClick ? (
-                <p className="w-[40%] text-right text-[9px]">
-                  {task.progress}
-                </p>
+                <p className="w-[40%] text-right text-[9px]">{task.progress}</p>
               ) : (
                 <p className="w-[40%] text-right text-[9px]">0</p>
               )}
             </div>
-            {/* End code line amount of todo task */}
+            {}
 
-            {/* Start code line amount of todo task */}
+            {}
             <div className="flex items-center w-full px-[10%]">
               <div className="flex items-center w-[100%]">
-                <svg
-                  width="13"
-                  height="13"
-                  viewBox="0 0 13 13"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <circle
-                    cx="6.42755"
-                    cy="6.50373"
-                    r="5.35941"
-                    stroke="hsl(160, 70%, 85%)"
-                    strokeWidth="1.19098"
-                  />
-                </svg>
-                <p className="pl-[7.5%] text-[9px]">Under Review</p>
-              </div>
-              {weeklyClick ? (
-                <p className="w-[40%] text-right text-[9px]">
-                  {task.review}
-                </p>
-              ) : (
-                <p className="w-[40%] text-right text-[9px]">0</p>
-              )}
-            </div>
-            {/* End code line amount of todo task */}
-
-            {/* Start code line amount of todo task */}
-            <div className="flex items-center w-full px-[10%]">
-              <div className="flex items-center w-[60%]">
                 <svg
                   width="13"
                   height="13"
@@ -731,21 +182,336 @@ export default function VerticalChart({ report }) {
                     strokeWidth="1.19098"
                   />
                 </svg>
-                <p className="pl-[7.5%] text-[9px]">Done</p>
+                <p className="pl-[7.5%] text-[9px]">Under Review</p>
               </div>
               {weeklyClick ? (
-                <p className="w-[40%] text-right text-[9px]">
-                  {task.done}
-                </p>
+                <p className="w-[40%] text-right text-[9px]">{task.review}</p>
               ) : (
                 <p className="w-[40%] text-right text-[9px]">0</p>
               )}
             </div>
-            {/* End code line amount of todo task */}
+            {}
+
+            {}
+            <div className="flex items-center w-full px-[10%]">
+              <div className="flex items-center w-[60%]">
+                <svg
+                  width="13"
+                  height="13"
+                  viewBox="0 0 13 13"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle
+                    cx="6.42755"
+                    cy="6.50373"
+                    r="5.35941"
+                    stroke="hsl(160, 70%, 85%)"
+                    strokeWidth="1.19098"
+                  />
+                </svg>
+                <p className="pl-[7.5%] text-[9px]">Done</p>
+              </div>
+              {weeklyClick ? (
+                <p className="w-[40%] text-right text-[9px]">{task.done}</p>
+              ) : (
+                <p className="w-[40%] text-right text-[9px]">0</p>
+              )}
+            </div>
+            {}
           </div>
-          {/* End code line amount of all task */}
+          {}
         </div>
       </div>
     </>
   );
 }
+
+export const MonthlyChart = ({ report }) => {
+  const canvasRef = useRef(null);
+  const chartRef = useRef(null);
+
+  useEffect(() => {
+    if (chartRef.current) {
+      chartRef.current.destroy();
+    }
+
+    const ctx = canvasRef.current.getContext("2d");
+
+    chartRef.current = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: [
+          "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+          "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+        ],
+        datasets: [
+          {
+            data: [66, 144, 146, 116, 107, 131, 43, 89, 75, 120, 95, 110],
+            label: "Applied",
+            borderColor: "rgb(109, 253, 181)",
+            backgroundColor: function(context) {
+              const chart = context.chart;
+              const {ctx, chartArea} = chart;
+              
+              if (!chartArea) return null;
+              
+              const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+              gradient.addColorStop(0, "rgb(109, 253, 181)");
+              gradient.addColorStop(0.5, "rgb(34, 197, 94)");
+              gradient.addColorStop(1, "rgb(22, 101, 52)");
+              
+              return gradient;
+            },
+            borderWidth: 2,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false,
+            position: "top",
+          },
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+          },
+        },
+      },
+    });
+
+    return () => {
+      if (chartRef.current) {
+        chartRef.current.destroy();
+        chartRef.current = null;
+      }
+    };
+  }, []);
+
+  return (
+    <div className="w-full h-[350px] flex mb-[2.5%]">
+      <canvas ref={canvasRef}></canvas>
+    </div>
+  );
+};
+
+export const WeeklyChart = ({ report }) => {
+  const canvasRef = useRef(null);
+  const chartRef = useRef(null);
+
+  const getWeekStart = (date) => {
+    const d = new Date(date);
+    const day = d.getDay();
+    const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+    return new Date(d.setDate(diff));
+  };
+
+  const getWeekNumber = (date, baseDate) => {
+    const weekStart = getWeekStart(date);
+    const baseWeekStart = getWeekStart(baseDate);
+    const diffTime = weekStart.getTime() - baseWeekStart.getTime();
+    const diffWeeks = Math.floor(diffTime / (7 * 24 * 60 * 60 * 1000));
+    return diffWeeks + 1;
+  };
+
+  const processWeeklyData = () => {
+    const weeklyData = {};
+
+    let earliestDate = null;
+
+    (report?.payload?.groupedTasks || []).forEach((group) => {
+      (group.tasks || []).forEach((task) => {
+        const taskDate = task.finishedAt || task.updatedAt || task.createdAt;
+        if (taskDate) {
+          const date = new Date(taskDate);
+          if (!earliestDate || date < earliestDate) {
+            earliestDate = date;
+          }
+        }
+      });
+    });
+
+    if (!earliestDate) return { weeklyData: {}, maxWeek: 7 };
+
+    (report?.payload?.groupedTasks || []).forEach((group) => {
+      (group.tasks || []).forEach((task) => {
+        const taskDate = task.finishedAt || task.updatedAt || task.createdAt;
+        if (taskDate) {
+          const date = new Date(taskDate);
+          const weekNum = getWeekNumber(date, earliestDate);
+
+          if (weekNum > 0 && weekNum <= 7) {
+            if (!weeklyData[weekNum]) {
+              weeklyData[weekNum] = {};
+            }
+
+            const stage = task.stage || "Unknown";
+            if (!weeklyData[weekNum][stage]) {
+              weeklyData[weekNum][stage] = 0;
+            }
+            weeklyData[weekNum][stage]++;
+          }
+        }
+      });
+    });
+
+    return { weeklyData, maxWeek: 7 };
+  };
+
+  const { weeklyData, maxWeek } = processWeeklyData();
+
+  const dataStages = [
+    ...new Set(
+      Object.values(weeklyData).flatMap((weekData) => Object.keys(weekData))
+    ),
+  ];
+
+  const allStages = dataStages.includes("DONE")
+    ? dataStages
+    : [...dataStages, "DONE"];
+
+  const stageColors = {
+    TO_DO: "hsl(210, 70%, 85%)",
+    TODO: "hsl(210, 70%, 85%)",
+    IN_PROGRESS: "hsl(40, 70%, 85%)",
+    UNDER_REVIEW: "hsl(260, 70%, 85%)",
+    DONE: "hsl(160, 70%, 85%)",
+    COMPLETED: "hsl(160, 70%, 85%)",
+  };
+
+  const datasets = allStages.map((stage, index) => {
+    const defaultColors = [
+      "hsl(210, 70%, 85%)",
+      "hsl(210, 70%, 85%)",
+      "hsl(40, 70%, 85%)",
+      "hsl(260, 70%, 85%)",
+      "hsl(160, 70%, 85%)",
+      "hsl(160, 70%, 85%)",
+    ];
+
+    return {
+      label: stage.replace("_", " "),
+      data: Array.from({ length: maxWeek }, (_, i) => {
+        const week = i + 1;
+        return weeklyData[week]?.[stage] || 0;
+      }),
+      backgroundColor:
+        stageColors[stage] || defaultColors[index % defaultColors.length],
+      borderColor:
+        stageColors[stage]?.replace("0.8", "1") ||
+        defaultColors[index % defaultColors.length].replace("0.8", "1"),
+      borderWidth: 1,
+    };
+  });
+
+  useEffect(() => {
+    if (chartRef.current) {
+      chartRef.current.destroy();
+    }
+
+    const ctx = canvasRef.current?.getContext("2d");
+    if (!ctx) return;
+
+    chartRef.current = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: Array.from({ length: maxWeek }, (_, i) => `Week ${i + 1}`),
+        datasets,
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: {
+          mode: "point",
+          intersect: true,
+        },
+        elements: {
+          bar: {
+            borderRadius: 6,
+          },
+        },
+        plugins: {
+          legend: {
+            display: false,
+            position: "top",
+            labels: {
+              padding: 20,
+              usePointStyle: true,
+              font: {
+                size: 12,
+              },
+            },
+          },
+          tooltip: {
+            mode: "point",
+            intersect: true,
+            filter: function (tooltipItem) {
+              return tooltipItem.datasetIndex === 0 || tooltipItem.parsed.y > 0;
+            },
+            callbacks: {
+              title: (tooltipItems) => {
+                return tooltipItems[0].label;
+              },
+              label: (context) => {
+                return `${context.dataset.label}: ${context.parsed.y}`;
+              },
+            },
+          },
+        },
+        scales: {
+          x: {
+            stacked: false,
+            grid: {
+              display: false,
+              color: "rgba(0,0,0,0.1)",
+            },
+            ticks: {
+              font: {
+                size: 12,
+              },
+            },
+          },
+          y: {
+            stacked: false,
+            beginAtZero: true,
+            grid: {
+              display: true,
+              color: "rgba(0,0,0,0.1)",
+            },
+            ticks: {
+              stepSize: 20,
+              font: {
+                size: 12,
+              },
+            },
+          },
+        },
+        layout: {
+          padding: {
+            top: 10,
+            bottom: 10,
+            left: 10,
+            right: 10,
+          },
+        },
+      },
+    });
+
+    return () => {
+      if (chartRef.current) {
+        chartRef.current.destroy();
+        chartRef.current = null;
+      }
+    };
+  }, [datasets, maxWeek]);
+
+  return (
+    <div className="w-full h-[350px] flex mb-[2.5%]">
+      <canvas ref={canvasRef} />
+    </div>
+  );
+};

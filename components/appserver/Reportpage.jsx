@@ -96,21 +96,21 @@ export default function Reportpage({ modal, report }) {
   };
 
   report?.payload?.groupedTasks.forEach((item) => {
-    if (item.task == "TO DO") {
-      cheklist.inTodo = cheklist.inTodo + item?.tasks?.allChecklists?.length || 0;
-    } else if (item.task == "IN_PROGRESS") {
-      cheklist.inProgress = cheklist.inProgress + item?.tasks?.allChecklists?.length || 0;
-    } else if (item.task == "UNDER_REVIEW") {
-      cheklist.inReview = cheklist.inReview + item?.tasks?.allChecklists?.length || 0;
-    } else {
-      cheklist.inDone = cheklist.inDone + item?.tasks?.allChecklists?.length || 0;
-    }
+    item?.tasks.forEach((value) => {
+      if (item.stage == "TO DO") {
+        cheklist.inTodo = cheklist.inTodo + value.allChecklists.length;
+      } else if (item.stage == "IN_PROGRESS") {
+        cheklist.inProgress = cheklist.inProgress + value.allChecklists.length;
+      } else if (item.stage == "UNDER_REVIEW") {
+        cheklist.inReview = cheklist.inReview + value.allChecklists.length;
+      } else {
+        cheklist.inDone = cheklist.inDone + value.allChecklists.length;
+      }
+    })
   });
 
   // all version of report
   const getVersion = report?.payload;
-  console.log("Version: ", getVersion)
-  
 
   // this for vertical chart
   const groupedTasks = report?.payload?.groupedTasks;
@@ -175,7 +175,7 @@ export default function Reportpage({ modal, report }) {
               </div>
 
               {/* Show chart horizontal chart */}
-              <div className="mt-5">
+              <div className="mt-10">
                 <HorizontalChart
                   amtChklistTodo={cheklist.inTodo}
                   amtChklistProgress={cheklist.inProgress}
