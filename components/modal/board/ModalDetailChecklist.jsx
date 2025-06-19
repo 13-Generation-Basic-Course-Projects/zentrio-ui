@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState, useCallback, useRef } from "react";
+import React, { useEffect, useReducer, useCallback, useRef } from "react";
 import Image from "next/image";
 import {
   Modal,
@@ -19,14 +19,243 @@ import PopupAction from "@/components/popup/PopupAction";
 import { IconpopupDelete } from "@/components/icon/Iconpopup";
 import { preventImage } from "@/constant/preventimage";
 import {
-  chageStatusCheckListAction,
+  changeStatusCheckListAction,
   getCommentByCheckListIdAction,
+  getCheckListByTaskIdAction,
+  updateCheckListByIdAndTaskIdAction,
 } from "@/action/board.action";
 import PostCommentChecklist from "./PostCommentChecklist";
 import CommentChecklistSec from "./CommentChecklistSec";
-import { getAttactmentAction } from "@/action/document.action";
+import { getAttachmentAction } from "@/action/document.action";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
-export default function ModalDetailChecklist({
+const initialState = {
+  activeTab: "add",
+  isModalOpen: false,
+  selectedAttachment: null,
+  comments: [],
+  loading: false,
+  error: null,
+  attachments: [],
+  attachmentError: null,
+  currentStatus: "IN_PROGRESS",
+  isEditing: false,
+  newDescription: "",
+  taskData: null,
+};
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case "SET_ACTIVE_TAB":
+      return { ...state, activeTab: action.payload };
+    case "SET_MODAL_OPEN":
+      return { ...state, isModalOpen: action.payload };
+    case "SET_SELECTED_ATTACHMENT":
+      return { ...state, selectedAttachment: action.payload };
+    case "SET_COMMENTS":
+      return { ...state, comments: action.payload };
+    case "SET_LOADING":
+      return { ...state, loading: action.payload };
+    case "SET_ERROR":
+      return { ...state, error: action.payload };
+    case "SET_ATTACHMENTS":
+      return { ...state, attachments: action.payload };
+    case "SET_ATTACHMENT_ERROR":
+      return { ...state, attachmentError: action.payload };
+    case "SET_CURRENT_STATUS":
+      return { ...state, currentStatus: action.payload };
+    case "SET_IS_EDITING":
+      return { ...state, isEditing: action.payload };
+    case "SET_NEW_DESCRIPTION":
+      return { ...state, newDescription: action.payload };
+    case "SET_TASK_DATA":
+      return { ...state, taskData: action.payload };
+    default:
+      return state;
+  }
+};
+
+const useChecklistData = (checklistId, isOpen) => {
+  const [state, dispatch] = useReducer(reducer, {
+    ...initialState,
+    currentStatus: "IN_PROGRESS",
+  });
+  const fetchingRef = useRef(false);
+  const shouldStayOpen = useRef(false);
+
+  const fetchAttachments = useCallback(async () => {
+    if (!checklistId || fetchingRef.current) return;
+    fetchingRef.current = true;
+    shouldStayOpen.current = true;
+    dispatch({ type: "SET_LOADING", payload: true });
+    dispatch({ type: "SET_ATTACHMENT_ERROR", payload: null });
+    dispatch({ type: "SET_ATTACHMENTS", payload: [] });
+    try {
+      const result = await getAttachmentAction(checklistId);
+      if (result.success) {
+        dispatch({ type: "SET_ATTACHMENTS", payload: [result.payload] });
+      } else {
+        dispatch({
+          type: "SET_ATTACHMENT_ERROR",
+          payload: result.error || "Failed to load attachments",
+        });
+      }
+    } catch (err) {
+      dispatch({
+        type: "SET_ATTACHMENT_ERROR",
+        payload:
+          err.status === 404
+            ? "No attachments found"
+            : "An unexpected error occurred",
+      });
+    } finally {
+      dispatch({ type: "SET_LOADING", payload: false });
+      fetchingRef.current = false;
+      shouldStayOpen.current = false;
+    }
+  }, [checklistId]);
+
+  const fetchComments = useCallback(async () => {
+    if (!checklistId || fetchingRef.current) return;
+    fetchingRef.current = true;
+    shouldStayOpen.current = true;
+    dispatch({ type: "SET_LOADING", payload: true });
+    dispatch({ type: "SET_ERROR", payload: null });
+    dispatch({ type: "SET_COMMENTS", payload: [] });
+    try {
+      const result = await getCommentByCheckListIdAction(checklistId);
+      if (result.success) {
+        dispatch({ type: "SET_COMMENTS", payload: result.data || [] });
+      } else {
+        dispatch({
+          type: "SET_ERROR",
+          payload: result.error?.includes("404")
+            ? "No comments yet"
+            : result.error || "Failed to load comments",
+        });
+      }
+    } catch (err) {
+      dispatch({
+        type: "SET_ERROR",
+        payload: err.message?.includes("404")
+          ? "No comments yet"
+          : "An unexpected error occurred",
+      });
+    } finally {
+      dispatch({ type: "SET_LOADING", payload: false });
+      fetchingRef.current = false;
+      shouldStayOpen.current = false;
+    }
+  }, [checklistId]);
+
+  useEffect(() => {
+    if (isOpen && checklistId && !fetchingRef.current) {
+      fetchComments();
+      fetchAttachments();
+    }
+  }, [isOpen, checklistId, fetchComments, fetchAttachments]);
+
+  return { state, dispatch, shouldStayOpen };
+};
+
+const useDescriptionEditor = (taskId, isOpen, token) => {
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isOpen) {
+      const fetchTask = async () => {
+        try {
+          const response = await getCheckListByTaskIdAction(taskId);
+          const task = response?.payload?.[0];
+          if (!task) throw new Error("Checklist not found");
+          dispatch({ type: "SET_TASK_DATA", payload: task });
+          dispatch({
+            type: "SET_NEW_DESCRIPTION",
+            payload: task.description || "",
+          });
+        } catch (err) {
+          dispatch({ type: "SET_ERROR", payload: err.message });
+          toast.error(`Failed to load checklist data: ${err.message}`, {
+            position: "top-right",
+            autoClose: 4000,
+            theme: "colored",
+            style: {
+              background: "linear-gradient(135deg, #EF4444 0%, #DC2626 100%)",
+              color: "#ffffff",
+              borderRadius: "16px",
+              fontSize: "14px",
+              fontWeight: "500",
+              padding: "16px 20px",
+              boxShadow: "0 20px 25px -5px rgba(239, 68, 68, 0.3)",
+              border: "1px solid rgba(255, 255, 255, 0.1)",
+            },
+          });
+        }
+      };
+      fetchTask();
+    }
+  }, [isOpen, taskId]);
+
+  const handleEditClick = () => {
+    dispatch({ type: "SET_IS_EDITING", payload: true });
+  };
+
+  const handleDescriptionChange = (e) => {
+    dispatch({ type: "SET_NEW_DESCRIPTION", payload: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    if (e.key === "Enter" && state.newDescription.trim()) {
+      try {
+        const result = await updateCheckListByIdAndTaskIdAction({
+          checklistId: taskId,
+          title: state.taskData?.title,
+          description: state.newDescription,
+          startedAt: state.taskData?.startedAt,
+          finishedAt: state.taskData?.finishedAt,
+          taskId,
+          token,
+        });
+        if (result?.success) {
+          toast.success("Description updated successfully", {
+            position: "top-right",
+            autoClose: 4000,
+          });
+          dispatch({ type: "SET_IS_EDITING", payload: false });
+          router.refresh();
+        } else {
+          throw new Error("Update failed unexpectedly");
+        }
+      } catch (error) {
+        toast.error(
+          `Failed to update description: ${error.message || "Unknown error"}`,
+          {
+            position: "top-right",
+            autoClose: 4000,
+          }
+        );
+      }
+    } else if (e.key === "Escape") {
+      dispatch({ type: "SET_IS_EDITING", payload: false });
+      dispatch({
+        type: "SET_NEW_DESCRIPTION",
+        payload: state.taskData?.description || "",
+      });
+    }
+  };
+
+  return {
+    state,
+    dispatch,
+    handleEditClick,
+    handleDescriptionChange,
+    handleSubmit,
+  };
+};
+
+const ModalDetailChecklist = ({
   id,
   taskTitle,
   title,
@@ -45,608 +274,557 @@ export default function ModalDetailChecklist({
   leaderId,
   role,
   boardId,
-}) {
+}) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [activeTab, setActiveTab] = useState("add");
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedAttachment, setSelectedAttachment] = useState(null);
-  const shouldStayOpen = useRef(false);
-  const fetchingRef = useRef(false);
+  const { state, dispatch, shouldStayOpen } = useChecklistData(
+    checklistId,
+    isOpen
+  );
+  const {
+    state: editorState,
+    dispatch: editorDispatch,
+    handleEditClick,
+    handleDescriptionChange,
+    handleSubmit,
+  } = useDescriptionEditor(taskId, isOpen, "your-token-here");
 
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
-
-  const [comments, setComments] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [currentStatus, setCurrentStatus] = useState(status);
-  const [attachments, setAttachments] = useState([]);
-  const [attachmentError, setAttachmentError] = useState(null);
-
-  const icons = {
+  const fileIcons = {
     pdf: "https://cdn-icons-png.flaticon.com/128/4726/4726010.png",
     docx: "https://cdn-icons-png.flaticon.com/128/2991/2991108.png",
     xlsx: "https://cdn-icons-png.flaticon.com/128/2504/2504768.png",
     pptx: "https://cdn-icons-png.flaticon.com/128/2875/2875416.png",
+    default: "https://cdn-icons-png.flaticon.com/128/833/833524.png",
   };
 
   const getFileIcon = (filename) => {
     const extension = filename?.split(".").pop()?.toLowerCase();
-    return (
-      icons[extension] ||
-      "https://cdn-icons-png.flaticon.com/128/833/833524.png"
-    );
+    return fileIcons[extension] || fileIcons.default;
   };
 
   const handleAttachmentSelected = (attachment) => {
-    console.log("Attachment selected in ModalDetailChecklist:", attachment);
-    setSelectedAttachment(attachment);
-    closeModal();
+    dispatch({ type: "SET_SELECTED_ATTACHMENT", payload: attachment });
+    dispatch({ type: "SET_MODAL_OPEN", payload: false });
   };
-
-  const fetchAttachments = useCallback(async () => {
-    if (!checklistId || fetchingRef.current) return;
-    console.log("Fetching attachments for checklistId:", checklistId);
-    fetchingRef.current = true;
-    shouldStayOpen.current = true;
-    setLoading(true);
-    setAttachmentError(null);
-    setAttachments([]);
-    try {
-      const result = await getAttactmentAction(checklistId);
-      console.log("Fetched attachments:", result);
-      if (result.success) {
-        setAttachments([result.payload]);
-        console.log("Set attachments:", [result.payload]);
-      } else {
-        setAttachmentError(result.error || "Failed to load attachments");
-        console.log("Attachment error:", result.error);
-      }
-    } catch (err) {
-      console.error("Error fetching attachments:", err);
-      setAttachmentError(
-        err.status === 404
-          ? "No attachments found"
-          : "An unexpected error occurred"
-      );
-    } finally {
-      setLoading(false);
-      fetchingRef.current = false;
-      shouldStayOpen.current = false;
-    }
-  }, [checklistId]);
-
-  const fetchComments = useCallback(async () => {
-    if (!checklistId || fetchingRef.current) return;
-    console.log("Fetching comments for checklistId:", checklistId);
-    fetchingRef.current = true;
-    shouldStayOpen.current = true;
-    setLoading(true);
-    setError(null);
-    setComments([]);
-    try {
-      const result = await getCommentByCheckListIdAction(checklistId);
-      console.log("Fetch comments for checklistId", checklistId, ":", result);
-      if (result.success) {
-        setComments(result.data || []);
-      } else {
-        setError(
-          result.error?.includes("404")
-            ? "No comments yet"
-            : result.error || "Failed to load comments"
-        );
-      }
-    } catch (err) {
-      console.error(
-        "Error fetching comments for checklistId",
-        checklistId,
-        ":",
-        err
-      );
-      setError(
-        err.message?.includes("404")
-          ? "No comments yet"
-          : "An unexpected error occurred"
-      );
-    } finally {
-      setLoading(false);
-      fetchingRef.current = false;
-      shouldStayOpen.current = false;
-    }
-  }, [checklistId]);
-
-  useEffect(() => {
-    console.log(
-      "useEffect triggered: isOpen=",
-      isOpen,
-      "checklistId=",
-      checklistId
-    );
-    if (isOpen && checklistId && !fetchingRef.current) {
-      fetchComments();
-      fetchAttachments();
-    }
-  }, [isOpen, checklistId, fetchComments, fetchAttachments]);
 
   const handleStatusChange = useCallback(async () => {
     shouldStayOpen.current = true;
-    const newStatus = currentStatus === "DONE" ? "IN_PROGRESS" : "DONE";
+    const newStatus = state.currentStatus === "DONE" ? "IN_PROGRESS" : "DONE";
     try {
-      const result = await chageStatusCheckListAction(checklistId, newStatus);
+      const result = await changeStatusCheckListAction(checklistId, newStatus);
       if (result.success) {
-        setCurrentStatus(newStatus);
-      } else {
-        console.error("Failed to update status:", result.error);
+        dispatch({ type: "SET_CURRENT_STATUS", payload: newStatus });
       }
     } catch (error) {
-      console.error("Error updating status:", error);
+      toast.error("Failed to update status", {
+        position: "top-right",
+        autoClose: 4000,
+      });
     } finally {
       shouldStayOpen.current = false;
     }
-  }, [checklistId, currentStatus]);
+  }, [checklistId, state.currentStatus]);
 
   const handleOpenChange = useCallback(
     (open) => {
-      if (!open && shouldStayOpen.current) {
-        console.log("Preventing modal close");
-        return;
-      }
+      if (!open && shouldStayOpen.current) return;
       onOpenChange(open);
       if (!open) {
-        setComments([]);
-        setError(null);
-        setActiveTab("add");
-        setSelectedAttachment(null);
-        setAttachments([]);
-        setAttachmentError(null);
+        dispatch({ type: "SET_COMMENTS", payload: [] });
+        dispatch({ type: "SET_ERROR", payload: null });
+        dispatch({ type: "SET_ACTIVE_TAB", payload: "add" });
+        dispatch({ type: "SET_SELECTED_ATTACHMENT", payload: null });
+        dispatch({ type: "SET_ATTACHMENTS", payload: [] });
+        dispatch({ type: "SET_ATTACHMENT_ERROR", payload: null });
       }
     },
     [onOpenChange]
   );
 
-  const handleCommentsUpdated = useCallback((dataOrUpdater) => {
-    shouldStayOpen.current = true;
-    if (typeof dataOrUpdater === "function") {
-      setComments((prev) => dataOrUpdater(prev));
-    } else {
-      setComments(dataOrUpdater || []);
-    }
-    setTimeout(() => {
-      shouldStayOpen.current = false;
-    }, 100);
-  }, []);
+  const handleCommentsUpdated = useCallback(
+    (dataOrUpdater) => {
+      shouldStayOpen.current = true;
+      dispatch({
+        type: "SET_COMMENTS",
+        payload:
+          typeof dataOrUpdater === "function"
+            ? dataOrUpdater(state.comments)
+            : dataOrUpdater,
+      });
+      setTimeout(() => {
+        shouldStayOpen.current = false;
+      }, 100);
+    },
+    [state.comments]
+  );
 
   return (
-    <>
-      <div>
-        <div className="flex justify-end items-center relative">
-          <button
-            onClick={handleStatusChange}
-            className="focus:outline-none absolute top-[20px] z-20 right-5 p-2 rounded-full transition-colors"
-            title={
-              currentStatus === "DONE" ? "Mark as In Progress" : "Mark as Done"
-            }
-          >
-            {currentStatus === "DONE" ? (
-              <svg
-                viewBox="0 0 24 24"
-                width={24}
-                height={24}
-                fill="#10B981"
-                stroke="#10B981"
-                strokeWidth="1"
-                aria-hidden="true"
-              >
-                <path
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
-                />
-              </svg>
-            ) : (
-              <svg
-                viewBox="0 0 24 24"
-                fill="#9ca3af"
-                width={24}
-                height={24}
-                className="hover:fill-green-500 transition-colors"
-              >
-                <path
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
-                />
-              </svg>
-            )}
-          </button>
+    <div>
+      <div className="relative flex justify-end items-center">
+        <button
+          onClick={handleStatusChange}
+          className="absolute top-5 right-5 p-2 rounded-full transition-colors z-20 focus:outline-none"
+          title={
+            state.currentStatus === "DONE"
+              ? "Mark as In Progress"
+              : "Mark as Done"
+          }
+        >
+          {state.currentStatus === "DONE" ? (
+            <svg
+              viewBox="0 0 24 24"
+              width={24}
+              height={24}
+              fill="#10B981"
+              stroke="#10B981"
+              strokeWidth="1"
+            >
+              <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+              />
+            </svg>
+          ) : (
+            <svg
+              viewBox="0 0 24 24"
+              fill="#9ca3af"
+              width={24}
+              height={24}
+              className="hover:fill-green-500 transition-colors"
+            >
+              <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M12 2C6.48 2 2 6.5 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+              />
+            </svg>
+          )}
+        </button>
+      </div>
+      <Button
+        onPress={onOpen}
+        className="h-full w-full p-0 shadow-sm"
+        fullWidth={true}
+      >
+        <div className="h-full w-full max-w-none !px-0 bg-pink-200">
+          <CardCheckList
+            status={state.currentStatus}
+            title={title}
+            startDate={startDate}
+            comment="static comment"
+            label={label}
+            image={image}
+            hideImage={hideImage}
+            member={member}
+            checkedListId={id}
+            commentCount={state.comments.length}
+            finishedAt={finishedAt}
+            leaderId={leaderId}
+          />
         </div>
-        <Button
-          onPress={onOpen}
-          className="h-full w-full p-0 shadow-sm"
-          fullWidth="true"
-        >
-          <div className="h-full w-full max-w-none !px-0 bg-pink-300">
-            <CardCheckList
-              status={currentStatus}
-              title={title}
-              startDate={startDate}
-              comment={"static comment"}
-              label={label}
-              image={image}
-              hideImage={hideImage}
-              member={member}
-              id={id}
-              commentCount={comments.length}
-              finishedAt={finishedAt}
-              leaderId={leaderId}
-            />
-          </div>
-        </Button>
-        <Modal
-          isOpen={isOpen}
-          onOpenChange={handleOpenChange}
-          size="5xl"
-          className="overflow-y-auto scrollbar-hidden max-h-[760px]"
-          isDismissable={false}
-          isKeyboardDismissDisabled={true}
-          closeButton={false}
-        >
-          <ModalContent>
-            {(onClose) => (
-              <>
-                <ModalHeader className="flex flex-row justify-between items-center sticky top-0 z-10 bg-white">
-                  <div className="flex flex-wrap justify-start items-center gap-2">
-                    <svg
-                      width="12"
-                      height="14"
-                      viewBox="0 0 12 14"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M8 2.5H2C1.44772 2.5 1 2.94772 1 3.5V12.5C1 13.0523 1.44772 13.5 2 13.5H8C8.55228 13.5 9 13.0523 9 12.5V3.5C9 2.94772 8.55228 2.5 8 2.5Z"
-                        stroke="#000001"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M3 5H7"
-                        stroke="#000001"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M3 7.5H7"
-                        stroke="#000001"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M3 10H5"
-                        stroke="#000001"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M3.5 0.5H10C10.2652 0.5 10.5196 0.605357 10.7071 0.792893C10.8946 0.98043 11 1.23478 11 1.5V11"
-                        stroke="#000001"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                    <p className="text-h5 font-medium break-words max-w-full">
-                      {taskTitle || "task name"}
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => {
-                      shouldStayOpen.current = false;
-                      onClose();
-                    }}
-                    className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200 ml-auto"
-                    aria-label="Close modal"
+      </Button>
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={handleOpenChange}
+        size="5xl"
+        className="overflow-y-auto scrollbar-hidden max-h-[760px]"
+        isDismissable={false}
+        isKeyboardDismissDisabled={false}
+        closeButton={false}
+      >
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-row justify-between items-center sticky top-0 z-10 bg-white">
+                <div className="flex flex-wrap justify-start items-center gap-2">
+                  <svg
+                    width="12"
+                    height="14"
+                    viewBox="0 0 12 14"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
                   >
-                    <svg
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="text-gray-500 hover:text-gray-700"
-                    >
-                      <path
-                        d="M18 6L6 18M6 6L18 18"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </button>
-                </ModalHeader>
-                <ModalBody>
-                  {loading && (
-                    <div className="absolute inset-0 bg-white/50 flex justify-center items-center z-20">
-                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary" />
-                    </div>
-                  )}
-                  <div className="border rounded-medium flex justify-center items-center">
-                    <img
-                      src={image || preventImage.noChecklistImage}
-                      alt="Dynamic ERD"
-                      className="w-full h-40 object-cover rounded-medium"
+                    <path
+                      d="M8 2.5H2C1.44772 2.5 1 2.94772 1 3.5V12.5C1 13.0523 1.44772 13.5 2 13.5H8C8.55228 13.5 9 13.0523 9 12.5V3.5C9 2.94772 8.55228 2.5 8 2.5Z"
+                      stroke="#000001"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M3 5H7"
+                      stroke="#000001"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M3 7.5H7"
+                      stroke="#000001"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M3 10H5"
+                      stroke="#000001"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M3.5 0.5H10C10.2652 0.5 10.5196 0.605357 10.7071 0.792893C10.8946 0.98043 11 1.23478 11 1.5V11"
+                      stroke="#000001"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  <p className="text-h5 font-medium break-words max-w-full">
+                    {taskTitle || "Task Name"}
+                  </p>
+                </div>
+                <button
+                  onClick={() => {
+                    shouldStayOpen.current = false;
+                    onClose();
+                  }}
+                  className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200 ml-auto"
+                  aria-label="Close modal"
+                >
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="text-gray-500 hover:text-gray-700"
+                  >
+                    <path
+                      d="M18 6L6 18M6 6L18 18"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+              </ModalHeader>
+              <ModalBody>
+                {state.loading && (
+                  <div className="absolute inset-0 bg-white/50 flex justify-center items-center z-20">
+                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary" />
+                  </div>
+                )}
+                <div className="border rounded-medium flex justify-center items-center">
+                  <img
+                    src={image || preventImage.noChecklistImage}
+                    alt="Checklist Image"
+                    className="w-full h-40 object-cover rounded-medium"
+                  />
+                </div>
+                <div className="flex flex-col">
+                  <div className="flex flex-wrap justify-between items-center">
+                    <p className="text-title text-h6 underline font-normal break-words max-w-full">
+                      {title || "Checklist Title"}
+                    </p>
+
+                    <PopupAction
+                      title={<Trash />}
+                      color={"text-blue-600"}
+                      massageTitle={"Are you sure?"}
+                      massageBody={"You want to delete this checklist "}
+                      icon={<IconpopupDelete />}
+                      bgcolor={"bg-slate-red"}
+                      massageDo={"Yes, Delete"}
+                      massageUndo={"No, Cancel"}
+                      checkListId={id}
+                      taskId={taskId}
                     />
                   </div>
-                  <div className="flex flex-col">
-                    <div className="flex flex-wrap justify-between items-center">
-                      <p className="text-title text-h6 underline font-normal break-words max-w-full">
-                        {title || "title of checklist"}
-                      </p>
-                      <PopupAction
-                        title={<Trash />}
-                        color={"text-blue-600"}
-                        massageTitle={"Are you sure?"}
-                        massageBody={"You want to delete this checklist "}
-                        icon={<IconpopupDelete />}
-                        bgcolor={"bg-slate-red"}
-                        massageDo={"Yes, Delete"}
-                        massageUndo={"No, Cancel"}
+                  <div className="flex flex-wrap justify-between items-center mt-5">
+                    <StackedProfileChecklist
+                      member={member}
+                      preventUserImage={preventUserImage}
+                      taskId={taskId}
+                      allMemberInBoard={allMemberInBoard}
+                      leaderId={leaderId}
+                      checklistId={checklistId}
+                    />
+                    <div className="w-full max-w-xl flex flex-row gap-4">
+                      <DateRangePicker
+                        showMonthAndYearPickers
+                        variant="none"
+                        size="md"
                       />
-                    </div>
-                    <div className="flex flex-wrap justify-between items-center mt-5">
-                      <StackedProfileChecklist
-                        member={member}
-                        preventUserImage={preventUserImage}
-                        taskId={taskId}
-                        allMemberInBoard={allMemberInBoard}
-                        leaderId={leaderId}
-                        checklistId={checklistId}
-                      />
-                      <div>
-                        <div className="w-full max-w-xl flex flex-row gap-4">
-                          <DateRangePicker
-                            showMonthAndYearPickers
-                            variant="none"
-                            size="md"
-                          />
-                        </div>
-                      </div>
                     </div>
                   </div>
-                  <div className="flex flex-col space-y-3">
-                    <div className="flex flex-wrap justify-between items-center">
-                      <p className="text-h6 text-title font-semibold">
-                        Description test id == {checklistId}
-                      </p>
-                      <div>
-                        <svg
-                          width="15"
-                          height="15"
-                          viewBox="0 0 15 15"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <g clipPath="url(#clip0_3611_138420)">
-                            <path
-                              d="M6.875 2.5H2.5C2.16848 2.5 1.85054 2.6317 1.61612 2.86612C1.3817 3.10054 1.25 3.41848 1.25 3.75V12.5C1.25 12.8315 1.3817 13.1495 1.61612 13.3839C1.85054 13.6183 2.16848 13.75 2.5 13.75H11.25C11.5815 13.75 11.8995 13.6183 12.1339 13.3839C12.3683 13.1495 12.5 12.8315 12.5 12.5V8.125"
-                              stroke="#143A47"
-                              strokeWidth="1.5"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                            <path
-                              d="M11.5625 1.56252C11.8111 1.31388 12.1484 1.17419 12.5 1.17419C12.8516 1.17419 13.1889 1.31388 13.4375 1.56252C13.6861 1.81116 13.8258 2.14839 13.8258 2.50002C13.8258 2.85165 13.6861 3.18888 13.4375 3.43752L7.5 9.37502L5 10L5.625 7.50002L11.5625 1.56252Z"
-                              stroke="#143A47"
-                              strokeWidth="1.5"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </g>
-                          <defs>
-                            <clipPath id="clip0_3611_138420">
-                              <rect width="15" height="15" fill="white" />
-                            </clipPath>
-                          </defs>
-                        </svg>
-                      </div>
+                </div>
+                <div className="flex flex-col space-y-3">
+                  <div className="flex flex-wrap justify-between items-center">
+                    <p className="text-h6 text-title font-semibold">
+                      Description
+                    </p>
+                    <div
+                      className="cursor-pointer"
+                      onClick={handleEditClick}
+                      role="button"
+                      aria-label="Edit description"
+                    >
+                      <svg
+                        width="15"
+                        height="15"
+                        viewBox="0 0 15 15"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <g clipPath="url(#clip0_3611_138420)">
+                          <path
+                            d="M6.875 2.5H2.5C2.16848 2.5 1.85054 2.6317 1.61612 2.86612C1.3817 3.10054 1.25 3.41848 1.25 3.75V12.5C1.25 12.8315 1.3817 13.1495 1.61612 13.3839C1.85054 13.6183 2.16848 13.75 2.5 13.75H11.25C11.5815 13.75 11.8995 13.6183 12.1339 13.3839C12.3683 13.1495 12.5 12.8315 12.5 12.5V8.125"
+                            stroke="#143A47"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                          <path
+                            d="M11.5625 1.56252C11.8111 1.31388 12.1484 1.17419 12.5 1.17419C12.8516 1.17419 13.1889 1.31388 13.4375 1.56252C13.6861 1.81116 13.8258 2.14839 13.8258 2.50002C13.8258 2.85165 13.6861 3.18888 13.4375 3.43752L7.5 9.37502L5 10L5.625 7.50002L11.5625 1.56252Z"
+                            stroke="#143A47"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </g>
+                        <defs>
+                          <clipPath id="clip0_3611_138420">
+                            <rect width="15" height="15" fill="white" />
+                          </clipPath>
+                        </defs>
+                      </svg>
                     </div>
+                  </div>
+                  {editorState.isEditing ? (
+                    <input
+                      type="text"
+                      value={editorState.newDescription}
+                      onChange={handleDescriptionChange}
+                      onKeyDown={handleSubmit}
+                      className="text-title/50 text-caption break-words max-w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      autoFocus
+                    />
+                  ) : (
                     <p className="text-title/50 text-caption break-words max-w-full">
-                      {description ||
+                      {editorState.newDescription ||
                         "The Task Management System is a web-based application designed to help individuals and teams effectively manage their daily activity"}
                     </p>
-                  </div>
-                  {selectedAttachment && (
-                    <div className="mt-4 p-3 border rounded">
-                      <p className="font-medium">
-                        Selected Attachment: {selectedAttachment.description}
-                      </p>
-                      <div className="flex items-center space-x-2">
-                        <img
-                          src={getFileIcon(selectedAttachment.description)}
-                          alt={selectedAttachment.description}
-                          className="w-5 h-5"
-                        />
-                        <a
-                          href={selectedAttachment.drive_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-600"
-                        >
-                          View
-                        </a>
-                        <Button
-                          onClick={() => setSelectedAttachment(null)}
-                          className="ml-2 text-sm bg-red-500 text-white"
-                        >
-                          Remove
-                        </Button>
-                      </div>
-                    </div>
                   )}
-                  <div className="flex space-x-4 border-b border-gray-300 mt-6">
-                    <button
-                      className={`py-2 px-4 ${
-                        activeTab === "add"
-                          ? "border-b-2 border-primary text-primary font-semibold"
-                          : "text-title/50"
-                      }`}
-                      onClick={() => setActiveTab("add")}
-                    >
-                      Add Attachment
-                    </button>
-                    <button
-                      className={`py-2 px-4 ${
-                        activeTab === "all"
-                          ? "border-b-2 border-primary text-primary font-semibold"
-                          : "text-title/50"
-                      }`}
-                      onClick={() => setActiveTab("all")}
-                    >
-                      All Attachments ({attachments.length})
-                    </button>
+                </div>
+                {state.selectedAttachment && (
+                  <div className="mt-4 p-3 border rounded">
+                    <p className="font-medium">
+                      Selected Attachment:{" "}
+                      {state.selectedAttachment.details.fileName}
+                    </p>
+                    <div className="flex items-center space-x-2">
+                      <img
+                        src={getFileIcon(
+                          state.selectedAttachment.details.fileName
+                        )}
+                        alt={state.selectedAttachment.details.fileName}
+                        className="w-5 h-5"
+                      />
+                      <a
+                        href={state.selectedAttachment.drive_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600"
+                      >
+                        View
+                      </a>
+                      <Button
+                        onClick={() =>
+                          dispatch({
+                            type: "SET_SELECTED_ATTACHMENT",
+                            payload: null,
+                          })
+                        }
+                        className="ml-2 text-sm bg-red-500 text-white"
+                      >
+                        Remove
+                      </Button>
+                    </div>
                   </div>
-                  <div className="mt-4 mb-5">
-                    {activeTab === "add" && (
-                      <div className="space-y-6">
-                        <div className="space-y-2">
-                          <label className="block text-title">Uploading</label>
-                          <div
-                            className="w-full text-title/50 text-caption p-4 border-1 rounded-medium border-gray-400 flex justify-between items-center cursor-pointer"
-                            onClick={openModal}
+                )}
+                <div className="flex space-x-4 border-b border-gray-300 mt-6">
+                  <button
+                    className={`py-2 px-4 ${
+                      state.activeTab === "add"
+                        ? "border-b-2 border-primary text-primary font-semibold"
+                        : "text-title/50"
+                    }`}
+                    onClick={() =>
+                      dispatch({ type: "SET_ACTIVE_TAB", payload: "add" })
+                    }
+                  >
+                    Add Attachment
+                  </button>
+                  <button
+                    className={`py-2 px-4 ${
+                      state.activeTab === "all"
+                        ? "border-b-2 border-primary text-primary font-semibold"
+                        : "text-title/50"
+                    }`}
+                    onClick={() =>
+                      dispatch({ type: "SET_ACTIVE_TAB", payload: "all" })
+                    }
+                  >
+                    All Attachments ({state.attachments.length})
+                  </button>
+                </div>
+                <div className="mt-4 mb-5">
+                  {state.activeTab === "add" && (
+                    <div className="space-y-6">
+                      <div className="space-y-2">
+                        <label className="block text-title">Uploading</label>
+                        <div
+                          className="w-full text-title/50 text-caption p-4 border rounded-medium border-gray-400 flex justify-between items-center cursor-pointer"
+                          onClick={() =>
+                            dispatch({ type: "SET_MODAL_OPEN", payload: true })
+                          }
+                        >
+                          Choose file here...
+                          <svg
+                            width="18"
+                            height="20"
+                            viewBox="0 0 18 20"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="inline-block cursor-pointer ml-2"
                           >
-                            Choose file here...
-                            <div className="inline-block cursor-pointer ml-2">
-                              <svg
-                                width="18"
-                                height="20"
-                                viewBox="0 0 18 20"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path
-                                  d="M3.33398 18.2243H15.0007C15.4427 18.2243 15.8666 18.0487 16.1792 17.7361C16.4917 17.4236 16.6673 16.9996 16.6673 16.5576V5.72428L12.5007 1.55762H5.00065C4.55862 1.55762 4.1347 1.73321 3.82214 2.04577C3.50958 2.35833 3.33398 2.78226 3.33398 3.22428V6.55762"
-                                  stroke="#59BAD5"
-                                  strokeWidth="1.66667"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                />
-                                <path
-                                  d="M11.668 1.55762V4.89095C11.668 5.33298 11.8436 5.7569 12.1561 6.06946C12.4687 6.38202 12.8926 6.55762 13.3346 6.55762H16.668M1.66797 12.391H10.0013M10.0013 12.391L7.5013 14.891M10.0013 12.391L7.5013 9.89095"
-                                  stroke="#59BAD5"
-                                  strokeWidth="1.66667"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                />
-                              </svg>
-                            </div>
-                          </div>
-                          {isModalOpen && (
-                            <ModalUploadAttachment
-                              boardId={boardId}
-                              checklistId={checklistId}
-                              isOpen={isModalOpen}
-                              onClose={closeModal}
-                              onAttachmentSelected={handleAttachmentSelected}
+                            <path
+                              d="M3.33398 18.2243H15.0007C15.4427 18.2243 15.8666 18.0487 16.1792 17.7361C16.4917 17.4236 16.6673 16.9996 16.6673 16.5576V5.72428L12.5007 1.55762H5.00065C4.55862 1.55762 4.1347 1.73321 3.82214 2.04577C3.50958 2.35833 3.33398 2.78226 3.33398 3.22428V6.55762"
+                              stroke="#59BAD5"
+                              strokeWidth="1.66667"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
                             />
-                          )}
+                            <path
+                              d="M11.668 1.55762V4.89095C11.668 5.33298 11.8436 5.7569 12.1561 6.06946C12.4687 6.38202 12.8926 6.55762 13.3346 6.55762H16.668M1.66797 12.391H10.0013M10.0013 12.391L7.5013 14.891M10.0013 12.391L7.5013 9.89095"
+                              stroke="#59BAD5"
+                              strokeWidth="1.66667"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
                         </div>
-                        <div className="space-y-2">
-                          <PostCommentChecklist checklistId={checklistId} />
-                        </div>
-                        {error ? (
-                          <div
-                            className={`text-center py-4 ${
-                              error === "No comments yet"
-                                ? "text-gray-500"
-                                : "text-red-500"
-                            }`}
-                          >
-                            {error}
-                            {error !== "No comments yet" && (
-                              <Button
-                                onClick={fetchComments}
-                                className="ml-2 text-sm bg-primary text-white"
-                              >
-                                Retry
-                              </Button>
-                            )}
-                          </div>
-                        ) : (
-                          <CommentChecklistSec
-                            comments={comments}
+                        {state.isModalOpen && (
+                          <ModalUploadAttachment
+                            boardId={boardId}
                             checklistId={checklistId}
-                            onCommentsUpdated={handleCommentsUpdated}
+                            isOpen={state.isModalOpen}
+                            onClose={() =>
+                              dispatch({
+                                type: "SET_MODAL_OPEN",
+                                payload: false,
+                              })
+                            }
+                            onAttachmentSelected={handleAttachmentSelected}
                           />
                         )}
                       </div>
-                    )}
-                    {activeTab === "all" && (
-                      <div className="h-[400px] overflow-auto scrollbar-hidden">
-                        {console.log(
-                          "Rendering attachments tab:",
-                          attachments,
-                          "error:",
-                          attachmentError
-                        )}
-                        {attachmentError ? (
-                          <div className="text-red-500 text-center py-4">
-                            {attachmentError}
-                            {attachmentError !== "No attachments found" && (
-                              <Button
-                                onClick={fetchAttachments}
-                                className="ml-2 text-sm bg-primary text-white"
-                              >
-                                Retry
-                              </Button>
-                            )}
-                          </div>
-                        ) : attachments.length === 0 ? (
-                          <div className="text-center py-4">
-                            No attachments available
-                          </div>
-                        ) : (
-                          attachments.map((item) => (
-                            <div
-                              key={item.attachmentId}
-                              className="mb-4 p-3 border rounded"
-                            >
-                              <p className="text-sm text-gray-500">
-                                Created on{" "}
-                                {new Date(item.createdAt).toLocaleString()}
-                              </p>
-                              <div className="mt-1 flex items-center space-x-2">
-                                <img
-                                  src={getFileIcon(item.details.fileName)}
-                                  alt={item.details.fileName}
-                                  className="w-5 h-5"
-                                />
-                                {item.drive_url ? (
-                                  <a
-                                    href={item.drive_url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-blue-600 hover:text-blueActive/50"
-                                  >
-                                    {item.details.fileName}
-                                  </a>
-                                ) : (
-                                  <span className="text-gray-600">
-                                    {item.details.fileName} (No link available)
-                                  </span>
-                                )}
-                              </div>
-                            </div>
-                          ))
-                        )}
+                      <div className="space-y-2">
+                        <PostCommentChecklist checklistId={checklistId} />
                       </div>
-                    )}
-                  </div>
-                </ModalBody>
-              </>
-            )}
-          </ModalContent>
-        </Modal>
-      </div>
-    </>
+                      {state.error ? (
+                        <div
+                          className={`text-center py-4 ${
+                            state.error === "No comments yet"
+                              ? "text-gray-500"
+                              : "text-red-500"
+                          }`}
+                        >
+                          {state.error}
+                          {state.error !== "No comments yet" && (
+                            <Button
+                              onClick={() =>
+                                dispatch({ type: "SET_COMMENTS", payload: [] })
+                              }
+                              className="ml-2 text-sm bg-primary text-white"
+                            >
+                              Retry
+                            </Button>
+                          )}
+                        </div>
+                      ) : (
+                        <CommentChecklistSec
+                          comments={state.comments}
+                          checklistId={checklistId}
+                          onCommentsUpdated={handleCommentsUpdated}
+                        />
+                      )}
+                    </div>
+                  )}
+                  {state.activeTab === "all" && (
+                    <div className="h-[400px] overflow-auto scrollbar-hidden">
+                      {state.attachmentError ? (
+                        <div className="text-red-500 text-center py-4">
+                          {state.attachmentError}
+                          {state.attachmentError !== "No attachments found" && (
+                            <Button
+                              onClick={() =>
+                                dispatch({
+                                  type: "SET_ATTACHMENTS",
+                                  payload: [],
+                                })
+                              }
+                              className="ml-2 text-sm bg-primary text-white"
+                            >
+                              Retry
+                            </Button>
+                          )}
+                        </div>
+                      ) : state.attachments.length === 0 ? (
+                        <div className="text-center py-4">
+                          No attachments available
+                        </div>
+                      ) : (
+                        state.attachments.map((item) => (
+                          <div
+                            key={item.attachmentId}
+                            className="mb-4 p-3 border rounded"
+                          >
+                            <p className="text-sm text-gray-500">
+                              Created on{" "}
+                              {new Date(item.createdAt).toLocaleString()}
+                            </p>
+                            <div className="mt-1 flex items-center space-x-2">
+                              <img
+                                src={getFileIcon(item.details.fileName)}
+                                alt={item.details.fileName}
+                                className="w-5 h-5"
+                              />
+                              {item.drive_url ? (
+                                <a
+                                  href={item.drive_url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-blue-600 hover:text-blueActive/50"
+                                >
+                                  {item.details.fileName}
+                                </a>
+                              ) : (
+                                <span className="text-gray-600">
+                                  {item.details.fileName} (No link available)
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  )}
+                </div>
+              </ModalBody>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+    </div>
   );
-}
+};
+
+export default ModalDetailChecklist;
