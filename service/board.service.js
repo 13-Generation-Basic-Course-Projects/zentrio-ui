@@ -844,3 +844,30 @@ export const updateTaskByIdService = async ({
 
   return response.json();
 };
+
+
+export const uploadImageBoardService = async ({ boardId, image, token }) => {
+  const url = boardRouteGroup.uploadImageBoard(boardId);
+  console.log("url",url, "image", image, "token", token)
+ 
+  const formData = new FormData();
+  formData.append("file", image);
+
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      accept: "*/*",
+      Authorization: `Bearer ${token}`,
+      // Do NOT set Content-Type, browser sets it automatically for FormData
+    },
+    body: formData,
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json();
+    throw new Error(`Upload failed: ${errorData.message || res.statusText}`);
+  }
+
+  const data = await res.json();
+  return data;
+};

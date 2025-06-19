@@ -5,6 +5,8 @@ import {
   loginGoogleService,
   loginZentrioCredentailService,
 } from "./service/auth.service";
+import { refreshGoogleAccessToken } from "./action/refreshAccessTokenAction.";
+
 
 export const {
   handlers: { GET, POST },
@@ -44,37 +46,49 @@ export const {
   ],
   callbacks: {
     async jwt({ token, account, user }) {
-  // Google
-  if (account?.provider === "google") {
-    token.idToken = account.id_token;
-    token.accessToken = account.access_token;
-    token.refreshToken = account.refresh_token;
+      // First time login
+      if (account?.provider === "google") {
+        token.idToken = account.id_token;
+        token.accessToken = account.access_token;
+        token.refreshToken = account.refresh_token;
+        token.accessTokenExpires = Date.now() + account.expires_at * 1000;
 
-    try {
-      const backendResponse = await loginGoogleService({
-        idToken: account.id_token,
-      });
+        try {
+          const backendResponse = await loginGoogleService({
+            idToken: account.id_token,
+          });
 
-      if (backendResponse?.success) {
-        token.backendToken = backendResponse.payload.token;
+          if (backendResponse?.success) {
+            token.backendToken = backendResponse.payload.token;
+          }
+        } catch (error) {
+          console.error("Google login error:", error.message);
+        }
       }
-    } catch (error) {
-      console.error("Google login error:", error.message);
-    }
-  }
 
-  // Credentials
-  if (account?.provider === "credentials" && user) {
-    token.backendToken = user?.payload?.token;
-    token.email = user?.payload?.email;
-  }
+      // Credentials login
+      if (account?.provider === "credentials" && user) {
+        token.backendToken = user?.payload?.token;
+        token.email = user?.payload?.email;
+      }
 
-  return token;
-}
-,
+      // Refresh access token if expired
+      if (token.accessTokenExpires && Date.now() > token.accessTokenExpires) {
+        try {
+          const refreshed = await refreshGoogleAccessToken(token.refreshToken);
+          token.accessToken = refreshed.access_token;
+          token.accessTokenExpires = Date.now() + refreshed.expires_in * 1000;
+          token.refreshToken = refreshed.refresh_token || token.refreshToken;
+        } catch (err) {
+          console.error("Failed to refresh access token:", err);
+          token.error = "RefreshAccessTokenError";
+        }
+      }
+
+      return token;
+    },
 
     async session({ session, token }) {
-      console.log("SESSION CALLBACK", token);
       session.user = {
         id: token.id,
         email: token.email,
