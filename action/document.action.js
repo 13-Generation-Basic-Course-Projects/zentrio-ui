@@ -22,8 +22,7 @@ import { revalidatePath } from "next/cache";
 
 // Get
 export const getDocumentsByBoardAction = async (boardId) => {
-  const userToken = await Token();
-  const token = userToken.Credential;
+  const token = await Token();
 
   const documents = await fetchDocumentsByBoardService(boardId, token);
 
@@ -32,8 +31,7 @@ export const getDocumentsByBoardAction = async (boardId) => {
 
 // Get public documents
 export const getPublicDocumentsByBoardAction = async (boardId) => {
-  const userToken = await Token();
-  const token = userToken.Credential;
+  const token = await Token();
 
   const publicDocuments = await fetchPublicDocumentsService(boardId, token);
 
@@ -42,8 +40,7 @@ export const getPublicDocumentsByBoardAction = async (boardId) => {
 
 // Get file by folder id
 export const getFileByFolderIdAction = async (accessToken, folderId) => {
-  const userToken = await Token();
-  const token = userToken.Credential;
+  const token = await Token();
 
   const files = await getFileByFolderIdService({
     accessToken,
@@ -61,8 +58,7 @@ export const downloadDocumentByDocumentIdAction = async (
   documentId,
   accessTokenFromGoogle
 ) => {
-  const userToken = await Token();
-  const token = userToken.Credential;
+  const token = await Token();
 
   // Only return the blob and filename - NO browser download code
   const { blob, fileName } = await downloadDocumentByDocumentIdService({
@@ -79,8 +75,7 @@ export const downloadAllFilesAsZipAction = async (
   documentId,
   accessTokenFromGoogle
 ) => {
-  const userToken = await Token();
-  const token = userToken.Credential;
+  const token = await Token();
 
   // Call service to get blob and filename
   const { blob, filename } = await downloadAllFilesAsZipService({
@@ -96,8 +91,7 @@ export const downloadAllFilesAsZipAction = async (
 
 // Create
 export const createFolderAction = async (data) => {
-  const userToken = await Token();
-  const token = userToken.Credential;
+  const token = await Token();
   console.log("post pending data", data);
   const folder = await createDocumentService(data, token);
   return folder;
@@ -137,8 +131,7 @@ export const createDocumentByUploadAction = async (
   boardId,
   tokenFromGoogle
 ) => {
-  const userToken = await Token();
-  const token = userToken.Credential;
+  const token = await Token();
   const document = await createDocumentByUploadService(
     formData,
     boardId,
@@ -155,8 +148,7 @@ export const uploadDocumentToFolderAction = async (
   folderId,
   tokenFromGoogle
 ) => {
-  const userToken = await Token();
-  const token = userToken.Credential;
+  const token = await Token();
 
   const document = await uploadDocumentToFolderServie(
     file,
@@ -202,8 +194,7 @@ export const createDriveFileAction = async ({
 
 // Delete
 export const deleteDocumentAction = async (accessToken, documentId) => {
-  const userToken = await Token();
-  const token = userToken.Credential;
+  const token = await Token();
   console.log("object1", documentId);
   const document = await deleteDocumentService({
     accessToken,
@@ -221,8 +212,7 @@ export const updateDocumentNameByIdAction = async (
   tokenFromGoogle
 ) => {
   console.log("tokekkek", tokenFromGoogle);
-  const userToken = await Token();
-  const token = userToken.Credential;
+  const token = await Token();
   revalidatePath("/document");
 
   const updated = await updateDocumentNameByIdService(
@@ -236,8 +226,7 @@ export const updateDocumentNameByIdAction = async (
 
 // public document (update)
 export const publicDocumentByIdAction = async (documentId, tokenFromGoogle) => {
-  const userToken = await Token();
-  const token = userToken.Credential;
+  const token = await Token();
   revalidatePath("/document");
 
   const updated = await publicDocumentByIdService(
@@ -252,8 +241,7 @@ export const publicDocumentByIdAction = async (documentId, tokenFromGoogle) => {
  * get all document by board id
  */
 export const getAllDocumentByBoardIdAction = async (boardId) => {
-  const userToken = await Token();
-  const token = userToken.Credential;
+  const token = await Token();
   const getAllDocument = await getAllDocumentByBoardIdSerivce({
     boardId,
     token,
@@ -265,8 +253,7 @@ export const getAllDocumentByBoardIdAction = async (boardId) => {
  * post attactment
  */
 export const postAttactmentAction = async (checklistId, details) => {
-  const userToken = await Token();
-  const token = userToken.Credential;
+  const token = await Token();
   const result = await postAttactmentService({
     checklistId,
     details,
@@ -279,8 +266,7 @@ export const postAttactmentAction = async (checklistId, details) => {
  * get attactment
  */
 export const getAttactmentAction = async (checklistId) => {
-  const userToken = await Token();
-  const token = userToken.Credential;
+  const token = await Token();
   const result = await getAttactmentService({
     checklistId,
     token,

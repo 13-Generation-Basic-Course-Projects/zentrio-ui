@@ -11,8 +11,7 @@ import {
 import { revalidatePath } from "next/cache";
 
 export const getCurrentUserProfileAction = async () => {
-  const userToken = await Token();
-  const token = userToken.Credential;
+ const token = await Token();
   console.log("token", token);
   const result = await getCurrentUserProfileService({
     token,
@@ -21,8 +20,7 @@ export const getCurrentUserProfileAction = async () => {
 };
 
 export const updateUserProfileAction = async (data) => {
-  const userToken = await Token();
-  const token = userToken.Credential;
+ const token = await Token();
   const genderMap = {
     female: "FEMALE",
     male: "MALE",
@@ -51,16 +49,14 @@ export const updateUserProfileAction = async (data) => {
 
 export const updateAchievementAction = async (payload) => {
   console.log("paylaod data", payload);
-  const userToken = await Token();
-  const token = userToken.Credential;
+ const token = await Token();
   const result = await updateAchievementService({ token, payload });
   revalidatePath("/profile");
   return result;
 };
 
 export const getUserAchievementAction = async () => {
-  const userToken = await Token();
-  const token = userToken.Credential;
+ const token = await Token();
   const result = await getUserAchievementService({
     token,
   });
@@ -68,8 +64,7 @@ export const getUserAchievementAction = async () => {
 };
 
 export const getPreviewProfileAction = async () => {
-  const userToken = await Token();
-  const token = userToken.Credential;
+ const token = await Token();
   const result = await getPreviewProfileService({
     token,
   });

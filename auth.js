@@ -1,6 +1,6 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import Credentials from "next-auth/providers/credentials";
+import CredentialsProvider from "next-auth/providers/credentials";
 import {
   loginGoogleService,
   loginZentrioCredentailService,
@@ -16,26 +16,37 @@ export const {
     strategy: "jwt",
   },
   providers: [
-    Credentials({
+    CredentialsProvider({
       credentials: {
-        email: {},
-        password: {},
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
       },
       authorize: async (credentials) => {
         const { email, password } = credentials;
-        const res = await loginZentrioCredentailService({ email, password });
-        if (!res?.success) {
-          return null; // Return null if login fails
+
+        try {
+          const token = await loginZentrioCredentailService({
+            email,
+            password,
+          });
+
+          if (!token || typeof token !== "string") {
+            console.error("❌ Invalid token from backend:", token);
+            return null;
+          }
+
+          return {
+            id: email,
+            email,
+            backendToken: token,
+          };
+        } catch (error) {
+          console.error("🔴 Authorization failed:", error.message);
+          return null;
         }
-        // Return user data and token to be used in jwt callback
-        return {
-          id: res.payload.user?.userId || res.payload.sub, // Adjust based on your response structure
-          email: res.payload.user?.email || credentials.email,
-          backendToken: res.payload.token, // Store backend token
-          ...res.payload.user, // Spread other user data
-        };
       },
     }),
+
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
@@ -45,63 +56,41 @@ export const {
           access_type: "offline",
           response_type: "code",
           scope:
-            "openid email profile https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/drive",
+            "openid email profile https://www.googleapis.com/auth/userinfo.email",
         },
       },
     }),
   ],
+
   callbacks: {
-    async jwt({ token, account, user }) {
-      // Handle Credentials login (user is populated from authorize)
-      if (user) {
-        token.id = user.id;
-        token.email = user.email;
-        token.backendToken = user.backendToken; // Store backend token
-        // Add other user properties as needed
-        token.username = user.username || token.username;
-      }
-
-      // Handle Google login (account is populated)
-      if (account && account.provider === "google") {
-        token.idToken = account.id_token;
-        token.accessToken = account.access_token;
-        token.refreshToken = account.refresh_token;
-
+    async jwt({ token, user, account }) {
+      if (user?.backendToken) {
+        // for credentials login
+        token.backendToken = user.backendToken;
+      } else if (account?.provider === "google" && account.id_token) {
         try {
-          const backendResponse = await loginGoogleService({
-            idToken: account.id_token, // Pass id_token to backend
-          });
-
-          if (backendResponse?.success) {
-            token.backendToken = backendResponse.payload.token;
-            token.id = backendResponse.payload.user?.userId || token.sub;
-            token.email = backendResponse.payload.user?.email || token.email;
-            token.username =
-              backendResponse.payload.user?.username || token.username;
-          } else {
-            console.error("Backend login failed:", backendResponse?.message);
-          }
+          const backendToken = await loginGoogleService(
+            account.id_token,
+            "GOOGLE"
+          );
+          token.backendToken = backendToken;
         } catch (error) {
-          console.error("Error calling loginGoogleService:", error.message);
+          console.error("🔴 Google backend login failed:", error.message);
         }
       }
-
       return token;
     },
+
     async session({ session, token }) {
-      // Shape the session object
-      session.user = {
-        id: token.id,
-        email: token.email,
-        username: token.username,
-        backendToken: token.backendToken,
-      };
-      session.backendToken = token.backendToken; // Optional: Store at root level
+      session.backendToken = token.backendToken;
+      console.log("session", session);
       return session;
     },
   },
-  secret: process.env.NEXTAUTH_SECRET,
+
   pages: {
     signIn: "/login",
   },
+
+  secret: process.env.NEXTAUTH_SECRET,
 });

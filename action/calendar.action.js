@@ -14,8 +14,7 @@ import {
  */
 export const getCalendarByBoardIdAndUserIdAction = async (boardId) => {
   try {
-    const userToken = await Token();
-    const token = userToken.Credential;
+  const token = await Token();
 
     const result = await getCalendarByBoardIdAndUserIdService({ boardId, token });
     return result;
@@ -30,8 +29,7 @@ export const getCalendarByBoardIdAndUserIdAction = async (boardId) => {
  */
 export const getNoteInCalendarAction = async (calendarId) => {
   try {
-    const userToken = await Token();
-    const token = userToken.Credential;
+  const token = await Token();
 
     const result = await getNoteInCalendarService({ calendarId, token });
     return result;
@@ -46,8 +44,7 @@ export const getNoteInCalendarAction = async (calendarId) => {
  */
 export const getAllNotesFromCalendarByCurrentUserAction = async (taskId) => {
   try {
-    const userToken = await Token();
-    const token = userToken.Credential;
+  const token = await Token();
 
     const result = await getAllNotesFromCalendarByCurrentUserService({ taskId, token });
     return result;
@@ -67,8 +64,7 @@ export const createNoteInCalendarAction = async ({
   taskId,
 }) => {
   try {
-    const userToken = await Token();
-    const token = userToken.Credential;
+  const token = await Token();
 
     const result = await createNoteInCalendarService({
       noted,
@@ -95,8 +91,7 @@ export const updateNoteByIdFromCalendarAction = async ({
   taskId,
 }) => {
   try {
-    const userToken = await Token();
-    const token = userToken.Credential;
+  const token = await Token();
 
     const result = await updateNoteByIdFromCalendarService({
       calendarId,

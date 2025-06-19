@@ -10,8 +10,7 @@ import {
  * Get board members action
  */
 export const getBoardMemberAction = async (boardId) => {
-  const userToken = await Token();
-  const token = userToken.Credential;
+  const token = await Token();
   const result = await getBoardMembersService({ boardId, token });
 
   // return result;
@@ -24,8 +23,7 @@ export const getBoardMemberAction = async (boardId) => {
  * Get board members action
  */
 export const getUserByUserIdAction = async (userId) => {
-  const userToken = await Token();
-  const token = userToken.Credential;
+  const token = await Token();
   const result = await getUserByUserIdService({ userId, token });
 
   // return result;

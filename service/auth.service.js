@@ -148,21 +148,22 @@ export const resendOtpZentrioService = async ({ email, type }) => {
 /*
  * login google
  */
-export const loginGoogleService = async ({ accesToken }) => {
+export const loginGoogleService = async (idToken, provider) => {
   try {
     const url = `${apiConfig.baseUrl}/auths/login/third-party`;
-    console.log("login3party", accesToken);
     const res = await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ idToken: accesToken, provider: "google" }),
+      body: JSON.stringify({ idToken, provider }),
     });
     const data = await res.json();
     console.log("📥 Backend responded with:", data);
+    if (!data?.payload?.token)
+      throw new Error("No token returned from backend");
 
-    return data; // just return the data, don’t redirect here
+    return data.payload.token;
   } catch (error) {
     console.error("Login service error:", error.message);
     throw error;

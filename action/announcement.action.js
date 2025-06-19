@@ -11,8 +11,7 @@ export const createAnnouncementByBoardIdAction = async (payload = {}) => {
     const { title, description, boardId } = payload;
     console.log("pay",payload);
 
-    const userToken = await Token();
-    const token = userToken.Credential;
+    const token = await Token();
     console.log("Calling service with:", { title, description, token ,boardId});
     const result = await createAnnouncementByBoardIdService({
         title,
@@ -27,8 +26,7 @@ export const createAnnouncementByBoardIdAction = async (payload = {}) => {
 export const uploadMultiImgByBoardIdAction = async (boardId,image) => {
     
     console.log("kakakak", image)
-    const userToken = await Token();
-    const token = userToken.Credential;
+    const token = await Token();
     const result = await uploadMultiImgByBoardIdService({
         boardId,
         image,
@@ -39,8 +37,7 @@ export const uploadMultiImgByBoardIdAction = async (boardId,image) => {
 
 export const getAllAnnouncementByBoardIdAction = async (boardId) => {
 
-    const userToken = await Token();
-    const token = userToken.Credential;
+    const token = await Token();
     const result = await getAllAnnouncementByBoardIdService({
         boardId, 
         token,
@@ -52,8 +49,7 @@ export const getAllAnnouncementByBoardIdAction = async (boardId) => {
 export const deleteAnnouncementByIdAction = async (id) => {
 
     console.log("kdet",id)
-    const userToken = await Token();
-    const token = userToken.Credential;
+    const token = await Token();
     const result = await deleteAnnouncementByIdService(
         id,
         token,
@@ -65,8 +61,7 @@ export const deleteAnnouncementByIdAction = async (id) => {
 export const pinedAnnouncementByIdAction = async (announId) => {
     console.log("pined id",announId);
 
-    const userToken = await Token();
-    const token = userToken.Credential;
+    const token = await Token();
     const result = await pinedAnnouncementByIdService( announId, token );
     revalidatePath("/update");
     return result;
@@ -75,8 +70,7 @@ export const pinedAnnouncementByIdAction = async (announId) => {
 export const updateAnnouncementByIdAction = async (announId, description, title, boardId) => {
     console.log("update id annon",announId, description, title, boardId);
 
-    const userToken = await Token();
-    const token = userToken.Credential;
+    const token = await Token();
     const result = await updateAnnouncementByIdService({announId, description, title, boardId, token});
     revalidatePath("/update");
     return result;

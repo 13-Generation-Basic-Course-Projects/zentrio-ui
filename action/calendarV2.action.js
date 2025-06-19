@@ -10,8 +10,7 @@ export const getTaskByBoardIdAndGanttBarIdAction = async (boardId, ganttBarId) =
   //   "ganttBarId in getTaskByBoardIdAndGanttBarIdAction: ",
   //   ganttBarId
   // );
-  const userToken = await Token();
-  const token = userToken.Credential;
+  const token = await Token();
   //console.log(token);
   const result = await getTaskByBoardIdAndGanttBarIdService({
     boardId,
@@ -27,8 +26,7 @@ export const getTaskByBoardIdAndGanttBarIdAction = async (boardId, ganttBarId) =
  */
 export const getGanttBarByGanttChartIdAction = async (ganttChartId) => {
   // console.log("ganttchartId  in calendar: ", ganttChartId);
-  const userToken = await Token();
-  const token = userToken.Credential;
+  const token = await Token();
   console.log(token);
   const result = await getGanttBarByGanttChartIdService({
     ganttChartId,
@@ -42,8 +40,7 @@ export const getGanttBarByGanttChartIdAction = async (ganttChartId) => {
  */
 export const getGanttChartByBoardIdAction = async (boardId) => {
     // console.log("BoardId ingetGanttChartByBoardIdAction: ", boardId);
-  const userToken = await Token();
-  const token = userToken.Credential;
+  const token = await Token();
   console.log(token);
 
   const result = await getGanttChartByBoardIdService({
@@ -62,8 +59,7 @@ export const createNoteInCalendarAction = async (
   tillDate,
   taskId,
 ) => {
-  const userToken = await Token();
-  const token = userToken.Credential;
+  const token = await Token();
   console.log("Action noted input:", noted);
   console.log("Action startDate input:", startDate);
   console.log("Action tillDate input:", tillDate);

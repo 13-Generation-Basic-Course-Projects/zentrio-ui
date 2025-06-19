@@ -14,8 +14,7 @@ console.log("test actions must create folders");
  * get ganttbar
  */
 export const getGanttBarAction = async () => {
-  const userToken = await Token();
-  const token = userToken.Credential;
+  const token = await Token();
   console.log(token);
   const result = await getGanttBarService({
     token,
@@ -26,8 +25,7 @@ export const getGanttBarAction = async () => {
  * get ganttbar by gantt chart id
  */
 export const getGanttBarByGanttChartIdAction = async ({ ganttChartId }) => {
-  const userToken = await Token();
-  const token = userToken.Credential;
+  const token = await Token();
   console.log(token);
   const result = await getGanttBarByGanttChartIdService({
     ganttChartId,
@@ -40,8 +38,7 @@ export const getGanttBarByGanttChartIdAction = async ({ ganttChartId }) => {
  * get ganttchart
  */
 export const getGanttChartByBoardIdAction = async ({ boardId }) => {
-  const userToken = await Token();
-  const token = userToken.Credential;
+  const token = await Token();
   console.log(token);
 
   const result = await getGanttChartByBoardIdService({
@@ -93,8 +90,7 @@ export const updateGantChartBytIdAction = async ({
   boardId,
   data,
 }) => {
-  const userToken = await Token();
-  const token = userToken.Credential;
+  const token = await Token();
   console.log(token);
 
   const result = await updateGantChartBytIdService({
@@ -113,8 +109,7 @@ export const deleteGanttBarsByGanttChartIdAction = async ({
   ganttChartId,
   ganttbarId,
 }) => {
-  const userToken = await Token();
-  const token = userToken.Credential;
+  const token = await Token();
   console.log(token);
 
   const result = await deleteGanttBarsByGanttChartIdService({

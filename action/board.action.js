@@ -258,8 +258,7 @@ export const createCheckListAction = async (taskId, data) => {
  * getboard
  */
 export const getBoardByBoardIdAction = async (boardId) => {
-  const userToken = await Token();
-  const token = userToken?.Credential;
+ const token = await Token();
   try {
     const result = await getBoardByBoardIdService({
       boardId,
@@ -276,8 +275,7 @@ export const getBoardByBoardIdAction = async (boardId) => {
  * create comment
  */
 export const postCommentByCheckListIdAction = async (data, checklistId) => {
-  const userToken = await Token();
-  const token = userToken?.Credential;
+ const token = await Token();
   //console.log("data create form", data);
   try {
     const result = await postCommentByCheckListIdService({
@@ -296,8 +294,7 @@ export const postCommentByCheckListIdAction = async (data, checklistId) => {
  * edit comment
  */
 export const editCommmentAction = async (data) => {
-  const userToken = await Token();
-  const token = userToken?.Credential;
+ const token = await Token();
   //console.log("data create form", data);
   try {
     const result = await editCommmentService({
@@ -318,8 +315,7 @@ export const editCommmentAction = async (data) => {
 /*
 
 export const assignLeaderAction = async (taskid, assignId) => {
-  const userToken = await Token();
-  const token = userToken?.Credential;
+ const token = await Token();
   //console.log("data create form", taskid, assignId);
 
   const result = await assignUserRoleLeadeerToBoardService({
@@ -337,8 +333,7 @@ export const assignLeaderAction = async (taskid, assignId) => {
  * get task baord id
  */
 export const getTaskByBoardIdAction = async (boardId) => {
-  const userToken = await Token();
-  const token = userToken?.Credential;
+ const token = await Token();
   const result = await getTaskByBoardIdService({
     boardId,
     token,
@@ -349,8 +344,7 @@ export const getTaskByBoardIdAction = async (boardId) => {
  * delete task
  */
 export const deleteTaskAction = async (taskId, boardId, ganttBarId) => {
-  const userToken = await Token();
-  const token = userToken?.Credential;
+ const token = await Token();
   const result = await deleteTaskService(taskId, boardId, ganttBarId, token);
   revalidatePath("/task");
   // console.log("📥 Backend responded with delete action", result);
@@ -366,8 +360,7 @@ export const assignMemberInChecklistAction = async (
   boardId,
   ganttBarId
 ) => {
-  const userToken = await Token();
-  const token = userToken?.Credential;
+ const token = await Token();
   const result = await assignMemberInChecklistService(
     taskId,
     boardId,
@@ -384,8 +377,7 @@ export const assignMemberInChecklistAction = async (
  *move the task
  */
 export const moveTaskOrderAction = async (boardId, newId, oldId) => {
-  const userToken = await Token();
-  const token = userToken?.Credential;
+ const token = await Token();
   const result = await moveTaskOrderService(boardId, newId, oldId, token);
   revalidatePath("/task");
   // console.log("📥 Backend responded with delete action", result);
@@ -461,8 +453,7 @@ export const createTaskByBoardIdAndGanttChartIdAction = async (
 };
 
 export const assignLeaderAction = async (taskId, assignId) => {
-  const userToken = await Token();
-  const token = userToken?.Credential;
+ const token = await Token();
   if (!token) {
     throw new Error("No authentication token found");
   }
@@ -543,8 +534,7 @@ export const assignMemberToChecklistAction = async (
   assignedBy,
   assignedTo
 ) => {
-  const userToken = await Token();
-  const token = userToken?.Credential;
+ const token = await Token();
   const result = await assignMemberToChecklistService(
     checklistId,
     taskId,
@@ -560,8 +550,7 @@ export const assignMemberToChecklistAction = async (
  * achange stage task
  */
 export const changeStageToUnderReviewAction = async (taskId, stage) => {
-  const userToken = await Token();
-  const token = userToken?.Credential;
+ const token = await Token();
   const result = await changeStageToUnderReviewService(taskId, token, stage);
   revalidatePath("/checklist");
   //console.log("status action", taskId, stage);
@@ -571,8 +560,7 @@ export const changeStageToUnderReviewAction = async (taskId, stage) => {
  * achange stage task
  */
 export const FeedBackAction = async (taskId, comment) => {
-  const userToken = await Token();
-  const token = userToken?.Credential;
+ const token = await Token();
   const result = await FeedBackService(taskId, token, comment);
   revalidatePath("/checklist");
   //console.log("status action", taskId, stage);
@@ -582,8 +570,7 @@ export const FeedBackAction = async (taskId, comment) => {
  * delete member action
  */
 export const deleteMemberAction = async (boardId, userId) => {
-  const userToken = await Token();
-  const token = userToken?.Credential;
+ const token = await Token();
   const result = await deleteMemberService(boardId, userId, token);
   revalidatePath("/member");
   return result;
@@ -599,8 +586,7 @@ export const checkEmailForClearAction = async (email) => {
  * achange status
  */
 export const chageStatusCheckListAction = async (checklistId, type) => {
-  const userToken = await Token();
-  const token = userToken?.Credential;
+ const token = await Token();
   const result = await chageStatusCheckListService(checklistId, token, type);
   revalidatePath("/checklist");
   console.log("status action", checklistId, type);
@@ -621,8 +607,7 @@ export const updateTaskByIdAction = async (
   ganttBarId
 ) => {
   console.log("👉 taskId in updateTask action: ", taskId);
-  const userToken = await Token();
-  const token = userToken?.Credential;
+ const token = await Token();
   const result = await updateTaskByIdService({
     taskId,
     title,
@@ -644,8 +629,7 @@ export const updateTaskByIdAction = async (
 export const deleteCheckListByTaskIdAction = async (checkListId, taskId) => {
   console.log("checkListId in delete action task id delete: ", checkListId);
   console.log("taskId in delete action task id delete: ", taskId);
-  const userToken = await Token();
-  const token = userToken?.Credential;
+ const token = await Token();
   const result = await deleteCheckListByTaskIdService({
     checkListId,
     taskId,
@@ -667,8 +651,7 @@ export const updateCheckListByIdAndTaskIdAction = async ({
   finishedAt,
   taskId,
 }) => {
-  const userToken = await Token();
-  const token = userToken?.Credential;
+ const token = await Token();
   const result = await updateCheckListByIdAndTaskIdService({
     checkListId,
     title,
