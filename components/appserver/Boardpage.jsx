@@ -2,7 +2,7 @@
 import Image from "next/image";
 import notification from "../../assets/notification.png";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import KanbanBoard from "../kanban/Kanban";
 import GanttChart from "../Gantt/GanttChart";
@@ -15,6 +15,31 @@ import ModalCreateGanttChart from "../modal/board/ModalCreateGanttChart";
 import ModalCreateGanttBar from "../modal/board/ModalCreateGanttBar";
 import { data } from "autoprefixer";
 import NotFound from "@/app/not-found";
+import { checkEmailForClearAction } from "@/action/board.action";
+
+const clearAllCookies = () => {
+  console.log(" Starting to clear all cookies...");
+
+  // Get all cookies and clear them
+  document.cookie.split(";").forEach((cookie) => {
+    const name = cookie.split("=")[0].trim();
+    if (name) {
+      // Clear with multiple strategies to ensure removal
+      document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; max-age=0`;
+      document.cookie = `${name}=; path=/; domain=${window.location.hostname}; expires=Thu, 01 Jan 1970 00:00:00 UTC; max-age=0`;
+      document.cookie = `${name}=; path=/; domain=.${window.location.hostname}; expires=Thu, 01 Jan 1970 00:00:00 UTC; max-age=0`;
+    }
+  });
+
+  // Also clear localStorage and sessionStorage
+  try {
+    localStorage.clear();
+    sessionStorage.clear();
+    console.log(" All cookies and storage cleared successfully");
+  } catch (error) {
+    console.warn(" Could not clear storage:", error);
+  }
+};
 
 export default function SystemBoard({
   user,
@@ -29,6 +54,7 @@ export default function SystemBoard({
   boardData,
   matchingBoardForNotPM,
   workspaceId,
+  currentUserProfile,
 }) {
   if (
     !boardData ||
@@ -37,6 +63,95 @@ export default function SystemBoard({
   ) {
     return <NotFound />;
   }
+
+  console.log("currentUserProfile={currentUserProfile}", currentUserProfile);
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const email = searchParams.get("email");
+
+  // Extract boardId from path
+  const pathSegments = pathname.split("/");
+  const boardIdFromURL = pathSegments[3];
+
+  console.log("Board ID:", boardIdFromURL);
+  console.log("Email from URL:", email);
+  console.log(
+    "Current user email:",
+    currentUserProfile?.user?.email || currentUserProfile?.email
+  );
+
+  useEffect(() => {
+    const handleEmailCheck = async () => {
+      // Check if email exists in URL
+      if (!email) {
+        console.log("❌ No email found in URL, no action needed");
+        return;
+      }
+
+      // Get current user's email (adjust based on your data structure)
+      const currentUserEmail =
+        currentUserProfile?.user?.email ||
+        currentUserProfile?.email ||
+        currentUserProfile?.payload?.user?.email;
+
+      console.log("📧 Comparing emails:");
+      console.log("  - URL email:", email);
+      console.log("  - Current user email:", currentUserEmail);
+
+      // If emails are the same, do nothing
+      if (email === currentUserEmail) {
+        console.log("✅ Email matches current user - no action needed");
+        console.log("🔒 Cookies will remain intact");
+        return;
+      }
+
+      // If emails are different, proceed with clearing
+      console.log("⚠️ Email is different from current user");
+      console.log("🔍 Checking if URL email exists in database...");
+
+      try {
+        const result = await checkEmailForClearAction(email);
+
+        console.log("📋 Backend response:", result);
+
+        // Check if the URL email exists in database
+        if (
+          result &&
+          result.success === true &&
+          result.payload &&
+          result.payload.userId
+        ) {
+          console.log("✅ URL email user found in database!");
+          console.log("👤 URL email user details:", {
+            userId: result.payload.userId,
+            username: result.payload.username,
+            email: result.payload.email,
+          });
+
+          console.log(
+            "🧹 Different user detected - clearing cookies and storage..."
+          );
+          clearAllCookies();
+
+          console.log("🎉 Cookies cleared successfully for different user");
+
+          // Optional: Redirect after clearing
+          setTimeout(() => {
+            console.log("🔄 Redirecting to login...");
+            window.location.href = "/login";
+          }, 1500);
+        } else {
+          console.log("❌ URL email user not found in database");
+          console.log("🔒 No cookies cleared - user doesn't exist");
+        }
+      } catch (error) {
+        console.error("💥 Error checking URL email:", error);
+      }
+    };
+
+    // Execute the email check logic
+    handleEmailCheck();
+  }, [email, currentUserProfile]); // Run when email or current user changes
 
   const [activeTab, setActiveTab] = useState("kanban");
   console.log(matchingBoardForNotPM, "roleeeeee");

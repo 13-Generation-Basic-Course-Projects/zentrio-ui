@@ -6,6 +6,7 @@ import { getCurrentUserProfileAction } from "@/action/profile.action";
 import { auth } from "@/auth";
 import DocumentAutherize from "@/components/appserver/Documentpage";
 import { preventImage } from "@/constant/preventimage";
+import { Token } from "@/constant/token";
 
 export default async function BoardLayout({ children, params }) {
   const session = await auth();
@@ -14,9 +15,16 @@ export default async function BoardLayout({ children, params }) {
   const getDocuments = await getDocumentsByBoardAction(boardId);
   const publicDocuments = await getPublicDocumentsByBoardAction(boardId);
 
-  const tokenFromGoogle =
-    "ya29.a0AW4XtxhTVWs5Dyisz75gT-gdXWn-I5RRAf6md5RZW9C0umn8dblkuPMDmLcLrL3pakUeGcFyw3lYKqP7QtasgUdpl5aaxwKh8OZ0g4Ev1k58HMM-NJ-PZLFsiRUlbxkG4m4062-98vgvCkjcJQu0EJKXUreCjWKl5NpVYtFNdAaCgYKAU4SARcSFQHGX2MiE4VRjwn_er0CT4mba35bYg0177";
+  // const refresh_token = session?.user?.google?.refreshToken;
+  // const tokenFromGoogle = await refreshAccessToken(refresh_token);
 
+  // console.log("refresh token ", refresh_token)
+  const userToken = await Token();
+  const token = userToken.GoogleDocumentToken;
+
+  const tokenFromGoogle = token;
+
+  console.log("debug", tokenFromGoogle);
   //pf
   /*
    * This function is the main entry point for the profile page.

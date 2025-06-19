@@ -6,12 +6,15 @@ import {
   assignUserRoleLeadeerToBoardService,
   chageStatusCheckListService,
   changeStageToUnderReviewService,
-  changeStatusTaskService,
+  checkEmailForClearService,
   createCheckListService,
   createGanttChartByBoardIdService,
   createTaskByBoardIdAndGanttChartIdService,
+  deleteCheckListByTaskIdService,
+  deleteMemberService,
   deleteTaskService,
   editCommmentService,
+  FeedBackService,
   getAllGanttBarByGanttChartIDService,
   getBoardByBoardIdService,
   getCheckListByTaskIdService,
@@ -22,11 +25,12 @@ import {
   inviteMemberToBoardService,
   moveTaskOrderService,
   postCommentByCheckListIdService,
+  updateCheckListByIdAndTaskIdService,
+  updateTaskByIdService,
 } from "@/service/board.service";
 import { revalidatePath } from "next/cache";
 import { sendNotificationToUserIdAction } from "./notification.action";
 import { sendNotificationToUserIdService } from "@/service/notification.service";
-import { teamLeader } from "@/data/board/teamleader";
 
 console.log("test actions must create folders");
 /*
@@ -53,11 +57,12 @@ export const getTaskByBoardIdAndGanttBarIdAction = async ({
 export const getCheckListByTaskIdAction = async ({ taskId }) => {
   const userToken = await Token();
   const token = userToken.Credential;
-  //console.log(token);
+
   const result = await getCheckListByTaskIdService({
     taskId,
     token,
   });
+  console.log("Result in getCheckListByTaskIdAction: ", result);
   return result;
 };
 
@@ -552,24 +557,45 @@ export const assignMemberToChecklistAction = async (
   // console.log("📥 Backend responded with delete action", result);
   return result;
 };
-
 /*
- * assignMemberToChecklistAction leader
+ * achange stage task
  */
-export const chageStatusCheckListWhenHaveTeamLeaderAction = async (
-  checklistId,
-  leaderId
-) => {
-  if (leaderId != null) {
-    const userToken = await Token();
-    const token = userToken?.Credential;
-    const result = await chageStatusCheckListService(checklistId, token);
-    revalidatePath("/checklist");
-    // console.log("📥 Backend responded with delete action", result);
-    return result;
-  }
+export const changeStageToUnderReviewAction = async (taskId, stage) => {
+  const userToken = await Token();
+  const token = userToken?.Credential;
+  const result = await changeStageToUnderReviewService(taskId, token, stage);
+  revalidatePath("/checklist");
+  //console.log("status action", taskId, stage);
+  return result;
 };
-
+/*
+ * achange stage task
+ */
+export const FeedBackAction = async (taskId, comment) => {
+  const userToken = await Token();
+  const token = userToken?.Credential;
+  const result = await FeedBackService(taskId, token, comment);
+  revalidatePath("/checklist");
+  //console.log("status action", taskId, stage);
+  return result;
+};
+/*
+ * delete member action
+ */
+export const deleteMemberAction = async (boardId, userId) => {
+  const userToken = await Token();
+  const token = userToken?.Credential;
+  const result = await deleteMemberService(boardId, userId, token);
+  revalidatePath("/member");
+  return result;
+};
+/*
+ * checkEmail
+ */
+export const checkEmailForClearAction = async (email) => {
+  const result = await checkEmailForClearService(email);
+  return result;
+};
 /*
  * achange status
  */
@@ -583,25 +609,89 @@ export const chageStatusCheckListAction = async (checklistId, type) => {
 };
 
 /*
- * achange status task
+ * new add
+ * Update task by Id with board id and gantt bar id
  */
-export const changeStatusTaskAction = async (taskId, type) => {
+export const updateTaskByIdAction = async (
+  taskId,
+  title,
+  description,
+  startedAt,
+  finishedAt,
+  boardId,
+  ganttBarId
+) => {
+  console.log("👉 taskId in updateTask action: ", taskId);
   const userToken = await Token();
   const token = userToken?.Credential;
-  const result = await changeStatusTaskService(taskId, token, type);
-  revalidatePath("/checklist");
-  console.log("status action", taskId, type);
+  const result = await updateTaskByIdService({
+    taskId,
+    title,
+    description,
+    startedAt,
+    finishedAt,
+    boardId,
+    ganttBarId,
+    token,
+  });
+  revalidatePath("/member");
   return result;
 };
 
 /*
- * achange stage task
+ * new add
+ * Delete checklist by specific tasks ID
  */
-export const changeStageToUnderReviewAction = async (taskId, stage) => {
+export const deleteCheckListByTaskIdAction = async (checkListId, taskId) => {
+  console.log("checkListId in delete action task id delete: ", checkListId);
+  console.log("taskId in delete action task id delete: ", taskId);
   const userToken = await Token();
   const token = userToken?.Credential;
-  const result = await changeStageToUnderReviewService(taskId, token, stage);
-  revalidatePath("/checklist");
-  //console.log("status action", taskId, stage);
+  const result = await deleteCheckListByTaskIdService({
+    checkListId,
+    taskId,
+    token,
+  });
+  revalidatePath("/member");
+  return result;
+};
+
+/*
+ * new add
+ * update checklist by specific tasks ID and checklist id
+ */
+
+export const updateCheckListByIdAndTaskIdAction = async (
+  checkListId,
+  title,
+  description,
+  startedAt,
+  finishedAt,
+  taskId
+) => {
+  const userToken = await Token();
+  const token = userToken?.Credential;
+
+  console.log("Checklist in upateChecklistByIdAndTaskIdAction: ", checkListId);
+  console.log("title in upateChecklistByIdAndTaskIdAction: ", title);
+  console.log(
+    "description in upateChecklistByIdAndTaskIdAction: ",
+    description
+  );
+  console.log("startedAt in upateChecklistByIdAndTaskIdAction: ", startedAt);
+  console.log("finishedAt in upateChecklistByIdAndTaskIdAction: ", finishedAt);
+  console.log("taskId in upateChecklistByIdAndTaskIdAction: ", taskId);
+
+  const result = await updateCheckListByIdAndTaskIdService(
+    checkListId,
+    title,
+    description,
+    startedAt,
+    finishedAt,
+    taskId,
+    token,
+  );
+
+  revalidatePath("/member");
   return result;
 };

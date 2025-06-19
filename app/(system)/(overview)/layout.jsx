@@ -17,13 +17,13 @@ export const metadata = {
 //sss
 
 export default async function OverviewLayout({ children }) {
-  const session = await auth();
-  if (session?.accessToken) {
-    const res = await loginThirdPartyService({
-      accessToken: session.accessToken,
-    });
-    console.log("Backend response in /test:", res);
-  }
+  // const session = await auth();
+  // if (session?.accessToken) {
+  //   const res = await loginThirdPartyService({
+  //     accessToken: session.accessToken,
+  //   });
+  //   console.log("Backend response in /test:", res);
+  // }
 
   return (
     <div className="h-screen flex flex-col overflow-y-hidden ">
@@ -33,7 +33,7 @@ export default async function OverviewLayout({ children }) {
           <div className="col-span-9 flex flex-col pt-4 overflow-hidden ">
             <CardWelcomeComponent />
           </div>
-          <div className="col-span-3  px-1 mt-10">
+          <div className="col-span-3   mt-10">
             <SmallCalendar />
           </div>
         </div>

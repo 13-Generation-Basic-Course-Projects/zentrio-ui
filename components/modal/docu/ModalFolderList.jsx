@@ -51,7 +51,10 @@ export default function ModalFolderList({
     const fetchData = async () => {
       try {
         setLoading(true);
-        const result = await getFileByFolderIdAction(accessToken, currentFolderId);
+        const result = await getFileByFolderIdAction(
+          accessToken,
+          currentFolderId
+        );
         const payload = Array.isArray(result?.payload) ? result.payload : [];
         setData(payload);
         setLoading(false);
@@ -133,9 +136,12 @@ export default function ModalFolderList({
                 ) : data.length === 0 ? (
                   <NoFilesFound />
                 ) : (
-                  <div className={`${getGridLayout()} overflow-y-auto pb-[250px] p-2`}>
+                  <div
+                    className={`${getGridLayout()} overflow-y-auto pb-[250px] p-2`}
+                  >
                     {data.map((el, i) => {
-                      const isFolder = el.mimeType === "application/vnd.google-apps.folder";
+                      const isFolder =
+                        el.mimeType === "application/vnd.google-apps.folder";
                       const fileType = el.mimeType.includes("document")
                         ? "docx"
                         : el.mimeType.includes("spreadsheet")
@@ -165,6 +171,8 @@ export default function ModalFolderList({
                           status={el.status || "personal"}
                           date={new Date().toISOString().split("T")[0]}
                           type={fileType}
+                          fileId={el.id}
+                          tokenFromGoogle={accessToken}
                           link={el.webViewLink}
                         />
                       );

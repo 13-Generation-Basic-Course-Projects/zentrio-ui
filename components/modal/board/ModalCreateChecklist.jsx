@@ -25,6 +25,7 @@ export default function ModalCreateChecklist({
   taskid,
   finishedAt,
   startedAt,
+  stage,
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
@@ -161,144 +162,150 @@ export default function ModalCreateChecklist({
 
   return (
     <>
-      <Button
-        onPress={onOpen}
-        className="flex items-center gap-2 pxj-4 py-1 text-sm font-medium text-primary bg-slate-blue border border-blue-300 rounded-[8px] shadow-sm hover:bg-[#000] h-[30px]"
-        fullWidth="true"
-      >
-        <p className="px-2">+</p>
-        {buttonText}
-      </Button>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="xl">
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex flex-col gap-1">
-                {modalTitle}
-              </ModalHeader>
-              <ModalBody>
-                <form onSubmit={handleSubmit(onFormSubmit)}>
-                  <div className="flex flex-col gap-3">
-                    <label className="text-sm font-medium text-title">
-                      Title <span className="text-progress-red">*</span>
-                    </label>
-                    <input
-                      className="border text-caption border-gray-300 rounded-small px-3 py-3"
-                      placeholder="Input your title"
-                      {...register("title")}
-                    />
-                    {errors.title && (
-                      <p className="text-progress-red text-xs">
-                        {errors.title.message}
-                      </p>
-                    )}
-                  </div>
+      {stage == "COMPLETED" || stage == "UNDER_REVIEW" ? (
+        ""
+      ) : (
+        <>
+          <Button
+            onPress={onOpen}
+            className="flex items-center gap-2 pxj-4 py-1 text-sm font-medium text-primary bg-slate-blue border border-blue-300 rounded-[8px] shadow-sm hover:bg-[#000] h-[30px]"
+            fullWidth="true"
+          >
+            <p className="px-2">+</p>
+            {buttonText}
+          </Button>
+          <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="xl">
+            <ModalContent>
+              {(onClose) => (
+                <>
+                  <ModalHeader className="flex flex-col gap-1">
+                    {modalTitle}
+                  </ModalHeader>
+                  <ModalBody>
+                    <form onSubmit={handleSubmit(onFormSubmit)}>
+                      <div className="flex flex-col gap-3">
+                        <label className="text-sm font-medium text-title">
+                          Title <span className="text-progress-red">*</span>
+                        </label>
+                        <input
+                          className="border text-caption border-gray-300 rounded-small px-3 py-3"
+                          placeholder="Input your title"
+                          {...register("title")}
+                        />
+                        {errors.title && (
+                          <p className="text-progress-red text-xs">
+                            {errors.title.message}
+                          </p>
+                        )}
+                      </div>
 
-                  <div className="relative w-full flex flex-col gap-3 mt-3">
-                    <label className="text-sm font-medium text-title">
-                      Duration <span className="text-progress-red">*</span>
-                    </label>
-                    <Controller
-                      name="duration"
-                      control={control}
-                      render={({ field }) => {
-                        // Safely parse the field values
-                        let startValue, endValue;
-                        try {
-                          startValue = field.value?.start
-                            ? parseDate(field.value.start)
-                            : parseDate(defaultStart);
-                          endValue = field.value?.end
-                            ? parseDate(field.value.end)
-                            : parseDate(defaultEnd);
-                        } catch (error) {
-                          console.error("Date parsing error:", error);
-                          startValue = parseDate(defaultStart);
-                          endValue = parseDate(defaultEnd);
-                        }
+                      <div className="relative w-full flex flex-col gap-3 mt-3">
+                        <label className="text-sm font-medium text-title">
+                          Duration <span className="text-progress-red">*</span>
+                        </label>
+                        <Controller
+                          name="duration"
+                          control={control}
+                          render={({ field }) => {
+                            // Safely parse the field values
+                            let startValue, endValue;
+                            try {
+                              startValue = field.value?.start
+                                ? parseDate(field.value.start)
+                                : parseDate(defaultStart);
+                              endValue = field.value?.end
+                                ? parseDate(field.value.end)
+                                : parseDate(defaultEnd);
+                            } catch (error) {
+                              console.error("Date parsing error:", error);
+                              startValue = parseDate(defaultStart);
+                              endValue = parseDate(defaultEnd);
+                            }
 
-                        return (
-                          <DateRangePicker
-                            isRequired
-                            className="max-w-none"
-                            minValue={minValue}
-                            maxValue={maxValue}
-                            value={{
-                              start: startValue,
-                              end: endValue,
-                            }}
-                            onChange={handleDateRangeChange(field)}
-                            label="Stay duration"
-                          />
-                        );
-                      }}
-                    />
-                    {errors.duration?.start && (
-                      <p className="text-progress-red text-xs">
-                        {errors.duration.start.message}
-                      </p>
-                    )}
-                    {errors.duration?.end && (
-                      <p className="text-progress-red text-xs">
-                        {errors.duration.end.message}
-                      </p>
-                    )}
-                  </div>
+                            return (
+                              <DateRangePicker
+                                isRequired
+                                className="max-w-none"
+                                minValue={minValue}
+                                maxValue={maxValue}
+                                value={{
+                                  start: startValue,
+                                  end: endValue,
+                                }}
+                                onChange={handleDateRangeChange(field)}
+                                label="Stay duration"
+                              />
+                            );
+                          }}
+                        />
+                        {errors.duration?.start && (
+                          <p className="text-progress-red text-xs">
+                            {errors.duration.start.message}
+                          </p>
+                        )}
+                        {errors.duration?.end && (
+                          <p className="text-progress-red text-xs">
+                            {errors.duration.end.message}
+                          </p>
+                        )}
+                      </div>
 
-                  <div className="flex flex-col gap-3 mt-3">
-                    <label className="text-sm font-medium text-title">
-                      Description
-                    </label>
-                    <textarea
-                      className="border text-caption border-gray-300 rounded-small px-3 py-3 resize-none"
-                      placeholder="Add a description (optional)"
-                      rows={3}
-                      {...register("description")}
-                    />
-                    {errors.description && (
-                      <p className="text-progress-red text-xs">
-                        {errors.description.message}
-                      </p>
-                    )}
-                  </div>
+                      <div className="flex flex-col gap-3 mt-3">
+                        <label className="text-sm font-medium text-title">
+                          Description
+                        </label>
+                        <textarea
+                          className="border text-caption border-gray-300 rounded-small px-3 py-3 resize-none"
+                          placeholder="Add a description (optional)"
+                          rows={3}
+                          {...register("description")}
+                        />
+                        {errors.description && (
+                          <p className="text-progress-red text-xs">
+                            {errors.description.message}
+                          </p>
+                        )}
+                      </div>
 
-                  <div className="grid grid-cols-2 gap-3 pt-2 py-4">
-                    <Button
-                      type="button"
-                      className="bg-transparent border-1 border-bgColor"
-                      radius="full"
-                      onPress={() => {
-                        reset();
-                        onClose();
-                      }}
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      type="submit"
-                      color="primary"
-                      radius="full"
-                      isDisabled={isSubmitting || !!errors.title}
-                      isLoading={isSubmitting}
-                    >
-                      Save
-                    </Button>
-                  </div>
-                </form>
-              </ModalBody>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
-      <ToastContainer
-        position="top-right"
-        autoClose={2000}
-        hideProgressBar={false}
-        closeOnClick
-        pauseOnHover
-        draggable
-        theme="colored"
-      />
+                      <div className="grid grid-cols-2 gap-3 pt-2 py-4">
+                        <Button
+                          type="button"
+                          className="bg-transparent border-1 border-bgColor"
+                          radius="full"
+                          onPress={() => {
+                            reset();
+                            onClose();
+                          }}
+                        >
+                          Cancel
+                        </Button>
+                        <Button
+                          type="submit"
+                          color="primary"
+                          radius="full"
+                          isDisabled={isSubmitting || !!errors.title}
+                          isLoading={isSubmitting}
+                        >
+                          Save
+                        </Button>
+                      </div>
+                    </form>
+                  </ModalBody>
+                </>
+              )}
+            </ModalContent>
+          </Modal>
+          <ToastContainer
+            position="top-right"
+            autoClose={2000}
+            hideProgressBar={false}
+            closeOnClick
+            pauseOnHover
+            draggable
+            theme="colored"
+          />
+        </>
+      )}
     </>
   );
 }

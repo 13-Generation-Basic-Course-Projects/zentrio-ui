@@ -95,7 +95,11 @@ export const fetchDocumentsByBoardService = async (boardId, token) => {
 /*
  * Get files by folder ID
  */
-export const getFileByFolderIdService = async ({ accessToken, folderId, token }) => {
+export const getFileByFolderIdService = async ({
+  accessToken,
+  folderId,
+  token,
+}) => {
   try {
     const res = await fetch(
       documentRouteGroup.getFileByFolderId(folderId, accessToken),
@@ -475,5 +479,115 @@ export const publicDocumentByIdService = async (
   } catch (error) {
     console.error("Error in publicDocumentByIdService: ", error.message);
     throw error;
+  }
+};
+
+/* new add
+ * get all document by board id
+ */
+export const getAllDocumentByBoardIdSerivce = async ({ boardId, token }) => {
+  try {
+    const url = documentRouteGroup.getAllDocumentByBoardId(boardId);
+
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        Accept: "*/*",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => null);
+      throw new Error(
+        `Failed to get all document by boardId: ${res.status} ${
+          errorData?.message || ""
+        }`
+      );
+    }
+
+    return await res.json();
+  } catch (error) {
+    console.error("Error in getAllDocumentByBoardIdSerivce: ", error.message);
+  }
+};
+
+/* new add
+ * post attactment
+ */
+export const postAttactmentService = async ({
+  checklistId,
+  details,
+  token,
+}) => {
+  try {
+    const url = documentRouteGroup.postAttactment(checklistId);
+
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        Accept: "*/*",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+        body: JSON.stringify({
+          details: details,
+        }),
+      },
+    });
+
+    const result = await res.json();
+
+    return result;
+  } catch (error) {
+    console.error("Error : ", error.message);
+  }
+};
+
+/* new add
+ * post attactment
+ */
+export const getAttactmentService = async ({ checklistId, token }) => {
+  try {
+    const url = documentRouteGroup.getAttactment(checklistId);
+    console.log("Fetching from URL:", url);
+
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        Accept: "*/*",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    console.log("Response status:", res.status);
+    console.log("Response ok:", res.ok);
+
+    // Check if the response is ok (status 200-299)
+    if (!res.ok) {
+      if (res.status === 404) {
+        return {
+          success: false,
+          error: "No attachments found",
+          status: res.status,
+        };
+      } else {
+        return {
+          success: false,
+          error: `HTTP ${res.status}: ${res.statusText}`,
+          status: res.status,
+        };
+      }
+    }
+
+    const result = await res.json();
+    console.log("in serviceee fetch data", result);
+    return result;
+  } catch (error) {
+    console.error("Network error:", error.message);
+    return {
+      success: false,
+      error: `Network error: ${error.message}`,
+    };
   }
 };
