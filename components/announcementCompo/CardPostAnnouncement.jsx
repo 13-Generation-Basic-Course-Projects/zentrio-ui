@@ -94,21 +94,21 @@ export default function CardPostAnnouncement({
               )}
 
               {/* Actions */}
-              <div className="flex items-center justify-between border-t border-gray-100 pt-4">
+              <div className="flex items-center justify-between border-t border-gray-100 pt-1">
                 <div className="flex items-center gap-6">
                   <LikeReactionButton
                     announId={announcement?.announcementId}
                     reacts={announcement?.reacts}
                     currentUserProfile={currentUserProfile}
                   />
-                  <Button
+                  {/* <Button
                     variant="ghost"
                     size="sm"
                     className="text-title hover:text-primary p-0"
                   >
                     <Bookmark className="w-4 h-4 mr-2" />
                     Bookmark
-                  </Button>
+                  </Button> */}
                 </div>
                 <span className="text-sm text-title">{"Read 11"}</span>
               </div>
