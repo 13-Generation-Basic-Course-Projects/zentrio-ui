@@ -1,93 +1,53 @@
-"use client";
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Button,
-  useDisclosure,
-} from "@heroui/react";
-import { useState } from "react";
-import { X, Image as ImageIcon } from "lucide-react";
-import {
-  updateAnnouncementByIdAction,
-  uploadMultiImgByBoardIdAction,
-} from "@/action/announcement.action";
+"use client"
 
-export default function ModalEditAnnoun({
-  icon,
-  bgcolor,
-  title,
-  announId,
-  boardId,
-  Announcement,
-}) {
-  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
-  const [titleState, setTitleState] = useState(Announcement?.title || "");
-  const [description, setDescription] = useState(Announcement?.description || "");
-  const [images, setImages] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const MAX_SIZE_MB = 10;
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure } from "@heroui/react"
+import { useState } from "react"
+import { X, ImageIcon } from "lucide-react"
+import { updateAnnouncementByIdAction } from "@/action/announcement.action"
 
-  // console.log("lolo",Announcement)
-  // console.log("botid",boardId)
+export default function ModalEditAnnoun({ icon, bgcolor, title, announId, boardId, Announcement }) {
+  // max size 10 mb
+  const MAX_SIZE_MB = 10
+
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure()
+  const [titleState, setTitleState] = useState(Announcement?.title || "")
+  const [description, setDescription] = useState(Announcement?.description || "")
+  const [images, setImages] = useState([])
+  const [loading, setLoading] = useState(false)
 
   const handleImageChange = (e) => {
-    const newFiles = Array.from(e.target.files || []);
+    const newFiles = Array.from(e.target.files || [])
     for (const file of newFiles) {
       if (file.size > MAX_SIZE_MB * 1024 * 1024) {
-        alert(`"${file.name}" exceeds 10MB.`);
-        return;
+        alert(`"${file.name}" exceeds 10MB.`)
+        return
       }
     }
-    setImages((prev) => [...prev, ...newFiles]);
-    e.target.value = null;
-  };
+    setImages((prev) => [...prev, ...newFiles])
+    e.target.value = null
+  }
 
   const removeImage = (index) => {
-    setImages((prev) => prev.filter((_, i) => i !== index));
-  };
+    setImages((prev) => prev.filter((_, i) => i !== index))
+  }
 
   const handleUpdate = async () => {
-    console.log(titleState)
-    // if (!titleState.trim() || !description.trim()) return;
-    // setLoading(true);
-    // try {
-    //   // upload new images
-    //   if (images.length > 0) {
-    //     await uploadMultiImgByBoardIdAction(boardId, images);
-    //   }
+    if (!titleState || !description) return
 
-    //   // ✅ FIXED PARAMETER CALL HERE
-      const res = await updateAnnouncementByIdAction(
-        announId,
-        description,
-        titleState,
-        boardId
-      );
-      console.log("gfgdgfdgf")
-      console.log("resssssss", res)
-
-    //   console.log("afterupdate",announId,
-    //     description,
-    //     titleState,
-    //     boardId)
-
-      // onClose(); // close modal after update
-    // } catch (err) {
-    //   console.error("Update failed:", err);
-    // } finally {
-    //   setLoading(false);
-    // }
-  };
+    setLoading(true)
+    try {
+      const res = await updateAnnouncementByIdAction(announId, description, titleState, boardId)
+      onClose() // Close modal on success
+    } catch (error) {
+      console.error("Failed to update announcement", error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <>
-      <Button
-        onPress={onOpen}
-        className="bg-transparent h-auto flex items-center cursor-pointer p-0 !border-0"
-      >
+      <Button onPress={onOpen} className="bg-transparent h-auto flex items-center cursor-pointer p-0 !border-0">
         <div className={`font-medium text-blue-500`}>{title}</div>
       </Button>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="lg">
@@ -95,20 +55,15 @@ export default function ModalEditAnnoun({
           {(onClose) => (
             <form
               onSubmit={(e) => {
-                e.preventDefault();
-                handleUpdate();
+                e.preventDefault()
+                handleUpdate()
               }}
             >
               <ModalHeader className="flex justify-between items-center">
                 <div className="flex items-center space-x-2">
-                  <div className={`w-8 h-8 rounded-full ${bgcolor} flex justify-center items-center`}>
-                    {icon}
-                  </div>
+                  <div className={`w-8 h-8 rounded-full ${bgcolor} flex justify-center items-center`}>{icon}</div>
                   <span className="text-lg font-semibold">Edit Announcement</span>
                 </div>
-                <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
-                  <X className="w-5 h-5" />
-                </button>
               </ModalHeader>
 
               <ModalBody className="space-y-4">
@@ -138,16 +93,14 @@ export default function ModalEditAnnoun({
                         <div className="flex items-center gap-2">
                           <ImageIcon className="w-4 h-4 text-blue-500" />
                           <span className="text-sm">{file.name}</span>
-                          <span className="text-xs text-gray-400">
-                            ({(file.size / 1024).toFixed(1)} KB)
-                          </span>
+                          <span className="text-xs text-gray-400">({(file.size / 1024).toFixed(1)} KB)</span>
                         </div>
                         <button
                           type="button"
-                          className="text-red-500 text-lg"
+                          className="text-red-500 hover:text-red-700 transition-colors"
                           onClick={() => removeImage(index)}
                         >
-                          
+                          <X className="w-4 h-4" />
                         </button>
                       </div>
                     ))}
@@ -156,15 +109,9 @@ export default function ModalEditAnnoun({
 
                 <div className="flex justify-between items-center border p-3 rounded-lg">
                   <span className="text-sm text-gray-600">Add images</span>
-                  <label className="cursor-pointer">
+                  <label className="cursor-pointer hover:bg-gray-100 p-2 rounded-full transition-colors">
                     <ImageIcon className="w-5 h-5 text-primary" />
-                    <input
-                      type="file"
-                      className="hidden"
-                      onChange={handleImageChange}
-                      multiple
-                      accept="image/*"
-                    />
+                    <input type="file" className="hidden" onChange={handleImageChange} multiple accept="image/*" />
                   </label>
                 </div>
               </ModalBody>
@@ -174,6 +121,7 @@ export default function ModalEditAnnoun({
                   type="button"
                   className="bg-gray-100 text-gray-700 font-semibold"
                   variant="light"
+                  onPress={onClose}
                   isDisabled={loading}
                 >
                   Cancel
@@ -195,6 +143,8 @@ export default function ModalEditAnnoun({
           )}
         </ModalContent>
       </Modal>
+      
+      
     </>
-  );
+  )
 }

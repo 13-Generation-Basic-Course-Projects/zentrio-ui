@@ -10,6 +10,8 @@ import {
   createCheckListService,
   createGanttChartByBoardIdService,
   createTaskByBoardIdAndGanttChartIdService,
+  deleteCheckListByTaskIdService,
+  deleteCommentBycmtIdService,
   deleteMemberService,
   deleteTaskService,
   editCommmentService,
@@ -21,9 +23,11 @@ import {
   getMemberByBoardIdService,
   getTaskByBoardIdAndGanttBarIdService,
   getTaskByBoardIdService,
+  getTaskByTaskIdService,
   inviteMemberToBoardService,
   moveTaskOrderService,
   postCommentByCheckListIdService,
+  updateCheckListByIdAndTaskIdService,
   updateTaskByIdService,
 } from "@/service/board.service";
 import { revalidatePath } from "next/cache";
@@ -55,11 +59,12 @@ export const getTaskByBoardIdAndGanttBarIdAction = async ({
 export const getCheckListByTaskIdAction = async ({ taskId }) => {
   const userToken = await Token();
   const token = userToken.Credential;
-  //console.log(token);
+
   const result = await getCheckListByTaskIdService({
     taskId,
     token,
   });
+  console.log("Result in getCheckListByTaskIdAction: ", result);
   return result;
 };
 
@@ -632,5 +637,99 @@ export const updateTaskByIdAction = async (
     token,
   });
   revalidatePath("/member");
+  return result;
+};
+
+/*
+ * new add
+ * Delete checklist by specific tasks ID
+ */
+export const deleteCheckListByTaskIdAction = async (checkListId, taskId) => {
+  console.log("checkListId in delete action task id delete: ", checkListId);
+  console.log("taskId in delete action task id delete: ", taskId);
+  const userToken = await Token();
+  const token = userToken?.Credential;
+  const result = await deleteCheckListByTaskIdService({
+    checkListId,
+    taskId,
+    token,
+  });
+  revalidatePath("/member");
+  return result;
+};
+
+/*
+ * new add
+ * update checklist by specific tasks ID and checklist id
+ */
+
+export const updateCheckListByIdAndTaskIdAction = async (
+  checkListId,
+  title,
+  description,
+  startedAt,
+  finishedAt,
+  taskId
+) => {
+  const userToken = await Token();
+  const token = userToken?.Credential;
+
+  console.log("Checklist in upateChecklistByIdAndTaskIdAction: ", checkListId);
+  console.log("title in upateChecklistByIdAndTaskIdAction: ", title);
+  console.log(
+    "description in upateChecklistByIdAndTaskIdAction: ",
+    description
+  );
+  console.log("startedAt in upateChecklistByIdAndTaskIdAction: ", startedAt);
+  console.log("finishedAt in upateChecklistByIdAndTaskIdAction: ", finishedAt);
+  console.log("taskId in upateChecklistByIdAndTaskIdAction: ", taskId);
+
+  const result = await updateCheckListByIdAndTaskIdService(
+    checkListId,
+    title,
+    description,
+    startedAt,
+    finishedAt,
+    taskId,
+    token
+  );
+
+  revalidatePath("/member");
+  console.log("Update checklist in action: ", result);
+  return result;
+};
+
+/* add new
+ *  delete comment in checklist
+ */
+export const deleteCommentBycmtIdAction = async (commentId) => {
+  console.log("delete action comment id delete: ", commentId);
+
+  const userToken = await Token();
+  const token = userToken?.Credential;
+  const result = await deleteCommentBycmtIdService({
+    commentId,
+    token,
+  });
+  revalidatePath("/member");
+  console.log("deleteCommentBycmtIdAction result: ", result);
+  return result;
+};
+
+
+/* add new
+ *  task by task id 
+ */
+export const getTaskByTaskIdAction = async (taskId) => {
+  console.log("taskId getTaskByTaskIdAction: ", taskId);
+
+  const userToken = await Token();
+  const token = userToken?.Credential;
+  const result = await getTaskByTaskIdService({
+    taskId,
+    token,
+  });
+  revalidatePath("/member");
+  console.log("getTaskByTaskIdAction result: ", result);
   return result;
 };

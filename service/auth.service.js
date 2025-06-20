@@ -3,7 +3,6 @@
 import { redirect } from "next/navigation";
 import { authRoute } from "../routes/authRoute";
 import { apiConfig } from "@/constant/baseurl";
-
 /*
  * register
  */
@@ -143,26 +142,23 @@ export const resendOtpZentrioService = async ({ email, type }) => {
   }
 };
 
-
-
 /*
  * login google
  */
 export const loginGoogleService = async ({ idToken }) => {
   try {
     const url = `${apiConfig.baseUrl}/auths/login/third-party`;
-    console.log("login3party", idToken);
-    const res = await fetch(url, {
+    console.log("Google ID Token:", idToken); // Debug
+    const response = await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ idToken: idToken, provider: "google" }),
+      body: JSON.stringify({ idToken, provider: "google" }),
     });
-    const data = await res.json();
-    console.log("📥 Backend responded with:", data);
-
-    return data; // just return the data, don’t redirect here
+    const data = await response.json(); // Fix: Use 'response' instead of 'res'
+    console.log("Backend Response:", data); // Debug
+    return data;
   } catch (error) {
     console.error("Login service error:", error.message);
     throw error;
@@ -170,10 +166,10 @@ export const loginGoogleService = async ({ idToken }) => {
 };
 
 /*
-* resend otp forgot
-*/
+ * resend otp forgot
+ */
 
-export const resendOtpForgotPasswordService = async ({email,type}) => {
+export const resendOtpForgotPasswordService = async ({ email, type }) => {
   try {
     const res = await fetch(
       `${authRoute.resendOtpUserRoute()}?email=${encodeURIComponent(
@@ -227,5 +223,3 @@ export const forgotPasswordService = async ({
     throw error;
   }
 };
-
-

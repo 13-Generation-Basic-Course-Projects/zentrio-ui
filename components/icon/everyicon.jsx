@@ -251,12 +251,12 @@ export function StackedProfileChecklist({
   member,
   taskId,
   preventUserImage,
-  allMemberInBoard,
+  allMemberChecklist,
   leaderId,
   checklistId,
   hidden,
 }) {
-  console.log("=====", member);
+  console.log("=====", allMemberChecklist);
 
   return (
     <div className="flex items-center space-x-[-14px]">
@@ -283,11 +283,12 @@ export function StackedProfileChecklist({
           />
         </div>
       )}
+
       {hidden != null ? (
         ""
       ) : (
         <ModalAssignMemberToCheckLisk
-          allMemberInBoard={allMemberInBoard}
+          allMemberInBoard={allMemberChecklist}
           taskId={taskId}
           leaderId={leaderId}
           checklistId={checklistId}

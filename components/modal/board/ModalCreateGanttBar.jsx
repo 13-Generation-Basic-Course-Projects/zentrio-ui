@@ -17,6 +17,7 @@ import { IconAdd } from "../../icon/everyicon";
 import { X } from "lucide-react";
 import { createGanttBarsByGanttChartIdAction } from "@/action/gantt.action";
 import { toast } from "react-toastify";
+import { Autocomplete, AutocompleteItem } from "@heroui/react";
 
 // Define the Face enum values
 const faceEnum = [
@@ -27,6 +28,11 @@ const faceEnum = [
   "TESTING_AND_REVIEW",
   "DEPLOYMENT_AND_MAINTENANCE",
 ];
+
+const faceOptions = faceEnum.map((face) => ({
+  key: face,
+  label: face.replace(/_/g, " "),
+}));
 
 // Define the Zod schema
 const ganttBarSchema = z.object({
@@ -343,19 +349,40 @@ export default function ModalCreateGanttBar({ input, ganttChartId }) {
                         <label className="text-sm font-medium text-title">
                           Face <span className="text-progress-red">*</span>
                         </label>
-                        <select
-                          {...register("face")}
-                          className={`border text-caption border-gray-300 rounded-small px-3 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary ${
-                            errors.face ? "border-red-500" : ""
-                          }`}
-                        >
-                          <option value="">Select face</option>
-                          {faceEnum.map((face) => (
-                            <option key={face} value={face}>
-                              {face.replace(/_/g, " ")}
-                            </option>
-                          ))}
-                        </select>
+
+                        <Controller
+                          name="face"
+                          control={control}
+                          rules={{ required: "Face is required" }}
+                          render={({ field }) => (
+                            <Autocomplete
+                              selectedKey={field.value || ""}
+                              onSelectionChange={(key) => field.onChange(key)}
+                              onBlur={field.onBlur}
+                              placeholder="Select face"
+                              className="w-full"
+                              size="md"
+                              classNames={{
+                                trigger: `border text-caption border-gray-300 rounded-small px-3 py-3 text-sm ${
+                                  errors.face ? "border-red-500" : ""
+                                }`,
+                                popoverContent:
+                                  "bg-white border border-gray-200 shadow-md rounded-md",
+                                listbox: "bg-white text-gray-700",
+                              }}
+                            >
+                              {faceOptions.map((option) => (
+                                <AutocompleteItem
+                                  key={option.key}
+                                  textValue={option.label}
+                                >
+                                  {option.label}
+                                </AutocompleteItem>
+                              ))}
+                            </Autocomplete>
+                          )}
+                        />
+
                         {errors.face && (
                           <span className="text-sm text-red-500">
                             {errors.face.message}

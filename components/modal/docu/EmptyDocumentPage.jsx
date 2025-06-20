@@ -30,8 +30,8 @@ export default function WelcomePage() {
       {/* Main Content */}
       <div className="flex flex-col items-center justify-center w-full h-[calc(100vh-80px)] overflow-hidden relative ">
         {/* Header Text */}
-        <h1 className="text-4xl md:text-5xl font-bold text-center mt-8 bg-gradient-to-r from-[#59BAD5] via-[#ABAAFF] to-[#59BAD5] bg-clip-text text-transparent">
-          Take control of your tasks and simplify your day.
+        <h1 className="text-[35px] font-bold text-center mt-8 text-[#143A47]">
+          Take <span className="text-primary"> control </span> of your tasks and <span className="text-primary"> simplify </span> your day.
         </h1>
 
         {/* Central Illustration */}

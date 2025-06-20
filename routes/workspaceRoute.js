@@ -27,7 +27,7 @@ export const boardRouteGroup = {
   getAllBoards: () => `${apiConfig.baseUrl}/boards`, // Get all boards
   createBoard: () => `${apiConfig.baseUrl}/boards`, // Create new board by workspace id
   inviteUserToBoard: (id) => `${apiConfig.baseUrl}/boards/${id}/users/invite`, // Invite user to board
-  uploadBoardCover: (id) => `${apiConfig.baseUrl}/boards/${id}/cover`, // Upload cover by board id
+  uploadBoardCover: (boardId) => `${apiConfig.baseUrl}/boards/${boardId}/cover`, // Upload cover by board id
   assignUserRole: `${apiConfig.baseUrl}/boards/assign`, // Assign role to user in board
 
   getBoardsByUserId: (userId) => `${apiConfig.baseUrl}/boards/${userId}/users`, // Get boards by user ID
@@ -45,5 +45,4 @@ export const boardRouteGroup = {
     `${apiConfig.baseUrl}/boards/favourite/users/${userId}`, // getfavorite board
 
   //new
- 
 };

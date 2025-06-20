@@ -36,66 +36,68 @@ export const metadata = {
 export default async function SystemLayout({ children, params }) {
   const session = await auth();
   console.log("aaa", session);
-  console.log("Session debug info:", session.debug);
-  const boardId = params.id;
-  /*  call action get all workspace */
-  const workspaceData = await getAllWorkspaceAction();
-  /*  call action get all workspace for users */
-  const workspaceUsersData = await getAllWorkspaceForUserAction();
+  if (session) {
+    const boardId = params.id;
+    /*  call action get all workspace */
+    const workspaceData = await getAllWorkspaceAction();
+    /*  call action get all workspace for users */
+    const workspaceUsersData = await getAllWorkspaceForUserAction();
 
-  /*
-   * This function is the main entry point for the profile page.
-   */
+    /*
+     * This function is the main entry point for the profile page.
+     */
 
-  const currentUserProfile = await getCurrentUserProfileAction();
-  /**
-   * get board favorite
-   */
-  const getUserDetials = await getPreviewProfileAction();
-  //  console.log("getPreviewProfileAction", getUserDetials);
-  const myUserId = getUserDetials?.payload?.userId;
-  const imageUser = getUserDetials?.payload?.profileImage;
-  const noImage = preventImage.noProfile;
-  const preventUserImage = imageUser == null ? noImage : imageUser;
-  console.log("what inside layout and userprofile", imageUser);
+    const currentUserProfile = await getCurrentUserProfileAction();
+    /**
+     * get board favorite
+     */
+    const getUserDetials = await getPreviewProfileAction();
+    //  console.log("getPreviewProfileAction", getUserDetials);
+    const myUserId = getUserDetials?.payload?.userId;
+    const imageUser = getUserDetials?.payload?.profileImage;
+    const noImage = preventImage.noProfile;
+    const preventUserImage = imageUser == null ? noImage : imageUser;
+    console.log("what inside layout and userprofile", imageUser);
 
-  const myFavBoard = await getFavoriteBoardAction(myUserId);
-  console.log("getFavoriteBoardAction", myFavBoard);
-  console.log("myUserId", myUserId);
+    const myFavBoard = await getFavoriteBoardAction(myUserId);
+    console.log("getFavoriteBoardAction", myFavBoard);
+    console.log("myUserId", myUserId);
 
-  //workspace other
+    //workspace other
 
-  const getWorKSpaceJoined = await getOtherWorkSpaceJoinedAction();
-  console.log("getWorKSpaceJoined", getWorKSpaceJoined);
+    const getWorKSpaceJoined = await getOtherWorkSpaceJoinedAction();
+    console.log("getWorKSpaceJoined", getWorKSpaceJoined);
 
-  const notificationData = await getNotificationForUserIdAction(myUserId);
+    const notificationData = await getNotificationForUserIdAction(myUserId);
 
-  return (
-    // <LoadingBarContainer>
-    <SidebarProvider className="bg-bgColor">
-      <SidebarRenderer
-        workspaceData={workspaceData}
-        workspaceUsersData={workspaceUsersData}
-        createWorkspace={createWorkspaceAction}
-        deleteWorkspace={deleteWorkspaceByIdAction}
-        updateNameWorkspace={updateWorkspaceByIdAction}
-        getBoardByWorkspaceId={getAllBoardBywWorkspaceIdAction}
-        getWorKSpaceJoined={getWorKSpaceJoined}
-      />
-      <div
-        className={" font-poppin h-screen overflow-hidden  bg-white  w-full"}
-      >
-        {/* <SidebarTrigger className="fixed top-0  z-[30]" /> */}
-        <div className="w-full  ">
-          <NavbarWrapper
-            user={session?.user}
-            preventUserImage={preventUserImage}
-            notificationData={notificationData}
-          />
-          {children}
+    return (
+      // <LoadingBarContainer>
+      <SidebarProvider className="bg-bgColor">
+        <SidebarRenderer
+          workspaceData={workspaceData}
+          workspaceUsersData={workspaceUsersData}
+          createWorkspace={createWorkspaceAction}
+          deleteWorkspace={deleteWorkspaceByIdAction}
+          updateNameWorkspace={updateWorkspaceByIdAction}
+          getBoardByWorkspaceId={getAllBoardBywWorkspaceIdAction}
+          getWorKSpaceJoined={getWorKSpaceJoined}
+        />
+        <div
+          className={" font-poppin h-screen overflow-hidden  bg-white  w-full"}
+        >
+          {/* <SidebarTrigger className="fixed top-0  z-[30]" /> */}
+          <div className="w-full  ">
+            <NavbarWrapper
+              user={session?.user}
+              preventUserImage={preventUserImage}
+              notificationData={notificationData}
+            />
+            {children}
+          </div>
         </div>
-      </div>
-    </SidebarProvider>
-    // </LoadingBarContainer>
-  );
+      </SidebarProvider>
+      // </LoadingBarContainer>
+    );
+  }
+  return <div className="w-full  ">{children}</div>;
 }

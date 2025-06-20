@@ -18,6 +18,7 @@ export default function DocumentLayout({
   publicDocuments,
   tokenFromGoogle,
   boardId,
+  preventUserImage,
 }) {
   const [activeTab, setActiveTab] = useState("personal");
 
@@ -69,44 +70,44 @@ export default function DocumentLayout({
   return (
     <>
       {/* Navbar */}
-      <div className="w-full sticky top-0 z-[20] bg-bgColor rounded-bl-3xl">
-        <header className="px-4 sm:px-6 lg:px-8">
+      {/* Navbar */}
+      <div className="w-full sticky top-0 z-10 bg-bgColor rounded-bl-3xl">
+        <header className="px-4 sm:px-6 lg:px-8 ">
           <div className="flex w-full h-16 items-center justify-between">
             {/* Left side - Navigation Tabs */}
             <nav className="flex-1">
               <ul className="flex gap-1 text-sm font-medium">
-                {tabItems.map((tab) => (
-                  <li
-                    key={tab.key}
-                    onClick={() => handleTabClick(tab.key)}
-                    className={`flex items-center cursor-pointer rounded-lg transition-all duration-200 px-4 py-2 ${
-                      activeTab === tab.key
-                        ? "border-b-2 border-blue-500 text-blue-600 font-semibold"
-                        : "text-gray-600 hover:text-gray-900"
-                    }`}
-                  >
-                    <span className="mr-2">
-                      {tab.icon(activeTab === tab.key)}
-                    </span>
-                    {tab.title}
-                  </li>
-                ))}
+                {tabItems.map((tab) => {
+                  const isActive = activeTab === tab.key;
+                  return (
+                    <li
+                      key={tab.key}
+                      onClick={() => setActiveTab(tab.key)}
+                      className={`cursor-pointer rounded-lg transition-all duration-200 flex items-center gap-2 ${
+                        isActive
+                          ? "border-b-2 border-blue-500 px-4 py-2 text-blue-600 font-semibold"
+                          : "text-gray-600 px-4 py-2 hover:text-gray-900"
+                      }`}
+                    >
+                      {tab.icon(isActive)}
+                      {tab.title}
+                    </li>
+                  );
+                })}
               </ul>
             </nav>
 
             {/* Right side - Notification and Profile */}
             <div className="flex items-center gap-4">
               <ModalNotification />
+
               <Link href="/profile">
-                <div className="overflow-hidden rounded-full border-2 border-gray-200 hover:border-gray-300 shadow-sm transition-all duration-200 hover:shadow-md">
+                <div className="overflow-hidden rounded-full border-2 border-gray-200 hover:border-gray-300 shadow-sm transition-all duration-200 hover:shadow-md ">
                   <span className="sr-only">Toggle dashboard menu</span>
-                  {user?.image != null ? (
+                  {preventUserImage ? (
                     <img
-                      src={
-                        user?.image ||
-                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzyLc8LMQIrviNz6u2EP3TtPRZZt3OlhrhHA&s"
-                      }
-                      alt={user?.name || "User"}
+                      src={preventUserImage}
+                      alt={user.name || "User"}
                       className="size-10 object-cover hover:scale-105 transition-transform duration-200"
                     />
                   ) : (
@@ -122,9 +123,8 @@ export default function DocumentLayout({
           </div>
         </header>
       </div>
-
       {/* Tab Content Area */}
-      {tokenFromGoogle == null ? (
+      {tokenFromGoogle === null ? (
         <WelcomePage />
       ) : (
         <main className="p-4 min-h-screen">
