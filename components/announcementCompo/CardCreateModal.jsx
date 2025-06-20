@@ -34,7 +34,6 @@ export default function CardCreateModal({
   const [description, setDescription] = useState("");
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [showPrivacyDropdown, setShowPrivacyDropdown] = useState(false);
   const [focusedField, setFocusedField] = useState(null);
 
   const handleImageChange = (e) => {

@@ -76,6 +76,8 @@ export default function ModalOptionAnnoun({
   Announcement,
   announId,
   boardId,
+  boardMember,
+  preventUserImage,
 }) {
 
   const iconClasses ="text-xl text-default-500 pointer-events-none flex-shrink-0";
@@ -133,6 +135,8 @@ export default function ModalOptionAnnoun({
             announId={announId}
             boardId={boardId}
             Announcement={Announcement}
+            boardMember={boardMember}
+            preventUserImage={preventUserImage}
           />
         </DropdownItem>
 

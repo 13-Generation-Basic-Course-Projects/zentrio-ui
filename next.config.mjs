@@ -1,8 +1,17 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    images: {
+  images: {
     domains: ["i.pravatar.cc"],
   },
+  images: {
+    unoptimized: true,
+  },
+  // experimental: {
+  //   serverActions: true,
+  // },
+  // serverActions: {
+  //   bodySizeLimit: '3mb', // Increase limit to 10MB
+  // },
 };
 
 export default nextConfig;

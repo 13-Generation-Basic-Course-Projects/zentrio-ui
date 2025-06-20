@@ -17,11 +17,9 @@ const files = [
   },
 ];
 
-export default function CardBoardReport() {
-
+export default function CardBoardReport({ boardId }) {
   const handleGenerate = async () => {
-    const boardId = `d4f6ed17-3f68-48b4-9cbb-fa141a2d2000`;
-    const { blob, fileName } = await generateReportByBoardIdAction(boardId);
+    const { blob, fileName } = await generateReportByBoardIdAction({ boardId });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -30,7 +28,7 @@ export default function CardBoardReport() {
     a.click();
     a.remove();
     window.URL.revokeObjectURL(url);
-  }
+  };
   return (
     <div className="bg-white text-title text-h6 p-5 border border-gray-200  rounded-large w-full max-w-md">
       <header className="mb-4 text-h6 font-semibold">My Report Board</header>

@@ -358,6 +358,8 @@ export default function SystemBoard({
           modal={ganttModal}
           ganttbar={ganttbar}
           ganttChartName={ganttChartName}
+          boardId={boardId}
+          ganttChartId={ganttChartId}
         />
       ),
     },

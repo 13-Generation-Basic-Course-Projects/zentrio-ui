@@ -34,4 +34,9 @@ export const ganttRouteGroup = {
   //delete
   deleteGanttBar: (ganttbarId, ganttChartId) =>
     `${apiConfig.baseUrl}/gantt-bars/${ganttbarId}/ganttChart/${ganttChartId}`, //delete
+
+  //update ganttbar by gantbarid and body is need ganttchartid
+  updateGanttBar: (ganttbarId) =>
+    `${apiConfig.baseUrl}/gantt-bars/${ganttbarId}/ganttCharts/
+`,
 };

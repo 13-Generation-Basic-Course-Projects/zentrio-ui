@@ -115,45 +115,26 @@ import {
 
 // Move the refresh function outside and fix the import path
 export async function refreshGoogleAccessToken(refreshToken) {
-  console.log("🔄 Attempting to refresh Google access token...");
-  
-  try {
-    const response = await fetch("https://oauth2.googleapis.com/token", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams({
-        client_id: process.env.GOOGLE_CLIENT_ID,
-        client_secret: process.env.GOOGLE_CLIENT_SECRET,
-        grant_type: "refresh_token",
-        refresh_token: refreshToken,
-      }),
-    });
+  const response = await fetch("https://oauth2.googleapis.com/token", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: new URLSearchParams({
+      client_id: process.env.GOOGLE_CLIENT_ID,
+      client_secret: process.env.GOOGLE_CLIENT_SECRET,
+      grant_type: "refresh_token",
+      refresh_token: refreshToken,
+    }),
+  });
 
-    const responseData = await response.json();
-    
-    if (!response.ok) {
-      console.error("❌ Token refresh failed:", {
-        status: response.status,
-        statusText: response.statusText,
-        error: responseData
-      });
-      throw new Error(`Failed to refresh access token: ${response.status} - ${responseData.error || responseData.error_description || 'Unknown error'}`);
-    }
-
-    console.log("✅ Token refresh successful:", {
-      hasAccessToken: !!responseData.access_token,
-      expiresIn: responseData.expires_in,
-      hasRefreshToken: !!responseData.refresh_token,
-      tokenType: responseData.token_type
-    });
-
-    return responseData;
-  } catch (error) {
-    console.error("❌ Token refresh error:", error);
-    throw error;
+  if (!response.ok) {
+    const errorData = await response.json();
+    console.error("Token refresh failed:", errorData);
+    throw new Error(`Failed to refresh access token: ${response.status}`);
   }
+
+  return await response.json();
 }
 
 export const {
