@@ -24,7 +24,7 @@ import { revalidatePath } from "next/cache";
 export const getDocumentsByBoardAction = async (boardId) => {
   const userToken = await Token();
   const token = userToken.Credential;
-
+  
   const documents = await fetchDocumentsByBoardService(boardId, token);
 
   return documents;
