@@ -28,7 +28,7 @@ export default function CardAllMembers({ boardMember, preventUserImage }) {
   };
 
   return (
-    <div className=" mx-auto p-2">
+    <div className=" mx-auto p-2 h-[450px]">
       <Card className="shadow-lg border-1 bg-white rounded-xl">
         <CardContent className="p-6">
           {/* Header */}

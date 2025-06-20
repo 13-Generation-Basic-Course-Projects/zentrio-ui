@@ -11,13 +11,12 @@ import {
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { folderSchema } from "@/lib/schemas/documentSchema";
-import { createDriveFileAction } from "@/action/document.action";
+import { createFolderAction } from "@/action/document.action";
 
 export default function ModalCreateFolder({
   isOpen,
   onClose,
   boardId,
-  folderId,
   tokenFromGoogle,
 }) {
   // const tokenFromGoogle = "ya29.a0AW4XtxhF89j9oUbKXiYmLiX3SKTPho4FfXIBourQ-UVriH7NUJ3cX939dlQXHL4HghzsMZnJGEJIhVxJw5Z5tQJK-G8IvDktKdEmfcCbYC9P3oKx4T1Mp71wAxkTk7uHc_0KRi1k7STtz88I_YxF-Y8ian9nG9oSjGuJ1WRBdwaCgYKAYkSARcSFQHGX2Mi_SHJY5zB2cR4FX_y5qsbyw0177";
@@ -33,18 +32,17 @@ export default function ModalCreateFolder({
 
   const onSubmit = async (data) => {
     try {
-      const createdFolder = await createDriveFileAction(
-        data.name,          // folder name
-        folderId,            // parent folder id
-        "FOLDER",            // file type
-        tokenFromGoogle      // Google token
+      const createdFolder = await createFolderAction(
+        tokenFromGoogle,
+        data.name,
+        "FOLDER",
+        boardId
       );
+
       console.log("Folder Created:", createdFolder);
 
       reset();
       onClose();
-
-      window.location.reload();
     } catch (error) {
       console.error("Error creating folder:", error);
     }

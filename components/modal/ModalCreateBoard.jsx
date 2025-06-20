@@ -9,13 +9,11 @@ import {
   useDisclosure,
   Card,
 } from "@heroui/react";
+
+import { createBoardSchema } from "@/lib/schemas/workspaceSchema";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createBoardSchema } from "@/lib/schemas/workspaceSchema";
-import {
-  createBoardAction,
-  uploadBoardCoverAction,
-} from "@/action/workspace.action";
+import { createBoardAction, uploadImageBoardAction } from "@/action/workspace.action";
 
 // SVG icons as data URLs (could be moved to a separate file for reusability)
 const svgIconInput = encodeURIComponent(`
@@ -39,7 +37,7 @@ export default function ModalCreateBoard({ Workspaceid }) {
   const [selectedOption, setSelectedOption] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [selectedFileName, setSelectedFileName] = useState(null);
-  const [selectedFile, setSelectedFile] = useState(null);
+
   const fileInputRef = useRef(null);
 
   const {
@@ -52,8 +50,6 @@ export default function ModalCreateBoard({ Workspaceid }) {
     resolver: zodResolver(createBoardSchema),
   });
 
-  const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-
   const colorOptions = [
     { key: "red", label: "Red", className: "bg-board-red" },
     { key: "blue", label: "Blue Sky", className: "bg-board-primary" },
@@ -63,339 +59,308 @@ export default function ModalCreateBoard({ Workspaceid }) {
     { key: "violet", label: "Violet", className: "bg-board-violet" },
   ];
 
+  const toggleColors = () => {
+    setShowColors((prev) => !prev);
+  };
+
   const handleColorSelect = (colorKey) => {
     if (previewUrl && previewUrl.startsWith("blob:")) {
       URL.revokeObjectURL(previewUrl);
     }
     setPreviewUrl(null);
     setSelectedFileName(null);
-    setSelectedFile(null);
-    setSelectedOption(colorKey);
+    setSelectedOption((prev) => (prev === colorKey ? null : colorKey));
     setShowColors(false);
     setDropdownOpen(false);
     setValue("cover", colorKey);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
   };
 
   const handleFileSelect = (e) => {
     const file = e.target.files[0];
-    if (!file) return;
-
-    if (!file.type.startsWith("image/")) {
-      alert("Please select an image file");
-      return;
-    }
-
-    if (file.size > MAX_FILE_SIZE) {
-      alert("File size must be less than 5MB");
-      return;
-    }
-
-    if (previewUrl && previewUrl.startsWith("blob:")) {
-      URL.revokeObjectURL(previewUrl);
-    }
-
-    setSelectedOption(null);
-    setSelectedFileName(file.name);
-    setSelectedFile(file);
-    setPreviewUrl(URL.createObjectURL(file));
-    setDropdownOpen(false);
-    setValue("cover", null); // Clear color if file is selected
-  };
-
-  const handleModalClose = () => {
-    if (previewUrl && previewUrl.startsWith("blob:")) {
-      URL.revokeObjectURL(previewUrl);
-    }
-    reset();
-    setPreviewUrl(null);
-    setSelectedOption(null);
-    setSelectedFileName(null);
-    setSelectedFile(null);
-    setDropdownOpen(false);
-    setShowColors(false);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
+    if (file) {
+      setSelectedOption(null);
+      setSelectedFileName(file.name);
+      setPreviewUrl(URL.createObjectURL(file));
+      setValue("cover", file);
     }
   };
+
 
   const onSubmit = async (data) => {
+    let board = null;  // declare outside try
+
     try {
-      let cover = null;
-
-      if (selectedFile) {
-        const formData = new FormData();
-        formData.append("file", selectedFile);
-        const uploadResponse = await uploadBoardCoverAction(formData);
-
-        if (!uploadResponse.ok) {
-          throw new Error(`File upload failed: ${uploadResponse.statusText}`);
-        }
-
-        const { fileId } = await uploadResponse.json();
-        if (!fileId) {
-          throw new Error("No fileId returned from upload");
-        }
-        cover = fileId;
-      } else if (selectedOption) {
-        cover = selectedOption;
+       if (selectedOption) {
+        board = await createBoardAction({
+          title: data.title,
+          description: data.description || "",
+          cover: selectedOption,
+          workspaceId: Workspaceid,
+        });
+        console.log("Boarddddddddddddddd: ", board);
+        setCreatedBoardId(board);
       } else {
-        alert("Please select a cover image or color");
+         board = await createBoardAction({
+          title: data.title,
+          description: data.description || "",
+          cover: "",
+          workspaceId: Workspaceid,
+        });
+
+        const image = fileInputRef.current?.files?.[0];
+        console.log("cccccc", image)
+      if (!image) {
+        console.warn("⚠️ No file selected!");
         return;
       }
 
-      const boardFormData = new FormData();
-      boardFormData.append("title", data.title);
-      boardFormData.append("description", data.description || "");
-      boardFormData.append("cover", cover);
-      boardFormData.append("workspaceId", Workspaceid);
-
-      const result = await createBoardAction(boardFormData);
-      if (!result.success) {
-        throw new Error(result.error || "Failed to create board");
+        await uploadImageBoardAction({boardId:board?.boardId ,image })
+        console.warn("⚠️ No image or color selected.");
+        return;
       }
-
-      handleModalClose();
-      onOpenChange(false);
     } catch (error) {
-      alert(`Failed to create board: ${error.message}`);
+      console.error("❌ Error creating board:", error);
+      return;
+    } finally {
+      reset();
+      setPreviewUrl(null);
+      setSelectedOption(null);
+      setSelectedFileName(null);
+      setDropdownOpen(false);
+      setShowColors(false);
+      onOpenChange(false);
+    }
+
+    // Extract boardId here
+    const boardId = board?.id; // Use optional chaining to be safe
+
+    if (boardId) {
+      console.log("Board ID:", boardId);
+
+    } else {
+      console.warn("Board created but no ID found!");
     }
   };
 
+
+
   return (
     <>
-      <Button
-        onPress={onOpen}
-        className="bg-transparent h-[340px] !p-0"
-        fullWidth
-      >
+      <Button onPress={onOpen} className="bg-transparent h-[340px] !p-0" fullWidth>
         <Card className="bg-transparent w-full h-full shadow-none border-none">
           <div className="flex items-center justify-center h-full bg-transparent">
             <div className="flex flex-col items-center justify-center border-2 border-dashed border-blue-400 rounded-xl h-full w-full text-center text-blue-400 cursor-pointer hover:bg-blue-50 transition">
               <div className="flex items-center justify-center w-14 h-14 text-h1 text-primary border-2 border-dashed border-primary rounded-full leading-none">
                 +
               </div>
-              <div className="text-primary mt-2 font-medium">
-                Create New Board
-              </div>
+              <div className="text-primary mt-2 font-medium">Create New Board</div>
             </div>
           </div>
         </Card>
       </Button>
 
-      <Modal
-        isOpen={isOpen}
-        onOpenChange={(open) => {
-          if (!open) handleModalClose();
-          onOpenChange(open);
-        }}
-        size="xl"
-      >
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="xl">
         <ModalContent className="max-h-[90vh] overflow-y-auto scrollbar-hidden">
-          {() => (
-            <>
-              <ModalHeader className="flex flex-col gap-1">
-                Create New Board
-              </ModalHeader>
-              <div className="border-t my-4 border-gray-200" />
-              <ModalBody>
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                  <div className="grid grid-cols-4 gap-4">
-                    {/* Title */}
-                    <div className="col-span-3 space-y-2">
-                      <label className="text-sm font-medium">Board Title</label>
-                      <input
-                        {...register("title")}
-                        placeholder="Type here"
-                        style={{
-                          backgroundImage: `url("data:image/svg+xml;utf8,${svgIconInput}")`,
-                          backgroundRepeat: "no-repeat",
-                          backgroundPosition: "8px center",
-                          paddingLeft: "36px",
-                          height: "40px",
-                          borderRadius: "9999px",
-                        }}
-                        className="w-full bg-transparent border border-gray-300 rounded-full text-sm focus:outline-none focus:border-primary transition"
-                      />
-                      {errors.title && (
-                        <span className="text-red-500 text-xs">
-                          {errors.title.message}
-                        </span>
-                      )}
-                    </div>
+          <ModalHeader className="flex flex-col gap-1">Create new Board</ModalHeader>
+          <div className="border-1 mt-2 mb-4 border-bgColor"></div>
+          <ModalBody>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <div className="grid grid-cols-4 gap-2 text-title">
+                {/* Title */}
+                <div className="col-span-3 flex flex-col items-start justify-center space-y-2">
+                  <label className="text-label-sm">Board Title</label>
+                  <input
+                    {...register("title")}
+                    placeholder="Type here"
+                    style={{
+                      backgroundImage: `url("data:image/svg+xml;utf8,${svgIconInput}")`,
+                      backgroundRepeat: "no-repeat",
+                      backgroundPosition: "8px center",
+                      paddingLeft: "36px",
+                      height: "40px",
+                      borderRadius: "9999px",
+                    }}
+                    className={`
+                      w-full bg-transparent text-title/50 text-caption
+                      border border-gray-300
+                      focus:outline-none focus:border-primary
+                      transition-all duration-150 ease-in-out
+                    `}
+                  />
+                  {errors.title && (
+                    <span className="text-red-500 text-caption-tiny">
+                      *{errors.title.message}*
+                    </span>
+                  )}
+                </div>
 
-                    {/* Cover Selection */}
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium">Cover</label>
-                      <div className="relative">
-                        <button
-                          type="button"
-                          className="h-10 rounded-full border border-gray-300 px-4 flex items-center gap-2 w-full text-sm"
-                          onClick={() => setDropdownOpen(!dropdownOpen)}
+                {/* Cover select */}
+                <div className="flex flex-col items-start justify-center space-y-2">
+                  <label className="text-label-sm">Cover</label>
+                  <div className="relative">
+                    <button
+                      className="h-[40px] rounded-full border border-gray-300 px-4 flex items-center gap-2"
+                      onClick={() => setDropdownOpen((open) => !open)}
+                      type="button"
+                    >
+                      {selectedOption && (
+                        <div
+                          className={`w-4 h-4 rounded-full ${colorOptions.find((color) => color.key === selectedOption)?.className || ""
+                            }`}
+                        />
+                      )}
+
+                      <div className="flex flex-col items-start">
+                        <p className="text-caption-tiny text-title/50">
+                          {selectedOption
+                            ? colorOptions.find((color) => color.key === selectedOption)?.label || selectedOption
+                            : selectedFileName || "Select Cover"}
+                        </p>
+                      </div>
+
+                      <svg
+                        width="14"
+                        height="9"
+                        viewBox="0 0 14 9"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="ml-auto"
+                      >
+                        <path
+                          d="M13 1.5C13 1.5 8.58107 7.5 6.99995 7.5C5.41884 7.5 1 1.5 1 1.5"
+                          stroke="#59BAD5"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </button>
+
+                    {dropdownOpen && (
+                      <div className="absolute mt-1 w-36 text-caption bg-white border rounded-small shadow-md z-50">
+                        <input
+                          type="file"
+                          id="fileUpload"
+                          accept="image/*"
+                          ref={fileInputRef}
+                          onChange={handleFileSelect}
+                          className="hidden"
+                        />
+
+                        <label
+                          htmlFor="fileUpload"
+                          className="w-full px-2 py-2 flex justify-between items-center hover:bg-gray-100 cursor-pointer"
                         >
-                          {selectedOption && (
-                            <div
-                              className={`w-4 h-4 rounded-full ${
-                                colorOptions.find(
-                                  (c) => c.key === selectedOption
-                                )?.className
-                              }`}
-                            />
-                          )}
-                          <span className="flex-1 text-left truncate">
-                            {selectedOption
-                              ? colorOptions.find(
-                                  (c) => c.key === selectedOption
-                                )?.label
-                              : selectedFileName || "Select Cover"}
-                          </span>
+                          <span>Upload images</span>
                           <svg
-                            width="14"
-                            height="9"
-                            viewBox="0 0 14 9"
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
                             fill="none"
                             xmlns="http://www.w3.org/2000/svg"
                           >
                             <path
-                              d="M13 1.5C13 1.5 8.58107 7.5 6.99995 7.5C5.41884 7.5 1 1.5 1 1.5"
+                              d="M17.4776 9.01106C17.485 9.01102 17.4925 9.01101 17.5 9.01101C19.9853 9.01101 22 11.0294 22 13.5193C22 15.8398 20.25 17.7508 18 18M17.4776 9.01106C17.4924 8.84606 17.5 8.67896 17.5 8.51009C17.5 5.46695 15.0376 3 12 3C9.12324 3 6.76233 5.21267 6.52042 8.03192M17.4776 9.01106C17.3753 10.1476 16.9286 11.1846 16.2428 12.0165M6.52042 8.03192C3.98398 8.27373 2 10.4139 2 13.0183C2 15.4417 3.71776 17.4632 6 17.9273M6.52042 8.03192C6.67826 8.01687 6.83823 8.00917 7 8.00917C8.12582 8.00917 9.16474 8.38194 10.0005 9.01101"
+                              stroke="#59BAD5"
+                              strokeWidth="1.5"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                            <path
+                              d="M12 13V21M12 13C11.2998 13 9.99153 14.9943 9.5 15.5M12 13C12.7002 13 14.0085 14.9943 14.5 15.5"
                               stroke="#59BAD5"
                               strokeWidth="1.5"
                               strokeLinecap="round"
                               strokeLinejoin="round"
                             />
                           </svg>
-                        </button>
+                        </label>
 
-                        {dropdownOpen && (
-                          <div className="absolute mt-1 w-full bg-white border rounded-md shadow-md z-50">
-                            <input
-                              type="file"
-                              id="fileUpload"
-                              accept="image/*"
-                              ref={fileInputRef}
-                              onChange={handleFileSelect}
-                              className="hidden"
-                            />
-                            <label
-                              htmlFor="fileUpload"
-                              className="flex justify-between items-center px-3 py-2 hover:bg-gray-100 cursor-pointer"
+                        <div>
+                          <button
+                            className="w-full px-2 py-2 flex justify-between items-center hover:bg-gray-100"
+                            onClick={toggleColors}
+                            type="button"
+                          >
+                            <span>Select colors</span>
+                            <svg
+                              width="18"
+                              height="18"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
                             >
-                              <span>Upload Image</span>
-                              <svg
-                                width="18"
-                                height="18"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path
-                                  d="M17.4776 9.01106C17.485 9.01102 17.4925 9.01101 17.5 9.01101C19.9853 9.01101 22 11.0294 22 13.5193C22 15.8398 20.25 17.7508 18 18M17.4776 9.01106C17.4924 8.84606 17.5 8.67896 17.5 8.51009C17.5 5.46695 15.0376 3 12 3C9.12324 3 6.76233 5.21267 6.52042 8.03192M17.4776 9.01106C17.3753 10.1476 16.9286 11.1846 16.2428 12.0165M6.52042 8.03192C3.98398 8.27373 2 10.4139 2 13.0183C2 15.4417 3.71776 17.4632 6 17.9273M6.52042 8.03192C6.67826 8.01687 6.83823 8.00917 7 8.00917C8.12582 8.00917 9.16474 8.38194 10.0005 9.01101"
-                                  stroke="#59BAD5"
-                                  strokeWidth="1.5"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                />
-                                <path
-                                  d="M12 13V21M12 13C11.2998 13 9.99153 14.9943 9.5 15.5M12 13C12.7002 13 14.0085 14.9943 14.5 15.5"
-                                  stroke="#59BAD5"
-                                  strokeWidth="1.5"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                />
-                              </svg>
-                            </label>
-                            <button
-                              type="button"
-                              className="flex justify-between items-center px-3 py-2 w-full hover:bg-gray-100"
-                              onClick={() => setShowColors(!showColors)}
-                            >
-                              <span>Select Color</span>
-                              <svg
-                                width="18"
-                                height="18"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <rect
-                                  width="24"
-                                  height="24"
-                                  rx="12"
-                                  fill="#59BAD5"
-                                />
-                              </svg>
-                            </button>
-                            {showColors && (
-                              <div className="pl-3 max-h-32 overflow-auto">
-                                {colorOptions.map((color) => (
-                                  <button
-                                    key={color.key}
-                                    type="button"
-                                    onClick={() => handleColorSelect(color.key)}
-                                    className="flex items-center gap-2 py-1 px-2 w-full text-left hover:bg-gray-100 rounded"
-                                  >
-                                    <div
-                                      className={`w-4 h-4 rounded-full ${color.className}`}
-                                    />
-                                    <span>{color.label}</span>
-                                  </button>
-                                ))}
-                              </div>
-                            )}
-                          </div>
-                        )}
+                              <rect width="24" height="24" rx="12" fill="#59BAD5" />
+                            </svg>
+                          </button>
+
+                          {showColors && (
+                            <div className="pl-2 h-[100px] overflow-auto scrollbar-hidden">
+                              {colorOptions.map((color) => (
+                                <button
+                                  key={color.key}
+                                  onClick={() => handleColorSelect(color.key)}
+                                  className="flex items-center gap-2 py-1 px-2 w-full text-left hover:bg-gray-100 rounded"
+                                  type="button"
+                                >
+                                  <div className={`w-4 h-4 rounded-full ${color.className}`} />
+                                  <span>{color.label}</span>
+                                </button>
+                              ))}
+                            </div>
+                          )}
+                        </div>
                       </div>
-                      {errors.cover && (
-                        <span className="text-red-500 text-xs">
-                          {errors.cover.message}
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Description */}
-                    <div className="col-span-4 space-y-2">
-                      <label className="text-sm font-medium">
-                        Board Description
-                      </label>
-                      <textarea
-                        {...register("description")}
-                        placeholder="Type here"
-                        style={{
-                          backgroundImage: `url("data:image/svg+xml;utf8,${svgIconType}")`,
-                          backgroundRepeat: "no-repeat",
-                          backgroundPosition: "10px 10px",
-                          paddingLeft: "36px",
-                          paddingTop: "10px",
-                          height: "80px",
-                          borderRadius: "12px",
-                          resize: "none",
-                        }}
-                        className="w-full bg-transparent border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-primary transition"
-                      />
-                      {errors.description && (
-                        <span className="text-red-500 text-xs">
-                          {errors.description.message}
-                        </span>
-                      )}
-                    </div>
+                    )}
                   </div>
+                  {errors.cover && (
+                    <span className="text-red-500 text-caption-tiny">
+                      *{errors.cover.message}*
+                    </span>
+                  )}
+                </div>
 
-                  <div className="flex justify-end pt-4">
-                    <Button
-                      type="submit"
-                      color="primary"
-                      radius="full"
-                      className="px-6"
-                    >
-                      Create Board
-                    </Button>
-                  </div>
-                </form>
-              </ModalBody>
-            </>
-          )}
+                {/* Description */}
+                <div className="col-span-4 space-y-2">
+                  <label className="text-label-sm">Board Description</label>
+                  <textarea
+                    {...register("description")}
+                    placeholder="Type here"
+                    style={{
+                      backgroundImage: `url("data:image/svg+xml;utf8,${svgIconType}")`,
+                      backgroundRepeat: "no-repeat",
+                      backgroundPosition: "10px calc(1em + 0px)",
+                      paddingLeft: "36px",
+                      paddingTop: "10px",
+                      height: "80px",
+                      borderRadius: "12px",
+                      lineHeight: "1.4",
+                      resize: "none",
+                    }}
+                    className={`
+                      w-full bg-transparent text-title/50 text-caption
+                      border border-gray-300
+                      focus:outline-none focus:border-primary
+                      transition-all duration-150 ease-in-out
+                    `}
+                  />
+                  {errors.description && (
+                    <span className="text-red-500 text-caption-tiny">
+                      *{errors.description.message}*
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              <div className="mx-[-1rem] border border-bgColor mt-5 mb-2"></div>
+
+              <div className="flex justify-end items-center pt-2 py-4">
+                <Button color="primary" radius="full" type="submit">
+                  Create Board
+                </Button>
+              </div>
+            </form>
+          </ModalBody>
         </ModalContent>
       </Modal>
     </>

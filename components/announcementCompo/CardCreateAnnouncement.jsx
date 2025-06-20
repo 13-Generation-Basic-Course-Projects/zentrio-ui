@@ -79,6 +79,44 @@ export default function CardCreateAnnouncement({
                 </div>
               </div>
             </div>
+<<<<<<< HEAD
+=======
+
+            {/* Enhanced Action Buttons */}
+            {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {quickActions.map((action) => {
+                const Icon = action.icon;
+                return (
+                  <Button
+                    key={action.id}
+                    variant="ghost"
+                    className={`p-6 h-auto flex flex-col items-center gap-3 rounded-2xl border-2 border-gray-100 hover:border-[#59BAD5]/30 transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-[#59BAD5]/10 group ${action.bgColor}`}
+                    onClick={toggleModal}
+                    onMouseEnter={() => setHoveredAction(action.id)}
+                    onMouseLeave={() => setHoveredAction(null)}
+                  >
+                    <div
+                      className={`w-12 h-12 rounded-xl bg-gradient-to-r ${
+                        action.color
+                      } flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 ${
+                        hoveredAction === action.id ? "scale-110" : ""
+                      }`}
+                    >
+                      <Icon className="w-6 h-6 text-white" />
+                    </div>
+                    <div className="text-center">
+                      <div className="font-semibold text-gray-900 group-hover:text-gray-800 transition-colors">
+                        {action.label}
+                      </div>
+                      <div className="text-xs text-gray-500 group-hover:text-gray-600 transition-colors mt-1">
+                        {action.description}
+                      </div>
+                    </div>
+                  </Button>
+                );
+              })}
+            </div> */}
+>>>>>>> 1dfc7bacdbf209490e7546ac55fe7a9920e92f68
           </div>
 
           {isModalOpen && (

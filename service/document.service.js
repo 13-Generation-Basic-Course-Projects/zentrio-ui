@@ -276,8 +276,8 @@ export const createDocumentService = async (data, token) => {
     const res = await fetch(url, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
     });
@@ -481,6 +481,28 @@ export const publicDocumentByIdService = async (
     throw error;
   }
 };
+
+/*
+* Private document by document id
+*/
+export const privateDocumentByIdService = async (documentId, token, tokenFromGoogle) => {
+  try {
+    const url = documentRouteGroup.makeDocumentPrivate(documentId, tokenFromGoogle);
+    const res = await fetch(url, {
+      method: "PUT",
+      headers: {
+        Accept: "*/*",
+        Authorization: `Bearer ${token}`,
+      }
+    });
+
+    return await res.json();
+
+  } catch (error) {
+    console.error("Error in privateDocumentByIdService: ", error.message);
+    throw error;
+  }
+}
 
 /* new add
  * get all document by board id

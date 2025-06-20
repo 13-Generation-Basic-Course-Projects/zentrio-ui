@@ -1,17 +1,7 @@
 "use client";
 
-import React, { useState, useMemo, useRef, useEffect } from "react";
-// import {
-//   BarChart,
-//   Bar,
-//   CartesianGrid,
-//   XAxis,
-//   Tooltip,
-//   YAxis,
-//   Cell,
-// } from "recharts";
 import { Chart } from "chart.js/auto";
-// import { Chart } from "chart.js";
+
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -23,6 +13,7 @@ import {
   Filler,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
+import { useEffect, useRef, useState } from "react";
 
 ChartJS.register(
   CategoryScale,
@@ -35,7 +26,7 @@ ChartJS.register(
 );
 
 export default function VerticalChart({ report }) {
-  const [weeklyClick, setWeeklyClick] = useState(false);
+  const [weeklyClick, setWeeklyClick] = useState(true);
   const [monthlyClick, setMonthlyClick] = useState(false);
 
   const task = {
@@ -93,7 +84,7 @@ export default function VerticalChart({ report }) {
           </div>
           <div className="w-[97.5%] border-t h-[85%] flex justify-end">
             <div className="w-[98.25%] h-[90%] flex justify-center items-center pt-[12.5%] pr-[5%]">
-              {/* <p className="text-slate-400">No Data</p> */}
+              {}
               {monthlyClick ? (
                 <MonthlyChart report={report} />
               ) : (
@@ -103,7 +94,7 @@ export default function VerticalChart({ report }) {
           </div>
         </div>
         <div className="w-[30%] border-l-1 border-gray-200 flex justify-center items-center">
-          {/* Start code line amount of all task */}
+          {}
           <div className="w-[140px] text-[11px] flex flex-col justify-center gap-[7.5%] h-[50%]">
             <div className="text-primary h-[35px] bg-[#59BAD5]/10 rounded-full w-full border-primary border flex items-center justify-center">
               <svg
@@ -117,7 +108,7 @@ export default function VerticalChart({ report }) {
               </svg>
               <p className="pl-[7.5%]">All Categories</p>
             </div>
-            {/* Start code line amount of todo task */}
+            {}
             <div className="flex items-center w-full px-[10%]">
               <div className="flex items-center w-[60%]">
                 <svg
@@ -137,15 +128,11 @@ export default function VerticalChart({ report }) {
                 </svg>
                 <p className="pl-[7.5%] text-[9px]">To Do</p>
               </div>
-              {weeklyClick ? (
-                <p className="w-[40%] text-right text-[9px]">{task.todo}</p>
-              ) : (
-                <p className="w-[40%] text-right text-[9px]">0</p>
-              )}
+              <p className="w-[40%] text-right text-[9px]">{task.todo}</p>
             </div>
-            {/* End code line amount of todo task */}
+            {}
 
-            {/* Start code line amount of todo task */}
+            {}
             <div className="flex items-center w-full px-[10%]">
               <div className="flex items-center w-[60%]">
                 <svg
@@ -165,45 +152,13 @@ export default function VerticalChart({ report }) {
                 </svg>
                 <p className="pl-[7.5%] text-[9px]">In Progress</p>
               </div>
-              {weeklyClick ? (
-                <p className="w-[40%] text-right text-[9px]">{task.progress}</p>
-              ) : (
-                <p className="w-[40%] text-right text-[9px]">0</p>
-              )}
+              <p className="w-[40%] text-right text-[9px]">{task.progress}</p>
             </div>
-            {/* End code line amount of todo task */}
+            {}
 
-            {/* Start code line amount of todo task */}
+            {}
             <div className="flex items-center w-full px-[10%]">
               <div className="flex items-center w-[100%]">
-                <svg
-                  width="13"
-                  height="13"
-                  viewBox="0 0 13 13"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <circle
-                    cx="6.42755"
-                    cy="6.50373"
-                    r="5.35941"
-                    stroke="hsl(160, 70%, 85%)"
-                    strokeWidth="1.19098"
-                  />
-                </svg>
-                <p className="pl-[7.5%] text-[9px]">Under Review</p>
-              </div>
-              {weeklyClick ? (
-                <p className="w-[40%] text-right text-[9px]">{task.review}</p>
-              ) : (
-                <p className="w-[40%] text-right text-[9px]">0</p>
-              )}
-            </div>
-            {/* End code line amount of todo task */}
-
-            {/* Start code line amount of todo task */}
-            <div className="flex items-center w-full px-[10%]">
-              <div className="flex items-center w-[60%]">
                 <svg
                   width="13"
                   height="13"
@@ -219,17 +174,37 @@ export default function VerticalChart({ report }) {
                     strokeWidth="1.19098"
                   />
                 </svg>
+                <p className="pl-[7.5%] text-[9px]">Under Review</p>
+              </div>
+              <p className="w-[40%] text-right text-[9px]">{task.review}</p>
+            </div>
+            {}
+
+            {}
+            <div className="flex items-center w-full px-[10%]">
+              <div className="flex items-center w-[60%]">
+                <svg
+                  width="13"
+                  height="13"
+                  viewBox="0 0 13 13"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle
+                    cx="6.42755"
+                    cy="6.50373"
+                    r="5.35941"
+                    stroke="hsl(160, 70%, 85%)"
+                    strokeWidth="1.19098"
+                  />
+                </svg>
                 <p className="pl-[7.5%] text-[9px]">Done</p>
               </div>
-              {weeklyClick ? (
-                <p className="w-[40%] text-right text-[9px]">{task.done}</p>
-              ) : (
-                <p className="w-[40%] text-right text-[9px]">0</p>
-              )}
+              <p className="w-[40%] text-right text-[9px]">{task.done}</p>
             </div>
-            {/* End code line amount of todo task */}
+            {}
           </div>
-          {/* End code line amount of all task */}
+          {}
         </div>
       </div>
     </>
@@ -240,16 +215,57 @@ export const MonthlyChart = ({ report }) => {
   const canvasRef = useRef(null);
   const chartRef = useRef(null);
 
+  const generateMonthlyStageData = (report) => {
+    const monthlyStageData = {
+      "TO DO": Array(12).fill(0),
+      IN_PROGRESS: Array(12).fill(0),
+      UNDER_REVIEW: Array(12).fill(0),
+      DONE: Array(12).fill(0),
+    };
+
+    if (!report || !report.groupedTasks) {
+      console.warn("generateMonthlyStageData: No groupedTasks found");
+      return monthlyStageData;
+    }
+
+    report.groupedTasks.forEach((group) => {
+      const stage = group?.stage;
+      if (!stage || !(stage in monthlyStageData)) {
+        console.warn(`Unknown stage encountered: "${stage}"`);
+        return; // skip unknown stages
+      }
+
+      if (!group.tasks || !Array.isArray(group.tasks)) {
+        console.warn(`No tasks array found for stage: "${stage}"`);
+        return;
+      }
+
+      group.tasks.forEach((task) => {
+        const date = new Date(task.finishedAt);
+        if (isNaN(date)) {
+          console.warn(`Invalid finishedAt date: "${task.finishedAt}"`);
+          return; // skip invalid dates
+        }
+
+        const monthIndex = date.getMonth(); // 0-11 for Jan-Dec
+        monthlyStageData[stage][monthIndex]++;
+      });
+    });
+
+    return monthlyStageData;
+  };
+
+  const monthlyStageData = generateMonthlyStageData(report?.payload);
+
+  console.log("Monthly: ", monthlyStageData);
+
   useEffect(() => {
-    // Destroy existing chart if it exists
     if (chartRef.current) {
       chartRef.current.destroy();
     }
 
-    // Get canvas context using ref instead of getElementById
     const ctx = canvasRef.current.getContext("2d");
 
-    // Create new chart and store reference
     chartRef.current = new Chart(ctx, {
       type: "bar",
       data: {
@@ -267,49 +283,90 @@ export const MonthlyChart = ({ report }) => {
           "Nov",
           "Dec",
         ],
-        datasets: [
-          {
-            data: [66, 144, 146, 116, 107, 131, 43, 89, 75, 120, 95, 110],
-            label: "Applied",
-            borderColor: "rgb(109, 253, 181)",
-            backgroundColor: "rgb(109, 253, 181, 0.5)",
-            borderWidth: 2,
+        datasets: Object.entries(monthlyStageData).map(([stage, data]) => ({
+          label: stage,
+          data,
+          borderWidth: 2,
+          borderColor: "rgba(0,0,0,0%)",
+          backgroundColor: function (context) {
+            const chart = context.chart;
+            const { ctx, chartArea } = chart;
+            if (!chartArea) return null;
+
+            const { datasetIndex, dataIndex } = context;
+            const meta = chart.getDatasetMeta(datasetIndex);
+            const bar = meta.data[dataIndex];
+
+            // Check if bar exists and has x & width
+            if (
+              !bar ||
+              typeof bar.x !== "number" ||
+              typeof bar.width !== "number"
+            ) {
+              return "#59BAD5"; // fallback solid color
+            }
+
+            const { x, width } = bar;
+            const gradient = ctx.createLinearGradient(
+              x - width / 2,
+              0,
+              x + width / 2,
+              0
+            );
+            gradient.addColorStop(0, "#FFFFFF");
+            gradient.addColorStop(0.5, "#59BAD5");
+            gradient.addColorStop(1, "#59BAD5");
+
+            return gradient;
           },
-        ],
+        })),
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        elements: {
+          bar: {
+            borderRadius: 6,
+          },
+        },
         plugins: {
           legend: {
             display: false,
-            position: "top",
+          },
+          tooltip: {
+            mode: "index",
+            intersect: false,
           },
         },
         scales: {
           y: {
             beginAtZero: true,
+            grid: {
+              display: true,
+            },
+          },
+          x: {
+            grid: {
+              display: false,
+            },
+            stacked: true,
           },
         },
       },
     });
 
-    // Cleanup function
     return () => {
       if (chartRef.current) {
         chartRef.current.destroy();
         chartRef.current = null;
       }
     };
-  }, []);
+  }, [report]);
 
   return (
-    <>
-      {/* Bar chart */}
-      <div className="w-full h-[350px] flex mb-[2.5%]">
-        <canvas ref={canvasRef}></canvas>
-      </div>
-    </>
+    <div className="w-full h-[350px] flex mb-[2.5%]">
+      <canvas ref={canvasRef}></canvas>
+    </div>
   );
 };
 
@@ -317,194 +374,162 @@ export const WeeklyChart = ({ report }) => {
   const canvasRef = useRef(null);
   const chartRef = useRef(null);
 
-  const task = {
-    todo: 0,
-    progress: 0,
-    review: 0,
-    done: 0,
+  const getWeekStart = (date) => {
+    const d = new Date(date);
+    const day = d.getDay();
+    const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+    return new Date(d.setDate(diff));
   };
 
-  report?.payload?.groupedTasksreport?.payload?.groupedTasks.forEach((item) => {
-    if (item.stage == "TO DO") {
-      task.todo = task.todo + item.count;
-    } else if (item.stage == "IN_PROGRESS") {
-      task.progress = task.progress + item.count;
-    } else if (item.stage == "UNDER_REVIEW") {
-      task.review = task.review + item.count;
-    } else {
-      task.done = task.done + item.count;
-    }
-  });
-
-  const getWeekDates = (date) => {
-    const inputDate = new Date(date);
-    const dayOfWeek = inputDate.getDay(); // 0 = Sunday, 1 = Monday, etc.
-
-    // Calculate how many days to subtract to get to Monday
-    const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
-
-    // Get Monday of the week
-    const monday = new Date(inputDate);
-    monday.setDate(inputDate.getDate() - daysToMonday);
-
-    // Generate all 7 days from Monday to Sunday
-    const weekDates = [];
-    for (let i = 0; i < 7; i++) {
-      const currentDay = new Date(monday);
-      currentDay.setDate(monday.getDate() + i);
-      weekDates.push(currentDay);
-    }
-
-    return weekDates;
+  const getWeekNumber = (date, baseDate) => {
+    const weekStart = getWeekStart(date);
+    const baseWeekStart = getWeekStart(baseDate);
+    const diffTime = weekStart.getTime() - baseWeekStart.getTime();
+    const diffWeeks = Math.floor(diffTime / (7 * 24 * 60 * 60 * 1000));
+    return diffWeeks + 1;
   };
 
-  // This IS an array - map() returns an array of 7 objects
-  const chartData = (week, stage, inputDate) => {
-    const weekDates = getWeekDates(inputDate);
+  const processWeeklyData = () => {
+    const weeklyData = {};
 
-    return weekDates.map((date, index) => ({
-      week: week || `Week ${index + 1}`,
-      stage,
-      date: date.toISOString().split("T")[0],
-    }));
-  };
+    let earliestDate = null;
 
-  const chartData2 = {
-    week: 0,
-    stage: "",
-    date: null,
-  };
-
-  // report?.payload?.groupedTasksreport.forEach((item) => {
-  report?.payload?.groupedTasks.forEach((item) => {
-    console.log("Weekly: ", item);
-    chartData2.stage = item.stage;
-    item?.tasks.forEach((subItem) => {
-      console.log("Sub Item: ", subItem);
-      chartData2.date = subItem.startAt;
-      chartData2.date = new Date(subItem.startAt); // Ensure it's a Date object
-
-      if (chartData2.date && !isNaN(chartData2.date.getTime())) {
-        chartData2.date = chartData2.date.toISOString().split("T")[0];
-        console.log("Formatted date:", chartData2.date);
-
-        const getWeekDates = (date) => {
-          const inputDate = new Date(date);
-          const dayOfWeek = inputDate.getDay(); // 0 = Sunday, 1 = Monday, etc.
-
-          // Calculate how many days to subtract to get to Monday
-          const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
-
-          // Get Monday of the week
-          const monday = new Date(inputDate);
-          monday.setDate(inputDate.getDate() - daysToMonday);
-
-          // Generate all 7 days from Monday to Sunday
-          const weekDates = [];
-          for (let i = 0; i < 7; i++) {
-            const currentDay = new Date(monday);
-            currentDay.setDate(monday.getDate() + i);
-            weekDates.push(currentDay.toISOString().split("T")[0]);
+    (report?.payload?.groupedTasks || []).forEach((group) => {
+      (group.tasks || []).forEach((task) => {
+        const taskDate = task.finishedAt || task.updatedAt || task.createdAt;
+        if (taskDate) {
+          const date = new Date(taskDate);
+          if (!earliestDate || date < earliestDate) {
+            earliestDate = date;
           }
-
-          return weekDates;
-        };
-
-        const allDate = getWeekDates(chartData2.date);
-
-        console.log("All Date: ", allDate);
-      }
+        }
+      });
     });
-  });
-  // })
 
-  console.log("Chart Data: ", chartData2);
+    if (!earliestDate) return { weeklyData: {}, maxWeek: 7 };
+
+    (report?.payload?.groupedTasks || []).forEach((group) => {
+      (group.tasks || []).forEach((task) => {
+        const taskDate = task.finishedAt || task.updatedAt || task.createdAt;
+        if (taskDate) {
+          const date = new Date(taskDate);
+          const weekNum = getWeekNumber(date, earliestDate);
+
+          if (weekNum > 0 && weekNum <= 7) {
+            if (!weeklyData[weekNum]) {
+              weeklyData[weekNum] = {};
+            }
+
+            const stage = task.stage || "Unknown";
+            if (!weeklyData[weekNum][stage]) {
+              weeklyData[weekNum][stage] = 0;
+            }
+            weeklyData[weekNum][stage]++;
+          }
+        }
+      });
+    });
+
+    return { weeklyData, maxWeek: 7 };
+  };
+
+  const { weeklyData, maxWeek } = processWeeklyData();
+
+  const dataStages = [
+    ...new Set(
+      Object.values(weeklyData).flatMap((weekData) => Object.keys(weekData))
+    ),
+  ];
+
+  const allStages = dataStages.includes("DONE")
+    ? dataStages
+    : [...dataStages, "DONE"];
+
+  const stageColors = {
+    TO_DO: "hsl(210, 70%, 85%)",
+    TODO: "hsl(210, 70%, 85%)",
+    IN_PROGRESS: "hsl(40, 70%, 85%)",
+    UNDER_REVIEW: "hsl(260, 70%, 85%)",
+    DONE: "hsl(160, 70%, 85%)",
+    COMPLETED: "hsl(160, 70%, 85%)",
+  };
+
+  const datasets = allStages.map((stage, index) => {
+    const defaultColors = [
+      "hsl(210, 70%, 85%)",
+      "hsl(210, 70%, 85%)",
+      "hsl(40, 70%, 85%)",
+      "hsl(260, 70%, 85%)",
+      "hsl(160, 70%, 85%)",
+      "hsl(160, 70%, 85%)",
+    ];
+
+    return {
+      label: stage.replace("_", " "),
+      data: Array.from({ length: maxWeek }, (_, i) => {
+        const week = i + 1;
+        return weeklyData[week]?.[stage] || 0;
+      }),
+      backgroundColor:
+        stageColors[stage] || defaultColors[index % defaultColors.length],
+      borderColor:
+        stageColors[stage]?.replace("0.8", "1") ||
+        defaultColors[index % defaultColors.length].replace("0.8", "1"),
+      borderWidth: 1,
+    };
+  });
 
   useEffect(() => {
-    // Destroy existing chart if it exists
     if (chartRef.current) {
       chartRef.current.destroy();
     }
 
-    // Get canvas context using ref instead of getElementById
-    const ctx = canvasRef.current.getContext("2d");
+    const ctx = canvasRef.current?.getContext("2d");
+    if (!ctx) return;
 
-    // Create new chart and store reference
     chartRef.current = new Chart(ctx, {
       type: "bar",
       data: {
-        labels: [
-          "Week 1",
-          "Week 2",
-          "Week 3",
-          "Week 4",
-          "Week 5",
-          "Week 6",
-          "Week 7",
-        ],
-        datasets: [
-          {
-            data: [66, 144, 146, 116, 107, 131, 43],
-            label: "Applied",
-            borderColor: "rgb(109, 253, 181)",
-            backgroundColor: "rgb(109, 253, 181, 0.5)",
-            borderWidth: 2,
-          },
-          {
-            data: [40, 100, 44, 70, 63, 30, 10],
-            label: "Accepted",
-            borderColor: "rgb(75, 192, 192)",
-            backgroundColor: "rgb(75, 192, 192, 0.5)",
-            borderWidth: 2,
-          },
-          {
-            data: [20, 24, 50, 34, 33, 23, 12],
-            label: "Pending",
-            borderColor: "rgb(255, 205, 86)",
-            backgroundColor: "rgb(255, 205, 86, 0.5)",
-            borderWidth: 2,
-          },
-          {
-            data: [6, 20, 52, 12, 11, 78, 21],
-            label: "Rejected",
-            borderColor: "rgb(255, 99, 132)",
-            backgroundColor: "rgb(255, 99, 132, 0.5)",
-            borderWidth: 2,
-          },
-        ],
+        labels: Array.from({ length: maxWeek }, (_, i) => `Week ${i + 1}`),
+        datasets,
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        elements: {
+          bar: {
+            borderRadius: 6,
+          },
+        },
         plugins: {
           legend: {
             display: false,
-            position: "top",
           },
         },
         scales: {
           y: {
             beginAtZero: true,
           },
+          x: {
+            grid: {
+              display: false,
+            },
+          },
         },
       },
     });
 
-    // Cleanup function
     return () => {
       if (chartRef.current) {
         chartRef.current.destroy();
         chartRef.current = null;
       }
     };
-  }, []);
+  }, [datasets, maxWeek]);
 
   return (
-    <>
-      {/* Bar chart */}
-      <div className="w-full h-[350px] flex mb-[2.5%]">
-        <canvas ref={canvasRef}></canvas>
-      </div>
-    </>
+    <div className="w-full h-[350px] flex mb-[2.5%]">
+      <canvas ref={canvasRef} />
+    </div>
   );
 };

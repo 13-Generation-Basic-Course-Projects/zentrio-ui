@@ -28,9 +28,16 @@ import correctIcon from "@/assets/correct.png";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { profileSchema } from "@/lib/schemas/editprofileSchema";
-import { getCurrentUserProfileAction, updateAchievementAction, updateUserProfileAction } from "@/action/profile.action";
+import {
+  getCurrentUserProfileAction,
+  updateAchievementAction,
+  updateUserProfileAction,
+} from "@/action/profile.action";
 import { Controller } from "react-hook-form";
-import { sendNotificationForAllUserAction, sendNotificationToUserIdAction } from "@/action/notification.action";
+import {
+  sendNotificationForAllUserAction,
+  sendNotificationToUserIdAction,
+} from "@/action/notification.action";
 import { sendNotificationToUserIdService } from "@/service/notification.service";
 
 export const gender = [
@@ -86,7 +93,7 @@ export function ModalEditProfile({ currentUserProfile }) {
     resolver: zodResolver(profileSchema),
     defaultValues: {
       username: "",
-      gender: "", 
+      gender: "",
       position: "",
       location: "",
       contact: "",
@@ -104,7 +111,6 @@ export function ModalEditProfile({ currentUserProfile }) {
       });
     }
   }, [isOpen, , reset]);
-  
 
   const onSubmit = async (data) => {
     const result = await updateUserProfileAction(data);
@@ -128,7 +134,9 @@ export function ModalEditProfile({ currentUserProfile }) {
     }
   };
 
-  const selectedBoards = combinedBoards.filter(board => selectedAchievements.has(board.id));
+  const selectedBoards = combinedBoards.filter((board) =>
+    selectedAchievements.has(board.id)
+  );
 
   const handleSave = async () => {
     const selectedBoards = combinedBoards.filter((board) =>
@@ -147,12 +155,10 @@ export function ModalEditProfile({ currentUserProfile }) {
     try {
       const response = await updateAchievementAction(payload); // API call with correct structure
       onOpenChange(false);
-
     } catch (error) {
       console.error("Error saving achievements:", error);
     }
-
-  };    
+  };
 
   return (
     <>
@@ -181,7 +187,8 @@ export function ModalEditProfile({ currentUserProfile }) {
                       tab: "max-w-fit px-0 h-12",
                       tabContent: "group-data-[selected=true]:text-blue-500",
                     }}
-                    variant="underlined">
+                    variant="underlined"
+                  >
                     <Tab
                       key="Profile"
                       title={
@@ -229,10 +236,12 @@ export function ModalEditProfile({ currentUserProfile }) {
                                 ? "border-blue-500 bg-blue-50 outline outline-1 outline-blue-500"
                                 : "border-stroke hover:border-gray-400"
                             } px-2 py-3`}
-                            onClick={() => handleAchievementToggle(board.id)}>
+                            onClick={() => handleAchievementToggle(board.id)}
+                          >
                             <div className="flex items-center gap-3">
                               <div
-                                className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold ${board.color}`}>
+                                className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold ${board.color}`}
+                              >
                                 {board.title.charAt(0)}
                               </div>
                               <div>
@@ -245,7 +254,8 @@ export function ModalEditProfile({ currentUserProfile }) {
                             <div
                               className={`transition-opacity duration-200 ${
                                 isSelected ? "opacity-100" : "opacity-0"
-                              }`}>
+                              }`}
+                            >
                               <Image
                                 src={correctIcon}
                                 width={18}
@@ -257,18 +267,20 @@ export function ModalEditProfile({ currentUserProfile }) {
                         );
                       })}
                     </ul>
-                    
+
                     <div className="grid grid-cols-2 gap-3 pt-2">
                       <Button
                         className="bg-transparent border-1 border-bgColor"
                         radius="full"
-                        onPress={onClose}>
+                        onPress={onClose}
+                      >
                         Cancel
                       </Button>
                       <Button
                         color="primary"
                         radius="full"
-                        onPress={handleSave}>
+                        onPress={handleSave}
+                      >
                         Save ({selectedAchievements.size})
                       </Button>
                     </div>
@@ -277,7 +289,8 @@ export function ModalEditProfile({ currentUserProfile }) {
                 {selectedTab === "Profile" && (
                   <form
                     onSubmit={handleSubmit(onSubmit)}
-                    className="grid grid-cols-1 gap-4">
+                    className="grid grid-cols-1 gap-4"
+                  >
                     {/* NAME */}
                     <div>
                       <label className="text-label font-medium flex items-center gap-x-2 mb-2">
@@ -294,6 +307,11 @@ export function ModalEditProfile({ currentUserProfile }) {
                           input: "text-black",
                         }}
                       />
+                      {errors.username && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.username.message}
+                        </p>
+                      )}
                     </div>
 
                     {/* GENDER (FIXED using Controller) */}
@@ -319,7 +337,8 @@ export function ModalEditProfile({ currentUserProfile }) {
                             classNames={{
                               trigger: `bg-white text-black border border-gray-300 focus:outline-none rounded-small px-6 py-6`,
                               value: "text-gray-500",
-                            }}>
+                            }}
+                          >
                             {gender.map((item) => (
                               <SelectItem key={item.key} value={item.key}>
                                 {item.label}
@@ -333,7 +352,7 @@ export function ModalEditProfile({ currentUserProfile }) {
                     {/* POSITION */}
                     <div>
                       <label className="text-label font-medium flex items-center gap-x-2 mb-2">
-                        <IconJob strokeWidth={1} size={4} />
+                        <IconJob strokeWidth={1} size={4}/>
                         Position <span className="text-red-500">*</span>
                       </label>
                       <Input
@@ -351,7 +370,7 @@ export function ModalEditProfile({ currentUserProfile }) {
                     {/* LOCATION */}
                     <div>
                       <label className="text-label font-medium flex items-center gap-x-2 mb-2">
-                        <IconMap strokeWidth={1} size={4} />
+                          <IconMap strokeWidth={1} size={4} color={"currentColor"} />{" "}
                         Location <span className="text-red-500">*</span>
                       </label>
                       <Input
@@ -382,6 +401,11 @@ export function ModalEditProfile({ currentUserProfile }) {
                           input: "text-black",
                         }}
                       />
+                      {errors.username && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.username.message}
+                        </p>
+                      )}
                     </div>
 
                     {/* ACTION BUTTONS */}
@@ -390,7 +414,8 @@ export function ModalEditProfile({ currentUserProfile }) {
                         type="button"
                         className="bg-transparent border-1 border-bgColor"
                         radius="full"
-                        onPress={onClose}>
+                        onPress={onClose}
+                      >
                         Cancel
                       </Button>
                       <Button type="submit" color="primary" radius="full">

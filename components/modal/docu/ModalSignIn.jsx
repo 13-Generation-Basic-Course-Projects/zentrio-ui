@@ -1,14 +1,18 @@
-import Link from 'next/link';
+import { doSocialLogin } from "@/action/auth.action";
 
-export default function ModalSignIn({ link = "/login" }) {
+export default function ModalSignIn() {
   return (
-    <div>
-      <Link
-        href={link}
-        className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-primary border border-gray-300 rounded-[8px] shadow-sm hover:bg-[#000] h-[50px] w-full"
+    <form action={doSocialLogin}>
+      <button
+        type="submit"
+        name="action"
+        value="google"
+        className="button border-none bg-transparent"
       >
-        Sign In
-      </Link>
-    </div>
+        <div className="flex flex-col items-center justify-center gap-2 w-[120px] h-[54px] border rounded-[18px] bg-primary text-white">
+          login
+        </div>
+      </button>
+    </form>
   );
 }
