@@ -1,7 +1,6 @@
-
-
 import { getGuestUserDisplayKanbanAction } from "@/action/board.action";
 import GuestKanbanBoardCompo from "@/components/appserver/GuestUserPage";
+import GuestKanbanBoard from "./[workspaceid]/[boardid]/page";
 
 export default async function GuestPage() {
   const workspaceId = "feb6d22e-b2d6-4105-b3ad-663c7148c337";
@@ -9,11 +8,12 @@ export default async function GuestPage() {
 
   const data = await getGuestUserDisplayKanbanAction({ workspaceId, boardId });
 
-  console.log("dAaaaaaaaaaaaaaaaaa", data);
+  console.log("dataaaaaaaaaaaaaaa", data);
+
   return (
     <>
       <div>Hello GuestRole</div>
-      <GuestKanbanBoardCompo data={data}/>
+      <GuestKanbanBoard data={data} />
     </>
   );
 }
