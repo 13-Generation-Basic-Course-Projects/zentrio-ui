@@ -135,8 +135,8 @@ export default function ModalOptionWorkspace({
     <>
       <Dropdown>
         <DropdownTrigger>
-          <Button variant="" className="p-0 min-w-0 h-auto w-auto">
-            <div className="hover:text-black text-gray-600  px-2 py-1">
+          <Button variant="" className="p-0 w-1 h-6 min-w-1 mx-3 hover:bg-gray-200">
+            <div className="hover:text-black text-gray-600 px-2 py-1">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="w-4 h-4"

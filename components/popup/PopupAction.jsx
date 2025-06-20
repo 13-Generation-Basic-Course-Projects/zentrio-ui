@@ -23,8 +23,8 @@ export default function PopupAction({
   massageBody,
   massageUndo,
   massageDo,
-  documentId,
   fileId,
+  documentId,
   accessToken,
   color,
   swapButton,
@@ -34,6 +34,8 @@ export default function PopupAction({
   taskId,
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  
+  console.log("fileid: ", fileId, accessToken);
 
   const router = useRouter();
   const handleDelete = async () => {
@@ -42,18 +44,8 @@ export default function PopupAction({
         await deleteDocumentAction(accessToken, documentId);
       }
       if (fileId) {
-        await deleteFileByFileIdAction(fileId, accessToken);
-      }
-      router.refresh();
-      const result = await deleteCheckListByTaskIdAction(checkListId, taskId);
-      if (result?.status === "success" || result?.success) {
-        toast.success("You have deleted the checklist successfully", {
-          position: "top-right",
-          duration: 4000,
-        });
-        router.refresh(); // Refresh only on success
-      } else {
-        throw new Error("Deletion failed unexpectedly");
+        await deleteFileByFileIdAction({ fileId, accessToken });
+        
       }
     } catch (error) {
       console.error("Delete failed:", error);

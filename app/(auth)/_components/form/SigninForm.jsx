@@ -103,15 +103,14 @@ export const SigninForm = () => {
             </div>
 
             {/* Remember Me and Forgot Password */}
-            <div className="flex items-center justify-between -mt-[10px]">
-              <div className="flex items-center gap-7 text-description">
+            <div className="flex items-center justify-end -mt-[10px]">
+              {/* <div className="flex items-center gap-7 text-description">
                 <Checkbox
                   label="Remember Me"
                   {...register("rememberMe")}
                   className="text-[16px] w-[12px] text-description"
                 /> Remember Me
-                {/* Removed extra 'Remember me' text since checkbox label handles it */}
-              </div>
+              </div> */}
               <Link href="/forgot-password" className="text-[16px] text-danger">
                 Forgot Password?
               </Link>

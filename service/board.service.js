@@ -32,7 +32,6 @@ export const getTaskByBoardIdAndGanttBarIdService = async ({
 
     return data;
   } catch (error) {
-    console.error("bug", error.message);
     throw error;
   }
 };
@@ -56,7 +55,6 @@ export const getCheckListByTaskIdService = async ({ taskId, token }) => {
 
     return data;
   } catch (error) {
-    console.error("bug", error.message);
     throw error;
   }
 };
@@ -80,7 +78,6 @@ export const getMemberByBoardIdService = async ({ boardId, token }) => {
 
     return data;
   } catch (error) {
-    console.error("bug", error.message);
     throw error;
   }
 };
@@ -172,7 +169,6 @@ export const getAllGanttBarByGanttChartIDService = async ({
 
     return data;
   } catch (error) {
-    console.error("bug", error.message);
     throw error;
   }
 };
@@ -320,7 +316,6 @@ export const createGanttChartByBoardIdService = async ({
 
     return data;
   } catch (error) {
-    console.error("bug", error.message);
     throw error;
   }
 };
@@ -351,7 +346,6 @@ export const createCheckListService = async ({ taskId, data, token }) => {
 
     return data;
   } catch (error) {
-    console.error("bug", error.message);
     throw error;
   }
 };
@@ -374,7 +368,6 @@ export const getBoardByBoardIdService = async ({ boardId, token }) => {
 
     return data;
   } catch (error) {
-    console.error("bug", error.message);
     throw error;
   }
 };
@@ -405,7 +398,6 @@ export const postCommentByCheckListIdService = async ({
 
     return data;
   } catch (error) {
-    console.error("bug", error.message);
     throw error;
   }
 };
@@ -432,7 +424,6 @@ export const editCommmentService = async ({ data, token }) => {
 
     return data;
   } catch (error) {
-    console.error("bug", error.message);
     throw error;
   }
 };
@@ -478,7 +469,6 @@ export const getTaskByBoardIdService = async ({ boardId, token }) => {
 
     return data;
   } catch (error) {
-    console.error("bug", error.message);
     throw error;
   }
 };
@@ -502,7 +492,6 @@ export const deleteTaskService = async (taskId, boardId, ganttbarId, token) => {
 
     return data;
   } catch (error) {
-    console.error("bug", error.message);
     throw error;
   }
 };
@@ -543,7 +532,6 @@ export const assignMemberInChecklistService = async ({
 
     return result;
   } catch (error) {
-    console.error("bug", error.message);
     throw error;
   }
 };
@@ -572,7 +560,6 @@ export const moveTaskOrderService = async (boardId, newId, oldId, token) => {
 
     return result;
   } catch (error) {
-    console.error("bug", error.message);
     throw error;
   }
 };
@@ -613,7 +600,6 @@ export const assignMemberToChecklistService = async (
 
     return result;
   } catch (error) {
-    console.error("bug", error.message);
     throw error;
   }
 };
@@ -641,7 +627,6 @@ export const chageStatusCheckListService = async (checklistId, token, type) => {
 
     return data;
   } catch (error) {
-    console.error("bug", error.message);
     throw error;
   }
 };
@@ -666,7 +651,6 @@ export const changeStatusTaskService = async (taskId, token, type) => {
 
     return data;
   } catch (error) {
-    console.error("bug", error.message);
     throw error;
   }
 };
@@ -691,7 +675,6 @@ export const changeStageToUnderReviewService = async (taskId, token, stage) => {
 
     return data;
   } catch (error) {
-    console.error("bug", error.message);
     throw error;
   }
 };
@@ -718,7 +701,6 @@ export const FeedBackService = async (taskId, token, comment) => {
 
     return data;
   } catch (error) {
-    console.error("bug", error.message);
     throw error;
   }
 };
@@ -741,7 +723,6 @@ export const deleteMemberService = async (boardId, userId, token) => {
 
     return data;
   } catch (error) {
-    console.error("bug", error.message);
     throw error;
   }
 };
@@ -765,7 +746,6 @@ export const checkEmailService = async (email) => {
 
     return data;
   } catch (error) {
-    console.error("bug", error.message);
     throw error;
   }
 };
@@ -787,7 +767,6 @@ export const checkEmailForClearService = async (email) => {
 
     return data;
   } catch (error) {
-    console.error("bug", error.message);
     throw error;
   }
 };
@@ -886,10 +865,10 @@ export const updateCheckListByIdAndTaskIdService = async (
   startedAt,
   finishedAt,
   taskId,
-  token,
+  token
 ) => {
   console.log("Token in update checklist service: ", token);
-  
+
   console.log("Request Body in update service: ", {
     checklistId,
     title,
@@ -900,9 +879,7 @@ export const updateCheckListByIdAndTaskIdService = async (
   });
 
   const url = checklistRouteGroup.updateCheckListByIdAndTaskId(checklistId);
-  console.log(
-    "Request URL",url
-  );
+  console.log("Request URL", url);
   const response = await fetch(url, {
     method: "PUT",
     headers: {
@@ -920,7 +897,7 @@ export const updateCheckListByIdAndTaskIdService = async (
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));
-    console.error("Backend error response: ", error);
+    console.error("Backend error response update checklist: ", error);
     if (response.status === 401 || response.status === 403) {
       throw new Error("Authentication required or token is invalid");
     }
@@ -930,4 +907,109 @@ export const updateCheckListByIdAndTaskIdService = async (
   }
 
   return response.status === 204 ? { success: true } : response.json();
+};
+
+export const uploadImageBoardService = async ({ boardId, image, token }) => {
+  const url = boardRouteGroup.uploadImageBoard(boardId);
+  console.log("url", url, "image", image, "token", token);
+
+  const formData = new FormData();
+  formData.append("file", image);
+
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      accept: "*/*",
+      Authorization: `Bearer ${token}`,
+      // Do NOT set Content-Type, browser sets it automatically for FormData
+    },
+    body: formData,
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json();
+    throw new Error(`Upload failed: ${errorData.message || res.statusText}`);
+  }
+
+  const data = await res.json();
+  return data;
+};
+
+/* add new
+ *  delete comment in checklist
+ */
+export const deleteCommentBycmtIdService = async ({ commentId, token }) => {
+  console.log("delete service comment id delete: ", commentId);
+
+  const url = checklistRouteGroup.deleteCommentBycmtId(commentId);
+  console.log("Delete url : ", url);
+
+  const response = await fetch(url, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    throw new Error(
+      error.message || `Failed to delete comment: ${response.status}`
+    );
+  }
+
+  return response.json();
+};
+
+/* //add new
+ * task by task id
+ */
+export const getTaskByTaskIdService = async ({ taskId, token }) => {
+  console.log("taskId getTaskByTaskIdService: ", taskId);
+
+  const url = taskRouteGroup.getTaskByTaskId(taskId);
+  console.log("get task url : ", url);
+
+  const response = await fetch(url, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    throw new Error(
+      error.message || `Failed to get task by task id: ${response.status}`
+    );
+  }
+
+  return response.json();
+};
+
+/**
+ * guest user
+ */ export const getGuestUserDisplayKanbanService = async (
+  workspaceId,
+  boardId
+) => {
+  const url = boardRouteGroup.getGuestUserDisplayKanban(workspaceId, boardId);
+  console.log("get task url : ", url);
+
+  const response = await fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  // if (!response.ok) {
+  //   const error = await response.json().catch(() => ({}));
+  //   throw new Error(
+  //     error.message || `Failed to get task by task id: ${response.status}`
+  //   );
+  // }
+
+  const data = response.json();
+  return data;
 };

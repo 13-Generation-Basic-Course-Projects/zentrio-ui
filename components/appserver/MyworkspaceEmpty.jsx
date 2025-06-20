@@ -11,6 +11,10 @@ import Image from "next/image";
 import image from "@/assets/C19_3.png";
 import icon from "@/assets/image1010.png";
 
+import Image from "next/image";
+import image from "@/assets/C19_3.png";
+import icon from "@/assets/image1010.png";
+
 import CardMember from "../card/CardMember";
 import Bar from "../bredcrum/Bar";
 
@@ -55,6 +59,17 @@ export default function MyworkspaceEmpty() {
       {/* board - this one scrolls */}
       <div className="col-span-9 flex flex-col overflow-hidden p-3 min-h-0">
         {/* Feature Showcase Section - Right under Bar */}
+        <div className="relative z-10 h-full flex items-center">
+          <div className="grid grid-cols-2 gap-2 w-full items-center">
+            {/* Left Side - Woman Illustration */}
+            <div className="flex justify-center">
+              <div className="relative">
+                <Image
+                  src={image}
+                  alt="Professional woman in blue outfit"
+                  className="w-50 h-auto object-contain"
+                />
+              </div>
         <div className="relative z-10 h-full flex items-center">
           <div className="grid grid-cols-2 gap-2 w-full items-center">
             {/* Left Side - Woman Illustration */}

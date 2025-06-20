@@ -5,7 +5,7 @@ import CardAllMembers from "../announcementCompo/CardAllMembers";
 import { preventImage } from "@/constant/preventimage";
 import ClockWeather from "../announcementCompo/ClockWheather";
 import Image from "next/image";
-import nothing from "@/assets/nothingbox.png"
+import nothing from "@/assets/nothingbox.png";
 
 export default function Announcementpage({
   boardId,
@@ -16,19 +16,18 @@ export default function Announcementpage({
   console.log("All announcement", Announcements);
   console.log("kdetttt", boardId);
   console.log("kdetkoooo", boardMember);
-  console.log("user",currentUserProfile)
+  console.log("user", currentUserProfile);
   const preventUserImage = preventImage.noProfile;
 
   const currentUserBoardInfo = boardMember.find(
     (member) => member.userId === currentUserProfile?.payload?.user?.userId
   );
-  console.log("gggg",currentUserProfile?.payload?.user?.userId)
-  console.log("info",currentUserBoardInfo);
+  console.log("gggg", currentUserProfile?.payload?.user?.userId);
+  console.log("info", currentUserBoardInfo);
   const currentUserRoles = currentUserBoardInfo?.roles || [];
-  console.log("ss",currentUserRoles)
+  console.log("ss", currentUserRoles);
   const isProjectManager = currentUserRoles.includes("ROLE_MANAGER");
-  console.log("rolemamam",isProjectManager)
-  
+  console.log("rolemamam", isProjectManager);
 
   return (
     <div className="grid grid-cols-12 w-full h-screen p-2">
@@ -56,8 +55,15 @@ export default function Announcementpage({
               />
             ) : (
               <div className="flex flex-col items-center justify-center h-[70vh] text-gray-500">
-                <Image src={nothing} alt="No Announcements" width={100} height={100} />
-                <p className="text-xl text-primary font-medium mt-4">Nothing has announcement</p>
+                <Image
+                  src={nothing}
+                  alt="No Announcements"
+                  width={100}
+                  height={100}
+                />
+                <p className="text-xl text-primary font-medium mt-4">
+                  Nothing has announcement
+                </p>
               </div>
             )}
           </div>

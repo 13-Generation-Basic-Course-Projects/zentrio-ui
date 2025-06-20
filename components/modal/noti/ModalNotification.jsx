@@ -248,13 +248,12 @@ export default function ModalNotification({ notificationData }) {
       <DropdownTrigger>
         <Button
           variant="none"
-          className="p-2 rounded-lg transition-transform duration-150 active:scale-95 focus:outline-none"
-          aria-label="Open notifications"
+          className="p-0 rounded-lg flex items-center justify-center h-[20px] min-w-[15px]"
         >
           <Image
             src={notification}
-            className="size-6"
-            alt="Notification icon"
+            className="size-5" 
+            alt="notification"
           />
         </Button>
       </DropdownTrigger>

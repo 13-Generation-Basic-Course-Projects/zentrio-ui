@@ -15,7 +15,10 @@ import {
   getGanttChartByBoardIdAction,
 } from "@/action/gantt.action";
 import { preventImage } from "@/constant/preventimage";
-import { getCurrentUserProfileAction } from "@/action/profile.action";
+import {
+  getCurrentUserProfileAction,
+  getPreviewProfileAction,
+} from "@/action/profile.action";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import NotFound from "@/app/not-found";
@@ -245,6 +248,13 @@ export default async function BoardLayout({ children, params }) {
       console.log("Board belongs to workspace:", matchingWorkspace.title);
     }
     const matchingBoardForNotPM = matchingBoard;
+
+    /**
+     * get board favorite
+     */
+    const getUserDetials = await getPreviewProfileAction();
+    //  console.log("getPreviewProfileAction", getUserDetials);
+    const myUserId = getUserDetials?.payload?.userId;
     return (
       <div>
         <SystemBoard
@@ -268,6 +278,7 @@ export default async function BoardLayout({ children, params }) {
           getWorKSpaceJoined={getWorKSpaceJoined}
           matchingBoardForNotPM={matchingBoardForNotPM}
           currentUserProfile={currentUserProfile}
+          myUserId={myUserId}
         />
         <ToastContainer position="top-right" autoClose={3000} />
         <main>{children}</main>
@@ -293,6 +304,7 @@ export default async function BoardLayout({ children, params }) {
           getWorKSpaceJoined={getWorKSpaceJoined}
           matchingBoardForNotPM={matchingBoardForNotPM}
           currentUserProfile={currentUserProfile}
+          myUserId={myUserId}
         />
         <main>{children}</main>
       </div>
