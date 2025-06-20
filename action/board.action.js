@@ -738,7 +738,7 @@ export const getTaskByTaskIdAction = async (taskId) => {
  *  getGuestUserDisplayKanbanService
  */
 export const getGuestUserDisplayKanbanAction = async (workspaceId, boardId) => {
-  console.log("aaaa: ", workspaceId, boardId);
+  console.log("from guestrole: ", workspaceId, boardId);
 
   const result = await getGuestUserDisplayKanbanService({
     workspaceId,

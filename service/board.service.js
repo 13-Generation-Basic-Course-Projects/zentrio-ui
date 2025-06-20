@@ -1003,13 +1003,7 @@ export const getTaskByTaskIdService = async ({ taskId, token }) => {
     },
   });
 
-  // if (!response.ok) {
-  //   const error = await response.json().catch(() => ({}));
-  //   throw new Error(
-  //     error.message || `Failed to get task by task id: ${response.status}`
-  //   );
-  // }
-
   const data = response.json();
+  console.log("data from guest", data);
   return data;
 };

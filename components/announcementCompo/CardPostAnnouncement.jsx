@@ -12,8 +12,8 @@ export default function CardPostAnnouncement({
   Announcements,
   currentUserProfile,
   boardId,
-  boardMember
-
+  boardMember,
+  preventUserImage
 }) {
   console.log("bottttt", boardId);
   const announcementList = Announcements?.payload || [];
@@ -106,6 +106,8 @@ export default function CardPostAnnouncement({
                     Announcement={announcement}
                     announId={announcement.announcementId}
                     boardId={boardId}
+                    boardMember={boardMember}
+                    preventUserImage={preventUserImage}
                     // onDeleteSuccess={() => handleDeleteSuccess(announcement.id)}
                   />
                   )}
