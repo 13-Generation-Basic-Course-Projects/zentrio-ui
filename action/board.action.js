@@ -29,6 +29,7 @@ import {
   moveTaskOrderService,
   postCommentByCheckListIdService,
   updateCheckListByIdAndTaskIdService,
+  updateGanttBarByGanttBarIdService,
   updateTaskByIdService,
 } from "@/service/board.service";
 import { revalidatePath } from "next/cache";
@@ -745,5 +746,20 @@ export const getGuestUserDisplayKanbanAction = async (workspaceId, boardId) => {
     boardId,
   });
   console.log("getTaskByTaskIdAction result: ", result);
+  return result;
+};
+
+/* add new
+ *  getGuestUserDisplayKanbanService
+ */
+export const updateGanttBarByGanttBarIdAction = async (ganttbarId, data) => {
+  const userToken = await Token();
+  const token = userToken?.Credential;
+  const result = await updateGanttBarByGanttBarIdService(
+    ganttbarId,
+    data,
+    token
+  );
+  console.log("update the chart ", result);
   return result;
 };

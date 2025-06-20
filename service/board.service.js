@@ -1007,3 +1007,25 @@ export const getTaskByTaskIdService = async ({ taskId, token }) => {
   console.log("data from guest", data);
   return data;
 };
+
+/**
+ * guest user
+ */ export const updateGanttBarByGanttBarIdService = async (
+  ganttbarId,
+  data,
+  token
+) => {
+  const url = ganttRouteGroup.updateGanttBar(ganttbarId);
+  console.log("get task url : ", url);
+  const response = await fetch(url, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+      body: JSON.stringify(data),
+    },
+  });
+
+  console.log("data from guest", data);
+  return response.json();
+};
