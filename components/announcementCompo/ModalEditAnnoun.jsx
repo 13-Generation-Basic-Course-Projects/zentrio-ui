@@ -1,6 +1,13 @@
 "use client";
 
-import { Modal, ModalContent, ModalBody, ModalFooter, Button, useDisclosure } from "@heroui/react";
+import {
+  Modal,
+  ModalContent,
+  ModalBody,
+  ModalFooter,
+  Button,
+  useDisclosure,
+} from "@heroui/react";
 import { useState } from "react";
 import { updateAnnouncementByIdAction } from "@/action/announcement.action";
 import Image from "next/image";
@@ -9,20 +16,18 @@ import thumbup from "@/assets/thumbupdynamiccolor.png";
 import logo from "@/public/image/Zentrio-Logo.png";
 import { ArrowRight, Calendar, Users, Zap } from "lucide-react";
 
-export default function ModalEditAnnoun({ title, announId, boardId, boardMember, Announcement, preventUserImage }) {
-
-  
-
+export default function ModalEditAnnoun({
+  title,
+  announId,
+  boardId,
+  boardMember,
+  Announcement,
+  preventUserImage,
+}) {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const [titleState, setTitleState] = useState(Announcement?.title || "");
   const [description, setDescription] = useState(Announcement?.description || "");
   const [loading, setLoading] = useState(false);
-
-  console.log("title",title);
-  console.log("preventUserImage",preventUserImage);
-  console.log("announId",announId);
-  console.log("boardId",boardId);
-  console.log("Announcement",Announcement)
 
   const handleUpdate = async () => {
     if (!titleState || !description) return;
@@ -40,7 +45,6 @@ export default function ModalEditAnnoun({ title, announId, boardId, boardMember,
   const managerMember = boardMember?.find((member) =>
     member.roles?.includes("ROLE_MANAGER")
   );
-  console.log("managerMember",managerMember);
 
   return (
     <>
@@ -51,7 +55,12 @@ export default function ModalEditAnnoun({ title, announId, boardId, boardMember,
         <div className="font-medium text-blue-500">{title}</div>
       </Button>
 
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="5xl">
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        size="5xl"
+        isDismissable={false} // disable click outside & ESC to close
+      >
         <ModalContent className="rounded-3xl bg-white shadow-2xl border-0 overflow-hidden transform transition-all duration-300 scale-100">
           {(onClose) => (
             <form
@@ -61,24 +70,32 @@ export default function ModalEditAnnoun({ title, announId, boardId, boardMember,
               }}
             >
               <div className="flex flex-col lg:flex-row min-h-[600px]">
-                {/* Left side (image and branding) */}
+                {/* Left side */}
                 <div className="w-full lg:w-2/5 relative bg-gradient-to-br from-primary via-primary to-white">
                   <div className="absolute inset-0 bg-white/20 backdrop-blur-md z-0"></div>
                   <Image src={preImage} alt="Pre Image" className="absolute w-full h-auto" />
-                  <Image src={thumbup} alt="Thumb Up" className="absolute bottom-5 left-3 w-full h-auto" />
-                  <Image src={logo} alt="Logo" className="absolute bottom-5 right-5 h-[30px] w-auto object-contain" />
+                  <Image
+                    src={thumbup}
+                    alt="Thumb Up"
+                    className="absolute bottom-5 left-3 w-full h-auto"
+                  />
+                  <Image
+                    src={logo}
+                    alt="Logo"
+                    className="absolute bottom-5 right-5 h-[30px] w-auto object-contain"
+                  />
                   <div className="relative z-10 h-full flex flex-col justify-center p-12 text-white">
                     <div className="inline-flex items-center px-4 py-2 bg-white/20 rounded-full text-sm font-medium mb-6 backdrop-blur-sm">
-                    <Zap className="w-4 h-4 mr-2" />
-                      Work smart with Zentrio<br />
+                      <Zap className="w-4 h-4 mr-2" />
+                      Work smart with Zentrio
+                      <br />
                       젠트리오와 함께 스마트하게 일하세요
                     </div>
                   </div>
                 </div>
 
-                {/* Right side (profile + form) */}
+                {/* Right side */}
                 <div className="w-full lg:w-3/5 flex flex-col">
-                  {/* Profile Section (Top) */}
                   <div className="px-6 py-4 border-b border-gray-100">
                     {managerMember && (
                       <div className="flex items-center space-x-3 p-4 rounded-2xl">
@@ -113,7 +130,6 @@ export default function ModalEditAnnoun({ title, announId, boardId, boardMember,
                     )}
                   </div>
 
-                  {/* Form Fields */}
                   <ModalBody className="flex-1 px-8 py-6 space-y-6">
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-gray-700 flex items-center">
@@ -143,7 +159,6 @@ export default function ModalEditAnnoun({ title, announId, boardId, boardMember,
                     </div>
                   </ModalBody>
 
-                  {/* Footer Buttons */}
                   <ModalFooter className="flex justify-end space-x-3 px-8 py-6 border-t border-gray-100 bg-gray-50/50">
                     <Button
                       type="button"

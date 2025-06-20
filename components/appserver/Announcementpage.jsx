@@ -2,7 +2,6 @@ import React from "react";
 import CartPostAnnouncement from "../announcementCompo/CardPostAnnouncement";
 import CardCreateAnnouncement from "../announcementCompo/CardCreateAnnouncement";
 import CardAllMembers from "../announcementCompo/CardAllMembers";
-import CardFilterComponent from "../announcementCompo/CardFilterComponent";
 import { preventImage } from "@/constant/preventimage";
 import ClockWeather from "../announcementCompo/ClockWheather";
 import Image from "next/image";

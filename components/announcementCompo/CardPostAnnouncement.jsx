@@ -12,8 +12,8 @@ export default function CardPostAnnouncement({
   Announcements,
   currentUserProfile,
   boardId,
-  boardMember
-
+  boardMember,
+  preventUserImage
 }) {
   console.log("bottttt", boardId);
   const announcementList = Announcements?.payload || [];
