@@ -51,7 +51,7 @@ export default function MyworkspaceEmpty() {
   ];
 
   return (
-    <div className="w-full grid grid-cols-12 h-full bg-pink-400">
+    <div className="w-full grid grid-cols-12 h-full">
       {/* board - this one scrolls */}
       <div className="col-span-9 flex flex-col overflow-hidden p-3 min-h-0">
         {/* Feature Showcase Section - Right under Bar */}
@@ -94,6 +94,7 @@ export default function MyworkspaceEmpty() {
         <CardMember data={"null"} />
         <Image 
         src={icon}
+        alt="image icon"
         className="w-25"
         />
       </div>
