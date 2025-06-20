@@ -10,8 +10,12 @@ export async function middleware(req) {
   if (!session?.user) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
-
-  return NextResponse.next();
+  
+  // Optional: Check for basic token presence but don't refresh
+  if (session?.error === "RefreshAccessTokenError") {
+    // Token refresh failed, redirect to login
+    return NextResponse.redirect(new URL("/login", req.url));
+  }
 }
 
 export const config = {
