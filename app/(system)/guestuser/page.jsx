@@ -168,6 +168,7 @@ export default function KanbanBoard({
         feature={"Board"}
         header={boardData?.payload.title || "Hikko Design"}
         modal={modal}
+        workspaceId={workspaceId}
       />
       <StackedUser image={allMemberInBoard} />
       <div className="pt-5 pb-2 grid grid-cols-4 gap-4">

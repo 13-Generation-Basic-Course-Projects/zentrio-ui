@@ -41,7 +41,7 @@ const normalizeDateToDay = (date) => {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate());
 };
 
-export default function MyCalender({ tasks }) {
+export default function MyCalender({ tasks, workspaceId }) {
   const colorList = [
     {
       bg: "bg-red-500",
@@ -298,32 +298,15 @@ export default function MyCalender({ tasks }) {
     tillDateObj.setHours(23, 59, 59, 999);
 
     const selectedDate = new Date(`${endDateStr}T00:00:00.000Z`);
-<<<<<<< HEAD
-=======
-    
->>>>>>> 5d175fdc06107f9a4968342a2ab2bded03e0a408
     const currentDate = new Date();
     currentDate.setHours(0, 0, 0, 0);
 
     // Compare only the date part (not time) for last day check
-<<<<<<< HEAD
     const selectedOnlyDate = new Date(`${endDateStr}T00:00:00.000Z`);
     const endDateOnlyObj = new Date(endDateObj);
     endDateOnlyObj.setHours(0, 0, 0, 0);
     console.log("selectedDateeeeeeeeeeeeeeee: ", selectedDate);
     console.log("EndDateOnlyObjeeeeeeeeeeeeeee: ", endDateOnlyObj);
-=======
-    // const selectedOnlyDate = new Date(`${endDateStr}T00:00:00.000Z`);
-    // selectedOnlyDate.setHours(0, 0, 0, 0);
-    // const endDateOnlyObj = new Date(endDateObj);
-    // endDateOnlyObj.setHours(0, 0, 0, 0);
-    // console.log("selectedDateeeeeeeeeeeeeeee: ", selectedDate);
-    // console.log("EndDateOnlyObjeeeeeeeeeeeeeee: ",endDateOnlyObj);
-    // if(selectedOnlyDate.getTime() === endDateOnlyObj.getTime()){
-    //   toast.error("cant not",{autoClose:2000});
-    // }
-  
->>>>>>> 5d175fdc06107f9a4968342a2ab2bded03e0a408
 
     const formattedStartDate = startDateObj.toISOString();
     const formattedTillDate = tillDateObj.toISOString();
@@ -565,11 +548,9 @@ export default function MyCalender({ tasks }) {
     );
   };
 
-
-
   return (
     <div className="p-4 h-screen flex flex-col overflow-hidden relative">
-      <BredCrum board="Hikko Design" feature="Calender" header="Calender" />
+      <BredCrum board="Hikko Design" feature="Calender" header="Calender" workspaceId={workspaceId}/>
 
       {/* Main content grid */}
       <div className="flex flex-1 overflow-hidden scrollbar-hidden gap-4">
@@ -677,7 +658,6 @@ export default function MyCalender({ tasks }) {
 
             return (
               <div className="absolute z-50 w-[50%] bottom-32 left-0 right-36 mx-auto">
-              
                 <input
                   type="text"
                   value={noteValue}
@@ -697,7 +677,6 @@ export default function MyCalender({ tasks }) {
                   className="w-full px-3 py-2 text-body-sm border border-gray-300 rounded-medium outline-none text-sm focus:ring-2 focus:ring-primary"
                   disabled={isLoading}
                 />
-                
               </div>
             );
           })()}

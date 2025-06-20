@@ -11,6 +11,7 @@ export default function Privatedocument({
   documents,
   tokenFromGoogle,
   isHidden,
+  workspaceId,
 }) {
   const data = documents || { payload: [] };
 
@@ -90,6 +91,7 @@ export default function Privatedocument({
           feature={"Document"}
           header={"Document"}
           modal={modal}
+          workspaceId={workspaceId}
         />
         <div className="flex items-center justify-between pb-5">
           <div className="flex flex-row items-end gap-4 mb-4">

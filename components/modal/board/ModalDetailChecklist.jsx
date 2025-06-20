@@ -690,12 +690,8 @@ const ModalDetailChecklist = ({
     checklistId,
     isOpen
   );
-  const [previewImage, setPreviewImage] = useState(
-    image || preventImage.noChecklistImage
-  );
-  const fileInputRef = useRef(null);
-  const MAX_FILE_SIZE = 5 * 1024 * 1024;
-  const router = useRouter();
+ 
+ 
 
   const {
     taskData,
@@ -796,6 +792,10 @@ const ModalDetailChecklist = ({
     [state.comments]
   );
 
+  const fileInputRef = useRef(null);
+  const MAX_FILE_SIZE = 5 * 1024 * 1024;
+  const router = useRouter();
+  const [previewImage, setPreviewImage] = useState();
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
     if (file) {

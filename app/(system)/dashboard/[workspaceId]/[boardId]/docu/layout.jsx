@@ -11,6 +11,7 @@ import { Token } from "@/constant/token";
 export default async function BoardLayout({ children, params }) {
   const session = await auth();
   const boardId = params?.boardId;
+  const workspaceId = (await params).workspaceId;
 
   const getDocuments = await getDocumentsByBoardAction(boardId);
   const publicDocuments = await getPublicDocumentsByBoardAction(boardId);
@@ -43,6 +44,7 @@ export default async function BoardLayout({ children, params }) {
         boardId={boardId}
         tokenFromGoogle={tokenFromGoogle}
         preventUserImage={preventUserImage}
+        workspaceId={workspaceId}
       />
       <div>{children}</div>
     </div>

@@ -263,6 +263,7 @@ export default function SystemBoard({
           boardData={boardData}
           ganttbar={ganttbar}
           boardId={boardId}
+          workspaceId={workspaceId}
         />
       ),
     },
@@ -360,6 +361,7 @@ export default function SystemBoard({
           ganttChartName={ganttChartName}
           boardId={boardId}
           ganttChartId={ganttChartId}
+          workspaceId={workspaceId}
         />
       ),
     },

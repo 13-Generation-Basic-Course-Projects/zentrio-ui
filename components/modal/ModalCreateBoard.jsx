@@ -98,8 +98,7 @@ export default function ModalCreateBoard({ Workspaceid }) {
           cover: selectedOption,
           workspaceId: Workspaceid,
         });
-        console.log("Boarddddddddddddddd: ", board);
-        setCreatedBoardId(board);
+     
       } else {
         board = await createBoardAction({
           title: data.title,
