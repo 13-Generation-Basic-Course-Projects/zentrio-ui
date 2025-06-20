@@ -731,7 +731,9 @@ export default function KanbanBoard({
                                     ) : null
                                   )}
                                 </div>
-                                <div className="flex justify-end items-center">
+                                {/* consider */}
+
+                                <div className="flex justify-end items-center hidden">
                                   <button
                                     onClick={() =>
                                       handleStatusChange(
@@ -793,22 +795,26 @@ export default function KanbanBoard({
                                     )}
                                   </button>
                                 </div>
-                                <ModalOptionTask
-                                  role={role}
-                                  key={"apple"}
-                                  allMemberInBoard={allMemberInBoard}
-                                  taskId={card.id}
-                                  boardId={
-                                    boardData?.payload?.boardId || boardId
-                                  }
-                                  ganttbarData={ganttbar}
-                                  tasks={tasks}
-                                  stage={
-                                    tasks.find(
-                                      (task) => task.taskId === card.id
-                                    )?.stage || "TO_DO"
-                                  }
-                                />
+                                {role == "ROLE_MEMBER" ? (
+                                  ""
+                                ) : (
+                                  <ModalOptionTask
+                                    role={role}
+                                    key={"apple"}
+                                    allMemberInBoard={allMemberInBoard}
+                                    taskId={card.id}
+                                    boardId={
+                                      boardData?.payload?.boardId || boardId
+                                    }
+                                    ganttbarData={ganttbar}
+                                    tasks={tasks}
+                                    stage={
+                                      tasks.find(
+                                        (task) => task.taskId === card.id
+                                      )?.stage || "TO_DO"
+                                    }
+                                  />
+                                )}
                               </div>
                             </div>
                             <div className="flex items-center justify-between text-xs text-gray-500 mt-2">
@@ -962,18 +968,22 @@ export default function KanbanBoard({
                                   <div
                                     className={`col-span-8 flex items-center`}
                                   >
-                                    <ModalCreateChecklist
-                                      buttonText="New checklist"
-                                      modalTitle="Create Checklist"
-                                      taskid={card.id}
-                                      startedAt={card.startedAt}
-                                      finishedAt={card.finishedAt}
-                                      stage={
-                                        tasks.find(
-                                          (task) => task.taskId === card.id
-                                        )?.stage || "TO_DO"
-                                      }
-                                    />
+                                    {role == "ROLE_MEMBER" ? (
+                                      ""
+                                    ) : (
+                                      <ModalCreateChecklist
+                                        buttonText="New checklist"
+                                        modalTitle="Create Checklist"
+                                        taskid={card.id}
+                                        startedAt={card.startedAt}
+                                        finishedAt={card.finishedAt}
+                                        stage={
+                                          tasks.find(
+                                            (task) => task.taskId === card.id
+                                          )?.stage || "TO_DO"
+                                        }
+                                      />
+                                    )}
                                   </div>
                                   <div className="col-span-4 p-2">
                                     <CardDateChecklist
@@ -991,7 +1001,8 @@ export default function KanbanBoard({
                             </div>
                           )}
                         </div>
-                        <div className="flex items-center justify-center">
+
+                        <div className="flex items-center justify-center ">
                           <button
                             onClick={() => toggleTaskExpansion(card.id)}
                             className="text-gray-400 hover:text-gray-600 p-1 rounded hover:bg-gray-100"

@@ -716,49 +716,53 @@ const ModalDetailChecklist = ({
 
   return (
     <div>
-      <div className="relative flex justify-end items-center">
-        <button
-          onClick={handleStatusChange}
-          className="absolute top-5 right-5 p-2 rounded-full transition-colors z-20 focus:outline-none"
-          title={
-            state.currentStatus === "DONE"
-              ? "Mark as In Progress"
-              : "Mark as Done"
-          }
-          disabled={loading}
-        >
-          {state.currentStatus === "DONE" ? (
-            <svg
-              viewBox="0 0 24 24"
-              width="24"
-              height="24"
-              fill="#10B981"
-              stroke="black"
-              strokeWidth="1"
-            >
-              <path
-                fillRule="evenodd"
-                clipRule="evenodd"
-                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
-              />
-            </svg>
-          ) : (
-            <svg
-              viewBox="0 0 24 24"
-              fill="#9ca3af"
-              width="24"
-              height="24"
-              className="hover:fill-green-500 transition-colors"
-            >
-              <path
-                fillRule="evenodd"
-                clipRule="evenodd"
-                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
-              />
-            </svg>
-          )}
-        </button>
-      </div>
+      {role == "ROLE_MEMBER" || role == "ROLE_MANAGER" ? (
+        ""
+      ) : (
+        <div className="relative flex justify-end items-center">
+          <button
+            onClick={handleStatusChange}
+            className="absolute top-5 right-5 p-2 rounded-full transition-colors z-20 focus:outline-none"
+            title={
+              state.currentStatus === "DONE"
+                ? "Mark as In Progress"
+                : "Mark as Done"
+            }
+            disabled={loading}
+          >
+            {state.currentStatus === "DONE" ? (
+              <svg
+                viewBox="0 0 24 24"
+                width="24"
+                height="24"
+                fill="#10B981"
+                stroke="black"
+                strokeWidth="1"
+              >
+                <path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+                />
+              </svg>
+            ) : (
+              <svg
+                viewBox="0 0 24 24"
+                fill="#9ca3af"
+                width="24"
+                height="24"
+                className="hover:fill-green-500 transition-colors"
+              >
+                <path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+                />
+              </svg>
+            )}
+          </button>
+        </div>
+      )}
       <Button
         onPress={onOpen}
         className="h-full w-full p-0"
@@ -943,6 +947,7 @@ const ModalDetailChecklist = ({
                       allMemberChecklist={allMemberInBoard}
                       leaderId={leaderId}
                       checklistId={checklistId}
+                      role={role}
                     />
                     <div className="max-w-[400px] w-full flex flex-row gap-4">
                       <DateRangePicker
