@@ -211,13 +211,20 @@ export function ModalAssignMemberToCheckLisk({
                         });
                       }}
                     >
-                      {allMemberInBoard.map((member) => (
+                      {allMemberInBoard?.map((member) => (
                         <SelectItem
                           key={member.userId}
                           value={member.userId}
                           textValue={member.username}
                         >
-                          <div className="flex items-center gap-2">
+                          <div
+                            className={`flex items-center gap-2 ${
+                              member.userId === leaderId ||
+                              member.roles?.includes("ROLE_MANAGER")
+                                ? `hidden`
+                                : ``
+                            }`}
+                          >
                             <img
                               src={member.profileImage || preventPf}
                               alt={member.username}

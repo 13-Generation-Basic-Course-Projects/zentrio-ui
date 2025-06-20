@@ -13,4 +13,7 @@ export const taskRouteGroup = {
   //delete
   deleteTaskByTaskId: (taskId, boardId, ganttBarId) =>
     `${apiConfig.baseUrl}/tasks/${taskId}/boards/${boardId}/gantt-bars/${ganttBarId}`, //Deleted task by ID with boards ID and gantt bars ID
+
+  /* //add new */
+  getTaskByTaskId: (taskId) => `${apiConfig.baseUrl}/tasks/${taskId}`, //get task by task id
 };

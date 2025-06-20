@@ -20,6 +20,7 @@ import {
   updateBoardByIdService,
   updateFavBoardByIdService,
   updateWorkspaceByIdService,
+  uploadBoardCoverService,
 } from "@/service/workspace.service";
 import { revalidatePath } from "next/cache";
 
@@ -53,7 +54,7 @@ export const createWorkspaceAction = async (payload = {}) => {
 export const getAllWorkspaceAction = async () => {
   const userToken = await Token();
   const token = userToken.Credential;
-  console.log("wwwwwwww", token)
+  console.log("wwwwwwww", token);
   const result = await getAllWorkspacesService({ token });
 
   return result;
@@ -286,7 +287,6 @@ export const getOtherWorkSpaceJoinedAction = async () => {
   return result;
 };
 
-
 /* new
  * get member by board id
  */
@@ -294,23 +294,32 @@ export const getOtherWorkSpaceJoinedAction = async () => {
 export const getMemberByBoardIdAction = async (boardId) => {
   const userToken = await Token();
   const token = userToken.Credential;
-  const result = await getMemberByBoardIdService({boardId,token});
+  const result = await getMemberByBoardIdService({ boardId, token });
   console.log("Get member in action : ", result);
   return result;
 };
 
-
-
-export const uploadImageBoardAction = async ({boardId,image}) => {
-    
-    console.log("kakakak", image)
-    const userToken = await Token();
-    const token = userToken.Credential;
-    console.log("token", token)
-    const result = await uploadImageBoardService({
-        boardId,
-        image,
-        token,
-    });
-    return result;
+export const uploadImageBoardAction = async ({ boardId, image }) => {
+  console.log("kakakak", image);
+  const userToken = await Token();
+  const token = userToken.Credential;
+  console.log("token", token);
+  const result = await uploadImageBoardService({
+    boardId,
+    image,
+    token,
+  });
+  return result;
+};
+/*
+ * 7. Upload cover by board id
+ */
+export const uploadBoardCoverAction = async (boardId, file) => {
+  console.log("upload boardId in action : ", boardId);
+  console.log("upload file in action : ", file);
+  const userToken = await Token();
+  const token = userToken.Credential;
+  const result = await uploadBoardCoverService({ boardId, file, token });
+  console.log("upload cover in action : ", result);
+  return result;
 };

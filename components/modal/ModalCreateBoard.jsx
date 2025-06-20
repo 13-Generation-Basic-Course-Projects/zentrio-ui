@@ -14,7 +14,10 @@ import {
 import { createBoardSchema } from "@/lib/schemas/workspaceSchema";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createBoardAction, uploadImageBoardAction } from "@/action/workspace.action";
+import {
+  createBoardAction,
+  uploadImageBoardAction,
+} from "@/action/workspace.action";
 
 const svgIconInput = encodeURIComponent(`
   <svg width="20" height="22" viewBox="0 0 20 22" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -83,12 +86,11 @@ export default function ModalCreateBoard({ Workspaceid }) {
     }
   };
 
-
   const onSubmit = async (data) => {
-    let board = null;  // declare outside try
+    let board = null; // declare outside try
 
     try {
-       if (selectedOption) {
+      if (selectedOption) {
         board = await createBoardAction({
           title: data.title,
           description: data.description || "",
@@ -98,7 +100,7 @@ export default function ModalCreateBoard({ Workspaceid }) {
         console.log("Boarddddddddddddddd: ", board);
         setCreatedBoardId(board);
       } else {
-         board = await createBoardAction({
+        board = await createBoardAction({
           title: data.title,
           description: data.description || "",
           cover: "",
@@ -106,13 +108,13 @@ export default function ModalCreateBoard({ Workspaceid }) {
         });
 
         const image = fileInputRef.current?.files?.[0];
-        console.log("cccccc", image)
-      if (!image) {
-        console.warn("⚠️ No file selected!");
-        return;
-      }
+        console.log("cccccc", image);
+        if (!image) {
+          console.warn("⚠️ No file selected!");
+          return;
+        }
 
-        await uploadImageBoardAction({boardId:board?.boardId ,image })
+        await uploadImageBoardAction({ boardId: board?.boardId, image });
         console.warn("⚠️ No image or color selected.");
         return;
       }
@@ -134,24 +136,27 @@ export default function ModalCreateBoard({ Workspaceid }) {
 
     if (boardId) {
       console.log("Board ID:", boardId);
-
     } else {
       console.warn("Board created but no ID found!");
     }
   };
 
-
-
   return (
     <>
-      <Button onPress={onOpen} className="bg-transparent h-[340px] !p-0" fullWidth>
+      <Button
+        onPress={onOpen}
+        className="bg-transparent h-[340px] !p-0"
+        fullWidth
+      >
         <Card className="bg-transparent w-full h-full shadow-none border-none">
           <div className="flex items-center justify-center h-full bg-transparent">
             <div className="flex flex-col items-center justify-center border-2 border-dashed border-blue-400 rounded-xl h-full w-full text-center text-blue-400 cursor-pointer hover:bg-blue-50 transition">
               <div className="flex items-center justify-center w-14 h-14 text-h1 text-primary border-2 border-dashed border-primary rounded-full leading-none">
                 +
               </div>
-              <div className="text-primary mt-2 font-medium">Create New Board</div>
+              <div className="text-primary mt-2 font-medium">
+                Create New Board
+              </div>
             </div>
           </div>
         </Card>
@@ -159,7 +164,9 @@ export default function ModalCreateBoard({ Workspaceid }) {
 
       <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="xl">
         <ModalContent className="max-h-[90vh] overflow-y-auto scrollbar-hidden">
-          <ModalHeader className="flex flex-col gap-1">Create new Board</ModalHeader>
+          <ModalHeader className="flex flex-col gap-1">
+            Create new Board
+          </ModalHeader>
           <div className="border-1 mt-2 mb-4 border-bgColor"></div>
           <ModalBody>
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -203,15 +210,20 @@ export default function ModalCreateBoard({ Workspaceid }) {
                     >
                       {selectedOption && (
                         <div
-                          className={`w-4 h-4 rounded-full ${colorOptions.find((color) => color.key === selectedOption)?.className || ""
-                            }`}
+                          className={`w-4 h-4 rounded-full ${
+                            colorOptions.find(
+                              (color) => color.key === selectedOption
+                            )?.className || ""
+                          }`}
                         />
                       )}
 
                       <div className="flex flex-col items-start">
                         <p className="text-caption-tiny text-title/50">
                           {selectedOption
-                            ? colorOptions.find((color) => color.key === selectedOption)?.label || selectedOption
+                            ? colorOptions.find(
+                                (color) => color.key === selectedOption
+                              )?.label || selectedOption
                             : selectedFileName || "Select Cover"}
                         </p>
                       </div>
@@ -288,7 +300,12 @@ export default function ModalCreateBoard({ Workspaceid }) {
                               fill="none"
                               xmlns="http://www.w3.org/2000/svg"
                             >
-                              <rect width="24" height="24" rx="12" fill="#59BAD5" />
+                              <rect
+                                width="24"
+                                height="24"
+                                rx="12"
+                                fill="#59BAD5"
+                              />
                             </svg>
                           </button>
 
@@ -301,7 +318,9 @@ export default function ModalCreateBoard({ Workspaceid }) {
                                   className="flex items-center gap-2 py-1 px-2 w-full text-left hover:bg-gray-100 rounded"
                                   type="button"
                                 >
-                                  <div className={`w-4 h-4 rounded-full ${color.className}`} />
+                                  <div
+                                    className={`w-4 h-4 rounded-full ${color.className}`}
+                                  />
                                   <span>{color.label}</span>
                                 </button>
                               ))}

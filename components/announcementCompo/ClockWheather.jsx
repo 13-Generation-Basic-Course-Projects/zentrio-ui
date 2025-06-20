@@ -206,8 +206,4 @@ export default function ClockWeather() {
       </div>
     </div>
   );
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 1dfc7bacdbf209490e7546ac55fe7a9920e92f68

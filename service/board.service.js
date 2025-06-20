@@ -897,7 +897,7 @@ export const updateCheckListByIdAndTaskIdService = async (
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));
-    console.error("Backend error response: ", error);
+    console.error("Backend error response update checklist: ", error);
     if (response.status === 401 || response.status === 403) {
       throw new Error("Authentication required or token is invalid");
     }
@@ -933,4 +933,56 @@ export const uploadImageBoardService = async ({ boardId, image, token }) => {
 
   const data = await res.json();
   return data;
+};
+
+/* add new
+ *  delete comment in checklist
+ */
+export const deleteCommentBycmtIdService = async ({ commentId, token }) => {
+  console.log("delete service comment id delete: ", commentId);
+
+  const url = checklistRouteGroup.deleteCommentBycmtId(commentId);
+  console.log("Delete url : ", url);
+
+  const response = await fetch(url, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    throw new Error(
+      error.message || `Failed to delete comment: ${response.status}`
+    );
+  }
+
+  return response.json();
+};
+
+/* //add new
+ * task by task id
+ */
+export const getTaskByTaskIdService = async ({ taskId, token }) => {
+  console.log("taskId getTaskByTaskIdService: ", taskId);
+
+  const url = taskRouteGroup.getTaskByTaskId(taskId);
+  console.log("get task url : ", url);
+
+  const response = await fetch(url, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    throw new Error(
+      error.message || `Failed to get task by task id: ${response.status}`
+    );
+  }
+
+  return response.json();
 };

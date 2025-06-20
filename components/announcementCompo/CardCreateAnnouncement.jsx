@@ -38,7 +38,7 @@ export default function CardCreateAnnouncement({
                   <h3 className="text-sm font-semibold">New Announcement</h3>
                 </div>
               </div>
-              
+
               {/* Compact stats */}
               <div className="flex items-center space-x-3 text-white/90 text-xs">
                 <span>{Announcements?.length || 0} posts</span>
@@ -79,8 +79,6 @@ export default function CardCreateAnnouncement({
                 </div>
               </div>
             </div>
-<<<<<<< HEAD
-=======
 
             {/* Enhanced Action Buttons */}
             {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -116,7 +114,6 @@ export default function CardCreateAnnouncement({
                 );
               })}
             </div> */}
->>>>>>> 1dfc7bacdbf209490e7546ac55fe7a9920e92f68
           </div>
 
           {isModalOpen && (

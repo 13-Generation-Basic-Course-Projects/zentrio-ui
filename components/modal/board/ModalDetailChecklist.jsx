@@ -712,6 +712,7 @@ const ModalDetailChecklist = ({
       }
     };
   }, [previewImage]);
+  console.log("all the user in this board", allMemberInBoard);
 
   return (
     <div>
@@ -933,12 +934,13 @@ const ModalDetailChecklist = ({
                       taskId={taskId}
                     />
                   </div>
+
                   <div className="flex flex-wrap justify-between items-center mt-5">
                     <StackedProfileChecklist
                       member={member || []}
                       preventUserImage={preventUserImage}
                       taskId={taskId}
-                      allMemberChecklist={allMemberInBoard || []}
+                      allMemberChecklist={allMemberInBoard}
                       leaderId={leaderId}
                       checklistId={checklistId}
                     />

@@ -11,6 +11,7 @@ import {
   createGanttChartByBoardIdService,
   createTaskByBoardIdAndGanttChartIdService,
   deleteCheckListByTaskIdService,
+  deleteCommentBycmtIdService,
   deleteMemberService,
   deleteTaskService,
   editCommmentService,
@@ -22,6 +23,7 @@ import {
   getMemberByBoardIdService,
   getTaskByBoardIdAndGanttBarIdService,
   getTaskByBoardIdService,
+  getTaskByTaskIdService,
   inviteMemberToBoardService,
   moveTaskOrderService,
   postCommentByCheckListIdService,
@@ -689,9 +691,45 @@ export const updateCheckListByIdAndTaskIdAction = async (
     startedAt,
     finishedAt,
     taskId,
-    token,
+    token
   );
 
   revalidatePath("/member");
+  console.log("Update checklist in action: ", result);
+  return result;
+};
+
+/* add new
+ *  delete comment in checklist
+ */
+export const deleteCommentBycmtIdAction = async (commentId) => {
+  console.log("delete action comment id delete: ", commentId);
+
+  const userToken = await Token();
+  const token = userToken?.Credential;
+  const result = await deleteCommentBycmtIdService({
+    commentId,
+    token,
+  });
+  revalidatePath("/member");
+  console.log("deleteCommentBycmtIdAction result: ", result);
+  return result;
+};
+
+
+/* add new
+ *  task by task id 
+ */
+export const getTaskByTaskIdAction = async (taskId) => {
+  console.log("taskId getTaskByTaskIdAction: ", taskId);
+
+  const userToken = await Token();
+  const token = userToken?.Credential;
+  const result = await getTaskByTaskIdService({
+    taskId,
+    token,
+  });
+  revalidatePath("/member");
+  console.log("getTaskByTaskIdAction result: ", result);
   return result;
 };
