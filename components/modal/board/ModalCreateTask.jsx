@@ -31,6 +31,7 @@ export default function ModalCreateTask({
   ganttbar,
   allMemberInBoard,
   setActiveTab,
+  userId,
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [apiError, setApiError] = useState(null);
@@ -58,6 +59,13 @@ export default function ModalCreateTask({
     (bar) => bar.ganttBarId === ganttBarId
   );
 
+  // Check if current user is a manager
+  const currentUser = allMemberInBoard?.find(
+    (member) => member.userId === userId
+  );
+  const isCurrentUserManager =
+    currentUser?.roles?.includes("ROLE_MANAGER") || false;
+
   // Prepare member options for autocomplete (exclude managers)
   const memberOptions = useMemo(() => {
     if (!allMemberInBoard || !Array.isArray(allMemberInBoard)) {
@@ -75,6 +83,10 @@ export default function ModalCreateTask({
         roles: member.roles,
       }));
   }, [allMemberInBoard]);
+
+  console.log("Current User:", currentUser);
+  console.log("Is Current User Manager:", isCurrentUserManager);
+  console.log("allMemberInBoard", allMemberInBoard);
 
   const onSubmit = async (data) => {
     try {
@@ -312,114 +324,119 @@ export default function ModalCreateTask({
                     />
                   </div>
 
-                  <div>
-                    <label className="text-label font-medium block mb-2">
-                      Assign team leader
-                    </label>
-                    <Controller
-                      name="teamLeader"
-                      control={control}
-                      render={({ field }) => (
-                        <Autocomplete
-                          placeholder="Type to search members..."
-                          startContent={
-                            <span className="text-2xl p-1 border-r-1 border-gray-400 text-default-400 pointer-events-none flex-shrink-0">
-                              @
-                            </span>
-                          }
-                          selectedKey={field.value || ""}
-                          onSelectionChange={(key) => field.onChange(key || "")} // Set userId
-                          onInputChange={() => {}} // Prevent manual input
-                          inputValue={
-                            memberOptions.find((m) => m.key === field.value)
-                              ?.label || ""
-                          } // Display username
-                          isInvalid={!!errors.teamLeader}
-                          errorMessage={errors.teamLeader?.message}
-                          allowsCustomValue={false} // Prevent custom input
-                          items={memberOptions}
-                          classNames={{
-                            base: "w-full",
-                            listboxWrapper: "max-h-[200px]",
-                            popoverContent:
-                              "bg-white border border-gray-300 shadow-lg rounded-large pb-[50px]",
-                            endContentWrapper: "hidden",
-                            clearButton: "hidden",
-                            selectorButton: "hidden",
-                          }}
-                          inputProps={{
-                            classNames: {
-                              inputWrapper: `
-                                bg-white 
-                                border
-                                border-gray-300
-                                shadow-none         
-                                focus:shadow-none  
-                                focus:outline-none
-                                focus:ring-0       
-                                focus-within:shadow-none
-                                focus-within:ring-0 
-                                rounded-small
-                                transition-all 
-                                hover:bg-white 
-                                py-6
-                                ${errors.teamLeader ? "border-red-500" : ""}
-                              `,
-                              input: "text-black",
-                            },
-                          }}
-                        >
-                          {memberOptions.map((member) => (
-                            <AutocompleteItem
-                              key={member.key}
-                              value={member.key} // Use userId
-                              textValue={member.label} // Display username
-                              className="hover:bg-gray-50"
-                            >
-                              <div className="flex items-center gap-2 py-1">
-                                {member.profileImage ? (
-                                  <img
-                                    src={member.profileImage}
-                                    alt={member.label}
-                                    className="w-8 h-8 rounded-full object-cover"
-                                  />
-                                ) : (
-                                  <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 text-sm font-medium">
-                                    {member.label.charAt(0).toUpperCase()}
-                                  </div>
-                                )}
-                                <div className="flex gap-2 items-center justify-between w-full">
-                                  <div className="flex gap-2 items-center">
-                                    <span className="text-xs text-gray-500">
-                                      {member.email}
-                                    </span>
-                                    <span className="text-sm font-medium text-gray-900">
-                                      {member.label}
-                                    </span>
-                                  </div>
-                                  <div>
-                                    {member.roles &&
-                                      member.roles.length > 0 && (
-                                        <div className="flex gap-1 mt-1">
-                                          {member.roles.map((role, index) => (
-                                            <span
-                                              key={index}
-                                              className="text-xs px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full"
-                                            >
-                                              {role.replace("ROLE_", "")}
-                                            </span>
-                                          ))}
-                                        </div>
-                                      )}
+                  {/* Show assign team leader section only if current user is a manager */}
+                  {isCurrentUserManager && (
+                    <div>
+                      <label className="text-label font-medium block mb-2">
+                        Assign team leader
+                      </label>
+                      <Controller
+                        name="teamLeader"
+                        control={control}
+                        render={({ field }) => (
+                          <Autocomplete
+                            placeholder="Type to search members..."
+                            startContent={
+                              <span className="text-2xl p-1 border-r-1 border-gray-400 text-default-400 pointer-events-none flex-shrink-0">
+                                @
+                              </span>
+                            }
+                            selectedKey={field.value || ""}
+                            onSelectionChange={(key) =>
+                              field.onChange(key || "")
+                            } // Set userId
+                            onInputChange={() => {}} // Prevent manual input
+                            inputValue={
+                              memberOptions.find((m) => m.key === field.value)
+                                ?.label || ""
+                            } // Display username
+                            isInvalid={!!errors.teamLeader}
+                            errorMessage={errors.teamLeader?.message}
+                            allowsCustomValue={false} // Prevent custom input
+                            items={memberOptions}
+                            classNames={{
+                              base: "w-full",
+                              listboxWrapper: "max-h-[200px]",
+                              popoverContent:
+                                "bg-white border border-gray-300 shadow-lg rounded-large pb-[50px]",
+                              endContentWrapper: "hidden",
+                              clearButton: "hidden",
+                              selectorButton: "hidden",
+                            }}
+                            inputProps={{
+                              classNames: {
+                                inputWrapper: `
+                                  bg-white 
+                                  border
+                                  border-gray-300
+                                  shadow-none         
+                                  focus:shadow-none  
+                                  focus:outline-none
+                                  focus:ring-0       
+                                  focus-within:shadow-none
+                                  focus-within:ring-0 
+                                  rounded-small
+                                  transition-all 
+                                  hover:bg-white 
+                                  py-6
+                                  ${errors.teamLeader ? "border-red-500" : ""}
+                                `,
+                                input: "text-black",
+                              },
+                            }}
+                          >
+                            {memberOptions.map((member) => (
+                              <AutocompleteItem
+                                key={member.key}
+                                value={member.key} // Use userId
+                                textValue={member.label} // Display username
+                                className="hover:bg-gray-50"
+                              >
+                                <div className="flex items-center gap-2 py-1">
+                                  {member.profileImage ? (
+                                    <img
+                                      src={member.profileImage}
+                                      alt={member.label}
+                                      className="w-8 h-8 rounded-full object-cover"
+                                    />
+                                  ) : (
+                                    <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 text-sm font-medium">
+                                      {member.label.charAt(0).toUpperCase()}
+                                    </div>
+                                  )}
+                                  <div className="flex gap-2 items-center justify-between w-full">
+                                    <div className="flex gap-2 items-center">
+                                      <span className="text-xs text-gray-500">
+                                        {member.email}
+                                      </span>
+                                      <span className="text-sm font-medium text-gray-900">
+                                        {member.label}
+                                      </span>
+                                    </div>
+                                    <div>
+                                      {member.roles &&
+                                        member.roles.length > 0 && (
+                                          <div className="flex gap-1 mt-1">
+                                            {member.roles.map((role, index) => (
+                                              <span
+                                                key={index}
+                                                className="text-xs px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full"
+                                              >
+                                                {role.replace("ROLE_", "")}
+                                              </span>
+                                            ))}
+                                          </div>
+                                        )}
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
-                            </AutocompleteItem>
-                          ))}
-                        </Autocomplete>
-                      )}
-                    />
-                  </div>
+                              </AutocompleteItem>
+                            ))}
+                          </Autocomplete>
+                        )}
+                      />
+                    </div>
+                  )}
 
                   <div>
                     <label className="text-label font-medium">
