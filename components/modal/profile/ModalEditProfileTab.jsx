@@ -352,7 +352,7 @@ export function ModalEditProfile({ currentUserProfile }) {
                     {/* POSITION */}
                     <div>
                       <label className="text-label font-medium flex items-center gap-x-2 mb-2">
-                        <IconJob strokeWidth={1} size={4} />
+                        <IconJob strokeWidth={1} size={4}/>
                         Position <span className="text-red-500">*</span>
                       </label>
                       <Input
@@ -370,7 +370,7 @@ export function ModalEditProfile({ currentUserProfile }) {
                     {/* LOCATION */}
                     <div>
                       <label className="text-label font-medium flex items-center gap-x-2 mb-2">
-                        <IconMap strokeWidth={1} size={4} />
+                          <IconMap strokeWidth={1} size={4} color={"currentColor"} />{" "}
                         Location <span className="text-red-500">*</span>
                       </label>
                       <Input
