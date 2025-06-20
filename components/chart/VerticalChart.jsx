@@ -126,11 +126,7 @@ export default function VerticalChart({ report }) {
                 </svg>
                 <p className="pl-[7.5%] text-[9px]">To Do</p>
               </div>
-              {weeklyClick ? (
-                <p className="w-[40%] text-right text-[9px]">{task.todo}</p>
-              ) : (
-                <p className="w-[40%] text-right text-[9px]">0</p>
-              )}
+              <p className="w-[40%] text-right text-[9px]">{task.todo}</p>
             </div>
             { }
 
@@ -154,11 +150,7 @@ export default function VerticalChart({ report }) {
                 </svg>
                 <p className="pl-[7.5%] text-[9px]">In Progress</p>
               </div>
-              {weeklyClick ? (
-                <p className="w-[40%] text-right text-[9px]">{task.progress}</p>
-              ) : (
-                <p className="w-[40%] text-right text-[9px]">0</p>
-              )}
+              <p className="w-[40%] text-right text-[9px]">{task.progress}</p>
             </div>
             { }
 
@@ -182,11 +174,7 @@ export default function VerticalChart({ report }) {
                 </svg>
                 <p className="pl-[7.5%] text-[9px]">Under Review</p>
               </div>
-              {weeklyClick ? (
-                <p className="w-[40%] text-right text-[9px]">{task.review}</p>
-              ) : (
-                <p className="w-[40%] text-right text-[9px]">0</p>
-              )}
+              <p className="w-[40%] text-right text-[9px]">{task.review}</p>
             </div>
             { }
 
@@ -210,11 +198,7 @@ export default function VerticalChart({ report }) {
                 </svg>
                 <p className="pl-[7.5%] text-[9px]">Done</p>
               </div>
-              {weeklyClick ? (
-                <p className="w-[40%] text-right text-[9px]">{task.done}</p>
-              ) : (
-                <p className="w-[40%] text-right text-[9px]">0</p>
-              )}
+              <p className="w-[40%] text-right text-[9px]">{task.done}</p>
             </div>
             { }
           </div>
@@ -255,12 +239,6 @@ export const MonthlyChart = ({ report }) => {
       }
 
       group.tasks.forEach((task) => {
-        if (!task.finishedAt) {
-          // Optional: log once per missing finishedAt?
-          // console.warn(`Task missing finishedAt:`, task);
-          return; // skip task without finishedAt
-        }
-
         const date = new Date(task.finishedAt);
         if (isNaN(date)) {
           console.warn(`Invalid finishedAt date: "${task.finishedAt}"`);
@@ -370,7 +348,6 @@ export const MonthlyChart = ({ report }) => {
     </div>
   );
 };
-
 
 export const WeeklyChart = ({ report }) => {
   const canvasRef = useRef(null);
