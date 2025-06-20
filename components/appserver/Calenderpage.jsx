@@ -286,7 +286,6 @@ export default function MyCalender({ tasks }) {
   ) => {
     const trimmedNoteValue = currentNoteValue.trim();
 
-    // Early exit if nothing is added or changed
     if (!trimmedNoteValue && !initialNoteValue) return;
 
     const isNewNote = !initialNoteValue && trimmedNoteValue;
@@ -297,30 +296,19 @@ export default function MyCalender({ tasks }) {
     const startDateObj = new Date(`${startDateStr}T00:00:00.000Z`);
     const endDateObj = new Date(`${endDateStr}T00:00:00.000Z`);
 
-    // Set tillDate to 23:59:59.999 of end day
     const tillDateObj = new Date(endDateObj);
     tillDateObj.setHours(23, 59, 59, 999);
-    // const tillDateObj = new Date(endDateObj);
-    // tillDateObj.setDate(tillDateObj.getDate() - 1);
-    // tillDateObj.setHours(23, 59, 59, 999);
 
-    // Get the selected date for note creation
     const selectedDate = new Date(`${endDateStr}T00:00:00.000Z`);
-    // Prevent creating notes on the last day of the task period
-    // Compare the selected date with the task end date
-    if (selectedDate.getTime() === endDateStr) {
-      toast.error("Cannot create notes on the last day of the task period!", {
-        position: "top-right",
-        autoClose: 4000,
-      });
-      return;
-    }
+    const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
 
-    // Prevent past-dated notes
-    if (endDateStr > tillDateObj) {
-      toast.error("Cannot create or update notes in the past!");
-      return;
-    }
+    // Compare only the date part (not time) for last day check
+    const selectedOnlyDate = new Date(`${endDateStr}T00:00:00.000Z`);
+    const endDateOnlyObj = new Date(endDateObj);
+    endDateOnlyObj.setHours(0, 0, 0, 0);
+    console.log("selectedDateeeeeeeeeeeeeeee: ", selectedDate);
+    console.log("EndDateOnlyObjeeeeeeeeeeeeeee: ",endDateOnlyObj);
 
     const formattedStartDate = startDateObj.toISOString();
     const formattedTillDate = tillDateObj.toISOString();
@@ -349,21 +337,13 @@ export default function MyCalender({ tasks }) {
             autoClose: 4000,
           }
         );
-        // console.log(
-        //   `✅ Note ${isNewNote ? "created" : "updated"} successfully.`
-        // );
       }
 
-      // Handle delete (when implemented)
       if (isDeletedNote) {
-        // console.log(` Note deleted for Task ID: ${currentEventId}`);
         toast.success("Note deleted successfully!");
       }
 
-      //  CRITICAL: Refetch notes for this specific task to get latest data
       await refetchTaskNotes(currentEventId);
-
-      // Trigger refresh of note components
       setNoteRefreshKey((prev) => prev + 1);
 
       return { success: true };
@@ -379,7 +359,6 @@ export default function MyCalender({ tasks }) {
       setIsLoading(false);
     }
   };
-
   /* 
    EVENT HANDLERS
   */
