@@ -54,6 +54,15 @@ module.exports = {
     // Define responsive breakpoints
 
     extend: {
+      keyframes: {
+        shine: {
+          '0%': { transform: 'translateX(-100%) rotate(12deg)' },
+          '100%': { transform: 'translateX(300%) rotate(12deg)' },
+        },
+      },
+      animation: {
+        shine: 'shine 1.8s cubic-bezier(0.4, 0, 0.2, 1)',
+      },
       // Gradient Color
       backgroundImage: {
         "custom-gradient": "linear-gradient(90deg, #59BAD5, #ABAAFF, #59BAD5)",
@@ -64,10 +73,11 @@ module.exports = {
         "board-violet": "linear-gradient(138.66deg, #8A2BE2, #DA70D6, #8A2BE2)", //add new
         "board-primary":
           "linear-gradient(140.08deg, #59bad5, #ffffff, #59bad5)",
-        "login-gradient": "linear-gradient(-50deg, rgba(255, 255, 255, 0.5) 50%, rgba(155, 219, 253, 0.3) 50%)", 
-        "signup-gradient": "linear-gradient(-55deg, rgba(255, 255, 255, 0.5) 48%, rgba(155, 219, 253, 0.3) 35%)", 
-        "verify-gradient": "linear-gradient(-38deg, rgba(255, 255, 255, 0.5) 48%, rgba(155, 219, 253, 0.3) 35%)", 
-        "forgot-gradient": "linear-gradient(-38deg, rgba(255, 255, 255, 0.5) 48%, rgba(155, 219, 253, 0.3) 35%)", 
+        "login-gradient": "linear-gradient(-50deg, rgba(255, 255, 255, 0.1) 50%, rgba(155, 219, 253, 0.2) 50%)", 
+        "signup-gradient": "linear-gradient(-58deg, rgba(255, 255, 255, 0.5) 48%, rgba(155, 219, 253, 0.3) 35%)", 
+        "verify-gradient": "linear-gradient(-38deg, rgba(255, 255, 255, 0.1) 50%, rgba(155, 219, 253, 0.2) 50%)", 
+        "forgot-gradient": "linear-gradient(-38deg, rgba(255, 255, 255, 0.1) 50%, rgba(155, 219, 253, 0.2) 50%)",
+        "resetpass-gradient": "linear-gradient(-45deg, rgba(255, 255, 255, 0.1) 50%, rgba(155, 219, 253, 0.2) 50%)",  
       },
       borderRadius: {
         lg: "var(--radius)",

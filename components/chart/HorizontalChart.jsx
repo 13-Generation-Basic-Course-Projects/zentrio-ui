@@ -1,20 +1,30 @@
 "use client";
 import { TrendingUp } from "lucide-react";
 
-const data = [
-  { browser: "Todo", visitors: 270, color: "#64A9F6" },
-  { browser: "In Progress", visitors: 200, color: "#5FC381" },
-  { browser: "Under Review", visitors: 187, color: "#F59E0B" },
-  { browser: "Done", visitors: 173, color: "#64A9F6" },
-];
+export default function HorizontalChart({
+  amtChklistTodo,
+  amtChklistProgress,
+  amtChklistUnderReview,
+  amtChklistDone,
+}) {
+  const todo = Number(amtChklistTodo) || 0;
+  const progress = Number(amtChklistProgress) || 0;
+  const review = Number(amtChklistUnderReview) || 0;
+  const done = Number(amtChklistDone) || 0;
 
-const maxVisitors = Math.max(...data.map((d) => d.visitors));
-const labelWidth = 120;
-const barHeight = 15;
-const barGap = 16;
-const padding = 20;
+  const data = [
+    { browser: "Todo", visitors: todo, color: "#64A9F6" },
+    { browser: "In Progress", visitors: progress, color: "#5FC381" },
+    { browser: "Under Review", visitors: review, color: "#F59E0B" },
+    { browser: "Done", visitors: done, color: "#64A9F6" }, 
+  ];
 
-export default function HorizontalChart() {
+  const maxVisitors = Math.max(...data.map((d) => d.visitors));
+  const labelWidth = 120;
+  const barHeight = 15;
+  const barGap = 16;
+  const padding = 20;
+
   const totalHeight = data.length * (barHeight + barGap);
   const viewBoxWidth = 1000;
   const barAreaWidth = viewBoxWidth - labelWidth - padding * 2;
@@ -27,7 +37,7 @@ export default function HorizontalChart() {
 
       <div className="relative w-full">
         <svg
-          className="w-full h-auto "
+          className="w-full h-auto"
           viewBox={`0 0 ${viewBoxWidth} ${totalHeight + 60}`}
           preserveAspectRatio="xMinYMin meet"
           role="img"
@@ -35,10 +45,15 @@ export default function HorizontalChart() {
         >
           {/* Bars */}
           {data.map((item, index) => {
-            const barLength = (item.visitors / maxVisitors) * barAreaWidth;
-            const percent =
-              ((item.visitors / maxVisitors) * 100).toFixed(1) + "%";
+            const barLength =
+              maxVisitors > 0
+                ? (item.visitors / maxVisitors) * barAreaWidth
+                : 0;
+            const visitors = item.visitors || 0;
+            const max = maxVisitors || 1; // Use 1 to avoid division by zero
+            const percent = ((visitors / max) * 100).toFixed(1) + "%";
             const y = index * (barHeight + barGap);
+            const textAnchor = barLength > 50 ? "end" : "start";
             return (
               <g key={item.browser} transform={`translate(0, ${y})`}>
                 {/* Status Label */}
@@ -56,7 +71,7 @@ export default function HorizontalChart() {
                 <rect
                   x={labelWidth}
                   y={0}
-                  width={barLength}
+                  width={barLength - 60}
                   height={barHeight}
                   fill={item.color}
                   rx={4}
@@ -69,6 +84,7 @@ export default function HorizontalChart() {
                   alignmentBaseline="middle"
                   fontSize="12"
                   fill="#0f172a"
+                  textAnchor={textAnchor}
                 >
                   {item.visitors} ({percent})
                 </text>

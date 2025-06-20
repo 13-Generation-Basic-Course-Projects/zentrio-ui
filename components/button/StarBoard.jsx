@@ -3,8 +3,8 @@ import React, { useState } from "react";
 import { StarIconOutline, StarIconSolid } from "../icon/everyicon";
 import { Button } from "@heroui/react";
 
-export default function StarBoard() {
-  const [favorited, setFavorited] = useState(false);
+export default function StarBoard({ favBoard, updateFavAction }) {
+  const [favorited, setFavorited] = useState(favBoard);
   return (
     <div className="h-[50px]">
       <Button

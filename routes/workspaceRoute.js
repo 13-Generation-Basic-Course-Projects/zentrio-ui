@@ -11,18 +11,23 @@ export const workspaceRouteGroup = {
   getWorkspacesByUserId: (id) => `${apiConfig.baseUrl}/workspaces/users/${id}`, // Get workspaces by workspace id for user
   getWorkspacesByTitle: (title) =>
     `${apiConfig.baseUrl}/workspaces/title/${title}`, // Get workspaces by title
+
+  //new
+  getOtherWorkSpaceJoined: () => `${apiConfig.baseUrl}/workspaces/other`, // Get other workspaces that users has joined
+  
+  getMemeberByBoardId: (boardId) =>
+    `${apiConfig.baseUrl}/boards/${boardId}/members`, // get member by board id
 };
 
- 
 export const boardRouteGroup = {
   getBoardById: (boardId) => `${apiConfig.baseUrl}/boards/${boardId}`, // Get board by ID
   updateBoardById: (boardId) => `${apiConfig.baseUrl}/boards/${boardId}`, // Update board by board ID and workspace id
   updateFavBoardById: (boardId) =>
     `${apiConfig.baseUrl}/boards/${boardId}/favourite`, // Toggle favorite (updated favorite of board by id)
-  getAllBoards:() => `${apiConfig.baseUrl}/boards`, // Get all boards
+  getAllBoards: () => `${apiConfig.baseUrl}/boards`, // Get all boards
   createBoard: () => `${apiConfig.baseUrl}/boards`, // Create new board by workspace id
   inviteUserToBoard: (id) => `${apiConfig.baseUrl}/boards/${id}/users/invite`, // Invite user to board
-  uploadBoardCover: (id) => `${apiConfig.baseUrl}/boards/${id}/cover`, // Upload cover by board id
+  uploadBoardCover: (boardId) => `${apiConfig.baseUrl}/boards/${boardId}/cover`, // Upload cover by board id
   assignUserRole: `${apiConfig.baseUrl}/boards/assign`, // Assign role to user in board
 
   getBoardsByUserId: (userId) => `${apiConfig.baseUrl}/boards/${userId}/users`, // Get boards by user ID
@@ -34,4 +39,10 @@ export const boardRouteGroup = {
   getBoardsForCurrentUser: `${apiConfig.baseUrl}/boards/current`, // Boards for current user
   deleteBoard: (id, workspaceId) =>
     `${apiConfig.baseUrl}/boards/${id}/workspaces/${workspaceId}`, // Delete board
+
+  //new
+  getFavoriteBoard: (userId) =>
+    `${apiConfig.baseUrl}/boards/favourite/users/${userId}`, // getfavorite board
+
+  //new
 };

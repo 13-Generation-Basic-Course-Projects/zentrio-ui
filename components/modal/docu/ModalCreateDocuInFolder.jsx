@@ -10,9 +10,16 @@ import {
 import { IconAdd } from "../../icon/everyicon";
 import ModalCreateFolder from "./ModalCreateFolder";
 import ModalUploadFile from "./ModalUploadfile";
-import { createDocumentByUploadAction } from "@/action/document.action";
+import {
+  createDocumentByUploadAction,
+  createDriveFileAction,
+} from "@/action/document.action";
 
-export default function ModalCreateDocuInFolder({ boardId, folderId, tokenFromGoogle }) {
+export default function ModalCreateDocuInFolder({
+  boardId,
+  folderId,
+  tokenFromGoogle,
+}) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isCreateFolderOpen, setIsCreateFolderOpen] = useState(false);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
@@ -76,14 +83,67 @@ export default function ModalCreateDocuInFolder({ boardId, folderId, tokenFromGo
     },
   ];
 
-  const handleItemClick = (key) => {
+  const handleItemClick = async (key) => {
     setIsDropdownOpen(false);
     if (key === "create") {
       setIsCreateFolderOpen(true);
     } else if (key === "upload") {
       setIsUploadModalOpen(true);
+    } else if (["doc", "slide", "sheet"].includes(key)) {
+      try {
+        const mimeTypes = {
+          doc: "DOC",
+          slide: "SLIDE",
+          sheet: "SHEET",
+        };
+
+        const defaultNames = {
+          doc: "Untitled Document",
+          slide: "Untitled Presentation",
+          sheet: "Untitled Spreadsheet",
+        };
+
+        const data = {
+          name: defaultNames[key],
+
+          folderId: folderId,
+          fileType: mimeTypes[key],
+          token: tokenFromGoogle,
+
+          folderId: folderId,
+          fileType: mimeTypes[key],
+          token: tokenFromGoogle,
+        };
+
+        console.log("Creating Google file with data: ", data);
+
+        const result = await createDriveFileAction(data);
+        console.log("Create drive file result:", result);
+
+        const driveUrl = result?.payload?.webViewLink;
+
+        if (driveUrl) {
+          console.log("Opening Google Drive URL:", driveUrl);
+          window.open(driveUrl, "_blank");
+        } else {
+          console.error("Drive URL missing from result:", result);
+          alert("Drive URL missing. Could not open editor.");
+        }
+      } catch (err) {
+        console.error("Error creating Google file: ", err);
+        alert(
+          `Failed to create Google ${
+            key === "doc"
+              ? "document"
+              : key === "slide"
+              ? "presentation"
+              : "spreadsheet"
+          }: ${err.message}`
+        );
+      }
     }
   };
+
   console.log("board in modal create doc", boardId);
   return (
     <>
@@ -127,7 +187,6 @@ export default function ModalCreateDocuInFolder({ boardId, folderId, tokenFromGo
         isOpen={isCreateFolderOpen}
         onClose={() => setIsCreateFolderOpen(false)}
         boardId={boardId}
-        folderId={folderId}
         tokenFromGoogle={tokenFromGoogle}
       />
 
@@ -135,6 +194,7 @@ export default function ModalCreateDocuInFolder({ boardId, folderId, tokenFromGo
         isOpen={isUploadModalOpen}
         onClose={() => setIsUploadModalOpen(false)}
         boardId={boardId}
+        folderId={folderId}
         uploadDocument={createDocumentByUploadAction}
         tokenFromGoogle={tokenFromGoogle}
       />

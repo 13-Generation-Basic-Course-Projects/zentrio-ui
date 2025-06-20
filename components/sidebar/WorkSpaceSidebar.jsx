@@ -1,7 +1,12 @@
 "use client";
+
 import { usePathname } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
+import { useState, useEffect } from "react";
+
 import logo from "@/public/image/Zentrio-Logo.png";
+
 import {
   Sidebar,
   SidebarContent,
@@ -12,14 +17,16 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import Link from "next/link";
+
+import { Button } from "@heroui/react";
+
 import { LeaveIcon } from "../icon/everyicon";
 import SaveWorkspace from "../button/SaveWorkspace";
 import ModalCreateWorkspace from "../modal/ModalCreateWorkspace";
 import ModalOptionWorkspace from "../modal/workspace/ModalOptionWorkspace";
-import { Button } from "@heroui/react";
-import { useState, useEffect } from "react";
+import Logout from "@/app/(auth)/_components/Logout";
 
+// Workspace colors for visual tags
 const colorOptions = [
   { key: "red", label: "Red", className: "bg-board-red" },
   { key: "blue", label: "Blue Sky", className: "bg-board-primary" },
@@ -29,96 +36,72 @@ const colorOptions = [
   { key: "violet", label: "Violet", className: "bg-board-violet" },
 ];
 
-// Map your custom bg color classes to actual active background + text colors
-const activeColorMap = {
-  "bg-board-red": "bg-red-600 text-white",
-  "bg-board-primary": "bg-blue-600 text-white",
-  "bg-board-green": "bg-green-600 text-white",
-  "bg-board-purple": "bg-purple-700 text-white",
-  "bg-board-orange": "bg-orange-600 text-white",
-  "bg-board-violet": "bg-violet-700 text-white",
-};
-
-// Assign and save a color for a workspace
-const assignColorToWorkspace = (workspaceId, index) => {
-  if (typeof window !== "undefined" && workspaceId) {
-    const colorClass = colorOptions[index % colorOptions.length].className;
-    localStorage.setItem(`workspaceColor-${workspaceId}`, colorClass);
-    return colorClass;
-  }
-  return colorOptions[index % colorOptions.length].className;
-};
-
 export default function WorkSpaceSideBar({
   workspaceData,
   workspaceUsersData,
   createWorkspace,
   deleteWorkspace,
   updateNameWorkspace,
+  getWorKSpaceJoined,
 }) {
   console.log("ssss",workspaceData)
   const pathname = usePathname();
   const { toggleSidebar } = useSidebar();
   const [selectedId, setSelectedId] = useState("");
-
-  // State: workspaceId -> colorClass
+  const [isClient, setIsClient] = useState(false);
   const [workspaceColors, setWorkspaceColors] = useState({});
 
-  // Load colors from localStorage or assign default colors on mount / when workspaceData changes
+  // Initialize client-side rendering flag
   useEffect(() => {
-    if (!workspaceData?.payload || typeof window === "undefined") return;
+    setIsClient(true);
+  }, []);
 
-    const colors = {};
-    workspaceData.payload.forEach((ws, i) => {
-      const key = `workspaceColor-${ws.workspaceId}`;
-      const stored = localStorage.getItem(key);
-      if (stored) {
-        colors[ws.workspaceId] = stored;
-      } else {
-        const defaultColor = colorOptions[i % colorOptions.length].className;
-        colors[ws.workspaceId] = defaultColor;
-        localStorage.setItem(key, defaultColor);
-      }
-    });
-    setWorkspaceColors(colors);
-  }, [workspaceData?.payload]);
+  // Calculate workspace colors only on client side
+  useEffect(() => {
+    if (isClient && Array.isArray(workspaceData?.payload)) {
+      const colors = {};
+      workspaceData.payload.forEach((ws, index) => {
+        colors[ws.workspaceId] = getWorkspaceColor(ws, index);
+      });
+      setWorkspaceColors(colors);
+    }
+  }, [isClient, workspaceData]);
 
-  // Wrap createWorkspace to assign and save color then update state
-  const handleCreateWorkspace = (newWorkspace, selectedColorKey) => {
-    const colorClass =
-      selectedColorKey ||
-      colorOptions[workspaceData.payload.length % colorOptions.length]
-        .className;
-
-    // Save the color to localStorage by workspaceId
-    if (typeof window !== "undefined" && newWorkspace.workspaceId) {
-      localStorage.setItem(
-        `workspaceColor-${newWorkspace.workspaceId}`,
-        colorClass
-      );
+  const getWorkspaceColor = (workspace, index) => {
+    // Only access localStorage on client side
+    if (typeof window === "undefined") {
+      return colorOptions[index % colorOptions.length].className;
     }
 
-    // Update state for immediate UI update
-    setWorkspaceColors((prev) => ({
-      ...prev,
-      [newWorkspace.workspaceId]: colorClass,
-    }));
-
-    createWorkspace(newWorkspace);
+    try {
+      const savedColor = localStorage.getItem(
+        `workspaceColor-${workspace.title}`
+      );
+      return savedColor || colorOptions[index % colorOptions.length].className;
+    } catch (e) {
+      console.warn("Failed to access localStorage:", e);
+      return colorOptions[index % colorOptions.length].className;
+    }
   };
+
+  // Don't render the full component until client-side hydration is complete
+  // But still render the basic structure to avoid hydration issues
+  const shouldShowColors = isClient;
 
   return (
     <Sidebar collapsible="icon" className="border-none rounded-tr-2xl bg-white">
       <SidebarContent className="h-screen flex flex-col !border-0 overflow-hidden">
-        <div className="p-4 !border-0 flex justify-between items-center">
+        {/* HEADER */}
+        <div className="p-4 flex justify-between items-center !border-0">
           <Link href="/">
-            <Image src={logo} className="w-[118px] object-cover" alt="logo" />
+            <Image src={logo} alt="logo" className="w-[118px] object-cover" />
           </Link>
           <Button
             isIconOnly
             onClick={toggleSidebar}
             className="hidden bg-transparent min-w-fit w-fit h-fit rounded-none !px-0 !py-0"
           >
+            {/* Sidebar toggle icon */}
             <svg
               width="22"
               height="25"
@@ -136,44 +119,44 @@ export default function WorkSpaceSideBar({
           </Button>
         </div>
 
+        {/* WORKSPACE LIST */}
         <SidebarGroup className="flex flex-col flex-1 !border-0 px-5 overflow-y-auto scrollbar-hidden">
           <SidebarGroupContent className="flex flex-col flex-1 !border-0 gap-6">
-            {/* TOP + MIDDLE MENU Combined */}
             <SidebarMenu className="space-y-1 flex flex-col gap-2 !border-0">
               <SaveWorkspace />
-              {/* 1 */}
+
+              {/* My Workspace Header */}
               <div className="flex items-center justify-between">
                 <p className="text-body-sm font-extrabold">My Workspace</p>
-                <ModalCreateWorkspace
-                  createWorkspace={(newWorkspace, selectedColorKey) =>
-                    handleCreateWorkspace(newWorkspace, selectedColorKey)
-                  }
-                />
+                <ModalCreateWorkspace createWorkspace={createWorkspace} />
               </div>
+
+              {/* My Workspace Items */}
               {Array.isArray(workspaceData.payload) &&
                 workspaceData.payload
                   .slice()
                   .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
                   .map((item, i) => {
                     const isActive = pathname.includes(item?.workspaceId);
-                    const colorClass =
-                      workspaceColors[item.workspaceId] ||
-                      colorOptions[i % colorOptions.length].className;
-                    const activeColorClass =
-                      activeColorMap[colorClass] ||
-                      "bg-slate-blue text-primary";
+                    const bgColor = shouldShowColors
+                      ? workspaceColors[item.workspaceId] ||
+                        colorOptions[i % colorOptions.length].className
+                      : colorOptions[i % colorOptions.length].className;
+
                     return (
-                      <SidebarMenuItem key={i} className="!border-0 p-0">
+                      <SidebarMenuItem
+                        key={item.workspaceId || i}
+                        className="!border-0 p-0"
+                      >
                         <SidebarMenuButton
                           style={{ borderRadius: "0.5rem" }}
                           asChild
                           tooltip={item?.title || "Untitled Workspace"}
-                          className={`group flex w-full items-center justify-between rounded-lg transition-colors duration-200 p-0
-                            ${
-                              isActive
-                                ? "bg-slate-100 text-gray-700"
-                                : "hover:bg-slate-100 text-gray-700"
-                            }`}
+                          className={`group flex w-full items-center justify-between rounded-lg transition-colors duration-200 p-0 ${
+                            isActive
+                              ? "bg-slate-100 text-gray-700"
+                              : "hover:bg-slate-100 text-gray-700"
+                          }`}
                         >
                           <div className="flex items-center justify-between w-full gap-2">
                             {item?.workspaceId ? (
@@ -182,7 +165,7 @@ export default function WorkSpaceSideBar({
                                 className="flex items-center gap-2 flex-1 overflow-hidden"
                               >
                                 <span
-                                  className={`${colorClass} h-5 w-5 rounded-full inline-block flex-shrink-0`}
+                                  className={`${bgColor} h-5 w-5 rounded-full inline-block flex-shrink-0`}
                                 />
                                 <span className="truncate text-left sm:text-body-sm text-gray-800">
                                   {item?.title || "Untitled Workspace"}
@@ -213,38 +196,41 @@ export default function WorkSpaceSideBar({
                       </SidebarMenuItem>
                     );
                   })}
-              {/* 2 */}
+
+              {/* Other Workspace Header */}
               <p className="text-body-sm font-extrabold">Other Workspace</p>
+
+              {/* Other Workspaces */}
               {Array.isArray(workspaceUsersData.payload) &&
-                workspaceUsersData.payload.map((item, i) => {
+                Array.isArray(getWorKSpaceJoined.payload) &&
+                getWorKSpaceJoined.payload.map((item, i) => {
                   const isActive = pathname.includes(item?.workspaceId);
-                  // For shared workspaces, assign color by index
-                  const colorClass =
-                    workspaceColors[item.workspaceId] ||
+                  const bgColor =
                     colorOptions[i % colorOptions.length].className;
-                  const activeColorClass =
-                    activeColorMap[colorClass] || "bg-slate-blue text-primary";
+
                   return (
-                    <SidebarMenuItem key={i} className="!border-0 p-0 ">
+                    <SidebarMenuItem
+                      key={item.workspaceId || i}
+                      className="!border-0 p-0"
+                    >
                       <SidebarMenuButton
                         style={{ borderRadius: "0.5rem" }}
                         asChild
                         tooltip={item?.title || "Untitled Workspace"}
-                        className={`group flex w-full items-center justify-between rounded-lg transition-colors duration-200 p-0
-                          ${
-                            isActive
-                              ? "bg-slate-100 text-gray-700"
-                              : "hover:bg-slate-100 text-gray-700"
-                          }`}
+                        className={`group flex w-full items-center justify-between rounded-lg transition-colors duration-200 p-0 ${
+                          isActive
+                            ? "bg-slate-100 text-gray-700"
+                            : "hover:bg-slate-100 text-gray-700"
+                        }`}
                       >
                         <div className="flex items-center justify-between w-full gap-2">
                           {item?.workspaceId ? (
                             <Link
-                              href={`/workspace/${item.workspaceId}`}
+                              href={`/workspace/otherworkspace/${item.workspaceId}`}
                               className="flex items-center gap-2 flex-1 overflow-hidden"
                             >
                               <span
-                                className={`${colorClass} h-5 w-5 rounded-full inline-block flex-shrink-0`}
+                                className={`${bgColor} h-5 w-5 rounded-full inline-block flex-shrink-0`}
                               />
                               <span className="truncate text-left sm:text-body-sm text-gray-800">
                                 {item?.title || "Untitled Workspace"}
@@ -273,15 +259,7 @@ export default function WorkSpaceSideBar({
         {/* BOTTOM MENU */}
         <SidebarMenu className="!border-0 p-0 px-5 py-2 flex flex-col gap-2">
           <SidebarMenuItem className="!border-0 p-0">
-            <SidebarMenuButton
-              className="!border-0 p-0 flex gap-2 text-gray-600 hover:text-error hover:bg-error/10 transition-colors duration-150"
-              onClick={() => {
-                localStorage.clear();
-                window.location.reload();
-              }}
-            >
-              <LeaveIcon /> Log Out
-            </SidebarMenuButton>
+            <Logout />
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarContent>

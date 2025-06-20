@@ -317,7 +317,7 @@ export default function GanttChart({ modal, ganttbar, ganttChartName }) {
               <span
                 className="inline-block px-2 py-0.5 text-xs font-medium rounded-full text-white truncate overflow-hidden whitespace-nowrap max-w-[100px]"
                 style={{ backgroundColor: eventInfo.event.borderColor }}
-                title={phaseName} // 👈 shows full text on hover
+                title={phaseName} //  shows full text on hover
               >
                 {phaseName}
               </span>

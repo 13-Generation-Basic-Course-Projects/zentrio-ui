@@ -13,12 +13,12 @@ import google from "@/public/image/google.png";
 import imgs4 from "@/public/image/img-s4.png";
 
 import fong from "@/public/image/fong.png";
-import leap from "@/public/image/leap.png";
+import leap from "@/public/image/leap.jpg";
 import theara from "@/public/image/theara.png";
-import vit from "@/public/image/vit.png";
+import vit from "@/public/image/vit.jpg";
 import roskan from "@/public/image/roskan.png";
 import fanau from "@/public/image/fanau.png";
-import minh from "@/public/image/minh.png";
+import minh from "@/public/image/minh.jpg";
 import senghun from "@/public/image/senghun.png";
 import visa from "@/public/image/visa.png";
 

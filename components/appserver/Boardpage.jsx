@@ -2,8 +2,8 @@
 import Image from "next/image";
 import notification from "../../assets/notification.png";
 import Link from "next/link";
-import React, { useState } from "react";
-import { usePathname } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
 import KanbanBoard from "../kanban/Kanban";
 import GanttChart from "../Gantt/GanttChart";
 import userProfile from "@/assets/profile.png";
@@ -13,6 +13,33 @@ import ModalCreateTask from "../modal/board/ModalCreateTask";
 import ModalNotification from "../modal/noti/ModalNotification";
 import ModalCreateGanttChart from "../modal/board/ModalCreateGanttChart";
 import ModalCreateGanttBar from "../modal/board/ModalCreateGanttBar";
+import { data } from "autoprefixer";
+import NotFound from "@/app/not-found";
+import { checkEmailForClearAction } from "@/action/board.action";
+
+const clearAllCookies = () => {
+  console.log(" Starting to clear all cookies...");
+
+  // Get all cookies and clear them
+  document.cookie.split(";").forEach((cookie) => {
+    const name = cookie.split("=")[0].trim();
+    if (name) {
+      // Clear with multiple strategies to ensure removal
+      document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; max-age=0`;
+      document.cookie = `${name}=; path=/; domain=${window.location.hostname}; expires=Thu, 01 Jan 1970 00:00:00 UTC; max-age=0`;
+      document.cookie = `${name}=; path=/; domain=.${window.location.hostname}; expires=Thu, 01 Jan 1970 00:00:00 UTC; max-age=0`;
+    }
+  });
+
+  // Also clear localStorage and sessionStorage
+  try {
+    localStorage.clear();
+    sessionStorage.clear();
+    console.log(" All cookies and storage cleared successfully");
+  } catch (error) {
+    console.warn(" Could not clear storage:", error);
+  }
+};
 
 export default function SystemBoard({
   user,
@@ -24,34 +51,183 @@ export default function SystemBoard({
   ganttChartId,
   ganttChartName,
   preventUserImage,
+  boardData,
+  matchingBoardForNotPM,
+  workspaceId,
+  currentUserProfile,
 }) {
+  if (
+    !boardData ||
+    boardData.status >= 400 ||
+    boardData.type === "about:blank"
+  ) {
+    return <NotFound />;
+  }
+
+  console.log("currentUserProfile={currentUserProfile}", currentUserProfile);
   const pathname = usePathname();
-  const segments = pathname.split("/");
-  const workspaceId = segments[2]; // gets workspaceId from URL like /dashboard/otherworkspace/2/board
+  const searchParams = useSearchParams();
+  const email = searchParams.get("email");
+
+  // Extract boardId from path
+  const pathSegments = pathname.split("/");
+  const boardIdFromURL = pathSegments[3];
+
+  console.log("Board ID:", boardIdFromURL);
+  console.log("Email from URL:", email);
+  console.log(
+    "Current user email:",
+    currentUserProfile?.user?.email || currentUserProfile?.email
+  );
+
+  useEffect(() => {
+    const handleEmailCheck = async () => {
+      // Check if email exists in URL
+      if (!email) {
+        console.log("❌ No email found in URL, no action needed");
+        return;
+      }
+
+      // Get current user's email (adjust based on your data structure)
+      const currentUserEmail =
+        currentUserProfile?.user?.email ||
+        currentUserProfile?.email ||
+        currentUserProfile?.payload?.user?.email;
+
+      console.log("📧 Comparing emails:");
+      console.log("  - URL email:", email);
+      console.log("  - Current user email:", currentUserEmail);
+
+      // If emails are the same, do nothing
+      if (email === currentUserEmail) {
+        console.log("✅ Email matches current user - no action needed");
+        console.log("🔒 Cookies will remain intact");
+        return;
+      }
+
+      // If emails are different, proceed with clearing
+      console.log("⚠️ Email is different from current user");
+      console.log("🔍 Checking if URL email exists in database...");
+
+      try {
+        const result = await checkEmailForClearAction(email);
+
+        console.log("📋 Backend response:", result);
+
+        // Check if the URL email exists in database
+        if (
+          result &&
+          result.success === true &&
+          result.payload &&
+          result.payload.userId
+        ) {
+          console.log("✅ URL email user found in database!");
+          console.log("👤 URL email user details:", {
+            userId: result.payload.userId,
+            username: result.payload.username,
+            email: result.payload.email,
+          });
+
+          console.log(
+            "🧹 Different user detected - clearing cookies and storage..."
+          );
+          clearAllCookies();
+
+          console.log("🎉 Cookies cleared successfully for different user");
+
+          // Optional: Redirect after clearing
+          setTimeout(() => {
+            console.log("🔄 Redirecting to login...");
+            window.location.href = "/login";
+          }, 1500);
+        } else {
+          console.log("❌ URL email user not found in database");
+          console.log("🔒 No cookies cleared - user doesn't exist");
+        }
+      } catch (error) {
+        console.error("💥 Error checking URL email:", error);
+      }
+    };
+
+    // Execute the email check logic
+    handleEmailCheck();
+  }, [email, currentUserProfile]); // Run when email or current user changes
 
   const [activeTab, setActiveTab] = useState("kanban");
+  console.log(matchingBoardForNotPM, "roleeeeee");
 
-  console.log("board id for passing prop", ganttChartId);
+  // Get role from matchingBoardForNotPM with priority logic
+  const getUserRole = (roles) => {
+    if (!roles || roles.length === 0) return "ROLE_MEMBER";
 
-  // Conditionally add ModalInviteMember only if workspaceId is NOT 'otherworkspace'
+    // If has 3 roles (ROLE_LEADER, ROLE_MEMBER, ROLE_MANAGER), return ROLE_MANAGER
+    if (roles.length === 3 && roles.includes("ROLE_MANAGER")) {
+      return "ROLE_MANAGER";
+    }
+
+    // If has 2 roles (ROLE_LEADER, ROLE_MEMBER), return ROLE_LEADER
+    if (roles.length === 2 && roles.includes("ROLE_LEADER")) {
+      return "ROLE_LEADER";
+    }
+
+    // Default to highest priority role available
+    if (roles.includes("ROLE_MANAGER")) return "ROLE_MANAGER";
+    if (roles.includes("ROLE_LEADER")) return "ROLE_LEADER";
+    return "ROLE_MEMBER";
+  };
+
+  // Updated role assignment
+  const role =
+    matchingBoardForNotPM === null
+      ? "ROLE_MANAGER"
+      : getUserRole(matchingBoardForNotPM?.role) || user.role || "ROLE_MEMBER";
+
+  console.log("data board", boardData);
+  console.log("data fav", boardData?.payload?.isFavourite);
+  console.log("user role from board:", role);
+
+  const favBoard = boardData?.payload?.isFavourite;
+
+  // Modal components based on role
   const modalComponents = [
-    <ModalCreateTask
-      key="create-task"
-      boardId={boardId}
-      ganttChartId={ganttChartId}
-      ganttbar={ganttbar}
-      allMemberInBoard={allMemberInBoard}
-    />,
-    workspaceId !== "otherworkspace" && (
+    (role === "ROLE_LEADER" || role === "ROLE_MANAGER") && (
+      <ModalCreateTask
+        key="create-task"
+        boardId={boardId}
+        ganttChartId={ganttChartId}
+        ganttbar={ganttbar}
+        allMemberInBoard={allMemberInBoard}
+        isGanttChartId={ganttChartId}
+        setActiveTab={setActiveTab}
+      />
+    ),
+    role === "ROLE_MANAGER" && (
       <ModalInviteMember
         key="invite-member"
         boardId={boardId}
         allMemberInBoard={allMemberInBoard}
+        workspaceId={workspaceId}
       />
     ),
-    <StarBoard key="star-board" />,
+    <StarBoard key="star-board" favBoard={favBoard} />,
   ].filter(Boolean);
 
+  // GanttChart modal based on role
+  const ganttModal =
+    role === "ROLE_MEMBER" || role === "ROLE_LEADER"
+      ? []
+      : [
+          <ModalCreateGanttChart
+            key="create-gantt-chart"
+            boardId={boardId}
+            ganttChartId={ganttChartId}
+          />,
+          <ModalCreateGanttBar
+            key="create-gantt-bar"
+            boardId={boardId}
+            ganttChartId={ganttChartId}
+          />,
+        ];
   const tabItems = [
     {
       key: "kanban",
@@ -76,11 +252,15 @@ export default function SystemBoard({
       ),
       content: (
         <KanbanBoard
+          role={role}
           modal={modalComponents}
           tasks={tasks}
           checklistbyTaskIds={checklistbyTaskIds}
           allMemberInBoard={allMemberInBoard}
           preventUserImage={preventUserImage}
+          boardData={boardData}
+          ganttbar={ganttbar}
+          boardId={boardId}
         />
       ),
     },
@@ -173,17 +353,7 @@ export default function SystemBoard({
 
       content: (
         <GanttChart
-          modal={[
-            <ModalCreateGanttChart
-              key="create-gantt-chart"
-              boardId={boardId}
-            />,
-            <ModalCreateGanttBar
-              key="create-gantt-bar"
-              boardId={boardId}
-              ganttChartId={ganttChartId}
-            />,
-          ]}
+          modal={ganttModal}
           ganttbar={ganttbar}
           ganttChartName={ganttChartName}
         />

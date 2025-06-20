@@ -174,21 +174,21 @@ export default function OtherProfileLayout({
           </div>
         </div>
 
-        <div className="text-center mt-16">
-          <h1 className="text-h4 font-bold">{displayName}</h1>
+        <div className="text-center mt-16 text-body-sm ">
+          <h1 className="text-body-sm font-bold">{displayName}</h1>
 
           {/* Display member information */}
           <div className="flex justify-center gap-6 text-sm text-gray-600 mt-2">
             <p className="flex items-center gap-1">
-              <IconJob strokeWidth={1} size={5} color={"currentColor"} />
+              <IconJob strokeWidth={1} size={4} color={"currentColor"} />
               {getPrimaryRole(roles)}
             </p>
             <p className="flex items-center gap-1">
-              <IconMap strokeWidth={1} size={5} color={"currentColor"} />
+              <IconMap strokeWidth={1} size={4} color={"currentColor"} />
               Phnom Penh
             </p>
             <p className="flex items-center gap-1">
-              <IconDate strokeWidth={1} size={5} color={"currentColor"} />
+              <IconDate strokeWidth={1} size={4} color={"currentColor"} />
               Started 07-May-2025
             </p>
           </div>

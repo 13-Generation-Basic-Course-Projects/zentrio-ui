@@ -8,16 +8,21 @@ import {
   Button,
   cn,
   DropdownSection,
+  Avatar,
 } from "@heroui/react";
 import ModalDelete from "../ModalDelete";
 import PopupAction from "@/components/popup/PopupAction";
 import { IconpopupDelete } from "@/components/icon/Iconpopup";
 import { ModalRenameFileOrFolder } from "./ModalRenameDocu";
-import { deleteDocumentAction, downloadDocumentByDocumentIdAction } from "@/action/document.action";
-import { useRouter } from "next/navigation";
+import {
+  downloadDocumentByDocumentIdAction,
+  downloadAllFilesAsZipAction,
+  publicDocumentByIdAction,
+  privateDocumentByIdAction,
+} from "@/action/document.action";
 import { useState } from "react";
 
-// icon components directly in the same file
+// Icon components
 const AddNoteIcon = (props) => (
   <svg
     width="18"
@@ -33,6 +38,21 @@ const AddNoteIcon = (props) => (
     />
   </svg>
 );
+
+export const users = [
+  {
+    id: 1,
+    name: "Tony Reichert",
+    email: "tony.reichert@example.com",
+    avatar: "https://d2u8k2ocievbld.cloudfront.net/memojis/male/1.png",
+  },
+  {
+    id: 2,
+    name: "Jane Doe",
+    email: "jane.doe@example.com",
+    avatar: "https://d2u8k2ocievbld.cloudfront.net/memojis/female/3.png",
+  },
+];
 
 const CopyDocumentIcon = (props) => (
   <svg
@@ -95,59 +115,138 @@ const DeleteDocumentIcon = (props) => (
     />
   </svg>
 );
-const ShareoDcumentIcon = (props) => (
+
+const DownloadZipIcon = (props) => (
   <svg
-    width="15"
-    height="15"
-    viewBox="0 0 15 15"
+    width="18"
+    height="18"
+    viewBox="0 0 18 18"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
   >
     <path
-      d="M8 0.5C8 0.223858 7.77614 0 7.5 0C7.22386 0 7 0.223858 7 0.5V7H0.5C0.223858 7 0 7.22386 0 7.5C0 7.77614 0.223858 8 0.5 8H7V14.5C7 14.7761 7.22386 15 7.5 15C7.77614 15 8 14.7761 8 14.5V8H14.5C14.7761 8 15 7.77614 15 7.5C15 7.22386 14.7761 7 14.5 7H8V0.5Z"
-      fill="#424242"
+      d="M12 2H6C4.895 2 4 2.895 4 4V14C4 15.105 4.895 16 6 16H12C13.105 16 14 15.105 14 14V4C14 2.895 13.105 2 12 2ZM8 3H9V4H8V3ZM9 5V6H8V5H9ZM8 7H9V8H8V7ZM9 9V10H8V9H9ZM7 11H11V13H7V11Z"
+      fill="#143A47"
     />
   </svg>
 );
 
-export default function ModalOptionDocument({ documentId, accessToken }) {
-  const [isDownloading, setIsDownloading] = useState(false);
+const PublicIcon = (props) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    className="size-5"
+    {...props}
+  >
+    <path d="m20.893 13.393-1.135-1.135a2.252 2.252 0 0 1-.421-.585l-1.08-2.16a.414.414 0 0 0-.663-.107.827.827 0 0 1-.812.21l-1.273-.363a.89.89 0 0 0-.738 1.595l.587.39c.59.395.674 1.23.172 1.732l-.2.2c-.212.212-.33.498-.33.796v.41c0 .409-.11.809-.32 1.158l-1.315 2.191a2.11 2.11 0 0 1-1.81 1.025 1.055 1.055 0 0 1-1.055-1.055v-1.172c0-.92-.56-1.747-1.414-2.089l-.655-.261a2.25 2.25 0 0 1-1.383-2.46l.007-.042a2.25 2.25 0 0 1 .29-.787l.09-.15a2.25 2.25 0 0 1 2.37-1.048l1.178.236a1.125 1.125 0 0 0 1.302-.795l.208-.73a1.125 1.125 0 0 0-.578-1.315l-.665-.332-.091.091a2.25 2.25 0 0 1-1.591.659h-.18c-.249 0-.487.1-.662.274a.931.931 0 0 1-1.458-1.137l1.411-2.353a2.25 2.25 0 0 0 .286-.76m11.928 9.869A9 9 0 0 0 8.965 3.525m11.928 9.868A9 9 0 1 1 8.965 3.525" />
+  </svg>
+);
 
+const PrivateIcon = (props) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth={1.5}
+    stroke="currentColor"
+    className="size-6"
+    {...props}
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
+    />
+  </svg>
+);
+
+export default function ModalOptionDocument({
+  documentId,
+  fileId,
+
+  accessToken,
+  isFolder,
+  status,
+}) {
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [isDownloadingZip, setIsDownloadingZip] = useState(false);
+  const [showUsers, setShowUsers] = useState(false);
   const handleDownload = async () => {
     try {
       setIsDownloading(true);
-      
-      // Get blob from action
-      const { blob, fileName } = await downloadDocumentByDocumentIdAction(
-      documentId, // you should define or pass this
-      accessToken // also passed or fetched beforehand
-    );
 
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = fileName || "document"; // Fallback filename
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    window.URL.revokeObjectURL(url); // Clean up
-      
+      const { blob, fileName } = await downloadDocumentByDocumentIdAction(
+        documentId,
+        accessToken
+      );
+
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = fileName || "document";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Download failed:", error);
+      // You might want to show a user-friendly error message here
     } finally {
       setIsDownloading(false);
     }
   };
 
-  const iconClasses =
-    "text-xl text-default-500 pointer-events-none flex-shrink-0";
+  const handleDownloadAsZip = async () => {
+    try {
+      setIsDownloadingZip(true);
+      const { status, blob, filename } = await downloadAllFilesAsZipAction(
+        documentId,
+        accessToken
+      );
+      if (status !== 200 || !blob || !filename) {
+        throw new Error(`Download failed with status: ${status}`);
+      }
+
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Download ZIP failed:", error);
+      // Optionally show user error notification
+    } finally {
+      setIsDownloadingZip(false);
+    }
+  };
+
+  const handlePublic = async () => {
+    try {
+      await publicDocumentByIdAction(documentId, accessToken);
+    } catch (error) {
+      console.error("Public document failed: ", error);
+    }
+  };
+
+  const handlePrivate = async () => {
+    try {
+      await privateDocumentByIdAction(documentId, accessToken);
+    } catch (error) {
+      console.error("Private document failed: ", error);
+    }
+  };
 
   return (
-    <Dropdown className="z-[10px]">
+    <Dropdown className="z-[10]">
       <DropdownTrigger>
-        <Button variant="" className="p-0 min-w-0 h-auto w-auto ">
-          <div className="hover:text-black text-gray-600  px-2 py-1">
+        <Button variant="" className="p-0 min-w-0 h-auto w-auto">
+          <div className="hover:text-black text-gray-600 px-2 py-1">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="w-4 h-4"
@@ -159,81 +258,112 @@ export default function ModalOptionDocument({ documentId, accessToken }) {
           </div>
         </Button>
       </DropdownTrigger>
+
       <DropdownMenu
-        aria-label="Dropdown menu with description"
+        aria-label="Document actions"
         variant="faded"
-        className="w-full min-w-[200px] "
+        className="min-w-[220px]"
         closeOnSelect={false}
       >
-        <DropdownItem
-          key="download"
-          className="w-full hover:bg-default-100"
-          onClick={handleDownload}
-          isDisabled={isDownloading} // Disable while downloading
-          startContent={
-            isDownloading ? (
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-900"></div>
-            ) : (
-              <AddNoteIcon className={iconClasses} />
-            )
-          }
-        >
-          {isDownloading ? 'Downloading...' : 'Download'}
-        </DropdownItem>
-        <DropdownItem
-          key="copy"
-          className="w-full hover:bg-default-100"
-          startContent={<CopyDocumentIcon className={iconClasses} />}
-        >
-          <ModalRenameFileOrFolder documentId={documentId} tokenFromGoogle={accessToken} />
-        </DropdownItem>
-        <DropdownItem
-          key="edit"
-          className="w-full hover:bg-default-100"
-          showDivider
-          startContent={<EditDocumentIcon className={iconClasses} />}
-        >
-          Details
-        </DropdownItem>
-        <DropdownItem
-          key="delete"
-          className="w-full hover:bg-default-100 mb-1"
-          startContent={<DeleteDocumentIcon className={cn(iconClasses)} />}
-        >
-          <PopupAction
-            title={"Delete Folder"}
-            massageTitle={"Are you sure?"}
-            massageBody={"You want to delete it."}
-            icon={<IconpopupDelete />}
-            bgcolor={"bg-slate-red"}
-            massageDo={"Yes, Delete"}
-            documentId={documentId}
-            accessToken={accessToken}
-            massageUndo={"No, Cancel"}
-          />
-        </DropdownItem>
-        <DropdownSection className="border-t-1 border-default-200 pt-1">
+        {isFolder ? (
           <DropdownItem
-            key="share"
+            key="download-zip"
             className="w-full hover:bg-default-100"
-            startContent={<ShareoDcumentIcon className={cn(iconClasses)} />}
-            endContent={
-              <svg
-                width="7"
-                height="12"
-                viewBox="0 0 7 12"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M0.645817 0.147077C0.840731 -0.0485327 1.15731 -0.0490966 1.35292 0.145817L6.83741 5.6108C7.05312 5.82574 7.05312 6.17505 6.83741 6.39L1.35292 11.855C1.15731 12.0499 0.840731 12.0493 0.645817 11.8537C0.450903 11.6581 0.451467 11.3415 0.647077 11.1466L5.81166 6.0004L0.647077 0.854183C0.451467 0.659268 0.450903 0.342687 0.645817 0.147077Z"
-                  fill="#424242"
-                />
-              </svg>
+            onClick={handleDownloadAsZip}
+            isDisabled={isDownloadingZip}
+            startContent={
+              isDownloadingZip ? (
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-900"></div>
+              ) : (
+                <DownloadZipIcon className="w-4 h-4" />
+              )
             }
           >
-            Share
+            {isDownloadingZip ? "Downloading ZIP..." : "Download as ZIP"}
           </DropdownItem>
+        ) : (
+          <DropdownItem
+            key="download"
+            className="w-full hover:bg-default-100"
+            onClick={handleDownload}
+            isDisabled={isDownloading}
+            startContent={
+              isDownloading ? (
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-900"></div>
+              ) : (
+                <AddNoteIcon className="w-4 h-4" />
+              )
+            }
+          >
+            {isDownloading ? "Downloading..." : "Download"}
+          </DropdownItem>
+        )}
+
+        {/* Rename */}
+        <DropdownItem
+          key="rename"
+          className="w-full hover:bg-default-100"
+          startContent={<CopyDocumentIcon className="w-4 h-4" />}
+        >
+          <ModalRenameFileOrFolder
+            documentId={documentId}
+            tokenFromGoogle={accessToken}
+          />
+        </DropdownItem>
+
+        {/* Details */}
+        {/* <DropdownItem
+          key="details"
+          className="w-full hover:bg-default-100"
+          showDivider
+          startContent={<EditDocumentIcon className="w-4 h-4" />}
+        >
+          Details
+        </DropdownItem> */}
+
+        {/* Delete */}
+        <DropdownItem
+          key="delete"
+          className="w-full hover:bg-default-100"
+          startContent={<DeleteDocumentIcon className="w-4 h-4" />}
+        >
+          <PopupAction
+            title="Delete Folder"
+            massageTitle="Are you sure?"
+            massageBody="You want to delete it."
+            icon={<IconpopupDelete />}
+            bgcolor="bg-slate-red"
+            massageDo="Yes, Delete"
+            massageUndo="No, Cancel"
+            documentId={documentId}
+            fileId={fileId}
+            accessToken={accessToken}
+          />
+        </DropdownItem>
+
+        {/* Public and Private Section */}
+        <DropdownSection className="border-t-1 border-default-200">
+          {status !== "public" ? (
+            <DropdownItem
+              onClick={handlePublic}
+              key="public"
+              className="w-full hover:bg-default-100"
+              showDivider
+              startContent={<PublicIcon className="w-4 h-4" />}
+            >
+              Make Public
+            </DropdownItem>
+          ) : (
+            <DropdownItem
+              onClick={handlePrivate}
+              key="private"
+              className="w-full hover:bg-default-100"
+              showDivider
+              startContent={<PrivateIcon className="w-4 h-4" />}
+            >
+              Make Private
+            </DropdownItem>
+          )}
         </DropdownSection>
       </DropdownMenu>
     </Dropdown>

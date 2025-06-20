@@ -6,6 +6,7 @@ import ModalCreateDocu from "../modal/docu/ModalCreateDocu";
 export default function DocumentAutherize({
   user,
   documents,
+  publicDocuments,
   boardId,
   tokenFromGoogle,
   preventUserImage,
@@ -15,6 +16,7 @@ export default function DocumentAutherize({
       <DocumentLayout
         user={user}
         documents={documents}
+        publicDocuments={publicDocuments}
         boardId={boardId}
         tokenFromGoogle={tokenFromGoogle}
         preventUserImage={preventUserImage}

@@ -50,40 +50,52 @@ export function BackgroundAuthentication({ actionCard }) {
             </svg>
 
         </div>
+        {/* //BlueGlow left buttom */}
         <div className="absolute left-[7%] top-[35%] w-[509px] h-[604px] rotate-[5deg] scale-[0.6]">
           <Image src={BlueGlow} alt="Blue Glow" />
         </div>
-        <div className="absolute left-[70%] top-[5%] w-[509px] h-[604px] rotate-[3deg] scale-[0.5]">
+        {/*BlurLineDash bottom  */}
+        <div className="absolute left-[10%] top-[70%] w-[509px] h-[604px] rotate-[3deg] scale-[0.5]">
           <Image src={BlurLineDash} alt="Blur Line Dash" />
         </div>
-        <div className="absolute left-[60%] top-[25%] w-[509px] h-[604px] rotate-[-2deg] scale-[0.4]">
+        {/* BlurLineWorm top right*/}
+        <div className="absolute left-[65%] top-[10%] w-[509px] h-[604px] rotate-[-2deg] scale-[0.4]">
           <Image src={BlurLineWorm} alt="Blur Line Worm" />
         </div>
-        <div className="absolute left-[50%] top-[35%] w-[509px] h-[604px] rotate-[10deg] scale-[0.5]">
+        {/* BlurPlusIcon right */}
+        <div className="absolute left-[58%] top-[50%] w-[509px] h-[604px] rotate-[10deg] scale-[0.5]">
           <Image src={BlurPlusIcon} alt="Blur Plus Icon" />
         </div>
-        <div className="absolute left-[-10%] top-[30%] w-[509px] h-[604px] rotate-[-3deg] scale-[0.45]">
+        {/* GrayBrash blur left*/}
+        <div className="absolute left-[-10%] top-[54%] w-[509px] h-[604px] rotate-[-3deg] scale-[0.45]">
           <Image src={GrayBrash} alt="Gray Brash" />
         </div>
-        <div className="absolute left-[52%] top-[-10%] w-[509px] h-[604px] rotate-[4deg] scale-[0.55]">
+        {/* GreenGlow top right */}
+        <div className="absolute left-[56%] top-[-13%] w-[509px] h-[604px] rotate-[4deg] scale-[0.5]">
           <Image src={GreenGlow} alt="Green Glow" />
         </div>
+        {/* LineDash top left */}
         <div className="absolute left-[-5%] top-[15%] w-[509px] h-[604px] rotate-[6deg] scale-[0.5]">
           <Image src={LineDash} alt="Line Dash" />
         </div>
-        <div className="absolute left-[68%] top-[55%] w-[509px] h-[604px] rotate-[-5deg] scale-[0.45]">
+        {/* LineWorm bottom right*/}
+        <div className="absolute left-[75%] top-[55%] w-[509px] h-[604px] rotate-[-5deg] scale-[0.45]">
           <Image src={LineWorm} alt="Line Worm" />
         </div>
+        {/* LineWorm center left */}
         <div className="absolute left-[5%] top-[30%] w-[509px] h-[604px] rotate-[-5deg] scale-[0.45]">
           <Image src={LineWorm} alt="Line Worm" />
         </div>
-        <div className="absolute left-[72%] top-[-20%] w-[509px] h-[604px] rotate-[7deg] scale-[0.6]">
+        {/* LongGrayBrash top right */}
+        <div className="absolute left-[80%] top-[-20%] w-[509px] h-[604px] rotate-[7deg] scale-[0.6]">
           <Image src={LongGrayBrash} alt="Long Gray Brash" />
         </div>
-        <div className="absolute left-[10%] top-[-15%] w-[509px] h-[604px] rotate-[3deg] scale-[0.4]">
+        {/* PlusIcon top left*/}
+        <div className="absolute left-[25%] top-[-5%] w-[509px] h-[604px] rotate-[3deg] scale-[0.4]">
           <Image src={PlusIcon} alt="Plus Icon" />
         </div>
-        <div className="absolute left-[7%] top-[-15%] w-[509px] h-[604px] rotate-[5deg] scale-[0.5]">
+        {/* RedGlow */}
+        <div className="absolute left-[20%] top-[-5%] w-[509px] h-[604px] rotate-[5deg] scale-[0.5]">
           <Image src={RedGlow} alt="Red Glow" />
         </div>
         <div className="absolute left-[55%] top-[50%] w-[509px] h-[604px] rotate-[-2deg] scale-[0.45]">

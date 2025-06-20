@@ -11,7 +11,7 @@ import {
   IconMap,
   IconReturnLeft,
 } from "../icon/everyicon";
-import { getUploadProfileImageAction } from "@/action/profile.action";
+import { getUploadProfileImageAction, updateProfileImageAction, updateUserProfileAction } from "@/action/profile.action";
 
 export default function ProfileLayout({
   user,
@@ -33,7 +33,7 @@ export default function ProfileLayout({
       content: acheivment,
     },
   ];
-
+  const [previewUrl, setPreviewUrl] = useState(null);
   const [activeTab, setActiveTab] = useState("profile");
 
   const currentTab = tabItems.find((tab) => tab.key === activeTab);
@@ -51,16 +51,30 @@ export default function ProfileLayout({
     return [];
   };
 
-  const [previewUrl, setPreviewUrl] = useState(null);
-  const handleImageChange = async (e) => {
-    // try {
-    //   //const response = await getUploadProfileImageAction();
-    //   console.log("Upload response", response);
-    // } catch (err) {
-    //   console.error("upload failed", err);
-    // }
-    console.log("bro u forgot to create service how can u call an action");
-  };
+
+const handleImageChange = async (e) => {
+  const file = e.target.files?.[0];
+  if (!file) {
+    console.log("No file selected.");
+    return;
+  }
+
+  console.log("Selected image file:", file);
+
+  // Optional: Validate file type or size
+  const maxSizeMB = 5;
+  if (file.size > maxSizeMB * 1024 * 1024) {
+    console.error("File is too large (max 5MB allowed).");
+    return;
+  }
+
+  // Prepare for upload
+  const formData = new FormData();
+  formData.append("file", file);
+  await updateProfileImageAction({formData});
+
+};
+
 
   return (
     <>
@@ -122,19 +136,19 @@ export default function ProfileLayout({
           </div>
         </div>
 
-        <div className="text-center mt-16">
-          <h1 className="text-h4 font-bold">{data?.username || "N/A"}</h1>
+        <div className="text-center mt-16 text-body-sm">
+          <h1 className="text-body-sm font-bold">{data?.username || "N/A"}</h1>
           <div className="flex justify-center gap-6 text-sm text-gray-600 mt-2">
             <p className="flex items-center gap-1">
-              <IconJob strokeWidth={1} size={5} color={"currentColor"} />
+              <IconJob strokeWidth={1} size={4} color={"currentColor"} />
               {data?.position || "N/A"}
             </p>
             <p className="flex items-center gap-1">
-              <IconMap strokeWidth={1} size={5} color={"currentColor"} />{" "}
+              <IconMap strokeWidth={1} size={4} color={"currentColor"} />{" "}
               {data?.location || "N/A"}
             </p>
             <p className="flex items-center gap-1">
-              <IconDate strokeWidth={1} size={5} color={"currentColor"} />
+              <IconDate strokeWidth={1} size={4} color={"currentColor"} />
               {data.createdAt ? data.createdAt.split("T")[0] : " "}
             </p>
           </div>

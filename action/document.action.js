@@ -6,10 +6,18 @@ import {
   createDocumentService,
   createDriveFileService,
   deleteDocumentService,
+  downloadAllFilesAsZipService,
   downloadDocumentByDocumentIdService,
   fetchDocumentsByBoardService,
+  fetchPublicDocumentsService,
+  getAllDocumentByBoardIdSerivce,
+  getAttactmentService,
   getFileByFolderIdService,
+  postAttactmentService,
+  privateDocumentByIdService,
+  publicDocumentByIdService,
   updateDocumentNameByIdService,
+  uploadDocumentToFolderServie,
 } from "@/service/document.service";
 import { revalidatePath } from "next/cache";
 
@@ -23,6 +31,16 @@ export const getDocumentsByBoardAction = async (boardId) => {
   return documents;
 };
 
+// Get public documents
+export const getPublicDocumentsByBoardAction = async (boardId) => {
+  const userToken = await Token();
+  const token = userToken.Credential;
+
+  const publicDocuments = await fetchPublicDocumentsService(boardId, token);
+
+  return publicDocuments;
+};
+
 // Get file by folder id
 export const getFileByFolderIdAction = async (accessToken, folderId) => {
   const userToken = await Token();
@@ -33,6 +51,8 @@ export const getFileByFolderIdAction = async (accessToken, folderId) => {
     folderId,
     token,
   });
+
+  revalidatePath("/document");
 
   return files;
 };
@@ -55,12 +75,54 @@ export const downloadDocumentByDocumentIdAction = async (
   return { blob, fileName }; // Just return data
 };
 
-// Create
-export const createFolderAction = async (data) => {
+// Download as zip action
+export const downloadAllFilesAsZipAction = async (
+  documentId,
+  accessTokenFromGoogle
+) => {
   const userToken = await Token();
   const token = userToken.Credential;
-  console.log("post pending data", data);
-  const folder = await createDocumentService(data, token);
+
+  const { status, blob, filename } = await downloadAllFilesAsZipService({
+    documentId,
+    accessToken: accessTokenFromGoogle,
+    token,
+  });
+
+  console.log(
+    "document id:",
+    documentId,
+    accessTokenFromGoogle,
+    token,
+    "Status:",
+    status
+  );
+  revalidatePath("/docu");
+  return { status, blob, filename };
+};
+
+// Create
+export const createFolderAction = async (
+  accessTokenFromGoogle,
+  name,
+  types,
+  boardId
+) => {
+  const userToken = await Token();
+  const token = userToken.Credential;
+
+  const folderData = {
+    accessToken: accessTokenFromGoogle,
+    folderName: name,
+    types, // e.g. "FOLDER"
+    boardId,
+  };
+
+  console.log("Payload to service:", folderData);
+
+  const folder = await createDocumentService(folderData, token);
+
+  revalidatePath("/document");
   return folder;
 };
 
@@ -74,7 +136,6 @@ export const createFileAction = async ({
   try {
     const userToken = await Token(); // get your backend token
     const token = userToken.Credential;
-    revalidatePath("/document");
 
     const data = {
       accessToken: tokenFromGoogle, // optional, if needed
@@ -84,7 +145,7 @@ export const createFileAction = async ({
     };
 
     const createdDocument = await createDocumentService(data, token);
-
+    revalidatePath("/document");
     return createdDocument;
   } catch (error) {
     console.error("Error creating file:", error);
@@ -106,25 +167,59 @@ export const createDocumentByUploadAction = async (
     token,
     tokenFromGoogle
   );
+  revalidatePath("/document");
   return document;
 };
 
-export const createDriveFileAction = async (
-  name,
+// Upload to folder action
+export const uploadDocumentToFolderAction = async (
+  file,
   folderId,
-  fileType,
   tokenFromGoogle
 ) => {
   const userToken = await Token();
   const token = userToken.Credential;
-  const document = await createDriveFileService(
-    name,
+
+  const document = await uploadDocumentToFolderServie(
+    file,
     folderId,
-    fileType,
     token,
     tokenFromGoogle
   );
+  revalidatePath("/document");
+
   return document;
+};
+
+export const createDriveFileAction = async ({
+  name,
+  folderId,
+  fileType,
+  token: tokenFromGoogle,
+}) => {
+  try {
+    const userToken = await Token();
+    const token = userToken.Credential;
+
+    const data = {
+      accessToken: tokenFromGoogle,
+      name: name,
+      folderId: folderId,
+      fileType: fileType,
+    };
+
+    const document = await createDriveFileService(
+      name,
+      folderId,
+      fileType,
+      token,
+      tokenFromGoogle
+    );
+    return document;
+  } catch (error) {
+    console.error("Error creting file: ", error);
+    throw error;
+  }
 };
 
 // Delete
@@ -138,6 +233,7 @@ export const deleteDocumentAction = async (accessToken, documentId) => {
     token,
   });
 
+  revalidatePath("/docu");
   return document;
 };
 
@@ -150,7 +246,6 @@ export const updateDocumentNameByIdAction = async (
   console.log("tokekkek", tokenFromGoogle);
   const userToken = await Token();
   const token = userToken.Credential;
-  revalidatePath("/document");
 
   const updated = await updateDocumentNameByIdService(
     documentId,
@@ -158,5 +253,80 @@ export const updateDocumentNameByIdAction = async (
     token,
     tokenFromGoogle
   );
+  revalidatePath("/docu");
   return updated;
 };
+
+// public document (update)
+export const publicDocumentByIdAction = async (documentId, tokenFromGoogle) => {
+  const userToken = await Token();
+  const token = userToken.Credential;
+
+  const updated = await publicDocumentByIdService(
+    documentId,
+    token,
+    tokenFromGoogle
+  );
+  revalidatePath("/docu");
+  return updated;
+};
+
+// Private document (update)
+export const privateDocumentByIdAction = async (
+  documentId,
+  tokenFromGoogle
+) => {
+  const userToken = await Token();
+  const token = userToken.Credential;
+
+  const updated = await privateDocumentByIdService(
+    documentId,
+    token,
+    tokenFromGoogle
+  );
+  revalidatePath("/docu");
+  return updated;
+};
+
+/* new add
+ * get all document by board id
+ */
+export const getAllDocumentByBoardIdAction = async (boardId) => {
+  const userToken = await Token();
+  const token = userToken.Credential;
+  const getAllDocument = await getAllDocumentByBoardIdSerivce({
+    boardId,
+    token,
+  });
+  console.log("Get all doucemnt action : ", getAllDocument);
+  return getAllDocument;
+};
+/* new add
+ * post attactment
+ */
+export const postAttactmentAction = async (checklistId, details) => {
+  const userToken = await Token();
+  const token = userToken.Credential;
+  const result = await postAttactmentService({
+    checklistId,
+    details,
+    token,
+  });
+  console.log("Get all attachments action : ", result);
+  revalidatePath("/docu");
+  return result;
+};
+/* new add
+ * get attactment
+ */
+export const getAttactmentAction = async (checklistId) => {
+  const userToken = await Token();
+  const token = userToken.Credential;
+  const result = await getAttactmentService({
+    checklistId,
+    token,
+  });
+  console.log("Get all attachments action : ", result);
+  return result;
+};
+///

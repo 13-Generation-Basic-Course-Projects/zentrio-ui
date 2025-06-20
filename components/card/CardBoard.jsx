@@ -44,7 +44,7 @@ export default function CardBoard({
 
   /* State to manage editing mode and edited title */
   const [editing, setEditing] = useState(false);
-  const [newTitle, setNewTitle] = useState(title);
+  const [newTitle, setNewTitle] = useState("");
 
   /* Function to handle rename confirmation */
   
@@ -127,7 +127,7 @@ export default function CardBoard({
             onClick={() => setEditing(true)}
             title="Click to rename"
           >
-            {newTitle}
+            {title}
           </p>
         )}
 
@@ -160,27 +160,27 @@ export default function CardBoard({
       </CardHeader>
 
       {/* Card Body: background image or placeholder */}
-      <CardBody className="overflow-visible py-2">
-        <Link href={`/dashboard/${workspaceId}/${boardId}/board?role=${role}`}>
-          {image && image.startsWith("bg-") ? (
-            <div
-              className={`rounded-xl w-full h-32 bg-cover bg-center ${image}`}
-              aria-label={`Card background for ${title}`}
-            />
-          ) : image ? (
-            <img
-              src={image}
-              alt={`Card background for ${title}`}
-              className="object-cover rounded-xl w-full h-32"
-            />
-          ) : (
-            <div
-              className="rounded-xl w-full h-32 bg-gray-200"
-              aria-label={`No image available for ${title}`}
-            />
-          )}
-        </Link>
-      </CardBody>
+<CardBody className="overflow-visible py-2">
+  <Link href={`/dashboard/${workspaceId}/${boardId}/board`}>
+    {image && image.startsWith("bg-") ? (
+      <div
+        className={`rounded-xl w-full h-32 bg-cover bg-center ${image}`}
+        aria-label={`Card background for ${title}`}
+      />
+    ) : image ? (
+      <img
+        src={image}
+        alt={image || "Board cover image"}
+        className="w-full h-32 object-cover rounded-xl"
+      />
+    ) : (
+      <div
+        className="rounded-xl w-full h-32 bg-gray-200"
+        aria-label={`No image available for ${title}`}
+      />
+    )}
+  </Link>
+</CardBody>
 
       {/* Card Footer: member count and delete button */}
       <CardFooter className="pt-2 px-4 flex flex-col items-start space-y-4">
@@ -198,8 +198,12 @@ export default function CardBoard({
 
           {/* Delete button and confirmation modal */}
           <div className="flex items-center text-progress-red py-5 gap-1">
-            <button onClick={() => setIsDeleteOpen(true)}>
+            <button
+              onClick={() => setIsDeleteOpen(true)}
+              className="flex items-center space-x-2 hover:bg-slate-50 rounded-medium text-caption"
+            >
               <IconDelete />
+              <span>Remove</span>
             </button>
 
             {/* Delete confirmation modal */}

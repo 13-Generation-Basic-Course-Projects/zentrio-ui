@@ -1,9 +1,28 @@
 "use client";
 
+import Link from "next/link";
+import { useState } from "react";
+import { AuthInput } from "./input";
+import { Button } from "@heroui/react";
+import { useForm } from "react-hook-form";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Eye, EyeOff } from "lucide-react";
+import { resendOtpForgotPasswordAction, zentrioForgotPasswordAction } from "@/action/auth.action";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { resetPasswordSchema } from "@/lib/schemas/resetPasswordSchema";
+
+
 export const ForgetPass = () => {
   const [formData, setFormData] = useState({
     email: "",
   });
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+  const router = useRouter();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -13,38 +32,36 @@ export const ForgetPass = () => {
     });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const onSubmit = async (email) => {
+    const type = "RESET";
+    try {
+      const result = await resendOtpForgotPasswordAction({ email, type });
 
-    // Validation logic
-    if (!formData.email) {
-      alert("Email is required!");
-      return;
+      if (result?.success) {
+        router.push(`/verify?email=${encodeURIComponent(email)}&type=RESET`);
+      }
+    } catch (err) {
+      console.error("Submit failed", err);
     }
-
-    // Add form submission logic here
-    console.log("Password reset request submitted for:", formData.email);
   };
+  
 
   return (
     <div className="w-full h-screen flex items-center justify-center">
       <div className="w-[1728px] h-[1117px]  flex items-center justify-center">
-        <Form
-          onSubmit={handleSubmit}
-          className="w-[640px] h-fit bg-forgot-gradient px-[55px] py-[40px] rounded-[20px] shadow-sm gap-[50px]"
-        >
+        <form
+          onSubmit={handleSubmit((data) => onSubmit(data.email))}
+          className="w-[640px] h-fit bg-forgot-gradient px-[55px] py-[40px] rounded-[20px] shadow-sm gap-[50px]">
           <div>
             <Link
               href="/login"
-              className="flex items-center gap-3 pb-[5%] text-body-sm text-primary"
-            >
+              className="flex items-center gap-3 pb-[5%] text-body-sm text-primary">
               <svg
                 width="18"
                 height="12"
                 viewBox="0 0 18 12"
                 fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
+                xmlns="http://www.w3.org/2000/svg">
                 <path
                   d="M2 6L17 5.99976"
                   stroke="#59BAD5"
@@ -64,9 +81,9 @@ export const ForgetPass = () => {
             </Link>
             <div className="flex flex-col gap-4">
               <p className="text-h1 text-primary">
-                <span className="font-bold">Forgot Password</span>
+                <span className="font-semibold text-[40px]">Forgot your password?</span>
               </p>
-              <p className="text-body text-[#787486]">
+              <p className="text-body text-[#787486] mb-14">
                 Don’t worry, happens to all of us. Enter your email below to
                 recover your password
               </p>
@@ -82,40 +99,56 @@ export const ForgetPass = () => {
                   labelPlacement="outside"
                   placeholder="Email"
                   className="text-foreground"
-
-                  // {...register("email", {
-                  //   required: "Email cannot be empty.",
-                  //   pattern: {
-                  //     value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-                  //     message: "Invalid email address.",
-                  //   },
-                  // })}
+                  {...register("email", {
+                    required: "Email is required",
+                    pattern: {
+                      value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                      message: "Invalid email format",
+                    },
+                  })}
                 />
-                {/* {errors?.email?.message && (
-                <MyErrorText label={errors?.email?.message} />
-              )} */}
+                {errors.email && (
+                  <p className="text-sm text-red-500 mt-1">
+                    {errors.email.message}
+                  </p>
+                )}
               </div>
             </div>
           </div>
 
-          <Button className="w-full bg-primary text-white max-w-none border-none">
-            <Link href="/setnewpassword" className="capitalize">
+          <Button
+            type="submit"
+            className="w-full bg-primary text-white max-w-none border-none mt-12 h-[48px] rounded-[10px] capitalize font-semibold text-[20px]">
               <p className="text-h6">Submit</p>
-            </Link>
           </Button>
-        </Form>
+        </form>
       </div>
     </div>
   );
 };
 
 export const SetNewPass = () => {
+
+
+  const searchParams = useSearchParams(); 
+  const email = searchParams.get("email")
+  const router = useRouter();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(resetPasswordSchema),
+  });
+
   const [isVisible, setIsVisible] = useState({
     current: false,
     new: false,
     confirm: false,
     confirm2: false,
   });
+
 
   const toggleVisibility = (field) => {
     setIsVisible((prev) => {
@@ -141,38 +174,29 @@ export const SetNewPass = () => {
     });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    // Validation logic
-    if (!formData.email || !formData.password) {
-      alert("Email and Password are required!");
-      return;
+  const onSubmit = async (data) => {
+    const result = await zentrioForgotPasswordAction({ email, password: data?.password, confirmPassword: data?.confirmPassword });
+    if (result) {
+      router.push("/login");
     }
-
-    // Add form submission logic here
-    console.log("Form submitted:", formData);
   };
 
   return (
     <div className="w-full h-screen flex items-center justify-center">
-      <div className="w-[1728px] h-[1117px]  flex items-center justify-center">
-        <Form
-          onSubmit={handleSubmit}
-          className="w-[640px] h-fit bg-gradient-to-br from-[#9BDBFD]/30 to-[#FFFFFF] px-[55px] py-[40px] rounded-[20px] shadow-lg gap-[50px]"
-        >
+      <div className="w-[1728px] h-[1117px]  flex items-center justify-center ">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="w-[640px] h-fit bg-resetpass-gradient px-[55px] py-[40px] rounded-[20px] shadow-lg gap-[50px]">
           <div>
             <Link
               href="/forgot-password"
-              className="flex items-center gap-3 pb-[5%] text-body-sm text-primary"
-            >
+              className="flex items-center gap-3 pb-[5%] text-body-sm text-primary">
               <svg
                 width="18"
                 height="12"
                 viewBox="0 0 18 12"
                 fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
+                xmlns="http://www.w3.org/2000/svg">
                 <path
                   d="M2 6L17 5.99976"
                   stroke="#59BAD5"
@@ -194,7 +218,7 @@ export const SetNewPass = () => {
               <p className="text-h1 text-primary">
                 <span className="font-bold">Set a password</span>
               </p>
-              <p className="text-body text-[#787486]">
+              <p className="text-body text-[#787486] mb-14">
                 Your previous password has been reseted. Please set a new
                 password for your account.
               </p>
@@ -211,10 +235,9 @@ export const SetNewPass = () => {
                 className="text-foreground"
                 endContent={
                   <button
-                    className="focus:outline-none bg-transparent border-none"
+                    className="focus:outline-none bg-transparent border-none p-0 mr-0 transition-colors"
                     type="button"
-                    onClick={() => toggleVisibility("confirm")}
-                  >
+                    onClick={() => toggleVisibility("confirm")}>
                     {isVisible.confirm ? (
                       <EyeOff className="text-2xl text-primary pointer-events-none" />
                     ) : (
@@ -222,10 +245,13 @@ export const SetNewPass = () => {
                     )}
                   </button>
                 }
-                // {...register("password", {
-                //   required: "Password cannot be empty.",
-                // })}
+                {...register("password")}
               />
+              {errors.password && (
+                <p className="text-sm text-red-500 mt-1">
+                  {errors.password.message}
+                </p>
+              )}
             </div>
             <div className="relative">
               <AuthInput
@@ -237,10 +263,9 @@ export const SetNewPass = () => {
                 className="text-foreground"
                 endContent={
                   <button
-                    className="focus:outline-none bg-transparent border-none"
+                    className="focus:outline-none bg-transparent border-none p-0 mr-0 transition-colors"
                     type="button"
-                    onClick={() => toggleVisibility("confirm2")}
-                  >
+                    onClick={() => toggleVisibility("confirm2")}>
                     {isVisible.confirm2 ? (
                       <EyeOff className="text-2xl text-primary pointer-events-none" />
                     ) : (
@@ -248,27 +273,23 @@ export const SetNewPass = () => {
                     )}
                   </button>
                 }
-                // {...register("email", {
-                //   required: "Email cannot be empty.",
-                //   pattern: {
-                //     value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-                //     message: "Invalid email address.",
-                //   },
-                // })}
+                {...register("confirmPassword")}
               />
-              {/* {errors?.email?.message && (
-                <MyErrorText label={errors?.email?.message} />
-              )} */}
+              {errors.confirmPassword && (
+                <p className="text-sm text-red-500 mt-1">
+                  {errors.confirmPassword.message}
+                </p>
+              )}
             </div>
           </div>
           <div className="w-full gap-[10px] flex flex-col">
-            <Link href="/login" className="capitalize">
-              <Button className="w-full max-w-none bg-primary text-white">
-                Save Password
-              </Button>
-            </Link>
+            <Button
+              type="submit"
+              className="w-full bg-primary text-white max-w-none border-none mt-12 h-[48px] rounded-[10px] capitalize font-semibold text-[20px]">
+              Save Password
+            </Button>
           </div>
-        </Form>
+        </form>
       </div>
     </div>
   );

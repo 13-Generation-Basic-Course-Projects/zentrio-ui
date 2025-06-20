@@ -6,17 +6,11 @@ import Image from "next/image";
 import iconSearch from "@/assets/search.png";
 import icon1 from "@/assets/icon1.png";
 import arrowdown from "@/assets/arrow-down.png";
-import member from "@/assets/memberSideBar.png";
 import ModalInviteMember from "../modal/ModalInviteMember";
 import {
   Popover,
   PopoverTrigger,
   PopoverContent,
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
   Button,
   useDisclosure,
   useDraggable,
@@ -24,13 +18,49 @@ import {
 } from "@heroui/react";
 import BredCrum from "../bredcrum/MyBredcrum";
 import Link from "next/link";
-import PopupAction from "../popup/PopupAction";
-import { IconpopupDelete } from "../icon/Iconpopup";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronUp } from "lucide-react";
 import ModalDelete from "../modal/ModalDelete";
 import { preventImage } from "@/constant/preventimage";
+import { formatRole } from "@/lib/roleFormart";
+import { deleteMemberAction } from "@/action/board.action";
+import { Autocomplete, AutocompleteItem } from "@heroui/react";
 
-export default function Memberpage({ boardMember, boardId, preventUserImage }) {
+export default function Memberpage({
+  boardMember,
+  boardId,
+  preventUserImage,
+  matchingBoardForNotPM,
+  workspaceId,
+  allMemberInBoard,
+  currentUserProfile,
+}) {
+  if (boardMember.status >= 400 || boardMember.type === "about:blank") {
+    return <NotFound />;
+  }
+
+  // Get role from matchingBoardForNotPM with priority logic
+  const getUserRole = (roles) => {
+    if (!roles || roles.length === 0) return "ROLE_MEMBER";
+
+    // If has 3 roles (ROLE_LEADER, ROLE_MEMBER, ROLE_MANAGER), return ROLE_MANAGER
+    if (roles.length === 3 && roles.includes("ROLE_MANAGER")) {
+      return "ROLE_MANAGER";
+    }
+
+    // If has 2 roles (ROLE_LEADER, ROLE_MEMBER), return ROLE_LEADER
+    if (roles.length === 2 && roles.includes("ROLE_LEADER")) {
+      return "ROLE_LEADER";
+    }
+
+    // Default to highest priority role available
+    if (roles.includes("ROLE_MANAGER")) return "ROLE_MANAGER";
+    if (roles.includes("ROLE_LEADER")) return "ROLE_LEADER";
+    return "ROLE_MEMBER";
+  };
+
+  const role =
+    getUserRole(matchingBoardForNotPM?.role) || user.role || "ROLE_MEMBER";
+
   const [members, setMembers] = useState(
     Array.isArray(boardMember) ? boardMember : []
   ); //call from props
@@ -47,6 +77,7 @@ export default function Memberpage({ boardMember, boardId, preventUserImage }) {
   const [selectedUserId, setSelectedUserId] = useState(null);
 
   const openModal = (id) => {
+    console.log("Opening modal for userId:", id);
     setSelectedUserId(id);
     setIsModalOpen(true);
   };
@@ -86,6 +117,13 @@ export default function Memberpage({ boardMember, boardId, preventUserImage }) {
     return false;
   });
 
+  const filterOptions = [
+    { key: "all", label: "All" },
+    { key: "week", label: "Last week" },
+    { key: "month", label: "Last month" },
+    { key: "year", label: "Last year" },
+  ];
+
   // Pagination calculations use filteredMembers instead of all members
   const [currentPage, setCurrentPage] = useState(1);
   const membersPerPage = 5;
@@ -111,6 +149,38 @@ export default function Memberpage({ boardMember, boardId, preventUserImage }) {
   const preventProfile = preventImage.noProfile;
 
   console.log("board id in memberpage", boardId);
+  console.log("currentUserProfile", currentUserProfile);
+  // checkrole
+  // Function to find the role for a given boardId
+  const findRoleByBoardId = (boardId, userProfile) => {
+    // Check ownBoards
+    const ownBoard = userProfile.payload.ownBoards.find(
+      (board) => board.boardId === boardId
+    );
+    if (ownBoard) {
+      return ownBoard.role;
+    }
+
+    // Check joinedBoards
+    const joinedBoard = userProfile.payload.joinedBoards.find(
+      (board) => board.boardId === boardId
+    );
+    if (joinedBoard) {
+      return joinedBoard.role;
+    }
+
+    // Return null or a message if boardId is not found
+    return "Board not found";
+  };
+  const userRoleBaseOnCurrentUser = findRoleByBoardId(
+    boardId,
+    currentUserProfile
+  );
+
+  console.log(
+    "role for current user depend on boardid",
+    userRoleBaseOnCurrentUser
+  );
   return (
     <div className="p-4 ">
       {/* Breadcrumb */}
@@ -120,28 +190,21 @@ export default function Memberpage({ boardMember, boardId, preventUserImage }) {
           <div className="relative flex items-center gap-2 border-r border-gray-200 pr-4 pl-3 py-2">
             <Image src={icon1} alt="Filter" className="w-4 h-4" />
             <div className="relative">
-              <select
-                value={filterRange}
-                onChange={(e) => setFilterRange(e.target.value)}
+              <Autocomplete
+                selectedKey={filterRange}
+                onSelectionChange={(key) => setFilterRange(key)}
                 onFocus={() => setMakeOpen(true)}
                 onBlur={() => setMakeOpen(false)}
-                className="appearance-none bg-white text-sm text-gray-700 px-3 pr-8 py-1.5 focus:outline-none transition"
+                placeholder="Filter"
+                className="w-[160px] bg-white text-sm text-gray-700"
+                size="sm"
               >
-                <option value="all">All</option>
-                <option value="week">Last week</option>
-                <option value="month">Last month</option>
-                <option value="year">Last year</option>
-              </select>
-
-              <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center transition-transform duration-300">
-                <Image
-                  src={arrowdown}
-                  alt="Dropdown arrow"
-                  className={`w-3 h-2 transform transition-transform duration-300 ${
-                    makeOpen ? "rotate-180" : ""
-                  }`}
-                />
-              </div>
+                {filterOptions.map((option) => (
+                  <AutocompleteItem key={option.key} textValue={option.label}>
+                    {option.label}
+                  </AutocompleteItem>
+                ))}
+              </Autocomplete>
             </div>
           </div>
 
@@ -157,7 +220,15 @@ export default function Memberpage({ boardMember, boardId, preventUserImage }) {
           />
         </div>
         {/* Invite */}
-        <ModalInviteMember boardId={boardId} />
+        {role == "ROLE_LEADER" || role == "MEMBER" ? (
+          ""
+        ) : (
+          <ModalInviteMember
+            boardId={boardId}
+            workspaceId={workspaceId}
+            allMemberInBoard={allMemberInBoard}
+          />
+        )}
       </div>
 
       <section className="overflow-hidden">
@@ -249,6 +320,7 @@ export default function Memberpage({ boardMember, boardId, preventUserImage }) {
                     <div className="flex items-center gap-2">
                       <span className="text-gray-700 group-hover:text-blue-700 transition-colors duration-200">
                         {member.roles[0]}
+                        {/* {formatRole(role)} */}
                       </span>
                       {member.roles.length > 1 && (
                         <Popover
@@ -285,7 +357,6 @@ export default function Memberpage({ boardMember, boardId, preventUserImage }) {
                       )}
                     </div>
                   </td>
-
                   {/* Tasks Popover */}
                   <td className="px-6 py-4 border-none">
                     <div className="flex items-center gap-2 !border-none">
@@ -317,33 +388,41 @@ export default function Memberpage({ boardMember, boardId, preventUserImage }) {
                   </td>
                   {/* Action for delete */}
                   <td className="px-6 py-4">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="w-4 h-4 cursor-pointer"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                      onClick={() => openModal(member.userId)}
-                    >
-                      <path d="M10 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4z" />
-                    </svg>
-
-                    <ModalDelete
-                      isOpen={isModalOpen}
-                      onClose={closeModal}
-                      messageTitle="Are you sure?"
-                      messageBody={`Do you want to delete ${member.username} from the board?`}
-                      messageUndo="No, Cancel"
-                      messageDo="Yes, Delete"
-                      action={() => {
-                        deleteMemberById(selectedUserId);
-                        closeModal();
-                      }}
-                    />
+                    {userRoleBaseOnCurrentUser === "ROLE_MANAGER" &&
+                    member.userId !== currentUserProfile.payload.user.userId ? (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="w-4 h-4 cursor-pointer"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        onClick={() => openModal(member.userId)}
+                      >
+                        <path d="M10 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4z" />
+                      </svg>
+                    ) : null}
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
+          {/* Render ModalDelete once */}
+          {isModalOpen && selectedUserId && (
+            <ModalDelete
+              isOpen={isModalOpen}
+              onClose={closeModal}
+              messageTitle="Are you sure?"
+              messageBody={`Do you want to delete ${
+                members.find((m) => m.userId === selectedUserId)?.username ||
+                "this member"
+              } from the board?`}
+              messageUndo="No, Cancel"
+              messageDo="Yes, Delete"
+              action={deleteMemberAction}
+              boardId={boardId}
+              userId={selectedUserId}
+              onDeleteSuccess={deleteMemberById}
+            />
+          )}
         </div>
       </section>
 

@@ -13,20 +13,20 @@ const colorOptions = [
   { key: "violet", label: "Violet", className: "bg-board-violet" },
 ];
 export default function MyFavoriteBoard({
-  getAllBoard,
   deleteBoardAction,
   updateNameBoardAction,
   updateFavAction,
+  myFavBoard,
 }) {
-  console.log("Get all board in MyFavoriteBoard: ", getAllBoard);
+  console.log("log fav", myFavBoard);
   return (
     <div className="w-full grid grid-cols-12 h-full">
       <div className="col-span-9 flex flex-col overflow-hidden p-3 min-h-0">
         <Bar title={"My Favorite Boards"} btn={"see all"} />
         <div className="grid grid-cols-3 gap-3 scrollbar-hidden px-2 pb-[200px] py-4 overflow-y-auto flex-1 min-h-0">
-          {getAllBoard.payload?.filter((board) => board.isFavourite).length >
+          {myFavBoard.payload?.filter((board) => board.isFavourite).length >
           0 ? (
-            getAllBoard.payload
+            myFavBoard.payload
               .filter((board) => board.isFavourite)
               .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // optional sort
               .map((board, i) => {
@@ -46,6 +46,7 @@ export default function MyFavoriteBoard({
                     deleteBoardAction={deleteBoardAction}
                     updateNameBoardAction={updateNameBoardAction}
                     updateFavAction={updateFavAction}
+                    role="pm"
                   />
                 );
               })

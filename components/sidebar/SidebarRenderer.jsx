@@ -11,11 +11,12 @@ export default function SidebarRenderer({
   deleteWorkspace,
   updateNameWorkspace,
   getBoardByWorkspaceId,
+  getWorKSpaceJoined,
 }) {
   const pathname = usePathname();
 
   if (pathname.startsWith("/dashboard")) {
-    return <DashbaordSideBar />;
+    return <DashbaordSideBar getWorKSpaceJoined={getWorKSpaceJoined} />;
   }
 
   if (pathname.startsWith("/workspace")) {
@@ -27,6 +28,7 @@ export default function SidebarRenderer({
         deleteWorkspace={deleteWorkspace}
         updateNameWorkspace={updateNameWorkspace}
         getBoardByWorkspaceId={getBoardByWorkspaceId}
+        getWorKSpaceJoined={getWorKSpaceJoined}
       />
     );
   }

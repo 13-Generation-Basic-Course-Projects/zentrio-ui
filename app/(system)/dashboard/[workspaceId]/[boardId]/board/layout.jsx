@@ -2,9 +2,11 @@ import SystemBoard from "@/components/appserver/Boardpage";
 import { auth } from "@/auth";
 import {
   getAllGanttBarByGanttChartIDAction,
+  getBoardByBoardIdAction,
   getCheckListByTaskIdAction,
   getCommentByCheckListIdAction,
   getMemberByBoardIdAction,
+  getTaskByBoardIdAction,
   getTaskByBoardIdAndGanttBarIdAction,
 } from "@/action/board.action";
 import {
@@ -16,6 +18,8 @@ import { preventImage } from "@/constant/preventimage";
 import { getCurrentUserProfileAction } from "@/action/profile.action";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import NotFound from "@/app/not-found";
+import { getOtherWorkSpaceJoinedAction } from "@/action/workspace.action";
 // Utility function to fetch ganttChartId
 async function fetchGanttChartId(boardId) {
   const FALLBACK_STRING = "No data available";
@@ -44,6 +48,7 @@ export default async function BoardLayout({ children, params }) {
   const FALLBACK_ARRAY = [];
   const FALLBACK_OBJECT = {};
   const boardId = params?.boardId || FALLBACK_STRING;
+  const workspaceId = await params.workspaceId;
 
   /*
    * Get ganttChartId using the utility function
@@ -188,6 +193,58 @@ export default async function BoardLayout({ children, params }) {
     const noImage = preventImage.noProfile;
     const preventUserImage = imageUser == null ? noImage : imageUser;
     console.log("what inside layout and userprofile", imageUser);
+
+    // /**
+    //  * get comment
+    //  * */
+    // const getCommentByChecklistId = await getCommentByCheckListIdAction(
+    //   checklistbyTaskIds
+    // );
+    // Extract checklistId values from checklistbyTaskIds
+
+    /*
+     * get board by board id
+     */
+    const boardData = await getBoardByBoardIdAction(boardId);
+    console.log("boardData", boardData);
+    /*
+     * get create id
+     */
+    const allTask = await getTaskByBoardIdAction(boardId);
+    console.log("task response", allTask);
+
+    /**
+     * workspace joined
+     */
+    //workspace other
+    const getWorKSpaceJoined = await getOtherWorkSpaceJoinedAction();
+    console.log("getWorKSpaceJoined other", getWorKSpaceJoined);
+    // Search through all workspaces and their otherBoards to find the matching board
+    let matchingBoard = null;
+    let matchingWorkspace = null;
+
+    for (const workspace of getWorKSpaceJoined.payload) {
+      const board = workspace.otherBoards?.find(
+        (board) => board.boardId === boardId
+      );
+
+      if (board) {
+        matchingBoard = board;
+        matchingWorkspace = workspace;
+        break; // Found it, no need to continue searching
+      }
+    }
+
+    console.log("matching board:", matchingBoard);
+    console.log("matching workspace:", matchingWorkspace);
+
+    if (!matchingBoard) {
+      console.log("Board not found with ID:", boardId);
+    } else {
+      console.log("Found board:", matchingBoard);
+      console.log("Board belongs to workspace:", matchingWorkspace.title);
+    }
+    const matchingBoardForNotPM = matchingBoard;
     return (
       <div>
         <SystemBoard
@@ -206,6 +263,11 @@ export default async function BoardLayout({ children, params }) {
           ganttChartId={ganttChartId}
           ganttChartName={ganttChartName}
           preventUserImage={preventUserImage}
+          boardData={boardData}
+          workspaceId={workspaceId}
+          getWorKSpaceJoined={getWorKSpaceJoined}
+          matchingBoardForNotPM={matchingBoardForNotPM}
+          currentUserProfile={currentUserProfile}
         />
         <ToastContainer position="top-right" autoClose={3000} />
         <main>{children}</main>
@@ -213,6 +275,7 @@ export default async function BoardLayout({ children, params }) {
     );
   } catch (error) {
     console.error("Critical error in BoardLayout:", error);
+
     return (
       <div>
         <SystemBoard
@@ -225,6 +288,11 @@ export default async function BoardLayout({ children, params }) {
           ganttChartId={ganttChartId}
           ganttChartName={ganttChartName}
           preventUserImage={preventUserImage}
+          boardData={boardData}
+          workspaceId={workspaceId}
+          getWorKSpaceJoined={getWorKSpaceJoined}
+          matchingBoardForNotPM={matchingBoardForNotPM}
+          currentUserProfile={currentUserProfile}
         />
         <main>{children}</main>
       </div>

@@ -15,7 +15,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
-import calender from "../../assets/calendarSideBar.png";
+import calender from "../../assets/calendarSidebar.png";
 import member from "../../assets/memberSideBar.png";
 import board from "../../assets/boardSideBar.png";
 import folder from "../../assets/folderSidBar.png";
@@ -25,7 +25,8 @@ import LeaveButton from "../button/LeaveButton";
 import PopupAction from "../popup/PopupAction";
 import { Button } from "@heroui/react";
 
-export default function DashboardSidebar() {
+export default function DashboardSidebar(getWorKSpaceJoined) {
+  console.log("workspace join inside bar", getWorKSpaceJoined);
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { toggleSidebar } = useSidebar();
@@ -44,12 +45,13 @@ export default function DashboardSidebar() {
   const workspaceId = pathSegments[2] || "1";
   const projectId = pathSegments[3] || "1";
 
-  const isTl = role === "tl";
+  const isTl = role === "ROLE_LEADER";
+  const ismem = role === "ROLE_MEMBER";
 
   const items = [
     {
       title: "Board",
-      url: `/dashboard/${workspaceId}/${projectId}/board?role=${role}`,
+      url: `/dashboard/${workspaceId}/${projectId}/board`,
 
       activeIcon: (active) => (
         <svg
@@ -70,7 +72,7 @@ export default function DashboardSidebar() {
     },
     {
       title: "Calendar",
-      url: `/dashboard/${workspaceId}/${projectId}/calendar?role=${role}`,
+      url: `/dashboard/${workspaceId}/${projectId}/calendar`,
 
       activeIcon: (active) => (
         <svg
@@ -159,7 +161,7 @@ export default function DashboardSidebar() {
     },
     {
       title: "Document",
-      url: `/dashboard/${workspaceId}/${projectId}/docu?role=${role}`,
+      url: `/dashboard/${workspaceId}/${projectId}/docu`,
 
       activeIcon: (active) => (
         <svg
@@ -195,7 +197,7 @@ export default function DashboardSidebar() {
     },
     {
       title: "Announcement",
-      url: `/dashboard/${workspaceId}/${projectId}/announcement?role=${role}`,
+      url: `/dashboard/${workspaceId}/${projectId}/announcement`,
       activeIcon: (active) => (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -216,7 +218,7 @@ export default function DashboardSidebar() {
     },
     {
       title: "Members",
-      url: `/dashboard/${workspaceId}/${projectId}/member?role=${role}`,
+      url: `/dashboard/${workspaceId}/${projectId}/member`,
 
       activeIcon: (active) => (
         <svg
@@ -259,7 +261,7 @@ export default function DashboardSidebar() {
     },
     {
       title: "Reports",
-      url: `/dashboard/${workspaceId}/${projectId}/report?role=${role}`,
+      url: `/dashboard/${workspaceId}/${projectId}/report`,
 
       activeIcon: (active) => (
         <svg
@@ -330,9 +332,9 @@ export default function DashboardSidebar() {
     },
   ];
 
-  const filteredItems = isTl
-    ? items.filter((item) => item.title !== "Reports")
-    : items;
+  // Fixed: Use OR (||) instead of AND (&&) to hide Reports for either tl OR ROLE_MEMBER
+  const filteredItems =
+    isTl || ismem ? items.filter((item) => item.title !== "Reports") : items;
 
   console.log("toggle: ", toggleSidebar);
 

@@ -10,19 +10,21 @@ import userProfile from "@/assets/profile.png";
 import ModalNotification from "../modal/noti/ModalNotification";
 import AllDocument from "./AllDocument";
 import ModalCreateDocu from "../modal/docu/ModalCreateDocu";
+import WelcomePage from "../modal/docu/EmptyDocumentPage";
 
 export default function DocumentLayout({
   user,
   documents,
+  publicDocuments,
   tokenFromGoogle,
   boardId,
   preventUserImage,
 }) {
-  const [activeTab, setActiveTab] = useState(null);
+  const [activeTab, setActiveTab] = useState("personal");
 
   const tabItems = [
     {
-      key: "kanban",
+      key: "personal",
       title: "Personal",
       content: <PrivateDocument />,
       icon: (isActive) => (
@@ -41,7 +43,7 @@ export default function DocumentLayout({
       ),
     },
     {
-      key: "calendar",
+      key: "public",
       title: "Public",
       content: <PublicDocument />,
       icon: (isActive) => (
@@ -62,51 +64,50 @@ export default function DocumentLayout({
   ];
 
   const handleTabClick = (tabKey) => {
-    if (activeTab === tabKey) {
-      setActiveTab(null);
-    } else {
-      setActiveTab(tabKey);
-    }
+    setActiveTab(tabKey);
   };
 
   return (
     <>
       {/* Navbar */}
-      <div className="w-full sticky top-0 z-[20] bg-bgColor rounded-bl-3xl">
-        <header className="px-4 sm:px-6 lg:px-8">
+      {/* Navbar */}
+      <div className="w-full sticky top-0 z-10 bg-bgColor rounded-bl-3xl">
+        <header className="px-4 sm:px-6 lg:px-8 ">
           <div className="flex w-full h-16 items-center justify-between">
             {/* Left side - Navigation Tabs */}
             <nav className="flex-1">
               <ul className="flex gap-1 text-sm font-medium">
-                {tabItems.map((tab) => (
-                  <li
-                    key={tab.key}
-                    onClick={() => handleTabClick(tab.key)}
-                    className={`flex items-center cursor-pointer rounded-lg transition-all duration-200 px-4 py-2 ${
-                      activeTab === tab.key
-                        ? "border-b-2 border-blue-500 text-blue-600 font-semibold"
-                        : "text-gray-600 hover:text-gray-900"
-                    }`}
-                  >
-                    <span className="mr-2">
-                      {tab.icon(activeTab === tab.key)}
-                    </span>
-                    {tab.title}
-                  </li>
-                ))}
+                {tabItems.map((tab) => {
+                  const isActive = activeTab === tab.key;
+                  return (
+                    <li
+                      key={tab.key}
+                      onClick={() => setActiveTab(tab.key)}
+                      className={`cursor-pointer rounded-lg transition-all duration-200 flex items-center gap-2 ${
+                        isActive
+                          ? "border-b-2 border-blue-500 px-4 py-2 text-blue-600 font-semibold"
+                          : "text-gray-600 px-4 py-2 hover:text-gray-900"
+                      }`}
+                    >
+                      {tab.icon(isActive)}
+                      {tab.title}
+                    </li>
+                  );
+                })}
               </ul>
             </nav>
 
             {/* Right side - Notification and Profile */}
             <div className="flex items-center gap-4">
               <ModalNotification />
+
               <Link href="/profile">
-                <div className="overflow-hidden rounded-full border-2 border-gray-200 hover:border-gray-300 shadow-sm transition-all duration-200 hover:shadow-md">
+                <div className="overflow-hidden rounded-full border-2 border-gray-200 hover:border-gray-300 shadow-sm transition-all duration-200 hover:shadow-md ">
                   <span className="sr-only">Toggle dashboard menu</span>
                   {preventUserImage ? (
                     <img
                       src={preventUserImage}
-                      alt={user?.name || "User"}
+                      alt={user.name || "User"}
                       className="size-10 object-cover hover:scale-105 transition-transform duration-200"
                     />
                   ) : (
@@ -122,31 +123,42 @@ export default function DocumentLayout({
           </div>
         </header>
       </div>
-
       {/* Tab Content Area */}
-      <main className="p-4 min-h-screen">
-        <div className="mx-auto">
-          {activeTab === "kanban" && (
-            <PrivateDocument
-              documents={documents}
-              modal={[<ModalCreateDocu boardId={boardId} />]}
-            />
-          )}
-          {activeTab === "calendar" && (
-            <PublicDocument
-              documents={documents}
-              modal={[<ModalCreateDocu boardId={boardId} />]}
-            />
-          )}
-          {activeTab === null && (
+      {tokenFromGoogle === null ? (
+        <WelcomePage />
+      ) : (
+        <main className="p-4 min-h-screen">
+          <div className="mx-auto">
+            {activeTab === "personal" && (
+              <PrivateDocument
+                documents={documents}
+                modal={[
+                  <ModalCreateDocu
+                    boardId={boardId}
+                    tokenFromGoogle={tokenFromGoogle}
+                  />,
+                ]}
+                tokenFromGoogle={tokenFromGoogle}
+                isHidden={false}
+              />
+            )}
+            {activeTab === "public" && (
+              <PublicDocument
+                publicDocuments={publicDocuments}
+                modal={[]}
+                isHidden={true}
+              />
+            )}
+            {/* {activeTab === null && (
             <AllDocument
               documents={documents}
               tokenFromGoogle={tokenFromGoogle}
               boardId={boardId}
             />
-          )}
-        </div>
-      </main>
+          )} */}
+          </div>
+        </main>
+      )}
     </>
   );
 }
