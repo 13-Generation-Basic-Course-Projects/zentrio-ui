@@ -1,8 +1,7 @@
-
-
 http://localhost:8080/swagger-ui/index.html#/
 
 the .env
+
 ```
 NEXT_PUBLIC_ONESIGNAL_APP_ID=eb585bc8-4e85-4114-8bbd-43d138858043
 NEXTAUTH_SECRET=FVPr6Q/fVlHGZkElZubC0Zaxv657dPUfDQ4o9DADjSin7+uST1d2A5klMWrMK8fmSl3doyf2wn5zj56VC+qqCg==
@@ -10,7 +9,6 @@ GOOGLE_CLIENT_ID=512720315813-t8pf1ac1rcrsgqamcr1eagmjjaf5ak09.apps.googleuserco
 GOOGLE_CLIENT_SECRET=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
 
 ```
-
 
 # Frontend - ReadMe
 
@@ -30,18 +28,18 @@ Welcome to the frontend repository of Zentrio!
 - [Getting Started](https://www.notion.so/Frontend-ReadMe-2164c727d12b800ab466f53e702b16d8?pvs=21)
 - [Project Structure](https://www.notion.so/Frontend-ReadMe-2164c727d12b800ab466f53e702b16d8?pvs=21)
 - [Routes and Implementations](https://www.notion.so/Frontend-ReadMe-2164c727d12b800ab466f53e702b16d8?pvs=21)
-    - [Workspace](https://www.notion.so/Frontend-ReadMe-2164c727d12b800ab466f53e702b16d8?pvs=21)
-    - [Board](https://www.notion.so/Frontend-ReadMe-2164c727d12b800ab466f53e702b16d8?pvs=21)
-    - [Gantt Chart and Gantt bar](https://www.notion.so/Frontend-ReadMe-2164c727d12b800ab466f53e702b16d8?pvs=21)
-    - [Gantt Chart (V2)](https://www.notion.so/Frontend-ReadMe-2164c727d12b800ab466f53e702b16d8?pvs=21)
-    - [Task](https://www.notion.so/Frontend-ReadMe-2164c727d12b800ab466f53e702b16d8?pvs=21)
-    - [Checklist](https://www.notion.so/Frontend-ReadMe-2164c727d12b800ab466f53e702b16d8?pvs=21)
-    - [Report](https://www.notion.so/Frontend-ReadMe-2164c727d12b800ab466f53e702b16d8?pvs=21)
-    - [Calendar](https://www.notion.so/Frontend-ReadMe-2164c727d12b800ab466f53e702b16d8?pvs=21)
-    - [Member](https://www.notion.so/Frontend-ReadMe-2164c727d12b800ab466f53e702b16d8?pvs=21)
-    - [Announcement](https://www.notion.so/Frontend-ReadMe-2164c727d12b800ab466f53e702b16d8?pvs=21)
-    - [Document](https://www.notion.so/Frontend-ReadMe-2164c727d12b800ab466f53e702b16d8?pvs=21)
-    - [Notification](https://www.notion.so/Frontend-ReadMe-2164c727d12b800ab466f53e702b16d8?pvs=21)
+  - [Workspace](https://www.notion.so/Frontend-ReadMe-2164c727d12b800ab466f53e702b16d8?pvs=21)
+  - [Board](https://www.notion.so/Frontend-ReadMe-2164c727d12b800ab466f53e702b16d8?pvs=21)
+  - [Gantt Chart and Gantt bar](https://www.notion.so/Frontend-ReadMe-2164c727d12b800ab466f53e702b16d8?pvs=21)
+  - [Gantt Chart (V2)](https://www.notion.so/Frontend-ReadMe-2164c727d12b800ab466f53e702b16d8?pvs=21)
+  - [Task](https://www.notion.so/Frontend-ReadMe-2164c727d12b800ab466f53e702b16d8?pvs=21)
+  - [Checklist](https://www.notion.so/Frontend-ReadMe-2164c727d12b800ab466f53e702b16d8?pvs=21)
+  - [Report](https://www.notion.so/Frontend-ReadMe-2164c727d12b800ab466f53e702b16d8?pvs=21)
+  - [Calendar](https://www.notion.so/Frontend-ReadMe-2164c727d12b800ab466f53e702b16d8?pvs=21)
+  - [Member](https://www.notion.so/Frontend-ReadMe-2164c727d12b800ab466f53e702b16d8?pvs=21)
+  - [Announcement](https://www.notion.so/Frontend-ReadMe-2164c727d12b800ab466f53e702b16d8?pvs=21)
+  - [Document](https://www.notion.so/Frontend-ReadMe-2164c727d12b800ab466f53e702b16d8?pvs=21)
+  - [Notification](https://www.notion.so/Frontend-ReadMe-2164c727d12b800ab466f53e702b16d8?pvs=21)
 - [Contributing](https://www.notion.so/Frontend-ReadMe-2164c727d12b800ab466f53e702b16d8?pvs=21)
 - [License](https://www.notion.so/Frontend-ReadMe-2164c727d12b800ab466f53e702b16d8?pvs=21)
 
@@ -55,9 +53,7 @@ Zentrio UI is a modular, scalable frontend for project management. It centralize
 
 ## About the Project
 
-![Zentrio-Logo 3.png](Zentrio-Logo_3.png)
-
-/*directory of our logo in public/images*/
+![Zentrio-Logo 3.png](zentrio.png)
 
 **ZenTrio** is an all-in-one teamwork management platform designed to solve common challenges in team collaboration, project tracking, and productivity. Born from real-world frustrations with messy workflows, unclear task ownership, and time wasted with switching between multiple platforms, ZenTrio brings everything your team needs into a single, streamlined environment.
 
@@ -74,52 +70,46 @@ Zentrio UI is a modular, scalable frontend for project management. It centralize
 
 ## Getting Started
 
-1. **Clone the repository:**
-    
+1.  **Clone the repository:**
+
     ```bash
     git clone <https://github.com/13-Generation-Basic-Course-Projects/zentrio-ui.git>
     cd zentrio-ui
-    
+
     ```
-    
-2. **Install dependencies:**
-    
+
+2.  **Install dependencies:**
+
     ```bash
     npm install
     # or yarn / pnpm / bun
     yarn install
-    
+
     ```
-    
-3. **Set up environment variables:**
-Create a `.env` file in the project root:
-    
+
+3.  **Set up environment variables:**
+    Create a `.env` file in the project root:
     ```bash
     NEXTAUTH_SECRET=your-secret-key
     GOOGLE_CLIENT_ID=your-google-client-id
-    GOOGLE_CLIENT_SECRET=your-google-client-secret
-    # Or
-    # GOOGLE_CLIENT_ID=740314412364-6pd3o8tgb0071s7tofra70bvhiqpb1kb.apps.googleusercontent.com
-    # GOOGLE_CLIENT_SECRET=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
+    GOOGLE_CLIENT_SECRET=your-google-client-secret # Or # GOOGLE_CLIENT_ID=740314412364-6pd3o8tgb0071s7tofra70bvhiqpb1kb.apps.googleusercontent.com # GOOGLE_CLIENT_SECRET=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
     NEXT_PUBLIC_API_URL=http://localhost:8080
     NEXTAUTH_URL=http://localhost:3000
-    NEXT_PUBLIC_ONESIGNAL_APP_ID=your-onesignal-app-id
-    # Or
-    # NEXT_PUBLIC_ONESIGNAL_APP_ID=eb585bc8-4e85-4114-8bbd-43d138858043
-    
-    ```
-    
-4. **Run the development server:**
-    
+    NEXT_PUBLIC_ONESIGNAL_APP_ID=your-onesignal-app-id # Or # NEXT_PUBLIC_ONESIGNAL_APP_ID=eb585bc8-4e85-4114-8bbd-43d138858043
+
+        ```
+
+4.  **Run the development server:**
+
     ```bash
     npm run dev
     # or yarn dev / pnpm dev / bun dev
     yarn run dev
-    
+
     ```
-    
-5. **Visit:**
-Open [http://localhost:3000](http://localhost:3000/) in your browser.
+
+5.  **Visit:**
+    Open [http://localhost:3000](http://localhost:3000/) in your browser.
 
 ---
 
@@ -169,71 +159,71 @@ zentrio-ui/
 ### Workspace
 
 - **Routes:**
-    
-    ```jsx
-    export const workspaceRouteGroup = {
-      createWorkspace: (),
-      getAllWorkspaces: (),
-      getWorkspaceById: (id),
-      deleteWorkspaceById: (id),
-      updateWorkspaceById: (id),
-      getWorkspacesByUser: (),
-      getWorkspacesByUserId: (id),
-      getWorkspacesByTitle: (title),
-      getOtherWorkSpaceJoined: (),
-    };
-    
-    ```
-    
+
+  ```jsx
+  export const workspaceRouteGroup = {
+    createWorkspace: (),
+    getAllWorkspaces: (),
+    getWorkspaceById: (id),
+    deleteWorkspaceById: (id),
+    updateWorkspaceById: (id),
+    getWorkspacesByUser: (),
+    getWorkspacesByUserId: (id),
+    getWorkspacesByTitle: (title),
+    getOtherWorkSpaceJoined: (),
+  };
+
+  ```
+
 - **Implementations:**
-    - **Service:** `service/workspace.service.js`
-    - **Action:** `action/workspace.action.js`
-        - Components:
-            - `appserver/Myworkspace.jsx`
-            - `card/CardBoardAdd.jsx`
-            - `modal/ModalCreateBoard.jsx`
-            - `card/CardBoard.jsx`
-            - `modal/ModalDelete.jsx`
-            - `modal/workspace/ModalOptionWorkspace.jsx`
-            - `modal/workspace/ModalRenameWorkspace.jsx`
-            - `modal/ModalCreateWorkspace.jsx`
-            - `sidebar/SidebarRenderer.jsx`
-            - `sidebar/WorkSpaceSidebar.jsx`
+  - **Service:** `service/workspace.service.js`
+  - **Action:** `action/workspace.action.js`
+    - Components:
+      - `appserver/Myworkspace.jsx`
+      - `card/CardBoardAdd.jsx`
+      - `modal/ModalCreateBoard.jsx`
+      - `card/CardBoard.jsx`
+      - `modal/ModalDelete.jsx`
+      - `modal/workspace/ModalOptionWorkspace.jsx`
+      - `modal/workspace/ModalRenameWorkspace.jsx`
+      - `modal/ModalCreateWorkspace.jsx`
+      - `sidebar/SidebarRenderer.jsx`
+      - `sidebar/WorkSpaceSidebar.jsx`
 
 ---
 
 ### Board
 
 - **Routes:**
-    
-    ```
-    export const boardRouteGroup = {
-      getBoardById: (boardId),
-      updateBoardById: (boardId),
-      updateFavBoardById: (boardId),
-      getAllBoards: (),
-      createBoard: (),
-      inviteUserToBoard: (id),
-      uploadBoardCover: (id),
-      getBoardsByUserId: (userId),
-      getBoardCover: (id, filename),
-      getBoardsByWorkspaceId: (workspaceId),
-      getBoardByTitle: (title),
-      deleteBoard: (id, workspaceId),
-      getFavoriteBoard: (userId),
-    };
-    
-    ```
-    
+
+  ```
+  export const boardRouteGroup = {
+    getBoardById: (boardId),
+    updateBoardById: (boardId),
+    updateFavBoardById: (boardId),
+    getAllBoards: (),
+    createBoard: (),
+    inviteUserToBoard: (id),
+    uploadBoardCover: (id),
+    getBoardsByUserId: (userId),
+    getBoardCover: (id, filename),
+    getBoardsByWorkspaceId: (workspaceId),
+    getBoardByTitle: (title),
+    deleteBoard: (id, workspaceId),
+    getFavoriteBoard: (userId),
+  };
+
+  ```
+
 - **Implementations:**
-    - **Service:** `service/workspace.service.js`
-    - **Action:** `action/workspace.action.js`
-        - Components:
-            - `appserver/Myworkspace.jsx`
-            - `appserver/FavoriteBoard.jsx`
-            - `card/CardBoardFavorite.jsx`
-            - `card/CardBoard.jsx`
-            - `modal/ModalDelete.jsx`
+  - **Service:** `service/workspace.service.js`
+  - **Action:** `action/workspace.action.js`
+    - Components:
+      - `appserver/Myworkspace.jsx`
+      - `appserver/FavoriteBoard.jsx`
+      - `card/CardBoardFavorite.jsx`
+      - `card/CardBoard.jsx`
+      - `modal/ModalDelete.jsx`
 
 ---
 
@@ -257,38 +247,38 @@ export const ganttRouteGroup = {
 ```
 
 - **Implementations:**
-    - **Service:** `service/gantt.service.js`
-    - **Action:** `action/gantt.action.js`
-        - **Components:**
-            - `appserver/Ganttpage.jsx`
-            - `gantt/GanttChartComponent.jsx`
-            - `gantt/GanttBarList.jsx`
+  - **Service:** `service/gantt.service.js`
+  - **Action:** `action/gantt.action.js`
+    - **Components:**
+      - `appserver/Ganttpage.jsx`
+      - `gantt/GanttChartComponent.jsx`
+      - `gantt/GanttBarList.jsx`
 
 ### Gantt Chart (V2)
 
 - **Routes:**
-    
-    ```
-      export const calendarV2RouteGroup = {
-      getTaskByBoardAndGanttBarId: (boardId, ganttbarId),
-      getAllGanttBarByGanttChartID: (ganttChartId),
-      getGanttChartByBoardId: (boardId),
-      createNoteInCalendar: (),
-      getAllNoteInCalendar: (taskId),
-      deleteNoteInCalendar: (calendarId, taskId),
-      updateNoteInCalendar: (calendarId),
-      getChecklistByTaskId: (taskId),
-    };
-    
-    ```
-    
+
+  ```
+    export const calendarV2RouteGroup = {
+    getTaskByBoardAndGanttBarId: (boardId, ganttbarId),
+    getAllGanttBarByGanttChartID: (ganttChartId),
+    getGanttChartByBoardId: (boardId),
+    createNoteInCalendar: (),
+    getAllNoteInCalendar: (taskId),
+    deleteNoteInCalendar: (calendarId, taskId),
+    updateNoteInCalendar: (calendarId),
+    getChecklistByTaskId: (taskId),
+  };
+
+  ```
+
 - **Implementations:**
-    - **Service:** `service/calendarV2.service.js`
-    - **Action:** `action/calendarV2.action.js`
-        - Components:
-            - `appserver/Calenderpage.jsx`
-            - `card/CardCommentCalender.jsx`
-            - `app/(system)/dashboard/[workspaceId]/[boardId]/calendar/page.jsx`
+  - **Service:** `service/calendarV2.service.js`
+  - **Action:** `action/calendarV2.action.js`
+    - Components:
+      - `appserver/Calenderpage.jsx`
+      - `card/CardCommentCalender.jsx`
+      - `app/(system)/dashboard/[workspaceId]/[boardId]/calendar/page.jsx`
 
 ---
 
@@ -307,98 +297,98 @@ export const taskRouteGroup = {
 ```
 
 - **Implementation:**
-    - **Service:** `service/task.service.js`
-    - **Action:** `action/task.action.js`
-        - **Components:**
-            - `appserver/Taskpage.jsx`
-            - `task/TaskList.jsx`
-            - `task/TaskItem.jsx`
+  - **Service:** `service/task.service.js`
+  - **Action:** `action/task.action.js`
+    - **Components:**
+      - `appserver/Taskpage.jsx`
+      - `task/TaskList.jsx`
+      - `task/TaskItem.jsx`
 
 ---
 
 ### Checklist
 
 - **Routes:**
-    
-    ```
-    export const checklistRouteGroup = {
-      getCheckListByTaskId: (checklistId),
-      getCoverOfCheckList: (checklistId, fileName),
-      getCheckListByCurrentUser: (id),
-      updateCheckListByIdAndTaskId: (checklistId),
-      updateStatusById: (id),
-      createCheckListByTaskId: (),
-      uploadCoverOfChecklistByCheckListId: (id),
-      assignMemberToCheckList: (checklistId, taskId, assignedBy, assignTo),
-      deleteCheckListByTaskId: (checkListId, taskId),
-    };
-    
-    ```
-    
+
+  ```
+  export const checklistRouteGroup = {
+    getCheckListByTaskId: (checklistId),
+    getCoverOfCheckList: (checklistId, fileName),
+    getCheckListByCurrentUser: (id),
+    updateCheckListByIdAndTaskId: (checklistId),
+    updateStatusById: (id),
+    createCheckListByTaskId: (),
+    uploadCoverOfChecklistByCheckListId: (id),
+    assignMemberToCheckList: (checklistId, taskId, assignedBy, assignTo),
+    deleteCheckListByTaskId: (checkListId, taskId),
+  };
+
+  ```
+
 - **Implementations:**
-    - **Service:** `service/checklist.service.js`
-    - **Action:** `action/checklist.action.js`
-        - **Components:**
-            - `appserver/Checklistpage.jsx`
-            - `checklist/ChecklistComponent.jsx`
-            - `checklist/ChecklistItem.jsx`
+  - **Service:** `service/checklist.service.js`
+  - **Action:** `action/checklist.action.js`
+    - **Components:**
+      - `appserver/Checklistpage.jsx`
+      - `checklist/ChecklistComponent.jsx`
+      - `checklist/ChecklistItem.jsx`
 
 ---
 
 ### Report
 
 - **Routes:**
-    
-    ```
-    export const reportRouteGroup = {
-      getReportByBoardId: (id),
-      generateReportInPDFByBoardId: (id),
-    };
-    
-    ```
-    
+
+  ```
+  export const reportRouteGroup = {
+    getReportByBoardId: (id),
+    generateReportInPDFByBoardId: (id),
+  };
+
+  ```
+
 - **Implementations:**
-    - **Service:** `service/report.service.js`
-    - **Action:** `action/report.action.js`
-        - `getReportByBoardId: (id)`
-            - `getReportService = async ({ boardId, zentrioToken })`
-            - `getReportAction = async ({ boardId })`
-            - Components:
-                - `appserver/Reportpage.jsx`
-                - `chart/VerticalChart.jsx`
-                - `chart/HorizontalChart.jsx`
-                - `button/ButtonReport.jsx`
-        - `generateReportInPDFByBoardId: (id)`
-            - `generateReportByBoardIdService = async ({ boardId, zentrioToken })`
-            - `generateReportByBoardIdAction = async ({ boardId })`
-            - Components:
-                - `card/CardBoardReport.jsx`
-                - `modal/rep/ModalSaveAs.jsx`
+  - **Service:** `service/report.service.js`
+  - **Action:** `action/report.action.js`
+    - `getReportByBoardId: (id)`
+      - `getReportService = async ({ boardId, zentrioToken })`
+      - `getReportAction = async ({ boardId })`
+      - Components:
+        - `appserver/Reportpage.jsx`
+        - `chart/VerticalChart.jsx`
+        - `chart/HorizontalChart.jsx`
+        - `button/ButtonReport.jsx`
+    - `generateReportInPDFByBoardId: (id)`
+      - `generateReportByBoardIdService = async ({ boardId, zentrioToken })`
+      - `generateReportByBoardIdAction = async ({ boardId })`
+      - Components:
+        - `card/CardBoardReport.jsx`
+        - `modal/rep/ModalSaveAs.jsx`
 
 ---
 
 ### Calendar
 
 - **Routes:**
-    
-    ```jsx
-    export const calendarRouteGroup = {
-      getCalendarByBoardIdAndUserId: (boardId),
-      getAllNotesFromCalendarByCurrentUser: (taskId),
-      createNoteInCalendar: (),
-      updateNoteByIdFromCalendar: (calendarId),
-      deleteNoteByIdFromCalendar: (calendarId, taskId),
-    };
-    
-    ```
-    
+
+  ```jsx
+  export const calendarRouteGroup = {
+    getCalendarByBoardIdAndUserId: (boardId),
+    getAllNotesFromCalendarByCurrentUser: (taskId),
+    createNoteInCalendar: (),
+    updateNoteByIdFromCalendar: (calendarId),
+    deleteNoteByIdFromCalendar: (calendarId, taskId),
+  };
+
+  ```
+
 - **Implementations:**
-    - **Service:** `service/calendar.service.js`
-    - **Action:** `action/calendar.action.js`
-        - Components:
-            - `appserver/Calendarpage.jsx`
-            - `card/CardTaskCalendar.jsx`
-            - `card/CardCommentCalendar.jsx`
+  - **Service:** `service/calendar.service.js`
+  - **Action:** `action/calendar.action.js`
+    - Components:
+      - `appserver/Calendarpage.jsx`
+      - `card/CardTaskCalendar.jsx`
+      - `card/CardCommentCalendar.jsx`
 
 ---
 
@@ -408,89 +398,85 @@ export const taskRouteGroup = {
 
 ```jsx
 export const memberRouteGroup = {
-  acceptBoardInvite: (id),
-  getBoardMembers: (boardId),
-  getUserByUserId: (id),
+  acceptBoardInvite: id,
+  getBoardMembers: boardId,
+  getUserByUserId: id,
 };
-
 ```
 
 - **Implementations:**
-    - **Service:** `service/member.service.js`
-    - **Action:** `action/member.action.js`
-        - **Components:**
-            - `appserver/Memberpage.jsx`
-            - `member/MemberList.jsx`
-            - `member/MemberProfile.jsx`
+  - **Service:** `service/member.service.js`
+  - **Action:** `action/member.action.js`
+    - **Components:**
+      - `appserver/Memberpage.jsx`
+      - `member/MemberList.jsx`
+      - `member/MemberProfile.jsx`
 
 ---
 
 ### Announcement
 
 - **Routes:**
-    
-    ```jsx
-    export const announcementRouteGroup = {
-      createAnnouncementByBoardId: (boardId),
-      uploadMultiImgByBoardId: (boardId),
-      getAllAnnouncementByBoardId: (boardId),
-      deleteAnnouncementById: (announId),
-      pinedAnnouncementById: (announId),
-      updateAnnouncementById: (announId),
-    };
-    
-    ```
-    
+  ```jsx
+  export const announcementRouteGroup = {
+    createAnnouncementByBoardId: boardId,
+    uploadMultiImgByBoardId: boardId,
+    getAllAnnouncementByBoardId: boardId,
+    deleteAnnouncementById: announId,
+    pinedAnnouncementById: announId,
+    updateAnnouncementById: announId,
+  };
+  ```
 - **Implementations:**
-    - **Service:** `service/announcement.service.js`
-    - **Action:** `action/announcement.action.js`
-        - Components:
-            - `announcementCompo/CardCreateModel.jsx`
-            - `announcementCompo/CardPostAnnouncement.jsx`
-            - `announcementCompo/ModelDeleteAnnoun.jsx`
-            - `announcementCompo/ModelPinedAnnoun.jsx`
-            - `announcementCompo/ModelEditAnnoun.jsx`
+  - **Service:** `service/announcement.service.js`
+  - **Action:** `action/announcement.action.js`
+    - Components:
+      - `announcementCompo/CardCreateModel.jsx`
+      - `announcementCompo/CardPostAnnouncement.jsx`
+      - `announcementCompo/ModelDeleteAnnoun.jsx`
+      - `announcementCompo/ModelPinedAnnoun.jsx`
+      - `announcementCompo/ModelEditAnnoun.jsx`
 
 ---
 
 ### Document
 
 - **Routes:**
-    
-    ```jsx
-    export const documentRouteGroup = {
-      getDocumentById: (id),
-      updateDocumentById: (id, accessToken, newName),
-      deleteDocumentById: (documentId, accessToken),
-      makeDocumentPrivate: (id),
-      makeDocumentPublic: (documentId, accessToken),
-      createDocument: (),
-      uploadDocumentToBoard: (boardId, accessToken),
-      createDriveFile: (name, folderId, fileType, accessToken),
-      uploadDocumentToFolder: (folderId, accessToken),
-      getPublicDocumentsByBoard: (boardId),
-      downloadDocumentByDocumentId: (documentId, accessToken),
-      downloadAllFilesAsZip: (documentId, accessToken),
-      getAllDocumentsByBoard: (boardId),
-      getDocumentsByType: (boardId, mineType),
-      getDocumentByName: (boardId, name),
-      getFileByFolderId: (folderId, accessToken),
-    };
-    
-    ```
-    
+
+  ```jsx
+  export const documentRouteGroup = {
+    getDocumentById: (id),
+    updateDocumentById: (id, accessToken, newName),
+    deleteDocumentById: (documentId, accessToken),
+    makeDocumentPrivate: (id),
+    makeDocumentPublic: (documentId, accessToken),
+    createDocument: (),
+    uploadDocumentToBoard: (boardId, accessToken),
+    createDriveFile: (name, folderId, fileType, accessToken),
+    uploadDocumentToFolder: (folderId, accessToken),
+    getPublicDocumentsByBoard: (boardId),
+    downloadDocumentByDocumentId: (documentId, accessToken),
+    downloadAllFilesAsZip: (documentId, accessToken),
+    getAllDocumentsByBoard: (boardId),
+    getDocumentsByType: (boardId, mineType),
+    getDocumentByName: (boardId, name),
+    getFileByFolderId: (folderId, accessToken),
+  };
+
+  ```
+
 - **Implementations:**
-    - **Service:** `service/document.service.js`
-    - **Action:** `action/document.action.js`
-        - Components:
-            - `modal/docu/ModalFolderList.jsx`
-            - `modal/docu/ModalOptionDocument.jsx`
-            - `modal/docu/ModalCreateDocu.jsx`
-            - `modal/docu/ModalUploadfile.jsx`
-            - `modal/docu/ModalCreateDocuInFolder.jsx`
-            - `modal/ModalRenameDocu.jsx`
-            - `popup/PopupAction.jsx`
-            - `app/(system)/dashboard/[workspaceId]/[boardId]/docu/layout.jsx`
+  - **Service:** `service/document.service.js`
+  - **Action:** `action/document.action.js`
+    - Components:
+      - `modal/docu/ModalFolderList.jsx`
+      - `modal/docu/ModalOptionDocument.jsx`
+      - `modal/docu/ModalCreateDocu.jsx`
+      - `modal/docu/ModalUploadfile.jsx`
+      - `modal/docu/ModalCreateDocuInFolder.jsx`
+      - `modal/ModalRenameDocu.jsx`
+      - `popup/PopupAction.jsx`
+      - `app/(system)/dashboard/[workspaceId]/[boardId]/docu/layout.jsx`
 
 ---
 
@@ -510,12 +496,12 @@ export const notificationRouteGroup = {
 ```
 
 - **Implementations:**
-    - **Service:** `service/notification.service.js`
-    - **Action:** `action/notification.action.js`
-        - **Components:**
-            - `appserver/Notificationpage.jsx`
-            - `notification/NotificationList.jsx`
-            - `notification/NotificationItem.jsx`
+  - **Service:** `service/notification.service.js`
+  - **Action:** `action/notification.action.js`
+    - **Components:**
+      - `appserver/Notificationpage.jsx`
+      - `notification/NotificationList.jsx`
+      - `notification/NotificationItem.jsx`
 
 ---
 
@@ -578,4 +564,5 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
 # zentrio-ui
