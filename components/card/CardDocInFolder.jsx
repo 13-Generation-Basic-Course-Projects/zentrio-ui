@@ -47,6 +47,7 @@ export default function CardFolderInFolder({
       </CardHeader>
       <CardBody>
         <ModalFolderList
+          folderId={fileId}
           accessToken={tokenFromGoogle}
           link={link}
           title={title}
