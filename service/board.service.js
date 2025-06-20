@@ -986,3 +986,30 @@ export const getTaskByTaskIdService = async ({ taskId, token }) => {
 
   return response.json();
 };
+
+/**
+ * guest user
+ */ export const getGuestUserDisplayKanbanService = async (
+  workspaceId,
+  boardId
+) => {
+  const url = boardRouteGroup.getGuestUserDisplayKanban(workspaceId, boardId);
+  console.log("get task url : ", url);
+
+  const response = await fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  // if (!response.ok) {
+  //   const error = await response.json().catch(() => ({}));
+  //   throw new Error(
+  //     error.message || `Failed to get task by task id: ${response.status}`
+  //   );
+  // }
+
+  const data = response.json();
+  return data;
+};

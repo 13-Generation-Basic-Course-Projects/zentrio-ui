@@ -255,6 +255,7 @@ export function StackedProfileChecklist({
   leaderId,
   checklistId,
   hidden,
+  role,
 }) {
   console.log("=====", allMemberChecklist);
 
@@ -287,12 +288,18 @@ export function StackedProfileChecklist({
       {hidden != null ? (
         ""
       ) : (
-        <ModalAssignMemberToCheckLisk
-          allMemberInBoard={allMemberChecklist}
-          taskId={taskId}
-          leaderId={leaderId}
-          checklistId={checklistId}
-        />
+        <>
+          {role == "ROLE_MEMBER" || role == "ROLE_MANGER" ? (
+            ""
+          ) : (
+            <ModalAssignMemberToCheckLisk
+              allMemberInBoard={allMemberChecklist}
+              taskId={taskId}
+              leaderId={leaderId}
+              checklistId={checklistId}
+            />
+          )}
+        </>
       )}
     </div>
   );

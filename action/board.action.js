@@ -20,6 +20,7 @@ import {
   getBoardByBoardIdService,
   getCheckListByTaskIdService,
   getCommentByCheckListIdService,
+  getGuestUserDisplayKanbanService,
   getMemberByBoardIdService,
   getTaskByBoardIdAndGanttBarIdService,
   getTaskByBoardIdService,
@@ -716,9 +717,8 @@ export const deleteCommentBycmtIdAction = async (commentId) => {
   return result;
 };
 
-
 /* add new
- *  task by task id 
+ *  task by task id
  */
 export const getTaskByTaskIdAction = async (taskId) => {
   console.log("taskId getTaskByTaskIdAction: ", taskId);
@@ -730,6 +730,20 @@ export const getTaskByTaskIdAction = async (taskId) => {
     token,
   });
   revalidatePath("/member");
+  console.log("getTaskByTaskIdAction result: ", result);
+  return result;
+};
+
+/* add new
+ *  getGuestUserDisplayKanbanService
+ */
+export const getGuestUserDisplayKanbanAction = async (workspaceId, boardId) => {
+  console.log("aaaa: ", workspaceId, boardId);
+
+  const result = await getGuestUserDisplayKanbanService({
+    workspaceId,
+    boardId,
+  });
   console.log("getTaskByTaskIdAction result: ", result);
   return result;
 };
