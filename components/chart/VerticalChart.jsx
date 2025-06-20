@@ -59,9 +59,8 @@ export default function VerticalChart({ report }) {
             </div>
             <div className="flex rounded-[16px] bg-black/5 px-[1.5%] py-[1%]">
               <p
-                className={`px-[11px] pt-[7px] cursor-pointer pb-[8px] ${
-                  weeklyClick ? "bg-black text-white" : "text-black/40"
-                } text-[11px] rounded-[10px]`}
+                className={`px-[11px] pt-[7px] cursor-pointer pb-[8px] ${weeklyClick ? "bg-black text-white" : "text-black/40"
+                  } text-[11px] rounded-[10px]`}
                 onClick={() => {
                   setWeeklyClick(true);
                   setMonthlyClick(false);
@@ -70,9 +69,8 @@ export default function VerticalChart({ report }) {
                 Weekly
               </p>
               <p
-                className={`px-[11px] pt-[7px] cursor-pointer pb-[8px] ${
-                  monthlyClick ? "bg-black text-white" : "text-black/40"
-                } text-[11px] rounded-[10px]`}
+                className={`px-[11px] pt-[7px] cursor-pointer pb-[8px] ${monthlyClick ? "bg-black text-white" : "text-black/40"
+                  } text-[11px] rounded-[10px]`}
                 onClick={() => {
                   setMonthlyClick(true);
                   setWeeklyClick(false);
@@ -84,7 +82,7 @@ export default function VerticalChart({ report }) {
           </div>
           <div className="w-[97.5%] border-t h-[85%] flex justify-end">
             <div className="w-[98.25%] h-[90%] flex justify-center items-center pt-[12.5%] pr-[5%]">
-              {}
+              { }
               {monthlyClick ? (
                 <MonthlyChart report={report} />
               ) : (
@@ -94,7 +92,7 @@ export default function VerticalChart({ report }) {
           </div>
         </div>
         <div className="w-[30%] border-l-1 border-gray-200 flex justify-center items-center">
-          {}
+          { }
           <div className="w-[140px] text-[11px] flex flex-col justify-center gap-[7.5%] h-[50%]">
             <div className="text-primary h-[35px] bg-[#59BAD5]/10 rounded-full w-full border-primary border flex items-center justify-center">
               <svg
@@ -108,7 +106,7 @@ export default function VerticalChart({ report }) {
               </svg>
               <p className="pl-[7.5%]">All Categories</p>
             </div>
-            {}
+            { }
             <div className="flex items-center w-full px-[10%]">
               <div className="flex items-center w-[60%]">
                 <svg
@@ -134,9 +132,9 @@ export default function VerticalChart({ report }) {
                 <p className="w-[40%] text-right text-[9px]">0</p>
               )}
             </div>
-            {}
+            { }
 
-            {}
+            { }
             <div className="flex items-center w-full px-[10%]">
               <div className="flex items-center w-[60%]">
                 <svg
@@ -162,9 +160,9 @@ export default function VerticalChart({ report }) {
                 <p className="w-[40%] text-right text-[9px]">0</p>
               )}
             </div>
-            {}
+            { }
 
-            {}
+            { }
             <div className="flex items-center w-full px-[10%]">
               <div className="flex items-center w-[100%]">
                 <svg
@@ -190,9 +188,9 @@ export default function VerticalChart({ report }) {
                 <p className="w-[40%] text-right text-[9px]">0</p>
               )}
             </div>
-            {}
+            { }
 
-            {}
+            { }
             <div className="flex items-center w-full px-[10%]">
               <div className="flex items-center w-[60%]">
                 <svg
@@ -218,9 +216,9 @@ export default function VerticalChart({ report }) {
                 <p className="w-[40%] text-right text-[9px]">0</p>
               )}
             </div>
-            {}
+            { }
           </div>
-          {}
+          { }
         </div>
       </div>
     </>
@@ -230,6 +228,56 @@ export default function VerticalChart({ report }) {
 export const MonthlyChart = ({ report }) => {
   const canvasRef = useRef(null);
   const chartRef = useRef(null);
+
+  const generateMonthlyStageData = (report) => {
+    const monthlyStageData = {
+      'TO DO': Array(12).fill(0),
+      'IN_PROGRESS': Array(12).fill(0),
+      'UNDER_REVIEW': Array(12).fill(0),
+      'DONE': Array(12).fill(0),
+    };
+
+    if (!report || !report.groupedTasks) {
+      console.warn("generateMonthlyStageData: No groupedTasks found");
+      return monthlyStageData;
+    }
+
+    report.groupedTasks.forEach((group) => {
+      const stage = group?.stage;
+      if (!stage || !(stage in monthlyStageData)) {
+        console.warn(`Unknown stage encountered: "${stage}"`);
+        return; // skip unknown stages
+      }
+
+      if (!group.tasks || !Array.isArray(group.tasks)) {
+        console.warn(`No tasks array found for stage: "${stage}"`);
+        return;
+      }
+
+      group.tasks.forEach((task) => {
+        if (!task.finishedAt) {
+          // Optional: log once per missing finishedAt?
+          // console.warn(`Task missing finishedAt:`, task);
+          return; // skip task without finishedAt
+        }
+
+        const date = new Date(task.finishedAt);
+        if (isNaN(date)) {
+          console.warn(`Invalid finishedAt date: "${task.finishedAt}"`);
+          return; // skip invalid dates
+        }
+
+        const monthIndex = date.getMonth(); // 0-11 for Jan-Dec
+        monthlyStageData[stage][monthIndex]++;
+      });
+    });
+
+    return monthlyStageData;
+  };
+
+  const monthlyStageData = generateMonthlyStageData(report?.payload);
+
+  console.log("Monthly: ", monthlyStageData)
 
   useEffect(() => {
     if (chartRef.current) {
@@ -243,42 +291,66 @@ export const MonthlyChart = ({ report }) => {
       data: {
         labels: [
           "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-          "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+          "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
         ],
-        datasets: [
-          {
-            data: [66, 144, 146, 116, 107, 131, 43, 89, 75, 120, 95, 110],
-            label: "Applied",
-            borderColor: "rgb(109, 253, 181)",
-            backgroundColor: function(context) {
-              const chart = context.chart;
-              const {ctx, chartArea} = chart;
-              
-              if (!chartArea) return null;
-              
-              const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
-              gradient.addColorStop(0, "rgb(109, 253, 181)");
-              gradient.addColorStop(0.5, "rgb(34, 197, 94)");
-              gradient.addColorStop(1, "rgb(22, 101, 52)");
-              
-              return gradient;
-            },
-            borderWidth: 2,
+        datasets: Object.entries(monthlyStageData).map(([stage, data]) => ({
+          label: stage,
+          data,
+          borderWidth: 2,
+          borderColor: "rgba(0,0,0,0%)",
+          backgroundColor: function (context) {
+            const chart = context.chart;
+            const { ctx, chartArea } = chart;
+            if (!chartArea) return null;
+
+            const { datasetIndex, dataIndex } = context;
+            const meta = chart.getDatasetMeta(datasetIndex);
+            const bar = meta.data[dataIndex];
+
+            // Check if bar exists and has x & width
+            if (!bar || typeof bar.x !== 'number' || typeof bar.width !== 'number') {
+              return "#59BAD5"; // fallback solid color
+            }
+
+            const { x, width } = bar;
+            const gradient = ctx.createLinearGradient(x - width / 2, 0, x + width / 2, 0);
+            gradient.addColorStop(0, "#FFFFFF");
+            gradient.addColorStop(0.5, "#59BAD5");
+            gradient.addColorStop(1, "#59BAD5");
+
+            return gradient;
           },
-        ],
+        })),
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        elements: {
+          bar: {
+            borderRadius: 6,
+          },
+        },
         plugins: {
           legend: {
             display: false,
-            position: "top",
+          },
+          tooltip: {
+            mode: 'index',
+            intersect: false,
           },
         },
         scales: {
           y: {
             beginAtZero: true,
+            grid: {
+              display: true,
+            },
+          },
+          x: {
+            grid: {
+              display: false,
+            },
+            stacked: true,
           },
         },
       },
@@ -290,7 +362,7 @@ export const MonthlyChart = ({ report }) => {
         chartRef.current = null;
       }
     };
-  }, []);
+  }, [report]);
 
   return (
     <div className="w-full h-[350px] flex mb-[2.5%]">
@@ -298,6 +370,7 @@ export const MonthlyChart = ({ report }) => {
     </div>
   );
 };
+
 
 export const WeeklyChart = ({ report }) => {
   const canvasRef = useRef(null);
@@ -425,10 +498,6 @@ export const WeeklyChart = ({ report }) => {
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        interaction: {
-          mode: "point",
-          intersect: true,
-        },
         elements: {
           bar: {
             borderRadius: 6,
@@ -437,66 +506,17 @@ export const WeeklyChart = ({ report }) => {
         plugins: {
           legend: {
             display: false,
-            position: "top",
-            labels: {
-              padding: 20,
-              usePointStyle: true,
-              font: {
-                size: 12,
-              },
-            },
-          },
-          tooltip: {
-            mode: "point",
-            intersect: true,
-            filter: function (tooltipItem) {
-              return tooltipItem.datasetIndex === 0 || tooltipItem.parsed.y > 0;
-            },
-            callbacks: {
-              title: (tooltipItems) => {
-                return tooltipItems[0].label;
-              },
-              label: (context) => {
-                return `${context.dataset.label}: ${context.parsed.y}`;
-              },
-            },
           },
         },
         scales: {
-          x: {
-            stacked: false,
-            grid: {
-              display: false,
-              color: "rgba(0,0,0,0.1)",
-            },
-            ticks: {
-              font: {
-                size: 12,
-              },
-            },
-          },
           y: {
-            stacked: false,
             beginAtZero: true,
+          },
+          x: {
             grid: {
-              display: true,
-              color: "rgba(0,0,0,0.1)",
-            },
-            ticks: {
-              stepSize: 20,
-              font: {
-                size: 12,
-              },
-            },
-          },
-        },
-        layout: {
-          padding: {
-            top: 10,
-            bottom: 10,
-            left: 10,
-            right: 10,
-          },
+              display: false
+            }
+          }
         },
       },
     });
