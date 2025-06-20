@@ -739,7 +739,7 @@ export const getTaskByTaskIdAction = async (taskId) => {
 /* add new
  *  getGuestUserDisplayKanbanService
  */
-export const getGuestUserDisplayKanbanAction = async (workspaceId, boardId) => {
+export const getGuestUserDisplayKanbanAction = async ({ workspaceId, boardId }) => {
   console.log("from guestrole: ", workspaceId, boardId);
 
   const result = await getGuestUserDisplayKanbanService({
