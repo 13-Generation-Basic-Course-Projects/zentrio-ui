@@ -27,26 +27,36 @@ const CardMember = ({ members = [], preventUserImage }) => {
     if (Array.isArray(roles)) {
       return roles[0]?.replace("ROLE_", "").replace(/_/g, " ") || "Member";
     }
-    return typeof roles === "string" ? roles.replace("ROLE_", "").replace(/_/g, " ") : "Member";
+    return typeof roles === "string"
+      ? roles.replace("ROLE_", "").replace(/_/g, " ")
+      : "Member";
   };
 
   return (
     <div>
-      <Card className="w-full mx-auto border shadow-sm h-[400px] bg-white/80 dark:bg-gray-800/80">
-        <CardHeader className="flex justify-between items-center px-6 py-4 pb-2">
-          <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-100">
-            Members
-          </h2>
-          <Button
-            variant="light"
-            size="md"
-            className="text-gray-500 dark:text-gray-300 p-0 h-auto min-w-0"
-          >
-            See All
-          </Button>
+      <Card className="w-full mx-auto shadow-sm h-[400px] bg-white/80 dark:bg-gray-800/80">
+        <CardHeader className="flex justify-between items-center px-6 py-4 pb-2 ">
+          <div className="flex w-full items-center justify-between pb-4 border-b border-gray-100">
+            {/* Left side: Icon + Title */}
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-[#59BAD5] rounded-xl">
+                <UsersRound className="w-5 h-5 text-white" />
+              </div>
+              <h2 className="text-xl font-bold text-gray-900">All Members</h2>
+            </div>
+
+            {/* Right side: Button */}
+            <Button
+              variant="light"
+              size="md"
+              className="text-gray-500 dark:text-gray-300 p-0 h-auto min-w-0"
+            >
+              See All
+            </Button>
+          </div>
         </CardHeader>
 
-        <CardBody className="px-6 py-4 overflow-y-auto max-h-[300px] scrollbar-hidden">
+        <CardBody className="px-6 py-1 overflow-y-auto max-h-[300px] scrollbar-hidden">
           {members?.length === 0 || !members ? (
             <div className="flex flex-col justify-center items-center gap-4 p-4 z-10 min-h-[calc(300px-2rem)]">
               {/* Using Lucide icon for "Nothing Found" for consistency */}
@@ -72,12 +82,18 @@ const CardMember = ({ members = [], preventUserImage }) => {
                     <div className="relative">
                       {/* Profile Image */}
                       <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-white shadow-md ring-2 ring-gray-100 group-hover:ring-[#59BAD5]/30 transition-all duration-200">
-                        {(member.profileImage && member.profileImage !== "default_user_image_path") || preventUserImage ? (
+                        {(member.profileImage &&
+                          member.profileImage !== "default_user_image_path") ||
+                        preventUserImage ? (
                           <img
                             src={member.profileImage || preventUserImage}
                             alt={member.username || member.name}
                             className="w-full h-full object-cover"
-                            onError={(e) => { e.target.src = preventUserImage || "https://placehold.co/48x48/CCCCCC/FFFFFF?text=U"; }}
+                            onError={(e) => {
+                              e.target.src =
+                                preventUserImage ||
+                                "https://placehold.co/48x48/CCCCCC/FFFFFF?text=U";
+                            }}
                           />
                         ) : (
                           <div className="w-full h-full bg-gradient-to-br from-[#59BAD5] to-[#4AA5C1] flex items-center justify-center text-white font-semibold text-sm">
