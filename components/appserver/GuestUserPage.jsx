@@ -140,8 +140,7 @@ export default function GuestKanbanBoardCompo({
 
   return (
     <>
-      <h1>Hello guest user</h1>
-      <div className="w-full h-screen flex flex-col">
+      <div className="w-full h-screen flex flex-col p-5">
         <BredCrum
           board={
             boardData?.payload?.title ||
