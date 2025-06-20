@@ -1,4 +1,3 @@
-import React from "react";
 import { Button } from "@/components/ui/button";
 import { generateReportByBoardIdAction } from "@/action/report.action";
 
@@ -17,11 +16,9 @@ const files = [
   },
 ];
 
-export default function CardBoardReport() {
-
+export default function CardBoardReport({ boardId }) {
   const handleGenerate = async () => {
-    const boardId = `d4f6ed17-3f68-48b4-9cbb-fa141a2d2000`;
-    const { blob, fileName } = await generateReportByBoardIdAction(boardId);
+    const { blob, fileName } = await generateReportByBoardIdAction({ boardId });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;

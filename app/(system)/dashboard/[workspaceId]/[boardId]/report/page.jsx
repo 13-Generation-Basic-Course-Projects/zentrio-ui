@@ -15,7 +15,7 @@ export default async function Report({ params }) {
       <Reportpage
         modal={[
           <BtnPreview key="btn-preview" report={reportData}/>, 
-          <ModalSaveAs key="modal-save-as" />,
+          <ModalSaveAs key="modal-save-as" boardId={boardId}/>,
         ]}
         report={reportData}
       />

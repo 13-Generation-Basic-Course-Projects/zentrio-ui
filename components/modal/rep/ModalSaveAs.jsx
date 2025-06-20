@@ -8,7 +8,9 @@ import {
   DropdownItem,
   Button,
 } from "@heroui/react";
-export default function ModalSaveAs() {
+import { useState } from "react";
+
+export default function ModalSaveAs({ boardId }) {
   return (
     <Dropdown className="p-0 bg-transparent borde-none">
       <DropdownTrigger>
@@ -32,7 +34,7 @@ export default function ModalSaveAs() {
         className="p-0 bg-transparent borde-none"
       >
         <DropdownItem className="p-0 bg-transparent borde-none">
-          <CardBoardReport />
+          <CardBoardReport boardId={boardId}/>
         </DropdownItem>
       </DropdownMenu>
     </Dropdown>
