@@ -1,7 +1,12 @@
 "use client";
 
-import { getGuestUserDisplayKanbanAction } from "@/action/board.action";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
+import { MessageSquare, Paperclip, ChevronUp, ChevronDown } from "lucide-react";
+import BredCrum from "../bredcrum/MyBredcrum";
+import { StackedUser } from "../useravatar/StackUser"; // Adjust path as needed
+import { EmptyKanban } from "./EmptyKanban"; // Adjust path as needed
+import ModalDetailChecklist from "../modal/board/ModalDetailChecklist"; // Adjust path as needed
+import CardDateChecklist from "../card/CardDateChecklist"; // Adjust path as needed
 
 // Placeholder component
 const UserAvater = ({ image }) => (
@@ -87,8 +92,6 @@ const transformApiToColumns = (apiData) => {
 
 export default function GuestKanbanBoardCompo({
   modal,
-  workspaceId,
-  boardId,
   allMemberInBoard,
   preventUserImage,
   boardData,
@@ -101,38 +104,19 @@ export default function GuestKanbanBoardCompo({
 
   console.log("data from kabanpage", data);
 
-  // Fetch data from API
   useEffect(() => {
-    const fetchData = async () => {
-      if (!workspaceId || !boardId) {
-        setError("Workspace ID or Board ID is missing");
+    if (data) {
+      if (data.success) {
+        const transformedColumns = transformApiToColumns(data.payload);
+        setColumns(transformedColumns);
         setLoading(false);
-        return;
-      }
-
-      try {
-        setLoading(true);
-        const result = await getGuestUserDisplayKanbanAction(
-          "feb6d22e-b2d6-4105-b3ad-663c7148c337",
-          "15bf8b35-fc6e-49fc-be3e-7730dc76a533"
-        );
-        if (result.success && result.payload?.tasks) {
-          const transformedColumns = transformApiToColumns(result.payload);
-          setColumns(transformedColumns);
-        } else {
-          setError(result.message || "Failed to fetch kanban data");
-        }
-      } catch (err) {
-        setError("Error fetching data: " + err.message);
-      } finally {
+      } else {
+        setError(data.message || "Failed to load Kanban data");
         setLoading(false);
       }
-    };
+    }
+  }, [data]);
 
-    fetchData();
-  }, [workspaceId, boardId]);
-
-  // Toggle task expansion
   const toggleTaskExpansion = (cardId) => {
     setColumns((prev) =>
       prev.map((column) => ({
@@ -151,21 +135,25 @@ export default function GuestKanbanBoardCompo({
     done: "border-green-500",
   };
 
-  if (loading) {
-    return <div>Loading tasks...</div>;
-  }
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+  if (loading) return <div>Loading tasks...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   return (
     <>
       <h1>Hello guest user</h1>
       <div className="w-full h-screen flex flex-col">
         <BredCrum
-          board={boardData?.payload.title || "Hikko Design"}
+          board={
+            boardData?.payload?.title ||
+            data?.payload?.board?.title ||
+            "Hikko Design"
+          }
           feature={"Board"}
-          header={boardData?.payload.title || "Hikko Design"}
+          header={
+            boardData?.payload?.title ||
+            data?.payload?.board?.title ||
+            "Hikko Design"
+          }
           modal={modal}
         />
         <StackedUser image={allMemberInBoard} />
@@ -189,11 +177,11 @@ export default function GuestKanbanBoardCompo({
               <div
                 key={column.id}
                 className="flex flex-col min-h-0 w-full rounded-lg p-1 h-full px-2 py-5">
-                <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-hidden pr-1 pb-[300px]">
+                <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 pr-1 pb-5">
                   {(column.cards || [])
                     .slice()
                     .sort((a, b) => a.order - b.order)
-                    .map((card, cardIndex) => (
+                    .map((card) => (
                       <div
                         key={card.id}
                         id={card.id}
@@ -229,6 +217,7 @@ export default function GuestKanbanBoardCompo({
                                   ) : (
                                     <UserAvater
                                       image={
+                                        preventUserImage ||
                                         "https://public.bnbstatic.com/20190405/eb2349c3-b2f8-4a93-a286-8f86a62ea9d8.png"
                                       }
                                     />
@@ -249,6 +238,7 @@ export default function GuestKanbanBoardCompo({
                                   </span>
                                 )}
                               </div>
+                              <span>{card.duration}</span>
                             </div>
                           </div>
                           {card.expanded && (
@@ -259,7 +249,7 @@ export default function GuestKanbanBoardCompo({
                                   id={checklist.checklistId}>
                                   <div className="mb-1 bg-white rounded-xl shadow-sm">
                                     <ModalDetailChecklist
-                                      boardId={boardId}
+                                      boardId={data?.payload?.board?.boardId}
                                       taskId={card.id}
                                       id={checklist?.checklistId}
                                       taskTitle={card.title}
@@ -273,10 +263,10 @@ export default function GuestKanbanBoardCompo({
                                       }
                                       status={checklist.status}
                                       image={
-                                        checklist.members &&
-                                        checklist.members.length > 0
+                                        checklist.members?.length > 0
                                           ? checklist.members[0].imageUrl
-                                          : card.assignees[0] || ""
+                                          : card.assignees[0] ||
+                                            preventUserImage
                                       }
                                       description={checklist.description || ""}
                                       checklistId={checklist?.checklistId}
@@ -288,7 +278,7 @@ export default function GuestKanbanBoardCompo({
                                       preventUserImage={preventUserImage}
                                       allMemberInBoard={allMemberInBoard}
                                       leaderId={card.teamLeader?.userId || null}
-                                      role="ROLE_GUEST" // Read-only for guests
+                                      role="ROLE_GUEST"
                                     />
                                   </div>
                                 </div>
@@ -315,7 +305,8 @@ export default function GuestKanbanBoardCompo({
                         <div className="flex items-center justify-center">
                           <button
                             onClick={() => toggleTaskExpansion(card.id)}
-                            className="text-gray-400 hover:text-gray-600 p-1 rounded hover:bg-gray-100">
+                            className="text-gray-400 hover:text-gray-600 p-1 rounded hover:bg-gray-100"
+                            disabled={role === "ROLE_GUEST"}>
                             {card.expanded ? (
                               <ChevronUp size={16} />
                             ) : (
