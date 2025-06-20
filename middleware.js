@@ -20,7 +20,7 @@ export async function middleware(req) {
     // Check if the requested route is in restricted routes
     if (restrictedRoutes.includes(pathname)) {
       // Redirect authenticated users to a safe route, e.g., /dashboard
-      return NextResponse.redirect(new URL("/", req.url));
+      return NextResponse.redirect(new URL("/dashboard", req.url));
     }
     // Allow access to other routes for authenticated users
     return NextResponse.next();
