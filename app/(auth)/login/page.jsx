@@ -7,7 +7,7 @@ import { SigninForm } from "../_components/form/SigninForm";
 export default function Login() {
   return (
     <>
-      <div className="w-full   ">
+      <div className="w-full">
         <BackgroundAuthentication actionCard={<SigninForm />} />
       </div>
     </>
