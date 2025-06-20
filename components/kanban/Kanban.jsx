@@ -357,7 +357,6 @@ export default function KanbanBoard({
 
     const sourceCol = newColumns.find((col) => col.id === sourceColumnId);
     if (!sourceCol) {
-      console.error("Source column not found:", sourceColumnId);
       handleDragEnd(e);
       return;
     }
@@ -365,7 +364,6 @@ export default function KanbanBoard({
     // Extract the item to move
     if (draggedType === "card") {
       if (sourceIndex < 0 || sourceIndex >= sourceCol.cards.length) {
-        console.error("Invalid source card index:", sourceIndex);
         handleDragEnd(e);
         return;
       }
@@ -380,7 +378,7 @@ export default function KanbanBoard({
         sourceIndex < 0 ||
         sourceIndex >= sourceCard.checklists.length
       ) {
-        console.error(
+        console.log(
           "Invalid source checklist index or card missing:",
           sourceCardId,
           sourceIndex
@@ -392,14 +390,14 @@ export default function KanbanBoard({
     }
 
     if (!itemToMove) {
-      console.error("Failed to find item to move");
+      console.log("Failed to find item to move");
       handleDragEnd(e);
       return;
     }
 
     const targetCol = newColumns.find((col) => col.id === targetColumnId);
     if (!targetCol) {
-      console.error("Target column not found:", targetColumnId);
+      console.log("Target column not found:", targetColumnId);
       handleDragEnd(e);
       return;
     }
@@ -487,7 +485,7 @@ export default function KanbanBoard({
             `Task order updated: ${draggedId} from ${oldOrder} to ${newOrder}`
           );
         } catch (error) {
-          console.error("Backend update failed:", error.message);
+          console.log("Backend update failed:", error.message);
           setErrorMessage("Failed to update task. Please try again.");
           setColumns(columns); // Revert to previous state
           throw error;
@@ -532,7 +530,7 @@ export default function KanbanBoard({
         return;
       }
     } catch (error) {
-      console.error("Drop error:", error.message);
+      console.log("Drop error:", error.message);
       setErrorMessage(
         error.message || "Failed to process drop. Please try again."
       );
@@ -570,11 +568,8 @@ export default function KanbanBoard({
           }))
         );
       } else {
-        console.error("Failed to update task status:", result.error);
       }
-    } catch (error) {
-      console.error("Error updating task status:", error.message);
-    }
+    } catch (error) {}
   };
 
   return (

@@ -32,7 +32,6 @@ export const getTaskByBoardIdAndGanttBarIdService = async ({
 
     return data;
   } catch (error) {
-    console.error("bug", error.message);
     throw error;
   }
 };
@@ -56,7 +55,6 @@ export const getCheckListByTaskIdService = async ({ taskId, token }) => {
 
     return data;
   } catch (error) {
-    console.error("bug", error.message);
     throw error;
   }
 };
@@ -80,7 +78,6 @@ export const getMemberByBoardIdService = async ({ boardId, token }) => {
 
     return data;
   } catch (error) {
-    console.error("bug", error.message);
     throw error;
   }
 };
@@ -172,7 +169,6 @@ export const getAllGanttBarByGanttChartIDService = async ({
 
     return data;
   } catch (error) {
-    console.error("bug", error.message);
     throw error;
   }
 };
@@ -320,7 +316,6 @@ export const createGanttChartByBoardIdService = async ({
 
     return data;
   } catch (error) {
-    console.error("bug", error.message);
     throw error;
   }
 };
@@ -351,7 +346,6 @@ export const createCheckListService = async ({ taskId, data, token }) => {
 
     return data;
   } catch (error) {
-    console.error("bug", error.message);
     throw error;
   }
 };
@@ -374,7 +368,6 @@ export const getBoardByBoardIdService = async ({ boardId, token }) => {
 
     return data;
   } catch (error) {
-    console.error("bug", error.message);
     throw error;
   }
 };
@@ -405,7 +398,6 @@ export const postCommentByCheckListIdService = async ({
 
     return data;
   } catch (error) {
-    console.error("bug", error.message);
     throw error;
   }
 };
@@ -432,7 +424,6 @@ export const editCommmentService = async ({ data, token }) => {
 
     return data;
   } catch (error) {
-    console.error("bug", error.message);
     throw error;
   }
 };
@@ -478,7 +469,6 @@ export const getTaskByBoardIdService = async ({ boardId, token }) => {
 
     return data;
   } catch (error) {
-    console.error("bug", error.message);
     throw error;
   }
 };
@@ -502,7 +492,6 @@ export const deleteTaskService = async (taskId, boardId, ganttbarId, token) => {
 
     return data;
   } catch (error) {
-    console.error("bug", error.message);
     throw error;
   }
 };
@@ -543,7 +532,6 @@ export const assignMemberInChecklistService = async ({
 
     return result;
   } catch (error) {
-    console.error("bug", error.message);
     throw error;
   }
 };
@@ -572,7 +560,6 @@ export const moveTaskOrderService = async (boardId, newId, oldId, token) => {
 
     return result;
   } catch (error) {
-    console.error("bug", error.message);
     throw error;
   }
 };
@@ -613,7 +600,6 @@ export const assignMemberToChecklistService = async (
 
     return result;
   } catch (error) {
-    console.error("bug", error.message);
     throw error;
   }
 };
@@ -641,7 +627,6 @@ export const chageStatusCheckListService = async (checklistId, token, type) => {
 
     return data;
   } catch (error) {
-    console.error("bug", error.message);
     throw error;
   }
 };
@@ -666,7 +651,6 @@ export const changeStatusTaskService = async (taskId, token, type) => {
 
     return data;
   } catch (error) {
-    console.error("bug", error.message);
     throw error;
   }
 };
@@ -691,7 +675,6 @@ export const changeStageToUnderReviewService = async (taskId, token, stage) => {
 
     return data;
   } catch (error) {
-    console.error("bug", error.message);
     throw error;
   }
 };
@@ -718,7 +701,6 @@ export const FeedBackService = async (taskId, token, comment) => {
 
     return data;
   } catch (error) {
-    console.error("bug", error.message);
     throw error;
   }
 };
@@ -741,7 +723,6 @@ export const deleteMemberService = async (boardId, userId, token) => {
 
     return data;
   } catch (error) {
-    console.error("bug", error.message);
     throw error;
   }
 };
@@ -765,7 +746,6 @@ export const checkEmailService = async (email) => {
 
     return data;
   } catch (error) {
-    console.error("bug", error.message);
     throw error;
   }
 };
@@ -787,7 +767,6 @@ export const checkEmailForClearService = async (email) => {
 
     return data;
   } catch (error) {
-    console.error("bug", error.message);
     throw error;
   }
 };

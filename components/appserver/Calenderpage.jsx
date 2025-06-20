@@ -308,19 +308,20 @@ export default function MyCalender({ tasks }) {
     const selectedDate = new Date(`${endDateStr}T00:00:00.000Z`);
     // Prevent creating notes on the last day of the task period
     // Compare the selected date with the task end date
-    if (selectedDate.getTime() === endDateObj.getTime()) {
-      toast.error("Cannot create notes on the last day of the task period!", {
-        position: "top-right",
-        autoClose: 4000,
-      });
-      return;
-    }
+
+    // if (selectedDate.getTime() === endDateObj.getTime()) {
+    //   toast.error("Cannot create notes on the last day of the task period!", {
+    //     position: "top-right",
+    //     autoClose: 4000,
+    //   });
+    //   return;
+    // }
 
     // Prevent past-dated notes
-    if (endDateStr > tillDateObj) {
-      toast.error("Cannot create or update notes in the past!");
-      return;
-    }
+    // if (endDateStr > tillDateObj) {
+    //   toast.error("Cannot create or update notes in the past!");
+    //   return;
+    // }
 
     const formattedStartDate = startDateObj.toISOString();
     const formattedTillDate = tillDateObj.toISOString();
@@ -470,7 +471,6 @@ export default function MyCalender({ tasks }) {
    RENDER FUNCTIONS
   */
 
- 
   const renderEventContent = ({ event, isStart }) => {
     const { type, color, notes = [], realEnd } = event.extendedProps;
 
