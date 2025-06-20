@@ -2,6 +2,7 @@
 
 import { Token } from "@/constant/token";
 import { RenameSchema } from "@/lib/schemas/workspaceSchema";
+import { uploadImageBoardService } from "@/service/board.service";
 import {
   createBoardService,
   createWorkspaceService,
@@ -52,6 +53,7 @@ export const createWorkspaceAction = async (payload = {}) => {
 export const getAllWorkspaceAction = async () => {
   const userToken = await Token();
   const token = userToken.Credential;
+  console.log("wwwwwwww", token)
   const result = await getAllWorkspacesService({ token });
 
   return result;
@@ -232,8 +234,8 @@ export const createBoardAction = async (payload = {}) => {
   });
 
   revalidatePath("boards");
-  console.log("Results create board in action:", result);
-  return result;
+  console.log("Results create board in action:", result.payload);
+  return result.payload;
 };
 
 /*
@@ -295,4 +297,20 @@ export const getMemberByBoardIdAction = async (boardId) => {
   const result = await getMemberByBoardIdService({boardId,token});
   console.log("Get member in action : ", result);
   return result;
+};
+
+
+
+export const uploadImageBoardAction = async ({boardId,image}) => {
+    
+    console.log("kakakak", image)
+    const userToken = await Token();
+    const token = userToken.Credential;
+    console.log("token", token)
+    const result = await uploadImageBoardService({
+        boardId,
+        image,
+        token,
+    });
+    return result;
 };
