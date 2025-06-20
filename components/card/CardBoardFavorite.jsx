@@ -12,6 +12,7 @@ import iconMember from "@/assets/memberSideBar.png";
 import Image from "next/image";
 import ModalDelete from "../modal/ModalDelete";
 import { usePathname, useSearchParams } from "next/navigation";
+import { StackedUser } from "../useravatar/StackUser";
 
 // Props expected: title, image, isFavourite, boardId, workspaceId, updateFavAction, deleteBoardAction
 export default function CardBoardFavorite({
@@ -23,6 +24,7 @@ export default function CardBoardFavorite({
   updateFavAction,
   deleteBoardAction,
   role,
+  memberData,
 }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -101,7 +103,7 @@ export default function CardBoardFavorite({
 
       {/* Footer */}
       <CardFooter className="pt-2 px-4 flex flex-col items-start space-y-4">
-        <StackedProfiles />
+        <StackedUser image={memberData} />
         <div className="flex w-full justify-between text-sm text-gray-600">
           {/* Members icon and text */}
           <div className="flex items-center gap-1">
@@ -110,7 +112,13 @@ export default function CardBoardFavorite({
               className="w-[16px] h-[16px]"
               alt="Members icon"
             />
-            <p className="text-body-sm">13 Members</p>
+            <p className="text-body-sm">
+              {memberData.length === 0
+                ? "No member"
+                : `${memberData.length} ${
+                    memberData.length === 1 ? "Member" : "Members"
+                  }`}
+            </p>
           </div>
 
           {/* Delete button and confirmation modal */}

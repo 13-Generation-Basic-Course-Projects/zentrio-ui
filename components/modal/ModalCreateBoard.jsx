@@ -110,16 +110,16 @@ export default function ModalCreateBoard({ Workspaceid }) {
         const image = fileInputRef.current?.files?.[0];
         console.log("cccccc", image)
       if (!image) {
-        console.warn("⚠️ No file selected!");
+        console.warn(" No file selected!");
         return;
       }
 
         await uploadImageBoardAction({boardId:board?.boardId ,image })
-        console.warn("⚠️ No image or color selected.");
+        console.warn("No image or color selected.");
         return;
       }
     } catch (error) {
-      console.error("❌ Error creating board:", error);
+      console.error(" Error creating board:", error);
       return;
     } finally {
       reset();
