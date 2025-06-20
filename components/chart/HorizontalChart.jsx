@@ -12,7 +12,7 @@ export default function HorizontalChart({ amtChklistTodo, amtChklistProgress, am
     { browser: "Todo", visitors: todo, color: "#64A9F6" },
     { browser: "In Progress", visitors: progress, color: "#5FC381" },
     { browser: "Under Review", visitors: review, color: "#F59E0B" },
-    { browser: "Done", visitors: done, color: "#64A9F6" },
+    { browser: "Done", visitors: done, color: "#64A9F6" }, 
   ];
 
   
