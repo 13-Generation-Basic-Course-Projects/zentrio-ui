@@ -308,7 +308,7 @@ export default function MyCalender({ tasks }) {
     const selectedDate = new Date(`${endDateStr}T00:00:00.000Z`);
     // Prevent creating notes on the last day of the task period
     // Compare the selected date with the task end date
-    if (selectedDate.getTime() === endDateObj.getTime()) {
+    if (selectedDate.getTime() === endDateStr) {
       toast.error("Cannot create notes on the last day of the task period!", {
         position: "top-right",
         autoClose: 4000,

@@ -1,5 +1,11 @@
 "use client";
-import React, { useEffect, useReducer, useCallback, useRef, useState } from "react";
+import React, {
+  useEffect,
+  useReducer,
+  useCallback,
+  useRef,
+  useState,
+} from "react";
 import Image from "next/image";
 import {
   Modal,
@@ -30,6 +36,7 @@ import { getAttachmentAction } from "@/action/document.action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { CameraIcon } from "lucide-react";
+import UpdateDateChecklist from "./UpdateDateChecklist";
 
 const initialState = {
   activeTab: "add",
@@ -44,7 +51,6 @@ const initialState = {
   isEditing: false,
   newDescription: "",
   taskData: null,
-  
 };
 const reducer = (state, action) => {
   switch (action.type) {
@@ -72,8 +78,8 @@ const reducer = (state, action) => {
       return { ...state, newDescription: action.payload };
     case "SET_TASK_DATA":
       return { ...state, taskData: action.payload };
-   
-    case "RESET_STATE": 
+
+    case "RESET_STATE":
       return { ...initialState };
     default:
       return state;
@@ -163,7 +169,6 @@ const useChecklistData = (checklistId, isOpen) => {
   return { state, dispatch, shouldStayOpen };
 };
 
-
 const useDescriptionEditor = (taskId, checklistId, isOpen) => {
   const [newDescription, setNewDescription] = useState("");
   const [error, setError] = useState();
@@ -172,14 +177,13 @@ const useDescriptionEditor = (taskId, checklistId, isOpen) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [newTitle, setNewTitle] = useState("");
-  
 
   useEffect(() => {
     if (isOpen) {
       const fetchTask = async () => {
         try {
           setIsLoading(true);
-          const response = await getCheckListByTaskIdAction({taskId});
+          const response = await getCheckListByTaskIdAction({ taskId });
           const checklist = response?.payload?.find(
             (ch) => ch.checklistId === checklistId
           );
@@ -715,8 +719,8 @@ const ModalDetailChecklist = ({
                           value={newTitle}
                           onChange={handleTitleChange}
                           onKeyDown={handleSubmit}
-                          className="w-full p-3 text-lg font-normal text-gray-900 underline bg-gray-50 border-none focus:border-none focus:ring-0 rounded-md"
-                          placeholder="Enter checklist title..."
+                          className="w-full p-3 text-lg font-normal text-gray-900 underline bg-transparent outline-none focus:outline-none border-0 focus:border-0 focus:ring-0"
+                          placeholder={title}
                           autoFocus
                           disabled={loading}
                           aria-label="Checklist title input"
@@ -763,13 +767,13 @@ const ModalDetailChecklist = ({
                       leaderId={leaderId}
                       checklistId={checklistId}
                     />
-                    <div className=" max-w-xl flex flex-row gap-4">
-                      <DateRangePicker
-                        showMonthAndYearPickers
-                        variant="none"
-                        size="md"
-                      />
-                    </div>
+                    {/* call pdate date */}
+                    <UpdateDateChecklist
+                      checkListId={checklistId}
+                      taskId={taskId}
+                      initialStartedAt={startDate}
+                      initialFinishedAt={finishedAt}
+                    />
                   </div>
                 </div>
 

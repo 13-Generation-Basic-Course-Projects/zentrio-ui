@@ -24,4 +24,8 @@ export const checklistRouteGroup = {
   //delete
   deleteCheckListByTaskId: (checkListId, taskId) =>
     `${apiConfig.baseUrl}/checklists/${checkListId}/tasks/${taskId}`, // Delete checklist id and task id
+
+  //add new delete comment
+  deleteCommentBycmtId: (commentId) =>
+    `${apiConfig.baseUrl}/comment/${commentId}`,
 };

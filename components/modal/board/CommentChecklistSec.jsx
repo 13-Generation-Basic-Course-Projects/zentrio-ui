@@ -3,7 +3,10 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { editCommmentAction } from "@/action/board.action";
+import {
+  deleteCommentBycmtIdAction,
+  editCommmentAction,
+} from "@/action/board.action";
 import { toast } from "react-toastify";
 
 // Define the Zod schema for editing
@@ -78,6 +81,30 @@ export default function CommentChecklistSec({
 
   console.log("checklistId in comment", checklistId);
 
+  // Handle delete comment
+  const [deletingCommentId, setDeletingCommentId] = useState(null);
+  const handleDelete = async (commentId) => {
+    try {
+      setDeletingCommentId(commentId);
+      const result = await deleteCommentBycmtIdAction(commentId);
+
+      if (result.success) {
+        toast.success("Comment deleted successfully!", { duration: 3000 });
+        if (onCommentsUpdated && result.updatedComments) {
+          onCommentsUpdated(result.updatedComments);
+        }
+      } else {
+        toast.error(result.error || "Failed to delete comment", {
+          duration: 3000,
+        });
+      }
+    } catch (error) {
+      toast.error("An unexpected error occurred", { duration: 3000 });
+    } finally {
+      setDeletingCommentId(null);
+    }
+  };
+
   return (
     <div className="space-y-1">
       {comments.map((el) => (
@@ -119,6 +146,14 @@ export default function CommentChecklistSec({
                     className="px-3 py-1 bg-primary text-white rounded-medium disabled:opacity-50"
                   >
                     Save
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleDelete(el.id)}
+                    disabled={deletingCommentId === el.id}
+                    className="px-3 py-1 bg-red-500 text-white rounded-medium disabled:opacity-50 hover:bg-red-600"
+                  >
+                    {deletingCommentId === el.id ? "Deleting..." : "Delete"}
                   </button>
                   <button
                     type="button"
