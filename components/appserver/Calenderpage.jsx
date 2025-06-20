@@ -300,15 +300,21 @@ export default function MyCalender({ tasks }) {
     tillDateObj.setHours(23, 59, 59, 999);
 
     const selectedDate = new Date(`${endDateStr}T00:00:00.000Z`);
+    
     const currentDate = new Date();
     currentDate.setHours(0, 0, 0, 0);
 
     // Compare only the date part (not time) for last day check
     const selectedOnlyDate = new Date(`${endDateStr}T00:00:00.000Z`);
+    selectedOnlyDate.setHours(0, 0, 0, 0);
     const endDateOnlyObj = new Date(endDateObj);
     endDateOnlyObj.setHours(0, 0, 0, 0);
     console.log("selectedDateeeeeeeeeeeeeeee: ", selectedDate);
     console.log("EndDateOnlyObjeeeeeeeeeeeeeee: ",endDateOnlyObj);
+    if(selectedOnlyDate.getTime() === endDateOnlyObj.getTime()){
+      toast.error("cant not",{autoClose:2000});
+    }
+  
 
     const formattedStartDate = startDateObj.toISOString();
     const formattedTillDate = tillDateObj.toISOString();
