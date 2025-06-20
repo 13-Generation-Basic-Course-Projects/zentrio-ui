@@ -9,10 +9,11 @@ export default function PublicDocument({
   publicDocuments,
   tokenFromGoogle,
   isHidden,
+  workspaceId,
 }) {
   const payload = publicDocuments?.payload || [];
 
-  console.log("payload .... ", payload)
+  console.log("payload .... ", payload);
 
   // if (publicDocuments.status == 404) {
   //   return <>a</>;
@@ -80,6 +81,7 @@ export default function PublicDocument({
           feature={"Document"}
           header={"Document"}
           modal={modal}
+          workspaceId={workspaceId}
         />
         <div className="flex items-center justify-between pb-5">
           <div className="flex flex-row items-end gap-4 mb-4">
@@ -191,7 +193,7 @@ export default function PublicDocument({
                     documentId={el?.id}
                     folderId={el?.folderId}
                     tokenFromGoogle={tokenFromGoogle}
-                    isHidden={isHidden} 
+                    isHidden={isHidden}
                   />
                 ))
             ) : (

@@ -14,7 +14,7 @@ import {
 import BredCrum from "@/components/bredcrum/MyBredcrum";
 import ModalSignIn from "./ModalSignIn";
 
-export default function WelcomePage() {
+export default function WelcomePage({ workspaceId }) {
   return (
     <div className="h-full ">
       {/* Breadcrumb Section */}
@@ -24,6 +24,7 @@ export default function WelcomePage() {
           feature={"Document"}
           header={"Document"}
           modal={[<ModalSignIn />]}
+          workspaceId={workspaceId}
         />
       </div>
 
@@ -31,7 +32,8 @@ export default function WelcomePage() {
       <div className="flex flex-col items-center justify-center w-full h-[calc(100vh-80px)] overflow-hidden relative ">
         {/* Header Text */}
         <h1 className="text-[35px] font-bold text-center mt-8 text-[#143A47]">
-          Take <span className="text-primary"> control </span> of your tasks and <span className="text-primary"> simplify </span> your day.
+          Take <span className="text-primary"> control </span> of your tasks and{" "}
+          <span className="text-primary"> simplify </span> your day.
         </h1>
 
         {/* Central Illustration */}

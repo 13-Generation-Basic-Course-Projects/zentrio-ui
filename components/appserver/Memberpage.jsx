@@ -184,7 +184,7 @@ export default function Memberpage({
   return (
     <div className="p-4 ">
       {/* Breadcrumb */}
-      <BredCrum board={"Hikko Design"} feature={"Members"} header={"Member"} />
+      <BredCrum board={"Hikko Design"} feature={"Members"} header={"Member"} workspaceId={workspaceId} />
       <div className="flex justify-between">
         <div className="flex items-center w-[600px] h-[45px] border border-gray-200 rounded-[16px] overflow-hidden bg-white text-input text-title">
           <div className="relative flex items-center gap-2 border-r border-gray-200 pr-4 pl-3 py-2">
