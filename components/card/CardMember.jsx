@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Card, CardHeader, CardBody, Button } from "@heroui/react";
-import { Crown, Shield, User, Circle } from "lucide-react";
+import { Crown, Shield, User, Circle, UsersRound } from "lucide-react";
 
 const CardMember = ({ members = [], preventUserImage }) => {
   console.log("Members in CardMember:", members);
@@ -32,7 +32,7 @@ const CardMember = ({ members = [], preventUserImage }) => {
 
   return (
     <div>
-      <Card className="w-full mx-auto shadow-sm h-[400px] bg-white/80 dark:bg-gray-800/80">
+      <Card className="w-full mx-auto border shadow-sm h-[400px] bg-white/80 dark:bg-gray-800/80">
         <CardHeader className="flex justify-between items-center px-6 py-4 pb-2">
           <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-100">
             Members
