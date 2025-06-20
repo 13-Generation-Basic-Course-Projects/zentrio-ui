@@ -589,7 +589,7 @@ export default function KanbanBoard({
       {isUpdating && (
         <div className="text-blue-500 p-2">Updating task order...</div>
       )}
-      {errorMessage && <div className="text-red-500 p-2">{errorMessage}</div>}
+      {/* {errorMessage && <div className="text-red-500 p-2">{errorMessage}</div>} */}
       <div className="pt-5 pb-2 grid grid-cols-4 gap-4">
         {(columns || []).map((column) => (
           <div

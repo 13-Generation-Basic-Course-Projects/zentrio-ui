@@ -187,7 +187,6 @@ export default function ModalCreateDocuInFolder({
         isOpen={isCreateFolderOpen}
         onClose={() => setIsCreateFolderOpen(false)}
         boardId={boardId}
-        folderId={folderId}
         tokenFromGoogle={tokenFromGoogle}
       />
 

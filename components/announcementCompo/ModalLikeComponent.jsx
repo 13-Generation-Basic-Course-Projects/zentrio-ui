@@ -205,10 +205,10 @@ export function LikeReactionButton({ announId, reacts, currentUserProfile }) {
           </button>
 
           {/* Reaction Picker */}
-            {showPicker && (
+          {showPicker && (
             <div
-              onMouseEnter={() => setHoverOnPicker(true)}
-              onMouseLeave={() => setHoverOnPicker(false)}
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
               className="absolute bottom-full mb-2 left-0 flex gap-2 bg-white p-2 rounded-full shadow-lg border z-50 animate-fade-in w-[200px]"
             >
               {reactions.map((reaction) => (

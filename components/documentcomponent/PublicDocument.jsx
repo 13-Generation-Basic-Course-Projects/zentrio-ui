@@ -12,6 +12,8 @@ export default function PublicDocument({
 }) {
   const payload = publicDocuments?.payload || [];
 
+  console.log("payload .... ", payload)
+
   // if (publicDocuments.status == 404) {
   //   return <>a</>;
   // }
@@ -148,13 +150,13 @@ export default function PublicDocument({
                 .map((el, i) => (
                   <CardFolder
                     key={`folder-${i}`}
-                    title={el.title || "Untitled Folder"}
-                    status={el.status || "personal"}
-                    date={el.date || "2025-05-25"}
-                    link={el?.link}
-                    documentId={el?.id}
-                    folderId={el?.folderId}
-                    isFolder={el?.category === "Folder"}
+                    title={el.title}
+                    status={el.status}
+                    date={el.date}
+                    link={el.link}
+                    documentId={el.id}
+                    folderId={el.folderId}
+                    isFolder={el.category === "Folder"}
                     tokenFromGoogle={tokenFromGoogle}
                     isHidden={isHidden}
                   />
@@ -189,7 +191,7 @@ export default function PublicDocument({
                     documentId={el?.id}
                     folderId={el?.folderId}
                     tokenFromGoogle={tokenFromGoogle}
-                    isHidden={isHidden}
+                    isHidden={isHidden} 
                   />
                 ))
             ) : (
