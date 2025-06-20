@@ -12,7 +12,6 @@ export default async function GuestPage() {
 
   return (
     <>
-      <div>Hello GuestRole</div>
       <GuestKanbanBoard data={data} />
     </>
   );

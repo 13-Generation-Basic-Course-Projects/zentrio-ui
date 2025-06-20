@@ -163,7 +163,8 @@ export default function GuestKanbanBoardCompo({
               key={column.id}
               className={`mb-4 border-b-4 pb-2 flex items-center gap-3 ${
                 columnHeaderStyles[column.id]
-              }`}>
+              }`}
+            >
               <p className="text-2xl font-semibold">{column.title}</p>
               <button className="px-3 py-1 text-sm rounded-full bg-transparent border-2 border-gray-300 shadow-sm">
                 {column.cards?.length || 0}
@@ -176,8 +177,9 @@ export default function GuestKanbanBoardCompo({
             {(columns || []).map((column) => (
               <div
                 key={column.id}
-                className="flex flex-col min-h-0 w-full rounded-lg p-1 h-full px-2 py-5">
-                <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 pr-1 pb-5">
+                className="flex flex-col min-h-0 w-full rounded-lg p-1 h-full px-2 py-5"
+              >
+                <div className="flex-1 overflow-y-auto scrollbar-hidden scrollbar-thumb-gray-300 pr-1 pb-5">
                   {(column.cards || [])
                     .slice()
                     .sort((a, b) => a.order - b.order)
@@ -185,14 +187,16 @@ export default function GuestKanbanBoardCompo({
                       <div
                         key={card.id}
                         id={card.id}
-                        className="mb-3 bg-white rounded-xl px-2">
+                        className="mb-3 bg-white rounded-xl px-2"
+                      >
                         <div className="shadow-sm rounded-xl overflow-hidden">
                           <div className="p-3">
                             <div className="flex items-center justify-between">
                               <div className="flex-1 min-w-0 mr-2">
                                 <p
                                   className="text-sm font-medium text-gray-800 truncate"
-                                  title={card.title}>
+                                  title={card.title}
+                                >
                                   {card.title}
                                 </p>
                                 {card.teamLeader ? (
@@ -246,7 +250,8 @@ export default function GuestKanbanBoardCompo({
                               {(card.checklists || []).map((checklist) => (
                                 <div
                                   key={checklist.checklistId}
-                                  id={checklist.checklistId}>
+                                  id={checklist.checklistId}
+                                >
                                   <div className="mb-1 bg-white rounded-xl shadow-sm">
                                     <ModalDetailChecklist
                                       boardId={data?.payload?.board?.boardId}
@@ -279,6 +284,8 @@ export default function GuestKanbanBoardCompo({
                                       allMemberInBoard={allMemberInBoard}
                                       leaderId={card.teamLeader?.userId || null}
                                       role="ROLE_GUEST"
+                                      style={{ pointerEvents: "none" }} // Disable all pointer events
+                                      isModalDisabled={true}
                                     />
                                   </div>
                                 </div>
@@ -306,7 +313,8 @@ export default function GuestKanbanBoardCompo({
                           <button
                             onClick={() => toggleTaskExpansion(card.id)}
                             className="text-gray-400 hover:text-gray-600 p-1 rounded hover:bg-gray-100"
-                            disabled={role === "ROLE_GUEST"}>
+                            disabled={role === "ROLE_GUEST"}
+                          >
                             {card.expanded ? (
                               <ChevronUp size={16} />
                             ) : (

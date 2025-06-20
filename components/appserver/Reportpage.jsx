@@ -111,7 +111,10 @@ export default function Reportpage({ modal, report }) {
   const getVersion = report?.payload;
 
   const groupedTasks = report?.payload?.groupedTasks;
-
+  console.log("apple", groupedTasks);
+  if (groupedTasks == null) {
+    return <></>;
+  }
   return (
     <>
       <div className="p-5">
