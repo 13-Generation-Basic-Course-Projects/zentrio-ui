@@ -118,8 +118,9 @@ export default function ActiveBoards({ userAchievement }) {
   return (
     <div className="rounded-xl shadow bg-white flex flex-col">
       <div>
-        <div className="flex justify-between py-4 px-4 border-b-1 border-stroke">
-          <h3 className="text-body font-semibold">Active Boards</h3>
+        <div className="sticky top-0 z-10 bg-white">
+          <div className="flex justify-between py-4 px-4 border-b-1 border-stroke ">
+          <h3 className="text-body font-semibold  ">Active Boards</h3>
           <IconEllipsisVertical
             strokeWidth={2}
             color={"currentColor"}
@@ -127,8 +128,9 @@ export default function ActiveBoards({ userAchievement }) {
           />
         </div>
         <div
-          className={`grid grid-cols-2 text-body-sm font-semibold text-description bg-gray-100 p-4`}>
+          className={`grid grid-cols-2 text-body-sm font-semibold text-description bg-gray-100 p-4 `}>
           <span>Board Name</span>
+        </div>
         </div>
         <ul className="p-4 space-y-3 mt-2">
           {processedBoards.map((board) => (
