@@ -31,6 +31,7 @@ import {
   updateCheckListByIdAndTaskIdService,
   updateGanttBarByGanttBarIdService,
   updateTaskByIdService,
+  uploadCoverChecklistService,
 } from "@/service/board.service";
 import { revalidatePath } from "next/cache";
 import { sendNotificationToUserIdAction } from "./notification.action";
@@ -761,5 +762,19 @@ export const updateGanttBarByGanttBarIdAction = async (ganttbarId, data) => {
     token
   );
   console.log("update the chart ", result);
+};
+//add new upload cover checklist
+export const uploadCoverChecklistAction = async (checklistId, file) => {
+  console.log("checklistId uploadCoverChecklistAction: ", checklistId);
+  console.log("file uploadCoverChecklistAction: ", file);
+  const userToken = await Token();
+  const token = userToken?.Credential;
+  const result = await uploadCoverChecklistService({
+    checklistId,
+    file,
+    token,
+  });
+  revalidatePath("/member");
+  console.log("uploadCoverChecklistAction result: ", result);
   return result;
 };

@@ -28,4 +28,8 @@ export const checklistRouteGroup = {
   //add new delete comment
   deleteCommentBycmtId: (commentId) =>
     `${apiConfig.baseUrl}/comment/${commentId}`,
+
+  //add new upload cover
+  uploadCoverChecklist: (checklistId) =>
+    `${apiConfig.baseUrl}/checklists/${checklistId}/cover`,
 };

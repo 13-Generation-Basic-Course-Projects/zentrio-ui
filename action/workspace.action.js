@@ -311,6 +311,7 @@ export const uploadImageBoardAction = async ({ boardId, image }) => {
   });
   return result;
 };
+
 /*
  * 7. Upload cover by board id
  */

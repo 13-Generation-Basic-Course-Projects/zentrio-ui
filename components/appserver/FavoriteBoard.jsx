@@ -17,8 +17,10 @@ export default function MyFavoriteBoard({
   updateNameBoardAction,
   updateFavAction,
   myFavBoard,
+  memberData,
 }) {
   console.log("log fav", myFavBoard);
+  console.log("memberData fav", memberData);
   return (
     <div className="w-full grid grid-cols-12 h-full">
       <div className="col-span-9 flex flex-col overflow-hidden p-3 min-h-0">
@@ -47,6 +49,7 @@ export default function MyFavoriteBoard({
                     updateNameBoardAction={updateNameBoardAction}
                     updateFavAction={updateFavAction}
                     role="pm"
+                    memberData={memberData}
                   />
                 );
               })
@@ -62,7 +65,7 @@ export default function MyFavoriteBoard({
       </div>
 
       <div className="col-span-3 p-2">
-        <CardMember />
+        <CardMember members={memberData} />
       </div>
     </div>
   );

@@ -1029,3 +1029,60 @@ export const getTaskByTaskIdService = async ({ taskId, token }) => {
   console.log("data from guest", data);
   return response.json();
 };
+//add new upload cover checklist
+export const uploadCoverChecklistService = async ({
+  checklistId,
+  file,
+  token,
+}) => {
+  console.log("checklistId uploadCoverChecklistService: ", checklistId);
+
+  const url = checklistRouteGroup.uploadCoverChecklist(checklistId);
+  console.log("upload cover url: ", url);
+
+  // Create FormData object
+  const formData = new FormData();
+  formData.append("file", file);
+
+  console.log("File details:", {
+    name: file.name,
+    size: file.size,
+    type: file.type,
+  });
+
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "*/*",
+      },
+      body: formData,
+    });
+
+    console.log("Upload response status:", response.status);
+
+    if (!response.ok) {
+      let errorMessage;
+      try {
+        const error = await response.json();
+        errorMessage =
+          error.message ||
+          error.error ||
+          `Upload failed with status ${response.status}`;
+      } catch (parseError) {
+        errorMessage =
+          response.statusText || `Upload failed with status ${response.status}`;
+      }
+
+      console.error("Upload error:", errorMessage);
+      throw new Error(errorMessage);
+    }
+
+    const result = await response.json();
+    console.log("Upload successful:", result);
+    return result;
+  } catch (error) {
+    console.error("Upload cover error:", error);
+  }
+};

@@ -156,27 +156,27 @@ export default function CardBoard({
       </CardHeader>
 
       {/* Card Body: background image or placeholder */}
-<CardBody className="overflow-visible py-2">
-  <Link href={`/dashboard/${workspaceId}/${boardId}/board`}>
-    {image && image.startsWith("bg-") ? (
-      <div
-        className={`rounded-xl w-full h-32 bg-cover bg-center ${image}`}
-        aria-label={`Card background for ${title}`}
-      />
-    ) : image ? (
-      <img
-        src={image}
-        alt={image || "Board cover image"}
-        className="w-full h-32 object-cover rounded-xl"
-      />
-    ) : (
-      <div
-        className="rounded-xl w-full h-32 bg-gray-200"
-        aria-label={`No image available for ${title}`}
-      />
-    )}
-  </Link>
-</CardBody>
+      <CardBody className="overflow-visible py-2">
+        <Link href={`/dashboard/${workspaceId}/${boardId}/board`}>
+          {image && image.startsWith("bg-") ? (
+            <div
+              className={`rounded-xl w-full h-32 bg-cover bg-center ${image}`}
+              aria-label={`Card background for ${title}`}
+            />
+          ) : image ? (
+            <img
+              src={image}
+              alt={image || "Board cover image"}
+              className="w-full h-32 object-cover rounded-xl"
+            />
+          ) : (
+            <div
+              className="rounded-xl w-full h-32 bg-gray-200"
+              aria-label={`No image available for ${title}`}
+            />
+          )}
+        </Link>
+      </CardBody>
 
       {/* Card Footer: member count and delete button */}
       <CardFooter className="pt-2 px-4 flex flex-col items-start space-y-4">
@@ -189,7 +189,13 @@ export default function CardBoard({
               className="w-[16px] h-[16px]"
               alt="Members icon"
             />
-            <p className="text-body-sm">13 Members</p>
+            <p className="text-body-sm">
+              {members.length === 0
+                ? "No Members"
+                : `${members.length} ${
+                    members.length === 1 ? "Member" : "Members"
+                  }`}
+            </p>
           </div>
 
           {/* Delete button and confirmation modal */}
