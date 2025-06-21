@@ -25,6 +25,7 @@ export default function CardBoard({
   getBoardByIdAction,
   updateFavAction,
   isFavourite,
+  includesPathOtherWorkSpace,
 }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -99,7 +100,7 @@ export default function CardBoard({
     <Card className="py-4 h-[340px] rounded-xl shadow-sm">
       {/* Card Header: shows editable title and favorite button */}
       <CardHeader className="pb-0 pt-2 px-4 flex justify-between items-center">
-        {editing ? (
+        {editing && !includesPathOtherWorkSpace ? (
           /* Input for editing title */
           <input
             type="text"
@@ -199,32 +200,38 @@ export default function CardBoard({
           </div>
 
           {/* Delete button and confirmation modal */}
-          <div className="flex items-center text-progress-red py-5 gap-1">
-            <button
-              onClick={() => setIsDeleteOpen(true)}
-              className="flex items-center space-x-2 hover:bg-slate-50 rounded-medium text-caption"
-            >
-              <IconDelete />
-              <span>Remove</span>
-            </button>
+          {includesPathOtherWorkSpace ? (
+            ""
+          ) : (
+            <div className="flex items-center text-progress-red py-5 gap-1">
+              <button
+                onClick={() => setIsDeleteOpen(true)}
+                className="flex items-center space-x-2 hover:bg-slate-50 rounded-medium text-caption"
+              >
+                <IconDelete />
+                <span>Remove</span>
+              </button>
 
-            {/* Delete confirmation modal */}
-            {isDeleteOpen && (
-              <ModalDelete
-                isOpen={isDeleteOpen}
-                onClose={() => setIsDeleteOpen(false)}
-                messageTitle="Are you sure?"
-                messageBody="You want delete this board."
-                messageUndo="Cancel"
-                messageDo="Delete"
-                action={async () => {
-                  await deleteBoardAction(boardId, workspaceId);
-                  console.log("Delete confirmed!");
-                  setIsDeleteOpen(false);
-                }}
-              />
-            )}
-          </div>
+              {/* Delete confirmation modal */}
+              {isDeleteOpen && (
+                <>
+                  <ModalDelete
+                    isOpen={isDeleteOpen}
+                    onClose={() => setIsDeleteOpen(false)}
+                    messageTitle="Are you sure?"
+                    messageBody="You want delete this board."
+                    messageUndo="Cancel"
+                    messageDo="Delete"
+                    action={async () => {
+                      await deleteBoardAction(boardId, workspaceId);
+                      console.log("Delete confirmed!");
+                      setIsDeleteOpen(false);
+                    }}
+                  />
+                </>
+              )}
+            </div>
+          )}
         </div>
       </CardFooter>
     </Card>
