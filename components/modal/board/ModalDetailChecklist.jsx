@@ -684,18 +684,13 @@ const ModalDetailChecklist = ({
   leaderId,
   role,
   boardId,
+  isModalDisabled,
 }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const { state, dispatch, shouldStayOpen } = useChecklistData(
     checklistId,
     isOpen
   );
-  const [previewImage, setPreviewImage] = useState(
-    image || preventImage.noChecklistImage
-  );
-  const fileInputRef = useRef(null);
-  const MAX_FILE_SIZE = 5 * 1024 * 1024;
-  const router = useRouter();
 
   const {
     taskData,
@@ -796,6 +791,10 @@ const ModalDetailChecklist = ({
     [state.comments]
   );
 
+  const fileInputRef = useRef(null);
+  const MAX_FILE_SIZE = 5 * 1024 * 1024;
+  const router = useRouter();
+  const [previewImage, setPreviewImage] = useState();
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -944,7 +943,7 @@ const ModalDetailChecklist = ({
         onPress={onOpen}
         className="h-full w-full p-0"
         fullWidth={true}
-        disabled={loading}
+        disabled={loading || isModalDisabled}
       >
         <div className="h-full w-full max-w-none px-0 bg-white">
           <CardCheckList

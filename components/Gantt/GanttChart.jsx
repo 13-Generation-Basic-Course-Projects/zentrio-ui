@@ -68,7 +68,7 @@ const formatFaceTitle = (face) => {
     .replace(/\b\w/g, (char) => char.toUpperCase());
 };
 
-export default function GanttChart({ modal, ganttbar, ganttChartName }) {
+export default function GanttChart({ modal, ganttbar, ganttChartName, workspaceId }) {
   const calendarRef = useRef(null);
   console.log("log gant bar again ", ganttbar);
 
@@ -351,6 +351,7 @@ export default function GanttChart({ modal, ganttbar, ganttChartName }) {
           ganttChartName != "No data available" ? ganttChartName : "Gantt Chart"
         }
         modal={modal}
+        workspaceId={workspaceId}
       />
       <div className="flex items-center justify-between bg-[#F3F7FB] px-6 py-3 rounded-t-[16px] mt-3 border-b border-gray-200">
         <div className="text-lg font-semibold text-gray-800">

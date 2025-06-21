@@ -10,6 +10,7 @@ export default function DocumentAutherize({
   boardId,
   tokenFromGoogle,
   preventUserImage,
+  workspaceId,
 }) {
   return (
     <>
@@ -18,6 +19,7 @@ export default function DocumentAutherize({
         documents={documents}
         publicDocuments={publicDocuments}
         boardId={boardId}
+        workspaceId={workspaceId}
         tokenFromGoogle={tokenFromGoogle}
         preventUserImage={preventUserImage}
         privatedocument={
@@ -25,6 +27,7 @@ export default function DocumentAutherize({
             title="Private"
             modal={[<ModalCreateDocu key="private-modal" boardId={boardId} />]}
             preventUserImage={preventUserImage}
+            workspaceId={workspaceId}
           />
         }
         publicdocument={
@@ -32,6 +35,7 @@ export default function DocumentAutherize({
             title="Public"
             modal={[<ModalCreateDocu key="public-modal" boardId={boardId} />]}
             preventUserImage={preventUserImage}
+            workspaceId={workspaceId}
           />
         }
       />

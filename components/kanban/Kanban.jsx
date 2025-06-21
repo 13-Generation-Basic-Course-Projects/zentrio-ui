@@ -124,6 +124,7 @@ export default function KanbanBoard({
   ganttbar,
   boardId,
   role,
+  workspaceId,
 }) {
   const [columns, setColumns] = useState([]);
   const [draggedItem, setDraggedItem] = useState(null);
@@ -579,6 +580,7 @@ export default function KanbanBoard({
         feature={"Board"}
         header={boardData?.payload.title || "Hikko Design"}
         modal={modal}
+        workspaceId={workspaceId}
       />
       <StackedUser image={allMemberInBoard} />
       {isUpdating && (

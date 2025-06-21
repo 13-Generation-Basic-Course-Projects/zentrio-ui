@@ -19,6 +19,7 @@ export default function DocumentLayout({
   tokenFromGoogle,
   boardId,
   preventUserImage,
+  workspaceId,
 }) {
   const [activeTab, setActiveTab] = useState("personal");
 
@@ -125,7 +126,7 @@ export default function DocumentLayout({
       </div>
       {/* Tab Content Area */}
       {tokenFromGoogle === null ? (
-        <WelcomePage />
+        <WelcomePage workspaceId={workspaceId} />
       ) : (
         <main className="p-4 min-h-screen">
           <div className="mx-auto">
