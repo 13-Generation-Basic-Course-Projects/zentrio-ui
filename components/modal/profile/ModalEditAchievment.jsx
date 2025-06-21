@@ -295,6 +295,11 @@ export function ModalEditAchievment({ currentUserProfile }) {
                           input: "text-black",
                         }}
                       />
+                      {errors.username && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.username.message}
+                        </p>
+                      )}
                     </div>
 
                     {/* GENDER (FIXED using Controller) */}
@@ -347,6 +352,11 @@ export function ModalEditAchievment({ currentUserProfile }) {
                           input: "text-black",
                         }}
                       />
+                      {errors.position && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.position.message}
+                        </p>
+                      )}
                     </div>
 
                     {/* LOCATION */}
@@ -365,6 +375,11 @@ export function ModalEditAchievment({ currentUserProfile }) {
                           input: "text-black",
                         }}
                       />
+                      {errors.location && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.location.message}
+                        </p>
+                      )}
                     </div>
 
                     {/* CONTACT */}
@@ -383,6 +398,11 @@ export function ModalEditAchievment({ currentUserProfile }) {
                           input: "text-black",
                         }}
                       />
+                      {errors.contact && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.contact.message}
+                        </p>
+                      )}
                     </div>
 
                     {/* ACTION BUTTONS */}

@@ -9,7 +9,9 @@ export default function Otherworkspace({
   Workspaceid,
   boards,
   updateFavAction,
+  allMembersInOther,
 }) {
+  console.log("All members in other workspace : ", allMembersInOther);
   return (
     <>
       <div className=" w-full grid grid-cols-12 h-full">
@@ -40,7 +42,7 @@ export default function Otherworkspace({
 
         {/* event - no scroll */}
         <div className="col-span-3 p-2">
-          <CardMember />
+          <CardMember members={allMembersInOther} />
         </div>
       </div>
     </>

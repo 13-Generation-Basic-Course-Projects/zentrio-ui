@@ -1,22 +1,17 @@
 "use server";
 import { auth } from "@/auth";
-/*
- * retrive token
- */
-export const Token = async () => {
- const session = await auth();
 
-  if (!session) {
-    console.log("⚠️ No session found");
-    return { Credential: null, GoogleDocumentToken: null };
-  }
+export const Token = async () => {
+  const session = await auth();
 
   const UserToken = {
-    Credential: session?.user?.backendToken || null,
-    GoogleDocumentToken: session?.accessToken || null,
+    Credential: session?.backendToken
+      ? session.backendToken
+      : session?.token?.user?.payload?.token,
+    GoogleDocumentToken: session?.googleAuth?.accessToken
+      ? session?.googleAuth?.accessToken
+      : null,
   };
 
-  console.log("rrrr", UserToken);
   return UserToken;
 };
-

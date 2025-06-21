@@ -498,9 +498,9 @@ export const inviteUserToBoardService = async (id, email, roleName, token) => {
 /*
  * 7. Upload cover by board id
  */
-export const uploadBoardCoverService = async (id, file, token) => {
+export const uploadBoardCoverService = async ({boardId, file, token}) => {
   try {
-    const url = boardRouteGroup.uploadBoardCover(id);
+    const url = boardRouteGroup.uploadBoardCover(boardId);
 
     const res = await fetch(url, {
       method: "POST",
@@ -508,7 +508,7 @@ export const uploadBoardCoverService = async (id, file, token) => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ id, file }),
+      body: JSON.stringify({ boardId, file }),
     });
 
     if (!res.ok) {

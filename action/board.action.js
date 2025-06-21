@@ -11,6 +11,7 @@ import {
   createGanttChartByBoardIdService,
   createTaskByBoardIdAndGanttChartIdService,
   deleteCheckListByTaskIdService,
+  deleteCommentBycmtIdService,
   deleteMemberService,
   deleteTaskService,
   editCommmentService,
@@ -19,14 +20,18 @@ import {
   getBoardByBoardIdService,
   getCheckListByTaskIdService,
   getCommentByCheckListIdService,
+  getGuestUserDisplayKanbanService,
   getMemberByBoardIdService,
   getTaskByBoardIdAndGanttBarIdService,
   getTaskByBoardIdService,
+  getTaskByTaskIdService,
   inviteMemberToBoardService,
   moveTaskOrderService,
   postCommentByCheckListIdService,
   updateCheckListByIdAndTaskIdService,
+  updateGanttBarByGanttBarIdService,
   updateTaskByIdService,
+  uploadCoverChecklistService,
 } from "@/service/board.service";
 import { revalidatePath } from "next/cache";
 import { sendNotificationToUserIdAction } from "./notification.action";
@@ -57,11 +62,12 @@ export const getTaskByBoardIdAndGanttBarIdAction = async ({
 export const getCheckListByTaskIdAction = async ({ taskId }) => {
   const userToken = await Token();
   const token = userToken.Credential;
-  //console.log(token);
+
   const result = await getCheckListByTaskIdService({
     taskId,
     token,
   });
+  console.log("Result in getCheckListByTaskIdAction: ", result);
   return result;
 };
 
@@ -659,25 +665,116 @@ export const deleteCheckListByTaskIdAction = async (checkListId, taskId) => {
  * new add
  * update checklist by specific tasks ID and checklist id
  */
-export const updateCheckListByIdAndTaskIdAction = async ({
+
+export const updateCheckListByIdAndTaskIdAction = async (
   checkListId,
   title,
   description,
   startedAt,
   finishedAt,
-  taskId,
-}) => {
+  taskId
+) => {
   const userToken = await Token();
   const token = userToken?.Credential;
-  const result = await updateCheckListByIdAndTaskIdService({
+
+  console.log("Checklist in upateChecklistByIdAndTaskIdAction: ", checkListId);
+  console.log("title in upateChecklistByIdAndTaskIdAction: ", title);
+  console.log(
+    "description in upateChecklistByIdAndTaskIdAction: ",
+    description
+  );
+  console.log("startedAt in upateChecklistByIdAndTaskIdAction: ", startedAt);
+  console.log("finishedAt in upateChecklistByIdAndTaskIdAction: ", finishedAt);
+  console.log("taskId in upateChecklistByIdAndTaskIdAction: ", taskId);
+
+  const result = await updateCheckListByIdAndTaskIdService(
     checkListId,
     title,
     description,
     startedAt,
     finishedAt,
     taskId,
+    token
+  );
+
+  revalidatePath("/member");
+  console.log("Update checklist in action: ", result);
+  return result;
+};
+
+/* add new
+ *  delete comment in checklist
+ */
+export const deleteCommentBycmtIdAction = async (commentId) => {
+  console.log("delete action comment id delete: ", commentId);
+
+  const userToken = await Token();
+  const token = userToken?.Credential;
+  const result = await deleteCommentBycmtIdService({
+    commentId,
     token,
   });
   revalidatePath("/member");
+  console.log("deleteCommentBycmtIdAction result: ", result);
+  return result;
+};
+
+/* add new
+ *  task by task id
+ */
+export const getTaskByTaskIdAction = async (taskId) => {
+  console.log("taskId getTaskByTaskIdAction: ", taskId);
+
+  const userToken = await Token();
+  const token = userToken?.Credential;
+  const result = await getTaskByTaskIdService({
+    taskId,
+    token,
+  });
+  revalidatePath("/member");
+  console.log("getTaskByTaskIdAction result: ", result);
+  return result;
+};
+
+/* add new
+ *  getGuestUserDisplayKanbanService
+ */
+export const getGuestUserDisplayKanbanAction = async ({ workspaceId, boardId }) => {
+  console.log("from guestrole: ", workspaceId, boardId);
+
+  const result = await getGuestUserDisplayKanbanService({
+    workspaceId,
+    boardId,
+  });
+  console.log("getTaskByTaskIdAction result: ", result);
+  return result;
+};
+
+/* add new
+ *  getGuestUserDisplayKanbanService
+ */
+export const updateGanttBarByGanttBarIdAction = async (ganttbarId, data) => {
+  const userToken = await Token();
+  const token = userToken?.Credential;
+  const result = await updateGanttBarByGanttBarIdService(
+    ganttbarId,
+    data,
+    token
+  );
+  console.log("update the chart ", result);
+};
+//add new upload cover checklist
+export const uploadCoverChecklistAction = async (checklistId, file) => {
+  console.log("checklistId uploadCoverChecklistAction: ", checklistId);
+  console.log("file uploadCoverChecklistAction: ", file);
+  const userToken = await Token();
+  const token = userToken?.Credential;
+  const result = await uploadCoverChecklistService({
+    checklistId,
+    file,
+    token,
+  });
+  revalidatePath("/member");
+  console.log("uploadCoverChecklistAction result: ", result);
   return result;
 };

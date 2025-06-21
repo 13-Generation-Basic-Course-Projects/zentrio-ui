@@ -414,7 +414,7 @@ export default function DashboardSidebar(getWorKSpaceJoined) {
             </SidebarMenu>
 
             {/* LOGOUT */}
-            <SidebarMenu className="!border-0">
+            <SidebarMenu className="!border-0 hidden">
               <SidebarMenuItem className="!border-0">
                 <SidebarMenuButton
                   asChild

@@ -1,7 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    images: {
+  images: {
     domains: ["i.pravatar.cc"],
+  },
+  images: {
+    unoptimized: true,
   },
   // experimental: {
   //   serverActions: true,
@@ -12,5 +15,3 @@ const nextConfig = {
 };
 
 export default nextConfig;
-
-

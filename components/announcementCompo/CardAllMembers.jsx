@@ -28,12 +28,12 @@ export default function CardAllMembers({ boardMember, preventUserImage }) {
   };
 
   return (
-    <div className=" mx-auto p-2 h-[450px]">
+    <div className=" mx-auto p-2 ">
       <Card className="shadow-lg border-1 bg-white rounded-xl">
-        <CardContent className="p-6">
+        <CardContent className="p-6 ">
           {/* Header */}
-          <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-100">
-            <div className="flex items-center gap-3">
+          <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-100 ">
+            <div className="flex items-center gap-3 ">
               <div className="p-2 bg-[#59BAD5] rounded-xl">
                 <UsersRound className="w-5 h-5 text-white" />
               </div>
@@ -51,7 +51,7 @@ export default function CardAllMembers({ boardMember, preventUserImage }) {
           </div>
 
           {/* Members List */}
-          <div className="space-y-3 max-h-[555px] overflow-y-auto pr-2 scrollbar-thin scrollbar-hidden scrollbar-track-gray-100">
+          <div className="space-y-3 max-h-[355px] overflow-y-auto pr-2 scrollbar-thin scrollbar-hidden scrollbar-track-gray-100">
             {boardMember?.length === 0 ? (
               <div className="text-center py-8">
                 <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">

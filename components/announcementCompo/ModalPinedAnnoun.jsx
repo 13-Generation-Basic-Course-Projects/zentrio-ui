@@ -1,4 +1,5 @@
 "use client";
+
 import {
   Modal,
   ModalContent,
@@ -8,12 +9,9 @@ import {
   Button,
   useDisclosure,
 } from "@heroui/react";
-import { useState } from "react";
-import { deleteAnnouncementByIdAction, pinedAnnouncementByIdAction } from "@/action/announcement.action";
+import {  pinedAnnouncementByIdAction } from "@/action/announcement.action";
 
-import { IconpopupDelete } from "../icon/Iconpopup";
-import { useRouter } from "next/navigation";
-import { deleteDocumentAction } from "@/action/document.action";
+
 export default function ModalPinedAnnoun({
   title,
   icon,
@@ -22,30 +20,17 @@ export default function ModalPinedAnnoun({
   massageBody,
   massageUndo,
   massageDo,
-  documentId,
-  accessToken,
   color,
   swapButton,
   action,
   announId,
-  onDeleteSuccess,
 }) {
+
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [error, setError] = useState(null);
 
-  console.log(accessToken);
-  // const router = useRouter();
-
-// const handleDelete = async (id) => {
-//   console.log("modal delete announce id: ", id);
-//   await deleteAnnouncementByIdAction(id);
-// };
-
-const handlePined = async (announId) => {
-  console.log("pined id",announId)
-  await pinedAnnouncementByIdAction(announId);
-};
+  const handlePined = async (announId) => {
+    await pinedAnnouncementByIdAction(announId);
+  };
 
   return (
     <>
@@ -78,10 +63,9 @@ const handlePined = async (announId) => {
                   <ModalFooter>
                     <form action={action}>
                       <Button
-                        className="bg-slate-red text-white font-semibold"
-                        // onPress={onClose}
+                        className="bg-slate-blue text-white font-semibold"
                       >
-                        <p className="text-red-500">{massageDo}</p>
+                        <p className="text-blue-500">{massageDo}</p>
                       </Button>
                     </form>
                     <Button
@@ -103,12 +87,13 @@ const handlePined = async (announId) => {
                     </Button>
                     <form action={action}>
                       <Button
-                        className="bg-slate-red text-white font-semibold"
-                        // onClick={handleDelete(announId)}
-                        // onPress={() => handleDelete(announId) && onClose} 
-                        onPress={() => handlePined(announId) && onClose}
+                        className="bg-slate-blue text-white font-semibold"
+                        onPress={async () => {
+                          await handlePined(announId);
+                          onClose();
+                        }}
                       >
-                        <p className="text-red-500">{massageDo}</p>
+                        <p className="text-blue-500">{massageDo}</p>
                       </Button>
                     </form>
                   </ModalFooter>

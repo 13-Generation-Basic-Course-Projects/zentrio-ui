@@ -163,13 +163,6 @@ export default function CardBoard({
               className={`rounded-xl w-full h-32 bg-cover bg-center ${image}`}
               aria-label={`Card background for ${title}`}
             />
-          ) : image &&
-            (image.startsWith("http") || image.startsWith("data:")) ? (
-            <img
-              src={image}
-              alt={image || "Board cover image"}
-              className="w-full h-32 object-cover rounded-xl"
-            />
           ) : image ? (
             <img
               src={image}
@@ -196,7 +189,13 @@ export default function CardBoard({
               className="w-[16px] h-[16px]"
               alt="Members icon"
             />
-            <p className="text-body-sm">13 Members</p>
+            <p className="text-body-sm">
+              {members.length === 0
+                ? "No Members"
+                : `${members.length} ${
+                    members.length === 1 ? "Member" : "Members"
+                  }`}
+            </p>
           </div>
 
           {/* Delete button and confirmation modal */}

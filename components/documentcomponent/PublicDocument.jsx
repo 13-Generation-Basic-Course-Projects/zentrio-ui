@@ -9,8 +9,11 @@ export default function PublicDocument({
   publicDocuments,
   tokenFromGoogle,
   isHidden,
+  workspaceId,
 }) {
   const payload = publicDocuments?.payload || [];
+
+  console.log("payload .... ", payload);
 
   // if (publicDocuments.status == 404) {
   //   return <>a</>;
@@ -78,6 +81,7 @@ export default function PublicDocument({
           feature={"Document"}
           header={"Document"}
           modal={modal}
+          workspaceId={workspaceId}
         />
         <div className="flex items-center justify-between pb-5">
           <div className="flex flex-row items-end gap-4 mb-4">
@@ -148,13 +152,13 @@ export default function PublicDocument({
                 .map((el, i) => (
                   <CardFolder
                     key={`folder-${i}`}
-                    title={el.title || "Untitled Folder"}
-                    status={el.status || "personal"}
-                    date={el.date || "2025-05-25"}
-                    link={el?.link}
-                    documentId={el?.id}
-                    folderId={el?.folderId}
-                    isFolder={el?.category === "Folder"}
+                    title={el.title}
+                    status={el.status}
+                    date={el.date}
+                    link={el.link}
+                    documentId={el.id}
+                    folderId={el.folderId}
+                    isFolder={el.category === "Folder"}
                     tokenFromGoogle={tokenFromGoogle}
                     isHidden={isHidden}
                   />

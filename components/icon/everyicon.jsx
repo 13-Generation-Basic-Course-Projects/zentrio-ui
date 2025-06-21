@@ -251,12 +251,13 @@ export function StackedProfileChecklist({
   member,
   taskId,
   preventUserImage,
-  allMemberInBoard,
+  allMemberChecklist,
   leaderId,
   checklistId,
   hidden,
+  role,
 }) {
-  console.log("=====", member);
+  console.log("=====", allMemberChecklist);
 
   return (
     <div className="flex items-center space-x-[-14px]">
@@ -283,15 +284,22 @@ export function StackedProfileChecklist({
           />
         </div>
       )}
+
       {hidden != null ? (
         ""
       ) : (
-        <ModalAssignMemberToCheckLisk
-          allMemberInBoard={allMemberInBoard}
-          taskId={taskId}
-          leaderId={leaderId}
-          checklistId={checklistId}
-        />
+        <>
+          {role == "ROLE_MEMBER" || role == "ROLE_MANGER" ? (
+            ""
+          ) : (
+            <ModalAssignMemberToCheckLisk
+              allMemberInBoard={allMemberChecklist}
+              taskId={taskId}
+              leaderId={leaderId}
+              checklistId={checklistId}
+            />
+          )}
+        </>
       )}
     </div>
   );

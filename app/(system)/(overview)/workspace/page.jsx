@@ -10,6 +10,6 @@ export default async function WorkspaceArea() {
   const ggt = session?.token?.account?.id_token
     ? `found${session?.token?.account?.id_token}`
     : "not found";
-  console.log("i am about to test ggt", ggt);
+  console.log("i am about to test ggt", session?.user?.idToken);
   return <MyworkspaceEmpty />;
 }

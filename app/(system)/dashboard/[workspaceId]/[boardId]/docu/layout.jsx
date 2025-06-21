@@ -11,6 +11,7 @@ import { Token } from "@/constant/token";
 export default async function BoardLayout({ children, params }) {
   const session = await auth();
   const boardId = params?.boardId;
+  const workspaceId = (await params).workspaceId;
 
   const getDocuments = await getDocumentsByBoardAction(boardId);
   const publicDocuments = await getPublicDocumentsByBoardAction(boardId);
@@ -21,9 +22,10 @@ export default async function BoardLayout({ children, params }) {
   // console.log("refresh token ", refresh_token)
   const userToken = await Token();
   const token = userToken.GoogleDocumentToken;
-  console.log("token cre", userToken.Credential);
+
   const tokenFromGoogle = token;
 
+  console.log("debug", tokenFromGoogle);
   //pf
   /*
    * This function is the main entry point for the profile page.
@@ -42,6 +44,7 @@ export default async function BoardLayout({ children, params }) {
         boardId={boardId}
         tokenFromGoogle={tokenFromGoogle}
         preventUserImage={preventUserImage}
+        workspaceId={workspaceId}
       />
       <div>{children}</div>
     </div>

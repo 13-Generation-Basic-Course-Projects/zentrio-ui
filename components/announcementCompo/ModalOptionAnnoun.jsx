@@ -5,94 +5,53 @@ import {
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
-  Button,
   cn,
-  DropdownSection,
 } from "@heroui/react";
-import PopupAction from "@/components/popup/PopupAction";
-import { IconpopupDelete } from "@/components/icon/Iconpopup";
-import { useRouter } from "next/navigation";
+import { IconpopupDelete, IconPopupEdit, IconPopupPined } from "@/components/icon/Iconpopup";
+
 import ModalDeleteAnnoun from "./ModalDeleteAnnoun";
 import ModalPinedAnnoun from "./ModalPinedAnnoun";
 import ModalEditAnnoun from "./ModalEditAnnoun";
-import CardCreateModal from "./CardCreateModal";
-import CardUpdateModal from "./CardUpdateModel";
+
 
 // icon components directly in the same file
-const AddNoteIcon = (props) => (
+
+const EditAnnouncementIcon = (props) => (
   <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth="1.5"
+    stroke="#143A47"
     width="18"
     height="18"
-    viewBox="0 0 18 18"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
     {...props}
   >
     <path
-      d="M9 13.599L4.44986 9.05014L5.36014 8.12443L8.35714 11.1214V0H9.64286V11.1214L12.6386 8.12571L13.5501 9.05014L9 13.599ZM2.07771 18C1.48543 18 0.991285 17.802 0.595285 17.406C0.199285 17.01 0.000857143 16.5154 0 15.9223V12.807H1.28571V15.9223C1.28571 16.1203 1.368 16.302 1.53257 16.4674C1.69714 16.6329 1.87843 16.7151 2.07643 16.7143H15.9236C16.1207 16.7143 16.302 16.632 16.4674 16.4674C16.6329 16.3029 16.7151 16.1211 16.7143 15.9223V12.807H18V15.9223C18 16.5146 17.802 17.0087 17.406 17.4047C17.01 17.8007 16.5154 17.9991 15.9223 18H2.07771Z"
-      fill="#143A47"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
     />
   </svg>
 );
 
-const PinedIcon = (props) => (
+const PinnedAnnouncementIcon = (props) => (
   <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth="1.5"
+    stroke="#143A47"
     width="18"
     height="18"
-    viewBox="0 0 18 18"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
     {...props}
   >
     <path
-      d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"
-      fill="#143A47"
-    />
-  </svg>
-);
-
-const CopyDocumentIcon = (props) => (
-  <svg
-    width="16"
-    height="16"
-    viewBox="0 0 16 16"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-    {...props}
-  >
-    <path
-      d="M8 0.5C8 0.367392 8.05268 0.240215 8.14645 0.146447C8.24021 0.0526784 8.36739 0 8.5 0L12.5 0C12.6326 0 12.7598 0.0526784 12.8536 0.146447C12.9473 0.240215 13 0.367392 13 0.5C13 0.632608 12.9473 0.759785 12.8536 0.853553C12.7598 0.947322 12.6326 1 12.5 1H11V15H12.5C12.6326 15 12.7598 15.0527 12.8536 15.1464C12.9473 15.2402 13 15.3674 13 15.5C13 15.6326 12.9473 15.7598 12.8536 15.8536C12.7598 15.9473 12.6326 16 12.5 16H8.5C8.36739 16 8.24021 15.9473 8.14645 15.8536C8.05268 15.7598 8 15.6326 8 15.5C8 15.3674 8.05268 15.2402 8.14645 15.1464C8.24021 15.0527 8.36739 15 8.5 15H10V1H8.5C8.36739 1 8.24021 0.947322 8.14645 0.853553C8.05268 0.759785 8 0.632608 8 0.5Z"
-      fill="#143A47"
-    />
-    <path
-      fillRule="evenodd"
-      clipRule="evenodd"
-      d="M5.46059 4.30916C5.4224 4.21813 5.35819 4.14042 5.27599 4.08576C5.1938 4.03111 5.09729 4.00195 4.99859 4.00195C4.89988 4.00195 4.80337 4.03111 4.72118 4.08576C4.63898 4.14042 4.57477 4.21813 4.53659 4.30916L2.03659 10.3092C1.98553 10.4316 1.98519 10.5692 2.03564 10.6919C2.08608 10.8145 2.18319 10.9121 2.30559 10.9632C2.42798 11.0142 2.56565 11.0146 2.6883 10.9641C2.81095 10.9137 2.90853 10.8166 2.95959 10.6942L3.66459 9.00416H6.33459L7.03959 10.6942C7.09064 10.8166 7.18823 10.9137 7.31087 10.9641C7.43352 11.0146 7.57119 11.0142 7.69359 10.9632C7.81598 10.9121 7.91309 10.8145 7.96353 10.6919C8.01398 10.5692 8.01364 10.4316 7.96259 10.3092L5.46259 4.30916H5.46059ZM4.99859 5.79916L5.91559 7.99916H4.08559L5.00259 5.79916H4.99859Z"
-      fill="#143A47"
-    />
-    <path
-      d="M8.50091 3C8.63351 3 8.76069 2.94732 8.85446 2.85355C8.94823 2.75979 9.00091 2.63261 9.00091 2.5C9.00091 2.36739 8.94823 2.24021 8.85446 2.14645C8.76069 2.05268 8.63351 2 8.50091 2H4.80091C3.12091 2 2.28091 2 1.64091 2.327C1.07778 2.61564 0.619545 3.07387 0.330906 3.637C0.00390628 4.279 0.00390625 5.117 0.00390625 6.797V9.197C0.00390625 10.877 0.00390628 11.717 0.330906 12.357C0.619545 12.9201 1.07778 13.3784 1.64091 13.667C2.28291 13.994 3.12091 13.994 4.80091 13.994H8.50091C8.63351 13.994 8.76069 13.9413 8.85446 13.8476C8.94823 13.7538 9.00091 13.6266 9.00091 13.494C9.00091 13.3614 8.94823 13.2342 8.85446 13.1404C8.76069 13.0467 8.63351 12.994 8.50091 12.994H4.80091C3.94391 12.994 3.36091 12.994 2.91091 12.956C2.47291 12.921 2.24791 12.856 2.09191 12.776C1.7156 12.5843 1.40965 12.2783 1.21791 11.902C1.13791 11.746 1.07291 11.522 1.03791 11.083C1.00091 10.633 0.999906 10.053 0.999906 9.193V6.793C0.999906 5.936 1.00091 5.353 1.03791 4.903C1.07391 4.465 1.13891 4.24 1.21791 4.084C1.40991 3.708 1.71591 3.402 2.09191 3.21C2.24791 3.13 2.47291 3.065 2.91091 3.03C3.36091 2.994 3.94091 2.993 4.80091 2.993H8.50091V3ZM12.5009 13C12.3688 13.0026 12.2429 13.0568 12.1503 13.151C12.0576 13.2452 12.0054 13.3719 12.0049 13.504C12.0049 13.782 12.2309 14.007 12.5089 14C13.3719 13.98 13.9189 13.91 14.3689 13.682C14.9328 13.3945 15.3914 12.9359 15.6789 12.372C16.0059 11.73 16.0059 10.892 16.0059 9.212V6.812C16.0059 5.132 16.0059 4.292 15.6789 3.652C15.3914 3.08806 14.9328 2.62952 14.3689 2.342C13.9199 2.113 13.3739 2.044 12.5089 2.024C12.443 2.02267 12.3775 2.03452 12.3163 2.05888C12.2551 2.08323 12.1994 2.11959 12.1524 2.1658C12.1054 2.21202 12.0682 2.26717 12.0429 2.328C12.0175 2.38883 12.0046 2.45411 12.0049 2.52C12.0049 2.795 12.2269 3.017 12.5009 3.024C12.7229 3.02867 12.9202 3.03833 13.0929 3.053C13.5309 3.088 13.7559 3.153 13.9119 3.233C14.2879 3.425 14.5939 3.731 14.7859 4.107C14.8659 4.263 14.9309 4.487 14.9659 4.926C15.0029 5.376 15.0039 5.956 15.0039 6.816V9.216C15.0039 10.073 15.0029 10.656 14.9659 11.106C14.9299 11.544 14.8649 11.769 14.7859 11.925C14.5942 12.3013 14.2882 12.6073 13.9119 12.799C13.7559 12.879 13.5309 12.944 13.0929 12.979C12.9196 12.9923 12.7222 13.0017 12.5009 13.007V13Z"
-      fill="#143A47"
-    />
-  </svg>
-);
-
-const EditDocumentIcon = (props) => (
-  <svg
-    width="18"
-    height="18"
-    viewBox="0 0 18 18"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-    {...props}
-  >
-    <path
-      d="M9.625 12.75V7.75H7.125V9H8.375V12.75H6.5V14H11.5V12.75H9.625ZM9 4C8.81458 4 8.63332 4.05498 8.47915 4.158C8.32498 4.26101 8.20482 4.40743 8.13386 4.57873C8.06291 4.75004 8.04434 4.93854 8.08051 5.1204C8.11669 5.30225 8.20598 5.4693 8.33709 5.60041C8.4682 5.73152 8.63525 5.82081 8.8171 5.85699C8.99896 5.89316 9.18746 5.87459 9.35877 5.80364C9.53007 5.73268 9.67649 5.61252 9.7795 5.45835C9.88252 5.30418 9.9375 5.12292 9.9375 4.9375C9.9375 4.68886 9.83873 4.4504 9.66291 4.27459C9.4871 4.09877 9.24864 4 9 4Z"
-      fill="#143A47"
-    />
-    <path
-      d="M9 17.75C7.26942 17.75 5.57769 17.2368 4.13876 16.2754C2.69983 15.3139 1.57832 13.9473 0.916058 12.3485C0.253791 10.7496 0.080512 8.9903 0.418133 7.29296C0.755753 5.59563 1.58911 4.03653 2.81282 2.81282C4.03653 1.58911 5.59563 0.755753 7.29296 0.418133C8.9903 0.080512 10.7496 0.253791 12.3485 0.916058C13.9473 1.57832 15.3139 2.69983 16.2754 4.13876C17.2368 5.57769 17.75 7.26942 17.75 9C17.75 11.3206 16.8281 13.5462 15.1872 15.1872C13.5462 16.8281 11.3206 17.75 9 17.75ZM9 1.5C7.51664 1.5 6.0666 1.93987 4.83323 2.76398C3.59986 3.58809 2.63856 4.75943 2.07091 6.12988C1.50325 7.50032 1.35473 9.00832 1.64411 10.4632C1.9335 11.918 2.64781 13.2544 3.6967 14.3033C4.7456 15.3522 6.08197 16.0665 7.53683 16.3559C8.99168 16.6453 10.4997 16.4968 11.8701 15.9291C13.2406 15.3614 14.4119 14.4001 15.236 13.1668C16.0601 11.9334 16.5 10.4834 16.5 9C16.5 7.01088 15.7098 5.10323 14.3033 3.6967C12.8968 2.29018 10.9891 1.5 9 1.5Z"
-      fill="#143A47"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="m15 11.25 1.5 1.5.75-.75V8.758l2.276-.61a3 3 0 1 0-3.675-3.675l-.61 2.277H12l-.75.75 
+         1.5 1.5M15 11.25l-8.47 8.47c-.34.34-.8.53-1.28.53s-.94.19-1.28.53l-.97.97-.75-.75.97-.97c.34-.34.53-.8.53-1.28s.19-.94.53-1.28L12.75 9
+         M15 11.25 12.75 9"
     />
   </svg>
 );
@@ -112,36 +71,16 @@ const DeleteDocumentIcon = (props) => (
     />
   </svg>
 );
-const ShareoDcumentIcon = (props) => (
-  <svg
-    width="15"
-    height="15"
-    viewBox="0 0 15 15"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-    {...props}
-  >
-    <path
-      d="M8 0.5C8 0.223858 7.77614 0 7.5 0C7.22386 0 7 0.223858 7 0.5V7H0.5C0.223858 7 0 7.22386 0 7.5C0 7.77614 0.223858 8 0.5 8H7V14.5C7 14.7761 7.22386 15 7.5 15C7.77614 15 8 14.7761 8 14.5V8H14.5C14.7761 8 15 7.77614 15 7.5C15 7.22386 14.7761 7 14.5 7H8V0.5Z"
-      fill="#424242"
-    />
-  </svg>
-);
 
 export default function ModalOptionAnnoun({
   Announcement,
   announId,
-  onDeleteSuccess,
   boardId,
-  Announcements,
   boardMember,
+  preventUserImage,
 }) {
-  console.log("Announcement",Announcement);
-  console.log("zzzz", announId);
-  console.log("my boardid",boardId);
 
-  const iconClasses =
-    "text-xl text-default-500 pointer-events-none flex-shrink-0";
+  const iconClasses ="text-xl text-default-500 pointer-events-none flex-shrink-0";
 
   return (
     <Dropdown className="z-[10px]">
@@ -170,16 +109,15 @@ export default function ModalOptionAnnoun({
           key="pined"
           className="w-full hover:bg-default-100"
           showDivider
-          startContent={<PinedIcon className={iconClasses} />}
+          startContent={<PinnedAnnouncementIcon className={iconClasses} />}
         >
           <ModalPinedAnnoun
-            title={"Pined"}
+            title={"Pin"}
             massageTitle={"Are you sure?"}
             massageBody={"You want to pined it."}
-            icon={<IconpopupDelete />}
-            bgcolor={"bg-slate-red"}
+            icon={<IconPopupPined />}
+            bgcolor={"bg-slate-blue"}
             massageDo={"Yes, Pined"}
-            accessToken={"jam dak key ..."}
             massageUndo={"No, Cancel"}
             announId={announId}
           />
@@ -189,29 +127,17 @@ export default function ModalOptionAnnoun({
           key="edit"
           className="w-full hover:bg-default-100"
           showDivider
-          startContent={<EditDocumentIcon className={iconClasses} />}
+          startContent={<EditAnnouncementIcon className={iconClasses} />}
         >
           <ModalEditAnnoun
-            title="Edit"
-            icon={""}
-            bgcolor="bg-blue-100"
+            title={"Edit"}
+            icon={<IconPopupEdit />}
             announId={announId}
             boardId={boardId}
             Announcement={Announcement}
+            boardMember={boardMember}
+            preventUserImage={preventUserImage}
           />
-
-          {/* <CardCreateModal 
-            title={"Edite"}
-            boardId={boardId} 
-            boardMember={boardMember} 
-            Announcements={Announcements}
-          /> */}
-          {/* <CardUpdateModal 
-            title={"Edite"}
-            boardId={boardId} 
-            boardMember={boardMember} 
-            Announcements={Announcements}
-          /> */}
         </DropdownItem>
 
         <DropdownItem
@@ -226,7 +152,6 @@ export default function ModalOptionAnnoun({
             icon={<IconpopupDelete />}
             bgcolor={"bg-slate-red"}
             massageDo={"Yes, Delete"}
-            accessToken={"jam dak key ..."}
             massageUndo={"No, Cancel"}
             announId={announId}
             onDeleteSuccess={announId}

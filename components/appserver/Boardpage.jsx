@@ -55,6 +55,7 @@ export default function SystemBoard({
   matchingBoardForNotPM,
   workspaceId,
   currentUserProfile,
+  myUserId,
 }) {
   if (
     !boardData ||
@@ -199,6 +200,7 @@ export default function SystemBoard({
         allMemberInBoard={allMemberInBoard}
         isGanttChartId={ganttChartId}
         setActiveTab={setActiveTab}
+        userId={myUserId}
       />
     ),
     role === "ROLE_MANAGER" && (
@@ -261,6 +263,7 @@ export default function SystemBoard({
           boardData={boardData}
           ganttbar={ganttbar}
           boardId={boardId}
+          workspaceId={workspaceId}
         />
       ),
     },
@@ -356,6 +359,9 @@ export default function SystemBoard({
           modal={ganttModal}
           ganttbar={ganttbar}
           ganttChartName={ganttChartName}
+          boardId={boardId}
+          ganttChartId={ganttChartId}
+          workspaceId={workspaceId}
         />
       ),
     },

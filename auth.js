@@ -1,3 +1,110 @@
+// import NextAuth from "next-auth";
+// import GoogleProvider from "next-auth/providers/google";
+// import Credentials from "next-auth/providers/credentials";
+// import {
+//   loginGoogleService,
+//   loginZentrioCredentailService,
+// } from "./service/auth.service";
+
+// export const {
+//   handlers: { GET, POST },
+//   auth,
+//   signIn,
+//   signOut,
+// } = NextAuth({
+//   session: {
+//     strategy: "jwt",
+//   },
+//   providers: [
+//     Credentials({
+//       credentials: {
+//         email: {},
+//         password: {},
+//       },
+//       authorize: async (credentials) => {
+//         const { email, password } = credentials;
+//         const res = await loginZentrioCredentailService({ email, password });
+//         if (!res?.success) {
+//           return null; // Return null if login fails
+//         }
+//         // Return user data and token to be used in jwt callback
+//         return {
+//           id: res.payload.user?.userId || res.payload.sub, // Adjust based on your response structure
+//           email: res.payload.user?.email || credentials.email,
+//           backendToken: res.payload.token, // Store backend token
+//           ...res.payload.user, // Spread other user data
+//         };
+//       },
+//     }),
+//     GoogleProvider({
+//       clientId: process.env.GOOGLE_CLIENT_ID,
+//       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+//       authorization: {
+//         params: {
+//           prompt: "consent",
+//           access_type: "offline",
+//           response_type: "code",
+//           scope:
+//             "openid email profile https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/drive",
+//         },
+//       },
+//     }),
+//   ],
+//   callbacks: {
+//     async jwt({ token, account, user }) {
+//       // Handle Credentials login (user is populated from authorize)
+//       if (user) {
+//         token.id = user.id;
+//         token.email = user.email;
+//         token.backendToken = user.backendToken; // Store backend token
+//         // Add other user properties as needed
+//         token.username = user.username || token.username;
+//       }
+
+//       // Handle Google login (account is populated)
+//       if (account && account.provider === "google") {
+//         token.idToken = account.id_token;
+//         token.accessToken = account.access_token;
+//         token.refreshToken = account.refresh_token;
+
+//         try {
+//           const backendResponse = await loginGoogleService({
+//             idToken: account.id_token, // Pass id_token to backend
+//           });
+
+//           if (backendResponse?.success) {
+//             token.backendToken = backendResponse.payload.token;
+//             token.id = backendResponse.payload.user?.userId || token.sub;
+//             token.email = backendResponse.payload.user?.email || token.email;
+//             token.username =
+//               backendResponse.payload.user?.username || token.username;
+//           } else {
+//             console.error("Backend login failed:", backendResponse?.message);
+//           }
+//         } catch (error) {
+//           console.error("Error calling loginGoogleService:", error.message);
+//         }
+//       }
+
+//       return token;
+//     },
+//     async session({ session, token }) {
+//       // Shape the session object
+//       session.user = {
+//         id: token.id,
+//         email: token.email,
+//         username: token.username,
+//         backendToken: token.backendToken,
+//       };
+//       session.backendToken = token.backendToken; // Optional: Store at root level
+//       return session;
+//     },
+//   },
+//   secret: process.env.NEXTAUTH_SECRET,
+//   pages: {
+//     signIn: "/login",
+//   },
+// });
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
@@ -48,8 +155,15 @@ export const {
       authorize: async (credentials) => {
         const { email, password } = credentials;
         const res = await loginZentrioCredentailService({ email, password });
-        if (res?.success === false) return null;
-        return res;
+        if (!res?.success) {
+          return null;
+        }
+        return {
+          id: res.payload.user?.userId || res.payload.sub,
+          email: res.payload.user?.email || credentials.email,
+          backendToken: res.payload.token,
+          ...res.payload.user,
+        };
       },
     }),
     GoogleProvider({
@@ -68,13 +182,21 @@ export const {
   ],
   callbacks: {
     async jwt({ token, account, user }) {
-      // First time login
-      if (account?.provider === "google") {
+      // Handle Credentials login
+      if (user) {
+        token.id = user.id;
+        token.email = user.email;
+        token.backendToken = user.backendToken;
+        token.username = user.username || token.username;
+      }
+
+      // Handle Google login
+      if (account && account.provider === "google") {
         token.idToken = account.id_token;
         token.accessToken = account.access_token;
         token.refreshToken = account.refresh_token;
-        // Fix: account.expires_at is already an absolute timestamp in seconds
-        token.accessTokenExpires = account.expires_at * 1000;
+        token.expiresAt = account.expires_at; // Store expiration timestamp
+        token.scopes = account.scope; // Store granted scopes
 
         try {
           const backendResponse = await loginGoogleService({
@@ -83,77 +205,36 @@ export const {
 
           if (backendResponse?.success) {
             token.backendToken = backendResponse.payload.token;
+            token.id = backendResponse.payload.user?.userId || token.sub;
+            token.email = backendResponse.payload.user?.email || token.email;
+            token.username =
+              backendResponse.payload.user?.username || token.username;
+          } else {
+            console.error("Backend login failed:", backendResponse?.message);
           }
         } catch (error) {
-          console.error("Google login error:", error.message);
-        }
-      }
-
-      // Credentials login
-      if (account?.provider === "credentials" && user) {
-        token.backendToken = user?.payload?.token;
-        token.email = user?.payload?.email;
-      }
-
-      // Check if we have the necessary tokens for refresh
-      if (!token.accessToken || !token.refreshToken || !token.accessTokenExpires) {
-        return token;
-      }
-
-
-      // Refresh access token if expired (check 5 minutes before actual expiry)
-      const shouldRefresh = Date.now() > (token.accessTokenExpires - 5 * 60 * 1000);
-      
-      // TEMPORARY: Force refresh if token seems to be from future (incorrect calculation)
-      const tokenSeemsIncorrect = token.accessTokenExpires > Date.now() + (24 * 60 * 60 * 1000); // More than 24 hours
-      
-      if (tokenSeemsIncorrect) {
-        console.log("Detected incorrect token expiration, forcing refresh...");
-      }
-      
-      if (shouldRefresh || tokenSeemsIncorrect) {
-        console.log("Refreshing access token...");
-        try {
-          const refreshed = await refreshGoogleAccessToken(token.refreshToken);
-          
-          return {
-            ...token,
-            accessToken: refreshed.access_token,
-            accessTokenExpires: Date.now() + refreshed.expires_in * 1000,
-            refreshToken: refreshed.refresh_token || token.refreshToken,
-            error: undefined, // Clear any previous errors
-          };
-        } catch (err) {
-          console.error("Failed to refresh access token:", err);
-          return {
-            ...token,
-            error: "RefreshAccessTokenError",
-          };
+          console.error("Error calling loginGoogleService:", error.message);
         }
       }
 
       return token;
     },
-
     async session({ session, token }) {
+      // Shape the session object
       session.user = {
         id: token.id,
         email: token.email,
         username: token.username,
         backendToken: token.backendToken,
       };
-      session.accessToken = token.accessToken;
-      session.error = token.error;
-      
-      // Add debug info (remove in production)
-      if (process.env.NODE_ENV === 'development') {
-        session.debug = {
-          tokenExpires: new Date(token.accessTokenExpires),
-          hasRefreshToken: !!token.refreshToken,
-          timeUntilExpiry: token.accessTokenExpires ? Math.round((token.accessTokenExpires - Date.now()) / 1000 / 60) : null,
-        };
-      }
-      
+      session.backendToken = token.backendToken;
+      session.googleAuth = {
+        accessToken: token.accessToken,
+        idToken: token.idToken,
+        refreshToken: token.refreshToken,
+        expiresAt: token.expiresAt, // Expose expiration timestamp
+        scopes: token.scopes, // Expose scopes
+      };
       return session;
     },
   },

@@ -4,7 +4,6 @@ import { useRef, useMemo } from "react";
 import FullCalendar from "@fullcalendar/react";
 import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
 import interactionPlugin from "@fullcalendar/interaction";
-import dayGridPlugin from "@fullcalendar/daygrid";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../../styles/ganttchart.css"; // Ensure this path is correct
@@ -16,14 +15,13 @@ const calculateDurationDays = (start, end) => {
   try {
     const startDate = new Date(start);
     const endDate = new Date(end);
-    // Check for invalid dates
     if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
       console.error(
         "Invalid date format for duration calculation:",
         start,
         end
       );
-      return 0; // Or handle as appropriate
+      return 0;
     }
     const diffTime = endDate - startDate;
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
@@ -61,16 +59,16 @@ const colorPalette = [
   { background: "#FCE7F3", border: "#EC4899" }, // Light Pink
 ];
 
-// Function to format face string to title case (e.g., REQUIREMENT_ANALYSIS -> Requirement Analysis)
+// Function to format face string to title case
 const formatFaceTitle = (face) => {
   if (!face || typeof face !== "string") return "Unknown Phase";
   return face
     .toLowerCase()
     .replace(/_/g, " ")
-    .replace(/\b\w/g, (char) => char.toUpperCase()); // Capitalize first letter of each word
+    .replace(/\b\w/g, (char) => char.toUpperCase());
 };
 
-export default function GanttChart({ modal, ganttbar, ganttChartName }) {
+export default function GanttChart({ modal, ganttbar, ganttChartName, workspaceId }) {
   const calendarRef = useRef(null);
   console.log("log gant bar again ", ganttbar);
 
@@ -82,7 +80,6 @@ export default function GanttChart({ modal, ganttbar, ganttChartName }) {
 
     if (data.length === 0) {
       console.log("No valid data found in ganttbar.payload");
-      // Return default empty resources but still allow calendar to render
       return {
         resources: [{ id: "default-phase", title: "" }],
         events: [],
@@ -170,6 +167,15 @@ export default function GanttChart({ modal, ganttbar, ganttChartName }) {
           return null;
         }
 
+        // Remove duplicate team leaders by userId
+        const uniqueTeamLeaders = Array.isArray(item.teamLeader)
+          ? [
+              ...new Map(
+                item.teamLeader.map((leader) => [leader.userId, leader])
+              ).values(),
+            ]
+          : [];
+
         return {
           id: item.ganttBarId,
           resourceId: resourceInfo.id,
@@ -180,9 +186,10 @@ export default function GanttChart({ modal, ganttbar, ganttChartName }) {
           borderColor: resourceInfo.borderColor,
           extendedProps: {
             duration: `${durationDays} Day${durationDays !== 1 ? "s" : ""}`,
-            teamLeader: Array.isArray(item.teamLeader) ? item.teamLeader : [],
+            teamLeader: uniqueTeamLeaders,
             face: faceKey,
             formattedFace: formatFaceTitle(faceKey),
+            ganttChartId: item.ganttChartId, // Store ganttChartId for each event
           },
         };
       })
@@ -200,66 +207,6 @@ export default function GanttChart({ modal, ganttbar, ganttChartName }) {
     };
   }, [ganttbar]);
 
-  // Handle event drag and resize
-  const handleEventChange = (info) => {
-    const startDate = new Date(info.event.start);
-    const endDate = new Date(info.event.end);
-    const durationDays = calculateDurationDays(startDate, endDate);
-
-    const eventResources = info.event.getResources();
-    const mainResource = eventResources[0] || null;
-    const resourceId = mainResource?.id;
-    const matchedResource = resources.find((res) => res.id === resourceId);
-    const resourceName = matchedResource
-      ? matchedResource.title
-      : "Unknown Resource";
-
-    info.event.setExtendedProp(
-      "duration",
-      `${durationDays} Day${durationDays !== 1 ? "s" : ""}`
-    );
-
-    // Update event colors and face if resource changed
-    if (
-      matchedResource &&
-      resourceId !== info.oldEvent?.getResources()[0]?.id
-    ) {
-      const newFace = Object.keys(dynamicFaceMap).find(
-        (key) => dynamicFaceMap[key].id === resourceId
-      );
-      if (newFace) {
-        const newResourceInfo = dynamicFaceMap[newFace];
-        info.event.setProp("backgroundColor", newResourceInfo.color);
-        info.event.setProp("borderColor", newResourceInfo.borderColor);
-        info.event.setExtendedProp("face", newFace);
-      }
-    }
-
-    // Show toast notification instead of alert
-    toast.success(
-      `"${
-        info.event.title
-      }" updated successfully! Duration: ${durationDays} days (${formatDate(
-        startDate
-      )} - ${formatDate(endDate)}) in ${resourceName}`,
-      {
-        position: "top-right",
-        autoClose: 4000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-      }
-    );
-
-    console.log("Event Changed:", {
-      id: info.event.id,
-      newStart: info.event.startStr,
-      newEnd: info.event.endStr,
-      newResourceId: resourceId,
-    });
-  };
-
   // Custom event rendering with phase information
   const renderEventContent = (eventInfo) => {
     const teamLeaders = eventInfo.event.extendedProps.teamLeader || [];
@@ -268,7 +215,7 @@ export default function GanttChart({ modal, ganttbar, ganttChartName }) {
 
     return (
       <div
-        className={`rounded-r-[10px] h-full p-0 overflow-hidden cursor-pointer`}
+        className={`rounded-r-[10px] h-full p-0 overflow-hidden cursor-default`} // Changed cursor to default to indicate non-interactivity
         style={{
           backgroundColor: eventInfo.event.backgroundColor,
           borderLeft: `4px solid ${eventInfo.event.borderColor}`,
@@ -286,14 +233,14 @@ export default function GanttChart({ modal, ganttbar, ganttChartName }) {
               <div className="flex items-center space-x-1 mt-1">
                 {teamLeaders.slice(0, 3).map((leader, index) => (
                   <img
-                    key={leader.username + index} // Use a more unique key if possible
+                    key={leader.userId + index}
                     src={leader.imageUrl}
                     alt={leader.username}
                     title={leader.username}
-                    className="w-4 h-4 rounded-full border border-white bg-gray-200" // Added bg for loading
+                    className="w-4 h-4 rounded-full border border-white bg-gray-200"
                     onError={(e) => {
                       e.target.style.display = "none";
-                    }} // Hide if image fails
+                    }}
                   />
                 ))}
                 {teamLeaders.length > 3 && (
@@ -310,14 +257,14 @@ export default function GanttChart({ modal, ganttbar, ganttChartName }) {
               </div>
             )}
           </div>
-          <div className=" flex flex-col justify-end gap-4  text-xs text-gray-700 whitespace-nowrap font-medium">
+          <div className="flex flex-col justify-end gap-4 text-xs text-gray-700 whitespace-nowrap font-medium">
             <div>{eventInfo.event.extendedProps.duration}</div>
             {/* Phase badge */}
-            <div className=" flex items-center  gap-2 mb-1">
+            <div className="flex items-center gap-2 mb-1">
               <span
                 className="inline-block px-2 py-0.5 text-xs font-medium rounded-full text-white truncate overflow-hidden whitespace-nowrap max-w-[100px]"
                 style={{ backgroundColor: eventInfo.event.borderColor }}
-                title={phaseName} //  shows full text on hover
+                title={phaseName}
               >
                 {phaseName}
               </span>
@@ -348,9 +295,7 @@ export default function GanttChart({ modal, ganttbar, ganttChartName }) {
       const start = new Date(event.start);
       const end = new Date(event.end);
       if (start < min) min = start;
-      // Ensure end date contributes to max range correctly
       const effectiveEnd = new Date(end);
-      // If end time is midnight, consider it the start of that day for range calculation
       if (
         effectiveEnd.getHours() === 0 &&
         effectiveEnd.getMinutes() === 0 &&
@@ -361,9 +306,9 @@ export default function GanttChart({ modal, ganttbar, ganttChartName }) {
       if (effectiveEnd > max) max = effectiveEnd;
     });
 
-    // Add some padding to the range (e.g., a few days before and after)
+    // Add padding to the range
     min.setDate(min.getDate() - 3);
-    max.setDate(max.getDate() + 4); // Added one extra day padding at end
+    max.setDate(max.getDate() + 4);
 
     return {
       minDate: min.toISOString().split("T")[0],
@@ -374,33 +319,41 @@ export default function GanttChart({ modal, ganttbar, ganttChartName }) {
   // Calculate duration string for the header
   const durationString = useMemo(() => {
     if (!events || events.length === 0) {
-      // Show current month when no events
       const today = new Date();
       const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
       const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
       return `${formatDate(startOfMonth)} - ${formatDate(endOfMonth)}`;
     }
-    // Use the calculated min/max dates for the header string
     const start = new Date(minDate);
     const end = new Date(maxDate);
-    // Adjust end date back if it was padded
     end.setDate(end.getDate() - 4);
     return `${formatDate(start)} - ${formatDate(end)}`;
   }, [minDate, maxDate, events]);
 
+  // Handle click to inform users of read-only mode
+  const handleEventClick = (info) => {
+    toast.info("This Gantt chart is read-only. You cannot modify tasks.", {
+      position: "top-right",
+      autoClose: 4000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+    });
+  };
+
   return (
     <div className="flex flex-col h-screen bg-white">
-      {/* Assuming BredCrum component exists and props are correct */}
       <BredCrum
-        board={"Project Dashboard"} // Example: Make dynamic if needed
+        board={"Project Dashboard"}
         feature={"Gantt Chart"}
         header={
           ganttChartName != "No data available" ? ganttChartName : "Gantt Chart"
-        } // Example: Make dynamic if needed
+        }
         modal={modal}
+        workspaceId={workspaceId}
       />
       <div className="flex items-center justify-between bg-[#F3F7FB] px-6 py-3 rounded-t-[16px] mt-3 border-b border-gray-200">
-        {/* Month and Year (Dynamic based on current view center) */}
         <div className="text-lg font-semibold text-gray-800">
           {calendarRef.current
             ? calendarRef.current.getApi().view.title
@@ -409,14 +362,10 @@ export default function GanttChart({ modal, ganttbar, ganttChartName }) {
                 year: "numeric",
               })}
         </div>
-
-        {/* Duration Range */}
         <div className="text-sm text-gray-600 font-medium">
           Overall Range:{" "}
           <span className="font-semibold text-gray-700">{durationString}</span>
         </div>
-
-        {/* Navigation buttons */}
         <div className="flex justify-center items-center space-x-2">
           <button
             title="Go to Today"
@@ -441,23 +390,20 @@ export default function GanttChart({ modal, ganttbar, ganttChartName }) {
           </button>
         </div>
       </div>
-
       <div className="flex-grow overflow-hidden pt-1 relative">
-        {/* Always render FullCalendar, but show empty state overlay when no events */}
         <FullCalendar
-          key={`${minDate}-${maxDate}-${resources.length}-${events.length}`} // More robust key for re-renders
+          key={`${minDate}-${maxDate}-${resources.length}-${events.length}`}
           ref={calendarRef}
-          plugins={[resourceTimelinePlugin, interactionPlugin]} // Removed dayGridPlugin if not used
-          schedulerLicenseKey="GPL-My-Project-Is-Open-Source" // Use your actual key if applicable
-          initialView="resourceTimelineMonthCustom" // Default view
-          headerToolbar={false} // Using custom header
-          slotMinWidth={50} // Adjust column width as needed
+          plugins={[resourceTimelinePlugin, interactionPlugin]}
+          schedulerLicenseKey="GPL-My-Project-Is-Open-Source"
+          initialView="resourceTimelineMonthCustom"
+          headerToolbar={false}
+          slotMinWidth={50}
           slotMinHeight={80}
-          editable={true}
-          eventDrop={handleEventChange}
-          eventResize={handleEventChange}
-          slotDuration={{ days: 1 }} // Each slot is one day
-          slotLabelInterval={{ days: 1 }} // Label each day slot
+          editable={false} // Disable drag-and-drop and resizing
+          eventClick={handleEventClick} // Inform users of read-only mode
+          slotDuration={{ days: 1 }}
+          slotLabelInterval={{ days: 1 }}
           slotLabelFormat={{
             day: "numeric",
             weekday: "short",
@@ -480,7 +426,7 @@ export default function GanttChart({ modal, ganttbar, ganttChartName }) {
 
             return (
               <div
-                className={`flex flex-col items-center justify-center w-10 h-10 rounded-lg mx-auto my-1  ${
+                className={`flex flex-col items-center justify-center w-10 h-10 rounded-lg mx-auto my-1 ${
                   isToday
                     ? "bg-primary rounded-xl text-white font-bold p-2"
                     : "bg-gray-100 rounded-xl text-gray-700 p-2"
@@ -494,45 +440,32 @@ export default function GanttChart({ modal, ganttbar, ganttChartName }) {
           views={{
             resourceTimelineMonthCustom: {
               type: "resourceTimeline",
-              duration: { days: 31 }, // Default duration
+              duration: { days: 31 },
               visibleRange: {
-                // Dynamically set based on data
                 start: minDate,
                 end: maxDate,
               },
               slotDuration: { days: 1 },
             },
-            // Add other views if needed (e.g., week, year)
           }}
           viewDidMount={(viewInfo) => {
-            // Optional: Update header title when view changes
-            // This requires state management (useState) for the header title
             console.log("View Title:", viewInfo.view.title);
           }}
           nowIndicator={true}
-          now={new Date().toISOString()} // Ensure 'now' is in correct format
+          now={new Date().toISOString()}
           eventContent={renderEventContent}
-          resourceAreaWidth="0px" // Hide the resource area completely
-          resourceAreaHeaderContent="" // Remove header content
-          resourceAreaClassNames="hidden" // Hide resource area
-          resourceLabelClassNames="hidden" // Hide resource labels
+          resourceAreaWidth="0px"
+          resourceAreaHeaderContent=""
+          resourceAreaClassNames="hidden"
+          resourceLabelClassNames="hidden"
           resources={resources}
           events={events}
-          resourceOrder="title" // Order resources alphabetically
-          eventMaxStack={2} // Limit number of stacked events shown per day
-          eventOverlap={false} // Prevent events visually overlapping in time
-          aspectRatio={2.5} // Adjust overall aspect ratio
-          height="100%" // Let container control height
-          //scrollTime="00:00:00"
-          // contentHeight="auto"
-          eventClick={(info) => {
-            const ganttBarId = info.event.id;
-            const eventTitle = info.event.title;
-            handleDeleteGanttBar(ganttBarId, eventTitle);
-          }}
+          resourceOrder="title"
+          eventMaxStack={2}
+          eventOverlap={false}
+          aspectRatio={2.5}
+          height="100%"
         />
-
-        {/* Empty state overlay when no events */}
         {events.length === 0 && ganttbar !== undefined && (
           <div className="absolute inset-0 flex justify-center items-center bg-white bg-opacity-70 z-10">
             <div className="text-center">
@@ -545,8 +478,6 @@ export default function GanttChart({ modal, ganttbar, ganttChartName }) {
             </div>
           </div>
         )}
-
-        {/* Loading state */}
         {ganttbar === undefined && (
           <div className="absolute inset-0 flex justify-center items-center bg-white bg-opacity-90 z-10">
             <div className="text-center">
@@ -558,8 +489,6 @@ export default function GanttChart({ modal, ganttbar, ganttChartName }) {
           </div>
         )}
       </div>
-
-      {/* Toast Container */}
       <ToastContainer
         position="top-right"
         autoClose={4000}

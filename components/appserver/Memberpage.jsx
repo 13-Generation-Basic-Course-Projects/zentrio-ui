@@ -23,6 +23,7 @@ import ModalDelete from "../modal/ModalDelete";
 import { preventImage } from "@/constant/preventimage";
 import { formatRole } from "@/lib/roleFormart";
 import { deleteMemberAction } from "@/action/board.action";
+import { Autocomplete, AutocompleteItem } from "@heroui/react";
 
 export default function Memberpage({
   boardMember,
@@ -116,6 +117,13 @@ export default function Memberpage({
     return false;
   });
 
+  const filterOptions = [
+    { key: "all", label: "All" },
+    { key: "week", label: "Last week" },
+    { key: "month", label: "Last month" },
+    { key: "year", label: "Last year" },
+  ];
+
   // Pagination calculations use filteredMembers instead of all members
   const [currentPage, setCurrentPage] = useState(1);
   const membersPerPage = 5;
@@ -176,34 +184,27 @@ export default function Memberpage({
   return (
     <div className="p-4 ">
       {/* Breadcrumb */}
-      <BredCrum board={"Hikko Design"} feature={"Members"} header={"Member"} />
+      <BredCrum board={"Hikko Design"} feature={"Members"} header={"Member"} workspaceId={workspaceId} />
       <div className="flex justify-between">
         <div className="flex items-center w-[600px] h-[45px] border border-gray-200 rounded-[16px] overflow-hidden bg-white text-input text-title">
           <div className="relative flex items-center gap-2 border-r border-gray-200 pr-4 pl-3 py-2">
             <Image src={icon1} alt="Filter" className="w-4 h-4" />
             <div className="relative">
-              <select
-                value={filterRange}
-                onChange={(e) => setFilterRange(e.target.value)}
+              <Autocomplete
+                selectedKey={filterRange}
+                onSelectionChange={(key) => setFilterRange(key)}
                 onFocus={() => setMakeOpen(true)}
                 onBlur={() => setMakeOpen(false)}
-                className="appearance-none bg-white text-sm text-gray-700 px-3 pr-8 py-1.5 focus:outline-none transition"
+                placeholder="Filter"
+                className="w-[160px] bg-white text-sm text-gray-700"
+                size="sm"
               >
-                <option value="all">All</option>
-                <option value="week">Last week</option>
-                <option value="month">Last month</option>
-                <option value="year">Last year</option>
-              </select>
-
-              <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center transition-transform duration-300">
-                <Image
-                  src={arrowdown}
-                  alt="Dropdown arrow"
-                  className={`w-3 h-2 transform transition-transform duration-300 ${
-                    makeOpen ? "rotate-180" : ""
-                  }`}
-                />
-              </div>
+                {filterOptions.map((option) => (
+                  <AutocompleteItem key={option.key} textValue={option.label}>
+                    {option.label}
+                  </AutocompleteItem>
+                ))}
+              </Autocomplete>
             </div>
           </div>
 

@@ -2,23 +2,14 @@
 
 import BredCrum from "../bredcrum/MyBredcrum";
 import HorizontalChart from "../chart/HorizontalChart";
-// import VerticalChart from "../chart/VerticalChart";
+
 import dynamic from "next/dynamic";
 
 const VerticalChartNoSSR = dynamic(() => import("../chart/VerticalChart"), {
   ssr: false,
 });
 
-export default function Reportpage({
-  modal,
-  report,
-  roleNeverJoined,
-  roleJoined,
-}) {
-  if (roleJoined != "ROLE_MANAGER") {
-    return <></>;
-  }
-
+export default function Reportpage({ modal, report }) {
   const task = {
     todo: 0,
     progress: 0,
@@ -83,7 +74,6 @@ export default function Reportpage({
 
   const totalTask = task.todo + task.progress + task.review + task.done;
 
-  // this use to count amount of project manager, team leader, member
   report?.payload?.allMembers.forEach((item) => {
     if (item.roleName === "ROLE_MANAGER") {
       userRole.pm = item.total;
@@ -105,28 +95,26 @@ export default function Reportpage({
   };
 
   report?.payload?.groupedTasks.forEach((item) => {
-    if (item.task == "TO DO") {
-      cheklist.inTodo =
-        cheklist.inTodo + item?.tasks?.allChecklists?.length || 0;
-    } else if (item.task == "IN_PROGRESS") {
-      cheklist.inProgress =
-        cheklist.inProgress + item?.tasks?.allChecklists?.length || 0;
-    } else if (item.task == "UNDER_REVIEW") {
-      cheklist.inReview =
-        cheklist.inReview + item?.tasks?.allChecklists?.length || 0;
-    } else {
-      cheklist.inDone =
-        cheklist.inDone + item?.tasks?.allChecklists?.length || 0;
-    }
+    item?.tasks.forEach((value) => {
+      if (item.stage == "TO DO") {
+        cheklist.inTodo = cheklist.inTodo + value.allChecklists.length;
+      } else if (item.stage == "IN_PROGRESS") {
+        cheklist.inProgress = cheklist.inProgress + value.allChecklists.length;
+      } else if (item.stage == "UNDER_REVIEW") {
+        cheklist.inReview = cheklist.inReview + value.allChecklists.length;
+      } else {
+        cheklist.inDone = cheklist.inDone + value.allChecklists.length;
+      }
+    });
   });
 
-  // all version of report
   const getVersion = report?.payload;
-  console.log("Version: ", getVersion);
 
-  // this for vertical chart
   const groupedTasks = report?.payload?.groupedTasks;
-
+  console.log("apple", groupedTasks);
+  if (groupedTasks == null) {
+    return <></>;
+  }
   return (
     <>
       <div className="p-5">
@@ -137,11 +125,11 @@ export default function Reportpage({
           modal={modal}
         />
 
-        {/* Content in Report */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mt-5 overflow-y-auto h-screen md:h-fit scrollbar-hidden ">
+        {}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mt-5 overflow-y-auto h-screen md:h-fit scrollbar-hidden">
           <div className="md:col-span-8 md:h-screen flex flex-col  ">
             <div className=" overflow-y-auto scrollbar-hidden pb-40 p-2">
-              {/* Show number have in 4 Stage */}
+              {}
               <div className="grid grid-cols-4 gap-2">
                 {tasks.map((item, index) => (
                   <div
@@ -172,20 +160,15 @@ export default function Reportpage({
                   </div>
                 ))}
               </div>
-              {/* Show chart vertical chart */}
-              {/* <div className="mt-10">
-                <VerticalChartNoSSR
-                  totalTask={totalTask}
-                  chartData={weekly(groupedTasks)}
-                />
-              </div> */}
+              {}
+              {}
 
               <div className="mt-10">
                 <VerticalChartNoSSR report={report} />
               </div>
 
-              {/* Show chart horizontal chart */}
-              <div className="mt-5">
+              {}
+              <div className="mt-10">
                 <HorizontalChart
                   amtChklistTodo={cheklist.inTodo}
                   amtChklistProgress={cheklist.inProgress}
@@ -196,24 +179,24 @@ export default function Reportpage({
             </div>
           </div>
 
-          {/* layout at right */}
+          {}
           <div className="md:col-span-4 space-y-10 md:h-screen flex flex-col ">
             <div className=" flex flex-col  gap-2 overflow-y-auto scrollbar-hidden pb-[250px]">
-              {/* Chart show amount member */}
+              {}
               <div className="border-1 rounded-medium bg-[#FFFFFF] shadow-small p-4 flex flex-col ">
                 <h1 className="text-left py-5 text-h6 text-title/50">
                   Amount of Members
                 </h1>
                 <p className="border border-title/10 w-full my-2"></p>
                 <div className="relative w-[200px] h-[200px] mx-auto">
-                  {/* Big Blue Circle */}
+                  {}
                   <div className="absolute w-[160px] h-[160px] bg-blue-500 rounded-full border-3 border-bgColor flex items-center justify-center">
                     <p className="text-h3 text-white font-semibold">
                       {userRole.m}
                     </p>
                   </div>
 
-                  {/* Medium Purple Circle */}
+                  {}
                   <div
                     className="absolute w-[100px] h-[100px] bg-purple-500 rounded-full border-3 border-bgColor flex items-center justify-center"
                     style={{ top: "20px", left: "120px" }}
@@ -223,7 +206,7 @@ export default function Reportpage({
                     </p>
                   </div>
 
-                  {/* Small Black Circle */}
+                  {}
                   <div
                     className="absolute w-[80px] h-[80px] bg-black rounded-full border-3 border-bgColor flex items-center justify-center"
                     style={{ top: "80px", left: "110px" }}
@@ -249,7 +232,7 @@ export default function Reportpage({
                 </div>
               </div>
 
-              {/*For show version history */}
+              {}
               <div className="border-1 rounded-medium bg-[#FFFFFF] shadow-small p-4 flex flex-col h-[300px] ">
                 <h1 className="flex items-center gap-2 text-h6 text-title font-semibold py-5">
                   <span className="inline-block w-5 h-5">
@@ -267,12 +250,12 @@ export default function Reportpage({
                   Version History
                 </h1>
                 <div className="relative  max-h-auto  overflow-y-auto scrollbar-hidden">
-                  {/* Vertical connecting line - no z-index, behind content */}
+                  {}
                   <div className="absolute h-full left-[20px] top-5 bottom-5 border-l border-gray-300"></div>
 
-                  {/* Content with z-index to be on top */}
+                  {}
                   <div className="flex flex-col space-y-8 relative z-10">
-                    {/* All Version */}
+                    {}
                     {allVersion.map((item, index) => (
                       <div className="flex items-start space-x-4" key={index}>
                         <div className="flex-shrink-0 w-[40px] h-[30px] bg-primary text-white rounded-full flex items-center justify-center font-semibold text-caption">
@@ -281,8 +264,7 @@ export default function Reportpage({
                         <div className="flex flex-col space-y-1">
                           <p className="text-h6">ZenTrio Reporting Document</p>
                           <p className="text-caption-tiny text-title/50">
-                            {report?.payload?.boardData?.createdBy?.username} ·
-                            1 hour ago
+                            {report?.payload?.boardData?.createdBy?.username}
                           </p>
                         </div>
                       </div>

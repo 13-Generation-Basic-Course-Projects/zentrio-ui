@@ -132,7 +132,11 @@ export const getFileByFolderIdService = async ({
 /*
  * Download document by document ID
  */
-export const downloadDocumentByDocumentIdService = async ({ documentId, accessToken, token}) => {
+export const downloadDocumentByDocumentIdService = async ({
+  documentId,
+  accessToken,
+  token,
+}) => {
   try {
     const url = documentRouteGroup.downloadDocumentByDocumentId(
       documentId,
@@ -180,7 +184,11 @@ export const downloadDocumentByDocumentIdService = async ({ documentId, accessTo
 /*
  * Download all files as zip
  */
-export const downloadAllFilesAsZipService = async ({ documentId, accessToken, token }) => {
+export const downloadAllFilesAsZipService = async ({
+  documentId,
+  accessToken,
+  token,
+}) => {
   try {
     const url = documentRouteGroup.downloadAllFilesAsZip(
       documentId,
@@ -223,7 +231,11 @@ export const downloadAllFilesAsZipService = async ({ documentId, accessToken, to
 /*
  * Delete document by document ID
  */
-export const deleteDocumentService = async ({ accessToken, documentId, token }) => {
+export const deleteDocumentService = async ({
+  accessToken,
+  documentId,
+  token,
+}) => {
   try {
     const res = await fetch(
       documentRouteGroup.deleteDocumentById(documentId, accessToken),
@@ -264,8 +276,8 @@ export const createDocumentService = async (data, token) => {
     const res = await fetch(url, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
     });
@@ -286,7 +298,12 @@ export const createDocumentService = async (data, token) => {
 /*
  * Create new document by file upload
  */
-export const createDocumentByUploadService = async (formData, boardId, token, tokenFromGoogle) => {
+export const createDocumentByUploadService = async (
+  formData,
+  boardId,
+  token,
+  tokenFromGoogle
+) => {
   try {
     const res = await fetch(
       documentRouteGroup.uploadDocumentToBoard(boardId, tokenFromGoogle),
@@ -315,7 +332,13 @@ export const createDocumentByUploadService = async (formData, boardId, token, to
 /*
  * Create drive file
  */
-export const createDriveFileService = async ( name, folderId, fileType, token, tokenFromGoogle) => {
+export const createDriveFileService = async (
+  name,
+  folderId,
+  fileType,
+  token,
+  tokenFromGoogle
+) => {
   try {
     const url = documentRouteGroup.createDriveFile(
       name,
@@ -347,7 +370,12 @@ export const createDriveFileService = async ( name, folderId, fileType, token, t
 /*
  * Upload file to folder
  */
-export const uploadDocumentToFolderServie = async (file, folderId, token, tokenFromGoogle) => {
+export const uploadDocumentToFolderServie = async (
+  file,
+  folderId,
+  token,
+  tokenFromGoogle
+) => {
   try {
     const url = documentRouteGroup.uploadDocumentToFolder(
       folderId,
@@ -380,7 +408,12 @@ export const uploadDocumentToFolderServie = async (file, folderId, token, tokenF
 /*
  * Update document name by document ID
  */
-export const updateDocumentNameByIdService = async ( documentId, newName, token, tokenFromGoogle) => {
+export const updateDocumentNameByIdService = async (
+  documentId,
+  newName,
+  token,
+  tokenFromGoogle
+) => {
   try {
     const url = documentRouteGroup.updateDocumentById(
       documentId,
@@ -414,7 +447,11 @@ export const updateDocumentNameByIdService = async ( documentId, newName, token,
 /*
  * Public document by document id
  */
-export const publicDocumentByIdService = async ( documentId, token, tokenFromGoogle) => {
+export const publicDocumentByIdService = async (
+  documentId,
+  token,
+  tokenFromGoogle
+) => {
   try {
     const url = documentRouteGroup.makeDocumentPublic(
       documentId,
@@ -444,6 +481,28 @@ export const publicDocumentByIdService = async ( documentId, token, tokenFromGoo
     throw error;
   }
 };
+
+/*
+* Private document by document id
+*/
+export const privateDocumentByIdService = async (documentId, token, tokenFromGoogle) => {
+  try {
+    const url = documentRouteGroup.makeDocumentPrivate(documentId, tokenFromGoogle);
+    const res = await fetch(url, {
+      method: "PUT",
+      headers: {
+        Accept: "*/*",
+        Authorization: `Bearer ${token}`,
+      }
+    });
+
+    return await res.json();
+
+  } catch (error) {
+    console.error("Error in privateDocumentByIdService: ", error.message);
+    throw error;
+  }
+}
 
 /* new add
  * get all document by board id

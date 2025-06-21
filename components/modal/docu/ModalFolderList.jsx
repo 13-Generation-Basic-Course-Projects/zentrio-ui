@@ -11,10 +11,10 @@ import {
   useDisclosure,
 } from "@heroui/react";
 import { IconFolder } from "../../icon/everyicon";
-import CardFolder, { CardFile } from "../../card/CardDoc";
 import { getFileByFolderIdAction } from "@/action/document.action";
 import NoFilesFound from "./NoFilesFound";
 import ModalCreateDocuInFolder from "./ModalCreateDocuInFolder";
+import CardFolderInFolder, { CardFileInFolder } from "@/components/card/CardDocInFolder";
 
 export default function ModalFolderList({
   title,
@@ -51,8 +51,12 @@ export default function ModalFolderList({
     const fetchData = async () => {
       try {
         setLoading(true);
-        const result = await getFileByFolderIdAction(accessToken, currentFolderId);
+        const result = await getFileByFolderIdAction(
+          accessToken,
+          currentFolderId
+        );
         const payload = Array.isArray(result?.payload) ? result.payload : [];
+        console.log("data...", payload)
         setData(payload);
         setLoading(false);
       } catch (err) {
@@ -133,9 +137,12 @@ export default function ModalFolderList({
                 ) : data.length === 0 ? (
                   <NoFilesFound />
                 ) : (
-                  <div className={`${getGridLayout()} overflow-y-auto pb-[250px] p-2`}>
+                  <div
+                    className={`${getGridLayout()} overflow-y-auto pb-[250px] p-2`}
+                  >
                     {data.map((el, i) => {
-                      const isFolder = el.mimeType === "application/vnd.google-apps.folder";
+                      const isFolder =
+                        el.mimeType === "application/vnd.google-apps.folder";
                       const fileType = el.mimeType.includes("document")
                         ? "docx"
                         : el.mimeType.includes("spreadsheet")
@@ -147,22 +154,21 @@ export default function ModalFolderList({
                         : el.mimeType.split("/")[1] || "file";
 
                       return isFolder ? (
-                        <CardFolder
+                        <CardFolderInFolder
                           key={`folder-${i}`}
                           title={el.name || "Untitled Folder"}
-                          status={el.status || "personal"}
+                          status={el._public ? "public" : "personal"}
                           date={new Date().toISOString().split("T")[0]}
                           link={el.webViewLink}
-                          documentId={el.id}
-                          folderId={el.id}
+                          fileId={el.id}
                           tokenFromGoogle={accessToken}
                           onClick={() => goToFolder(el.id)} // change folder content inside modal
                         />
                       ) : (
-                        <CardFile
+                        <CardFileInFolder
                           key={el.id || i}
                           title={el.name}
-                          status={el.status || "personal"}
+                          status={el._public ? "public" : "personal"}
                           date={new Date().toISOString().split("T")[0]}
                           type={fileType}
                           fileId={el.id}
