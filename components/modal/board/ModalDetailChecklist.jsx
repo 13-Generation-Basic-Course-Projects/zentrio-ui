@@ -684,14 +684,13 @@ const ModalDetailChecklist = ({
   leaderId,
   role,
   boardId,
+  isModalDisabled,
 }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const { state, dispatch, shouldStayOpen } = useChecklistData(
     checklistId,
     isOpen
   );
- 
- 
 
   const {
     taskData,
@@ -944,7 +943,7 @@ const ModalDetailChecklist = ({
         onPress={onOpen}
         className="h-full w-full p-0"
         fullWidth={true}
-        disabled={loading}
+        disabled={loading || isModalDisabled}
       >
         <div className="h-full w-full max-w-none px-0 bg-white">
           <CardCheckList
