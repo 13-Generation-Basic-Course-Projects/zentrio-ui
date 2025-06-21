@@ -102,6 +102,7 @@ export default function CardBoard({
       <CardHeader className="pb-0 pt-2 px-4 flex justify-between items-center">
         {editing && !includesPathOtherWorkSpace ? (
           /* Input for editing title */
+
           <input
             type="text"
             className="text-body-sm font-semibold text-primary bg-transparent border-b border-primary focus:outline-none"
