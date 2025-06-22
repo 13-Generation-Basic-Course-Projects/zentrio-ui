@@ -2,16 +2,7 @@
 import ModalFolderList from "../modal/docu/ModalFolderList";
 import React, { useState } from "react";
 import { Card, CardHeader, CardBody, CardFooter } from "@heroui/card";
-import {
-  IconDelete,
-  StackedProfiles,
-  StarIconOutline,
-  StarIconSolid,
-} from "../icon/everyicon";
-import iconMember from "@/assets/memberSideBar.png";
-
 import Image from "next/image";
-import { icon } from "../icon/allicon";
 import ModalOptionDocument from "../modal/docu/ModalOptionDocument";
 import Link from "next/link";
 

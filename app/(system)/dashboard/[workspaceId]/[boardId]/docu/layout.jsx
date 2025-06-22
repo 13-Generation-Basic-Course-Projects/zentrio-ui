@@ -20,10 +20,10 @@ export default async function BoardLayout({ children, params }) {
   // const tokenFromGoogle = await refreshAccessToken(refresh_token);
 
   // console.log("refresh token ", refresh_token)
-  const userToken = await Token();
-  const token = userToken.GoogleDocumentToken;
+  // const userToken = await Token();
+  // const token = userToken.GoogleDocumentToken;
 
-  const tokenFromGoogle = token;
+  const tokenFromGoogle = "ya29.a0AW4XtxjmO36PU4vEhXhB6gyXpb_Um9wMecy153P4YRr7lbQaC5zR0qVTHvsNpKsmcSrt9ofkJ4633QrkEglksfLYbUF_YKfQWVpRgULGi4RTN_pa-J-8EQWOCkcjanCB6EkpvRisb_zSI5PcSOOTmXjmwG0Heh9HS42cPFlrygaCgYKARASARcSFQHGX2MiTyWDkwYvZZfQWcsybwPyeA0177";
 
   console.log("debug", tokenFromGoogle);
   //pf
