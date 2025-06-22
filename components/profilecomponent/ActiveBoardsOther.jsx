@@ -185,11 +185,11 @@ export default function ActiveBoardsOther({
         {/* Title Header */}
         <div className="flex justify-between py-0 px-4 border-b-1 border-stroke">
           <h3 className="text-body font-semibold">Active Tasks</h3>
-          <IconEllipsisVertical
+          {/* <IconEllipsisVertical
             strokeWidth={2}
             color={"currentColor"}
             size={6}
-          />
+          /> */}
         </div>
 
         {/* User Info Header */}

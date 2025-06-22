@@ -154,7 +154,7 @@ export default function OtherProfileLayout({
             Go Back
           </Button>
 
-          <div className="absolute bottom-[-60px] left-1/2 -translate-x-1/2 w-28 h-28 rounded-full border-2 border-desc p-0.5 group cursor-pointer bg-white shadow overflow-hidden">
+          <div className="absolute bottom-[-60px] left-1/2 -translate-x-1/2 w-28 h-28 rounded-full border-2 border-desc p-0.5 group  bg-white shadow overflow-hidden">
             {displayProfileImage ? (
               <img
                 className="rounded-full w-full h-full object-cover"
@@ -168,9 +168,9 @@ export default function OtherProfileLayout({
                 alt="user profile"
               />
             )}
-            <div className="absolute top-20 inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+            {/* <div className="absolute top-20 inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
               <Camera className="text-white w-3 h-3" />
-            </div>
+            </div> */}
           </div>
         </div>
 
