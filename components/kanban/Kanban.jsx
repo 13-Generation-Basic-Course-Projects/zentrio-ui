@@ -560,6 +560,7 @@ export default function KanbanBoard({
     try {
       const result = await changeStatusTaskAction(taskId, newStatus);
       if (result.success) {
+        // Update columns state
         setColumns((prev) =>
           prev.map((column) => ({
             ...column,
@@ -569,8 +570,11 @@ export default function KanbanBoard({
           }))
         );
       } else {
+        console.error("Failed to update task status:", result.error);
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error("Error updating task status:", error.message);
+    }
   };
 
   return (
@@ -735,7 +739,7 @@ export default function KanbanBoard({
                                 </div>
                                 {/* consider */}
 
-                                <div className="flex justify-end items-center hidden">
+                                <div className="flex justify-end items-center ">
                                   <button
                                     onClick={() =>
                                       handleStatusChange(
