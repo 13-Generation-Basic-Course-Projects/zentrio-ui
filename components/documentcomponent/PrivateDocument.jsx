@@ -4,7 +4,6 @@ import MyDatePicker from "../date/Datepicker";
 import BredCrum from "../bredcrum/MyBredcrum";
 import CardFolder, { CardFile } from "../card/CardDoc";
 import { Autocomplete, AutocompleteItem, Input } from "@heroui/react";
-import ModalCreateDocu from "../modal/docu/ModalCreateDocu";
 
 export default function Privatedocument({
   modal,

@@ -201,13 +201,6 @@ export const createDriveFileAction = async ({
     const userToken = await Token();
     const token = userToken.Credential;
 
-    const data = {
-      accessToken: tokenFromGoogle,
-      name: name,
-      folderId: folderId,
-      fileType: fileType,
-    };
-
     const document = await createDriveFileService(
       name,
       folderId,

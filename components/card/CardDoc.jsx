@@ -27,13 +27,14 @@ export default function CardFolder({
   onClick,
   isHidden,
 }) {
+
   return (
     <Card
       onClick={() => onClick?.(folderId)}
       className="rounded-xl text-blue-400 cursor-pointer hover:bg-blue-50 transition sm:w-[160px] md:w-full h-[160px] shadow-sm "
     >
       {/* Header */}
-      <CardHeader className="pb-0 pt-2 px-4 flex justify-end">
+      <CardHeader className={`pb-0 pt-2 px-4 flex justify-end ${isHidden ? `pt-8` : ``} `}>
         <div className="hover:text-black text-gray-600">
           {isHidden == true ? (
             ""
@@ -125,7 +126,7 @@ export function CardFile({
     <Card className="rounded-xl text-blue-400 cursor-pointer hover:bg-blue-50 transition sm:w-[160px] md:w-full h-[160px] shadow-sm">
       {/* Header */}
       <CardHeader
-        className={`pb-0 pt-2 px-4 flex justify-end  ${isHidden ? `pt-6` : ``}`}
+        className={`pb-0 pt-2 px-4 flex justify-end  ${isHidden ? `pt-8` : ``}`}
       >
         <div className="hover:text-black text-gray-600">
           {isHidden == true ? (

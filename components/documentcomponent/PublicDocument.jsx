@@ -13,12 +13,6 @@ export default function PublicDocument({
 }) {
   const payload = publicDocuments?.payload || [];
 
-  console.log("payload .... ", payload);
-
-  // if (publicDocuments.status == 404) {
-  //   return <>a</>;
-  // }
-
   const [sortOrder, setSortOrder] = useState("asc");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDate, setSelectedDate] = useState(null);

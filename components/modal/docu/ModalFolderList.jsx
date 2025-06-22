@@ -14,7 +14,9 @@ import { IconFolder } from "../../icon/everyicon";
 import { getFileByFolderIdAction } from "@/action/document.action";
 import NoFilesFound from "./NoFilesFound";
 import ModalCreateDocuInFolder from "./ModalCreateDocuInFolder";
-import CardFolderInFolder, { CardFileInFolder } from "@/components/card/CardDocInFolder";
+import CardFolderInFolder, {
+  CardFileInFolder,
+} from "@/components/card/CardDocInFolder";
 
 export default function ModalFolderList({
   title,
@@ -51,23 +53,37 @@ export default function ModalFolderList({
     const fetchData = async () => {
       try {
         setLoading(true);
+        setError(null); // Clear previous errors
+
         const result = await getFileByFolderIdAction(
           accessToken,
           currentFolderId
         );
-        const payload = Array.isArray(result?.payload) ? result.payload : [];
-        console.log("data...", payload)
+
+        console.log("result: ", result);
+
+        // Handle different response formats
+        let payload = [];
+        if (Array.isArray(result)) {
+          payload = result;
+        } else if (result && Array.isArray(result.payload)) {
+          payload = result.payload;
+        } else if (result && Array.isArray(result.files)) {
+          payload = result.files;
+        }
+
+        console.log("Setting data to:", payload);
         setData(payload);
-        setLoading(false);
       } catch (err) {
         console.error("Error fetching files:", err);
-        setError("Failed to fetch files");
+        setError(`Failed to fetch files: ${err.message}`);
         setData([]);
+      } finally {
         setLoading(false);
       }
     };
 
-    if (currentFolderId) {
+    if (currentFolderId && accessToken) {
       fetchData();
     }
   }, [currentFolderId, accessToken]);
