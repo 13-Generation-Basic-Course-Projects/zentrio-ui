@@ -89,6 +89,47 @@ export const getGanttChartByBoardIdService = async ({ boardId, token }) => {
 /* 
 * create noted in calendar 
 */
+// export const createNoteInCalendarService = async ({
+//   token,
+//   noted,
+//   startDate,
+//   tillDate,
+//   taskId,
+// }) => {
+//   try {
+//     console.log("Service noted input:", noted);
+//     console.log("Service startDate input:", startDate);
+//     console.log("Service tillDate input:", tillDate);
+//     console.log("Service taskId input:", taskId);
+
+//     const url = calendarV2RouteGroup.createNoteInCalendar();
+//     const res = await fetch(url, {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//         Authorization: `Bearer ${token}`,
+//       },
+//       body: JSON.stringify({
+//         noted,
+//         startDate,
+//         tillDate,
+//         taskId,
+//       }),
+//     });
+
+//     if (!res.ok) {
+//       const errorData = await res.json();
+//       throw new Error(errorData.message || "Failed to create note");
+//     }
+
+//     const result = await res.json();
+//     return result;
+//   } catch (error) {
+//     console.error("Create note service error:", error.message);
+//     // throw error; 
+//   }
+// };
+
 export const createNoteInCalendarService = async ({
   token,
   noted,
@@ -119,18 +160,33 @@ export const createNoteInCalendarService = async ({
 
     if (!res.ok) {
       const errorData = await res.json();
-      throw new Error(errorData.message || "Failed to create note");
+      // Return error object instead of throwing
+      return {
+        success: false,
+        error: {
+          detail: errorData.message || "Failed to create note",
+          status: res.status,
+        },
+      };
     }
 
     const result = await res.json();
-    return result;
+    return {
+      success: true,
+      data: result,
+    };
   } catch (error) {
     console.error("Create note service error:", error.message);
-    throw error; 
+
+    // Return error object for network/parsing errors
+    return {
+      success: false,
+      error: {
+        detail: error.message || "Network error occurred",
+      },
+    };
   }
 };
-
-
 
 /*
 * Get note in calendar

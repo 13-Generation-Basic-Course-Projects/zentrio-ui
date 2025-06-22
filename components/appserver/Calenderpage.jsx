@@ -289,22 +289,27 @@ export default function MyCalender({ tasks, workspaceId }) {
       initialNoteValue && trimmedNoteValue !== initialNoteValue;
     const isDeletedNote = initialNoteValue && !trimmedNoteValue;
 
-    const startDateObj = new Date(`${startDateStr}T00:00:00.000Z`);
-    const endDateObj = new Date(`${endDateStr}T00:00:00.000Z`);
+    const startDateObj = new Date(`${startDateStr}T23:59:59.831Z`);
+    // const startedDateObj = new Date(`${startDateStr}T00:00:00.000Z`);
+    // const endDateObj = new Date(`${endDateStr}T00:00:00.000Z`);
+    const tillDateObj = new Date(`${endDateStr}T23:59:59.999Z`);
 
-    const tillDateObj = new Date(endDateObj);
-    tillDateObj.setHours(23, 59, 59, 999);
+
+    // const startDateObj = new Date(startedDateObj);
+    // startDateObj.setHours(07, 55, 12, 999);
+    // const tillDateObj = new Date(endDateObj);
+    // tillDateObj.setHours(23, 59, 59, 999);
 
     const selectedDate = new Date(`${endDateStr}T00:00:00.000Z`);
     const currentDate = new Date();
     currentDate.setHours(0, 0, 0, 0);
 
     // Compare only the date part (not time) for last day check
-    const selectedOnlyDate = new Date(`${endDateStr}T00:00:00.000Z`);
-    const endDateOnlyObj = new Date(endDateObj);
-    endDateOnlyObj.setHours(0, 0, 0, 0);
-    console.log("selectedDateeeeeeeeeeeeeeee: ", selectedDate);
-    console.log("EndDateOnlyObjeeeeeeeeeeeeeee: ", endDateOnlyObj);
+    // const selectedOnlyDate = new Date(`${endDateStr}T00:00:00.000Z`);
+    // const endDateOnlyObj = new Date(endDateObj);
+    // endDateOnlyObj.setHours(0, 0, 0, 0);
+    // console.log("selectedDateeeeeeeeeeeeeeee: ", selectedDate);
+    // console.log("EndDateOnlyObjeeeeeeeeeeeeeee: ", endDateOnlyObj);
 
     const formattedStartDate = startDateObj.toISOString();
     const formattedTillDate = tillDateObj.toISOString();
@@ -322,7 +327,10 @@ export default function MyCalender({ tasks, workspaceId }) {
         );
 
         if (response?.error) {
-          toast.error(response.error.detail || "Error saving note");
+          toast.error(response.error.detail || "Error saving note", {
+            position: "top-right",
+            autoClose: 4000,
+          });
           return { success: false, message: response.error.detail };
         }
 
@@ -349,7 +357,10 @@ export default function MyCalender({ tasks, workspaceId }) {
         error?.message ||
         "Unknown error occurred";
       console.error("Failed to save/update/delete note:", error);
-      toast.error(errorMsg);
+      toast.error(errorMsg,{
+        position: "top-right",
+        autoClose: 4000,
+      });
       return { success: false, message: errorMsg };
     } finally {
       setIsLoading(false);
