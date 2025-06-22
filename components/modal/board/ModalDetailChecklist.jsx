@@ -31,6 +31,7 @@ import {
   getCheckListByTaskIdAction,
   updateCheckListByIdAndTaskIdAction,
   uploadCoverChecklistAction,
+  chageStatusCheckListAction,
 } from "@/action/board.action";
 import PostCommentChecklist from "./PostCommentChecklist";
 import CommentChecklistSec from "./CommentChecklistSec";
@@ -734,29 +735,23 @@ const ModalDetailChecklist = ({
     dispatch({ type: "SET_MODAL_OPEN", payload: false });
   };
 
-  const handleStatusChange = useCallback(async () => {
-    shouldStayOpen.current = true;
-    const newStatus = state.currentStatus === "DONE" ? "IN_PROGRESS" : "DONE";
+  // Toggle status between IN_PROGRESS and DONE
+  const [currentStatus, setCurrentStatus] = useState(status); // Initialize with status (PENDING)
+
+  // Toggle status: PENDING/IN_PROGRESS -> DONE, DONE -> IN_PROGRESS
+  const handleStatusChange = async () => {
+    const newStatus = currentStatus === "DONE" ? "IN_PROGRESS" : "DONE";
     try {
-      const result = await changeStatusCheckListAction(checklistId, newStatus);
+      const result = await chageStatusCheckListAction(id, newStatus);
       if (result.success) {
-        dispatch({ type: "SET_CURRENT_STATUS", payload: newStatus });
-        toast.success(`Status updated to ${newStatus}`, {
-          position: "top-right",
-          autoClose: 2500,
-        });
+        setCurrentStatus(newStatus); // Update UI on success
       } else {
-        throw new Error(result.error || "Failed to update status");
+        console.error("Failed to update status:", result.error);
       }
     } catch (error) {
-      toast.error(`Failed to update status: ${error.message}`, {
-        position: "top-right",
-        autoClose: 4000,
-      });
-    } finally {
-      shouldStayOpen.current = false;
+      console.error("Error updating status:", error.message);
     }
-  }, [checklistId, state.currentStatus]);
+  };
 
   const handleOpenChange = useCallback(
     (open) => {

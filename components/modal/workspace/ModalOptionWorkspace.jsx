@@ -126,7 +126,7 @@ export default function ModalOptionWorkspace({
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isRenameModalOpen, setRenameModalOpen] = useState(false);
 
-  const [deleteType, setDeleteType] = useState(null); 
+  const [deleteType, setDeleteType] = useState(null);
 
   console.log("workspaceTitle:", workspaceTitle);
   console.log("workspaceUserTitle test:", workspaceUserTitle);
@@ -135,7 +135,10 @@ export default function ModalOptionWorkspace({
     <>
       <Dropdown>
         <DropdownTrigger>
-          <Button variant="" className="p-0 w-1 h-6 min-w-1 mx-3 hover:bg-gray-200">
+          <Button
+            variant=""
+            className="p-0 w-1 h-6 min-w-1 mx-3 hover:bg-gray-200"
+          >
             <div className="hover:text-black text-gray-600 px-2 py-1">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -182,7 +185,7 @@ export default function ModalOptionWorkspace({
             Move to trash
           </DropdownItem>
 
-          <DropdownSection className="border-t-1 border-default-200 pt-1">
+          <DropdownSection className="border-t-1 border-default-200 pt-1 hidden">
             <DropdownItem
               key="share"
               className="w-full hover:bg-default-100"

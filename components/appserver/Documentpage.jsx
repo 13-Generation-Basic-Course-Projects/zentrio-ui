@@ -11,6 +11,7 @@ export default function DocumentAutherize({
   tokenFromGoogle,
   preventUserImage,
   workspaceId,
+  docIdPage,
 }) {
   return (
     <>
@@ -22,6 +23,7 @@ export default function DocumentAutherize({
         workspaceId={workspaceId}
         tokenFromGoogle={tokenFromGoogle}
         preventUserImage={preventUserImage}
+        docIdPage={docIdPage}
         privatedocument={
           <Privatedocument
             title="Private"

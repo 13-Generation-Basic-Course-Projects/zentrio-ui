@@ -11,6 +11,7 @@ import ModalNotification from "../modal/noti/ModalNotification";
 import AllDocument from "./AllDocument";
 import ModalCreateDocu from "../modal/docu/ModalCreateDocu";
 import WelcomePage from "../modal/docu/EmptyDocumentPage";
+import { useParams, usePathname } from "next/navigation";
 
 export default function DocumentLayout({
   user,
@@ -22,7 +23,25 @@ export default function DocumentLayout({
   workspaceId,
 }) {
   const [activeTab, setActiveTab] = useState("personal");
+  const pathname = usePathname();
+  const params = useParams();
+  const pathSegments = params.id; // Array for /docu/[...id]
 
+  // Check if the pathname starts with /docu/ (any document route)
+  const isDocumentPage = pathname.includes("/docu/");
+  console.log(
+    "Pathname:",
+    pathname,
+    "Path Segments:",
+    pathSegments,
+    "Is Document Page:",
+    isDocumentPage
+  );
+
+  // Skip rendering for /docu/* routes
+  if (isDocumentPage) {
+    return null;
+  }
   const tabItems = [
     {
       key: "personal",
