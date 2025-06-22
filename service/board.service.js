@@ -690,11 +690,11 @@ export const FeedBackService = async (taskId, token, comment) => {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
-        body: JSON.stringify({
-          comment: comment,
-          taskId: taskId,
-        }),
       },
+      body: JSON.stringify({
+        comment: comment.comment,
+        taskId: taskId,
+      }),
     });
     const data = await res.json();
     console.log("📥 Backend responded with change feedback:", data);
