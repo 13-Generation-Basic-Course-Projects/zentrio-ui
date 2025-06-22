@@ -11,6 +11,7 @@ export default function Privatedocument({
   tokenFromGoogle,
   isHidden,
   workspaceId,
+  boardId,
 }) {
   const data = documents || { payload: [] };
 
@@ -82,6 +83,7 @@ export default function Privatedocument({
       }
     });
 
+  console.log("boardId private", boardId);
   return (
     <div className="h-screen flex flex-col">
       <div className="grid grid-cols-1 gap-3">
@@ -92,6 +94,7 @@ export default function Privatedocument({
           modal={modal}
           workspaceId={workspaceId}
         />
+
         <div className="flex items-center justify-between pb-5">
           <div className="flex flex-row items-end gap-4 mb-4">
             <div className="flex-1">
@@ -116,6 +119,7 @@ export default function Privatedocument({
               </Autocomplete>
             </div>
           </div>
+
           <div className="w-[340px] rounded-2xl flex justify-center items-center text-white">
             <Input
               isClearable
@@ -164,6 +168,8 @@ export default function Privatedocument({
                     isFolder={el.category === "Folder"}
                     tokenFromGoogle={tokenFromGoogle}
                     isHidden={isHidden}
+                    workspaceId={workspaceId}
+                    boardId={boardId}
                   />
                 ))
             ) : (

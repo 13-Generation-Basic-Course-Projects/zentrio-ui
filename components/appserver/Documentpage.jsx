@@ -13,6 +13,7 @@ export default function DocumentAutherize({
   workspaceId,
   docIdPage,
 }) {
+  console.log("object boardId", boardId);
   return (
     <>
       <DocumentLayout
@@ -30,6 +31,8 @@ export default function DocumentAutherize({
             modal={[<ModalCreateDocu key="private-modal" boardId={boardId} />]}
             preventUserImage={preventUserImage}
             workspaceId={workspaceId}
+            boardId={boardId}
+            docIdPage={docIdPage}
           />
         }
         publicdocument={
@@ -38,6 +41,8 @@ export default function DocumentAutherize({
             modal={[<ModalCreateDocu key="public-modal" boardId={boardId} />]}
             preventUserImage={preventUserImage}
             workspaceId={workspaceId}
+            boardId={boardId}
+            docIdPage={docIdPage}
           />
         }
       />
