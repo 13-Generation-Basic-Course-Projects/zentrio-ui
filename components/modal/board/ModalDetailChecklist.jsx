@@ -1376,7 +1376,7 @@ const ModalDetailChecklist = ({
                     }
                     disabled={loading}
                   >
-                    Add action
+                    Add Attatchments
                   </button>
                   <button
                     className={`py-2 px-4 ${
@@ -1389,7 +1389,7 @@ const ModalDetailChecklist = ({
                     }
                     disabled={loading}
                   >
-                    All Actions ({state.actions?.length || 0})
+                    All Attatchments ({state.actions?.length || 0})
                   </button>
                 </div>
                 <div className="mt-4 mb-5">
