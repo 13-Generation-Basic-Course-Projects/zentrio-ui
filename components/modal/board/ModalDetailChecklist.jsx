@@ -795,7 +795,10 @@ const ModalDetailChecklist = ({
   const fileInputRef = useRef(null);
   const MAX_FILE_SIZE = 5 * 1024 * 1024;
   const router = useRouter();
-  const [previewImage, setPreviewImage] = useState();
+  const [previewImage, setPreviewImage] = useState(
+    image || previewImage.noChecklistImage 
+  );
+  
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -890,7 +893,7 @@ const ModalDetailChecklist = ({
       fileInputRef.current.click();
     }
   };
-
+  const displayImage = previewImage || image;
   return (
     <div>
       {role == "ROLE_MEMBER" || role == "ROLE_MANAGER" ? (
@@ -953,7 +956,7 @@ const ModalDetailChecklist = ({
             startDate={startDate}
             comment="static comment"
             label={label}
-            image={image}
+            image={displayImage}
             hideImage={hideImage}
             member={member || []}
             checkedListId={id}

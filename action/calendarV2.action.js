@@ -1,6 +1,6 @@
 "use server";
 import { Token } from "@/constant/token";
-import { createNoteInCalendarService, deleteNoteInCalendarService, getAllNoteInCalendarService, getCalendarByBoardIdAndUserIdService, getChecklistByTaskIdService, getGanttBarByGanttChartIdService, getGanttChartByBoardIdService, getNoteInCalendarService, getTaskByBoardIdAndGanttBarIdService } from "@/service/calendarV2.service";
+import { createNoteInCalendarService, deleteNoteInCalendarService, getAllNoteInCalendarService, getCalendarByBoardIdAndUserIdService, getChecklistByTaskIdService, getGanttBarByGanttChartIdService, getGanttChartByBoardIdService, getNoteInCalendarService, getTaskByBoardIdAndGanttBarIdService, updateNoteInCalendarService } from "@/service/calendarV2.service";
 import { revalidatePath, revalidateTag } from "next/cache";
 /*
  * getTaskbyBoardId and GanttbarId
@@ -143,7 +143,7 @@ export const updateNoteInCalendarAction = async (
     const userToken = await Token();
     const token = userToken.Credential;
 
-    const result = await deleteNoteInCalendarService({
+    const result = await updateNoteInCalendarService({
       calendarId,
       noted,
       startDate,
@@ -157,6 +157,7 @@ export const updateNoteInCalendarAction = async (
     throw error;
   }
 };
+
 
 
 /*
