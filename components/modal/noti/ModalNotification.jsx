@@ -250,11 +250,7 @@ export default function ModalNotification({ notificationData }) {
           variant="none"
           className="p-0 rounded-lg flex items-center justify-center h-[20px] min-w-[15px]"
         >
-          <Image
-            src={notification}
-            className="size-5" 
-            alt="notification"
-          />
+          <Image src={notification} className="size-5" alt="notification" />
         </Button>
       </DropdownTrigger>
       <DropdownMenu
