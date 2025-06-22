@@ -2,16 +2,7 @@
 import ModalFolderList from "../modal/docu/ModalFolderList";
 import React, { useState } from "react";
 import { Card, CardHeader, CardBody, CardFooter } from "@heroui/card";
-import {
-  IconDelete,
-  StackedProfiles,
-  StarIconOutline,
-  StarIconSolid,
-} from "../icon/everyicon";
-import iconMember from "@/assets/memberSideBar.png";
-
 import Image from "next/image";
-import { icon } from "../icon/allicon";
 import ModalOptionDocument from "../modal/docu/ModalOptionDocument";
 import Link from "next/link";
 
@@ -27,13 +18,14 @@ export default function CardFolder({
   onClick,
   isHidden,
 }) {
+
   return (
     <Card
       onClick={() => onClick?.(folderId)}
       className="rounded-xl text-blue-400 cursor-pointer hover:bg-blue-50 transition sm:w-[160px] md:w-full h-[160px] shadow-sm "
     >
       {/* Header */}
-      <CardHeader className="pb-0 pt-2 px-4 flex justify-end">
+      <CardHeader className={`pb-0 pt-2 px-4 flex justify-end ${isHidden ? `pt-8` : ``} `}>
         <div className="hover:text-black text-gray-600">
           {isHidden == true ? (
             ""
@@ -125,7 +117,7 @@ export function CardFile({
     <Card className="rounded-xl text-blue-400 cursor-pointer hover:bg-blue-50 transition sm:w-[160px] md:w-full h-[160px] shadow-sm">
       {/* Header */}
       <CardHeader
-        className={`pb-0 pt-2 px-4 flex justify-end  ${isHidden ? `pt-6` : ``}`}
+        className={`pb-0 pt-2 px-4 flex justify-end  ${isHidden ? `pt-8` : ``}`}
       >
         <div className="hover:text-black text-gray-600">
           {isHidden == true ? (

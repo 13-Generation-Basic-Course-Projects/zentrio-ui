@@ -11,7 +11,6 @@ import {
   Avatar,
 } from "@heroui/react";
 import ModalDelete from "../ModalDelete";
-import PopupAction from "@/components/popup/PopupAction";
 import { IconpopupDelete } from "@/components/icon/Iconpopup";
 import { ModalRenameFileOrFolder } from "./ModalRenameDocu";
 import {
@@ -21,6 +20,7 @@ import {
   privateDocumentByIdAction,
 } from "@/action/document.action";
 import { useState } from "react";
+import PopupActionDeleteDocu from "@/components/popup/PopupActionDeleteDocu";
 
 // Icon components
 const AddNoteIcon = (props) => (
@@ -327,7 +327,7 @@ export default function ModalOptionDocument({
           className="w-full hover:bg-default-100"
           startContent={<DeleteDocumentIcon className="w-4 h-4" />}
         >
-          <PopupAction
+          <PopupActionDeleteDocu
             title="Delete Folder"
             massageTitle="Are you sure?"
             massageBody="You want to delete it."
