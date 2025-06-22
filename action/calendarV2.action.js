@@ -132,13 +132,18 @@ export const deleteNoteInCalendarAction = async (calendarId, taskId) => {
 /*
 * update note in calendar
 */
-export const updateNoteInCalendarAction = async (
+export const updateNoteInCalendarAction = async ({
   calendarId,
   noted,
   startDate,
   tillDate,
   taskId
-) => {
+}) => {
+  console.log("CalendarId in update action : ", calendarId);
+  console.log("noted in update action : ", noted);
+  console.log("startDate in update action : ", startDate);
+  console.log("tillDate in update action : ", tillDate);
+  console.log("taskId in update action : ", taskId);
   try {
     const userToken = await Token();
     const token = userToken.Credential;
@@ -151,6 +156,7 @@ export const updateNoteInCalendarAction = async (
       taskId,
       token: token,
     });
+    console.log("Result in updateNOteInCalendarService: ", result);
     return result;
   } catch (error) {
     console.error("updateNoteInCalendarAction error:", error);

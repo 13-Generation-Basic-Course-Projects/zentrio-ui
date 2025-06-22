@@ -122,9 +122,10 @@ export default function CardTCommentCalender({
         return;
       }
 
+      //this action have been updated
       try {
         const result = await updateNoteInCalendarAction({
-          noteId: noteData.calendarId,
+          calendarId: noteData.calendarId,
           noted: editingNoteText,
           startDate: noteData.notedAt,
           tillDate: noteData.tillDate,
