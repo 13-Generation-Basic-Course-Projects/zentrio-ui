@@ -332,11 +332,15 @@ export default function DashboardSidebar(getWorKSpaceJoined) {
     },
   ];
 
+  const includesPathOtherWorkSpace = pathname.includes(
+    "/dashboard/otherworkspace"
+  );
   // Fixed: Use OR (||) instead of AND (&&) to hide Reports for either tl OR ROLE_MEMBER
-  const filteredItems =
-    isTl || ismem ? items.filter((item) => item.title !== "Reports") : items;
+  const filteredItems = includesPathOtherWorkSpace
+    ? items.filter((item) => item.title !== "Reports")
+    : items;
 
-  console.log("toggle: ", toggleSidebar);
+  console.log("toggle: ", includesPathOtherWorkSpace);
 
   return (
     <Sidebar collapsible="icon" className="border-none rounded-tr-3xl bg-white">
@@ -414,7 +418,7 @@ export default function DashboardSidebar(getWorKSpaceJoined) {
             </SidebarMenu>
 
             {/* LOGOUT */}
-            <SidebarMenu className="!border-0">
+            <SidebarMenu className="!border-0 hidden">
               <SidebarMenuItem className="!border-0">
                 <SidebarMenuButton
                   asChild

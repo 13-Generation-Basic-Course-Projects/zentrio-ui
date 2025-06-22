@@ -9,16 +9,7 @@ const VerticalChartNoSSR = dynamic(() => import("../chart/VerticalChart"), {
   ssr: false,
 });
 
-export default function Reportpage({
-  modal,
-  report,
-  roleNeverJoined,
-  roleJoined,
-}) {
-  if (roleJoined != "ROLE_MANAGER") {
-    return <></>;
-  }
-
+export default function Reportpage({ modal, report }) {
   const task = {
     todo: 0,
     progress: 0,
@@ -120,7 +111,10 @@ export default function Reportpage({
   const getVersion = report?.payload;
 
   const groupedTasks = report?.payload?.groupedTasks;
-
+  console.log("apple", groupedTasks);
+  if (groupedTasks == null) {
+    return <></>;
+  }
   return (
     <>
       <div className="p-5">
@@ -270,8 +264,7 @@ export default function Reportpage({
                         <div className="flex flex-col space-y-1">
                           <p className="text-h6">ZenTrio Reporting Document</p>
                           <p className="text-caption-tiny text-title/50">
-                            {report?.payload?.boardData?.createdBy?.username} ·
-                            1 hour ago
+                            {report?.payload?.boardData?.createdBy?.username}
                           </p>
                         </div>
                       </div>

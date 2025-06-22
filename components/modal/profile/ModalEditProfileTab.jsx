@@ -226,11 +226,11 @@ export function ModalEditProfile({ currentUserProfile }) {
                     </div>
 
                     <ul className="px-2 pt-2 space-y-3 mt-2 max-h-[400px] overflow-y-auto pr-2  pb-[200px]">
-                      {combinedBoards?.map((board) => {
+                      {combinedBoards?.map((board, index) => {
                         const isSelected = selectedAchievements.has(board.id);
                         return (
                           <li
-                            key={board.id}
+                            key={index}
                             className={`flex justify-between items-center gap-4 border rounded-xl cursor-pointer transition-all duration-200 ${
                               isSelected
                                 ? "border-blue-500 bg-blue-50 outline outline-1 outline-blue-500"
@@ -352,7 +352,7 @@ export function ModalEditProfile({ currentUserProfile }) {
                     {/* POSITION */}
                     <div>
                       <label className="text-label font-medium flex items-center gap-x-2 mb-2">
-                        <IconJob strokeWidth={1} size={4}/>
+                        <IconJob strokeWidth={1} size={4} />
                         Position <span className="text-red-500">*</span>
                       </label>
                       <Input
@@ -365,12 +365,21 @@ export function ModalEditProfile({ currentUserProfile }) {
                           input: "text-black",
                         }}
                       />
+                      {errors.position && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.position.message}
+                        </p>
+                      )}
                     </div>
 
                     {/* LOCATION */}
                     <div>
                       <label className="text-label font-medium flex items-center gap-x-2 mb-2">
-                          <IconMap strokeWidth={1} size={4} color={"currentColor"} />{" "}
+                        <IconMap
+                          strokeWidth={1}
+                          size={4}
+                          color={"currentColor"}
+                        />{" "}
                         Location <span className="text-red-500">*</span>
                       </label>
                       <Input
@@ -383,6 +392,11 @@ export function ModalEditProfile({ currentUserProfile }) {
                           input: "text-black",
                         }}
                       />
+                      {errors.location && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.location.message}
+                        </p>
+                      )}
                     </div>
 
                     {/* CONTACT */}
@@ -401,9 +415,9 @@ export function ModalEditProfile({ currentUserProfile }) {
                           input: "text-black",
                         }}
                       />
-                      {errors.username && (
+                      {errors.contact && (
                         <p className="text-red-500 text-sm mt-1">
-                          {errors.username.message}
+                          {errors.contact.message}
                         </p>
                       )}
                     </div>

@@ -671,7 +671,7 @@ export const changeStageToUnderReviewService = async (taskId, token, stage) => {
       },
     });
     const data = await res.json();
-    console.log("📥 Backend responded with change status:", data);
+    console.log("📥 Backend responded with change status completed:", data);
 
     return data;
   } catch (error) {
@@ -989,10 +989,11 @@ export const getTaskByTaskIdService = async ({ taskId, token }) => {
 
 /**
  * guest user
- */ export const getGuestUserDisplayKanbanService = async (
+ */
+export const getGuestUserDisplayKanbanService = async ({
   workspaceId,
-  boardId
-) => {
+  boardId,
+}) => {
   const url = boardRouteGroup.getGuestUserDisplayKanban(workspaceId, boardId);
   console.log("get task url : ", url);
 
@@ -1003,7 +1004,7 @@ export const getTaskByTaskIdService = async ({ taskId, token }) => {
     },
   });
 
-  const data = response.json();
+  const data = await response.json();
   console.log("data from guest", data);
   return data;
 };

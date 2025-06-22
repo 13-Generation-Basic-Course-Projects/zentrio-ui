@@ -27,7 +27,10 @@ import correctIcon from "@/assets/correct.png";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { profileSchema } from "@/lib/schemas/editprofileSchema";
-import { updateAchievementAction, updateUserProfileAction } from "@/action/profile.action";
+import {
+  updateAchievementAction,
+  updateUserProfileAction,
+} from "@/action/profile.action";
 
 export const gender = [
   { key: "male", label: "Male" },
@@ -36,11 +39,9 @@ export const gender = [
 ];
 
 export function ModalEditAchievment({ currentUserProfile }) {
-
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [selectedTab, setSelectedTab] = useState("Achievement");
   const [selectedAchievements, setSelectedAchievements] = useState(new Set());
-
 
   const ownBoards = currentUserProfile?.payload?.ownBoards || [];
   const joinedBoards = currentUserProfile?.payload?.joinedBoards || [];
@@ -59,37 +60,36 @@ export function ModalEditAchievment({ currentUserProfile }) {
     })
   );
 
-   const user = currentUserProfile?.payload?.user || {};
- 
-   const {
-     register,
-     handleSubmit,
-     control,
-     reset,
-     formState: { errors },
-   } = useForm({
-     resolver: zodResolver(profileSchema),
-     defaultValues: {
-       username: "",
-       gender: "", 
-       position: "",
-       location: "",
-       contact: "",
-     },
-   });
- 
-   useEffect(() => {
-     if (isOpen && user) {
-       reset({
-         username: user?.username || "",
-         gender: user?.gender?.toLowerCase() || "",
-         position: user?.position || "",
-         location: user?.location || "",
-         contact: user?.contact || "",
-       });
-     }
-   }, [isOpen, , reset]);
-   
+  const user = currentUserProfile?.payload?.user || {};
+
+  const {
+    register,
+    handleSubmit,
+    control,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(profileSchema),
+    defaultValues: {
+      username: "",
+      gender: "",
+      position: "",
+      location: "",
+      contact: "",
+    },
+  });
+
+  useEffect(() => {
+    if (isOpen && user) {
+      reset({
+        username: user?.username || "",
+        gender: user?.gender?.toLowerCase() || "",
+        position: user?.position || "",
+        location: user?.location || "",
+        contact: user?.contact || "",
+      });
+    }
+  }, [isOpen, , reset]);
 
   const onSubmit = async (data) => {
     const result = await updateUserProfileAction(data);
@@ -136,7 +136,6 @@ export function ModalEditAchievment({ currentUserProfile }) {
       if (response) {
         onOpenChange(false);
       }
-     
     } catch (error) {
       console.error("Error saving achievements:", error);
     }
@@ -181,7 +180,8 @@ export function ModalEditAchievment({ currentUserProfile }) {
                       tab: "max-w-fit px-0 h-12",
                       tabContent: "group-data-[selected=true]:text-blue-500",
                     }}
-                    variant="underlined">
+                    variant="underlined"
+                  >
                     <Tab
                       key="Profile"
                       title={
@@ -219,20 +219,22 @@ export function ModalEditAchievment({ currentUserProfile }) {
                     </div>
 
                     <ul className="px-2 pt-2 space-y-3 mt-2 max-h-[400px] overflow-y-auto pr-2  pb-[200px]">
-                      {combinedBoards?.map((board) => {
+                      {combinedBoards?.map((board, index) => {
                         const isSelected = selectedAchievements.has(board.id);
                         return (
                           <li
-                            key={board.id}
+                            key={index}
                             className={`flex justify-between items-center gap-4 border rounded-xl cursor-pointer transition-all duration-200 ${
                               isSelected
                                 ? "border-blue-500 bg-blue-50 outline outline-1 outline-blue-500"
                                 : "border-stroke hover:border-gray-400"
                             } px-2 py-3`}
-                            onClick={() => handleAchievementToggle(board.id)}>
+                            onClick={() => handleAchievementToggle(board.id)}
+                          >
                             <div className="flex items-center gap-3">
                               <div
-                                className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold ${board.color}`}>
+                                className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold ${board.color}`}
+                              >
                                 {board.title.charAt(0)}
                               </div>
                               <div>
@@ -245,7 +247,8 @@ export function ModalEditAchievment({ currentUserProfile }) {
                             <div
                               className={`transition-opacity duration-200 ${
                                 isSelected ? "opacity-100" : "opacity-0"
-                              }`}>
+                              }`}
+                            >
                               <Image
                                 src={correctIcon}
                                 width={18}
@@ -262,13 +265,15 @@ export function ModalEditAchievment({ currentUserProfile }) {
                       <Button
                         className="bg-transparent border-1 border-bgColor"
                         radius="full"
-                        onPress={onClose}>
+                        onPress={onClose}
+                      >
                         Cancel
                       </Button>
                       <Button
                         color="primary"
                         radius="full"
-                        onPress={handleSave}>
+                        onPress={handleSave}
+                      >
                         Save ({selectedAchievements.size})
                       </Button>
                     </div>
@@ -278,7 +283,8 @@ export function ModalEditAchievment({ currentUserProfile }) {
                 {selectedTab === "Profile" && (
                   <form
                     onSubmit={handleSubmit(onSubmit)}
-                    className="grid grid-cols-1 gap-4">
+                    className="grid grid-cols-1 gap-4"
+                  >
                     {/* NAME */}
                     <div>
                       <label className="text-label font-medium flex items-center gap-x-2 mb-2">
@@ -295,6 +301,11 @@ export function ModalEditAchievment({ currentUserProfile }) {
                           input: "text-black",
                         }}
                       />
+                      {errors.username && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.username.message}
+                        </p>
+                      )}
                     </div>
 
                     {/* GENDER (FIXED using Controller) */}
@@ -320,7 +331,8 @@ export function ModalEditAchievment({ currentUserProfile }) {
                             classNames={{
                               trigger: `bg-white text-black border border-gray-300 focus:outline-none rounded-small px-6 py-6`,
                               value: "text-gray-500",
-                            }}>
+                            }}
+                          >
                             {gender.map((item) => (
                               <SelectItem key={item.key} value={item.key}>
                                 {item.label}
@@ -347,6 +359,11 @@ export function ModalEditAchievment({ currentUserProfile }) {
                           input: "text-black",
                         }}
                       />
+                      {errors.position && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.position.message}
+                        </p>
+                      )}
                     </div>
 
                     {/* LOCATION */}
@@ -365,6 +382,11 @@ export function ModalEditAchievment({ currentUserProfile }) {
                           input: "text-black",
                         }}
                       />
+                      {errors.location && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.location.message}
+                        </p>
+                      )}
                     </div>
 
                     {/* CONTACT */}
@@ -383,6 +405,11 @@ export function ModalEditAchievment({ currentUserProfile }) {
                           input: "text-black",
                         }}
                       />
+                      {errors.contact && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.contact.message}
+                        </p>
+                      )}
                     </div>
 
                     {/* ACTION BUTTONS */}
@@ -391,7 +418,8 @@ export function ModalEditAchievment({ currentUserProfile }) {
                         type="button"
                         className="bg-transparent border-1 border-bgColor"
                         radius="full"
-                        onPress={onClose}>
+                        onPress={onClose}
+                      >
                         Cancel
                       </Button>
                       <Button type="submit" color="primary" radius="full">

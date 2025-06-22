@@ -32,8 +32,6 @@ import {
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-
-
 const normalizeDateToDay = (date) => {
   if (!(date instanceof Date)) {
     date = new Date(date);
@@ -550,7 +548,12 @@ export default function MyCalender({ tasks, workspaceId }) {
 
   return (
     <div className="p-4 h-screen flex flex-col overflow-hidden relative">
-      <BredCrum board="Hikko Design" feature="Calender" header="Calender" workspaceId={workspaceId}/>
+      <BredCrum
+        board="Hikko Design"
+        feature="Calender"
+        header="Calender"
+        workspaceId={workspaceId}
+      />
 
       {/* Main content grid */}
       <div className="flex flex-1 overflow-hidden scrollbar-hidden gap-4">

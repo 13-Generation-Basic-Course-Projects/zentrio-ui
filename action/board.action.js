@@ -6,6 +6,7 @@ import {
   assignUserRoleLeadeerToBoardService,
   chageStatusCheckListService,
   changeStageToUnderReviewService,
+  changeStatusTaskService,
   checkEmailForClearService,
   createCheckListService,
   createGanttChartByBoardIdService,
@@ -570,7 +571,7 @@ export const changeStageToUnderReviewAction = async (taskId, stage) => {
   const token = userToken?.Credential;
   const result = await changeStageToUnderReviewService(taskId, token, stage);
   revalidatePath("/checklist");
-  //console.log("status action", taskId, stage);
+  console.log("status action complete fix", taskId, stage);
   return result;
 };
 /*
@@ -739,7 +740,10 @@ export const getTaskByTaskIdAction = async (taskId) => {
 /* add new
  *  getGuestUserDisplayKanbanService
  */
-export const getGuestUserDisplayKanbanAction = async (workspaceId, boardId) => {
+export const getGuestUserDisplayKanbanAction = async ({
+  workspaceId,
+  boardId,
+}) => {
   console.log("from guestrole: ", workspaceId, boardId);
 
   const result = await getGuestUserDisplayKanbanService({
@@ -776,5 +780,17 @@ export const uploadCoverChecklistAction = async (checklistId, file) => {
   });
   revalidatePath("/member");
   console.log("uploadCoverChecklistAction result: ", result);
+  return result;
+};
+
+/*
+ * achange status task fix bugss
+ */
+export const changeStatusTaskAction = async (taskId, type) => {
+  const userToken = await Token();
+  const token = userToken?.Credential;
+  const result = await changeStatusTaskService(taskId, token, type);
+  revalidatePath("/checklist");
+  console.log("status action task fix bug", taskId, type);
   return result;
 };
