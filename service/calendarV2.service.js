@@ -171,6 +171,7 @@ export const createNoteInCalendarService = async ({
     }
 
     const result = await res.json();
+    console.log("Result in service : ", result);
     return {
       success: true,
       data: result,
