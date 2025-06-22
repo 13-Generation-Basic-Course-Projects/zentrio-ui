@@ -582,7 +582,7 @@ export const FeedBackAction = async (taskId, comment) => {
   const token = userToken?.Credential;
   const result = await FeedBackService(taskId, token, comment);
   revalidatePath("/checklist");
-  console.log("status action move to complete", taskId);
+
   return result;
 };
 /*
