@@ -1,7 +1,7 @@
 .slider {
   --width: 100px;
   --high: 80px; /* Increased from 50px to accommodate logo height */
-  --quantity: 5;
+  --quantity: 4;
 
   overflow: hidden;
   height: var(--high);

@@ -26,9 +26,9 @@ import visa from "@/public/image/visa.png";
 import hun from "@/public/image/senghun.png";
 
 import hrd from "@/assets/about-us-image/LogoHRD.jpg";
-import webcash from "@/public/image/webcash.png";
-// import hrd from "@/public/image/hrd-logo.png";
-// import hrd from "@/public/image/hrd-logo.png";
+import webcash from "@/assets/sponser/webcash.jpg";
+import kosign from "@/assets/sponser/kosign.png";
+import kb from "@/assets/sponser/kb.png";
 
 export default function ZentrioDrawerCompo() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -249,32 +249,60 @@ export default function ZentrioDrawerCompo() {
                         <span className="text-small text-default-500">
                           Development Team
                         </span>
-                        <div className="flex gap-2 items-center flex-wrap">
-                          {[
-                            fanua,
-                            fong,
-                            theara,
-                            minh,
-                            leap,
-                            visa,
-                            hun,
-                            skan,
-                            vid,
-                          ].map((member, index) => (
-                            <Tooltip key={index} content="Developer">
-                              <Image
-                                src={member}
-                                alt="Developer"
-                                width={40}
-                                height={40}
-                                className="rounded-full border-2 border-white hover:scale-105 transition-transform object-cover aspect-square"
-                              />
-                            </Tooltip>
-                          ))}
+                        
+                        <div className="flex -space-x-4 rtl:space-x-reverse">
+                          <Image
+                            className="w-10 h-10 border-2 border-white rounded-full dark:border-gray-800"
+                            src={fong}
+                            alt=""
+                          />
+                          <Image
+                            className="w-10 h-10 border-2 border-white rounded-full dark:border-gray-800"
+                            src={fanua}
+                            alt=""
+                          />
+                          <Image
+                            className="w-10 h-10 border-2 border-white rounded-full dark:border-gray-800"
+                            src={theara}
+                            alt=""
+                          />
+                          <Image
+                            className="w-10 h-10 border-2 border-white rounded-full dark:border-gray-800"
+                            src={leap}
+                            alt=""
+                          />
+                          <Image
+                            className="w-10 h-10 border-2 border-white rounded-full dark:border-gray-800"
+                            src={visa}
+                            alt=""
+                          />
+                          <Image
+                            className="w-10 h-10 border-2 border-white rounded-full dark:border-gray-800"
+                            src={hun}
+                            alt=""
+                          />
+                          <Image
+                            className="w-10 h-10 border-2 border-white rounded-full dark:border-gray-800"
+                            src={skan}
+                            alt=""
+                          />
+                          <Image
+                            className="w-10 h-10 border-2 border-white rounded-full dark:border-gray-800"
+                            src={minh}
+                            alt=""
+                          />
+                          <Image
+                            className="w-10 h-10 border-2 border-white rounded-full dark:border-gray-800"
+                            src={vid}
+                            alt=""
+                          />
                         </div>
                       </div>
                     </div>
                     {/* our supporter */}
+                    <span className="text-small text-default-500">
+                          Our Support
+                        </span>
                     <div
                       className="slider"
                       style={{
@@ -287,19 +315,16 @@ export default function ZentrioDrawerCompo() {
                         {[...Array(2)].map((_, i) => (
                           <React.Fragment key={i}>
                             <div className="item">
-                              <Image src={hrd} alt="kosign" />
+                              <Image src={hrd} alt="hrd" />
+                            </div>
+                            <div className="item">
+                              <Image src={kosign} alt="kosing" />
                             </div>
                             <div className="item">
                               <Image src={webcash} alt="webcash" />
                             </div>
                             <div className="item">
-                              <Image src={hrd} alt="kb" />
-                            </div>
-                            <div className="item">
-                              <Image src={hrd} alt="wingbank" />
-                            </div>
-                            <div className="item">
-                              <Image src={hrd} alt="ppc bank" />
+                              <Image src={kb} alt="kb" />
                             </div>
                           </React.Fragment>
                         ))}
