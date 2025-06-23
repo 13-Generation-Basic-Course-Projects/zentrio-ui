@@ -18,6 +18,7 @@ import { getMemberByBoardIdAction } from "@/action/board.action";
 export default function CardBoard({
   title,
   image,
+  images,
   role,
   deleteBoardAction,
   boardId,
@@ -167,8 +168,8 @@ export default function CardBoard({
             />
           ) : image ? (
             <img
-              src={image}
-              alt={image || "Board cover image"}
+              src={images}
+              alt={images || "Board cover image"}
               className="w-full h-32 object-cover rounded-xl"
             />
           ) : (
