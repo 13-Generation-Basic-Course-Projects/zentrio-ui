@@ -1,3 +1,4 @@
+"use client";
 import {
   Modal,
   ModalContent,
@@ -9,32 +10,56 @@ import {
 } from "@heroui/react";
 import { LeaveIcon } from "../icon/everyicon";
 import { IconpopupLeave } from "../icon/Iconpopup";
+import { BadgeMinus } from "lucide-react";
+import { leaveTheBoardAction } from "@/action/board.action";
+import { useRouter } from "next/navigation"; // Updated import
+
 export default function ModalLeave({
   massageTitle,
   massageBody,
   massageUndo,
   massageDo,
   action,
+  trigger,
+  boardId,
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  console.log("boardid ", boardId);
+  const router = useRouter();
+
+  const handleLeaveBoard = async () => {
+    if (boardId) {
+      try {
+        const result = await leaveTheBoardAction(boardId);
+        console.log("Leave board result:", result);
+        if (result.success) {
+          router.push("/workspace"); // Redirect to /workspace on success
+        }
+      } catch (error) {
+        console.error("Error leaving board:", error);
+      }
+    }
+  };
 
   return (
     <>
-      <Button
-        onPress={onOpen}
-        className="bg-transparent  flex items-center gap-2 cursor-pointer p-0 !border-0"
-         disableRipple={true}
-        disableAnimation
-      >
-        <LeaveIcon strokwidth={2} size={4} color={"red"} />
-        <span className="text-red-500 font-medium">Logout</span>
-      </Button>
+      {/* Use custom trigger if provided, otherwise use default span */}
+      {trigger ? (
+        <div onClick={onOpen} className="cursor-pointer">
+          {trigger}
+        </div>
+      ) : (
+        <span onClick={onOpen} className="text-red-500 cursor-pointer pl-4">
+          Quit Team
+        </span>
+      )}
+
       <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="sm">
-        <ModalContent className="flex  flex-col justify-center items-center">
+        <ModalContent className="flex flex-col justify-center items-center">
           {(onClose) => (
             <>
               <ModalHeader>
-                <div className="w-8 h-8 rounded-full bg-slate-orange flex justify-center items-center ">
+                <div className="w-8 h-8 rounded-full bg-slate-orange flex justify-center items-center">
                   <IconpopupLeave />
                 </div>
               </ModalHeader>
@@ -50,7 +75,13 @@ export default function ModalLeave({
                 >
                   <p className="text-blue-500">{massageUndo}</p>
                 </Button>
-                <Button className="bg-slate-red" onPress={onClose}>
+                <Button
+                  className="bg-slate-red"
+                  onPress={async () => {
+                    await handleLeaveBoard(); // Ensure async operation completes
+                    onClose();
+                  }}
+                >
                   <p className="text-red-500">{massageDo}</p>
                 </Button>
               </ModalFooter>

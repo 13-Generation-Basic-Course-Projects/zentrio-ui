@@ -1,14 +1,13 @@
 "use server";
 
 import { memberRouteGroup, taskRouteGroup } from "@/routes/memberRoute";
-
 /*
  * Get board members service
  */
 export const getBoardMembersService = async ({ boardId, token }) => {
   try {
     const url = memberRouteGroup.getBoardMembers(boardId);
-
+    console.log("url member", url, boardId);
     const res = await fetch(url, {
       next: {
         tags: ["members"],

@@ -1087,3 +1087,30 @@ export const uploadCoverChecklistService = async ({
     console.error("Upload cover error:", error);
   }
 };
+
+/**
+ *  leave the board
+ */
+
+/*
+ * delete task
+ */
+export const leaveTheBoardService = async (boardId, token) => {
+  try {
+    //console.log("from service ", token);
+    const url = boardRouteGroup.leaveTheBoard(boardId);
+    const res = await fetch(url, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await res.json();
+    console.log("📥 Backend responded with leave the baord", data);
+
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};

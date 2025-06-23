@@ -27,6 +27,7 @@ import {
   getTaskByBoardIdService,
   getTaskByTaskIdService,
   inviteMemberToBoardService,
+  leaveTheBoardService,
   moveTaskOrderService,
   postCommentByCheckListIdService,
   updateCheckListByIdAndTaskIdService,
@@ -792,5 +793,17 @@ export const changeStatusTaskAction = async (taskId, type) => {
   const result = await changeStatusTaskService(taskId, token, type);
   revalidatePath("/checklist");
   console.log("status action task fix bug", taskId, type);
+  return result;
+};
+
+/*
+ *leave the baord
+ */
+export const leaveTheBoardAction = async (boardId) => {
+  const userToken = await Token();
+  const token = userToken?.Credential;
+  const result = await leaveTheBoardService(boardId, token);
+  revalidatePath("/board");
+
   return result;
 };
