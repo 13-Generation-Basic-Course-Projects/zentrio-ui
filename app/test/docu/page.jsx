@@ -1,10 +1,11 @@
-import WelcomePage from '@/components/modal/docu/EmptyDocumentPage'
-import React from 'react'
+import WelcomePage from "@/components/modal/docu/EmptyDocumentPage";
+import GoogleStyleLayout from "@/components/welcome/LayoutWelcomeDragDrop";
+import React from "react";
 
 export default function () {
   return (
     <div>
-      <WelcomePage />
+      <GoogleStyleLayout />
     </div>
-  )
+  );
 }

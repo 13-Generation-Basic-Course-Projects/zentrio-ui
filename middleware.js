@@ -19,8 +19,8 @@ export async function middleware(req) {
   if (session?.user || exitsToken?.Credential) {
     // Check if the requested route is in restricted routes
     if (restrictedRoutes.includes(pathname)) {
-      // Redirect authenticated users to a safe route, e.g., /dashboard
-      return NextResponse.redirect(new URL("/dashboard", req.url));
+      // Redirect authenticated users to a safe route, e.g.,
+      return NextResponse.redirect(new URL("/", req.url));
     }
     // Allow access to other routes for authenticated users
     return NextResponse.next();
@@ -28,7 +28,7 @@ export async function middleware(req) {
 
   // If user is not authenticated, redirect to login for protected routes
   if (pathname.startsWith("/workspace") || pathname.startsWith("/dashboard")) {
-    return NextResponse.redirect(new URL("/", req.url));
+    return NextResponse.redirect(new URL("/login", req.url));
   }
 
   // Allow unauthenticated users to access non-protected routes

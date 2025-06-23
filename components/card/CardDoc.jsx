@@ -23,7 +23,7 @@ export default function CardFolder({
   boardId,
 }) {
   const pathname = usePathname();
-  console.log("error", workspaceId);
+  console.log("error", documentId);
 
   // Check if current path contains 'otherworkspace'
   const isOtherWorkspace = pathname.includes("/otherworkspace/");
@@ -41,7 +41,9 @@ export default function CardFolder({
       <CardHeader
         className={`pb-0 pt-2 px-4 flex justify-end ${isHidden ? `pt-8` : ``} `}
       >
-        {boardId}
+        {/* {boardId} */}
+        {/* {folderId} */}
+
         <div className="hover:text-black text-gray-600">
           {isHidden == true ? (
             ""
