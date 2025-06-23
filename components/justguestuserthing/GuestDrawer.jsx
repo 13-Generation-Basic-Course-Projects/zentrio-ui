@@ -13,7 +13,7 @@ import {
   AvatarGroup,
 } from "@heroui/react";
 
-export default function GuestDrawerCompo() {
+export default function ZentrioDrawerCompo() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   return (
@@ -39,6 +39,7 @@ export default function GuestDrawerCompo() {
       >
         See Zentrio
       </Button>
+
       <Drawer
         hideCloseButton
         backdrop="blur"
@@ -76,43 +77,47 @@ export default function GuestDrawerCompo() {
                   </Button>
                 </Tooltip>
               </DrawerHeader>
+
               <DrawerBody className="pt-16">
                 <div className="flex w-full justify-center items-center pt-4">
-                  <Image
-                    isBlurred
-                    isZoomed
-                    alt="Event image"
-                    className="aspect-square w-full hover:scale-110"
+                  <img
+                    alt="Zentrio Project Management System"
+                    className="aspect-video w-full object-cover rounded-xl transition-transform duration-300 hover:scale-100"
                     height={300}
-                    src="https://nextuipro.nyc3.cdn.digitaloceanspaces.com/components-images/places/san-francisco.png"
+                    src="https://i.pinimg.com/736x/3f/03/e3/3f03e3729367070cc115dd539f3795f3.jpg"
                   />
                 </div>
+
                 <div className="flex flex-col gap-2 py-4">
                   <h1 className="text-2xl font-bold leading-7">
-                    SF Bay Area Meetup in November
+                    Zentrio Task Management System
                   </h1>
                   <p className="text-sm text-default-500">
-                    555 California St, San Francisco, CA 94103
+                    Complete project management solution for teams
                   </p>
+
                   <div className="mt-4 flex flex-col gap-3">
+                    {/* User Roles Section */}
                     <div className="flex gap-3 items-center">
                       <div className="flex-none border-1 border-default-200/50 rounded-small text-center w-11 overflow-hidden">
-                        <div className="text-tiny bg-default-100 py-0.5 text-default-500">
-                          Nov
+                        <div className="text-tiny bg-primary-100 py-0.5 text-primary-600">
+                          PM
                         </div>
-                        <div className="flex items-center justify-center font-semibold text-medium h-6 text-default-500">
-                          19
+                        <div className="flex items-center justify-center font-semibold text-medium h-6 text-primary-600">
+                          3
                         </div>
                       </div>
                       <div className="flex flex-col gap-0.5">
                         <p className="text-medium text-foreground font-medium">
-                          Tuesday, November 19
+                          User Roles Available
                         </p>
                         <p className="text-small text-default-500">
-                          5:00 PM - 9:00 PM PST
+                          Project Manager, Team Leader, Members
                         </p>
                       </div>
                     </div>
+
+                    {/* Kanban Board Section */}
                     <div className="flex gap-3 items-center">
                       <div className="flex items-center justify-center border-1 border-default-200/50 rounded-small w-11 h-11">
                         <svg
@@ -122,17 +127,14 @@ export default function GuestDrawerCompo() {
                           width="20"
                           xmlns="http://www.w3.org/2000/svg"
                         >
-                          <g
-                            fill="none"
-                            fillRule="evenodd"
-                            stroke="currentColor"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="1.5"
-                          >
-                            <path d="M2 6.854C2 11.02 7.04 15 8 15s6-3.98 6-8.146C14 3.621 11.314 1 8 1S2 3.62 2 6.854" />
-                            <path d="M9.5 6.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0" />
-                          </g>
+                          <path
+                            d="M2 3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3zm1 0v10h10V3H3z"
+                            fill="currentColor"
+                          />
+                          <path
+                            d="M5 5h6v1H5V5zm0 2h6v1H5V7zm0 2h4v1H5V9z"
+                            fill="currentColor"
+                          />
                         </svg>
                       </div>
                       <div className="flex flex-col gap-0.5">
@@ -156,78 +158,78 @@ export default function GuestDrawerCompo() {
                             </svg>
                           }
                           className="group gap-x-0.5 text-medium text-foreground font-medium"
-                          href="https://www.google.com/maps/place/555+California+St,+San+Francisco,+CA+94103"
-                          rel="noreferrer noopener"
+                          href="#kanban-board"
                         >
-                          555 California St suite 500
+                          Kanban Board System
                         </Link>
                         <p className="text-small text-default-500">
-                          San Francisco, California
+                          Development LifeCycle Management
                         </p>
                       </div>
                     </div>
+
+                    {/* About Section */}
                     <div className="flex flex-col mt-4 gap-3 items-start">
                       <span className="text-medium font-medium">
-                        About the event
+                        About Zentrio
                       </span>
                       <div className="text-medium text-default-500 flex flex-col gap-2">
                         <p>
-                          Hey Bay Area! We are excited to announce our next
-                          meetup on Tuesday, November 19th.
+                          Zentrio is a comprehensive Task Management tool
+                          designed for people who struggle to organize and track
+                          their tasks.
                         </p>
                         <p>
-                          Join us for an evening of insightful discussions and
-                          hands-on workshops focused on the latest developments
-                          in web development and design. Our featured speakers
-                          will share their experiences with modern frontend
-                          frameworks, responsive design patterns, and emerging
-                          web technologies. You&apos;ll have the opportunity to
-                          network with fellow developers and designers while
-                          enjoying refreshments and snacks.
+                          The system helps teams gather all resources for their
+                          projects, including documentation (Google Sheets,
+                          Slides, and Docs), links to resources, task
+                          visualization with calendars, and a complete Kanban
+                          page management system.
                         </p>
                         <p>
-                          During the main session, we&apos;ll dive deep into
-                          practical examples of building scalable applications,
-                          exploring best practices for component architecture,
-                          and understanding advanced state management
-                          techniques. Our interactive workshop portion will let
-                          you apply these concepts directly, with experienced
-                          mentors available to provide guidance and answer your
-                          questions. Whether you&apos;re a seasoned developer or
-                          just starting your journey, you&apos;ll find valuable
-                          takeaways from this session.
+                          Features include role-based access control, project
+                          timeline visualization, comprehensive reporting,
+                          achievement tracking, and real-time notifications for
+                          task assignments and deadlines.
                         </p>
-
                         <p className="mt-4">
-                          Brought to you by the{" "}
-                          <Link
-                            className="text-default-700"
-                            href="https://heroui.com"
-                          >
-                            HeroUI team
+                          Built for teams who need{" "}
+                          <Link className="text-default-700" href="#features">
+                            structured project management
                           </Link>
                           .
                         </p>
                       </div>
                     </div>
+
+                    {/* Core Features */}
                     <div className="flex flex-col mt-4 gap-3 items-start">
                       <span className="text-small text-default-500">
-                        Hosted By
+                        Core Features
                       </span>
-                      <div className="flex gap-2 items-center">
-                        <Avatar
-                          name="HeroUI"
-                          size="sm"
-                          src="https://heroui.com/android-chrome-192x192.png"
-                        />
-                        <span className="text-small text-default-500">
-                          HeroUI Team
-                        </span>
+                      <div className="flex flex-wrap gap-2">
+                        <div className="bg-primary-50 text-primary-700 px-2 py-1 rounded-small text-tiny">
+                          Kanban Board
+                        </div>
+                        <div className="bg-secondary-50 text-secondary-700 px-2 py-1 rounded-small text-tiny">
+                          Calendar Integration
+                        </div>
+                        <div className="bg-success-50 text-success-700 px-2 py-1 rounded-small text-tiny">
+                          Documentation
+                        </div>
+                        <div className="bg-warning-50 text-warning-700 px-2 py-1 rounded-small text-tiny">
+                          Reports & Analytics
+                        </div>
+                        <div className="bg-danger-50 text-danger-700 px-2 py-1 rounded-small text-tiny">
+                          Notifications
+                        </div>
                       </div>
                     </div>
+
+                    {/* Development Team */}
                     <div className="flex flex-col mt-4 gap-3 items-start">
                       <span className="text-small text-default-500">
-                        105 Going
+                        Development Team
                       </span>
                       <div className="flex gap-2 items-center">
                         <AvatarGroup
@@ -237,34 +239,34 @@ export default function GuestDrawerCompo() {
                             count: "text-default-500 text-tiny bg-default-100",
                           }}
                           size="sm"
-                          total={101}
+                          total={5}
                         >
-                          <Tooltip content="Alex">
+                          <Tooltip content="Project Manager">
                             <Avatar
                               className="data-[hover=true]:!translate-x-0"
-                              name="Alex"
-                              src="https://i.pravatar.cc/150?u=a04258114e29026708c"
+                              name="LF"
+                              src=""
                             />
                           </Tooltip>
-                          <Tooltip content="Joe">
+                          <Tooltip content="Team Leader">
                             <Avatar
                               className="data-[hover=true]:!translate-x-0"
-                              name="Joe"
-                              src="https://i.pravatar.cc/150?u=a04258114e290267084"
+                              name="NF"
+                              src=""
                             />
                           </Tooltip>
-                          <Tooltip content="John">
+                          <Tooltip content="Developer">
                             <Avatar
                               className="data-[hover=true]:!translate-x-0"
-                              name="John"
-                              src="https://i.pravatar.cc/150?u=a04258a2462d826712d"
+                              name="CT"
+                              src=""
                             />
                           </Tooltip>
-                          <Tooltip content="Jane">
+                          <Tooltip content="Designer">
                             <Avatar
                               className="data-[hover=true]:!translate-x-0"
-                              name="Jane"
-                              src="https://i.pravatar.cc/150?u=a04258114e29026702d"
+                              name="SC"
+                              src=""
                             />
                           </Tooltip>
                         </AvatarGroup>
@@ -273,20 +275,17 @@ export default function GuestDrawerCompo() {
                   </div>
                 </div>
               </DrawerBody>
+
               <DrawerFooter className="flex flex-col gap-1">
-                <Link
-                  className="text-default-400"
-                  href="mailto:hello@heroui.com"
-                  size="sm"
-                >
-                  Contact the host
+                <Link className="text-default-400" href="#tutorial" size="sm">
+                  Start Tutorial
                 </Link>
                 <Link
                   className="text-default-400"
-                  href="mailto:hello@heroui.com"
+                  href="#documentation"
                   size="sm"
                 >
-                  Report event
+                  View Documentation
                 </Link>
               </DrawerFooter>
             </>
