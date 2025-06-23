@@ -19,6 +19,7 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { inviteMemberSchema } from "@/lib/schemas/invitememberSchema";
 import { inviteMemberToBoardAction } from "@/action/board.action";
+import { Link } from "lucide-react";
 
 export const roles = [
   { key: "team leader", label: "Team Leader" },
@@ -61,6 +62,7 @@ export default function ModalInviteMember({
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [copySuccess, setCopySuccess] = useState("");
 
   const {
     register,
@@ -77,12 +79,24 @@ export default function ModalInviteMember({
     },
   });
 
-  // const boardId = "feb6d22e-b2d6-4105-b3ad-663c7148c337";
   console.log("+++log workspaceId", workspaceId);
   // Watch form values to determine button text and state
   const watchedEmail = watch("email");
   const watchedRole = watch("role");
   const isFormFilled = watchedEmail && watchedRole;
+
+  // Function to generate and copy the invite link
+  const copyInviteLink = async () => {
+    const inviteLink = `http://localhost:3000/guestuser/${workspaceId}/${boardId}`;
+    try {
+      await navigator.clipboard.writeText(inviteLink);
+      setCopySuccess("Link copied to clipboard!");
+      setTimeout(() => setCopySuccess(""), 3000); // Clear message after 3 seconds
+    } catch (err) {
+      setCopySuccess("Failed to copy link");
+      console.error("Failed to copy: ", err);
+    }
+  };
 
   const onSubmit = (data) => {
     setErrorMessage("");
@@ -172,11 +186,28 @@ export default function ModalInviteMember({
                   <div className="flex items-center justify-center p-5 rounded-xl bg-slate-blue">
                     <Image src={mailIcon} width={30} height={27} alt="Email" />
                   </div>
-                  <div>
-                    <h2 className="text-h4 text-title mb-1">Member</h2>
-                    <p className="text-body-sm text-description">
-                      Invite team members to collaborate
-                    </p>
+                  <div className="flex-1">
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <h2 className="text-h4 text-title mb-1">Member</h2>
+                        <p className="text-body-sm text-description">
+                          Invite team members to collaborate
+                        </p>
+                      </div>
+                      <Button
+                        onClick={copyInviteLink}
+                        className="bg-slate-blue px-4 py-2 text-sm text-primary"
+                        variant="bordered"
+                        size="sm"
+                        radius="md"
+                      >
+                        Guest Link
+                        <Link />
+                      </Button>
+                    </div>
+                    {copySuccess && (
+                      <p className="text-success text-sm mt-2">{copySuccess}</p>
+                    )}
                   </div>
                 </div>
               </ModalHeader>

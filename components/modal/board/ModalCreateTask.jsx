@@ -105,9 +105,40 @@ export default function ModalCreateTask({
         throw new Error("Invalid Gantt bar ID selected");
       }
 
-      // Validate task dates against Gantt bar dates
-      const taskStart = new Date(data.dateRange.start);
+      // Parse dates and add time buffer for current date
+      let taskStart = new Date(data.dateRange.start);
       const taskEnd = new Date(data.dateRange.end);
+
+      // Check if start date is today and add 2 minutes buffer
+      const today = new Date();
+      const isStartDateToday =
+        taskStart.toDateString() === today.toDateString();
+
+      if (isStartDateToday) {
+        // If start date is today, set time to current time + 2 minutes
+        const currentTime = new Date();
+        const bufferedTime = new Date(currentTime.getTime() + 2 * 60 * 1000); // Add 2 minutes
+
+        // Set the start date to today with buffered time
+        taskStart = new Date(
+          taskStart.getFullYear(),
+          taskStart.getMonth(),
+          taskStart.getDate(),
+          bufferedTime.getHours(),
+          bufferedTime.getMinutes(),
+          bufferedTime.getSeconds()
+        );
+      } else {
+        // If not today, set to start of day (00:00:00)
+        taskStart.setHours(0, 0, 0, 0);
+      }
+
+      // Set end date to end of day (23:59:59) unless it's a specific time
+      if (taskEnd.getHours() === 0 && taskEnd.getMinutes() === 0) {
+        taskEnd.setHours(23, 59, 59, 999);
+      }
+
+      // Validate task dates against Gantt bar dates
       const ganttStart = new Date(selectedGanttBar.startedAt);
       const ganttEnd = new Date(selectedGanttBar.finishedAt);
 
@@ -129,10 +160,14 @@ export default function ModalCreateTask({
         finishedAt: taskEnd.toISOString(),
         boardId: boardId,
         ganttBarId: data.ganttBarId,
-        leaderId: data.teamLeader || null, // Use teamLeader (userId) directly
+        leaderId: data.teamLeader || null,
       };
 
       console.log("Submitting Payload:", payload);
+      console.log(
+        "Start time adjusted:",
+        isStartDateToday ? "Yes (+2 minutes)" : "No"
+      );
 
       const result = await createTaskByBoardIdAndGanttChartIdAction(
         payload,

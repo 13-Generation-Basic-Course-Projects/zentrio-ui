@@ -10,14 +10,9 @@ export default function PublicDocument({
   tokenFromGoogle,
   isHidden,
   workspaceId,
+  boardId,
 }) {
   const payload = publicDocuments?.payload || [];
-
-  console.log("payload .... ", payload);
-
-  // if (publicDocuments.status == 404) {
-  //   return <>a</>;
-  // }
 
   const [sortOrder, setSortOrder] = useState("asc");
   const [searchTerm, setSearchTerm] = useState("");
@@ -64,7 +59,23 @@ export default function PublicDocument({
   });
 
   const filteredData = transformedData
-    .filter((doc) => doc.title.toLowerCase().includes(searchTerm.toLowerCase()))
+    .filter((doc) => {
+      const matchesTitle = myFilter(doc.title, searchTerm);
+      const matchesDate = (() => {
+        if (!selectedDate) return true;
+
+        const selected = new Date(selectedDate);
+        const docDate = new Date(doc.date);
+
+        return (
+          selected.getFullYear() === docDate.getFullYear() &&
+          selected.getMonth() === docDate.getMonth() &&
+          selected.getDate() === docDate.getDate()
+        );
+      })();
+
+      return matchesTitle && matchesDate;
+    })
     .sort((a, b) => {
       if (sortOrder === "asc") {
         return a.title.localeCompare(b.title);
@@ -86,7 +97,11 @@ export default function PublicDocument({
         <div className="flex items-center justify-between pb-5">
           <div className="flex flex-row items-end gap-4 mb-4">
             <div className="flex-1">
-              <MyDatePicker className="h-12" />
+              <MyDatePicker
+                selectedDate={selectedDate}
+                setSelectedDate={setSelectedDate}
+                className="h-12"
+              />
             </div>
 
             <div className="w-40">
@@ -161,6 +176,8 @@ export default function PublicDocument({
                     isFolder={el.category === "Folder"}
                     tokenFromGoogle={tokenFromGoogle}
                     isHidden={isHidden}
+                    workspaceId={workspaceId}
+                    boardId={boardId}
                   />
                 ))
             ) : (
