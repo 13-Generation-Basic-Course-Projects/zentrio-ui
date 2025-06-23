@@ -45,6 +45,54 @@ const formatDate = (date) => {
   }
 };
 
+// Helper function to get full month range
+const getFullMonthRange = (events) => {
+  if (!events || events.length === 0) {
+    // Default to current month if no events
+    const today = new Date();
+    const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+    const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+    return {
+      minDate: startOfMonth.toISOString().split("T")[0],
+      maxDate: new Date(endOfMonth.getTime() + 24 * 60 * 60 * 1000)
+        .toISOString()
+        .split("T")[0], // Add one day for FullCalendar
+    };
+  }
+
+  // Find the earliest and latest months from events
+  let earliestDate = new Date(events[0].start);
+  let latestDate = new Date(events[0].end);
+
+  events.forEach((event) => {
+    const start = new Date(event.start);
+    const end = new Date(event.end);
+    if (start < earliestDate) earliestDate = start;
+    if (end > latestDate) latestDate = end;
+  });
+
+  // Get the start of the earliest month
+  const startOfEarliestMonth = new Date(
+    earliestDate.getFullYear(),
+    earliestDate.getMonth(),
+    1
+  );
+
+  // Get the end of the latest month
+  const endOfLatestMonth = new Date(
+    latestDate.getFullYear(),
+    latestDate.getMonth() + 1,
+    0
+  );
+
+  return {
+    minDate: startOfEarliestMonth.toISOString().split("T")[0],
+    maxDate: new Date(endOfLatestMonth.getTime() + 24 * 60 * 60 * 1000)
+      .toISOString()
+      .split("T")[0], // Add one day for FullCalendar
+  };
+};
+
 // Predefined color palette for dynamic assignment
 const colorPalette = [
   { background: "#DBF9CE", border: "#34D399" },
@@ -285,43 +333,9 @@ export default function GanttChart({
     );
   }, []);
 
-  // Memoize date range calculation
+  // Modified date range calculation to show full months
   const { minDate, maxDate } = useMemo(() => {
-    if (!events || events.length === 0) {
-      const today = new Date();
-      const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-      const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-      return {
-        minDate: startOfMonth.toISOString().split("T")[0],
-        maxDate: endOfMonth.toISOString().split("T")[0],
-      };
-    }
-
-    let min = new Date(events[0].start);
-    let max = new Date(events[0].end);
-
-    events.forEach((event) => {
-      const start = new Date(event.start);
-      const end = new Date(event.end);
-      if (start < min) min = start;
-      const effectiveEnd = new Date(end);
-      if (
-        effectiveEnd.getHours() === 0 &&
-        effectiveEnd.getMinutes() === 0 &&
-        effectiveEnd.getSeconds() === 0
-      ) {
-        effectiveEnd.setDate(effectiveEnd.getDate() - 1);
-      }
-      if (effectiveEnd > max) max = effectiveEnd;
-    });
-
-    min.setDate(min.getDate() - 3);
-    max.setDate(max.getDate() + 4);
-
-    return {
-      minDate: min.toISOString().split("T")[0],
-      maxDate: max.toISOString().split("T")[0],
-    };
+    return getFullMonthRange(events);
   }, [events]);
 
   // Memoize duration string calculation for current visible range
@@ -458,7 +472,7 @@ export default function GanttChart({
       views: {
         resourceTimelineMonthCustom: {
           type: "resourceTimeline",
-          duration: { days: 31 },
+          duration: { months: 1 }, // Changed to show full months
           visibleRange: {
             start: minDate,
             end: maxDate,
