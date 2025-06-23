@@ -53,6 +53,7 @@ export const createWorkspaceAction = async (payload = {}) => {
  */
 export const getAllWorkspaceAction = async () => {
   const userToken = await Token();
+  console.log("vvvvv",userToken)
   const token = userToken.Credential;
   console.log("wwwwwwww", token);
   const result = await getAllWorkspacesService({ token });
