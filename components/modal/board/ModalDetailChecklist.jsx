@@ -686,6 +686,7 @@ const ModalDetailChecklist = ({
   role,
   boardId,
   isModalDisabled,
+  imageChecklist
 }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const { state, dispatch, shouldStayOpen } = useChecklistData(
@@ -693,6 +694,7 @@ const ModalDetailChecklist = ({
     isOpen
   );
 
+  console.log("hhhh", image)
   const {
     taskData,
     newDescription,
@@ -954,6 +956,7 @@ const ModalDetailChecklist = ({
             commentCount={state.comments.length}
             finishedAt={finishedAt}
             leaderId={leaderId}
+            imageChecklist={imageChecklist}
           />
         </div>
       </Button>
@@ -1044,9 +1047,11 @@ const ModalDetailChecklist = ({
                     <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-blue-500"></div>
                   </div>
                 )}
+             
+
                 <div className="border rounded-medium flex justify-center items-center relative w-full h-40">
                   <img
-                    src={previewImage}
+                    src={imageChecklist}
                     alt="Checklist Image"
                     className="w-full h-full object-cover rounded-medium"
                   />

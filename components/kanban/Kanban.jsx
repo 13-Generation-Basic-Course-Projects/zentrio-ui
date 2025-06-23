@@ -206,29 +206,29 @@ export default function KanbanBoard({
         cards: (column.cards || []).map((card) =>
           card.id === cardId
             ? {
-                ...card,
-                checklists: [
-                  ...(card.checklists || []),
-                  {
-                    checklistId: newChecklistId,
-                    title:
-                      checklistData.title ||
-                      `Checklist ${(card.checklists || []).length + 1}`,
-                    description: checklistData.description,
-                    status: "PENDING",
-                    cover: null,
-                    createdAt: new Date().toISOString(),
-                    updatedAt: new Date().toISOString(),
-                    checklistOrder: (card.checklists || []).length + 1,
-                    startedAt: checklistData.startedAt || null,
-                    finishedAt: checklistData.finishedAt || null,
-                    taskId: cardId,
-                    createdBy: "current-user-id",
-                    members: [],
-                  },
-                ],
-                expanded: true,
-              }
+              ...card,
+              checklists: [
+                ...(card.checklists || []),
+                {
+                  checklistId: newChecklistId,
+                  title:
+                    checklistData.title ||
+                    `Checklist ${(card.checklists || []).length + 1}`,
+                  description: checklistData.description,
+                  status: "PENDING",
+                  cover: null,
+                  createdAt: new Date().toISOString(),
+                  updatedAt: new Date().toISOString(),
+                  checklistOrder: (card.checklists || []).length + 1,
+                  startedAt: checklistData.startedAt || null,
+                  finishedAt: checklistData.finishedAt || null,
+                  taskId: cardId,
+                  createdBy: "current-user-id",
+                  members: [],
+                },
+              ],
+              expanded: true,
+            }
             : card
         ),
       }))
@@ -344,9 +344,9 @@ export default function KanbanBoard({
       (dropTargetType === "card"
         ? columns.find((c) => c.id === targetColumnId)?.cards[targetIndex]?.id
         : columns
-            .find((c) => c.id === targetColumnId)
-            ?.cards.find((c) => c.id === targetCardId)?.checklists[targetIndex]
-            ?.checklistId)
+          .find((c) => c.id === targetColumnId)
+          ?.cards.find((c) => c.id === targetCardId)?.checklists[targetIndex]
+          ?.checklistId)
     ) {
       console.log("Dropped on same item, aborting");
       handleDragEnd(e);
@@ -595,9 +595,8 @@ export default function KanbanBoard({
         {(columns || []).map((column) => (
           <div
             key={column.id}
-            className={`mb-4 border-b-4 pb-2 flex items-center gap-3 ${
-              columnHeaderStyles[column.id]
-            }`}
+            className={`mb-4 border-b-4 pb-2 flex items-center gap-3 ${columnHeaderStyles[column.id]
+              }`}
           >
             <p className="text-2xl font-semibold">{column.title}</p>
             <button className="px-3 py-1 text-sm rounded-full bg-transparent border-2 border-gray-300 shadow-sm">
@@ -647,11 +646,10 @@ export default function KanbanBoard({
                         className="mb-3 bg-white rounded-xl px-2"
                       >
                         <div
-                          className={`h-2 w-full transition-all duration-300 ease-in-out rounded ${
-                            isCardDropZoneHovered
+                          className={`h-2 w-full transition-all duration-300 ease-in-out rounded ${isCardDropZoneHovered
                               ? "bg-blue-200 h-8 border-2 border-dashed border-blue-500"
                               : ""
-                          }`}
+                            }`}
                           onDragOver={(e) =>
                             handleDragOver(e, {
                               targetColumnId: column.id,
@@ -663,18 +661,17 @@ export default function KanbanBoard({
                           onDrop={handleDrop}
                         />
                         <div
-                          className={`shadow-sm rounded-xl overflow-hidden transition-all duration-300 ease-in-out ${
-                            isChecklistHoverTargetCard
+                          className={`shadow-sm rounded-xl overflow-hidden transition-all duration-300 ease-in-out ${isChecklistHoverTargetCard
                               ? "ring-2 ring-green-300"
                               : ""
-                          }`}
+                            }`}
                           style={{
                             opacity: isCardDragging ? 0.5 : 1,
                             transform: isCardDragging
                               ? "rotate(2deg) scale(1.05)"
                               : isCardHoverMakeSpace
-                              ? "translateY(8px)"
-                              : "none",
+                                ? "translateY(8px)"
+                                : "none",
                           }}
                           draggable
                           onDragStart={(e) =>
@@ -749,13 +746,12 @@ export default function KanbanBoard({
                                         )?.status || "OVERDUE"
                                       )
                                     }
-                                    className={`top-[20px] right-5 p-2 rounded-full ${
-                                      (tasks.find(
-                                        (task) => task.taskId === card.id
-                                      )?.status || "OVERDUE") === "COMPLETED"
+                                    className={`top-[20px] right-5 p-2 rounded-full ${(tasks.find(
+                                      (task) => task.taskId === card.id
+                                    )?.status || "OVERDUE") === "COMPLETED"
                                         ? "text-white"
                                         : ""
-                                    }`}
+                                      }`}
                                     title={
                                       (tasks.find(
                                         (task) => task.taskId === card.id
@@ -870,11 +866,10 @@ export default function KanbanBoard({
                                       id={checklist.checklistId}
                                     >
                                       <div
-                                        className={`h-1 w-full transition-all duration-200 ease-in-out rounded ${
-                                          isChecklistDropZoneHovered
+                                        className={`h-1 w-full transition-all duration-200 ease-in-out rounded ${isChecklistDropZoneHovered
                                             ? "bg-green-200 h-6 border-2 border-dashed border-green-500"
                                             : ""
-                                        }`}
+                                          }`}
                                         onDragOver={(e) =>
                                           handleDragOver(e, {
                                             targetColumnId: column.id,
@@ -894,8 +889,8 @@ export default function KanbanBoard({
                                           transform: isChecklistDragging
                                             ? "scale(1.05)"
                                             : isChecklistHoverMakeSpace
-                                            ? "translateY(4px)"
-                                            : "none",
+                                              ? "translateY(4px)"
+                                              : "none",
                                         }}
                                         draggable
                                         onDragStart={(e) =>
@@ -918,17 +913,18 @@ export default function KanbanBoard({
                                           startDate={
                                             checklist.startedAt
                                               ? new Date(
-                                                  checklist.startedAt
-                                                ).toLocaleDateString()
+                                                checklist.startedAt
+                                              ).toLocaleDateString()
                                               : "N/A"
                                           }
                                           status={checklist.status}
                                           image={
                                             checklist.members &&
-                                            checklist.members.length > 0
+                                              checklist.members.length > 0
                                               ? checklist.members[0].imageUrl
                                               : card.assignees[0] || ""
                                           }
+
                                           description={checklist.description}
                                           checklistId={checklist?.checklistId}
                                           members={checklist.members || []}
@@ -944,6 +940,9 @@ export default function KanbanBoard({
                                             )?.teamLeader?.userId || null
                                           }
                                           role={role}
+                                          imageChecklist={
+                                            checklist.cover
+                                          }
                                         />
                                       </div>
                                     </div>
@@ -951,14 +950,13 @@ export default function KanbanBoard({
                                 }
                               )}
                               <div
-                                className={`h-1 w-full transition-all duration-200 ease-in-out rounded ${
-                                  hoverInfo?.type === "checklist" &&
-                                  hoverInfo?.targetCardId === card.id &&
-                                  hoverInfo?.targetIndex ===
+                                className={`h-1 w-full transition-all duration-200 ease-in-out rounded ${hoverInfo?.type === "checklist" &&
+                                    hoverInfo?.targetCardId === card.id &&
+                                    hoverInfo?.targetIndex ===
                                     (card.checklists || []).length
                                     ? "bg-green-200 h-6 border-2 border-dashed border-green-500"
                                     : ""
-                                }`}
+                                  }`}
                                 onDragOver={(e) =>
                                   handleDragOver(e, {
                                     targetColumnId: column.id,
@@ -996,8 +994,8 @@ export default function KanbanBoard({
                                       date={
                                         card.startedAt
                                           ? new Date(
-                                              card.startedAt
-                                            ).toLocaleDateString()
+                                            card.startedAt
+                                          ).toLocaleDateString()
                                           : "N/A"
                                       }
                                     />
@@ -1024,13 +1022,12 @@ export default function KanbanBoard({
                     );
                   })}
                 <div
-                  className={`min-h-[10px] w-full transition-all duration-300 ease-in-out rounded ${
-                    hoverInfo?.type === "card" &&
-                    hoverInfo?.targetColumnId === column.id &&
-                    hoverInfo?.targetIndex === (column.cards || []).length
+                  className={`min-h-[10px] w-full transition-all duration-300 ease-in-out rounded ${hoverInfo?.type === "card" &&
+                      hoverInfo?.targetColumnId === column.id &&
+                      hoverInfo?.targetIndex === (column.cards || []).length
                       ? "bg-blue-100 border-2 border-dashed border-blue-400 py-4"
                       : ""
-                  }`}
+                    }`}
                   onDragOver={(e) =>
                     handleDragOver(e, {
                       targetColumnId: column.id,
