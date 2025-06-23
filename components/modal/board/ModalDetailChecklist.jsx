@@ -686,6 +686,7 @@ const ModalDetailChecklist = ({
   role,
   boardId,
   isModalDisabled,
+  checklistImage,
 }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const { state, dispatch, shouldStayOpen } = useChecklistData(
@@ -790,9 +791,9 @@ const ModalDetailChecklist = ({
   const MAX_FILE_SIZE = 5 * 1024 * 1024;
   const router = useRouter();
   const [previewImage, setPreviewImage] = useState(
-    image || previewImage.noChecklistImage 
+    image || previewImage.noChecklistImage
   );
-  
+
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -950,7 +951,7 @@ const ModalDetailChecklist = ({
             startDate={startDate}
             comment="static comment"
             label={label}
-            image={displayImage}
+            image={checklistImage}
             hideImage={hideImage}
             member={member || []}
             checkedListId={id}
@@ -1049,7 +1050,7 @@ const ModalDetailChecklist = ({
                 )}
                 <div className="border rounded-medium flex justify-center items-center relative w-full h-40">
                   <img
-                    src={previewImage}
+                    src={checklistImage}
                     alt="Checklist Image"
                     className="w-full h-full object-cover rounded-medium"
                   />

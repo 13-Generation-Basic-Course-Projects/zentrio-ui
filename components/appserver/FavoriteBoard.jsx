@@ -44,6 +44,7 @@ export default function MyFavoriteBoard({
                     boardId={board.boardId}
                     title={board.title}
                     image={colorClass}
+                    imageCover={board.image}
                     isFavourite={board.isFavourite}
                     deleteBoardAction={deleteBoardAction}
                     updateNameBoardAction={updateNameBoardAction}
