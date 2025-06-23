@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Drawer,
   DrawerContent,
@@ -6,12 +7,28 @@ import {
   DrawerFooter,
   Button,
   useDisclosure,
-  Image,
   Link,
   Tooltip,
   Avatar,
   AvatarGroup,
 } from "@heroui/react";
+import "./guestdrawer.css";
+
+import Image from "next/image";
+import fong from "@/public/image/fong.png";
+import fanua from "@/public/image/fanau.png";
+import theara from "@/public/image/theara.png";
+import minh from "@/public/image/minh.png";
+import leap from "@/public/image/leap.png";
+import vid from "@/public/image/vit.png";
+import skan from "@/public/image/skan.png";
+import visa from "@/public/image/visa.png";
+import hun from "@/public/image/senghun.png";
+
+import hrd from "@/assets/about-us-image/LogoHRD.jpg";
+import webcash from "@/assets/sponser/webcash.jpg";
+import kosign from "@/assets/sponser/kosign.png";
+import kb from "@/assets/sponser/kb.png";
 
 export default function ZentrioDrawerCompo() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -101,7 +118,7 @@ export default function ZentrioDrawerCompo() {
                     <div className="flex gap-3 items-center">
                       <div className="flex-none border-1 border-default-200/50 rounded-small text-center w-11 overflow-hidden">
                         <div className="text-tiny bg-primary-100 py-0.5 text-primary-600">
-                          PM
+                          Roles
                         </div>
                         <div className="flex items-center justify-center font-semibold text-medium h-6 text-primary-600">
                           3
@@ -227,49 +244,90 @@ export default function ZentrioDrawerCompo() {
                     </div>
 
                     {/* Development Team */}
-                    <div className="flex flex-col mt-4 gap-3 items-start">
-                      <span className="text-small text-default-500">
-                        Development Team
-                      </span>
-                      <div className="flex gap-2 items-center">
-                        <AvatarGroup
-                          isBordered
-                          classNames={{
-                            base: "pl-2",
-                            count: "text-default-500 text-tiny bg-default-100",
-                          }}
-                          size="sm"
-                          total={5}
-                        >
-                          <Tooltip content="Project Manager">
-                            <Avatar
-                              className="data-[hover=true]:!translate-x-0"
-                              name="LF"
-                              src=""
-                            />
-                          </Tooltip>
-                          <Tooltip content="Team Leader">
-                            <Avatar
-                              className="data-[hover=true]:!translate-x-0"
-                              name="NF"
-                              src=""
-                            />
-                          </Tooltip>
-                          <Tooltip content="Developer">
-                            <Avatar
-                              className="data-[hover=true]:!translate-x-0"
-                              name="CT"
-                              src=""
-                            />
-                          </Tooltip>
-                          <Tooltip content="Designer">
-                            <Avatar
-                              className="data-[hover=true]:!translate-x-0"
-                              name="SC"
-                              src=""
-                            />
-                          </Tooltip>
-                        </AvatarGroup>
+                    <div className="flex flex-col gap-2 py-4">
+                      <div className="flex flex-col mt-4 gap-3 items-start">
+                        <span className="text-small text-default-500">
+                          Development Team
+                        </span>
+                        
+                        <div className="flex -space-x-4 rtl:space-x-reverse">
+                          <Image
+                            className="w-10 h-10 border-2 border-white rounded-full dark:border-gray-800"
+                            src={fong}
+                            alt=""
+                          />
+                          <Image
+                            className="w-10 h-10 border-2 border-white rounded-full dark:border-gray-800"
+                            src={fanua}
+                            alt=""
+                          />
+                          <Image
+                            className="w-10 h-10 border-2 border-white rounded-full dark:border-gray-800"
+                            src={theara}
+                            alt=""
+                          />
+                          <Image
+                            className="w-10 h-10 border-2 border-white rounded-full dark:border-gray-800"
+                            src={leap}
+                            alt=""
+                          />
+                          <Image
+                            className="w-10 h-10 border-2 border-white rounded-full dark:border-gray-800"
+                            src={visa}
+                            alt=""
+                          />
+                          <Image
+                            className="w-10 h-10 border-2 border-white rounded-full dark:border-gray-800"
+                            src={hun}
+                            alt=""
+                          />
+                          <Image
+                            className="w-10 h-10 border-2 border-white rounded-full dark:border-gray-800"
+                            src={skan}
+                            alt=""
+                          />
+                          <Image
+                            className="w-10 h-10 border-2 border-white rounded-full dark:border-gray-800"
+                            src={minh}
+                            alt=""
+                          />
+                          <Image
+                            className="w-10 h-10 border-2 border-white rounded-full dark:border-gray-800"
+                            src={vid}
+                            alt=""
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    {/* our supporter */}
+                    <span className="text-small text-default-500">
+                          Our Support
+                        </span>
+                    <div
+                      className="slider"
+                      style={{
+                        "--width": "100px",
+                        "--high": "100px",
+                        "--quantity": 5,
+                      }}
+                    >
+                      <div className="list">
+                        {[...Array(2)].map((_, i) => (
+                          <React.Fragment key={i}>
+                            <div className="item">
+                              <Image src={hrd} alt="hrd" />
+                            </div>
+                            <div className="item">
+                              <Image src={kosign} alt="kosing" />
+                            </div>
+                            <div className="item">
+                              <Image src={webcash} alt="webcash" />
+                            </div>
+                            <div className="item">
+                              <Image src={kb} alt="kb" />
+                            </div>
+                          </React.Fragment>
+                        ))}
                       </div>
                     </div>
                   </div>
