@@ -4,12 +4,13 @@ export const notificationRouteGroup = {
   sendNotificationToAllUser: () =>
     `${apiConfig.baseUrl}/notifications/sendMessageToAllUsers`,
 
-  sendNotificationToUserId: (receiverId, taskId) =>
-    `${apiConfig.baseUrl}/notifications/sendMessageToUser/users/${receiverId}/tasks/${taskId}`,
+  sendNotificationToUserId: () =>
+    `${apiConfig.baseUrl}/notifications/sendSpecificToUsers`,
 
   getNotificationForUserId: (userId) =>
     `${apiConfig.baseUrl}/notifications/users/${userId}`,
-
+  sendNotificationToUseArrayrId: () =>
+    `${apiConfig.baseUrl}/notifications/sendSpecificToUsers`,
   deleteNotificationById: (notificationId) =>
     `${apiConfig.baseUrl}/notifications/${notificationId}`,
 

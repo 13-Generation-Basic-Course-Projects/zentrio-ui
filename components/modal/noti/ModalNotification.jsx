@@ -25,7 +25,23 @@ export default function ModalNotification({ notificationData }) {
   const [error, setError] = useState(null);
   const [notificationStatus, setNotificationStatus] = useState({});
 
-  // Process notificationData to create notifications array
+  // Load notification status from localStorage on mount
+  useEffect(() => {
+    const storedStatus = localStorage.getItem("notificationStatus");
+    if (storedStatus) {
+      setNotificationStatus(JSON.parse(storedStatus));
+    }
+  }, []);
+
+  // Save notification status to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem(
+      "notificationStatus",
+      JSON.stringify(notificationStatus)
+    );
+  }, [notificationStatus]);
+
+  // Process notificationData
   useEffect(() => {
     if (!notificationData || !Array.isArray(notificationData?.payload)) {
       console.warn("Invalid notificationData:", notificationData);
@@ -33,63 +49,39 @@ export default function ModalNotification({ notificationData }) {
       return;
     }
 
-    const formatted = notificationData.payload.map((item, index) => {
-      let contentObj = { message: "No content", type: "general" };
-      try {
-        // Parse content if it's a JSON string
-        if (item.content && typeof item.content === "string") {
-          contentObj = JSON.parse(item.content);
-        }
-      } catch (err) {
-        // console.error("Failed to parse content JSON:", item.content, err);
-      }
-
-      return {
-        id: item.id ?? index,
-        content:
-          contentObj.message ?? item.message ?? item.content ?? "No content",
-        action: item.action ?? "",
-        createdAt: item.createdAt?.split("T")[0] ?? item.date ?? "",
-        read: item.read ?? item.isRead ?? false,
-        notificationId: item.notificationId ?? item.id ?? index,
-        sender: item.sender
-          ? {
-              userId: item.sender.userId,
-              username: item.sender.username,
-              email: item.sender.email,
-              contact: item.sender.contact,
-              gender: item.sender.gender,
-              location: item.sender.location,
-              position: item.sender.position,
-              profileImage: item.sender.profileImage,
-            }
-          : {
-              userId: null,
-              username: "Unknown Sender",
-            },
-        type: contentObj.type ?? item.type ?? "general",
-        taskId: contentObj.taskId ?? item.taskId ?? null,
-        assignId: contentObj.assignId ?? item.assignId ?? null,
-        taskTitle: contentObj.taskTitle ?? item.taskTitle ?? null,
-      };
-    });
-    console.log("Formatted notifications:", formatted);
+    const formatted = notificationData.payload.map((item, index) => ({
+      id: item.id ?? index,
+      content: item.content ?? "No content",
+      action: item.action ?? "",
+      createdAt: item.createdAt?.split("T")[0] ?? item.date ?? "",
+      read: item.read ?? item.isRead ?? false,
+      notificationId: item.notificationId ?? item.id ?? index,
+      sender: item.sender
+        ? {
+            userId: item.sender.userId,
+            username: item.sender.username,
+            email: item.sender.email,
+            contact: item.sender.contact,
+            gender: item.sender.gender,
+            location: item.sender.location,
+            position: item.sender.position,
+            profileImage: item.sender.profileImage,
+          }
+        : { userId: null, username: "Unknown Sender" },
+      type: item.type ?? "general",
+      taskId: item.taskId ?? null,
+      assignId: item.receiverId ?? null,
+      taskTitle: item.title ?? null,
+    }));
     setNotifications(formatted);
   }, [notificationData]);
 
-  // Mark all notifications as read
   const markAllAsRead = () => {
     setIsActive(true);
     setMarkAllRead(true);
-    setNotifications((prev) =>
-      prev.map((n) => ({
-        ...n,
-        read: true,
-      }))
-    );
+    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
   };
 
-  // Delete a single notification from local state
   const deleteNotification = (notificationId) => {
     setNotifications((prev) =>
       prev.filter(
@@ -98,26 +90,37 @@ export default function ModalNotification({ notificationData }) {
     );
   };
 
-  // Delete all notifications
   const deleteAllNotifications = () => {
     setNotifications([]);
+    setNotificationStatus({});
+    localStorage.removeItem("notificationStatus");
   };
 
-  // Handle delete action
   async function handleDelete(notificationId) {
     try {
       setError(null);
       const result = await deleteNotificationByIdAction(notificationId);
       if (result.success) {
         deleteNotification(notificationId);
+        setNotificationStatus((prev) => {
+          const newStatus = { ...prev };
+          delete newStatus[notificationId];
+          return newStatus;
+        });
+        toast.success("Notification deleted successfully", {
+          position: "top-right",
+          autoClose: 3000,
+        });
       } else {
-        setError(result.error || "Failed to delete notification");
+        throw new Error(result.error || "Failed to delete notification");
       }
     } catch (error) {
       console.error("Error in handleDelete:", error.message);
-      setError(
-        error.message || "An error occurred while deleting the notification"
-      );
+      setError(error.message || "Failed to delete notification");
+      toast.error(error.message || "Failed to delete notification", {
+        position: "top-right",
+        autoClose: 3000,
+      });
     }
   }
 
@@ -127,18 +130,23 @@ export default function ModalNotification({ notificationData }) {
       const result = await deleteAllNotificationAction();
       if (result.success) {
         deleteAllNotifications();
+        toast.success("All notifications deleted successfully", {
+          position: "top-right",
+          autoClose: 3000,
+        });
       } else {
-        setError(result.error || "Failed to delete all notifications");
+        throw new Error(result.error || "Failed to delete all notifications");
       }
     } catch (error) {
       console.error("Error in handleDeleteAll:", error.message);
-      setError(
-        error.message || "An error occurred while deleting all notifications"
-      );
+      setError(error.message || "Failed to delete all notifications");
+      toast.error(error.message || "Failed to delete all notifications", {
+        position: "top-right",
+        autoClose: 3000,
+      });
     }
   }
 
-  // Handle accept leader
   async function handleAccept(notificationId, taskId, assignId) {
     try {
       setError(null);
@@ -164,7 +172,7 @@ export default function ModalNotification({ notificationData }) {
           isApproved: true,
         },
       }));
-
+      await handleDelete(notificationId); // Delete notification from server
       toast.success("Successfully accepted team leader role!", {
         position: "top-right",
         autoClose: 3000,
@@ -187,7 +195,6 @@ export default function ModalNotification({ notificationData }) {
     }
   }
 
-  // Handle decline leader
   async function handleDecline(notificationId, taskId, assignId) {
     try {
       setError(null);
@@ -213,7 +220,7 @@ export default function ModalNotification({ notificationData }) {
           isApproved: false,
         },
       }));
-
+      await handleDelete(notificationId); // Delete notification from server
       toast.success("Successfully declined team leader role.", {
         position: "top-right",
         autoClose: 3000,
@@ -236,12 +243,9 @@ export default function ModalNotification({ notificationData }) {
     }
   }
 
-  // Limit displayed notifications
   const displayedNotifications = showAll
     ? notifications
     : notifications.slice(0, 3);
-
-  console.log("Notifications:", displayedNotifications);
 
   return (
     <Dropdown className="p-4">
@@ -250,7 +254,13 @@ export default function ModalNotification({ notificationData }) {
           variant="none"
           className="p-0 rounded-lg flex items-center justify-center h-[20px] min-w-[15px]"
         >
-          <Image src={notification} className="size-5" alt="notification" />
+          <Image
+            src={notification}
+            width={5}
+            height={5}
+            className="size-5"
+            alt="notification"
+          />
         </Button>
       </DropdownTrigger>
       <DropdownMenu
@@ -261,7 +271,6 @@ export default function ModalNotification({ notificationData }) {
         <DropdownItem className="p-0 bg-transparent">
           <div className="w-full flex items-center justify-center">
             <div className="w-[400px] h-auto bg-white shadow-md rounded-xl overflow-hidden">
-              {/* Header */}
               <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
                 <p className="text-base font-semibold text-gray-800">
                   Notifications ({notifications.length})
@@ -348,14 +357,12 @@ export default function ModalNotification({ notificationData }) {
                 </div>
               </div>
 
-              {/* Error Display */}
               {error && (
                 <div className="px-6 py-3 text-red-600 text-sm text-center bg-red-50">
                   {error}
                 </div>
               )}
 
-              {/* Notification Items */}
               <div className="max-h-[350px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
                 {notifications.length === 0 ? (
                   <div className="flex flex-col items-center justify-center h-full text-center py-8">
@@ -387,7 +394,7 @@ export default function ModalNotification({ notificationData }) {
                 ) : (
                   displayedNotifications.map((notificationItem) => (
                     <div
-                      key={notificationItem.id}
+                      key={notificationItem.notificationId}
                       className={`flex justify-between items-start ${
                         markAllRead || notificationItem.read
                           ? "bg-white"
@@ -397,7 +404,11 @@ export default function ModalNotification({ notificationData }) {
                       <div className="flex gap-3 flex-1">
                         <div className="flex-shrink-0">
                           <Image
-                            src={ActiveIcon}
+                            src={
+                              notificationItem.sender.profileImage || ActiveIcon
+                            }
+                            width={5}
+                            height={5}
                             alt="Profile icon"
                             className="w-10 h-10 rounded-full"
                           />
@@ -410,18 +421,19 @@ export default function ModalNotification({ notificationData }) {
                           <p className="text-xs text-gray-600">
                             {notificationItem.content}
                           </p>
-                          {/* {notificationItem.type === "leader_assignment" && (
+                          {notificationItem.type === "leader_assignment" && (
                             <p className="text-xs text-gray-600">
                               Task: {notificationItem.taskTitle}
                             </p>
-                          )} */}
+                          )}
                           <p className="text-xs text-gray-500">
                             {notificationItem.createdAt}
                           </p>
-                          {/* Accept/Decline Buttons */}
                           {notificationItem.type === "leader_assignment" &&
                             !notificationStatus[notificationItem.notificationId]
-                              ?.isApproved && (
+                              ?.isApproved &&
+                            !notificationStatus[notificationItem.notificationId]
+                              ?.isActive && (
                               <div className="flex gap-2 mt-2">
                                 <button
                                   onClick={() =>
@@ -536,7 +548,6 @@ export default function ModalNotification({ notificationData }) {
                 )}
               </div>
 
-              {/* Footer */}
               <div className="flex justify-between px-6 py-4 border-t border-gray-200">
                 {notifications.length > 3 && (
                   <button
