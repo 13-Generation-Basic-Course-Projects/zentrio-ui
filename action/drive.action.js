@@ -1,6 +1,6 @@
 "use server"
 import { Token } from "@/constant/token"
-import { deleteFileByFileIdService, downloadFileFromDriveService } from "@/service/drive.service";
+import { deleteFileByFileIdService, downloadFileFromDriveService, updateFileNameByFileIdService } from "@/service/drive.service";
 import { revalidatePath } from "next/cache";
 
 export const deleteFileByFileIdAction = async ({fileId, accessToken}) => {
@@ -28,12 +28,12 @@ export const downloadFileFromDriveAction = async ({fileId, accessTokenFromGoogle
     return { blob, fileName }; // Just return data
 }
 
-export const updateFileNameByFileIdAction = async ({fileId, accessTokenFromGoogle, newName}) => {
+export const updateFileNameByFileIdAction = async ({ accessTokenFromGoogle, fileId, newName}) => {
   const userToken = await Token();
   const token = userToken.Credential;
   revalidatePath("/document");
 
-  const updated = await updateFileNameByFileIdAction({fileId, accessTokenFromGoogle, newName, token});
+  const updated = await updateFileNameByFileIdService({ accessTokenFromGoogle, fileId, newName, token});
 
   return updated;
 }

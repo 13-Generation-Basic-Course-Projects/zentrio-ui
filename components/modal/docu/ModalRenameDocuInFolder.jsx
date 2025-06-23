@@ -11,15 +11,15 @@ import {
 import { updateFileNameByFileIdAction } from "@/action/drive.action";
 
 /* rename foc in document */
-export function ModalRenameFileOrFolderInFolder({ fileId, tokenFromGoogle }) {
+export function ModalRenameFileOrFolderInFolder({ tokenFromGoogle, fileId }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [newName, setNewName] = useState("");
 
   const handleSave = async (close) => {
     try {
       await updateFileNameByFileIdAction({
-        fileId,
         tokenFromGoogle,
+        fileId,
         newName,
       });
       close();

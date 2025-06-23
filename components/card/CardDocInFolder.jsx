@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Card, CardHeader, CardBody, CardFooter } from "@heroui/card";
 import {
   IconDelete,
+  IconFolder,
   StackedProfiles,
   StarIconOutline,
   StarIconSolid,
@@ -15,6 +16,7 @@ import { icon } from "../icon/allicon";
 import ModalOptionDocument from "../modal/docu/ModalOptionDocument";
 import Link from "next/link";
 import ModalOptionDocumentInFolder from "../modal/docu/ModalOptionDocumentInFolder";
+import { usePathname } from "next/navigation";
 
 export default function CardFolderInFolder({
   title,
@@ -22,14 +24,30 @@ export default function CardFolderInFolder({
   date,
   link,
   fileId,
+  documentId,
+  folderId,
   isFolder,
   tokenFromGoogle,
-  onClick,
   isHidden,
+  workspaceId,
+  boardId,
 }) {
+  const pathname = usePathname();
+
+  // Check if current path contains 'otherworkspace'
+  const isOtherWorkspace = pathname.includes("/otherworkspace/");
+
+  // Generate href based on current URL context
+  const base = isOtherWorkspace
+    ? `/dashboard/otherworkspace/${boardId}/docu/${folderId}`
+    : `/dashboard/${workspaceId}/${boardId}/docu/${folderId}`;
+
+  const href = pathname.includes(folderId)
+    ? base.replace(folderId, documentId)
+    : base;
+
   return (
     <Card
-      onClick={() => onClick?.(folderId)}
       className="rounded-xl text-blue-400 cursor-pointer hover:bg-blue-50 transition sm:w-[160px] md:w-full h-[160px] shadow-sm "
     >
       {/* Header */}
@@ -40,23 +58,25 @@ export default function CardFolderInFolder({
           ) : (
             <ModalOptionDocumentInFolder
               fileId={fileId}
+              isFolder={isFolder}
               accessToken={tokenFromGoogle}
             />
           )}
         </div>
       </CardHeader>
       <CardBody>
-        {/* <ModalFolderList
-          folderId={fileId}
-          accessToken={tokenFromGoogle}
-          link={link}
-          title={title}
-          isFolder={isFolder}
-        /> */}
+        <Link href={href} className="overflow-hidden">
+          <div className=" flex flex-col items-center overflow-hidden ">
+            <IconFolder />
+          </div>
+        </Link>
       </CardBody>
       {/* Body */}
 
       {/* Footer */}
+      <p className="text-center text-base font-bold text-title/90 truncate w-full px-2">
+        {title}
+      </p>
       <CardFooter className="pt-2 px-4">
         <div className="flex justify-between items-center w-full text-caption-tiny text-title/50">
           <div className="flex items-center space-x-1 justify-center">
@@ -121,14 +141,16 @@ export function CardFileInFolder({
   return (
     <Card className="rounded-xl text-blue-400 cursor-pointer hover:bg-blue-50 transition sm:w-[160px] md:w-full h-[160px] shadow-sm">
       {/* Header */}
-      <CardHeader className={`pb-0 pt-2 px-4 flex justify-end  ${isHidden ? `pt-6`: ``}`}>
+      <CardHeader
+        className={`pb-0 pt-2 px-4 flex justify-end  ${isHidden ? `pt-6` : ``}`}
+      >
         <div className="hover:text-black text-gray-600">
           {isHidden == true ? (
             ""
           ) : (
             <ModalOptionDocumentInFolder
               fileId={fileId}
-              accessToken={tokenFromGoogle}
+                   
             />
           )}
         </div>

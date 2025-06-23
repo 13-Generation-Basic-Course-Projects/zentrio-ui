@@ -10,7 +10,7 @@ import { Autocomplete, AutocompleteItem } from "@heroui/react";
 import { getFileByFolderIdAction } from "@/action/document.action";
 import { SearchIcon } from "lucide-react";
 import ModalCreateDocuInFolder from "../modal/docu/ModalCreateDocuInFolder";
-import CardFolderInFolder from "../card/CardDocInFolder";
+import CardFolderInFolder, { CardFileInFolder } from "../card/CardDocInFolder";
 
 export default function DocumentEachFolder({
   id, // folderId
@@ -24,6 +24,7 @@ export default function DocumentEachFolder({
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(null);
 
   const sortOptions = [
     { key: "asc", label: "A-Z" },
@@ -107,7 +108,23 @@ export default function DocumentEachFolder({
   });
 
   const filteredData = transformedData
-    .filter((doc) => doc.title.toLowerCase().includes(searchTerm.toLowerCase()))
+    .filter((doc) => {
+      const matchesTitle = myFilter(doc.title, searchTerm);
+      const matchesDate = (() => {
+        if (!selectedDate) return true;
+
+        const selected = new Date(selectedDate);
+        const docDate = new Date(doc.date);
+
+        return (
+          selected.getFullYear() === docDate.getFullYear() &&
+          selected.getMonth() === docDate.getMonth() &&
+          selected.getDate() === docDate.getDate()
+        );
+      })();
+
+      return matchesTitle && matchesDate;
+    })
     .sort((a, b) => {
       if (sortOrder === "asc") {
         return a.title.localeCompare(b.title);
@@ -115,6 +132,8 @@ export default function DocumentEachFolder({
         return b.title.localeCompare(a.title);
       }
     });
+
+  const dependId = boardId;
 
   return (
     <div className="h-full flex flex-col">
@@ -137,7 +156,11 @@ export default function DocumentEachFolder({
         <div className="flex items-center justify-between pb-5">
           <div className="flex flex-row items-end gap-4 mb-4">
             <div className="flex-1">
-              <MyDatePicker className="h-12" />
+              <MyDatePicker
+                selectedDate={selectedDate}
+                setSelectedDate={setSelectedDate}
+                className="h-12"
+              />
             </div>
 
             <div className="w-40">
@@ -202,19 +225,20 @@ export default function DocumentEachFolder({
                       .filter((el) => el.category === "Folder")
                       .map((el, i) => (
                         <div key={i}>
-                          <CardFolder
-                            key={i}
+                          <CardFolderInFolder
+                            key={`folder-${i}`}
                             title={el.title}
                             status={el.status}
                             date={el.date}
                             link={el.link}
                             documentId={el.id}
+                            fileId={el.id}
                             folderId={el.folderId}
                             isFolder={el.category === "Folder"}
                             tokenFromGoogle={tokenFromGoogle}
                             isHidden={isHidden}
                             workspaceId={workspaceId}
-                            boardId={boardId}
+                            boardId={dependId}
                           />
                         </div>
                       ))
@@ -239,14 +263,14 @@ export default function DocumentEachFolder({
                     filteredData
                       .filter((el) => el.category === "File")
                       .map((el, i) => (
-                        <CardFile
+                        <CardFileInFolder
                           key={`file-${i}`}
                           title={el.title}
                           status={el.status}
                           date={el.date}
                           type={el.type}
                           link={el.link}
-                          documentId={el?.id}
+                          fileId={el?.id}
                           folderId={el?.folderId}
                           tokenFromGoogle={tokenFromGoogle}
                         />

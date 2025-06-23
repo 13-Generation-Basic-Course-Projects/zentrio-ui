@@ -68,10 +68,10 @@ export const downloadFileFromDriveService = async ({fileId, accessToken, token})
   }
 }
 
-export const updateFileNameByFileIdService = async ({fileId, accessToken, newName, token}) => {
+export const updateFileNameByFileIdService = async ({ accessToken, fileId, newName, token}) => {
   try {
-    const url = driveRouteGroup.updateFileNameByFileId({fileId, accessToken, newName});
-    const res = fetch(url, {
+    const url = driveRouteGroup.updateFileNameByFileId({ accessToken, fileId, newName});
+    const res = await fetch(url, {
       method: "PATCH",
       headers: {
         Authorization: `Bearer ${token}`,
