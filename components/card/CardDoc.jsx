@@ -12,26 +12,28 @@ export default function CardFolder({
   title,
   status,
   date,
-  link,
   documentId,
   folderId,
   isFolder,
   tokenFromGoogle,
-  onClick,
   isHidden,
   workspaceId,
   boardId,
 }) {
   const pathname = usePathname();
-  console.log("error", documentId);
 
   // Check if current path contains 'otherworkspace'
   const isOtherWorkspace = pathname.includes("/otherworkspace/");
 
   // Generate href based on current URL context
-  const href = isOtherWorkspace
+  const base = isOtherWorkspace
     ? `/dashboard/otherworkspace/${boardId}/docu/${folderId}`
     : `/dashboard/${workspaceId}/${boardId}/docu/${folderId}`;
+
+  const href = pathname.includes(folderId)
+    ? base.replace(folderId, documentId)
+    : base;
+
   return (
     <Card
       // onClick={() => onClick?.(folderId)}
@@ -41,9 +43,6 @@ export default function CardFolder({
       <CardHeader
         className={`pb-0 pt-2 px-4 flex justify-end ${isHidden ? `pt-8` : ``} `}
       >
-        {/* {boardId} */}
-        {/* {folderId} */}
-
         <div className="hover:text-black text-gray-600">
           {isHidden == true ? (
             ""
@@ -58,13 +57,6 @@ export default function CardFolder({
         </div>
       </CardHeader>
       <CardBody className="max-h-none h-fit bg-transparent">
-        {/* <ModalFolderList
-          folderId={folderId}
-          accessToken={tokenFromGoogle}
-          link={link}
-          title={title}
-          isFolder={isFolder}
-        /> */}
         <Link href={href} className="overflow-hidden">
           <div className=" flex flex-col items-center overflow-hidden ">
             <IconFolder />

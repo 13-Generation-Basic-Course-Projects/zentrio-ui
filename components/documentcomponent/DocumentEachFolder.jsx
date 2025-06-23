@@ -10,6 +10,7 @@ import { Autocomplete, AutocompleteItem } from "@heroui/react";
 import { getFileByFolderIdAction } from "@/action/document.action";
 import { SearchIcon } from "lucide-react";
 import ModalCreateDocuInFolder from "../modal/docu/ModalCreateDocuInFolder";
+import CardFolderInFolder from "../card/CardDocInFolder";
 
 export default function DocumentEachFolder({
   id, // folderId
@@ -68,6 +69,8 @@ export default function DocumentEachFolder({
       fetchData();
     }
   }, [id, tokenFromGoogle]);
+
+  console.log("dataaaa: ", data);
 
   const transformedData = data.map((doc) => {
     const docType = doc.mimeType || doc.documentType || "";
@@ -198,7 +201,7 @@ export default function DocumentEachFolder({
                     filteredData
                       .filter((el) => el.category === "Folder")
                       .map((el, i) => (
-                        <>
+                        <div key={i}>
                           <CardFolder
                             key={i}
                             title={el.title}
@@ -213,7 +216,7 @@ export default function DocumentEachFolder({
                             workspaceId={workspaceId}
                             boardId={boardId}
                           />
-                        </>
+                        </div>
                       ))
                   ) : (
                     <p className="text-gray-500 col-span-6">No Folders</p>

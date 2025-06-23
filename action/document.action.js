@@ -219,7 +219,6 @@ export const createDriveFileAction = async ({
 export const deleteDocumentAction = async (accessToken, documentId) => {
   const userToken = await Token();
   const token = userToken.Credential;
-  console.log("object1", documentId);
   const document = await deleteDocumentService({
     accessToken,
     documentId,
