@@ -13,7 +13,7 @@ export default function DocumentAutherize({
   workspaceId,
   docIdPage,
 }) {
-  console.log("object boardId", boardId);
+  console.log("object workId", workspaceId);
   return (
     <>
       <DocumentLayout

@@ -21,9 +21,12 @@ export default function CardFolder({
   workspaceId,
   boardId,
 }) {
-  const href = workspaceId
-    ? `/dashboard/${workspaceId}/${boardId}/docu/${folderId}`
-    : `/dashboard/otherworkspace/${workspaceId}/docu/${folderId}`;
+  console.log("error", workspaceId);
+  //http://localhost:3000/dashboard/otherworkspace/15bf8b35-fc6e-49fc-be3e-7730dc76a533/docu/1V52amYOKy_dpbRtk6sJZDsZDhmOMGIF5  if have use   -> documentId
+  const href =
+    workspaceId == null
+      ? `/dashboard/${workspaceId}/${boardId}/docu/${folderId}`
+      : `/dashboard/otherworkspace/${boardId}/docu/${folderId}`;
   return (
     <Card
       // onClick={() => onClick?.(folderId)}
@@ -33,6 +36,7 @@ export default function CardFolder({
       <CardHeader
         className={`pb-0 pt-2 px-4 flex justify-end ${isHidden ? `pt-8` : ``} `}
       >
+        {boardId}
         <div className="hover:text-black text-gray-600">
           {isHidden == true ? (
             ""

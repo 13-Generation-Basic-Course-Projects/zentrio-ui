@@ -5,7 +5,8 @@ import React from "react";
 
 export default async function page({ params }) {
   const { id } = await params;
-  const { boardId, workspaceId } = await params;
+  const { workspaceId } = await params;
+  const boardId = await params?.boardId;
   const userToken = await Token();
   const token = userToken.GoogleDocumentToken;
 
