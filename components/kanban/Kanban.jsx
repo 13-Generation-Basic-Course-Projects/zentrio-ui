@@ -944,7 +944,7 @@ export default function KanbanBoard({
                                             )?.teamLeader?.userId || null
                                           }
                                           role={role}
-                                          checklistImage={checklist.cover} //add new
+                                          imageChecklist={checklist?.cover}
                                         />
                                       </div>
                                     </div>

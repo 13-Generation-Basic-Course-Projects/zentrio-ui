@@ -21,14 +21,16 @@ export const CardCheckList = ({
   finishedAt,
   commentCount,
   leaderId,
+  imageChecklist
 }) => {
   const finishedAtRaw = finishedAt;
   const FormattedFinishDate = finishedAtRaw.split("T")[0];
-
+  console.log("imageChecklist",imageChecklist)
   return (
     <div>
       <Card className="py-4 rounded-xl cursor-pointer hover:bg-blue-50 transition shadow-sm w-full">
         {/* Header */}
+      
         <CardHeader className="pb-0 pt-2 px-4 flex items-start flex-col">
           <div className="flex w-full justify-between items-center">
             <p className="text-h6 font-semibold text-title truncate">{title}</p>
@@ -105,10 +107,10 @@ export const CardCheckList = ({
         </CardHeader>
 
         {/* Body */}
-        {image && (
+        { (
           <CardBody className="overflow-visible py-2">
             <img
-              src={image}
+              src={imageChecklist}
               alt={`Card background for ${title}`}
               className="object-cover rounded-xl w-full h-32"
             />
