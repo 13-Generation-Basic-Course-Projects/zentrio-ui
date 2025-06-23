@@ -249,50 +249,50 @@ export default function ZentrioDrawerCompo() {
                         <span className="text-small text-default-500">
                           Development Team
                         </span>
-                        
+
                         <div className="flex -space-x-4 rtl:space-x-reverse">
                           <Image
-                            className="w-10 h-10 border-2 border-white rounded-full dark:border-gray-800"
+                            className="w-10 h-10 border-2 border-white rounded-full dark:border-gray-800 object-cover"
                             src={fong}
                             alt=""
                           />
                           <Image
-                            className="w-10 h-10 border-2 border-white rounded-full dark:border-gray-800"
+                            className="w-10 h-10 border-2 border-white rounded-full dark:border-gray-800 object-cover"
                             src={fanua}
                             alt=""
                           />
                           <Image
-                            className="w-10 h-10 border-2 border-white rounded-full dark:border-gray-800"
+                            className="w-10 h-10 border-2 border-white rounded-full dark:border-gray-800 object-cover"
                             src={theara}
                             alt=""
                           />
                           <Image
-                            className="w-10 h-10 border-2 border-white rounded-full dark:border-gray-800"
+                            className="w-10 h-10 border-2 border-white rounded-full dark:border-gray-800 object-cover"
                             src={leap}
                             alt=""
                           />
                           <Image
-                            className="w-10 h-10 border-2 border-white rounded-full dark:border-gray-800"
+                            className="w-10 h-10 border-2 border-white rounded-full dark:border-gray-800 object-cover"
                             src={visa}
                             alt=""
                           />
                           <Image
-                            className="w-10 h-10 border-2 border-white rounded-full dark:border-gray-800"
+                            className="w-10 h-10 border-2 border-white rounded-full dark:border-gray-800 object-cover"
                             src={hun}
                             alt=""
                           />
                           <Image
-                            className="w-10 h-10 border-2 border-white rounded-full dark:border-gray-800"
+                            className="w-10 h-10 border-2 border-white rounded-full dark:border-gray-800 object-cover"
                             src={skan}
                             alt=""
                           />
                           <Image
-                            className="w-10 h-10 border-2 border-white rounded-full dark:border-gray-800"
+                            className="w-10 h-10 border-2 border-white rounded-full dark:border-gray-800 object-cover"
                             src={minh}
                             alt=""
                           />
                           <Image
-                            className="w-10 h-10 border-2 border-white rounded-full dark:border-gray-800"
+                            className="w-10 h-10 border-2 border-white rounded-full dark:border-gray-800 object-cover"
                             src={vid}
                             alt=""
                           />
@@ -301,8 +301,8 @@ export default function ZentrioDrawerCompo() {
                     </div>
                     {/* our supporter */}
                     <span className="text-small text-default-500">
-                          Our Support
-                        </span>
+                      Our Sponsers
+                    </span>
                     <div
                       className="slider"
                       style={{
