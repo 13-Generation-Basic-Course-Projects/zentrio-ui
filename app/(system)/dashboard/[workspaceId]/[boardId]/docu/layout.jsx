@@ -23,7 +23,7 @@ export default async function BoardLayout({ children, params }) {
   // const userToken = await Token();
   // const token = userToken.GoogleDocumentToken;
 
-  const tokenFromGoogle = "ya29.a0AW4XtxjmO36PU4vEhXhB6gyXpb_Um9wMecy153P4YRr7lbQaC5zR0qVTHvsNpKsmcSrt9ofkJ4633QrkEglksfLYbUF_YKfQWVpRgULGi4RTN_pa-J-8EQWOCkcjanCB6EkpvRisb_zSI5PcSOOTmXjmwG0Heh9HS42cPFlrygaCgYKARASARcSFQHGX2MiTyWDkwYvZZfQWcsybwPyeA0177";
+  const tokenFromGoogle = "ya29.a0AW4XtxgJAVqf4lekUOSc1yWJfP9rQc_ktHNQF9tm4s_XqW6Jnz1BgH1stHv-plDgNmDUBn2Uisi-SBKe2lP0vdubB_cu5kOjFCCBvcc_GxD52zD6QEti6Iw6jlqi6hZP9DnqlGhYGndYbr0gzP_vE54a5jC-OcT1RoenBPzv2QaCgYKAUwSARcSFQHGX2MitJlyflBYrXfAtuuaFIgGnw0177";
 
   console.log("debug", tokenFromGoogle);
   //pf
