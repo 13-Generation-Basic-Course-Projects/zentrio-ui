@@ -19,6 +19,7 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { inviteMemberSchema } from "@/lib/schemas/invitememberSchema";
 import { inviteMemberToBoardAction } from "@/action/board.action";
+import { Link } from "lucide-react";
 
 export const roles = [
   { key: "team leader", label: "Team Leader" },
@@ -200,7 +201,8 @@ export default function ModalInviteMember({
                         size="sm"
                         radius="md"
                       >
-                        Copy Invite Link
+                        Guest Link
+                        <Link />
                       </Button>
                     </div>
                     {copySuccess && (
