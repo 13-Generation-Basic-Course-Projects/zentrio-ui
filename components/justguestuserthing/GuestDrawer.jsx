@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Drawer,
   DrawerContent,
@@ -6,12 +7,28 @@ import {
   DrawerFooter,
   Button,
   useDisclosure,
-  Image,
   Link,
   Tooltip,
   Avatar,
   AvatarGroup,
 } from "@heroui/react";
+import "./guestdrawer.css";
+
+import Image from "next/image";
+import fong from "@/public/image/fong.png";
+import fanua from "@/public/image/fanau.png";
+import theara from "@/public/image/theara.png";
+import minh from "@/public/image/minh.png";
+import leap from "@/public/image/leap.png";
+import vid from "@/public/image/vit.png";
+import skan from "@/public/image/skan.png";
+import visa from "@/public/image/visa.png";
+import hun from "@/public/image/senghun.png";
+
+import hrd from "@/assets/about-us-image/LogoHRD.jpg";
+import webcash from "@/public/image/webcash.png";
+// import hrd from "@/public/image/hrd-logo.png";
+// import hrd from "@/public/image/hrd-logo.png";
 
 export default function ZentrioDrawerCompo() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -101,7 +118,7 @@ export default function ZentrioDrawerCompo() {
                     <div className="flex gap-3 items-center">
                       <div className="flex-none border-1 border-default-200/50 rounded-small text-center w-11 overflow-hidden">
                         <div className="text-tiny bg-primary-100 py-0.5 text-primary-600">
-                          PM
+                          Roles
                         </div>
                         <div className="flex items-center justify-center font-semibold text-medium h-6 text-primary-600">
                           3
@@ -227,49 +244,65 @@ export default function ZentrioDrawerCompo() {
                     </div>
 
                     {/* Development Team */}
-                    <div className="flex flex-col mt-4 gap-3 items-start">
-                      <span className="text-small text-default-500">
-                        Development Team
-                      </span>
-                      <div className="flex gap-2 items-center">
-                        <AvatarGroup
-                          isBordered
-                          classNames={{
-                            base: "pl-2",
-                            count: "text-default-500 text-tiny bg-default-100",
-                          }}
-                          size="sm"
-                          total={5}
-                        >
-                          <Tooltip content="Project Manager">
-                            <Avatar
-                              className="data-[hover=true]:!translate-x-0"
-                              name="LF"
-                              src=""
-                            />
-                          </Tooltip>
-                          <Tooltip content="Team Leader">
-                            <Avatar
-                              className="data-[hover=true]:!translate-x-0"
-                              name="NF"
-                              src=""
-                            />
-                          </Tooltip>
-                          <Tooltip content="Developer">
-                            <Avatar
-                              className="data-[hover=true]:!translate-x-0"
-                              name="CT"
-                              src=""
-                            />
-                          </Tooltip>
-                          <Tooltip content="Designer">
-                            <Avatar
-                              className="data-[hover=true]:!translate-x-0"
-                              name="SC"
-                              src=""
-                            />
-                          </Tooltip>
-                        </AvatarGroup>
+                    <div className="flex flex-col gap-2 py-4">
+                      <div className="flex flex-col mt-4 gap-3 items-start">
+                        <span className="text-small text-default-500">
+                          Development Team
+                        </span>
+                        <div className="flex gap-2 items-center flex-wrap">
+                          {[
+                            fanua,
+                            fong,
+                            theara,
+                            minh,
+                            leap,
+                            visa,
+                            hun,
+                            skan,
+                            vid,
+                          ].map((member, index) => (
+                            <Tooltip key={index} content="Developer">
+                              <Image
+                                src={member}
+                                alt="Developer"
+                                width={40}
+                                height={40}
+                                className="rounded-full border-2 border-white hover:scale-105 transition-transform object-cover aspect-square"
+                              />
+                            </Tooltip>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                    {/* our supporter */}
+                    <div
+                      className="slider"
+                      style={{
+                        "--width": "100px",
+                        "--high": "100px",
+                        "--quantity": 5,
+                      }}
+                    >
+                      <div className="list">
+                        {[...Array(2)].map((_, i) => (
+                          <React.Fragment key={i}>
+                            <div className="item">
+                              <Image src={hrd} alt="kosign" />
+                            </div>
+                            <div className="item">
+                              <Image src={webcash} alt="webcash" />
+                            </div>
+                            <div className="item">
+                              <Image src={hrd} alt="kb" />
+                            </div>
+                            <div className="item">
+                              <Image src={hrd} alt="wingbank" />
+                            </div>
+                            <div className="item">
+                              <Image src={hrd} alt="ppc bank" />
+                            </div>
+                          </React.Fragment>
+                        ))}
                       </div>
                     </div>
                   </div>
