@@ -189,7 +189,7 @@ export default function DocumentEachFolder({
                   <span className="text-sm text-gray-500">
                     {filteredData?.filter((el) => el.category === "Folder")
                       .length || 0}{" "}
-                    folders
+                    folders {boardId}
                   </span>
                 </div>
                 <div className="grid grid-cols-6 gap-3 pb-4 pr-2 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
@@ -199,9 +199,8 @@ export default function DocumentEachFolder({
                       .filter((el) => el.category === "Folder")
                       .map((el, i) => (
                         <>
-                          {el.id}
                           <CardFolder
-                            key={`folder-${i}`}
+                            key={i}
                             title={el.title}
                             status={el.status}
                             date={el.date}

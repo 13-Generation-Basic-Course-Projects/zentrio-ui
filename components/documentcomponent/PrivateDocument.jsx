@@ -84,6 +84,8 @@ export default function Privatedocument({
     });
 
   console.log("boardId private", boardId);
+  console.log("skan id ", boardId);
+  const dependId = boardId;
   return (
     <div className="h-screen flex flex-col">
       <div className="grid grid-cols-1 gap-3">
@@ -169,7 +171,7 @@ export default function Privatedocument({
                     tokenFromGoogle={tokenFromGoogle}
                     isHidden={isHidden}
                     workspaceId={workspaceId}
-                    boardId={boardId}
+                    boardId={dependId}
                   />
                 ))
             ) : (

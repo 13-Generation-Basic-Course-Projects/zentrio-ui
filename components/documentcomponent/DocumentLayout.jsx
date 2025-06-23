@@ -161,6 +161,7 @@ export default function DocumentLayout({
                 tokenFromGoogle={tokenFromGoogle}
                 isHidden={false}
                 boardId={boardId}
+                workspaceId={workspaceId}
               />
             )}
             {activeTab === "public" && (
@@ -169,6 +170,7 @@ export default function DocumentLayout({
                 modal={[]}
                 isHidden={true}
                 boardId={boardId}
+                workspaceId={workspaceId}
               />
             )}
             {/* {activeTab === null && (

@@ -6,6 +6,7 @@ import Image from "next/image";
 import ModalOptionDocument from "../modal/docu/ModalOptionDocument";
 import Link from "next/link";
 import { IconFolder } from "../icon/everyicon";
+import { usePathname } from "next/navigation";
 
 export default function CardFolder({
   title,
@@ -21,9 +22,16 @@ export default function CardFolder({
   workspaceId,
   boardId,
 }) {
-  const href = workspaceId
-    ? `/dashboard/${workspaceId}/${boardId}/docu/${folderId}`
-    : `/dashboard/otherworkspace/${workspaceId}/docu/${folderId}`;
+  const pathname = usePathname();
+  console.log("error", workspaceId);
+
+  // Check if current path contains 'otherworkspace'
+  const isOtherWorkspace = pathname.includes("/otherworkspace/");
+
+  // Generate href based on current URL context
+  const href = isOtherWorkspace
+    ? `/dashboard/otherworkspace/${boardId}/docu/${folderId}`
+    : `/dashboard/${workspaceId}/${boardId}/docu/${folderId}`;
   return (
     <Card
       // onClick={() => onClick?.(folderId)}
@@ -33,6 +41,7 @@ export default function CardFolder({
       <CardHeader
         className={`pb-0 pt-2 px-4 flex justify-end ${isHidden ? `pt-8` : ``} `}
       >
+        {boardId}
         <div className="hover:text-black text-gray-600">
           {isHidden == true ? (
             ""
