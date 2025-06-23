@@ -18,6 +18,7 @@ import { getMemberByBoardIdAction } from "@/action/board.action";
 export default function CardBoard({
   title,
   image,
+  images,
   role,
   deleteBoardAction,
   boardId,
@@ -158,7 +159,7 @@ export default function CardBoard({
       </CardHeader>
 
       {/* Card Body: background image or placeholder */}
-      <CardBody className="overflow-visible py-2">
+      <CardBody className="overflow-visible py-2 ">
         <Link href={`/dashboard/${workspaceId}/${boardId}/board`}>
           {image && image.startsWith("bg-") ? (
             <div
@@ -167,8 +168,8 @@ export default function CardBoard({
             />
           ) : image ? (
             <img
-              src={image}
-              alt={image || "Board cover image"}
+              src={images}
+              alt={images || "Board cover image"}
               className="w-full h-32 object-cover rounded-xl"
             />
           ) : (

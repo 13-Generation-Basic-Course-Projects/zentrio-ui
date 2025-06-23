@@ -309,6 +309,7 @@ export const uploadImageBoardAction = async ({ boardId, image }) => {
     image,
     token,
   });
+  revalidatePath("/workspaces");
   return result;
 };
 

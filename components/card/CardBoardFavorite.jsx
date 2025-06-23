@@ -18,6 +18,7 @@ import { StackedUser } from "../useravatar/StackUser";
 export default function CardBoardFavorite({
   title,
   image,
+  imageCover,
   boardId,
   // workspaceId,
   isFavourite,
@@ -38,6 +39,8 @@ export default function CardBoardFavorite({
 
   const [favorited, setFavorited] = useState(isFavourite);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+
+  console.log("Image in fav card board: ", imageCover);
 
   return (
     <Card className="py-4 h-[340px] rounded-xl shadow-sm">
@@ -86,17 +89,13 @@ export default function CardBoardFavorite({
               className={`rounded-xl w-full h-32 bg-cover bg-center ${image}`}
               aria-label={`Card background for ${title}`}
             />
-          ) : image ? (
+          ) :  (
             <img
-              src={image}
-              alt={`Card background for ${title}`}
+              src={imageCover}
+              alt={`Card background for ${imageCover}`}
               className="object-cover rounded-xl w-full h-32"
             />
-          ) : (
-            <div
-              className="rounded-xl w-full h-32 bg-gray-200"
-              aria-label={`No image available for ${title}`}
-            />
+        
           )}
         </Link>
       </CardBody>

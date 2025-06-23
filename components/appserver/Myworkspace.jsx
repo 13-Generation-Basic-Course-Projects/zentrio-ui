@@ -119,10 +119,10 @@ export default function Myworkspace({
                       if (matchedColor) {
                         image = matchedColor.className; // e.g., "bg-board-red"
                       } else if (
-                        board.cover?.startsWith("http") ||
-                        board.cover?.startsWith("data:")
+                        board.image?.startsWith("http") ||
+                        board.image?.startsWith("data:")
                       ) {
-                        image = board.cover; // External URL or data URI
+                        image = board.image; // External URL or data URI
                       
                       } else {
                         image = "bg-gray-200"; 
@@ -140,6 +140,7 @@ export default function Myworkspace({
                           boardId={board?.boardId}
                           title={board?.title}
                           image={image}
+                          images = {board?.image}
                           isFavourite={board?.isFavourite}
                           deleteBoardAction={deleteBoardAction}
                           updateNameBoardAction={updateNameBoardAction}

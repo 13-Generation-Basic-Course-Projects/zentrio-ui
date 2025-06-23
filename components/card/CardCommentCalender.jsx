@@ -10,10 +10,11 @@ import Image from "next/image";
 import commentlogo from "../../assets/Comment.png";
 import profile from "../../public/image/minh.png";
 import { SquarePen, AlarmClock, Trash2 } from "lucide-react";
-import { calendarUpdateNoteAction } from "@/action/calendar.action";
+// import { calendarUpdateNoteAction } from "@/action/calendar.action";
 import {
   deleteNoteInCalendarAction,
   getAllNoteInCalendarAction,
+  updateNoteInCalendarAction,
 } from "@/action/calendarV2.action";
 import ModalDelete from "../modal/ModalDelete";
 
@@ -121,9 +122,10 @@ export default function CardTCommentCalender({
         return;
       }
 
+      //this action have been updated
       try {
-        const result = await calendarUpdateNoteAction({
-          noteId: noteData.calendarId,
+        const result = await updateNoteInCalendarAction({
+          calendarId: noteData.calendarId,
           noted: editingNoteText,
           startDate: noteData.notedAt,
           tillDate: noteData.tillDate,
