@@ -51,6 +51,7 @@ export default function MyFavoriteBoard({
                     updateFavAction={updateFavAction}
                     role="pm"
                     memberData={memberData}
+                    isFavBoardDelete={true}
                   />
                 );
               })
