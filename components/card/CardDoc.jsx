@@ -6,6 +6,7 @@ import Image from "next/image";
 import ModalOptionDocument from "../modal/docu/ModalOptionDocument";
 import Link from "next/link";
 import { IconFolder } from "../icon/everyicon";
+import { usePathname } from "next/navigation";
 
 export default function CardFolder({
   title,
@@ -21,12 +22,16 @@ export default function CardFolder({
   workspaceId,
   boardId,
 }) {
+  const pathname = usePathname();
   console.log("error", workspaceId);
-  //http://localhost:3000/dashboard/otherworkspace/15bf8b35-fc6e-49fc-be3e-7730dc76a533/docu/1V52amYOKy_dpbRtk6sJZDsZDhmOMGIF5  if have use   -> documentId
-  const href =
-    workspaceId == null
-      ? `/dashboard/${workspaceId}/${boardId}/docu/${folderId}`
-      : `/dashboard/otherworkspace/${boardId}/docu/${folderId}`;
+
+  // Check if current path contains 'otherworkspace'
+  const isOtherWorkspace = pathname.includes("/otherworkspace/");
+
+  // Generate href based on current URL context
+  const href = isOtherWorkspace
+    ? `/dashboard/otherworkspace/${boardId}/docu/${folderId}`
+    : `/dashboard/${workspaceId}/${boardId}/docu/${folderId}`;
   return (
     <Card
       // onClick={() => onClick?.(folderId)}
