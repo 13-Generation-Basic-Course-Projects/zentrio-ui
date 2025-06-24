@@ -12,7 +12,10 @@ const nextConfig = {
   // serverActions: {
   //   bodySizeLimit: '3mb', // Increase limit to 10MB
   // },
-
+  experimental: {
+    optimizePackageImports: true,
+  },
+  swcMinify: true,
   output: "standalone",
 };
 

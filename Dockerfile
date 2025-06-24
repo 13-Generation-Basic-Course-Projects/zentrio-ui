@@ -8,6 +8,8 @@ COPY .env* ./
 COPY package*.json ./
 RUN npm install
 COPY . .
+# Set memory limit for build
+ENV NODE_OPTIONS="--max-old-space-size=2048"
 RUN npm run build
 
 FROM node:22.12.0-bullseye-slim AS runner
