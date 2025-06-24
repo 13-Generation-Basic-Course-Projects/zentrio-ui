@@ -15,7 +15,6 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: true,
   },
-  swcMinify: true,
   output: "standalone",
 };
 
