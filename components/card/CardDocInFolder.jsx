@@ -59,6 +59,7 @@ export default function CardFolderInFolder({
             <ModalOptionDocumentInFolder
               fileId={fileId}
               isFolder={isFolder}
+              folderName={title}
               accessToken={tokenFromGoogle}
             />
           )}
@@ -150,7 +151,7 @@ export function CardFileInFolder({
           ) : (
             <ModalOptionDocumentInFolder
               fileId={fileId}
-                   
+              accessToken={tokenFromGoogle}     
             />
           )}
         </div>

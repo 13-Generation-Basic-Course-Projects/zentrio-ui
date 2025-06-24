@@ -166,14 +166,19 @@ const PrivateIcon = (props) => (
 export default function ModalOptionDocument({
   documentId,
   fileId,
-
+  folderName,
   accessToken,
   isFolder,
   status,
 }) {
   const [isDownloading, setIsDownloading] = useState(false);
   const [isDownloadingZip, setIsDownloadingZip] = useState(false);
-  const [showUsers, setShowUsers] = useState(false);
+
+  const cleanFolderName = (name) => {
+    if (!name) return "folder";
+    return name.replace(/[^a-zA-Z0-9-_ ]/g, "").replace(/\s+/g, "_");
+  };
+
   const handleDownload = async () => {
     try {
       setIsDownloading(true);
@@ -200,31 +205,39 @@ export default function ModalOptionDocument({
   };
 
   const handleDownloadAsZip = async () => {
-    try {
-      setIsDownloadingZip(true);
-      const { status, blob, filename } = await downloadAllFilesAsZipAction(
-        documentId,
-        accessToken
-      );
-      if (status !== 200 || !blob || !filename) {
-        throw new Error(`Download failed with status: ${status}`);
-      }
+      try {
+        setIsDownloadingZip(true);
+  
+        const { blob, filename } = await downloadAllFilesAsZipAction(
+          {documentId,
+          accessToken,}
+        );
 
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      window.URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error("Download ZIP failed:", error);
-      // Optionally show user error notification
-    } finally {
-      setIsDownloadingZip(false);
-    }
-  };
+        console.log("documentId: ", documentId);
+        console.log("accessToken: ", accessToken);
+  
+        if (!blob || !(blob instanceof Blob)) {
+          console.error("No ZIP file to download.");
+          return;
+        }
+  
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+  
+        // Use the backend filename if available, else use sanitized folderName.zip
+        a.download = filename || `${cleanFolderName(folderName)}.zip`;
+  
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+      } catch (error) {
+        console.error("Download ZIP failed:", error);
+      } finally {
+        setIsDownloadingZip(false);
+      }
+    };
 
   const handlePublic = async () => {
     try {

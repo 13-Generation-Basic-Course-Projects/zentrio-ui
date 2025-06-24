@@ -83,8 +83,6 @@ export default function Privatedocument({
       }
     });
 
-  console.log("boardId private", boardId);
-  console.log("skan id ", boardId);
   const dependId = boardId;
   return (
     <div className="h-screen flex flex-col">

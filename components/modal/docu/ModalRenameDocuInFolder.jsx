@@ -58,7 +58,6 @@ export function ModalRenameFileOrFolderInFolder({ tokenFromGoogle, fileId }) {
                       value={newName}
                       onChange={(e) => {
                         setNewName(e.target.value);
-                        console.log("Input changed to:", e.target.value);
                       }}
                     />
                   </div>

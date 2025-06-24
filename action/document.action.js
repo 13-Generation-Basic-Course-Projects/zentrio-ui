@@ -77,28 +77,20 @@ export const downloadDocumentByDocumentIdAction = async (
 
 // Download as zip action
 export const downloadAllFilesAsZipAction = async (
-  documentId,
-  accessTokenFromGoogle
+  {documentId,
+  accessToken}
 ) => {
   const userToken = await Token();
   const token = userToken.Credential;
 
-  const { status, blob, filename } = await downloadAllFilesAsZipService({
+  const { blob, filename } = await downloadAllFilesAsZipService({
     documentId,
-    accessToken: accessTokenFromGoogle,
+    accessToken,
     token,
   });
 
-  console.log(
-    "document id:",
-    documentId,
-    accessTokenFromGoogle,
-    token,
-    "Status:",
-    status
-  );
   revalidatePath("/docu");
-  return { status, blob, filename };
+  return { blob, filename };
 };
 
 // Create

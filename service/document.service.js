@@ -190,41 +190,41 @@ export const downloadAllFilesAsZipService = async ({
   token,
 }) => {
   try {
-    const url = documentRouteGroup.downloadAllFilesAsZip(
-      documentId,
-      accessToken
-    );
-    console.log("Calling backend with:", { url, token });
-
+    const url = documentRouteGroup.downloadAllFilesAsZip({ documentId, accessToken });
+    console.log("url: ", url)
     const res = await fetch(url, {
       method: "GET",
       headers: {
-        Authorization: `Bearer ${token}`,
         Accept: "*/*",
+        Authorization: `Bearer ${token}`,
       },
     });
 
     if (res.status === 404) {
-      return { status: 404, blob: null, filename: null }; // Return null for blob and filename
+      return { status: 404, blob: null, fileName: null };
     }
 
     if (!res.ok) {
-      throw new Error(
-        `Failed to download ZIP file: ${res.status} ${res.statusText}`
-      );
+      throw new Error(`Failed to download file: ${res.status}`);
     }
 
     const blob = await res.blob();
     const contentDisposition = res.headers.get("Content-Disposition");
-    const filenameMatch = contentDisposition?.match(/filename="(.+?)"/);
-    const filename = filenameMatch
-      ? filenameMatch[1]
-      : `folder-${documentId}.zip`;
+    let fileName = "document";
 
-    return { status: 200, blob, filename };
+    if (contentDisposition && contentDisposition.includes("filename=")) {
+      const match = contentDisposition.match(
+        /filename[^;=\n]*=(['"]?)([^'"\n]*)\1?/
+      );
+      if (match && match.length >= 3) {
+        fileName = decodeURIComponent(match[2]);
+      }
+    }
+
+    return { status: 200, blob, fileName };
   } catch (error) {
-    console.error("Error in downloadAllFilesAsZipService:", error.message);
-    return { status: error.status || 500, blob: null, filename: null }; // Fallback for other errors
+    console.error("Error in downloadAllFilesAsZip:", error.message);
+    return { status: error.status || 500, message: error.message };
   }
 };
 
@@ -483,26 +483,32 @@ export const publicDocumentByIdService = async (
 };
 
 /*
-* Private document by document id
-*/
-export const privateDocumentByIdService = async (documentId, token, tokenFromGoogle) => {
+ * Private document by document id
+ */
+export const privateDocumentByIdService = async (
+  documentId,
+  token,
+  tokenFromGoogle
+) => {
   try {
-    const url = documentRouteGroup.makeDocumentPrivate(documentId, tokenFromGoogle);
+    const url = documentRouteGroup.makeDocumentPrivate(
+      documentId,
+      tokenFromGoogle
+    );
     const res = await fetch(url, {
       method: "PUT",
       headers: {
         Accept: "*/*",
         Authorization: `Bearer ${token}`,
-      }
+      },
     });
 
     return await res.json();
-
   } catch (error) {
     console.error("Error in privateDocumentByIdService: ", error.message);
     throw error;
   }
-}
+};
 
 /* new add
  * get all document by board id

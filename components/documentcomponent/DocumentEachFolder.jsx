@@ -71,8 +71,6 @@ export default function DocumentEachFolder({
     }
   }, [id, tokenFromGoogle]);
 
-  console.log("dataaaa: ", data);
-
   const transformedData = data.map((doc) => {
     const docType = doc.mimeType || doc.documentType || "";
     const isGoogleDoc =
@@ -203,7 +201,7 @@ export default function DocumentEachFolder({
 
         <div className="w-full max-h-screen overflow-y-auto scrollbar-hidden pb-[300px] px-5 pt-10">
           {loading ? (
-            <p className="text-gray-500 col-span-6">Loading...</p>
+            <span className="loader"></span>
           ) : error ? (
             <p className="text-red-500 col-span-6">{error}</p>
           ) : (

@@ -68,29 +68,39 @@ export const downloadFileFromDriveService = async ({fileId, accessToken, token})
   }
 }
 
-export const updateFileNameByFileIdService = async ({ accessToken, fileId, newName, token}) => {
+export const updateFileNameByFileIdService = async ({
+  accessToken,
+  fileId,
+  newName,
+  token,
+}) => {
   try {
-    const url = driveRouteGroup.updateFileNameByFileId({ accessToken, fileId, newName});
+    const url = driveRouteGroup.updateFileNameByFileId({
+      accessToken,
+      fileId,
+      newName,
+    });
+
+    console.log("url: ", url);
+
     const res = await fetch(url, {
       method: "PATCH",
       headers: {
         Authorization: `Bearer ${token}`,
         Accept: "*/*",
-      }
-    })
+      },
+    });
 
-    if (!res.ok){
-      const errorData = await res.json().catch(() => null);
-      throw new Error(
-        `Failed to update file name: ${res.status} ${
-          errorData?.message || ""
-        }`
-      );
+    if (!res.ok) {
+      const errorText = await res.text();
+      console.error("❌ Backend failed:", res.status, errorText);
+      throw new Error(`Failed to update file name. Status: ${res.status}`);
     }
 
-    return (await res).json();
+    const json = await res.json();
+    return json;
   } catch (error) {
-    console.error("Error in updateFileNameByFileIdSevice:", error);
+    console.error("❌ updateFileNameByFileIdService error:", error.message);
     throw error;
   }
-}
+};

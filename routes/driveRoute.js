@@ -6,5 +6,5 @@ export const driveRouteGroup = {
   downloadFileFromDrive: ({fileId, accessToken}) =>
     `${apiConfig.baseUrl}/files/${fileId}/download?accessToken=${accessToken}`,
   updateFileNameByFileId: ({ accessToken, fileId, newName }) =>
-  `${apiConfig.baseUrl}/api/v1/files/rename?accessToken=${accessToken}&fileId=${fileId}&newName=${newName}`
+  `${apiConfig.baseUrl}/files/rename?accessToken=${accessToken}&fileId=${fileId}&newName=${encodeURIComponent(newName)}`
 };
