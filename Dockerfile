@@ -1,36 +1,32 @@
-# Use the same base image for both stages to reduce layer differences
-FROM node:22.12.0-bullseye-slim AS builder
-
-# Set the working directory
+# Builder stage
+FROM node:20-bullseye-slim AS builder
 WORKDIR /app
 
-# Copy package files first (for better caching)
-COPY package*.json ./
+# Copy package files
+COPY package.json package-lock.json* ./
 
-# Install dependencies with optimization flags
-RUN npm ci --only=production --no-audit --no-fund --prefer-offline
-
-# Copy the rest of the application files
+# Install dependencies with modern flags
+RUN npm install --omit=dev --no-audit --no-fund
+# Note: Removed --prefer-offline to ensure dependencies are fetched if needed
+# Copy application files
 COPY . .
 
-# Set Node.js memory limit and build
-ENV NODE_OPTIONS="--max-old-space-size=4096"
+# Set conservative memory limit for build
+ENV NODE_OPTIONS="--max-old-space-size=512"
 RUN npm run build
 
-# Production runner stage
-FROM node:22.12.0-bullseye-slim AS runner
-
-# Set working directory
+# Runner stage
+FROM node:20-bullseye-slim AS runner
 WORKDIR /app
 
 # Set production environment
 ENV NODE_ENV=production
 
-# Create non-root user for security
+# Create non-root user
 RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs
 
-# Copy built application from builder stage
+# Copy built artifacts
 COPY --from=builder /app/next.config.js ./
 COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
@@ -39,11 +35,9 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 # Switch to non-root user
 USER nextjs
 
-# Expose the Next.js default port
+# Expose port
 EXPOSE 3000
-
-# Set port environment variable
 ENV PORT=3000
 
-# Start the Next.js app
+# Start app
 CMD ["node", "server.js"]
