@@ -20,7 +20,7 @@ import {
 import { parseDate } from "@internationalized/date";
 import { IconAdd, StackedProfileChecklist } from "../../icon/everyicon";
 import ModalUploadAttachment from "./ModalUploadAttachment";
-import { CardCheckList } from "@/components/card/CardCheckList";
+import { CardCheckList } from "@/components/card/CardChecklist";
 import Trash from "@/components/button/Trash";
 import PopupAction from "@/components/popup/PopupAction";
 import { IconpopupDelete } from "@/components/icon/Iconpopup";
