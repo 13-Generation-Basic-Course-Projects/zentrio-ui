@@ -1,47 +1,27 @@
-# 1. Use official Node.js image as the base
-FROM node:18-alpine AS builder
+FROM node:22.12.0 AS builder
 
-# 2. Set working directory
+# Set the working directory
 WORKDIR /app
 
-# 3. Copy package.json and package-lock.json
 COPY package*.json ./
 
-# 4. Install dependencies
-RUN npm ci
+# Install production dependencies
+RUN npm install
 
-# 5. Copy the rest of the application code
+# Copy the rest of the application files
 COPY . .
 
-# 6. Build the Next.js app
+# Build the application
 RUN npm run build
 
-# 7. Use a smaller image for the final stage
-FROM node:18-alpine AS runner
+FROM node:22.12.0-bullseye-slim AS runner
 
-WORKDIR /app
+COPY --from=builder /app/.next/standalone ./standalone
+COPY --from=builder /app/public ./standalone/public
+COPY --from=builder /app/.next/static ./standalone/.next/static
 
-# 8. Copy only necessary files from builder
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/next.config.mjs ./
-COPY --from=builder /app/app ./app
-COPY --from=builder /app/components ./components
-COPY --from=builder /app/assets ./assets
-COPY --from=builder /app/constant ./constant
-COPY --from=builder /app/context ./context
-COPY --from=builder /app/data ./data
-COPY --from=builder /app/hooks ./hooks
-COPY --from=builder /app/lib ./lib
-COPY --from=builder /app/routes ./routes
-COPY --from=builder /app/service ./service
-COPY --from=builder /app/styles ./styles
-COPY --from=builder /app/utils ./utils
-
-# 9. Expose port (default for Next.js)
+# Expose the Next.js default port
 EXPOSE 3000
 
-# 10. Start the Next.js app
-CMD ["npm", "start"]
+# Start the Next.js app
+CMD ["node", "./standalone/server.js"]
