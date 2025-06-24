@@ -80,7 +80,6 @@ export default function OtherBoardsOther({ currentUserProfile }) {
     <div className="rounded-xl shadow bg-white  flex flex-col">
       <div className="flex justify-between px-4 border-b-1 border-stroke">
         <h3 className="text-body font-semibold">Other Boards</h3>
-        <IconEllipsisVertical strokeWidth={2} color={"currentColor"} size={6} />
       </div>
       <div className="grid grid-cols-2 text-body-sm font-semibold text-description bg-gray-100 p-4">
         <span>Board Name</span>

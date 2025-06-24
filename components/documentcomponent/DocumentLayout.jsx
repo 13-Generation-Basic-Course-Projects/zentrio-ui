@@ -144,7 +144,7 @@ export default function DocumentLayout({
         </header>
       </div>
       {/* Tab Content Area */}
-      {tokenFromGoogle === null ? (
+      {tokenFromGoogle != null ? (
         <WelcomePage workspaceId={workspaceId} />
       ) : (
         <main className="p-4 min-h-screen">

@@ -163,12 +163,12 @@ export default function Reportpage({ modal, report }) {
               {}
               {}
 
-              <div className="mt-10">
+              <div className="mt-5 border-1 rounded-medium pl-8 pr-16 pb-8">
                 <VerticalChartNoSSR report={report} />
               </div>
 
               {}
-              <div className="mt-10">
+              <div className="mt-5">
                 <HorizontalChart
                   amtChklistTodo={cheklist.inTodo}
                   amtChklistProgress={cheklist.inProgress}
@@ -183,8 +183,8 @@ export default function Reportpage({ modal, report }) {
           <div className="md:col-span-4 space-y-10 md:h-screen flex flex-col ">
             <div className=" flex flex-col  gap-2 overflow-y-auto scrollbar-hidden pb-[250px]">
               {}
-              <div className="border-1 rounded-medium bg-[#FFFFFF] shadow-small p-4 flex flex-col ">
-                <h1 className="text-left py-5 text-h6 text-title/50">
+              <div className="border-1 rounded-medium bg-[#FFFFFF] px-4 pb-4 flex flex-col ">
+                <h1 className="text-left pb-5 pt-4 text-h6 text-title/50">
                   Amount of Members
                 </h1>
                 <p className="border border-title/10 w-full my-2"></p>
@@ -233,7 +233,7 @@ export default function Reportpage({ modal, report }) {
               </div>
 
               {}
-              <div className="border-1 rounded-medium bg-[#FFFFFF] shadow-small p-4 flex flex-col h-[300px] ">
+              <div className="border-1 rounded-medium bg-[#FFFFFF] p-4 flex flex-col h-[300px] mt-3">
                 <h1 className="flex items-center gap-2 text-h6 text-title font-semibold py-5">
                   <span className="inline-block w-5 h-5">
                     <svg
