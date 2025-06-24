@@ -45,5 +45,8 @@ EXPOSE 3000
 # Set port environment variable
 ENV PORT=3000
 
+# Environment variables will be passed at runtime
+# Do NOT set secrets here - they'll be visible in the image
+
 # Start the Next.js app
 CMD ["node", "server.js"]
