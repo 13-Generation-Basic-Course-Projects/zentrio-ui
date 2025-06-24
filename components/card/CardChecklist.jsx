@@ -118,7 +118,7 @@ export const CardCheckList = ({
         {/* Footer */}
         <div className="flex justify-between items-center p-4">
           {/* nh test sent nh ot torn map data tee */}
-          <div className=" p-2 bg-orange-500 text-white rounded-full ">
+          <div className=" p-2 bg-orange-500 text-white rounded-xl ">
             Feedback
           </div>
           <StackedProfileChecklist member={member} hidden={1} />
