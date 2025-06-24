@@ -890,7 +890,10 @@ const ModalDetailChecklist = ({
       fileInputRef.current.click();
     }
   };
-  const displayImage = imageChecklist ? imageChecklist : previewImage;
+
+  const displayImage = imageChecklist
+    ? imageChecklist
+    : "https://media.sproutsocial.com/uploads/2024/01/facebook-cover-image.svg";
   return (
     <div>
       {role == "ROLE_MEMBER" || role == "ROLE_MANAGER" ? (

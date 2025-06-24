@@ -25,7 +25,7 @@ export const CardCheckList = ({
 }) => {
   const finishedAtRaw = finishedAt;
   const FormattedFinishDate = finishedAtRaw.split("T")[0];
-  console.log("imageChecklist", imageChecklist);
+  console.log("imageChecklist", member);
   return (
     <div className="">
       <Card className="py-4 rounded-xl cursor-pointer hover:bg-blue-50 transition shadow-sm w-full">
