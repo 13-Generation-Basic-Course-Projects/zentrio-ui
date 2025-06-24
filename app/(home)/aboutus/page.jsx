@@ -26,7 +26,7 @@ import arrowdown from "@/public/image/arrow-down.png";
 import arrowright from "@/public/image/arrow-right.png";
 import "@/styles/box.css";
 
-import LogoHRD from "@/assets/about-us-image/logohrd.jpg";
+import LogoHRD from "@/public/LogoHRD.jpg";
 import TeacherAtHRD from "@/assets/about-us-image/TeacherAtHRD.jpg";
 import TeacherDara from "@/assets/about-us-image/TeacherDara.jpg";
 import TeacherNak from "@/assets/about-us-image/TeacherNak.jpg";

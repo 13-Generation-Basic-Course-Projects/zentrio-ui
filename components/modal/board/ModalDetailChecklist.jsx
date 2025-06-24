@@ -20,7 +20,7 @@ import {
 import { parseDate } from "@internationalized/date";
 import { IconAdd, StackedProfileChecklist } from "../../icon/everyicon";
 import ModalUploadAttachment from "./ModalUploadAttachment";
-import { CardCheckList } from "@/components/card/CardCheckList";
+
 import Trash from "@/components/button/Trash";
 import PopupAction from "@/components/popup/PopupAction";
 import { IconpopupDelete } from "@/components/icon/Iconpopup";
@@ -39,6 +39,7 @@ import { getAttactmentAction } from "@/action/document.action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { CameraIcon } from "lucide-react";
+import { CardCheckList } from "@/components/card/CardChecklist";
 
 const initialState = {
   activeTab: "add",

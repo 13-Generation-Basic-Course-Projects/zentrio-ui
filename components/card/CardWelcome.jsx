@@ -16,7 +16,7 @@ import ClockWeather from "../announcementCompo/ClockWheather";
 import clearday from "@/assets/weathericon/clear-day.png";
 import clearnight from "@/assets/weathericon/clear-night.png";
 import cloudy from "@/assets/weathericon/cloudy.png";
-import overcast from "@/assets/weathericon/Overcast.png";
+import overcast from "@/assets/weathericon/overcast.png";
 import heavyrain from "@/assets/weathericon/heavy-showers.png";
 import thunderstorm from "@/assets/weathericon/thunderstorm-showers.png";
 import cloudyday from "@/assets/weathericon/partly-cloudy-day.png";
@@ -114,35 +114,34 @@ function getCustomWeatherIcon(condition, hour) {
   }
 }
 
-
 export default function TeamCardWelcome() {
   const swapy = useRef(null);
   const container = useRef(null);
   const [time, setTime] = useState(new Date());
-    const [weather, setWeather] = useState(null);
-  
-    useEffect(() => {
-      const interval = setInterval(() => setTime(new Date()), 1000);
-      return () => clearInterval(interval);
-    }, []);
-  
-    useEffect(() => {
-      const apiKey = "247a59dc9dfeb4159eb6e357fc7d0e41"; // replace with your API key
-      const city = "Phnom Penh";
-  
-      fetch(
-        `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`
-      )
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.cod !== 200) {
-            console.error("Weather API error:", data.message);
-            return;
-          }
-          setWeather(data);
-        })
-        .catch((err) => console.error("Weather fetch error:", err));
-    }, []);
+  const [weather, setWeather] = useState(null);
+
+  useEffect(() => {
+    const interval = setInterval(() => setTime(new Date()), 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const apiKey = "247a59dc9dfeb4159eb6e357fc7d0e41"; // replace with your API key
+    const city = "Phnom Penh";
+
+    fetch(
+      `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.cod !== 200) {
+          console.error("Weather API error:", data.message);
+          return;
+        }
+        setWeather(data);
+      })
+      .catch((err) => console.error("Weather fetch error:", err));
+  }, []);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -219,8 +218,8 @@ export default function TeamCardWelcome() {
       ref={container}
       className="grid grid-cols-4 grid-rows-2 gap-4 p-4 mt-2"
     >
-      <div  className="rounded-large col-span-3">
-        <div  className="rounded-large h-44">
+      <div className="rounded-large col-span-3">
+        <div className="rounded-large h-44">
           {/* Weather Card */}
           <div
             className={`col-span-2 row-span-2 bg-gradient-to-br ${weatherGradient} rounded-2xl p-4 text-white flex flex-col justify-between shadow-lg transition-all duration-500`}
@@ -273,7 +272,7 @@ export default function TeamCardWelcome() {
 
       <div data-swapy-slot="d" className="rounded-large col-span-3">
         <div data-swapy-item="d" className="rounded-large h-44">
-          <FourStageWorkflow/>
+          <FourStageWorkflow />
         </div>
       </div>
     </div>
