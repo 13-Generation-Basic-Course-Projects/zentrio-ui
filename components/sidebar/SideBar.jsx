@@ -58,7 +58,6 @@ export default function DashboardSidebar({ getWorKSpaceJoined }) {
       }
     }
   }, [pathname, searchParams]);
-
   const pathSegments = pathname.split("/").filter((part) => part !== "");
   const workspaceId = pathSegments[1] || "1"; // Adjusted for correct segment
   const projectId = pathSegments[2] || "1"; // Adjusted for correct segment

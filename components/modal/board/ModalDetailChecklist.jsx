@@ -35,7 +35,7 @@ import {
 } from "@/action/board.action";
 import PostCommentChecklist from "./PostCommentChecklist";
 import CommentChecklistSec from "./CommentChecklistSec";
-import { getAttachmentAction } from "@/action/document.action";
+import { getAttactmentAction } from "@/action/document.action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { CameraIcon } from "lucide-react";
@@ -98,7 +98,7 @@ const useChecklistData = (checklistId, isOpen) => {
     dispatch({ type: "SET_ATTENDMENT_ERROR", payload: null });
     dispatch({ type: "SET_ATTENDMENTS", payload: [] });
     try {
-      const result = await getAttachmentAction(checklistId);
+      const result = await getAttactmentAction(checklistId);
       if (result.success) {
         dispatch({ type: "SET_ATTENDMENTS", payload: [result.payload] });
       } else {

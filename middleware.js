@@ -27,7 +27,11 @@ export async function middleware(req) {
   }
 
   // If user is not authenticated, redirect to login for protected routes
-  if (pathname.startsWith("/workspace") || pathname.startsWith("/dashboard")) {
+  if (
+    pathname.startsWith("/workspace") ||
+    pathname.startsWith("/dashboard") ||
+    pathname.startsWith("/profile")
+  ) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
@@ -38,6 +42,7 @@ export async function middleware(req) {
 export const config = {
   matcher: [
     "/workspace/:path*",
+
     "/dashboard/:path*",
     "/login",
     "/register",

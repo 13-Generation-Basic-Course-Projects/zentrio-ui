@@ -25,7 +25,7 @@ import skan from "@/public/image/skan.png";
 import visa from "@/public/image/visa.png";
 import hun from "@/public/image/senghun.png";
 
-import hrd from "@/assets/about-us-image/LogoHRD.jpg";
+import hrd from "@/assets/about-us-image/logohrd.jpg";
 import webcash from "@/assets/sponser/webcash.jpg";
 import kosign from "@/assets/sponser/kosign.png";
 import kb from "@/assets/sponser/kb.png";
