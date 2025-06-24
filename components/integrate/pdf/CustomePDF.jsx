@@ -445,8 +445,8 @@ export const PDFPreviewer = ({ report }) => {
         <div className="w-full h-[95%] flex relative">
           {/* this pdf sidebar */}
           <div className="absolute top-0 left-0 h-full w-[15%] overflow-y-scroll scrollbar-hide overflow-x-hidden z-10">
-            <div className="bg-title flex justify-center">
-              <div className="flex flex-col justify-center py-[10%] w-[297.5px] px-5 ">
+            <div className="bg-title">
+              <div className="py-[10%]">
                 <div onClick={() => selectOnly("item1")} className={`h-[250px] relative`}>
                   {/* <!-- Cover --> */}
                 <div
@@ -1958,7 +1958,7 @@ export const PDFPreviewer = ({ report }) => {
           </div>
 
           {/* this pdf display */}
-          <div className="h-auto w-full flex justify-center pt-[2.5%] overflow-y-scroll bg-[#D3D3D3]">
+          <div className="h-auto w-full flex justify-center pt-[2.5%] overflow-y-scroll scrollbar-hide bg-[#D3D3D3]">
             <div
               ref={zoomRef}
               style={{
