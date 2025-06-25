@@ -233,14 +233,14 @@ export default function ModalCreateTask({
         ganttChartId
       );
 
-      if (!result.success) {
-        throw new Error(result.error || "Failed to create task");
-      }
+      // if (!result.success) {
+      //   throw new Error(result.error || "Failed to create task");
+      // }
 
-      toast.success(`"${data.title}"\nTask created successfully!`, {
-        position: "top-right",
-        autoClose: 3000,
-      });
+      // toast.success(`"${data.title}"\nTask created successfully!`, {
+      //   position: "top-right",
+      //   autoClose: 3000,
+      // });
 
       reset();
       onOpenChange();
