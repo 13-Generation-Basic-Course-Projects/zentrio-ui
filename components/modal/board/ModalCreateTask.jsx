@@ -1,4 +1,3 @@
-// ModalCreateTask.jsx
 "use client";
 import React, { useState, useMemo } from "react";
 import { useForm, Controller } from "react-hook-form";
@@ -18,7 +17,7 @@ import {
   Autocomplete,
   AutocompleteItem,
 } from "@heroui/react";
-import { parseDate, today, getLocalTimeZone } from "@internationalized/date";
+import { parseDate, today } from "@internationalized/date";
 import { IconAdd } from "../../icon/everyicon";
 import { taskFormSchema } from "@/lib/schemas/createTaskSchema";
 import { createTaskByBoardIdAndGanttChartIdAction } from "@/action/board.action";
@@ -176,32 +175,27 @@ export default function ModalCreateTask({
       }
 
       // Parse and adjust dates
-      let taskStart = new Date(data.dateRange.start);
+      const taskStart = new Date(data.dateRange.start);
       const taskEnd = new Date(data.dateRange.end);
-      const today = new Date();
-      const isStartDateToday =
-        taskStart.toDateString() === today.toDateString();
 
-      if (isStartDateToday) {
-        // Add 2-minute buffer for today's start time
-        const currentTime = new Date();
-        const bufferedTime = new Date(currentTime.getTime() + 2 * 60 * 1000);
-        taskStart = new Date(
-          taskStart.getFullYear(),
-          taskStart.getMonth(),
-          taskStart.getDate(),
-          bufferedTime.getHours(),
-          bufferedTime.getMinutes(),
-          bufferedTime.getSeconds()
-        );
-      } else {
-        taskStart.setHours(0, 0, 0, 0);
-      }
+      // Get current time in UTC+7 and add 1 hour
+      const now = new Date();
+      const utc7OffsetMs = 7 * 60 * 60 * 1000; // 7 hours in milliseconds
+      const oneHourMs = 1 * 60 * 60 * 1000; // 1 hour in milliseconds
+      const nowInUtc7PlusOneHour = new Date(
+        now.getTime() + utc7OffsetMs + oneHourMs
+      );
 
-      // Set end date to end of day if no specific time
-      if (taskEnd.getHours() === 0 && taskEnd.getMinutes() === 0) {
-        taskEnd.setHours(23, 59, 59, 999);
-      }
+      // Set taskStart to current time + 1 hour in UTC+7 on the selected start date
+      taskStart.setHours(
+        nowInUtc7PlusOneHour.getHours(),
+        nowInUtc7PlusOneHour.getMinutes(),
+        nowInUtc7PlusOneHour.getSeconds(),
+        nowInUtc7PlusOneHour.getMilliseconds()
+      );
+
+      // Set end date to end of day (23:59:59.999)
+      taskEnd.setHours(23, 59, 59, 999);
 
       // Validate task dates against Gantt bar
       const ganttStart = new Date(selectedGanttBar.startedAt);
@@ -233,14 +227,16 @@ export default function ModalCreateTask({
         ganttChartId
       );
 
-      // if (!result.success) {
-      //   throw new Error(result.error || "Failed to create task");
-      // }
+      // Note: The commented success check suggests the result structure may differ.
+      // Adjust based on actual API response.
+      if (result.status === 400) {
+        throw new Error(result.detail || "Failed to create task");
+      }
 
-      // toast.success(`"${data.title}"\nTask created successfully!`, {
-      //   position: "top-right",
-      //   autoClose: 3000,
-      // });
+      toast.success(`"${data.title}"\nTask created successfully!`, {
+        position: "top-right",
+        autoClose: 3000,
+      });
 
       reset();
       onOpenChange();
@@ -346,7 +342,7 @@ export default function ModalCreateTask({
                     render={({ field }) => (
                       <DateRangePicker
                         className="max-w-none"
-                        minValue={today(getLocalTimeZone())}
+                        minValue={today("Asia/Bangkok")}
                         maxValue={
                           selectedGanttBar
                             ? parseDate(
@@ -437,7 +433,6 @@ export default function ModalCreateTask({
                                   shadow-none
                                   rounded-small
                                   py-6
-
                                   ${errors.teamLeader ? "border-red-500" : ""}
                                 `,
                                 input: "text-black",

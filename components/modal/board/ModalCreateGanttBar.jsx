@@ -164,13 +164,48 @@ export default function ModalCreateGanttBar({ input, ganttChartId }) {
       return;
     }
 
-    const payload = pendingItems.map((item) => ({
-      title: item.title,
-      startedAt: new Date(item.startedAt + "T00:00:00.000Z").toISOString(),
-      finishedAt: new Date(item.finishedAt + "T23:59:59.999Z").toISOString(),
-      face: item.face,
-      ganttChartId,
-    }));
+    const payload = pendingItems.map((item) => {
+      // Parse the selected start date (e.g., "2025-06-25")
+      const selectedStartDate = new Date(item.startedAt);
+
+      // Get current time in UTC+7 and add 1 hour
+      const now = new Date();
+      const utc7OffsetMs = 7 * 60 * 60 * 1000; // 7 hours in milliseconds
+      const oneHourMs = 1 * 60 * 60 * 1000; // 1 hour in milliseconds
+      const nowInUtc7PlusOneHour = new Date(
+        now.getTime() + utc7OffsetMs + oneHourMs
+      );
+
+      // Set the start time to current time + 1 hour in UTC+7 on the selected date
+      const startedAt = new Date(
+        selectedStartDate.getFullYear(),
+        selectedStartDate.getMonth(),
+        selectedStartDate.getDate(),
+        nowInUtc7PlusOneHour.getHours(),
+        nowInUtc7PlusOneHour.getMinutes(),
+        nowInUtc7PlusOneHour.getSeconds(),
+        nowInUtc7PlusOneHour.getMilliseconds()
+      );
+
+      // Set end time to 23:59:59.999 on the selected end date
+      const finishedAt = new Date(
+        new Date(item.finishedAt).getFullYear(),
+        new Date(item.finishedAt).getMonth(),
+        new Date(item.finishedAt).getDate(),
+        23,
+        59,
+        59,
+        999
+      );
+
+      return {
+        title: item.title,
+        startedAt: startedAt.toISOString(),
+        finishedAt: finishedAt.toISOString(),
+        face: item.face,
+        ganttChartId,
+      };
+    });
 
     console.log("Sending payload to action:", payload);
 
