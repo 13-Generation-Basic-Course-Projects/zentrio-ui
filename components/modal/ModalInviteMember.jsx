@@ -14,50 +14,56 @@ import {
 import mailIcon from "@/assets/mail.png";
 import { Select, SelectItem } from "@heroui/react";
 
-// Form + Validation
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { inviteMemberSchema } from "@/lib/schemas/invitememberSchema";
 import { inviteMemberToBoardAction } from "@/action/board.action";
-import { Link, Shield, Crown, Users, } from "lucide-react";
+import { Link, Shield, Crown, Users } from "lucide-react";
 
-// Role formatting function
 const formatRole = (role) => {
   const iconClass = "w-4 h-4 inline-block mr-1";
+  const baseClass =
+    "inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border";
 
   const roleMap = {
     ROLE_MANAGER: (
-      <>
+      <span
+        className={`${baseClass} bg-yellow-50 text-orange-700 border-yellow-300`}
+      >
         <Crown className={iconClass} /> Manager
-      </>
+      </span>
     ),
     ROLE_LEADER: (
-      <>
+      <span
+        className={`${baseClass} bg-indigo-50 text-indigo-700 border-indigo-300`}
+      >
         <Shield className={iconClass} /> Leader
-      </>
+      </span>
     ),
     ROLE_MEMBER: (
-      <>
+      <span
+        className={`${baseClass} bg-green-50 text-green-700 border-green-300`}
+      >
         <Users className={iconClass} /> Member
-      </>
+      </span>
     ),
   };
 
-  return roleMap[role] || (
-    <>
-      <Users className={iconClass} />
-      {role?.replace("ROLE_", "").toLowerCase().replace(/^\w/, (c) => c.toUpperCase())}
-    </>
+  return (
+    roleMap[role] || (
+      <span className={`${baseClass} bg-gray-100 text-gray-600 border`}> 
+        <Users className={iconClass} />
+        {role?.replace("ROLE_", "").toLowerCase().replace(/^\w/, (c) => c.toUpperCase())}
+      </span>
+    )
   );
 };
-
 
 export const roles = [
   { key: "team leader", label: "Team Leader" },
   { key: "member", label: "Member" },
 ];
 
-// Function to generate avatar color based on email
 const getAvatarColor = (email) => {
   const colors = [
     "bg-progress-blue",
@@ -70,16 +76,9 @@ const getAvatarColor = (email) => {
   return colors[index];
 };
 
-// Function to get first letter of email or name
-const getInitial = (str) => {
-  return str.charAt(0).toUpperCase();
-};
+const getInitial = (str) => str.charAt(0).toUpperCase();
 
-export default function ModalInviteMember({
-  boardId,
-  allMemberInBoard,
-  workspaceId,
-}) {
+export default function ModalInviteMember({ boardId, allMemberInBoard, workspaceId }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [newMembers, setNewMembers] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
@@ -96,10 +95,7 @@ export default function ModalInviteMember({
     formState: { errors },
   } = useForm({
     resolver: zodResolver(inviteMemberSchema),
-    defaultValues: {
-      email: "",
-      role: "",
-    },
+    defaultValues: { email: "", role: "" },
   });
 
   const watchedEmail = watch("email");
@@ -121,7 +117,6 @@ export default function ModalInviteMember({
   const onSubmit = (data) => {
     setErrorMessage("");
     setSuccessMessage("");
-
     if (isFormFilled) {
       const newMember = {
         id: Date.now(),
@@ -138,22 +133,15 @@ export default function ModalInviteMember({
 
   const sendAllInvites = async () => {
     if (newMembers.length === 0) return;
-
     setErrorMessage("");
     setSuccessMessage("");
     setIsLoading(true);
-
     try {
       const inviteData = newMembers.map((member) => ({
         email: member.email,
         roleName: member.role === "team leader" ? "ROLE_LEADER" : "ROLE_MEMBER",
       }));
-
-      const result = await inviteMemberToBoardAction({
-        boardId,
-        workspaceId,
-        data: inviteData,
-      });
+      const result = await inviteMemberToBoardAction({ boardId, workspaceId, data: inviteData });
       if (result.success) {
         setSuccessMessage(`Sent ${newMembers.length} invites successfully`);
         setNewMembers([]);
