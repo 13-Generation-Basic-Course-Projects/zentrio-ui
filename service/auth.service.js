@@ -145,6 +145,8 @@ export const resendOtpZentrioService = async ({ email, type }) => {
 /*
  * login google
  */
+/*
+
 export const loginGoogleService = async ({ idToken }) => {
   try {
     const url = `${apiConfig.baseUrl}/auths/login/third-party`;
@@ -165,6 +167,7 @@ export const loginGoogleService = async ({ idToken }) => {
   }
 };
 
+*/
 /*
  * resend otp forgot
  */
@@ -221,5 +224,53 @@ export const forgotPasswordService = async ({
   } catch (error) {
     console.error("Can't reset password", error);
     throw error;
+  }
+};
+
+export const loginGoogleService = async ({ idToken }) => {
+  try {
+    const url = `${apiConfig.baseUrl}/auths/login/third-party`;
+    console.log("Google ID Token:", idToken);
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ idToken, provider: "google" }),
+    });
+    const data = await response.json();
+    console.log("Backend Response:", data);
+    if (!response.ok) {
+      return {
+        success: false,
+        message: data.message || "Authentication failed",
+        status: response.status,
+      };
+    }
+    if (!data.success) {
+      return {
+        success: false,
+        message: data.message || "Backend authentication failed",
+      };
+    }
+    return {
+      success: true,
+      payload: {
+        token: data.payload.token,
+        user: {
+          userId: data.payload.user?.userId || data.payload.sub,
+          email: data.payload.user?.email,
+          username: data.payload.user?.username || data.payload.user?.name,
+          role: data.payload.user?.role || "user",
+        },
+      },
+    };
+  } catch (error) {
+    console.error("LoginGoogleService error:", error.message);
+    return {
+      success: false,
+      message: "Failed to authenticate with backend",
+      error: error.message,
+    };
   }
 };

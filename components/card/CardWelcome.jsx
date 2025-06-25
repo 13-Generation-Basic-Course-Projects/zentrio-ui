@@ -6,7 +6,7 @@ import React, { useState, useRef, useEffect } from "react";
 import clearday from "@/assets/weathericon/clear-day.png";
 import clearnight from "@/assets/weathericon/clear-night.png";
 import cloudy from "@/assets/weathericon/cloudy.png";
-import overcast from "@/assets/weathericon/Overcast.png";
+import overcast from "@/assets/weathericon/overcast.png";
 import heavyrain from "@/assets/weathericon/heavy-showers.png";
 import thunderstorm from "@/assets/weathericon/thunderstorm-showers.png";
 import cloudyday from "@/assets/weathericon/partly-cloudy-day.png";
@@ -186,10 +186,8 @@ export default function TeamCardWelcome() {
 
         {/* Day and Weekday */}
         <div className="absolute left-[8%] top-[36%] flex items-baseline space-x-2 justify-center">
-          <p className="text-[50px] font-bold text-gray-800">
-            {today.getDate()}
-          </p>
-          <p className="text-h5 uppercase text-gray-600">
+          <p className="text-[50px] font-bold text-white">{today.getDate()}</p>
+          <p className="text-h5 uppercase text-white">
             {today.toLocaleDateString("en-US", { weekday: "short" })}
           </p>
         </div>
@@ -291,24 +289,17 @@ export default function TeamCardWelcome() {
         </div>
       </div>
 
-      <div className="rounded-large col-span-3">
-        <div className="w-full rounded-large h-44">
-          <div className="bg-gradient-to-br from-primary/10 via-primary/20 to-primary/60 p-3 rounded-3xl h-full shadow-lg border border-white/10 flex items-center justify-center">
-            <div className="grid grid-cols-2 gap-3 w-full h-full">
-              {/* Calendar */}
-              {/* <div className="bg-white/10 backdrop-blur-sm rounded-2xl flex flex-col items-center justify-center text-title text-sm font-medium">
-                <Image
-                  src={calendarIcon}
-                  alt="calendar feature"
-                  width={32}
-                  height={32}
-                />
-                <span>Calendar</span>
-              </div>
- */}
-              
-            </div>
-          </div>
+      <div data-swapy-slot="d" className="rounded-large col-span-3">
+        <div
+          data-swapy-item="d"
+          className="w-full rounded-large h-44 overflow-hidden border-1 border-primary"
+        >
+          {/* <FourStageWorkflow /> */}
+          <img
+            src="https://www.bitrix24.com/upload/optimizer/converted/images/content_en/tools/tasks_and_projects/index/tasks_and_projects-img-block-1.jpg.webp?1749567480869"
+            alt="img promote"
+            className="h-full w-full object-cover object-top"
+          />
         </div>
       </div>
     </div>

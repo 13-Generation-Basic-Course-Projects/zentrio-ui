@@ -168,9 +168,6 @@ export default function OtherProfileLayout({
                 alt="user profile"
               />
             )}
-            <div className="absolute top-20 inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-              <Camera className="text-white w-3 h-3" />
-            </div>
           </div>
         </div>
 

@@ -287,7 +287,6 @@ export default function ModalCreateGanttBar({ input, ganttChartId }) {
                           control={control}
                           render={({ field }) => (
                             <DateRangePicker
-                              isRequired
                               className="max-w-none"
                               minValue={today(getLocalTimeZone())} // Prevent past dates
                               value={
@@ -347,19 +346,19 @@ export default function ModalCreateGanttBar({ input, ganttChartId }) {
                       {/* Face Dropdown */}
                       <div className="flex flex-col gap-3 mt-6">
                         <label className="text-sm font-medium text-title">
-                          Face <span className="text-progress-red">*</span>
+                          Phases <span className="text-progress-red">*</span>
                         </label>
 
                         <Controller
-                          name="face"
+                          name="Phases"
                           control={control}
-                          rules={{ required: "Face is required" }}
+                          rules={{ required: "Phase is required" }}
                           render={({ field }) => (
                             <Autocomplete
                               selectedKey={field.value || ""}
                               onSelectionChange={(key) => field.onChange(key)}
                               onBlur={field.onBlur}
-                              placeholder="Select face"
+                              placeholder="Select Phase"
                               className="w-full"
                               size="md"
                               classNames={{

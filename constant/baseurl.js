@@ -3,7 +3,3 @@ export const apiConfig = {
   baseUrl: `http://34.124.235.228:9100/api/v1`,
   // baseUrl: `http://localhost:8081/api/v1`,
 };
-
-// export const frontendDomain = {
-//   baseUrl: `http://localhost:8081/api/v1`,
-// };

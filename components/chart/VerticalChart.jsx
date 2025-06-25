@@ -59,9 +59,8 @@ export default function VerticalChart({ report }) {
             </div>
             <div className="flex rounded-[16px] bg-black/5 px-[1.5%] py-[1%]">
               <p
-                className={`px-[11px] pt-[7px] cursor-pointer pb-[8px] ${
-                  weeklyClick ? "bg-black text-white" : "text-black/40"
-                } text-[11px] rounded-[10px]`}
+                className={`px-[11px] pt-[7px] cursor-pointer pb-[8px] ${weeklyClick ? "bg-black text-white" : "text-black/40"
+                  } text-[11px] rounded-[10px]`}
                 onClick={() => {
                   setWeeklyClick(true);
                   setMonthlyClick(false);
@@ -70,9 +69,8 @@ export default function VerticalChart({ report }) {
                 Weekly
               </p>
               <p
-                className={`px-[11px] pt-[7px] cursor-pointer pb-[8px] ${
-                  monthlyClick ? "bg-black text-white" : "text-black/40"
-                } text-[11px] rounded-[10px]`}
+                className={`px-[11px] pt-[7px] cursor-pointer pb-[8px] ${monthlyClick ? "bg-black text-white" : "text-black/40"
+                  } text-[11px] rounded-[10px]`}
                 onClick={() => {
                   setMonthlyClick(true);
                   setWeeklyClick(false);
@@ -84,7 +82,7 @@ export default function VerticalChart({ report }) {
           </div>
           <div className="w-[97.5%] border-t h-[85%] flex justify-end">
             <div className="w-[98.25%] h-[90%] flex justify-center items-center pt-[12.5%] pr-[5%]">
-              {}
+              { }
               {monthlyClick ? (
                 <MonthlyChart report={report} />
               ) : (
@@ -93,9 +91,9 @@ export default function VerticalChart({ report }) {
             </div>
           </div>
         </div>
-        <div className="w-[30%] border-l-1 border-gray-200 flex justify-center items-center">
-          {}
-          <div className="w-[140px] text-[11px] flex flex-col justify-center gap-[7.5%] h-[50%]">
+        <div className="w-[30%] border-gray-200 flex justify-center items-center mb-8 scale-[1.2]">
+          { }
+          <div className="w-[140px] text-[11px] flex flex-col justify-end item-center gap-[7.5%] h-[50%]">
             <div className="text-primary h-[35px] bg-[#59BAD5]/10 rounded-full w-full border-primary border flex items-center justify-center">
               <svg
                 width="12"
@@ -108,7 +106,7 @@ export default function VerticalChart({ report }) {
               </svg>
               <p className="pl-[7.5%]">All Categories</p>
             </div>
-            {}
+            { }
             <div className="flex items-center w-full px-[10%]">
               <div className="flex items-center w-[60%]">
                 <svg
@@ -130,9 +128,9 @@ export default function VerticalChart({ report }) {
               </div>
               <p className="w-[40%] text-right text-[9px]">{task.todo}</p>
             </div>
-            {}
+            { }
 
-            {}
+            { }
             <div className="flex items-center w-full px-[10%]">
               <div className="flex items-center w-[60%]">
                 <svg
@@ -154,9 +152,9 @@ export default function VerticalChart({ report }) {
               </div>
               <p className="w-[40%] text-right text-[9px]">{task.progress}</p>
             </div>
-            {}
+            { }
 
-            {}
+            { }
             <div className="flex items-center w-full px-[10%]">
               <div className="flex items-center w-[100%]">
                 <svg
@@ -178,9 +176,9 @@ export default function VerticalChart({ report }) {
               </div>
               <p className="w-[40%] text-right text-[9px]">{task.review}</p>
             </div>
-            {}
+            { }
 
-            {}
+            { }
             <div className="flex items-center w-full px-[10%]">
               <div className="flex items-center w-[60%]">
                 <svg
@@ -202,9 +200,9 @@ export default function VerticalChart({ report }) {
               </div>
               <p className="w-[40%] text-right text-[9px]">{task.done}</p>
             </div>
-            {}
+            { }
           </div>
-          {}
+          { }
         </div>
       </div>
     </>
@@ -220,7 +218,7 @@ export const MonthlyChart = ({ report }) => {
       "TO DO": Array(12).fill(0),
       IN_PROGRESS: Array(12).fill(0),
       UNDER_REVIEW: Array(12).fill(0),
-      DONE: Array(12).fill(0),
+      COMPLETED: Array(12).fill(0),
     };
 
     if (!report || !report.groupedTasks) {
@@ -341,9 +339,23 @@ export const MonthlyChart = ({ report }) => {
         scales: {
           y: {
             beginAtZero: true,
+            border: {
+              display: false,        
+              color: '#333',        
+              width: 2,           
+              dash: [5, 5],
+            },
             grid: {
               display: true,
-            },
+              color: function(context) {
+                if (context.tick.value === context.chart.scales.y.min) {
+                  return 'transparent';
+                }
+                return '#e0e0e0'; 
+              },
+              lineWidth: 1,
+              drawBorder: false,
+          },
           },
           x: {
             grid: {
@@ -475,7 +487,7 @@ export const WeeklyChart = ({ report }) => {
       borderColor:
         stageColors[stage]?.replace("0.8", "1") ||
         defaultColors[index % defaultColors.length].replace("0.8", "1"),
-      borderWidth: 1,
+      borderWidth: 0,
     };
   });
 
@@ -509,7 +521,24 @@ export const WeeklyChart = ({ report }) => {
         scales: {
           y: {
             beginAtZero: true,
+            border: {
+              display: false,        
+              color: '#333',        
+              width: 2,           
+              dash: [5, 5],
+            },
+            grid: {
+              display: true,
+              color: function(context) {
+                if (context.tick.value === context.chart.scales.y.min) {
+                  return 'transparent';
+                }
+                return '#e0e0e0'; 
+              },
+              lineWidth: 1,
+              drawBorder: false,
           },
+        },
           x: {
             grid: {
               display: false,

@@ -25,7 +25,7 @@ export const CardCheckList = ({
 }) => {
   const finishedAtRaw = finishedAt;
   const FormattedFinishDate = finishedAtRaw.split("T")[0];
-  console.log("imageChecklist", imageChecklist);
+  console.log("imageChecklist", member);
   return (
     <div className="">
       <Card className="py-4 rounded-xl cursor-pointer hover:bg-blue-50 transition shadow-sm w-full">
@@ -117,7 +117,10 @@ export const CardCheckList = ({
 
         {/* Footer */}
         <div className="flex justify-between items-center p-4">
-          <div className=" p-2 bg-orange-300 text-white ">Feedback</div>
+          {/* nh test sent nh ot torn map data tee */}
+          <div className=" p-2 bg-orange-500 text-white rounded-xl ">
+            Feedback
+          </div>
           <StackedProfileChecklist member={member} hidden={1} />
         </div>
         <div className="border-b m-4 items-center border-2"></div>

@@ -327,13 +327,13 @@ export default function GuestKanbanBoardCompo({
                 </div>
               </div>
             ))}
-            <div className="absolute bottom-5 left-3">
-              <GuestDrawerCompo />
-            </div>
           </div>
         ) : (
           <EmptyKanban />
         )}
+      </div>
+      <div className="absolute bottom-5 left-3">
+        <GuestDrawerCompo />
       </div>
     </>
   );

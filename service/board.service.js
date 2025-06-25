@@ -813,15 +813,9 @@ export const updateTaskByIdService = async ({
       ganttBarId,
     }),
   });
-
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({}));
-    throw new Error(
-      error.message || `Failed to update task: ${response.status}`
-    );
-  }
-
-  return response.json();
+  const data = await response.json();
+  console.log("err update", data);
+  return data;
 };
 
 /*

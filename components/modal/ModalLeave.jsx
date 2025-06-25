@@ -13,6 +13,9 @@ import { IconpopupLeave } from "../icon/Iconpopup";
 import { BadgeMinus } from "lucide-react";
 import { leaveTheBoardAction } from "@/action/board.action";
 import { useRouter } from "next/navigation"; // Updated import
+import { getBoardMemberAction } from "@/action/member.action";
+import { getCurrentUserProfileAction } from "@/action/profile.action";
+import { deleteBoardAction } from "@/action/workspace.action";
 
 export default function ModalLeave({
   massageTitle,
@@ -32,6 +35,21 @@ export default function ModalLeave({
       try {
         const result = await leaveTheBoardAction(boardId);
         console.log("Leave board result:", result);
+
+        if (result.success) {
+          router.push("/workspace"); // Redirect to /workspace on success
+        }
+      } catch (error) {
+        console.error("Error leaving board:", error);
+      }
+    }
+  };
+  const handleDeleteboardIfMangerRole = async () => {
+    if (boardId) {
+      try {
+        const result = await deleteBoardAction(boardId);
+        console.log("Leave board result:", result);
+
         if (result.success) {
           router.push("/workspace"); // Redirect to /workspace on success
         }
@@ -79,6 +97,15 @@ export default function ModalLeave({
                   className="bg-slate-red"
                   onPress={async () => {
                     await handleLeaveBoard(); // Ensure async operation completes
+                    const currentUserProfile =
+                      await getCurrentUserProfileAction();
+
+                    const boardMember = await getBoardMemberAction(boardId);
+                    console.log(
+                      "this is the boardmember",
+                      boardMember,
+                      currentUserProfile
+                    );
                     onClose();
                   }}
                 >

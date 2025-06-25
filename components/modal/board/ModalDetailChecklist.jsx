@@ -20,7 +20,6 @@ import {
 import { parseDate } from "@internationalized/date";
 import { IconAdd, StackedProfileChecklist } from "../../icon/everyicon";
 import ModalUploadAttachment from "./ModalUploadAttachment";
-import { CardCheckList } from "@/components/card/CardCheckList";
 import Trash from "@/components/button/Trash";
 import PopupAction from "@/components/popup/PopupAction";
 import { IconpopupDelete } from "@/components/icon/Iconpopup";
@@ -35,10 +34,11 @@ import {
 } from "@/action/board.action";
 import PostCommentChecklist from "./PostCommentChecklist";
 import CommentChecklistSec from "./CommentChecklistSec";
-import { getAttachmentAction } from "@/action/document.action";
+import { getAttactmentAction } from "@/action/document.action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { CameraIcon } from "lucide-react";
+import { CardCheckList } from "@/components/card/CardChecklist";
 
 const initialState = {
   activeTab: "add",
@@ -98,7 +98,7 @@ const useChecklistData = (checklistId, isOpen) => {
     dispatch({ type: "SET_ATTENDMENT_ERROR", payload: null });
     dispatch({ type: "SET_ATTENDMENTS", payload: [] });
     try {
-      const result = await getAttachmentAction(checklistId);
+      const result = await getAttactmentAction(checklistId);
       if (result.success) {
         dispatch({ type: "SET_ATTENDMENTS", payload: [result.payload] });
       } else {
@@ -889,7 +889,10 @@ const ModalDetailChecklist = ({
       fileInputRef.current.click();
     }
   };
-  const displayImage = imageChecklist ? imageChecklist : previewImage;
+
+  const displayImage = imageChecklist
+    ? imageChecklist
+    : "https://media.sproutsocial.com/uploads/2024/01/facebook-cover-image.svg";
   return (
     <div>
       {role == "ROLE_MEMBER" || role == "ROLE_MANAGER" ? (
