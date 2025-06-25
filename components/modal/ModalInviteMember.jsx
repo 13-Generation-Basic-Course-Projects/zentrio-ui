@@ -19,19 +19,42 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { inviteMemberSchema } from "@/lib/schemas/invitememberSchema";
 import { inviteMemberToBoardAction } from "@/action/board.action";
-import { Link } from "lucide-react";
+import { Link, Shield, Crown, Users, } from "lucide-react";
+
+// Role formatting function
+const formatRole = (role) => {
+  const iconClass = "w-4 h-4 inline-block mr-1";
+
+  const roleMap = {
+    ROLE_MANAGER: (
+      <>
+        <Crown className={iconClass} /> Manager
+      </>
+    ),
+    ROLE_LEADER: (
+      <>
+        <Shield className={iconClass} /> Leader
+      </>
+    ),
+    ROLE_MEMBER: (
+      <>
+        <Users className={iconClass} /> Member
+      </>
+    ),
+  };
+
+  return roleMap[role] || (
+    <>
+      <Users className={iconClass} />
+      {role?.replace("ROLE_", "").toLowerCase().replace(/^\w/, (c) => c.toUpperCase())}
+    </>
+  );
+};
+
 
 export const roles = [
   { key: "team leader", label: "Team Leader" },
   { key: "member", label: "Member" },
-];
-
-export const members = [
-  { id: 1, name: "Rosskan", role: "Member", color: "bg-progress-blue" },
-  { id: 2, name: "Visa", role: "Member", color: "bg-progress-orange" },
-  { id: 3, name: "ChhengLeap", role: "Member", color: "bg-progress-green" },
-  { id: 4, name: "Fong", role: "Team Leader", color: "bg-progress-green" },
-  { id: 5, name: "Senghun", role: "Member", color: "bg-progress-green" },
 ];
 
 // Function to generate avatar color based on email
@@ -79,19 +102,16 @@ export default function ModalInviteMember({
     },
   });
 
-  console.log("+++log workspaceId", workspaceId);
-  // Watch form values to determine button text and state
   const watchedEmail = watch("email");
   const watchedRole = watch("role");
   const isFormFilled = watchedEmail && watchedRole;
 
-  // Function to generate and copy the invite link
   const copyInviteLink = async () => {
     const inviteLink = `http://localhost:3000/guestuser/${workspaceId}/${boardId}`;
     try {
       await navigator.clipboard.writeText(inviteLink);
       setCopySuccess("Link copied to clipboard!");
-      setTimeout(() => setCopySuccess(""), 3000); // Clear message after 3 seconds
+      setTimeout(() => setCopySuccess(""), 3000);
     } catch (err) {
       setCopySuccess("Failed to copy link");
       console.error("Failed to copy: ", err);
@@ -103,7 +123,6 @@ export default function ModalInviteMember({
     setSuccessMessage("");
 
     if (isFormFilled) {
-      // Add to pending list
       const newMember = {
         id: Date.now(),
         email: data.email,
@@ -151,7 +170,7 @@ export default function ModalInviteMember({
   const removeNewMember = (id) => {
     setNewMembers((prev) => prev.filter((member) => member.id !== id));
   };
-  console.log("log in invite memeber", allMemberInBoard);
+
   return (
     <div className="relative">
       <Button
@@ -324,14 +343,13 @@ export default function ModalInviteMember({
                           />
                           <div>
                             <p className="font-medium">{member?.username}</p>
-                            <p className="text-body-sm text-description">
-                              Roles: {member?.roles.join(", ")}
-                            </p>
+                            {/* <p className="text-body-sm text-description">
+                              Roles: {member?.roles.map(formatRole).join(", ")}
+                            </p> */}
                           </div>
                         </div>
                         <p className="text-caption text-description">
-                          {member.roles[0]}{" "}
-                          {/* or display all roles if you want */}
+                          {formatRole(member.roles[0])}
                         </p>
                       </li>
                     ))}
@@ -359,13 +377,13 @@ export default function ModalInviteMember({
                             <div>
                               <p className="font-medium">{member.email}</p>
                               <p className="text-body-sm text-description">
-                                Role: {member.role}
+                                Role: {formatRole(member.role)}
                               </p>
                             </div>
                           </div>
                           <div className="flex items-center gap-2">
                             <p className="text-caption text-description">
-                              {member.role}
+                              {formatRole(member.role)}
                             </p>
                             <Button
                               size="sm"
