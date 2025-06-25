@@ -120,7 +120,7 @@ export default function VerticalChart({ report }) {
                     cx="6.42755"
                     cy="6.50373"
                     r="5.35941"
-                    stroke="hsl(210, 70%, 85%)"
+                    stroke="hsl(194, 54%, 60%)"
                     strokeWidth="1.19098"
                   />
                 </svg>
@@ -144,7 +144,7 @@ export default function VerticalChart({ report }) {
                     cx="6.42755"
                     cy="6.50373"
                     r="5.35941"
-                    stroke="hsl(40, 70%, 85%)"
+                    stroke="hsl(215, 89%, 69%)"
                     strokeWidth="1.19098"
                   />
                 </svg>
@@ -168,7 +168,7 @@ export default function VerticalChart({ report }) {
                     cx="6.42755"
                     cy="6.50373"
                     r="5.35941"
-                    stroke="hsl(260, 70%, 85%)"
+                    stroke="hsl(16, 89%, 66%)"
                     strokeWidth="1.19098"
                   />
                 </svg>
@@ -192,7 +192,7 @@ export default function VerticalChart({ report }) {
                     cx="6.42755"
                     cy="6.50373"
                     r="5.35941"
-                    stroke="hsl(160, 70%, 85%)"
+                    stroke="hsl(145, 53%, 67%)"
                     strokeWidth="1.19098"
                   />
                 </svg>
@@ -458,22 +458,18 @@ export const WeeklyChart = ({ report }) => {
     : [...dataStages, "DONE"];
 
   const stageColors = {
-    TO_DO: "hsl(210, 70%, 85%)",
-    TODO: "hsl(210, 70%, 85%)",
-    IN_PROGRESS: "hsl(40, 70%, 85%)",
-    UNDER_REVIEW: "hsl(260, 70%, 85%)",
-    DONE: "hsl(160, 70%, 85%)",
-    COMPLETED: "hsl(160, 70%, 85%)",
+    "TO DO": "hsl(194, 54%, 60%)",
+    IN_PROGRESS: "hsl(215, 89%, 69%)",
+    UNDER_REVIEW: "hsl(16, 89%, 66%)",
+    COMPLETED: "hsl(145, 53%, 67%)",
   };
 
   const datasets = allStages.map((stage, index) => {
     const defaultColors = [
-      "hsl(210, 70%, 85%)",
-      "hsl(210, 70%, 85%)",
-      "hsl(40, 70%, 85%)",
-      "hsl(260, 70%, 85%)",
-      "hsl(160, 70%, 85%)",
-      "hsl(160, 70%, 85%)",
+      "hsl(194, 54%, 60%)",    // TO_DO
+      "hsl(215, 89%, 69%)",    // IN_PROGRESS
+      "hsl(16, 89%, 66%)",     // UNDER_REVIEW
+      "hsl(145, 53%, 67%)",    // COMPLETED
     ];
 
     return {
