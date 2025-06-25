@@ -6,28 +6,33 @@ import {
   loginZentrioCredentailService,
 } from "./service/auth.service";
 
-// Move the refresh function outside and fix the import path
+// Refresh Google access token
 export async function refreshGoogleAccessToken(refreshToken) {
-  const response = await fetch("https://oauth2.googleapis.com/token", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body: new URLSearchParams({
-      client_id: process.env.GOOGLE_CLIENT_ID,
-      client_secret: process.env.GOOGLE_CLIENT_SECRET,
-      grant_type: "refresh_token",
-      refresh_token: refreshToken,
-    }),
-  });
+  try {
+    const response = await fetch("https://oauth2.googleapis.com/token", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: new URLSearchParams({
+        client_id: process.env.GOOGLE_CLIENT_ID,
+        client_secret: process.env.GOOGLE_CLIENT_SECRET,
+        grant_type: "refresh_token",
+        refresh_token: refreshToken,
+      }),
+    });
 
-  if (!response.ok) {
-    const errorData = await response.json();
-    console.error("Token refresh failed:", errorData);
-    throw new Error(`Failed to refresh access token: ${response.status}`);
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error("Token refresh failed:", errorData);
+      throw new Error(`Failed to refresh access token: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Refresh token error:", error.message);
+    throw error;
   }
-
-  return await response.json();
 }
 
 export const {
@@ -47,17 +52,24 @@ export const {
       },
       authorize: async (credentials) => {
         const { email, password } = credentials;
-        const res = await loginZentrioCredentailService({ email, password });
-        if (!res?.success) {
+        try {
+          const res = await loginZentrioCredentailService({ email, password });
+          if (!res?.success) {
+            console.error("Credentials login failed:", res?.message);
+            return null;
+          }
+          return {
+            id: res.payload.user?.userId || res.payload.sub,
+            email: res.payload.user?.email || credentials.email,
+            username: res.payload.user?.username,
+            backendToken: res.payload.token,
+            role: res.payload.user?.role || "user",
+            ...res.payload.user,
+          };
+        } catch (error) {
+          console.error("Credentials authorize error:", error.message);
           return null;
         }
-        return {
-          id: res.payload.user?.userId || res.payload.sub,
-          email: res.payload.user?.email || credentials.email,
-          backendToken: res.payload.token,
-          provider: "credentials",
-          ...res.payload.user,
-        };
       },
     }),
     GoogleProvider({
@@ -76,22 +88,37 @@ export const {
   ],
   callbacks: {
     async jwt({ token, account, user }) {
-      // First time login with Google
-      if (account?.provider === "google") {
-        console.log("🔐 Initial Google login - setting tokens");
-        console.log("Account expires_at:", account.expires_at, "Current time:", Math.floor(Date.now() / 1000));
-        
+      if (user) {
+        token.id = user.id;
+        token.email = user.email;
+        token.username = user.username;
+        token.backendToken = user.backendToken;
+        token.role = user.role || "user";
+      }
+
+      if (account && account.provider === "google") {
         token.idToken = account.id_token;
         token.accessToken = account.access_token;
         token.refreshToken = account.refresh_token;
-        // account.expires_at is already an absolute timestamp in seconds
-        token.accessTokenExpires = account.expires_at * 1000;
-        token.provider = "google";
-        
-        console.log("📅 Google token expires at:", new Date(token.accessTokenExpires));
-        console.log("🕐 Current time:", new Date());
-        console.log("⏰ Time until expiry:", Math.round((token.accessTokenExpires - Date.now()) / 1000 / 60), "minutes");
-        
+        token.expiresAt = account.expires_at;
+        token.scopes = account.scope;
+
+        if (token.expiresAt && Date.now() / 1000 > token.expiresAt) {
+          try {
+            const refreshedTokens = await refreshGoogleAccessToken(
+              token.refreshToken
+            );
+            token.accessToken = refreshedTokens.access_token;
+            token.expiresAt =
+              Math.floor(Date.now() / 1000) + refreshedTokens.expires_in;
+            if (refreshedTokens.id_token)
+              token.idToken = refreshedTokens.id_token;
+          } catch (error) {
+            console.error("Token refresh failed in JWT:", error.message);
+            return null;
+          }
+        }
+
         try {
           const backendResponse = await loginGoogleService({
             idToken: account.id_token,
@@ -101,118 +128,38 @@ export const {
             token.backendToken = backendResponse.payload.token;
             token.id = backendResponse.payload.user?.userId || token.sub;
             token.email = backendResponse.payload.user?.email || token.email;
-            token.username = backendResponse.payload.user?.username || token.username;
-            console.log("🎫 Backend token obtained");
+            token.username =
+              backendResponse.payload.user?.username || token.name;
+            token.role = backendResponse.payload.user?.role || "user";
+          } else {
+            console.error("Backend login failed:", backendResponse?.message);
+            return null;
           }
         } catch (error) {
-          console.error("❌ Google login error:", error.message);
-        }
-        
-        return token;
-      }
-
-
-      // Credentials login
-      if (account?.provider === "credentials" && user) {
-        token.id = user.id;
-        token.email = user.email;
-        token.backendToken = user.backendToken;
-        token.username = user.username;
-        token.provider = "credentials";
-        console.log("🔑 Credentials login - backend token set:", !!token.backendToken);
-        return token;
-      }
-
-      // Only attempt to refresh Google tokens
-      if (token.provider === "google" && token.accessToken && token.refreshToken && token.accessTokenExpires) {
-        const now = Date.now();
-        const expiresAt = token.accessTokenExpires;
-        const timeUntilExpiry = Math.round((expiresAt - now) / 1000 / 60);
-        const shouldRefresh = now > (expiresAt - 5 * 60 * 1000); // 5 minutes before expiry
-        
-        console.log("🔍 Token refresh check:", {
-          now: new Date(now).toISOString(),
-          expiresAt: new Date(expiresAt).toISOString(),
-          timeUntilExpiry: timeUntilExpiry + " minutes",
-          shouldRefresh,
-          hasRefreshToken: !!token.refreshToken
-        });
-        
-        if (shouldRefresh && token.refreshToken) {
-          console.log("🔄 Refreshing Google access token (expires in " + timeUntilExpiry + " minutes)...");
-          try {
-            const refreshed = await refreshGoogleAccessToken(token.refreshToken);
-            
-            if (refreshed.access_token) {
-              const newExpiresAt = Date.now() + (refreshed.expires_in * 1000);
-              console.log("✅ Token refreshed successfully!");
-              console.log("📅 New expiry:", new Date(newExpiresAt).toISOString());
-              console.log("⏰ Valid for:", refreshed.expires_in / 60, "minutes");
-              
-              return {
-                ...token,
-                accessToken: refreshed.access_token,
-                accessTokenExpires: newExpiresAt,
-                refreshToken: refreshed.refresh_token || token.refreshToken,
-                error: undefined,
-              };
-            } else {
-              throw new Error("No access_token in refresh response");
-            }
-          } catch (err) {
-            console.error("❌ Failed to refresh access token:", err.message);
-            return {
-              ...token,
-              error: "RefreshAccessTokenError",
-            };
-          }
-        } else if (shouldRefresh && !token.refreshToken) {
-          console.warn("⚠️ Token expired but no refresh token available");
-          return {
-            ...token,
-            error: "RefreshTokenMissing",
-          };
+          console.error("Error calling loginGoogleService:", error.message);
+          return null;
         }
       }
-
 
       return token;
     },
     async session({ session, token }) {
-      // Shape the session object
+      if (!token) return null;
       session.user = {
-        id: token.id,
+        id: token.id || token.sub,
         email: token.email,
         username: token.username,
         backendToken: token.backendToken,
+        role: token.role || "user",
       };
-      session.backendToken = token.backendToken; // Optional: Store at root level
-      
-      // Only include Google access token if it exists and is valid
-      if (token.accessToken && !token.error && token.provider === "google") {
-        session.accessToken = token.accessToken;
-        session.googleTokenExpires = token.accessTokenExpires;
-      }
-      
-      if (token.error) {
-        session.error = token.error;
-        console.warn("⚠️ Session has token error:", token.error);
-      }
-      
-      // Add debug info (remove in production)
-      if (process.env.NODE_ENV === 'development') {
-        session.debug = {
-          provider: token.provider || 'unknown',
-          hasGoogleToken: !!token.accessToken && token.provider === "google",
-          hasBackendToken: !!token.backendToken,
-          googleTokenExpires: token.accessTokenExpires ? new Date(token.accessTokenExpires) : null,
-          hasRefreshToken: !!token.refreshToken,
-          timeUntilGoogleExpiry: token.accessTokenExpires ? 
-            Math.round((token.accessTokenExpires - Date.now()) / 1000 / 60) : null,
-          tokenError: token.error
-        };
-      }
-      
+      session.backendToken = token.backendToken;
+      session.googleAuth = {
+        accessToken: token.accessToken,
+        idToken: token.idToken,
+        refreshToken: token.refreshToken,
+        expiresAt: token.expiresAt,
+        scopes: token.scopes,
+      };
       return session;
     },
   },

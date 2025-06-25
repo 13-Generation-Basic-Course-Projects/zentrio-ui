@@ -3,27 +3,28 @@ import { auth } from "@/auth";
 
 export const Token = async () => {
   const session = await auth();
-  
-  // Debug logging (remove in production)
-  if (process.env.NODE_ENV === 'development') {
-    console.log("🔍 Session debug:", {
-      hasSession: !!session,
-      hasAccessToken: !!session?.accessToken,
-      hasBackendToken: !!session?.backendToken,
-      sessionKeys: session ? Object.keys(session) : [],
-      userKeys: session?.user ? Object.keys(session.user) : [],
-      debug: session?.debug
-    });
+  if (!session) {
+    return null;
   }
-  
+  // const UserToken = {
+  //   Credential: session.backendToken || null,
+  //   GoogleDocumentToken: session.googleAuth?.accessToken ?  session.googleAuth?.accessToken : null,
+  // }; fong old
+
   const UserToken = {
-    Credential: session?.backendToken 
-      ? session.backendToken 
-      : session?.token?.user?.payload?.token,
-    GoogleDocumentToken: session?.accessToken 
-      ? session.accessToken 
+    Credential: (() => {
+      if (typeof session?.backendToken === 'string' && session.backendToken.trim().length > 0) {
+        return session.backendToken;
+      }
+      if (typeof session?.googleAuth?.accessToken === 'string' && session.googleAuth.accessToken.trim().length > 0) {
+        return session.googleAuth.accessToken;
+      }
+      return null;
+    })(),
+    GoogleDocumentToken: typeof session?.googleAuth?.accessToken === 'string' && session.googleAuth.accessToken.trim().length > 0
+      ? session.googleAuth.accessToken
       : null,
   };
-  
   return UserToken;
 };
+
