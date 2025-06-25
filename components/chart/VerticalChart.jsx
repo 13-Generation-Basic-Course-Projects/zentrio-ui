@@ -466,7 +466,7 @@ export const WeeklyChart = ({ report }) => {
 
   const datasets = allStages.map((stage, index) => {
     const defaultColors = [
-      "hsl(194, 54%, 60%)",    // TO_DO
+      "hsl(194, 54%, 60%)",    // TO DO
       "hsl(215, 89%, 69%)",    // IN_PROGRESS
       "hsl(16, 89%, 66%)",     // UNDER_REVIEW
       "hsl(145, 53%, 67%)",    // COMPLETED
