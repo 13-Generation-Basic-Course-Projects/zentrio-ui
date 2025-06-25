@@ -155,7 +155,7 @@ export default function CardPostAnnouncement({
                 {/* Add Comment */}
                 <div className="flex items-start gap-3">
                   <img
-                    src={currentUserProfile?.payload?.user?.imageUrl}
+                    src={announcement.createdBy?.imageUrl}
                     alt="You"
                     className="w-8 h-8 rounded-2xl object-cover"
                   />
