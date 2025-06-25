@@ -129,7 +129,7 @@ export default function WorkSpaceSideBar({
                 <ModalCreateWorkspace createWorkspace={createWorkspace} />
               </div>
 
-              <div className="h-[300px] overflow-y-auto scrollbar-hidden">
+              <div className="h-[320px] overflow-y-auto scrollbar-hidden">
                 {/* My Workspace Items */}
                 {Array.isArray(workspaceData.payload) &&
                   workspaceData.payload
