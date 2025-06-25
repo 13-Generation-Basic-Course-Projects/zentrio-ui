@@ -350,7 +350,7 @@ export default function ModalCreateGanttBar({ input, ganttChartId }) {
                         </label>
 
                         <Controller
-                          name="Phases"
+                          name="face"
                           control={control}
                           rules={{ required: "Phase is required" }}
                           render={({ field }) => (
