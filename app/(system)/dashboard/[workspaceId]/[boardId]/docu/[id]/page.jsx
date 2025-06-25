@@ -1,3 +1,4 @@
+import { getFileByFolderIdAction } from "@/action/document.action";
 import DocumentEachFolder from "@/components/documentcomponent/DocumentEachFolder";
 import { NavbarAuthorized } from "@/components/layout/NavbarAutherized";
 import { Token } from "@/constant/token";
@@ -9,11 +10,23 @@ export default async function page({ params }) {
   const boardId = await params?.boardId;
   const userToken = await Token();
   const token = userToken.GoogleDocumentToken;
-
-  // const tokenFromGoogle = "ya29.a0AW4XtxjmO36PU4vEhXhB6gyXpb_Um9wMecy153P4YRr7lbQaC5zR0qVTHvsNpKsmcSrt9ofkJ4633QrkEglksfLYbUF_YKfQWVpRgULGi4RTN_pa-J-8EQWOCkcjanCB6EkpvRisb_zSI5PcSOOTmXjmwG0Heh9HS42cPFlrygaCgYKARASARcSFQHGX2MiTyWDkwYvZZfQWcsybwPyeA0177";
+  const isHidden = false;
   const tokenFromGoogle = token;
 
-  const isHidden = false;
+  let fetchedData = [];
+  try {
+    const result = await getFileByFolderIdAction(tokenFromGoogle, id);
+    if (Array.isArray(result)) {
+      fetchedData = result;
+    } else if (result && Array.isArray(result.payload)) {
+      fetchedData = result.payload;
+    } else if (result && Array.isArray(result.files)) {
+      fetchedData = result.files;
+    }
+  } catch (error) {
+    console.error("Server fetch error:", error);
+  }
+
   return (
     <div>
       <div className="p-4 ">
@@ -23,6 +36,7 @@ export default async function page({ params }) {
           boardId={boardId}
           workspaceId={workspaceId}
           isHidden={isHidden}
+          initialData={fetchedData}
         />
       </div>
     </div>

@@ -11,10 +11,7 @@ import {
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { folderSchema } from "@/lib/schemas/documentSchema";
-import {
-  createDriveFileAction,
-  createFolderAction,
-} from "@/action/document.action";
+import { createDriveFileAction } from "@/action/drive.action";
 
 export default function ModalCreateFolderInFolder({
   isOpen,

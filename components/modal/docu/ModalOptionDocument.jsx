@@ -188,6 +188,8 @@ export default function ModalOptionDocument({
         accessToken
       );
 
+      console.log("Downloading file:", fileName);
+
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
@@ -212,9 +214,6 @@ export default function ModalOptionDocument({
           {documentId,
           accessToken,}
         );
-
-        console.log("documentId: ", documentId);
-        console.log("accessToken: ", accessToken);
   
         if (!blob || !(blob instanceof Blob)) {
           console.error("No ZIP file to download.");

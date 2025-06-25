@@ -151,6 +151,7 @@ export function CardFileInFolder({
           ) : (
             <ModalOptionDocumentInFolder
               fileId={fileId}
+              fileName={title}
               accessToken={tokenFromGoogle}     
             />
           )}

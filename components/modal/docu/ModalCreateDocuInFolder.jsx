@@ -10,11 +10,9 @@ import {
 import { IconAdd } from "../../icon/everyicon";
 import ModalCreateFolder from "./ModalCreateFolder";
 import ModalUploadFile from "./ModalUploadfile";
-import {
-  createDocumentByUploadAction,
-  createDriveFileAction,
-} from "@/action/document.action";
 import ModalCreateFolderInFolder from "./ModalCreateFolderInFolder";
+import { createDriveFileAction } from "@/action/drive.action";
+import { createDocumentByUploadAction } from "@/action/document.action";
 
 export default function ModalCreateDocuInFolder({
   boardId,

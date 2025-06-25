@@ -1,11 +1,39 @@
 "use server";
+
 import { Token } from "@/constant/token";
+import { createDriveFileService } from "@/service/document.service";
 import {
   deleteFileByFileIdService,
   downloadFileFromDriveService,
   updateFileNameByFileIdService,
 } from "@/service/drive.service";
 import { revalidatePath } from "next/cache";
+
+export const createDriveFileAction = async ({
+  name,
+  folderId,
+  fileType,
+  token: tokenFromGoogle,
+}) => {
+  try {
+    const userToken = await Token();
+    const token = userToken.Credential;
+
+    const document = await createDriveFileService(
+      name,
+      folderId,
+      fileType,
+      token,
+      tokenFromGoogle
+    );
+
+    revalidatePath("/document")
+    return document;
+  } catch (error) {
+    console.error("Error creting file: ", error);
+    throw error;
+  }
+};
 
 export const deleteFileByFileIdAction = async ({ fileId, accessToken }) => {
   console.log("deleteFileByFileIdAction input:", { fileId, accessToken });
@@ -57,6 +85,7 @@ export const updateFileNameByFileIdAction = async ({
     });
 
     console.log("✅ File name updated:", updated);
+    revalidatePath("/docu")
     return updated;
   } catch (error) {
     console.error("❌ updateFileNameByFileIdAction error:", error.message);

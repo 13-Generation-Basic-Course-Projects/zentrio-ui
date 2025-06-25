@@ -113,11 +113,10 @@ const DownloadZipIcon = (props) => (
 export default function ModalOptionDocumentInFolder({
   fileId,
   isFolder,
+  fileName,
   folderName,
   accessToken,
 }) {
-  console.log("file id: ", fileId);
-  console.log("accessToken: ", accessToken);
   const [isDownloading, setIsDownloading] = useState(false);
   const [isDownloadingZip, setIsDownloadingZip] = useState(false);
 

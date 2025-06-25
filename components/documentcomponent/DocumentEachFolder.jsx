@@ -18,12 +18,11 @@ export default function DocumentEachFolder({
   tokenFromGoogle,
   workspaceId,
   isHidden,
+  initialData = [],
 }) {
   const [sortOrder, setSortOrder] = useState("asc");
   const [searchTerm, setSearchTerm] = useState("");
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [data] = useState(initialData);
   const [selectedDate, setSelectedDate] = useState(null);
 
   const sortOptions = [
@@ -37,39 +36,6 @@ export default function DocumentEachFolder({
     inputValue = inputValue.normalize("NFC").toLowerCase();
     return textValue.startsWith(inputValue);
   };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-
-        const result = await getFileByFolderIdAction(tokenFromGoogle, id);
-
-        let payload = [];
-        if (Array.isArray(result)) {
-          payload = result;
-        } else if (result && Array.isArray(result.payload)) {
-          payload = result.payload;
-        } else if (result && Array.isArray(result.files)) {
-          payload = result.files;
-        }
-
-        console.log("Fetched data:", payload);
-        setData(payload);
-      } catch (err) {
-        console.error("Error fetching files:", err);
-        setError(`Failed to fetch files: ${err.message}`);
-        setData([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (id && tokenFromGoogle) {
-      fetchData();
-    }
-  }, [id, tokenFromGoogle]);
 
   const transformedData = data.map((doc) => {
     const docType = doc.mimeType || doc.documentType || "";
@@ -200,86 +166,80 @@ export default function DocumentEachFolder({
         </div>
 
         <div className="w-full max-h-screen overflow-y-auto scrollbar-hidden pb-[300px] px-5 pt-10">
-          {loading ? (
-            <span className="loader"></span>
-          ) : error ? (
-            <p className="text-red-500 col-span-6">{error}</p>
-          ) : (
-            <>
-              {/* Folders Section */}
-              <div className="mb-8">
-                <div className="flex items-center justify-between mb-4">
-                  <p className="text-h5 font-semibold">Folders</p>
-                  <span className="text-sm text-gray-500">
-                    {filteredData?.filter((el) => el.category === "Folder")
-                      .length || 0}{" "}
-                    folders {boardId}
-                  </span>
-                </div>
-                <div className="grid grid-cols-6 gap-3 pb-4 pr-2 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
+          <>
+            {/* Folders Section */}
+            <div className="mb-8">
+              <div className="flex items-center justify-between mb-4">
+                <p className="text-h5 font-semibold">Folders</p>
+                <span className="text-sm text-gray-500">
                   {filteredData?.filter((el) => el.category === "Folder")
-                    .length > 0 ? (
-                    filteredData
-                      .filter((el) => el.category === "Folder")
-                      .map((el, i) => (
-                        <div key={i}>
-                          <CardFolderInFolder
-                            key={`folder-${i}`}
-                            title={el.title}
-                            status={el.status}
-                            date={el.date}
-                            link={el.link}
-                            documentId={el.id}
-                            fileId={el.id}
-                            folderId={el.folderId}
-                            isFolder={el.category === "Folder"}
-                            tokenFromGoogle={tokenFromGoogle}
-                            isHidden={isHidden}
-                            workspaceId={workspaceId}
-                            boardId={dependId}
-                          />
-                        </div>
-                      ))
-                  ) : (
-                    <p className="text-gray-500 col-span-6">No Folders</p>
-                  )}
-                </div>
+                    .length || 0}{" "}
+                  folders
+                </span>
               </div>
-              {/* Files Section */}
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <p className="text-h5 font-semibold">Files</p>
-                  <span className="text-sm text-gray-500">
-                    {filteredData?.filter((el) => el.category === "File")
-                      .length || 0}{" "}
-                    files
-                  </span>
-                </div>
-                <div className="grid grid-cols-6 gap-3 pb-4 pr-2 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
-                  {filteredData?.filter((el) => el.category === "File").length >
-                  0 ? (
-                    filteredData
-                      .filter((el) => el.category === "File")
-                      .map((el, i) => (
-                        <CardFileInFolder
-                          key={`file-${i}`}
+              <div className="grid grid-cols-6 gap-3 pb-4 pr-2 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
+                {filteredData?.filter((el) => el.category === "Folder").length >
+                0 ? (
+                  filteredData
+                    .filter((el) => el.category === "Folder")
+                    .map((el, i) => (
+                      <div key={i}>
+                        <CardFolderInFolder
+                          key={`folder-${i}`}
                           title={el.title}
                           status={el.status}
                           date={el.date}
-                          type={el.type}
                           link={el.link}
-                          fileId={el?.id}
-                          folderId={el?.folderId}
+                          documentId={el.id}
+                          fileId={el.id}
+                          folderId={el.folderId}
+                          isFolder={el.category === "Folder"}
                           tokenFromGoogle={tokenFromGoogle}
+                          isHidden={isHidden}
+                          workspaceId={workspaceId}
+                          boardId={dependId}
                         />
-                      ))
-                  ) : (
-                    <p className="text-gray-500 col-span-6">No Files</p>
-                  )}
-                </div>
+                      </div>
+                    ))
+                ) : (
+                  <p className="text-gray-500 col-span-6">No Folders</p>
+                )}
               </div>
-            </>
-          )}
+            </div>
+            {/* Files Section */}
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <p className="text-h5 font-semibold">Files</p>
+                <span className="text-sm text-gray-500">
+                  {filteredData?.filter((el) => el.category === "File")
+                    .length || 0}{" "}
+                  files
+                </span>
+              </div>
+              <div className="grid grid-cols-6 gap-3 pb-4 pr-2 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
+                {filteredData?.filter((el) => el.category === "File").length >
+                0 ? (
+                  filteredData
+                    .filter((el) => el.category === "File")
+                    .map((el, i) => (
+                      <CardFileInFolder
+                        key={`file-${i}`}
+                        title={el.title}
+                        status={el.status}
+                        date={el.date}
+                        type={el.type}
+                        link={el.link}
+                        fileId={el?.id}
+                        folderId={el?.folderId}
+                        tokenFromGoogle={tokenFromGoogle}
+                      />
+                    ))
+                ) : (
+                  <p className="text-gray-500 col-span-6">No Files</p>
+                )}
+              </div>
+            </div>
+          </>
         </div>
       </div>
     </div>

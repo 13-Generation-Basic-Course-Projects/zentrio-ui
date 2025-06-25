@@ -52,8 +52,6 @@ export const getFileByFolderIdAction = async (accessToken, folderId) => {
     token,
   });
 
-  revalidatePath("/document");
-
   return files;
 };
 
@@ -181,30 +179,6 @@ export const uploadDocumentToFolderAction = async (
   revalidatePath("/document");
 
   return document;
-};
-
-export const createDriveFileAction = async ({
-  name,
-  folderId,
-  fileType,
-  token: tokenFromGoogle,
-}) => {
-  try {
-    const userToken = await Token();
-    const token = userToken.Credential;
-
-    const document = await createDriveFileService(
-      name,
-      folderId,
-      fileType,
-      token,
-      tokenFromGoogle
-    );
-    return document;
-  } catch (error) {
-    console.error("Error creting file: ", error);
-    throw error;
-  }
 };
 
 // Delete
