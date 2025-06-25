@@ -204,7 +204,7 @@ export default function CardTCommentCalender({
         <h1 className="text-title text-h6 font-semibold">
           {selectedTaskId && selectedTask ? (
             <>
-              Comments in{" "}
+              Notes in{" "}
               <span className="text-primary">{selectedTask.title}</span>
             </>
           ) : (
