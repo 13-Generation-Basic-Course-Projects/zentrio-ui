@@ -296,7 +296,7 @@ export default function TeamCardWelcome() {
           <div className="bg-gradient-to-br from-primary/10 via-primary/20 to-primary/60 p-3 rounded-3xl h-full shadow-lg border border-white/10 flex items-center justify-center">
             <div className="grid grid-cols-2 gap-3 w-full h-full">
               {/* Calendar */}
-              <div className="bg-white/10 backdrop-blur-sm rounded-2xl flex flex-col items-center justify-center text-title text-sm font-medium">
+              {/* <div className="bg-white/10 backdrop-blur-sm rounded-2xl flex flex-col items-center justify-center text-title text-sm font-medium">
                 <Image
                   src={calendarIcon}
                   alt="calendar feature"
@@ -305,39 +305,8 @@ export default function TeamCardWelcome() {
                 />
                 <span>Calendar</span>
               </div>
-
-              {/* Gantt Chart */}
-              <div className="bg-white/10 backdrop-blur-sm rounded-2xl flex flex-col items-center justify-center text-title text-sm font-medium">
-                <Image
-                  src={kanbanIcon}
-                  alt="calendar feature"
-                  width={32}
-                  height={32}
-                />
-                <span>Kanban</span>
-              </div>
-
-              {/* Document */}
-              <div className="bg-white/10 backdrop-blur-sm rounded-2xl flex flex-col items-center justify-center text-title text-sm font-medium">
-                <Image
-                  src={docsIcon}
-                  alt="calendar feature"
-                  width={32}
-                  height={32}
-                />
-                <span>Document</span>
-              </div>
-
-              {/* Report */}
-              <div className="bg-white/10 backdrop-blur-sm rounded-2xl flex flex-col items-center justify-center text-title text-sm font-medium">
-                <Image
-                  src={reportIcon}
-                  alt="calendar feature"
-                  width={32}
-                  height={32}
-                />
-                <span>Report</span>
-              </div>
+ */}
+              
             </div>
           </div>
         </div>

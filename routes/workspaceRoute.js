@@ -2,7 +2,7 @@ import { apiConfig } from "@/constant/baseurl";
 
 export const workspaceRouteGroup = {
   createWorkspace: () => `${apiConfig.baseUrl}/workspaces`, // Create workspace
-  getAllWorkspaces: () => `${apiConfig.baseUrl}/workspaces`, // Get all workspaces
+  getAllWorkspaces: () => `${apiConfig.baseUrl}/workspaces?page=1&size=9999`, // Get all workspaces
   getWorkspaceById: (id) => `${apiConfig.baseUrl}/workspaces/${id}`, // Get workspace by id
   deleteWorkspaceById: (id) => `${apiConfig.baseUrl}/workspaces/${id}`, // Delete workspace by id
   updateWorkspaceById: (id) => `${apiConfig.baseUrl}/workspaces/${id}`, // Update workspace by id
@@ -14,7 +14,7 @@ export const workspaceRouteGroup = {
 
   //new
   getOtherWorkSpaceJoined: () => `${apiConfig.baseUrl}/workspaces/other`, // Get other workspaces that users has joined
-  
+
   getMemeberByBoardId: (boardId) =>
     `${apiConfig.baseUrl}/boards/${boardId}/members`, // get member by board id
 };
