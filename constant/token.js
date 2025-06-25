@@ -13,17 +13,25 @@ export const Token = async () => {
 
   const UserToken = {
     Credential: (() => {
-      if (typeof session?.backendToken === 'string' && session.backendToken.trim().length > 0) {
+      if (
+        typeof session?.backendToken === "string" &&
+        session.backendToken.trim().length > 0
+      ) {
         return session.backendToken;
       }
-      if (typeof session?.googleAuth?.accessToken === 'string' && session.googleAuth.accessToken.trim().length > 0) {
+      if (
+        typeof session?.googleAuth?.accessToken === "string" &&
+        session.googleAuth.accessToken.trim().length > 0
+      ) {
         return session.googleAuth.accessToken;
       }
       return null;
     })(),
-    GoogleDocumentToken: typeof session?.googleAuth?.accessToken === 'string' && session.googleAuth.accessToken.trim().length > 0
-      ? session.googleAuth.accessToken
-      : null,
+    GoogleDocumentToken:
+      typeof session?.googleAuth?.accessToken === "string" &&
+      session.googleAuth.accessToken.trim().length > 0
+        ? session.googleAuth.accessToken
+        : null,
   };
   return UserToken;
 };
