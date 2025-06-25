@@ -341,6 +341,7 @@ export const PDFPreviewer = ({ report }) => {
       });
     });
 
+
     return flattened;
   };
 
@@ -1171,7 +1172,7 @@ export const PDFPreviewer = ({ report }) => {
                                                 borderRight: "1px solid black",
                                               }}
                                             >
-                                              {value?.teamLeader}
+                                              {value?.teamLeader?.username}
                                             </td>
                                             <td style={{ paddingLeft: "27px" }}>
                                               {value?.allChecklists.length}
@@ -1272,7 +1273,7 @@ export const PDFPreviewer = ({ report }) => {
                                               borderRight: "1px solid black",
                                             }}
                                           >
-                                            {value?.teamLeader}
+                                            {value?.teamLeader?.username}
                                           </td>
                                           <td style={{ paddingLeft: "27px" }}>
                                             {value?.allChecklists.length}
@@ -1371,7 +1372,7 @@ export const PDFPreviewer = ({ report }) => {
                                               borderRight: "1px solid black",
                                             }}
                                           >
-                                            {value?.teamLeader}
+                                            {value?.teamLeader?.username}
                                           </td>
                                           <td style={{ paddingLeft: "27px" }}>
                                             {value?.allChecklists.length}
@@ -1522,7 +1523,7 @@ export const PDFPreviewer = ({ report }) => {
                                                 borderRight: "1px solid black",
                                               }}
                                             >
-                                              {value?.teamLeader}
+                                              {value?.teamLeader?.username}
                                             </td>
                                             <td style={{ paddingLeft: "27px" }}>
                                               {value?.allChecklists.length}
@@ -2692,7 +2693,7 @@ export const PDFPreviewer = ({ report }) => {
                                                 borderRight: "1px solid black",
                                               }}
                                             >
-                                              {value?.teamLeader}
+                                              {value?.teamLeader?.username?.username}
                                             </td>
                                             <td style={{ paddingLeft: "27px" }}>
                                               {value?.allChecklists.length}
@@ -2793,7 +2794,7 @@ export const PDFPreviewer = ({ report }) => {
                                               borderRight: "1px solid black",
                                             }}
                                           >
-                                            {value?.teamLeader}
+                                            {value?.teamLeader?.username}
                                           </td>
                                           <td style={{ paddingLeft: "27px" }}>
                                             {value?.allChecklists.length}
@@ -2892,7 +2893,7 @@ export const PDFPreviewer = ({ report }) => {
                                               borderRight: "1px solid black",
                                             }}
                                           >
-                                            {value?.teamLeader}
+                                            {value?.teamLeader?.username}
                                           </td>
                                           <td style={{ paddingLeft: "27px" }}>
                                             {value?.allChecklists.length}
@@ -3041,7 +3042,7 @@ export const PDFPreviewer = ({ report }) => {
                                                 borderRight: "1px solid black",
                                               }}
                                             >
-                                              {value?.teamLeader}
+                                              {value?.teamLeader?.username}
                                             </td>
                                             <td style={{ paddingLeft: "27px" }}>
                                               {value?.allChecklists.length}

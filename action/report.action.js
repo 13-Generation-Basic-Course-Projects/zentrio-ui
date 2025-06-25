@@ -1,7 +1,7 @@
 "use server"
 
 import { Token } from "@/constant/token"
-import { generateReportByBoardIdService, getReportService } from "@/service/report.service"
+import { generateReportByBoardIdService, getReportService, getReportVersionByReportIdService } from "@/service/report.service"
 
 export const getReportAction = async ({ boardId }) => {
     const userToken = await Token();
@@ -15,4 +15,11 @@ export const generateReportByBoardIdAction = async ({ boardId }) => {
     const zentrioToken = userToken.Credential;
     const { blob, fileName } = await generateReportByBoardIdService({ boardId, zentrioToken });
     return { blob, fileName };
+}
+
+export const getReportVersionByReportIdAction = async ({ boardId }) => {
+    const userToken = await Token();
+    const zentrioToken = userToken.Credential;
+    const result = await getReportVersionByReportIdService({ boardId, zentrioToken });
+    return result;
 }

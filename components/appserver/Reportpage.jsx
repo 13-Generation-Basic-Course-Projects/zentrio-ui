@@ -9,7 +9,7 @@ const VerticalChartNoSSR = dynamic(() => import("../chart/VerticalChart"), {
   ssr: false,
 });
 
-export default function Reportpage({ modal, report }) {
+export default function Reportpage({ modal, report, version }) {
   const task = {
     todo: 0,
     progress: 0,
@@ -115,6 +115,8 @@ export default function Reportpage({ modal, report }) {
   if (groupedTasks == null) {
     return <></>;
   }
+
+  console.log("Version: ", version)
   return (
     <>
       <div className="p-5">

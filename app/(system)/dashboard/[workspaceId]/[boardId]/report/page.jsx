@@ -1,6 +1,6 @@
 import { getBoardMemberAction } from "@/action/member.action";
 import { getCurrentUserProfileAction } from "@/action/profile.action";
-import { getReportAction } from "@/action/report.action";
+import { getReportAction, getReportVersionByReportIdAction } from "@/action/report.action";
 import { getOtherWorkSpaceJoinedAction } from "@/action/workspace.action";
 import Reportpage from "@/components/appserver/Reportpage";
 import { BtnPreview, BtnSaveAs } from "@/components/button/ButtonReport";
@@ -12,6 +12,8 @@ export default async function Report({ params }) {
   // const boardId = `d4f6ed17-3f68-48b4-9cbb-fa141a2d2000`;
   const boardId = params.boardId;
   const reportData = await getReportAction({ boardId });
+  const reportId = reportData?.payload?.reportId;
+  const reportVersionData = await getReportVersionByReportIdAction({ reportId })
   const boardMember = await getBoardMemberAction(boardId);
   const currentUserProfile = await getCurrentUserProfileAction();
 
@@ -41,6 +43,8 @@ export default async function Report({ params }) {
   const role = getRoleByBoardId(boardId, currentUserProfile);
   console.log("sadd", role);
   const roleNeverJoined = null;
+  console.log("Report Id: ", reportVersionData)
+  console.log("BoardId: ", boardId)
   return (
     <>
       <Reportpage
@@ -48,9 +52,10 @@ export default async function Report({ params }) {
         roleJoined={role}
         modal={[
           <BtnPreview key="btn-preview" report={reportData} />,
-          <ModalSaveAs key="modal-save-as" boardid={boardId} />,
+          <ModalSaveAs key="modal-save-as" board={boardId} />,
         ]}
         report={reportData}
+        version={reportVersionData}
       />
     </>
   );

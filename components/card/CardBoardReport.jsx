@@ -17,6 +17,8 @@ const files = [
 ];
 
 export default function CardBoardReport({ boardId }) {
+
+  console.log("Board: ", boardId)
   const handleGenerate = async () => {
     const { blob, fileName } = await generateReportByBoardIdAction({ boardId });
     const url = window.URL.createObjectURL(blob);
@@ -28,6 +30,7 @@ export default function CardBoardReport({ boardId }) {
     a.remove();
     window.URL.revokeObjectURL(url);
   };
+  
   return (
     <div className="bg-white text-title text-h6 p-5 border border-gray-200  rounded-large w-full max-w-md">
       <header className="mb-4 text-h6 font-semibold">My Report Board</header>

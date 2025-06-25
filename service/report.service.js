@@ -18,7 +18,6 @@ export const getReportService = async ({ boardId, zentrioToken } = {}) => {
     return data;
 }
 
-// generating report by pdf
 export const generateReportByBoardIdService = async ({ boardId, zentrioToken } = {}) =>{
     const url = reportRouteGroup.generateReportInPDFByBoardId(boardId);
     const res = await fetch(url, {
@@ -44,4 +43,18 @@ export const generateReportByBoardIdService = async ({ boardId, zentrioToken } =
     }
 
     return { blob, fileName };
+}
+
+export const getReportVersionByReportIdService = async ({ boardId, zentrioToken } = {}) => {
+    const url = reportRouteGroup.getReportVersionByReportId(boardId);
+    const res = await fetch(url, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "accept": "*/*",
+            "Authorization": `Bearer ${zentrioToken}`
+        }
+    });
+    const data = await res.json();
+    return data;
 }
