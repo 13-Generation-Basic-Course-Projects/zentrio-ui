@@ -459,12 +459,24 @@ export default function MyCalender({ tasks, workspaceId }) {
         month: "long",
       });
 
+    // const displayEnd = new Date(realEnd || event.end);
+    // console.log("Display end in calendar is: ", displayEnd);
+    // const formattedDate = `${formatDate(event.start)} - ${formatDate(
+    //   displayEnd
+    // )}`;
+    
+    
     const displayEnd = new Date(realEnd || event.end);
     console.log("Display end in calendar is: ", displayEnd);
+    if (formatDate(event.start) === formatDate(displayEnd) && event.allDay) {
+      displayEnd.setDate(displayEnd.getDate() );
+    }
     const formattedDate = `${formatDate(event.start)} - ${formatDate(
       displayEnd
     )}`;
-    // console.log("formattedDate in calendar is: ", formattedDate);
+    console.log("Display formattedDate in calendar is: ", formattedDate);
+
+    
 
 
     // COMMENT EVENT BLOCK
