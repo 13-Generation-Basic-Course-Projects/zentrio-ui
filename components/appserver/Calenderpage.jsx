@@ -444,6 +444,121 @@ export default function MyCalender({ tasks, workspaceId }) {
    RENDER FUNCTIONS
   */
 
+  // const renderEventContent = ({ event, isStart }) => {
+  //   const { type, color, notes = [], realEnd } = event.extendedProps;
+
+  //   if (type !== "task" && type !== "comment") return null;
+
+  //   const baseStyle = `h-[70px] p-1 rounded-small border-2 px-2 font-bold ${
+  //     color?.text || "text-green-600"
+  //   } ${color?.light || "bg-green-100"}`;
+
+  //   const formatDate = (dateStr) =>
+  //     new Date(dateStr).toLocaleDateString("en-GB", {
+  //       day: "numeric",
+  //       month: "long",
+  //     });
+
+  //   // const displayEnd = new Date(realEnd || event.end);
+  //   // console.log("Display end in calendar is: ", displayEnd);
+  //   // const formattedDate = `${formatDate(event.start)} - ${formatDate(
+  //   //   displayEnd
+  //   // )}`;
+    
+  //   console.log("RealEndddddddd :", realEnd);
+  //   const displayEnd = new Date(realEnd);
+  //   console.log("Display end in calendar is: ", displayEnd);
+  //   if (formatDate(event.start) === formatDate(displayEnd) && event.allDay) {
+  //     displayEnd.setDate(displayEnd.getDate() );
+  //   }
+  //   const formattedDate = `${formatDate(event.start)} - ${formatDate(
+  //     displayEnd
+  //   )}`;
+  //   console.log("Display formattedDate in calendar is: ", formattedDate);
+
+    
+
+
+  //   // COMMENT EVENT BLOCK
+  //   if (type === "comment") {
+  //     if (!isStart) {
+  //       return (
+  //         <div
+  //           className={`mt-1 text-[0.7rem] rounded-small border-2 border-dashed px-2 py-[12px] ${
+  //             color?.text || "text-blue-600"
+  //           } ${color?.light || "bg-blue-100"}`}
+  //           style={{
+  //             width: "100%",
+  //             display: "flex",
+  //             alignItems: "center",
+  //             justifyContent: "space-between",
+  //             gap: "1.5rem",
+  //           }}
+  //         ></div>
+  //       );
+  //     }
+
+  //     return (
+  //       <div
+  //         className={`mt-1 text-[0.7rem] rounded-small border-2 border-dashed px-2 py-[6px] ${
+  //           color?.text || "text-blue-600"
+  //         } ${color?.light || "bg-blue-100"}`}
+  //         style={{
+  //           width: "100%",
+  //           display: "flex",
+  //           alignItems: "center",
+  //           justifyContent: "space-between",
+  //           gap: "1.5rem",
+  //         }}
+  //       >
+  //         <MessageCircleMore className="w-4 h-4 flex-shrink-0" />
+  //         <div
+  //           className="text-[0.7rem] leading-snug break-words whitespace-pre-wrap flex-1"
+  //           style={{ wordBreak: "break-word" }}
+  //         >
+  //           {notes[0]?.noted || event.extendedProps.noted}
+  //         </div>
+  //       </div>
+  //     );
+  //   }
+
+  //   // TASK EVENT BLOCK
+  //   if (!isStart) {
+  //     return (
+  //       <div
+  //         className={`${baseStyle} h-[70px] text-[0.9rem] border ${
+  //           color?.border || "border-green-500"
+  //         } p-1`}
+  //       />
+  //     );
+  //   }
+
+  //   return (
+  //     <div className="flex flex-col gap-1">
+  //       <div
+  //         draggable={false}
+  //         onDragStart={(e) => e.preventDefault()}
+  //         className={`${baseStyle} border ${
+  //           color?.border || "border-green-500"
+  //         } rounded-medium`}
+  //         style={{
+  //           height: "70px",
+  //           display: "grid",
+  //           gridTemplateRows: "auto 1fr",
+  //           gap: 0,
+  //         }}
+  //       >
+  //         <div className="text-[0.65rem] font-medium bg-white bg-opacity-80 w-fit px-2 py-[2px] rounded-small">
+  //           {formattedDate}
+  //         </div>
+  //         <div className="flex items-center gap-1 text-[0.9rem] h-[60px]">
+  //           <ClipboardList className="w-4 h-4" />
+  //           <span className="truncate">{event.title}</span>
+  //         </div>
+  //       </div>
+  //     </div>
+  //   );
+  // };
   const renderEventContent = ({ event, isStart }) => {
     const { type, color, notes = [], realEnd } = event.extendedProps;
 
@@ -459,50 +574,38 @@ export default function MyCalender({ tasks, workspaceId }) {
         month: "long",
       });
 
-    // const displayEnd = new Date(realEnd || event.end);
-    // console.log("Display end in calendar is: ", displayEnd);
-    // const formattedDate = `${formatDate(event.start)} - ${formatDate(
-    //   displayEnd
-    // )}`;
-    
-    
-    const displayEnd = new Date(realEnd || event.end);
-    console.log("Display end in calendar is: ", displayEnd);
-    if (formatDate(event.start) === formatDate(displayEnd) && event.allDay) {
-      displayEnd.setDate(displayEnd.getDate() );
+    // Determine correct end date
+    const rawEnd = realEnd || event.end || event.start;
+    const startDate = new Date(event.start);
+    const endDate = new Date(rawEnd);
+
+    // Adjust for allDay event logic
+    if (event.allDay && startDate.toDateString() === endDate.toDateString()) {
+      // Don't change end date, same day
+    } else if (event.allDay && startDate < endDate) {
+      // FullCalendar may treat end as exclusive for allDay — subtract 1 day
+      endDate.setDate(endDate.getDate() - 1);
     }
-    const formattedDate = `${formatDate(event.start)} - ${formatDate(
-      displayEnd
-    )}`;
-    console.log("Display formattedDate in calendar is: ", formattedDate);
 
-    
+    const formattedDate = `${formatDate(startDate)} - ${formatDate(endDate)}`;
 
+    // DEBUG (optional)
+    console.log("Start:", startDate);
+    console.log("Real End:", rawEnd);
+    console.log("Final Adjusted End:", endDate);
+    console.log("Formatted Display:", formattedDate);
 
-    // COMMENT EVENT BLOCK
+    // 🟦 COMMENT EVENT
     if (type === "comment") {
-      if (!isStart) {
-        return (
-          <div
-            className={`mt-1 text-[0.7rem] rounded-small border-2 border-dashed px-2 py-[12px] ${
-              color?.text || "text-blue-600"
-            } ${color?.light || "bg-blue-100"}`}
-            style={{
-              width: "100%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              gap: "1.5rem",
-            }}
-          ></div>
-        );
-      }
+      const commentText = notes[0]?.noted || event.extendedProps.noted;
 
       return (
         <div
-          className={`mt-1 text-[0.7rem] rounded-small border-2 border-dashed px-2 py-[6px] ${
+          className={`mt-1 text-[0.7rem] rounded-small border-2 border-dashed px-2 ${
             color?.text || "text-blue-600"
-          } ${color?.light || "bg-blue-100"}`}
+          } ${color?.light || "bg-blue-100"} ${
+            isStart ? "py-[6px]" : "py-[12px]"
+          }`}
           style={{
             width: "100%",
             display: "flex",
@@ -511,19 +614,24 @@ export default function MyCalender({ tasks, workspaceId }) {
             gap: "1.5rem",
           }}
         >
-          <MessageCircleMore className="w-4 h-4 flex-shrink-0" />
-          <div
-            className="text-[0.7rem] leading-snug break-words whitespace-pre-wrap flex-1"
-            style={{ wordBreak: "break-word" }}
-          >
-            {notes[0]?.noted || event.extendedProps.noted}
-          </div>
+          {isStart && (
+            <>
+              <MessageCircleMore className="w-4 h-4 flex-shrink-0" />
+              <div
+                className="text-[0.7rem] leading-snug break-words whitespace-pre-wrap flex-1"
+                style={{ wordBreak: "break-word" }}
+              >
+                {commentText}
+              </div>
+            </>
+          )}
         </div>
       );
     }
 
-    // TASK EVENT BLOCK
+    // ✅ TASK EVENT
     if (!isStart) {
+      // Prevent duplicate render on following days
       return (
         <div
           className={`${baseStyle} h-[70px] text-[0.9rem] border ${
@@ -559,7 +667,8 @@ export default function MyCalender({ tasks, workspaceId }) {
       </div>
     );
   };
-
+  
+  
   return (
     <div className="p-4 h-screen flex flex-col overflow-hidden relative">
       <BredCrum
