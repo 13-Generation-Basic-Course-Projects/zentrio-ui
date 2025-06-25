@@ -251,7 +251,7 @@ export default function Reportpage({ modal, report }) {
                 </h1>
                 <div className="relative  max-h-auto  overflow-y-auto scrollbar-hidden">
                   {}
-                  <div className="absolute h-full left-[20px] top-5 bottom-5 border-l border-gray-300"></div>
+                  
 
                   {}
                   <div className="flex flex-col space-y-8 relative z-10">
@@ -267,6 +267,7 @@ export default function Reportpage({ modal, report }) {
                             {report?.payload?.boardData?.createdBy?.username}
                           </p>
                         </div>
+                        <div className="absolute h-full left-[0.75%] -z-30 top-5 bottom-5 border-l border-gray-300"></div>
                       </div>
                     ))}
                   </div>

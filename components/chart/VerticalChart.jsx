@@ -120,7 +120,7 @@ export default function VerticalChart({ report }) {
                     cx="6.42755"
                     cy="6.50373"
                     r="5.35941"
-                    stroke="hsl(194, 54%, 60%)"
+                    stroke={weeklyClick ? `hsl(194, 54%, 60%)` : `hsl(201, 52%, 59%)`}
                     strokeWidth="1.19098"
                   />
                 </svg>
@@ -144,7 +144,7 @@ export default function VerticalChart({ report }) {
                     cx="6.42755"
                     cy="6.50373"
                     r="5.35941"
-                    stroke="hsl(215, 89%, 69%)"
+                    stroke={weeklyClick ? `hsl(215, 89%, 69%)` : `hsl(201, 52%, 59%)`}
                     strokeWidth="1.19098"
                   />
                 </svg>
@@ -168,7 +168,7 @@ export default function VerticalChart({ report }) {
                     cx="6.42755"
                     cy="6.50373"
                     r="5.35941"
-                    stroke="hsl(16, 89%, 66%)"
+                    stroke={weeklyClick ? `hsl(16, 89%, 66%)` : `hsl(201, 52%, 59%)`}
                     strokeWidth="1.19098"
                   />
                 </svg>
@@ -192,7 +192,7 @@ export default function VerticalChart({ report }) {
                     cx="6.42755"
                     cy="6.50373"
                     r="5.35941"
-                    stroke="hsl(145, 53%, 67%)"
+                    stroke={weeklyClick ? `hsl(145, 53%, 67%)` : `hsl(201, 52%, 59%)`}
                     strokeWidth="1.19098"
                   />
                 </svg>
@@ -340,22 +340,22 @@ export const MonthlyChart = ({ report }) => {
           y: {
             beginAtZero: true,
             border: {
-              display: false,        
-              color: '#333',        
-              width: 2,           
+              display: false,
+              color: '#333',
+              width: 2,
               dash: [5, 5],
             },
             grid: {
               display: true,
-              color: function(context) {
+              color: function (context) {
                 if (context.tick.value === context.chart.scales.y.min) {
                   return 'transparent';
                 }
-                return '#e0e0e0'; 
+                return '#e0e0e0';
               },
               lineWidth: 1,
               drawBorder: false,
-          },
+            },
           },
           x: {
             grid: {
@@ -518,23 +518,23 @@ export const WeeklyChart = ({ report }) => {
           y: {
             beginAtZero: true,
             border: {
-              display: false,        
-              color: '#333',        
-              width: 2,           
+              display: false,
+              color: '#333',
+              width: 2,
               dash: [5, 5],
             },
             grid: {
               display: true,
-              color: function(context) {
+              color: function (context) {
                 if (context.tick.value === context.chart.scales.y.min) {
                   return 'transparent';
                 }
-                return '#e0e0e0'; 
+                return '#e0e0e0';
               },
               lineWidth: 1,
               drawBorder: false,
+            },
           },
-        },
           x: {
             grid: {
               display: false,
