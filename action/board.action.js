@@ -6,6 +6,7 @@ import {
   assignUserRoleLeadeerToBoardService,
   chageStatusCheckListService,
   changeStageToUnderReviewService,
+  changeStatusTaskService,
   checkEmailForClearService,
   createCheckListService,
   createGanttChartByBoardIdService,
@@ -26,6 +27,7 @@ import {
   getTaskByBoardIdService,
   getTaskByTaskIdService,
   inviteMemberToBoardService,
+  leaveTheBoardService,
   moveTaskOrderService,
   postCommentByCheckListIdService,
   updateCheckListByIdAndTaskIdService,
@@ -35,7 +37,10 @@ import {
 } from "@/service/board.service";
 import { revalidatePath } from "next/cache";
 import { sendNotificationToUserIdAction } from "./notification.action";
-import { sendNotificationToUserIdService } from "@/service/notification.service";
+import {
+  sendNotificationToSpecificArrayIdService,
+  sendNotificationToUserIdService,
+} from "@/service/notification.service";
 
 console.log("test actions must create folders");
 /*
@@ -413,8 +418,6 @@ export const createTaskByBoardIdAndGanttChartIdAction = async (
     if (!token) {
       throw new Error("No authentication token found");
     }
-    console.log("Token retrieved:", token);
-    console.log("Data create form:", data);
 
     // Create the task
     const result = await createTaskByBoardIdAndGanttChartIdService({
@@ -424,37 +427,35 @@ export const createTaskByBoardIdAndGanttChartIdAction = async (
       token,
     });
 
-    // Log the result to confirm response structure
-    console.log("Create task result:", JSON.stringify(result, null, 2));
-
-    // Extract taskId from result.payload.taskId
+    // Extract taskId
     const taskId = result.payload?.taskId;
     if (!taskId || typeof taskId !== "string") {
       throw new Error("Task ID is missing or invalid in the response");
     }
 
-    // Check if leaderId exists
+    // Send notification if leaderId exists
     if (data.leaderId) {
-      // Create notification message with startedAt date
-      const startDate = new Date(data.startedAt).toLocaleDateString();
       const notificationData = {
-        message: `You have been assigned as the leader for the task "${data.title}"`,
-        taskId: taskId,
-        assignId: data.leaderId,
-        taskTitle: data.title,
+        userIds: [data.leaderId],
+        title: `Task "${data.title}" Assignment`,
+        message: `You have been assigned as the leader for the task "${
+          data.title
+        }" starting on ${new Date(data.startedAt).toLocaleString()}`,
         type: "leader_assignment",
+        boardId: boardId,
+        taskId: taskId,
+        // checklistId omitted as it's optional
       };
 
-      // Send notification
-      const notiResult = await sendNotificationToUserIdAction(
-        data.leaderId,
-        taskId,
-        notificationData
-      );
-      if (!notiResult.success) {
-        console.warn("Failed to send notification:", notiResult.error);
-        // Optionally, throw error to halt process
-        // throw new Error(`Failed to send notification: ${notiResult.error}`);
+      try {
+        const notiResult = await sendNotificationToSpecificArrayIdService(
+          notificationData,
+          token
+        );
+        console.log("Notification result:", notiResult);
+      } catch (error) {
+        console.warn("Failed to send notification:", error.message);
+        // Continue execution as notification failure is non-critical
       }
     }
 
@@ -467,29 +468,48 @@ export const createTaskByBoardIdAndGanttChartIdAction = async (
 };
 
 export const assignLeaderAction = async (taskId, assignId) => {
-  const userToken = await Token();
-  const token = userToken?.Credential;
-  if (!token) {
-    throw new Error("No authentication token found");
+  try {
+    const userToken = await Token();
+    const token = userToken?.Credential;
+    if (!token) {
+      throw new Error("No authentication token found");
+    }
+
+    const result = await assignUserRoleLeadeerToBoardService({
+      taskId,
+      assignId,
+      token,
+    });
+
+    // Send notification
+    if (result.payload?.boardId) {
+      const notificationData = {
+        userIds: [assignId],
+        title: "Leader Assignment",
+        message: `You have been assigned as the leader for task ID ${taskId}`,
+        type: "leader_assignment",
+        boardId: result.payload.boardId,
+        taskId: taskId,
+      };
+
+      try {
+        const notiResult = await sendNotificationToSpecificArrayIdService(
+          notificationData,
+          token
+        );
+        console.log("Notification result:", notiResult);
+      } catch (error) {
+        console.warn("Failed to send notification:", error.message);
+      }
+    }
+
+    revalidatePath("/assignLd");
+    return { success: true, data: result };
+  } catch (error) {
+    console.error("Assign leader action error:", error.message);
+    return { success: false, error: error.message };
   }
-
-  console.log("Assigning leader with:", {
-    taskId,
-    assignId,
-    token: token.substring(0, 10) + "...",
-  });
-
-  const result = await assignUserRoleLeadeerToBoardService({
-    taskId,
-    assignId,
-    token,
-  });
-
-  console.log("Assign leader result:", JSON.stringify(result, null, 2));
-  revalidatePath("/assignLd");
-  return { success: true, data: result };
 };
-
 export const declineLeaderAction = async (taskId, assignId) => {
   try {
     const userToken = await Token();
@@ -570,7 +590,7 @@ export const changeStageToUnderReviewAction = async (taskId, stage) => {
   const token = userToken?.Credential;
   const result = await changeStageToUnderReviewService(taskId, token, stage);
   revalidatePath("/checklist");
-  //console.log("status action", taskId, stage);
+  console.log("status action complete fix", taskId, stage);
   return result;
 };
 /*
@@ -581,7 +601,7 @@ export const FeedBackAction = async (taskId, comment) => {
   const token = userToken?.Credential;
   const result = await FeedBackService(taskId, token, comment);
   revalidatePath("/checklist");
-  //console.log("status action", taskId, stage);
+
   return result;
 };
 /*
@@ -779,5 +799,29 @@ export const uploadCoverChecklistAction = async (checklistId, file) => {
   });
   revalidatePath("/member");
   console.log("uploadCoverChecklistAction result: ", result);
+  return result;
+};
+
+/*
+ * achange status task fix bugss
+ */
+export const changeStatusTaskAction = async (taskId, type) => {
+  const userToken = await Token();
+  const token = userToken?.Credential;
+  const result = await changeStatusTaskService(taskId, token, type);
+  revalidatePath("/checklist");
+  console.log("status action task fix bug", taskId, type);
+  return result;
+};
+
+/*
+ *leave the baord
+ */
+export const leaveTheBoardAction = async (boardId) => {
+  const userToken = await Token();
+  const token = userToken?.Credential;
+  const result = await leaveTheBoardService(boardId, token);
+  revalidatePath("/board");
+
   return result;
 };

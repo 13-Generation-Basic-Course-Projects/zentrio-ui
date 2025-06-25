@@ -5,7 +5,7 @@ import Image from "next/image";
 import clearday from "@/assets/weathericon/clear-day.png";
 import clearnight from "@/assets/weathericon/clear-night.png";
 import cloudy from "@/assets/weathericon/cloudy.png";
-import overcast from "@/assets/weathericon/Overcast.png";
+import overcast from "@/assets/weathericon/overcast.png";
 import heavyrain from "@/assets/weathericon/heavy-showers.png";
 import thunderstorm from "@/assets/weathericon/thunderstorm-showers.png";
 import cloudyday from "@/assets/weathericon/partly-cloudy-day.png";

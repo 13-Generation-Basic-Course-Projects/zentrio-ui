@@ -22,6 +22,7 @@ export default function CardCreateAnnouncement({
   const managerMember = boardMember?.find((member) =>
     member.roles?.some((role) => role === "ROLE_MANAGER")
   );
+  console.log("anal",Announcements?.payload)
 
   return (
     <div className="mx-auto px-2 py-1">
@@ -41,7 +42,7 @@ export default function CardCreateAnnouncement({
 
               {/* Compact stats */}
               <div className="flex items-center space-x-3 text-white/90 text-xs">
-                <span>{Announcements?.length || 0} posts</span>
+                <span>{Announcements?.payload?.length || 0} posts</span>
                 <span>{boardMember?.length || 0} members</span>
               </div>
             </div>

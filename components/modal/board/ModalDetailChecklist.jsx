@@ -20,7 +20,6 @@ import {
 import { parseDate } from "@internationalized/date";
 import { IconAdd, StackedProfileChecklist } from "../../icon/everyicon";
 import ModalUploadAttachment from "./ModalUploadAttachment";
-import { CardCheckList } from "@/components/card/CardChecklist";
 import Trash from "@/components/button/Trash";
 import PopupAction from "@/components/popup/PopupAction";
 import { IconpopupDelete } from "@/components/icon/Iconpopup";
@@ -35,10 +34,11 @@ import {
 } from "@/action/board.action";
 import PostCommentChecklist from "./PostCommentChecklist";
 import CommentChecklistSec from "./CommentChecklistSec";
-import { getAttachmentAction } from "@/action/document.action";
+import { getAttactmentAction } from "@/action/document.action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { CameraIcon } from "lucide-react";
+import { CardCheckList } from "@/components/card/CardChecklist";
 
 const initialState = {
   activeTab: "add",
@@ -98,7 +98,7 @@ const useChecklistData = (checklistId, isOpen) => {
     dispatch({ type: "SET_ATTENDMENT_ERROR", payload: null });
     dispatch({ type: "SET_ATTENDMENTS", payload: [] });
     try {
-      const result = await getAttachmentAction(checklistId);
+      const result = await getAttactmentAction(checklistId);
       if (result.success) {
         dispatch({ type: "SET_ATTENDMENTS", payload: [result.payload] });
       } else {
@@ -686,6 +686,7 @@ const ModalDetailChecklist = ({
   role,
   boardId,
   isModalDisabled,
+  imageChecklist,
 }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const { state, dispatch, shouldStayOpen } = useChecklistData(
@@ -693,6 +694,7 @@ const ModalDetailChecklist = ({
     isOpen
   );
 
+  console.log("hhhh", image);
   const {
     taskData,
     newDescription,
@@ -789,7 +791,10 @@ const ModalDetailChecklist = ({
   const fileInputRef = useRef(null);
   const MAX_FILE_SIZE = 5 * 1024 * 1024;
   const router = useRouter();
-  const [previewImage, setPreviewImage] = useState();
+  const [previewImage, setPreviewImage] = useState(
+    image || previewImage.noChecklistImage
+  );
+
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -885,6 +890,9 @@ const ModalDetailChecklist = ({
     }
   };
 
+  const displayImage = imageChecklist
+    ? imageChecklist
+    : "https://media.sproutsocial.com/uploads/2024/01/facebook-cover-image.svg";
   return (
     <div>
       {role == "ROLE_MEMBER" || role == "ROLE_MANAGER" ? (
@@ -947,13 +955,14 @@ const ModalDetailChecklist = ({
             startDate={startDate}
             comment="static comment"
             label={label}
-            image={image}
+            image={displayImage}
             hideImage={hideImage}
             member={member || []}
             checkedListId={id}
             commentCount={state.comments.length}
             finishedAt={finishedAt}
             leaderId={leaderId}
+            imageChecklist={displayImage}
           />
         </div>
       </Button>
@@ -1044,9 +1053,10 @@ const ModalDetailChecklist = ({
                     <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-blue-500"></div>
                   </div>
                 )}
+
                 <div className="border rounded-medium flex justify-center items-center relative w-full h-40">
                   <img
-                    src={previewImage}
+                    src={displayImage}
                     alt="Checklist Image"
                     className="w-full h-full object-cover rounded-medium"
                   />
@@ -1376,7 +1386,7 @@ const ModalDetailChecklist = ({
                     }
                     disabled={loading}
                   >
-                    Add action
+                    Add Attatchments
                   </button>
                   <button
                     className={`py-2 px-4 ${
@@ -1389,7 +1399,7 @@ const ModalDetailChecklist = ({
                     }
                     disabled={loading}
                   >
-                    All Actions ({state.actions?.length || 0})
+                    All Attatchments ({state.actions?.length || 0})
                   </button>
                 </div>
                 <div className="mt-4 mb-5">

@@ -21,12 +21,13 @@ export const CardCheckList = ({
   finishedAt,
   commentCount,
   leaderId,
+  imageChecklist,
 }) => {
   const finishedAtRaw = finishedAt;
   const FormattedFinishDate = finishedAtRaw.split("T")[0];
-
+  console.log("imageChecklist", member);
   return (
-    <div>
+    <div className="">
       <Card className="py-4 rounded-xl cursor-pointer hover:bg-blue-50 transition shadow-sm w-full">
         {/* Header */}
         <CardHeader className="pb-0 pt-2 px-4 flex items-start flex-col">
@@ -36,7 +37,7 @@ export const CardCheckList = ({
           <p className="text-caption font-semibold text-title/50 truncate mt-2">
             Start Date: {startDate}
           </p>
-          <div className="text-body-sm mt-4 flex flex-row items-center space-x-2">
+          <div className="text-body-sm mt-4 flex flex-row items-center space-x-2 ">
             <div>
               {status === "In Progress" && (
                 <svg
@@ -103,28 +104,26 @@ export const CardCheckList = ({
             </p>
           </div>
         </CardHeader>
-
         {/* Body */}
-        {image && (
+        {
           <CardBody className="overflow-visible py-2">
             <img
-              src={image}
+              src={imageChecklist}
               alt={`Card background for ${title}`}
               className="object-cover rounded-xl w-full h-32"
             />
           </CardBody>
-        )}
+        }
 
         {/* Footer */}
         <div className="flex justify-between items-center p-4">
-          <div className="bg-primary/50 p-2 text-label rounded-small text-blueActive">
-            {label}
+          {/* nh test sent nh ot torn map data tee */}
+          <div className=" p-2 bg-orange-500 text-white rounded-xl ">
+            Feedback
           </div>
           <StackedProfileChecklist member={member} hidden={1} />
         </div>
-
         <div className="border-b m-4 items-center border-2"></div>
-
         <CardFooter className="pt-2 px-4 flex flex-col items-start space-y-4">
           <div className="flex w-full justify-between text-sm text-gray-600">
             <div className="flex flex-row justify-center items-center space-x-2">

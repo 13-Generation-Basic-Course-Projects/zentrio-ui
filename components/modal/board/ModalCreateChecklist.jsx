@@ -162,7 +162,7 @@ export default function ModalCreateChecklist({
 
   return (
     <>
-      {stage == "COMPLETED" || stage == "UNDER_REVIEW" ? (
+      {stage == "COMPLETED" || stage == "UNDER_REVIEW" || stage == "TO DO" ? (
         ""
       ) : (
         <>

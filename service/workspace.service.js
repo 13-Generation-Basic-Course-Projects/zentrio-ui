@@ -364,12 +364,12 @@ export const updateFavBoardByIdService = async ({
       },
     });
 
-    if (!res.ok) {
-      const errorData = await res.json();
-      throw new Error(
-        errorData.message || `Request failed with status ${res.status}`
-      );
-    }
+    // if (!res.ok) {
+    //   const errorData = await res.json();
+    //   throw new Error(
+    //     errorData.message || `Request failed with status ${res.status}`
+    //   );
+    // }
 
     return await res.json();
   } catch (error) {
@@ -722,16 +722,16 @@ export const deleteBoardService = async ({ id, workspaceId, token }) => {
     const res = await fetch(url, {
       method: "DELETE",
       headers: {
-        "Content-Type": "application/json",
+        // "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
       next: { tags: ["boards"] },
       // body: JSON.stringify({ id, workspaceId }),
     });
 
-    if (!res.ok) {
-      throw new Error(`Failed to delete board: ${res.status}`);
-    }
+    // if (!res.ok) {
+    //   throw new Error(`Failed to delete board: ${res.status}`);
+    // }
 
     return await res.json();
   } catch (error) {

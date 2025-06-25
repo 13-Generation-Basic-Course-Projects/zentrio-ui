@@ -560,6 +560,7 @@ export default function KanbanBoard({
     try {
       const result = await changeStatusTaskAction(taskId, newStatus);
       if (result.success) {
+        // Update columns state
         setColumns((prev) =>
           prev.map((column) => ({
             ...column,
@@ -569,8 +570,11 @@ export default function KanbanBoard({
           }))
         );
       } else {
+        console.error("Failed to update task status:", result.error);
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error("Error updating task status:", error.message);
+    }
   };
 
   return (
@@ -735,7 +739,7 @@ export default function KanbanBoard({
                                 </div>
                                 {/* consider */}
 
-                                <div className="flex justify-end items-center hidden">
+                                <div className="flex justify-end items-center ">
                                   <button
                                     onClick={() =>
                                       handleStatusChange(
@@ -940,6 +944,7 @@ export default function KanbanBoard({
                                             )?.teamLeader?.userId || null
                                           }
                                           role={role}
+                                          imageChecklist={checklist?.cover}
                                         />
                                       </div>
                                     </div>
@@ -982,7 +987,7 @@ export default function KanbanBoard({
                                         stage={
                                           tasks.find(
                                             (task) => task.taskId === card.id
-                                          )?.stage || "TO_DO"
+                                          )?.stage || "TO DO"
                                         }
                                       />
                                     )}
@@ -1007,7 +1012,7 @@ export default function KanbanBoard({
                         <div className="flex items-center justify-center ">
                           <button
                             onClick={() => toggleTaskExpansion(card.id)}
-                            className="text-gray-400 hover:text-gray-600 p-1 rounded hover:bg-gray-100"
+                            className="text-gray-400 hover:text-gray-600 p-1 rounded hover:bg-gray-100 p-4 rounded-large"
                           >
                             {card.expanded ? (
                               <ChevronUp size={16} />

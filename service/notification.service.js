@@ -1,5 +1,6 @@
 "use server";
 
+import { apiConfig } from "@/constant/baseurl";
 import { notificationRouteGroup } from "@/routes/notificationRoute";
 
 export const sendNotificationForAllUserService = async ({ token, data }) => {
@@ -135,6 +136,42 @@ export const deleteAllNotificationService = async (token) => {
     return response;
   } catch (error) {
     console.error("Can't delete notification:", error);
+    throw error;
+  }
+};
+
+//new
+
+export const sendNotificationToSpecificArrayIdService = async (data, token) => {
+  const url = `${apiConfig.baseUrl}/notifications/sendSpecificToUsers`;
+
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    });
+
+    const resultText = await response.text();
+
+    if (!response.ok) {
+      throw new Error(
+        `Failed to send notification. Status: ${response.status}. Body: ${resultText}`
+      );
+    }
+
+    try {
+      return JSON.parse(resultText);
+    } catch (err) {
+      return {
+        message: resultText || "Notification sent (no JSON returned)",
+      };
+    }
+  } catch (error) {
+    console.error("Error sending notification:", error.message);
     throw error;
   }
 };

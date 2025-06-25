@@ -671,7 +671,7 @@ export const changeStageToUnderReviewService = async (taskId, token, stage) => {
       },
     });
     const data = await res.json();
-    console.log("📥 Backend responded with change status:", data);
+    console.log("📥 Backend responded with change status completed:", data);
 
     return data;
   } catch (error) {
@@ -690,11 +690,11 @@ export const FeedBackService = async (taskId, token, comment) => {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
-        body: JSON.stringify({
-          comment: comment,
-          taskId: taskId,
-        }),
       },
+      body: JSON.stringify({
+        comment: comment.comment,
+        taskId: taskId,
+      }),
     });
     const data = await res.json();
     console.log("📥 Backend responded with change feedback:", data);
@@ -813,15 +813,9 @@ export const updateTaskByIdService = async ({
       ganttBarId,
     }),
   });
-
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({}));
-    throw new Error(
-      error.message || `Failed to update task: ${response.status}`
-    );
-  }
-
-  return response.json();
+  const data = await response.json();
+  console.log("err update", data);
+  return data;
 };
 
 /*
@@ -994,10 +988,7 @@ export const getGuestUserDisplayKanbanService = async ({
   workspaceId,
   boardId,
 }) => {
-  const url = boardRouteGroup.getGuestUserDisplayKanban(
-    workspaceId,
-    boardId,
-  );
+  const url = boardRouteGroup.getGuestUserDisplayKanban(workspaceId, boardId);
   console.log("get task url : ", url);
 
   const response = await fetch(url, {
@@ -1088,5 +1079,32 @@ export const uploadCoverChecklistService = async ({
     return result;
   } catch (error) {
     console.error("Upload cover error:", error);
+  }
+};
+
+/**
+ *  leave the board
+ */
+
+/*
+ * delete task
+ */
+export const leaveTheBoardService = async (boardId, token) => {
+  try {
+    //console.log("from service ", token);
+    const url = boardRouteGroup.leaveTheBoard(boardId);
+    const res = await fetch(url, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await res.json();
+    console.log("📥 Backend responded with leave the baord", data);
+
+    return data;
+  } catch (error) {
+    throw error;
   }
 };
