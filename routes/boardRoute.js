@@ -21,7 +21,7 @@ export const boardRouteGroup = {
   assignMemberInChecklist: (checklistId, taskId, assignedBy, assignedTo) =>
     `${apiConfig.baseUrl}/api/v1/checklists/${checklistId}/tasks/${taskId}/members/${assignedBy}/members/${assignedTo}/`,
   uploadImageBoard: (boardId) =>
-    `${apiConfig.baseUrl}/boards/${boardId}/cover/`,
+    `${apiConfig.baseUrl}/boards/${boardId}/cover`,
 
   createTaskByBoardIdAndGanttBarId: () => `${apiConfig.baseUrl}/tasks`, // Created task with boards ID and gantt bars ID
   createCheckListBytaskId: () => `${apiConfig.baseUrl}/checklists`, // Created task with boards ID and gantt bars ID

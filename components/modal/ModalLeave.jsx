@@ -8,66 +8,121 @@ import {
   Button,
   useDisclosure,
 } from "@heroui/react";
-import { LeaveIcon } from "../icon/everyicon";
 import { IconpopupLeave } from "../icon/Iconpopup";
-import { BadgeMinus } from "lucide-react";
 import { leaveTheBoardAction } from "@/action/board.action";
-import { useRouter } from "next/navigation"; // Updated import
+import { useRouter } from "next/navigation";
 import { getBoardMemberAction } from "@/action/member.action";
 import { getCurrentUserProfileAction } from "@/action/profile.action";
 import { deleteBoardAction } from "@/action/workspace.action";
+import { useEffect, useState } from "react";
 
 export default function ModalLeave({
   massageTitle,
   massageBody,
   massageUndo,
   massageDo,
-  action,
   trigger,
   boardId,
+  workspaceData,
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  console.log("boardid ", boardId);
   const router = useRouter();
 
-  const handleLeaveBoard = async () => {
-    if (boardId) {
-      try {
-        const result = await leaveTheBoardAction(boardId);
-        console.log("Leave board result:", result);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [boardMembers, setBoardMembers] = useState([]);
+  const [userRole, setUserRole] = useState("");
 
-        if (result.success) {
-          router.push("/workspace"); // Redirect to /workspace on success
-        }
-      } catch (error) {
-        console.error("Error leaving board:", error);
-      }
+  console.log("workspaceData inside bar", workspaceData);
+  const workspaceId = workspaceData?.payload?.[0]?.workspaceId;
+  console.log("workspaceId inside modal leave", workspaceId);
+
+  // Load data once modal is opened
+  const loadData = async () => {
+    try {
+      const userResponse = await getCurrentUserProfileAction();
+      const memberResponse = await getBoardMemberAction(boardId);
+
+      // Here is the key: access memberResponse.payload, NOT memberResponse directly
+      const user = userResponse?.payload?.user;
+      const members = memberResponse || [];
+
+      console.log("Current User is:", user);
+      console.log("Board Members is:", members);
+      console.log("Board Members id is:", members.userId);
+
+      const matchedMember = members.find(
+        (member) => member.userId === user.userId
+      );
+
+      const role = matchedMember?.roles?.[0] || "UNKNOWN";
+
+      console.log("Matched Role:", role);
+
+      setCurrentUser(user);
+      setBoardMembers(members);
+      setUserRole(role);
+    } catch (error) {
+      console.error("Error loading modal data:", error);
     }
   };
-  const handleDeleteboardIfMangerRole = async () => {
-    if (boardId) {
-      try {
-        const result = await deleteBoardAction(boardId);
-        console.log("Leave board result:", result);
 
-        if (result.success) {
-          router.push("/workspace"); // Redirect to /workspace on success
-        }
-      } catch (error) {
-        console.error("Error leaving board:", error);
+  const handleLeaveBoard = async () => {
+    try {
+      const result = await leaveTheBoardAction(boardId);
+      console.log("Leave board result:", result);
+      if (result.success) {
+        router.push("/workspace");
       }
+    } catch (error) {
+      console.error("Error leaving board:", error);
+    }
+  };
+
+  const handleDeleteBoard = async () => {
+    try {
+      const result = await deleteBoardAction(boardId, workspaceId);
+      console.log("Delete board result:", result);
+      if (result.success) {
+        router.push("/workspace");
+      }
+    } catch (error) {
+      console.error("Error deleting board:", error);
+    }
+  };
+
+  const handleAction = async (onClose) => {
+    try {
+      if (userRole === "ROLE_MANAGER") {
+        await handleDeleteBoard();
+      } else {
+        await handleLeaveBoard();
+      }
+      onClose();
+    } catch (error) {
+      console.error("Error executing action:", error);
     }
   };
 
   return (
     <>
-      {/* Use custom trigger if provided, otherwise use default span */}
       {trigger ? (
-        <div onClick={onOpen} className="cursor-pointer">
+        <div
+          onClick={() => {
+            onOpen();
+            loadData(); // load current user + members + role
+          }}
+          className="cursor-pointer"
+        >
           {trigger}
         </div>
       ) : (
-        <span onClick={onOpen} className="text-red-500 cursor-pointer pl-4">
+        <span
+          onClick={() => {
+            onOpen();
+            loadData(); // same here
+          }}
+          className="text-red-500 cursor-pointer pl-4"
+        >
           Quit Team
         </span>
       )}
@@ -84,6 +139,14 @@ export default function ModalLeave({
               <ModalHeader>{massageTitle}</ModalHeader>
               <ModalBody>
                 <p>{massageBody}</p>
+                {currentUser && (
+                  <p className="text-sm text-gray-500 mt-2">
+                    Your Role:{" "}
+                    <span className="font-semibold text-blue-500">
+                      {userRole}
+                    </span>
+                  </p>
+                )}
               </ModalBody>
               <ModalFooter>
                 <Button
@@ -95,19 +158,7 @@ export default function ModalLeave({
                 </Button>
                 <Button
                   className="bg-slate-red"
-                  onPress={async () => {
-                    await handleLeaveBoard(); // Ensure async operation completes
-                    const currentUserProfile =
-                      await getCurrentUserProfileAction();
-
-                    const boardMember = await getBoardMemberAction(boardId);
-                    console.log(
-                      "this is the boardmember",
-                      boardMember,
-                      currentUserProfile
-                    );
-                    onClose();
-                  }}
+                  onPress={() => handleAction(onClose)}
                 >
                   <p className="text-red-500">{massageDo}</p>
                 </Button>

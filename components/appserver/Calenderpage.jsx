@@ -518,7 +518,8 @@ export default function MyCalender({ tasks, workspaceId }) {
 
     // Adjust end time back by 1ms to make it inclusive on the correct date
     const rawEndDate = new Date(event.end || event.start);
-    const adjustedEndDate = new Date(rawEndDate.getTime() -2 );
+    const adjustedEndDate = new Date(rawEndDate.getTime() -2
+   );
     const endDate = normalizeDateToDay(adjustedEndDate);
 
     console.log("Start date:", startDate);
