@@ -739,7 +739,7 @@ export default function KanbanBoard({
                                 </div>
                                 {/* consider */}
 
-                                <div className="flex justify-end items-center ">
+                                <div className="flex justify-end items-center  hidden">
                                   <button
                                     onClick={() =>
                                       handleStatusChange(
