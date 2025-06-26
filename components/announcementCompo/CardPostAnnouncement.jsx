@@ -1,18 +1,19 @@
 "use client";
 
-import { ThumbsUp, Bookmark, EllipsisVertical, Pin } from "lucide-react";
+import { Pin, MessageCircle, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import ModalOptionAnnoun from "./ModalOptionAnnoun";
 import { LikeReactionButton } from "./ModalLikeComponent";
 import ImageViewer from "./popupImage";
+import CommentCompo from "./CommentCompo";
 
 export default function CardPostAnnouncement({
   Announcements,
   currentUserProfile,
   boardId,
   boardMember,
-  preventUserImage
+  preventUserImage,
 }) {
   const announcementList = Announcements?.payload || [];
 
@@ -21,6 +22,8 @@ export default function CardPostAnnouncement({
   );
   const currentUserRoles = currentUserBoardInfo?.roles || [];
   const isProjectManager = currentUserRoles.includes("ROLE_MANAGER");
+
+  console.log("this is comment",Announcements);
 
   return (
     <div className="mx-auto h-screen overflow-hidden px-2 py-1">
@@ -53,15 +56,18 @@ export default function CardPostAnnouncement({
                     <h3 className="flex font-bold text-title">
                       {announcement.createdBy?.username}
                     </h3>
-                    <p className="text-sm text-gray-500">
-                      {new Date(announcement.createdAt).toLocaleString("en-US", {
-                        year: "numeric",
-                        month: "short",
-                        day: "2-digit",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                        hour12: false,
-                      })}
+                    <p className="text-small text-gray-500">
+                      {new Date(announcement.createdAt).toLocaleString(
+                        "en-US",
+                        {
+                          year: "numeric",
+                          month: "short",
+                          day: "2-digit",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          hour12: true,
+                        }
+                      )}
                     </p>
                   </div>
                 </div>
@@ -106,7 +112,8 @@ export default function CardPostAnnouncement({
               )}
 
               {/* Actions */}
-              <div className="flex items-center justify-between border-t border-gray-100 pt-1">
+              <div className="flex items-end justify-between border-gray-100 pt-1 m-5">
+                {/* like */}
                 <div className="flex items-center gap-6">
                   <LikeReactionButton
                     announId={announcement?.announcementId}
@@ -114,63 +121,53 @@ export default function CardPostAnnouncement({
                     currentUserProfile={currentUserProfile}
                   />
                 </div>
+                {/* comment */}
+                <div className="flex items-center gap-2 text-gray-600 p-2">
+                  <MessageCircle className="w-5 h-5" />
+                  <span className="text-sm font-medium">
+                    {announcement?.comments?.length || 0}
+                  </span>
+                </div>
               </div>
 
-              {/* Comments Section */}
-              <div className="mt-4 border-t border-gray-200 pt-4 space-y-4">
-                {/* Mock Comments */}
-                <div className="space-y-2">
-                  {[
-                    {
-                      user: {
-                        username: "Alice",
-                        imageUrl: "https://i.pravatar.cc/40?img=3",
-                      },
-                      text: "Great announcement!",
-                    },
-                    {
-                      user: {
-                        username: "Bob",
-                        imageUrl: "https://i.pravatar.cc/40?img=4",
-                      },
-                      text: "Thank you for the update!",
-                    },
-                  ].map((comment, idx) => (
-                    <div key={idx} className="flex items-start gap-3">
+              {/* comment list section */}
+              <div>
+                <CommentCompo 
+                  boardMember={boardMember}
+                  announId={announcement?.announcementId}
+                  comments={announcement.comments}
+                  currentUserProfile={currentUserProfile}
+                />
+              </div>
+
+              {/* Comment input section */}
+              <div className="flex items-center space-x-3">
+                <div className="relative w-10 h-10">
+                  <div className="w-full h-full rounded-full overflow-hidden bg-gradient-to-r from-[#59BAD5] to-[#4AB5D1] p-0.5">
+                    <div className="w-full h-full rounded-full overflow-hidden bg-white">
                       <img
-                        src={comment.user.imageUrl}
-                        alt={comment.user.username}
-                        className="w-8 h-8 rounded-full object-cover"
+                        src={currentUserBoardInfo?.profileImage}
+                        alt="Profile"
+                        className="w-full h-full object-cover rounded-full p-0.5"
                       />
-                      <div className="bg-gray-100 rounded-lg px-3 py-2 max-w-[80%]">
-                        <p className="text-sm font-semibold text-title">
-                          {comment.user.username}
-                        </p>
-                        <p className="text-sm text-description">{comment.text}</p>
-                      </div>
                     </div>
-                  ))}
+                  </div>
+                  <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-[2px] border-white" />
                 </div>
 
-                {/* Add Comment */}
-                <div className="flex items-start gap-3">
-                  <img
-                    src={announcement.createdBy?.imageUrl}
-                    alt="You"
-                    className="w-8 h-8 rounded-2xl object-cover"
-                  />
-                  <div className="flex-1">
-                    <textarea
-                      rows={2}
-                      placeholder="Write a comment..."
-                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary resize-none"
-                    />
-                    <div className="flex justify-end mt-2">
+                <div className="flex-1 bg-gray-100 rounded-full px-4 py-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-500 text-sm">
+                      Comment as {currentUserBoardInfo?.username}
+                    </span>
+
+                    <div className="flex items-center space-x-2">
                       <Button
-                        size="sm"
-                        className="text-white rounded-2xl bg-primary hover:bg-primary/90"
+                        variant="ghost"
+                        size="md"
+                        className="p-1 h-auto rounded-full"
                       >
-                        Post
+                        <Send className="w-6 h-6 text-primary" />
                       </Button>
                     </div>
                   </div>

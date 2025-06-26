@@ -58,7 +58,7 @@ export default function CardCreateAnnouncement({
                       <img
                         src={managerMember.profileImage || preventUserImage}
                         alt="Profile"
-                        className="w-full h-full object-cover rounded-full"
+                        className="w-full h-full object-cover rounded-full p-0.5"
                       />
                     </div>
                   </div>
