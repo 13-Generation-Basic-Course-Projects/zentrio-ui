@@ -256,7 +256,7 @@ export default function MyCalender({ tasks, workspaceId }) {
       const adjustedTask = {
         ...task,
         end: new Date(
-          new Date(task.end).setDate(new Date(task.end).getDate()+1)
+          new Date(task.end).setDate(new Date(task.end).getDate() + 1)
         )
           .toISOString()
           .split("T")[0],
