@@ -164,13 +164,48 @@ export default function ModalCreateGanttBar({ input, ganttChartId }) {
       return;
     }
 
-    const payload = pendingItems.map((item) => ({
-      title: item.title,
-      startedAt: new Date(item.startedAt + "T00:00:00.000Z").toISOString(),
-      finishedAt: new Date(item.finishedAt + "T23:59:59.999Z").toISOString(),
-      face: item.face,
-      ganttChartId,
-    }));
+    const payload = pendingItems.map((item) => {
+      // Parse the selected start date (e.g., "2025-06-25")
+      const selectedStartDate = new Date(item.startedAt);
+
+      // Get current time in UTC+7 and add 1 hour
+      const now = new Date();
+      const utc7OffsetMs = 7 * 60 * 60 * 1000; // 7 hours in milliseconds
+      const oneHourMs = 1 * 60 * 60 * 1000; // 1 hour in milliseconds
+      const nowInUtc7PlusOneHour = new Date(
+        now.getTime() + utc7OffsetMs + oneHourMs
+      );
+
+      // Set the start time to current time + 1 hour in UTC+7 on the selected date
+      const startedAt = new Date(
+        selectedStartDate.getFullYear(),
+        selectedStartDate.getMonth(),
+        selectedStartDate.getDate(),
+        nowInUtc7PlusOneHour.getHours(),
+        nowInUtc7PlusOneHour.getMinutes(),
+        nowInUtc7PlusOneHour.getSeconds(),
+        nowInUtc7PlusOneHour.getMilliseconds()
+      );
+
+      // Set end time to 23:59:59.999 on the selected end date
+      const finishedAt = new Date(
+        new Date(item.finishedAt).getFullYear(),
+        new Date(item.finishedAt).getMonth(),
+        new Date(item.finishedAt).getDate(),
+        23,
+        59,
+        59,
+        999
+      );
+
+      return {
+        title: item.title,
+        startedAt: startedAt.toISOString(),
+        finishedAt: finishedAt.toISOString(),
+        face: item.face,
+        ganttChartId,
+      };
+    });
 
     console.log("Sending payload to action:", payload);
 
@@ -238,8 +273,7 @@ export default function ModalCreateGanttBar({ input, ganttChartId }) {
           <Button
             onPress={onOpen}
             className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-primary border border-gray-300 rounded-[8px] shadow-sm hover:bg-[#000] h-[50px]"
-            fullWidth
-          >
+            fullWidth>
             <IconAdd />
             Create
           </Button>
@@ -248,8 +282,7 @@ export default function ModalCreateGanttBar({ input, ganttChartId }) {
             isOpen={isOpen}
             onOpenChange={onOpenChange}
             onClose={handleModalClose}
-            size="xl"
-          >
+            size="xl">
             <ModalContent>
               {(onClose) => (
                 <>
@@ -287,7 +320,6 @@ export default function ModalCreateGanttBar({ input, ganttChartId }) {
                           control={control}
                           render={({ field }) => (
                             <DateRangePicker
-                              isRequired
                               className="max-w-none"
                               minValue={today(getLocalTimeZone())} // Prevent past dates
                               value={
@@ -347,19 +379,19 @@ export default function ModalCreateGanttBar({ input, ganttChartId }) {
                       {/* Face Dropdown */}
                       <div className="flex flex-col gap-3 mt-6">
                         <label className="text-sm font-medium text-title">
-                          Face <span className="text-progress-red">*</span>
+                          Phases <span className="text-progress-red">*</span>
                         </label>
 
                         <Controller
                           name="face"
                           control={control}
-                          rules={{ required: "Face is required" }}
+                          rules={{ required: "Phase is required" }}
                           render={({ field }) => (
                             <Autocomplete
                               selectedKey={field.value || ""}
                               onSelectionChange={(key) => field.onChange(key)}
                               onBlur={field.onBlur}
-                              placeholder="Select face"
+                              placeholder="Select Phase"
                               className="w-full"
                               size="md"
                               classNames={{
@@ -369,13 +401,11 @@ export default function ModalCreateGanttBar({ input, ganttChartId }) {
                                 popoverContent:
                                   "bg-white border border-gray-200 shadow-md rounded-md",
                                 listbox: "bg-white text-gray-700",
-                              }}
-                            >
+                              }}>
                               {faceOptions.map((option) => (
                                 <AutocompleteItem
                                   key={option.key}
-                                  textValue={option.label}
-                                >
+                                  textValue={option.label}>
                                   {option.label}
                                 </AutocompleteItem>
                               ))}
@@ -401,8 +431,7 @@ export default function ModalCreateGanttBar({ input, ganttChartId }) {
                             ({ title, startedAt, finishedAt, face }, idx) => (
                               <div
                                 key={`${title}-${idx}`}
-                                className="flex items-center justify-between bg-bgColor rounded-large px-4 py-2 w-auto"
-                              >
+                                className="flex items-center justify-between bg-bgColor rounded-large px-4 py-2 w-auto">
                                 <span>
                                   {`${title} (${face.replace(
                                     /_/g,
@@ -417,8 +446,7 @@ export default function ModalCreateGanttBar({ input, ganttChartId }) {
                                   type="button"
                                   onClick={() => handleRemovePendingItem(idx)}
                                   className="text-progress-red/70 hover:text-progress-red ml-2"
-                                  aria-label="Delete"
-                                >
+                                  aria-label="Delete">
                                   <X size={16} />
                                 </button>
                               </div>
@@ -437,8 +465,7 @@ export default function ModalCreateGanttBar({ input, ganttChartId }) {
                             !durationValue?.end ||
                             !faceValue
                           }
-                          className="w-full bg-bgColor text-primary font-medium py-3 rounded-full border border-title/20 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
+                          className="w-full bg-bgColor text-primary font-medium py-3 rounded-full border border-title/20 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed">
                           Add to Pending
                         </button>
                       </div>
@@ -452,16 +479,14 @@ export default function ModalCreateGanttBar({ input, ganttChartId }) {
                         onPress={() => {
                           handleModalClose();
                           onClose();
-                        }}
-                      >
+                        }}>
                         Cancel
                       </Button>
                       <Button
                         color="primary"
                         radius="full"
                         disabled={pendingItems.length === 0}
-                        onPress={onSaveAllItems}
-                      >
+                        onPress={onSaveAllItems}>
                         Save ({pendingItems.length})
                       </Button>
                     </div>

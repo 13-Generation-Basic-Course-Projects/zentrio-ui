@@ -3,11 +3,12 @@ const nextConfig = {
   output: "standalone",
   images: {
     domains: ["i.pravatar.cc"],
-  },
-  images: {
     unoptimized: true,
   },
-
+  experimental: {
+    optimizePackageImports: [], // Empty array or list of package names
+  },
+  output: "standalone",
 };
 
 export default nextConfig;

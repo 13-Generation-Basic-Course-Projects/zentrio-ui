@@ -67,7 +67,7 @@ export default function PostCommentChecklist({ checklistId, onCommentPosted }) {
 
   return (
     <div>
-      <label className="block text-title">Activity {checklistId}</label>
+      <label className="block text-title">Activity </label>
       <form onSubmit={handleSubmit(onSubmit)} className="relative">
         <input
           type="text"

@@ -18,6 +18,7 @@ import { StackedUser } from "../useravatar/StackUser";
 export default function CardBoardFavorite({
   title,
   image,
+  imageCover,
   boardId,
   // workspaceId,
   isFavourite,
@@ -25,6 +26,7 @@ export default function CardBoardFavorite({
   deleteBoardAction,
   role,
   memberData,
+  isFavBoardDelete,
 }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -38,6 +40,8 @@ export default function CardBoardFavorite({
 
   const [favorited, setFavorited] = useState(isFavourite);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+
+  console.log("Image in fav card board: ", imageCover);
 
   return (
     <Card className="py-4 h-[340px] rounded-xl shadow-sm">
@@ -86,16 +90,11 @@ export default function CardBoardFavorite({
               className={`rounded-xl w-full h-32 bg-cover bg-center ${image}`}
               aria-label={`Card background for ${title}`}
             />
-          ) : image ? (
-            <img
-              src={image}
-              alt={`Card background for ${title}`}
-              className="object-cover rounded-xl w-full h-32"
-            />
           ) : (
-            <div
-              className="rounded-xl w-full h-32 bg-gray-200"
-              aria-label={`No image available for ${title}`}
+            <img
+              src={imageCover}
+              alt={`Card background for ${imageCover}`}
+              className="object-cover rounded-xl w-full h-32"
             />
           )}
         </Link>
@@ -120,31 +119,34 @@ export default function CardBoardFavorite({
                   }`}
             </p>
           </div>
+          {isFavBoardDelete ? (
+            ""
+          ) : (
+            <div className="flex items-center text-progress-red py-5 gap-1">
+              <button onClick={() => setIsDeleteOpen(true)}>
+                <IconDelete />
+              </button>
 
+              {isDeleteOpen && (
+                <ModalDelete
+                  isOpen={isDeleteOpen}
+                  onClose={() => setIsDeleteOpen(false)}
+                  messageTitle="Are you sure?"
+                  messageBody="You want to delete this board."
+                  messageUndo="Cancel"
+                  messageDo="Delete"
+                  action={async () => {
+                    if (deleteBoardAction && boardId && workspaceId) {
+                      await deleteBoardAction(boardId, workspaceId);
+                      console.log("Delete confirmed!");
+                      setIsDeleteOpen(false);
+                    }
+                  }}
+                />
+              )}
+            </div>
+          )}
           {/* Delete button and confirmation modal */}
-          <div className="flex items-center text-progress-red py-5 gap-1">
-            <button onClick={() => setIsDeleteOpen(true)}>
-              <IconDelete />
-            </button>
-
-            {isDeleteOpen && (
-              <ModalDelete
-                isOpen={isDeleteOpen}
-                onClose={() => setIsDeleteOpen(false)}
-                messageTitle="Are you sure?"
-                messageBody="You want to delete this board."
-                messageUndo="Cancel"
-                messageDo="Delete"
-                action={async () => {
-                  if (deleteBoardAction && boardId && workspaceId) {
-                    await deleteBoardAction(boardId, workspaceId);
-                    console.log("Delete confirmed!");
-                    setIsDeleteOpen(false);
-                  }
-                }}
-              />
-            )}
-          </div>
         </div>
       </CardFooter>
     </Card>

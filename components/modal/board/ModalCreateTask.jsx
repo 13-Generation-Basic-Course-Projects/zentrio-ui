@@ -17,7 +17,7 @@ import {
   Autocomplete,
   AutocompleteItem,
 } from "@heroui/react";
-import { parseDate, today, getLocalTimeZone } from "@internationalized/date";
+import { parseDate, today } from "@internationalized/date";
 import { IconAdd } from "../../icon/everyicon";
 import { taskFormSchema } from "@/lib/schemas/createTaskSchema";
 import { createTaskByBoardIdAndGanttChartIdAction } from "@/action/board.action";
@@ -49,7 +49,7 @@ export default function ModalCreateTask({
       description: "",
       dateRange: { start: "", end: "" },
       ganttBarId: "",
-      teamLeader: "", // Stores userId
+      teamLeader: "",
     },
   });
 
@@ -68,32 +68,89 @@ export default function ModalCreateTask({
 
   // Prepare member options for autocomplete (exclude managers)
   const memberOptions = useMemo(() => {
-    if (!allMemberInBoard || !Array.isArray(allMemberInBoard)) {
-      return [];
-    }
-
+    if (!Array.isArray(allMemberInBoard)) return [];
     return allMemberInBoard
       .filter((member) => !member.roles.includes("ROLE_MANAGER"))
       .map((member) => ({
         key: member.userId,
-        label: member.username, // Display username
-        value: member.userId, // Store userId
+        label: member.username,
+        value: member.userId,
         email: member.email,
         profileImage: member.profileImage,
         roles: member.roles,
       }));
   }, [allMemberInBoard]);
 
-  console.log("Current User:", currentUser);
-  console.log("Is Current User Manager:", isCurrentUserManager);
-  console.log("allMemberInBoard", allMemberInBoard);
+  // Helper functions to check Gantt bar status
+  const getGanttBarStatus = (ganttBar) => {
+    const today = new Date();
+    const ganttStartDate = new Date(ganttBar.startedAt);
+    const ganttEndDate = new Date(ganttBar.finishedAt);
+
+    // Set all dates to start of day for proper comparison
+    const todayStart = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate()
+    );
+    const ganttStart = new Date(
+      ganttStartDate.getFullYear(),
+      ganttStartDate.getMonth(),
+      ganttStartDate.getDate()
+    );
+    const ganttEnd = new Date(
+      ganttEndDate.getFullYear(),
+      ganttEndDate.getMonth(),
+      ganttEndDate.getDate()
+    );
+
+    console.log(
+      "Today:",
+      todayStart,
+      "Gantt Start:",
+      ganttStart,
+      "Gantt End:",
+      ganttEnd
+    );
+
+    if (ganttEnd < todayStart) {
+      return "expired"; // Past end date
+    } else if (ganttStart > todayStart) {
+      return "not_started"; // Future start date
+    } else {
+      return "active"; // Currently active
+    }
+  };
+
+  const isGanttBarExpired = (ganttBar) => {
+    return getGanttBarStatus(ganttBar) === "expired";
+  };
+
+  const isGanttBarNotStarted = (ganttBar) => {
+    return getGanttBarStatus(ganttBar) === "not_started";
+  };
+
+  const isGanttBarDisabled = (ganttBar) => {
+    const status = getGanttBarStatus(ganttBar);
+    return status === "expired" || status === "not_started";
+  };
+
+  // Helper function to format dates nicely
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  };
 
   const onSubmit = async (data) => {
     try {
       setApiError(null);
 
       // Validate ganttChartId
-      if (!ganttChartId || (ganttChartId ?? "") === "No data available") {
+      if (!ganttChartId || ganttChartId === "No data available") {
         throw new Error("No valid Gantt chart available");
       }
 
@@ -105,43 +162,44 @@ export default function ModalCreateTask({
         throw new Error("Invalid Gantt bar ID selected");
       }
 
-      // Parse dates and add time buffer for current date
-      let taskStart = new Date(data.dateRange.start);
+      // Check if selected Gantt bar is disabled (expired or not started)
+      if (isGanttBarDisabled(selectedGanttBar)) {
+        const status = getGanttBarStatus(selectedGanttBar);
+        if (status === "expired") {
+          throw new Error("Cannot create task for an expired Gantt bar");
+        } else if (status === "not_started") {
+          throw new Error(
+            "Cannot create task for a Gantt bar that hasn't started yet"
+          );
+        }
+      }
+
+      // Parse and adjust dates
+      const taskStart = new Date(data.dateRange.start);
       const taskEnd = new Date(data.dateRange.end);
 
-      // Check if start date is today and add 2 minutes buffer
-      const today = new Date();
-      const isStartDateToday =
-        taskStart.toDateString() === today.toDateString();
+      // Get current time in UTC+7 and add 1 hour
+      const now = new Date();
+      const utc7OffsetMs = 7 * 60 * 60 * 1000; // 7 hours in milliseconds
+      const oneHourMs = 1 * 60 * 60 * 1000; // 1 hour in milliseconds
+      const nowInUtc7PlusOneHour = new Date(
+        now.getTime() + utc7OffsetMs + oneHourMs
+      );
 
-      if (isStartDateToday) {
-        // If start date is today, set time to current time + 2 minutes
-        const currentTime = new Date();
-        const bufferedTime = new Date(currentTime.getTime() + 2 * 60 * 1000); // Add 2 minutes
+      // Set taskStart to current time + 1 hour in UTC+7 on the selected start date
+      taskStart.setHours(
+        nowInUtc7PlusOneHour.getHours(),
+        nowInUtc7PlusOneHour.getMinutes(),
+        nowInUtc7PlusOneHour.getSeconds(),
+        nowInUtc7PlusOneHour.getMilliseconds()
+      );
 
-        // Set the start date to today with buffered time
-        taskStart = new Date(
-          taskStart.getFullYear(),
-          taskStart.getMonth(),
-          taskStart.getDate(),
-          bufferedTime.getHours(),
-          bufferedTime.getMinutes(),
-          bufferedTime.getSeconds()
-        );
-      } else {
-        // If not today, set to start of day (00:00:00)
-        taskStart.setHours(0, 0, 0, 0);
-      }
+      // Set end date to end of day (23:59:59.999)
+      taskEnd.setHours(23, 59, 59, 999);
 
-      // Set end date to end of day (23:59:59) unless it's a specific time
-      if (taskEnd.getHours() === 0 && taskEnd.getMinutes() === 0) {
-        taskEnd.setHours(23, 59, 59, 999);
-      }
-
-      // Validate task dates against Gantt bar dates
+      // Validate task dates against Gantt bar
       const ganttStart = new Date(selectedGanttBar.startedAt);
       const ganttEnd = new Date(selectedGanttBar.finishedAt);
-
       if (taskStart < ganttStart) {
         throw new Error(
           `Task start date must be on or after Gantt bar start date (${ganttStart.toLocaleDateString()})`
@@ -163,23 +221,17 @@ export default function ModalCreateTask({
         leaderId: data.teamLeader || null,
       };
 
-      console.log("Submitting Payload:", payload);
-      console.log(
-        "Start time adjusted:",
-        isStartDateToday ? "Yes (+2 minutes)" : "No"
-      );
-
       const result = await createTaskByBoardIdAndGanttChartIdAction(
         payload,
         boardId,
         ganttChartId
       );
 
-      if (!result.success) {
-        throw new Error(result.error || "Failed to create task");
+      // Note: The commented success check suggests the result structure may differ.
+      // Adjust based on actual API response.
+      if (result.status === 400) {
+        throw new Error(result.detail || "Failed to create task");
       }
-
-      console.log("API Response:", result);
 
       toast.success(`"${data.title}"\nTask created successfully!`, {
         position: "top-right",
@@ -190,30 +242,34 @@ export default function ModalCreateTask({
       onOpenChange();
     } catch (error) {
       console.error("Error creating task:", error.message);
-      setApiError(error.message);
-      toast.error(error.message, {
-        position: "top-right",
-        autoClose: 3000,
-      });
+      setApiError(
+        error.message.includes("Gantt bar")
+          ? `Gantt Bar Error: ${error.message}`
+          : `Error: ${error.message}`
+      );
+      toast.error(
+        error.message.includes("Gantt bar")
+          ? `Gantt Bar Error: ${error.message}`
+          : `Error: ${error.message}`,
+        {
+          position: "top-right",
+          autoClose: 3000,
+        }
+      );
     }
   };
 
   const handleClose = () => {
-    reset({
-      title: "",
-      description: "",
-      dateRange: { start: "", end: "" },
-      ganttBarId: "",
-      teamLeader: "",
-    });
+    reset();
     setApiError(null);
     onOpenChange();
   };
 
-  // Handle case where no Gantt bars or invalid ganttChartId
+  // Handle no Gantt bars or invalid ganttChartId
   if (
-    !ganttbar?.payload?.length ||
-    (ganttChartId ?? "") === "No data available"
+    !Array.isArray(ganttbar?.payload) ||
+    !ganttbar.payload.length ||
+    ganttChartId === "No data available"
   ) {
     return (
       <PopupActionNoGanttChart
@@ -228,15 +284,14 @@ export default function ModalCreateTask({
       <Button
         onPress={onOpen}
         className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-primary border border-gray-300 rounded-[8px] shadow-sm hover:bg-[#000] h-[50px]"
-        fullWidth="true"
-      >
+        fullWidth="true">
         <IconAdd />
         Create
       </Button>
 
       <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="xl">
         <ModalContent>
-          {(onClose) => (
+          {() => (
             <>
               <ModalHeader className="flex flex-col gap-1">
                 Create Task
@@ -247,119 +302,92 @@ export default function ModalCreateTask({
                 )}
                 <form
                   onSubmit={handleSubmit(onSubmit)}
-                  className="grid grid-cols-1 gap-4"
-                >
-                  <div>
-                    <Controller
-                      name="title"
-                      control={control}
-                      render={({ field }) => (
-                        <Input
-                          {...field}
-                          isRequired
-                          label="Title"
-                          labelPlacement="outside"
-                          placeholder="Input your title"
-                          type="text"
-                          isInvalid={!!errors.title}
-                          errorMessage={errors.title?.message}
-                          classNames={{
-                            label: "text-label font-medium",
-                            inputWrapper: `
-                              bg-white 
-                              border
-                              border-gray-300
-                              shadow-none         
-                              focus:shadow-none  
-                              focus:outline-none
-                              focus:ring-0       
-                              focus-within:shadow-none
-                              focus-within:ring-0
-                              rounded-small
-                              transition-all 
-                              hover:bg-white
-                              px-3
-                              py-6
-                              ${errors.title ? "border-red-500" : ""}
-                            `,
-                            input: "text-black",
-                          }}
-                        />
-                      )}
-                    />
-                  </div>
+                  className="grid grid-cols-1 gap-4">
+                  <Controller
+                    name="title"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        isRequired
+                        label="Title"
+                        labelPlacement="outside"
+                        placeholder="Input your title"
+                        type="text"
+                        isInvalid={!!errors.title}
+                        errorMessage={errors.title?.message}
+                        classNames={{
+                          label: "text-label font-medium",
+                          inputWrapper: `
+                            bg-white 
+                            border
+                            border-gray-300
+                            shadow-none
+                            rounded-small
+                            px-3
+                            py-6
+                            ${errors.title ? "border-red-500" : ""}
+                          `,
+                          input: "text-black",
+                        }}
+                      />
+                    )}
+                  />
 
-                  <div>
-                    <Controller
-                      name="dateRange"
-                      control={control}
-                      render={({ field }) => (
-                        <DateRangePicker
-                          isRequired
-                          className="max-w-none"
-                          minValue={today(getLocalTimeZone())} // Prevent selecting past dates
-                          maxValue={
-                            selectedGanttBar
-                              ? parseDate(
-                                  selectedGanttBar.finishedAt.split("T")[0]
-                                )
-                              : undefined
-                          } // Limit to Gantt bar end date
-                          value={
-                            field.value.start && field.value.end
-                              ? {
-                                  start: parseDate(field.value.start),
-                                  end: parseDate(field.value.end),
-                                }
-                              : null
-                          }
-                          onChange={(value) =>
-                            field.onChange({
-                              start: value.start.toString(),
-                              end: value.end.toString(),
-                            })
-                          }
-                          label="Task Duration"
-                          labelPlacement="outside"
-                          isInvalid={!!errors.dateRange}
-                          errorMessage={
-                            errors.dateRange?.start?.message ||
-                            errors.dateRange?.end?.message ||
-                            errors.dateRange?.message
-                          }
-                          classNames={{
-                            inputWrapper: `
-                              bg-white 
-                              border
-                              border-gray-300
-                              shadow-none         
-                              focus:shadow-none  
-                              focus:outline-none
-                              focus:ring-0       
-                              focus-within:shadow-none
-                              focus-within:ring-0
-                              rounded-small
-                              transition-all 
-                              hover:bg-white
-                              px-3
-                              py-6
-                              ${errors.dateRange ? "border-red-500" : ""}
-                            `,
-                            input: "text-black",
-                            label: "text-label font-medium",
-                          }}
-                          style={{
-                            appearance: "none",
-                            WebkitAppearance: "none",
-                            MozAppearance: "none",
-                            cursor: "pointer",
-                          }}
-                        />
-                      )}
-                    />
-                  </div>
+                  <Controller
+                    name="dateRange"
+                    control={control}
+                    render={({ field }) => (
+                      <DateRangePicker
+                        className="max-w-none"
+                        minValue={today("Asia/Bangkok")}
+                        maxValue={
+                          selectedGanttBar
+                            ? parseDate(
+                                selectedGanttBar.finishedAt.split("T")[0]
+                              )
+                            : undefined
+                        }
+                        value={
+                          field.value.start && field.value.end
+                            ? {
+                                start: parseDate(field.value.start),
+                                end: parseDate(field.value.end),
+                              }
+                            : null
+                        }
+                        onChange={(value) =>
+                          field.onChange({
+                            start: value.start.toString(),
+                            end: value.end.toString(),
+                          })
+                        }
+                        label="Task Duration"
+                        labelPlacement="outside"
+                        isInvalid={!!errors.dateRange}
+                        errorMessage={
+                          errors.dateRange?.start?.message ||
+                          errors.dateRange?.end?.message ||
+                          errors.dateRange?.message
+                        }
+                        classNames={{
+                          inputWrapper: `
+                            bg-white 
+                            border
+                            border-gray-300
+                            shadow-none
+                            rounded-small
+                            px-3
+                            py-6
+                            ${errors.dateRange ? "border-red-500" : ""}
+                          `,
+                          input: "text-black",
+                          label: "text-label font-medium",
+                        }}
+                      />
+                    )}
+                  />
 
-                  {/* Show assign team leader section only if current user is a manager */}
                   {isCurrentUserManager && (
                     <div>
                       <label className="text-label font-medium block mb-2">
@@ -379,24 +407,20 @@ export default function ModalCreateTask({
                             selectedKey={field.value || ""}
                             onSelectionChange={(key) =>
                               field.onChange(key || "")
-                            } // Set userId
-                            onInputChange={() => {}} // Prevent manual input
+                            }
                             inputValue={
                               memberOptions.find((m) => m.key === field.value)
                                 ?.label || ""
-                            } // Display username
+                            }
                             isInvalid={!!errors.teamLeader}
                             errorMessage={errors.teamLeader?.message}
-                            allowsCustomValue={false} // Prevent custom input
+                            allowsCustomValue={false}
                             items={memberOptions}
                             classNames={{
                               base: "w-full",
                               listboxWrapper: "max-h-[200px]",
                               popoverContent:
-                                "bg-white border border-gray-300 shadow-lg rounded-large pb-[50px]",
-                              endContentWrapper: "hidden",
-                              clearButton: "hidden",
-                              selectorButton: "hidden",
+                                "bg-white border border-gray-300 shadow-lg rounded-large pb-[50px] ",
                             }}
                             inputProps={{
                               classNames: {
@@ -404,29 +428,20 @@ export default function ModalCreateTask({
                                   bg-white 
                                   border
                                   border-gray-300
-                                  shadow-none         
-                                  focus:shadow-none  
-                                  focus:outline-none
-                                  focus:ring-0       
-                                  focus-within:shadow-none
-                                  focus-within:ring-0 
+                                  shadow-none
                                   rounded-small
-                                  transition-all 
-                                  hover:bg-white 
                                   py-6
                                   ${errors.teamLeader ? "border-red-500" : ""}
                                 `,
                                 input: "text-black",
                               },
-                            }}
-                          >
+                            }}>
                             {memberOptions.map((member) => (
                               <AutocompleteItem
                                 key={member.key}
-                                value={member.key} // Use userId
-                                textValue={member.label} // Display username
-                                className="hover:bg-gray-50"
-                              >
+                                value={member.key}
+                                textValue={member.label}
+                                className="hover:bg-gray-50">
                                 <div className="flex items-center gap-2 py-1">
                                   {member.profileImage ? (
                                     <img
@@ -441,7 +456,7 @@ export default function ModalCreateTask({
                                   )}
                                   <div className="flex gap-2 items-center justify-between w-full">
                                     <div className="flex gap-2 items-center">
-                                      <span className="text-xs text-gray-500">
+                                      <span className="text-xs text-gray-500 hidden">
                                         {member.email}
                                       </span>
                                       <span className="text-sm font-medium text-gray-900">
@@ -455,8 +470,7 @@ export default function ModalCreateTask({
                                             {member.roles.map((role, index) => (
                                               <span
                                                 key={index}
-                                                className="text-xs px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full"
-                                              >
+                                                className="text-xs px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full">
                                                 {role.replace("ROLE_", "")}
                                               </span>
                                             ))}
@@ -473,117 +487,123 @@ export default function ModalCreateTask({
                     </div>
                   )}
 
-                  <div>
-                    <label className="text-label font-medium">
-                      Gantt bar <span className="text-red-500">*</span>
-                    </label>
-                    <Controller
-                      name="ganttBarId"
-                      control={control}
-                      render={({ field }) => (
-                        <Select
-                          isRequired
-                          placeholder="Choose your Gantt bar"
-                          selectedKeys={field.value ? [field.value] : []}
-                          onChange={(e) => field.onChange(e.target.value)}
-                          isInvalid={!!errors.ganttBarId}
-                          errorMessage={errors.ganttBarId?.message}
-                          classNames={{
-                            trigger: `
-                              bg-white 
-                              text-black 
-                              border 
-                              border-gray-300 
-                              shadow-none         
-                              focus:shadow-none  
-                              focus:outline-none
-                              focus:ring-0       
-                              focus-within:shadow-none
-                              focus-within:ring-0 
-                              rounded-small
-                              transition-all 
-                              hover:bg-white 
-                              px-3
-                              py-6
-                              ${errors.ganttBarId ? "border-red-500" : ""}
-                            `,
-                            value: "text-gray-500",
-                          }}
-                        >
-                          {ganttbar?.payload?.map((bar) => (
+                  <Controller
+                    name="ganttBarId"
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        isRequired
+                        placeholder="Choose your Gantt bar"
+                        selectedKeys={field.value ? [field.value] : []}
+                        onChange={(e) => field.onChange(e.target.value)}
+                        isInvalid={!!errors.ganttBarId}
+                        errorMessage={errors.ganttBarId?.message}
+                        classNames={{
+                          trigger: `
+                            bg-white 
+                            text-black 
+                            border 
+                            border-gray-300 
+                            shadow-none
+                            rounded-small
+                            px-3
+                            py-6
+                            ${errors.ganttBarId ? "border-red-500" : ""}
+                          `,
+                          value: "text-gray-500",
+                        }}
+                        disabledKeys={
+                          ganttbar?.payload
+                            ?.filter((bar) => isGanttBarDisabled(bar))
+                            .map((bar) => bar.ganttBarId) || []
+                        }>
+                        {ganttbar?.payload?.map((bar) => {
+                          const status = getGanttBarStatus(bar);
+                          let statusText = "";
+                          let statusClass = "";
+
+                          if (status === "expired") {
+                            statusText = " (Expired)";
+                            statusClass = "text-red-400 opacity-60";
+                          } else if (status === "not_started") {
+                            statusText = " (Not yet started)";
+                            statusClass = "text-orange-500 opacity-70";
+                          }
+
+                          const displayText = `${bar.title} (${
+                            bar.face
+                          }) • ${formatDate(bar.startedAt)} - ${formatDate(
+                            bar.finishedAt
+                          )}${statusText}`;
+
+                          return (
                             <SelectItem
                               key={bar.ganttBarId}
                               value={bar.ganttBarId}
-                            >
-                              {`${bar.title} (${bar.face}, ${new Date(
-                                bar.startedAt
-                              ).toLocaleDateString()} - ${new Date(
-                                bar.finishedAt
-                              ).toLocaleDateString()})`}
+                              textValue={displayText}
+                              className={statusClass}>
+                              <div className={`flex flex-col ${statusClass}`}>
+                                <div className="font-medium">
+                                  {bar.title} ({bar.face})
+                                </div>
+                                <div className="text-sm text-gray-600">
+                                  {formatDate(bar.startedAt)} -{" "}
+                                  {formatDate(bar.finishedAt)}
+                                  {statusText && (
+                                    <span
+                                      className={
+                                        status === "expired"
+                                          ? "text-red-500"
+                                          : "text-orange-500"
+                                      }>
+                                      {statusText}
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
                             </SelectItem>
-                          ))}
-                        </Select>
-                      )}
-                    />
-                    {errors.ganttBarId && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {errors.ganttBarId.message}
-                      </p>
+                          );
+                        })}
+                      </Select>
                     )}
-                  </div>
+                  />
 
-                  <div>
-                    <Controller
-                      name="description"
-                      control={control}
-                      render={({ field }) => (
-                        <Textarea
-                          {...field}
-                          isRequired
-                          label="Description"
-                          labelPlacement="outside"
-                          placeholder="Input your description"
-                          isInvalid={!!errors.description}
-                          errorMessage={errors.description?.message}
-                          onChange={(e) => field.onChange(e.target.value)}
-                          classNames={{
-                            inputWrapper: `
-                              bg-white 
-                              text-black 
-                              border
-                              border-gray-300
-                              shadow-none         
-                              focus:shadow-none  
-                              focus:outline-none
-                              focus:ring-0       
-                              focus-within:shadow-none
-                              focus-within:ring-0 
-                              rounded-small
-                              transition-all 
-                              hover:bg-white
-                              px-3
-                              py-4
-                              ${errors.description ? "border-red-500" : ""}
-                            `,
-                            input: "text-black",
-                          }}
-                        />
-                      )}
-                    />
-                    {errors.description && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {errors.description.message}
-                      </p>
+                  <Controller
+                    name="description"
+                    control={control}
+                    render={({ field }) => (
+                      <Textarea
+                        {...field}
+                        isRequired
+                        label="Description"
+                        labelPlacement="outside"
+                        placeholder="Input your description"
+                        isInvalid={!!errors.description}
+                        errorMessage={errors.description?.message}
+                        classNames={{
+                          inputWrapper: `
+                            bg-white 
+                            text-black 
+                            border
+                            border-gray-300
+                            shadow-none
+                            rounded-small
+                            px-3
+                            py-4
+                            ${errors.description ? "border-red-500" : ""}
+                          `,
+                          input: "text-black",
+                        }}
+                      />
                     )}
-                  </div>
+                  />
 
                   <div className="grid grid-cols-2 gap-3 pt-2">
                     <Button
                       type="button"
                       className="bg-transparent border-1 border-bgColor"
                       radius="full"
-                      onPress={handleClose}
-                    >
+                      onPress={handleClose}>
                       Cancel
                     </Button>
                     <Button
@@ -591,8 +611,7 @@ export default function ModalCreateTask({
                       color="primary"
                       radius="full"
                       isLoading={isSubmitting}
-                      disabled={isSubmitting}
-                    >
+                      isDisabled={isSubmitting}>
                       Save
                     </Button>
                   </div>

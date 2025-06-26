@@ -63,4 +63,8 @@ export const boardRouteGroup = {
   //guest
   getGuestUserDisplayKanban: (workspaceId, boardId) =>
     `${apiConfig.baseUrl}/data/workspaces/${workspaceId}/boards/${boardId}`,
+
+  //leave board
+
+  leaveTheBoard: (boardId) => `${apiConfig.baseUrl}/boards/${boardId}`,
 };

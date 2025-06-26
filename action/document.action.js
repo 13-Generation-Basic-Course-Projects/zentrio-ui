@@ -25,7 +25,7 @@ import { revalidatePath } from "next/cache";
 export const getDocumentsByBoardAction = async (boardId) => {
   const userToken = await Token();
   const token = userToken.Credential;
-
+  
   const documents = await fetchDocumentsByBoardService(boardId, token);
 
   return documents;
@@ -219,7 +219,6 @@ export const createDriveFileAction = async ({
 export const deleteDocumentAction = async (accessToken, documentId) => {
   const userToken = await Token();
   const token = userToken.Credential;
-  console.log("object1", documentId);
   const document = await deleteDocumentService({
     accessToken,
     documentId,

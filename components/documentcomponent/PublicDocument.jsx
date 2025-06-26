@@ -1,15 +1,16 @@
 "use client";
 import React, { useState } from "react";
-import MyDatePicker from "../date/Datepicker";
 import BredCrum from "../bredcrum/MyBredcrum";
 import CardFolder, { CardFile } from "../card/CardDoc";
 import { Autocomplete, AutocompleteItem, Input } from "@heroui/react";
+import MyDatePicker from "../date/DatePicker";
 export default function PublicDocument({
   modal,
   publicDocuments,
   tokenFromGoogle,
   isHidden,
   workspaceId,
+  boardId,
 }) {
   const payload = publicDocuments?.payload || [];
 
@@ -97,9 +98,10 @@ export default function PublicDocument({
           <div className="flex flex-row items-end gap-4 mb-4">
             <div className="flex-1">
               <MyDatePicker
-              selectedDate={selectedDate}
-              setSelectedDate={setSelectedDate}
-              className="h-12" />
+                selectedDate={selectedDate}
+                setSelectedDate={setSelectedDate}
+                className="h-12"
+              />
             </div>
 
             <div className="w-40">
@@ -174,6 +176,8 @@ export default function PublicDocument({
                     isFolder={el.category === "Folder"}
                     tokenFromGoogle={tokenFromGoogle}
                     isHidden={isHidden}
+                    workspaceId={workspaceId}
+                    boardId={boardId}
                   />
                 ))
             ) : (

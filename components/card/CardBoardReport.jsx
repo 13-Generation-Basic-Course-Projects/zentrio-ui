@@ -1,4 +1,3 @@
-import React from "react";
 import { Button } from "@/components/ui/button";
 import { generateReportByBoardIdAction } from "@/action/report.action";
 

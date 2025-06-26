@@ -24,35 +24,51 @@ import ModalLeave from "../modal/ModalLeave";
 import LeaveButton from "../button/LeaveButton";
 import PopupAction from "../popup/PopupAction";
 import { Button } from "@heroui/react";
+import { BadgeMinus } from "lucide-react";
 
-export default function DashboardSidebar(getWorKSpaceJoined) {
+export default function DashboardSidebar({ getWorKSpaceJoined }) {
   console.log("workspace join inside bar", getWorKSpaceJoined);
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { toggleSidebar } = useSidebar();
 
   const [role, setRole] = useState("pm"); // default fallback role
+  const [boardId, setBoardId] = useState(null); // State to store boardId
 
-  // On mount, set role once from URL
+  // On mount, set role and extract boardId from URL
   useEffect(() => {
     const initialRole = searchParams.get("role");
     if (initialRole) {
       setRole(initialRole);
     }
-  }, []);
 
-  const pathSegments = pathname.split("/");
-  const workspaceId = pathSegments[2] || "1";
-  const projectId = pathSegments[3] || "1";
+    // Extract boardId based on URL pattern
+    const pathSegments = pathname.split("/").filter(Boolean); // Remove empty segments
+    if (pathSegments.includes("otherworkspace")) {
+      // Pattern 1: /dashboard/otherworkspace/:boardId/:dynamicWord
+      const boardIdIndex = pathSegments.indexOf("otherworkspace") + 1;
+      if (pathSegments[boardIdIndex]) {
+        setBoardId(pathSegments[boardIdIndex]);
+      }
+    } else if (pathSegments.includes("dashboard")) {
+      // Pattern 2: /dashboard/:workspaceId/:boardId/:dynamicWord
+      const boardIdIndex = pathSegments.indexOf("dashboard") + 2;
+      if (pathSegments[boardIdIndex]) {
+        setBoardId(pathSegments[boardIdIndex]);
+      }
+    }
+  }, [pathname, searchParams]);
+  const pathSegments = pathname.split("/").filter((part) => part !== "");
+  const workspaceId = pathSegments[1] || "1"; // Adjusted for correct segment
+  const projectId = pathSegments[2] || "1"; // Adjusted for correct segment
 
   const isTl = role === "ROLE_LEADER";
-  const ismem = role === "ROLE_MEMBER";
+  const isMem = role === "ROLE_MEMBER";
 
   const items = [
     {
       title: "Board",
       url: `/dashboard/${workspaceId}/${projectId}/board`,
-
       activeIcon: (active) => (
         <svg
           width={22}
@@ -73,7 +89,6 @@ export default function DashboardSidebar(getWorKSpaceJoined) {
     {
       title: "Calendar",
       url: `/dashboard/${workspaceId}/${projectId}/calendar`,
-
       activeIcon: (active) => (
         <svg
           width={22}
@@ -162,7 +177,6 @@ export default function DashboardSidebar(getWorKSpaceJoined) {
     {
       title: "Document",
       url: `/dashboard/${workspaceId}/${projectId}/docu`,
-
       activeIcon: (active) => (
         <svg
           width={22}
@@ -172,7 +186,7 @@ export default function DashboardSidebar(getWorKSpaceJoined) {
           xmlns="http://www.w3.org/2000/svg"
         >
           <path
-            d="M0.992188 7.08951V14.4119C0.992188 15.4646 1.40563 16.4742 2.14156 17.2186C2.87748 17.963 3.87562 18.3812 4.91638 18.3812H8.84057H10.4922M0.992188 7.08951V5.47698C0.992188 4.68744 1.30227 3.93023 1.85421 3.37194C2.40616 2.81365 3.15476 2.5 3.93533 2.5H6.78037C7.10247 2.49994 7.42143 2.56406 7.71904 2.68869C8.01665 2.81332 8.28707 2.99603 8.51486 3.22638L10.0669 4.79624M0.992188 7.08951H6.78429C7.1064 7.08957 7.42536 7.02546 7.72297 6.90082C8.02057 6.77619 8.29099 6.59348 8.51878 6.36313L10.0669 4.79624M19.1416 8.76555C19.1416 7.71283 18.7281 6.70322 17.9922 5.95883C17.2563 5.21444 16.2581 4.79624 15.2174 4.79624H10.0669"
+            d="M0.992188 7.08951V14.4119C0.992188 15.4646 1.40563 16.4742 2.14156 17.2186C2.87748 17.963 3.87562 18.3812 4.91638 18.3812H8.84057H10.4922M0.992188 7.08951V5.47698C0.992188 4.68744 1.30227 3.93023 1.85421 3.37194C2.40616 2.81365 3.15476 2.5 3.93533 2.5H6.78037C7.10247 2.49994 7.42143 2.56406 7.71904 2.68869C8.01665 2.81332 8.28707 2.99603 8.51486 3.22638L10.0669 4.79624M0.992188 7.08951H6.78429C7.1064 7.08957 7.42536 7.02546 7.72297 6.90982C8.02057 6.77619 8.29099 6.59348 8.51878 6.36313L10.0669 4.79624M19.1416 8.76555C19.1416 7.71283 18.7281 6.70322 17.9922 5.95883C17.2563 5.21444 16.2581 4.79624 15.2174 4.79624H10.0669"
             stroke={active ? "#59BAD5" : "black"}
             strokeWidth="1.5"
             strokeLinecap="round"
@@ -219,7 +233,6 @@ export default function DashboardSidebar(getWorKSpaceJoined) {
     {
       title: "Members",
       url: `/dashboard/${workspaceId}/${projectId}/member`,
-
       activeIcon: (active) => (
         <svg
           width={22}
@@ -262,7 +275,6 @@ export default function DashboardSidebar(getWorKSpaceJoined) {
     {
       title: "Reports",
       url: `/dashboard/${workspaceId}/${projectId}/report`,
-
       activeIcon: (active) => (
         <svg
           width={22}
@@ -335,7 +347,6 @@ export default function DashboardSidebar(getWorKSpaceJoined) {
   const includesPathOtherWorkSpace = pathname.includes(
     "/dashboard/otherworkspace"
   );
-  // Fixed: Use OR (||) instead of AND (&&) to hide Reports for either tl OR ROLE_MEMBER
   const filteredItems = includesPathOtherWorkSpace
     ? items.filter((item) => item.title !== "Reports")
     : items;
@@ -363,7 +374,7 @@ export default function DashboardSidebar(getWorKSpaceJoined) {
             >
               <path
                 fillRule="evenodd"
-                clipule="evenodd"
+                clipRule="evenodd"
                 d="M5.96522 5.52079C5.12183 5.52079 4.31298 5.85583 3.71662 6.45219C3.12025 7.04856 2.78522 7.8574 2.78522 8.70079V19.2992C2.78522 20.1426 3.12025 20.9514 3.71662 21.5478C4.31298 22.1442 5.12183 22.4792 5.96522 22.4792H7.71842V5.52079H5.96522ZM5.96522 3.40039C4.55978 3.40039 3.21191 3.9587 2.21812 4.95249C1.22432 5.94628 0.666016 7.29416 0.666016 8.69959V19.2992C0.665858 19.9952 0.80281 20.6844 1.06905 21.3275C1.33529 21.9705 1.7256 22.5549 2.21769 23.0471C2.70978 23.5393 3.29402 23.9297 3.93702 24.1961C4.58003 24.4625 5.26921 24.5996 5.96522 24.5996H19.3668C20.0629 24.5996 20.7522 24.4624 21.3953 24.196C22.0384 23.9295 22.6227 23.539 23.1148 23.0466C23.6069 22.5543 23.9972 21.9698 24.2633 21.3266C24.5295 20.6834 24.6663 19.9941 24.666 19.298V8.69959C24.666 7.29416 24.1077 5.94628 23.1139 4.95249C22.1201 3.9587 20.7723 3.40039 19.3668 3.40039H5.96522ZM9.83882 5.52079V22.4792H19.3668C20.2102 22.4792 21.019 22.1442 21.6154 21.5478C22.2118 20.9514 22.5468 20.1426 22.5468 19.2992V8.69959C22.5468 7.8562 22.2118 7.04736 21.6154 6.45099C21.019 5.85463 20.2102 5.51959 19.3668 5.51959H9.83882V5.52079Z"
                 fill="#59BAD5"
               />
@@ -371,78 +382,90 @@ export default function DashboardSidebar(getWorKSpaceJoined) {
           </Button>
         </div>
 
-        <SidebarGroup className="flex-1 flex flex-col !border-0">
-          <SidebarGroupContent className="flex-1 flex flex-col justify-between !border-0">
-            {/* TOP MENU */}
-            <SidebarMenu className="!border-0">
-              {filteredItems.map((item) => {
-                const isActive = pathname === item.url.split("?")[0]; // compare path only
-                return (
-                  <SidebarMenuItem className="py-1 !border-0" key={item.title}>
-                    <SidebarMenuButton
-                      asChild
-                      tooltip={item.title}
-                      className={`${
-                        isActive
-                          ? "bg-slate-blue text-primary hover:text-primary "
-                          : ""
-                      } py-5 px-3 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:!px-5 group-data-[collapsible=icon]:!py-5`}
-                      style={{ borderRadius: "0.5rem" }}
+        <SidebarGroup className="flex-1 flex flex-col !border-0 pb-10">
+          <SidebarGroupContent className="flex-1 flex flex-col !border-0">
+            <div className="flex flex-col h-full">
+              <SidebarMenu className="!border-0 flex-1">
+                {filteredItems.map((item) => {
+                  const isActive = pathname === item.url.split("?")[0];
+                  return (
+                    <SidebarMenuItem
+                      className="py-1 !border-0"
+                      key={item.title}
                     >
-                      <Link
-                        href={item.url}
+                      <SidebarMenuButton
+                        asChild
+                        tooltip={item.title}
+                        className={`${
+                          isActive
+                            ? "bg-slate-blue text-primary hover:text-primary"
+                            : ""
+                        } py-5 px-3 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:!px-5 group-data-[collapsible=icon]:!py-5`}
                         style={{ borderRadius: "0.5rem" }}
-                        className="flex items-center justify-start group-data-[collapsible=icon]:justify-center w-full"
                       >
-                        {typeof item.activeIcon === "function" ? (
-                          <div className="flex items-center justify-center min-w-[22px]">
-                            {item.activeIcon(isActive)}
-                          </div>
-                        ) : (
-                          <div className="flex items-center justify-center min-w-[22px]">
-                            <Image
-                              src={isActive ? item.activeIcon : item.icon}
-                              className="w-[18px] object-cover"
-                              alt={`${item.title} icon`}
-                            />
-                          </div>
-                        )}
-                        <span className="pl-3 group-data-[collapsible=icon]:hidden">
-                          {item.title}
-                        </span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                );
-              })}
-            </SidebarMenu>
+                        <Link
+                          href={item.url}
+                          style={{ borderRadius: "0.5rem" }}
+                          className="flex items-center justify-start group-data-[collapsible=icon]:justify-center w-full"
+                        >
+                          {typeof item.activeIcon === "function" ? (
+                            <div className="flex items-center justify-center min-w-[22px]">
+                              {item.activeIcon(isActive)}
+                            </div>
+                          ) : (
+                            <div className="flex items-center justify-center min-w-[22px]">
+                              <Image
+                                src={isActive ? item.activeIcon : item.icon}
+                                className="w-[18px] object-cover"
+                                alt={`${item.title} icon`}
+                              />
+                            </div>
+                          )}
+                          <span className="pl-3 group-data-[collapsible=icon]:hidden">
+                            {item.title}
+                          </span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  );
+                })}
+              </SidebarMenu>
 
-            {/* LOGOUT */}
-            <SidebarMenu className="!border-0 hidden">
-              <SidebarMenuItem className="!border-0">
-                <SidebarMenuButton
-                  asChild
-                  tooltip="Logout"
-                  className="flex items-center gap-2 px-4 cursor-pointer pb-10 
-                              !border-0 !bg-transparent hover:!bg-transparent focus:!bg-transparent active:!bg-transparent
-                              group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:!px-2"
-                >
-                  <div
-                    className="flex items-center justify-start w-full 
-                                    group-data-[collapsible=icon]:justify-center 
-                                    !bg-transparent hover:!bg-transparent"
-                  >
-                    <ModalLeave
-                      massageTitle={"Are you sure?"}
-                      massageBody={"You want to leave this board "}
-                      massageUndo={"No, cancel"}
-                      massageDo={"Yes, Leave"}
-                      action={[<LeaveButton key="leave-button" />]}
-                    />
+              <SidebarMenu className="!border-0 mt-auto">
+                <SidebarMenuItem className="py-1 !border-0">
+                  <div className="py-5 px-3 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:!px-5 group-data-[collapsible=icon]:!py-5 rounded-lg">
+                    <div className="flex items-center justify-start w-full group-data-[collapsible=icon]:hidden">
+                      <div className="flex items-center justify-center min-w-[22px]">
+                        <BadgeMinus className="w-[22px] h-[22px] text-red-500" />
+                      </div>
+                      <ModalLeave
+                        boardId={boardId}
+                        massageTitle={"Are you sure?"}
+                        massageBody={"You want to leave this board "}
+                        massageUndo={"No, cancel"}
+                        massageDo={"Yes, Leave"}
+                        action={[<LeaveButton key="leave-button" />]}
+                      />
+                    </div>
+                    <div className="hidden group-data-[collapsible=icon]:flex items-center justify-center w-full">
+                      <ModalLeave
+                        boardId={boardId}
+                        massageTitle={"Are you sure?"}
+                        massageBody={"You want to leave this board "}
+                        massageUndo={"No, cancel"}
+                        massageDo={"Yes, Leave"}
+                        action={[<LeaveButton key="leave-button" />]}
+                        trigger={
+                          <div className="flex items-center justify-center min-w-[22px] cursor-pointer hover:bg-gray-100 rounded p-2">
+                            <BadgeMinus className="w-[18px] h-[18px]" />
+                          </div>
+                        }
+                      />
+                    </div>
                   </div>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </div>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>

@@ -26,6 +26,7 @@ import {
   sendNotificationToUserIdAction,
 } from "@/action/notification.action";
 import OneSignalInitializer from "@/components/onesignal/OneSignalInitializer";
+import ModalNotification from "@/components/modal/noti/ModalNotification";
 //import { LoadingBarContainer } from "react-top-loading-bar";
 export const metadata = {
   title: "Zentrio | Task Mangement",
@@ -71,10 +72,12 @@ export default async function SystemLayout({ children, params }) {
 
     const notificationData = await getNotificationForUserIdAction(myUserId);
 
+
+
     return (
       // <LoadingBarContainer>
       <SidebarProvider className="bg-bgColor">
-        <OneSignalInitializer userId={myUserId}/>
+        <OneSignalInitializer userId={myUserId} />
         <SidebarRenderer
           workspaceData={workspaceData}
           workspaceUsersData={workspaceUsersData}
@@ -85,8 +88,7 @@ export default async function SystemLayout({ children, params }) {
           getWorKSpaceJoined={getWorKSpaceJoined}
         />
         <div
-          className={" font-poppin h-screen overflow-hidden  bg-white  w-full"}
-        >
+          className={" font-poppin h-screen overflow-hidden  bg-white  w-full"}>
           {/* <SidebarTrigger className="fixed top-0  z-[30]" /> */}
           <div className="w-full  ">
             <NavbarWrapper

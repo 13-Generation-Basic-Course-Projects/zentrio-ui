@@ -46,7 +46,7 @@ export default function DocumentLayout({
     {
       key: "personal",
       title: "Personal",
-      content: <PrivateDocument />,
+      content: <PrivateDocument boardId={boardId} />,
       icon: (isActive) => (
         <svg
           width={14}
@@ -65,7 +65,7 @@ export default function DocumentLayout({
     {
       key: "public",
       title: "Public",
-      content: <PublicDocument />,
+      content: <PublicDocument boardId={boardId} />,
       icon: (isActive) => (
         <svg
           width={17}
@@ -144,7 +144,7 @@ export default function DocumentLayout({
         </header>
       </div>
       {/* Tab Content Area */}
-      {tokenFromGoogle === null ? (
+      {tokenFromGoogle != null ? (
         <WelcomePage workspaceId={workspaceId} />
       ) : (
         <main className="p-4 min-h-screen">
@@ -160,6 +160,8 @@ export default function DocumentLayout({
                 ]}
                 tokenFromGoogle={tokenFromGoogle}
                 isHidden={false}
+                boardId={boardId}
+                workspaceId={workspaceId}
               />
             )}
             {activeTab === "public" && (
@@ -167,6 +169,8 @@ export default function DocumentLayout({
                 publicDocuments={publicDocuments}
                 modal={[]}
                 isHidden={true}
+                boardId={boardId}
+                workspaceId={workspaceId}
               />
             )}
             {/* {activeTab === null && (

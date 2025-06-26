@@ -10,7 +10,7 @@ import { Token } from "@/constant/token";
 
 export default async function BoardLayout({ children, params }) {
   const session = await auth();
-  const boardId = params?.boardId;
+  const boardId = (await params).boardId;
   const workspaceId = (await params).workspaceId;
 
   const getDocuments = await getDocumentsByBoardAction(boardId);
@@ -33,6 +33,7 @@ export default async function BoardLayout({ children, params }) {
   const preventUserImage = imageUser == null ? noImage : imageUser;
 
   const { id } = params;
+  console.log("this is the boardid", boardId);
   return (
     <div>
       <DocumentAutherize
