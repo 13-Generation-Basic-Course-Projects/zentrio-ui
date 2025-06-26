@@ -49,7 +49,20 @@ const ganttBarSchema = z.object({
     .refine((data) => new Date(data.start) <= new Date(data.end), {
       message: "End date must be on or after start date",
       path: ["end"],
-    }),
+    })
+    .refine(
+      (data) => {
+        const startDate = new Date(data.start);
+        const endDate = new Date(data.end);
+        const diffTime = endDate - startDate;
+        const diffDays = diffTime / (1000 * 60 * 60 * 24);
+        return diffDays >= 6; // Minimum 7 days (inclusive, so 6 days difference)
+      },
+      {
+        message: "End date must be at least 7 days after start date",
+        path: ["end"],
+      }
+    ),
   face: z.enum(faceEnum, { required_error: "Face is required" }),
 });
 
@@ -70,7 +83,10 @@ export default function ModalCreateGanttBar({ input, ganttChartId }) {
     resolver: zodResolver(ganttBarSchema),
     defaultValues: {
       title: "",
-      duration: { start: "", end: "" },
+      duration: {
+        start: today(getLocalTimeZone()).toString(),
+        end: today(getLocalTimeZone()).add({ days: 7 }).toString(),
+      },
       face: "",
     },
   });
@@ -108,6 +124,7 @@ export default function ModalCreateGanttBar({ input, ganttChartId }) {
       };
 
       activeToasts.current.add(toastId);
+      console.log(`Showing toast: ${type} - ${message}`); // Debugging
       return toast[type](message, toastOptions);
     } catch (error) {
       console.error("Toast error:", error);
@@ -135,7 +152,10 @@ export default function ModalCreateGanttBar({ input, ganttChartId }) {
 
       reset({
         title: "",
-        duration: { start: "", end: "" },
+        duration: {
+          start: today(getLocalTimeZone()).toString(),
+          end: today(getLocalTimeZone()).add({ days: 7 }).toString(),
+        },
         face: data.face,
       });
     },
@@ -165,10 +185,7 @@ export default function ModalCreateGanttBar({ input, ganttChartId }) {
     }
 
     const payload = pendingItems.map((item) => {
-      // Parse the selected start date (e.g., "2025-06-25")
       const selectedStartDate = new Date(item.startedAt);
-
-      // Get current time in UTC+7 and add 1 hour
       const now = new Date();
       const utc7OffsetMs = 7 * 60 * 60 * 1000; // 7 hours in milliseconds
       const oneHourMs = 1 * 60 * 60 * 1000; // 1 hour in milliseconds
@@ -176,7 +193,6 @@ export default function ModalCreateGanttBar({ input, ganttChartId }) {
         now.getTime() + utc7OffsetMs + oneHourMs
       );
 
-      // Set the start time to current time + 1 hour in UTC+7 on the selected date
       const startedAt = new Date(
         selectedStartDate.getFullYear(),
         selectedStartDate.getMonth(),
@@ -187,7 +203,6 @@ export default function ModalCreateGanttBar({ input, ganttChartId }) {
         nowInUtc7PlusOneHour.getMilliseconds()
       );
 
-      // Set end time to 23:59:59.999 on the selected end date
       const finishedAt = new Date(
         new Date(item.finishedAt).getFullYear(),
         new Date(item.finishedAt).getMonth(),
@@ -254,15 +269,152 @@ export default function ModalCreateGanttBar({ input, ganttChartId }) {
   const handleModalClose = useCallback(() => {
     reset();
     setPendingItems([]);
-    activeToasts.current.forEach((toastId) => {
+
+    // Create a copy of the Set to avoid modification during iteration
+    const currentToasts = Array.from(activeToasts.current);
+
+    currentToasts.forEach((toastId) => {
       try {
-        toast.dismiss(toastId);
+        // Check if toast exists before dismissing
+        if (toast.isActive(toastId)) {
+          toast.dismiss(toastId);
+        }
       } catch (err) {
         console.warn("Toast cleanup error:", err);
+      } finally {
+        // Always remove from our tracking
+        activeToasts.current.delete(toastId);
       }
     });
+
+    // Clear the set as a final cleanup
     activeToasts.current.clear();
   }, [reset]);
+
+  const validateDuration = useCallback(
+    (value) => {
+      if (!value?.start || !value?.end) {
+        return null;
+      }
+
+      const start = value.start;
+      const end = value.end;
+
+      // Calculate the difference in days
+      const startDate = start.toDate(getLocalTimeZone());
+      const endDate = end.toDate(getLocalTimeZone());
+      const diffTime = endDate.getTime() - startDate.getTime();
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+      console.log(`Validation: diffDays = ${diffDays}`);
+
+      if (diffDays < 7) {
+        console.log("Validation: Duration < 7 days");
+
+        // Defer the toast to avoid render-time state updates
+        setTimeout(() => {
+          showToast(
+            "error",
+            "End date must be at least 7 days after start date",
+            {
+              preventDuplicate: true,
+              autoClose: 3000,
+            }
+          );
+        }, 0);
+
+        return "End date must be at least 7 days after start date";
+      }
+
+      console.log("Validation: Duration valid");
+      return null;
+    },
+    [showToast]
+  );
+
+  <Controller
+    name="duration"
+    control={control}
+    render={({ field }) => (
+      <DateRangePicker
+        className="max-w-none"
+        minValue={today(getLocalTimeZone())}
+        // Remove the validate prop entirely
+        value={
+          field.value?.start && field.value?.end
+            ? {
+                start: parseDate(field.value.start),
+                end: parseDate(field.value.end),
+              }
+            : null
+        }
+        onChange={(value) => {
+          if (value?.start && value?.end) {
+            // Perform validation here instead of in validate prop
+            const startDate = value.start.toDate(getLocalTimeZone());
+            const endDate = value.end.toDate(getLocalTimeZone());
+            const diffTime = endDate.getTime() - startDate.getTime();
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            console.log(`OnChange validation: diffDays = ${diffDays}`);
+
+            // Only show toast if validation fails
+            if (diffDays < 6) {
+              // Use setTimeout to defer the toast to avoid render-time state updates
+              setTimeout(() => {
+                showToast(
+                  "error",
+                  "End date must be at least 7 days after start date",
+                  {
+                    preventDuplicate: true,
+                    autoClose: 3000,
+                  }
+                );
+              }, 0);
+            }
+
+            // Always update the field value
+            field.onChange({
+              start: value.start.toString(),
+              end: value.end.toString(),
+            });
+          }
+        }}
+        label="Gantt Bar Duration"
+        labelPlacement="outside"
+        isInvalid={!!errors.duration}
+        classNames={{
+          inputWrapper: `
+          bg-white 
+          border
+          border-gray-300
+          shadow-none         
+          focus:shadow-none  
+          focus:outline-none
+          focus:ring-0       
+          focus-within:shadow-none
+          focus-within:ring-0
+          rounded-small
+          transition-all 
+          hover:bg-white
+          px-3
+          py-6
+          ${errors.duration ? "border-red-500" : ""}
+        `,
+          input: "text-black",
+          label: "text-label font-medium",
+        }}
+        style={{
+          appearance: "none",
+          WebkitAppearance: "none",
+          MozAppearance: "none",
+          cursor: "pointer",
+        }}
+      />
+    )}
+  />;
+
+  // Also remove the validateDuration function since it's no longer needed
 
   return (
     <>
@@ -324,8 +476,9 @@ export default function ModalCreateGanttBar({ input, ganttChartId }) {
                             <DateRangePicker
                               className="max-w-none"
                               minValue={today(getLocalTimeZone())} // Prevent past dates
+                              validate={validateDuration}
                               value={
-                                field.value.start && field.value.end
+                                field.value?.start && field.value?.end
                                   ? {
                                       start: parseDate(field.value.start),
                                       end: parseDate(field.value.end),
@@ -339,13 +492,8 @@ export default function ModalCreateGanttBar({ input, ganttChartId }) {
                                 })
                               }
                               label="Gantt Bar Duration"
-                              labelPlacement="outside"
-                              isInvalid={!!errors.duration}
-                              errorMessage={
-                                errors.duration?.start?.message ||
-                                errors.duration?.end?.message ||
-                                errors.duration?.message
-                              }
+                              // labelPlacement="outside"
+                              // isInvalid={!!errors.duration}
                               classNames={{
                                 inputWrapper: `
                                   bg-white 
@@ -383,7 +531,6 @@ export default function ModalCreateGanttBar({ input, ganttChartId }) {
                         <label className="text-sm font-medium text-title">
                           Phases <span className="text-progress-red">*</span>
                         </label>
-
                         <Controller
                           name="face"
                           control={control}
@@ -416,7 +563,6 @@ export default function ModalCreateGanttBar({ input, ganttChartId }) {
                             </Autocomplete>
                           )}
                         />
-
                         {errors.face && (
                           <span className="text-sm text-red-500">
                             {errors.face.message}
@@ -469,7 +615,8 @@ export default function ModalCreateGanttBar({ input, ganttChartId }) {
                             !titleValue?.trim() ||
                             !durationValue?.start ||
                             !durationValue?.end ||
-                            !faceValue
+                            !faceValue ||
+                            !!errors.duration
                           }
                           className="w-full bg-bgColor text-primary font-medium py-3 rounded-full border border-title/20 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
