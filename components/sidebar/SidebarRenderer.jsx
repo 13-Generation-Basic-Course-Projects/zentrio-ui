@@ -16,7 +16,7 @@ export default function SidebarRenderer({
   const pathname = usePathname();
 
   if (pathname.startsWith("/dashboard")) {
-    return <DashbaordSideBar getWorKSpaceJoined={getWorKSpaceJoined} workspaceData={workspaceData}/>;
+    return <DashbaordSideBar getWorKSpaceJoined={getWorKSpaceJoined} />;
   }
 
   if (pathname.startsWith("/workspace")) {

@@ -23,7 +23,7 @@ export default function ModalLeave({
   massageDo,
   trigger,
   boardId,
-  workspaceData,
+  workspaceId,
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const router = useRouter();
@@ -32,24 +32,18 @@ export default function ModalLeave({
   const [boardMembers, setBoardMembers] = useState([]);
   const [userRole, setUserRole] = useState("");
 
-  console.log("workspaceData inside bar", workspaceData);
-  const workspaceId = workspaceData?.payload?.[0]?.workspaceId;
-  console.log("workspaceId inside modal leave", workspaceId);
+  console.log("workspaceId in modal leave : ", workspaceId);
 
-  // Load data once modal is opened
   const loadData = async () => {
     try {
       const userResponse = await getCurrentUserProfileAction();
       const memberResponse = await getBoardMemberAction(boardId);
-
-      // Here is the key: access memberResponse.payload, NOT memberResponse directly
       const user = userResponse?.payload?.user;
       const members = memberResponse || [];
 
       console.log("Current User is:", user);
       console.log("Board Members is:", members);
-      console.log("Board Members id is:", members.userId);
-
+      
       const matchedMember = members.find(
         (member) => member.userId === user.userId
       );
@@ -91,10 +85,11 @@ export default function ModalLeave({
   };
 
   const handleAction = async (onClose) => {
+    console.log("🚀 User role in handleAction:", userRole);
     try {
       if (userRole === "ROLE_MANAGER") {
         await handleDeleteBoard();
-      } else {
+      } else if (userRole ==="ROLE_LEADER" || userRole === "ROLE_MEMBER"){
         await handleLeaveBoard();
       }
       onClose();
