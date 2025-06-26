@@ -43,7 +43,7 @@ export default async function Report({ params }) {
   const role = getRoleByBoardId(boardId, currentUserProfile);
   console.log("sadd", role);
   const roleNeverJoined = null;
-  console.log("Report Id: ", reportVersionData)
+  console.log("Report Version: ", reportVersionData.payload)
   console.log("BoardId: ", boardId)
   return (
     <>

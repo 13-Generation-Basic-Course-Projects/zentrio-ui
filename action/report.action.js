@@ -17,9 +17,10 @@ export const generateReportByBoardIdAction = async ({ boardId }) => {
     return { blob, fileName };
 }
 
-export const getReportVersionByReportIdAction = async ({ boardId }) => {
+export const getReportVersionByReportIdAction = async ({ reportId }) => {
     const userToken = await Token();
     const zentrioToken = userToken.Credential;
-    const result = await getReportVersionByReportIdService({ boardId, zentrioToken });
+    const result = await getReportVersionByReportIdService({ reportId, zentrioToken });
+    console.log("Version: ", result)
     return result;
 }

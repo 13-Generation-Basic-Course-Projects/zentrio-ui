@@ -45,8 +45,8 @@ export const generateReportByBoardIdService = async ({ boardId, zentrioToken } =
     return { blob, fileName };
 }
 
-export const getReportVersionByReportIdService = async ({ boardId, zentrioToken } = {}) => {
-    const url = reportRouteGroup.getReportVersionByReportId(boardId);
+export const getReportVersionByReportIdService = async ({ reportId, zentrioToken } = {}) => {
+    const url = reportRouteGroup.getReportVersionByReportId(reportId);
     const res = await fetch(url, {
         method: "GET",
         headers: {

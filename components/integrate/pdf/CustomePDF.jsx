@@ -232,85 +232,73 @@ export const PDFPreviewer = ({ report }) => {
       month: "January",
       tasks: myMonth.january,
       subtasks: myMonthChecklist.january,
-      january: 0,
-      february: 0,
-      march: 0,
-      april: 0,
-      may: 0,
-      june: 0,
-      july: 0,
-      august: 0,
-      september: 0,
-      october: 0,
-      november: 0,
-      december: 0,
-      completed: (doneTask.january / totalTasks) * 100 + "%",
+      completed: ((doneTask.january / totalTasks) * 100).toFixed(2) + "%",
     },
     {
       month: "February",
       tasks: myMonth.february,
       subtasks: myMonthChecklist.february,
-      completed: (doneTask.february / totalTasks) * 100 + "%",
+      completed: ((doneTask.february / totalTasks) * 100).toFixed(2) + "%",
     },
     {
       month: "March",
       tasks: myMonth.march,
       subtasks: myMonthChecklist.march,
-      completed: (doneTask.march / totalTasks) * 100 + "%",
+      completed: ((doneTask.march / totalTasks) * 100).toFixed(2) + "%",
     },
     {
       month: "April",
       tasks: myMonth.april,
       subtasks: myMonthChecklist.april,
-      completed: (doneTask.april / totalTasks) * 100 + "%",
+      completed: ((doneTask.april / totalTasks) * 100).toFixed(2) + "%",
     },
     {
       month: "May",
       tasks: myMonth.may,
       subtasks: myMonthChecklist.may,
-      completed: (doneTask.may / totalTasks) * 100 + "%",
+      completed: ((doneTask.may / totalTasks) * 100).toFixed(2) + "%",
     },
     {
       month: "June",
       tasks: myMonth.june,
       subtasks: myMonthChecklist.june,
-      completed: (doneTask.june / totalTasks) * 100 + "%",
+      completed: ((doneTask.june / totalTasks) * 100).toFixed(2) + "%",
     },
     {
       month: "July",
       tasks: myMonth.july,
       subtasks: myMonthChecklist.july,
-      completed: (doneTask.july / totalTasks) * 100 + "%",
+      completed: ((doneTask.july / totalTasks) * 100).toFixed(2) + "%",
     },
     {
       month: "August",
       tasks: myMonth.august,
       subtasks: myMonthChecklist.august,
-      completed: (doneTask.august / totalTasks) * 100 + "%",
+      completed: ((doneTask.august / totalTasks) * 100).toFixed(2) + "%",
     },
     {
       month: "September",
       tasks: myMonth.september,
       subtasks: myMonthChecklist.september,
-      completed: (doneTask.september / totalTasks) * 100 + "%",
+      completed: ((doneTask.september / totalTasks) * 100).toFixed(2) + "%",
     },
     {
       month: "October",
       tasks: myMonth.october,
       subtasks: myMonthChecklist.october,
-      completed: (doneTask.october / totalTasks) * 100 + "%",
+      completed: ((doneTask.october / totalTasks) * 100).toFixed(2) + "%",
     },
     {
       month: "November",
       tasks: myMonth.november,
       subtasks: myMonthChecklist.november,
-      completed: (doneTask.november / totalTasks) * 100 + "%",
+      completed: ((doneTask.november / totalTasks) * 100).toFixed(2) + "%",
     },
     {
       month: "December",
       tasks: myMonth.december,
       subtasks: myMonthChecklist.december,
-      completed: (doneTask.december / totalTasks) * 100 + "%",
+      completed: ((doneTask.december / totalTasks) * 100).toFixed(2) + "%",
     },
   ];
 
@@ -340,7 +328,6 @@ export const PDFPreviewer = ({ report }) => {
         });
       });
     });
-
 
     return flattened;
   };
@@ -437,9 +424,7 @@ export const PDFPreviewer = ({ report }) => {
               </div>
             </div>
           </div>
-          <div className="w-8 h-8 hover:bg-black flex justify-center items-center cursor-pointer">
-            
-          </div>
+          <div className="w-8 h-8 hover:bg-black flex justify-center items-center cursor-pointer"></div>
         </div>
 
         {/* this body */}
@@ -448,1511 +433,1569 @@ export const PDFPreviewer = ({ report }) => {
           <div className="absolute top-0 left-0 h-full w-[15%] z-10">
             <div className="bg-title h-full overflow-y-scroll overflow-x-hidden scrollbar-hide">
               <div className="py-[10%] pl-10 pr-10 h-full">
-                <div onClick={() => selectOnly("item1")} className={`h-[250px] relative`}>
-                  {/* <!-- Cover --> */}
                 <div
-                  className={`absolute scale-[0.3] translate-x-[-34.5%] translate-y-[-35%] ${isSelected.item1 ? "border-3 border-blue-500" : "border-none"}`}
-                  style={{
-                    backgroundColor: "#D6DEE1",
-                    width: "595px",
-                    height: "842px",
-                  }}
+                  onClick={() => selectOnly("item1")}
+                  className={`h-[250px] relative`}
                 >
-                  {/* <!-- Inner Container --> */}
+                  {/* <!-- Cover --> */}
                   <div
+                    className={`absolute scale-[0.3] translate-x-[-34.5%] translate-y-[-35%] ${
+                      isSelected.item1
+                        ? "border-3 border-blue-500"
+                        : "border-none"
+                    }`}
                     style={{
-                      height: "100%",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      position: "relative",
+                      backgroundColor: "#D6DEE1",
+                      width: "595px",
+                      height: "842px",
                     }}
                   >
-                    {/* <!-- SVG Background --> */}
-                    <div style={{ position: "absolute", bottom: 0 }}>
-                      <svg
-                        width={595}
-                        height={768}
-                        viewBox="0 0 595 768"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M704.998 727.386L-24.5553 1092.03L-113.858 1.22405L704.998 727.386Z"
-                          fill="url(#paint0_linear_3611_140066)"
-                          fillOpacity="0.5"
-                          stroke="#787486"
-                        />
-                        <defs>
-                          <linearGradient
-                            id="paint0_linear_3611_140066"
-                            x1="-728.031"
-                            y1="200.198"
-                            x2="1405.8"
-                            y2="486.145"
-                            gradientUnits="userSpaceOnUse"
-                          >
-                            <stop
-                              offset="0.4499"
-                              stopColor="#9BDBFD"
-                              stopOpacity="0.3"
-                            />
-                            <stop offset="0.925752" stopColor="white" />
-                          </linearGradient>
-                        </defs>
-                      </svg>
-                    </div>
-
-                    {/* <!-- Report Frame --> */}
+                    {/* <!-- Inner Container --> */}
                     <div
                       style={{
+                        height: "100%",
                         display: "flex",
-                        paddingTop: "7.5%",
+                        alignItems: "center",
                         justifyContent: "center",
-                        width: "512px",
-                        height: "762px",
-                        border: "2px solid white",
-                        position: "absolute",
+                        position: "relative",
                       }}
                     >
-                      {/* <!-- Report Content --> */}
+                      {/* <!-- SVG Background --> */}
+                      <div style={{ position: "absolute", bottom: 0 }}>
+                        <svg
+                          width={595}
+                          height={768}
+                          viewBox="0 0 595 768"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M704.998 727.386L-24.5553 1092.03L-113.858 1.22405L704.998 727.386Z"
+                            fill="url(#paint0_linear_3611_140066)"
+                            fillOpacity="0.5"
+                            stroke="#787486"
+                          />
+                          <defs>
+                            <linearGradient
+                              id="paint0_linear_3611_140066"
+                              x1="-728.031"
+                              y1="200.198"
+                              x2="1405.8"
+                              y2="486.145"
+                              gradientUnits="userSpaceOnUse"
+                            >
+                              <stop
+                                offset="0.4499"
+                                stopColor="#9BDBFD"
+                                stopOpacity="0.3"
+                              />
+                              <stop offset="0.925752" stopColor="white" />
+                            </linearGradient>
+                          </defs>
+                        </svg>
+                      </div>
+
+                      {/* <!-- Report Frame --> */}
                       <div
                         style={{
-                          width: "404px",
-                          height: "633px",
-                          backgroundColor: "white",
                           display: "flex",
+                          paddingTop: "7.5%",
                           justifyContent: "center",
-                          paddingTop: "15%",
-                          position: "relative",
+                          width: "512px",
+                          height: "762px",
+                          border: "2px solid white",
+                          position: "absolute",
                         }}
                       >
-                        {/* <!-- Gradient Background --> */}
+                        {/* <!-- Report Content --> */}
                         <div
                           style={{
-                            width: "263px",
-                            height: "465px",
-                            background:
-                              "linear-gradient(to bottom left, rgba(186, 230, 253, 0.15), rgba(186, 230, 253, 0.15))",
-                          }}
-                        ></div>
-
-                        {/* <!-- Report Title --> */}
-                        <p
-                          style={{
-                            position: "absolute",
-                            top: "20%",
-                            fontSize: "24px",
-                            lineHeight: "32px",
-                            width: "150px",
-                            left: "3%",
-                            textAlign: "right",
-                            color: "#143a47",
-                          }}
-                        >
-                          <span style={{ fontWeight: "bold" }}>
-                            Report from zentrio board
-                          </span>
-                        </p>
-
-                        {/* <!-- Company Section --> */}
-                        <div
-                          style={{
-                            position: "absolute",
-                            height: "95px",
-                            right: 0,
-                            bottom: "40%",
+                            width: "404px",
+                            height: "633px",
+                            backgroundColor: "white",
                             display: "flex",
-                            flexDirection: "column",
-                            justifyContent: "space-between",
+                            justifyContent: "center",
+                            paddingTop: "15%",
+                            position: "relative",
                           }}
                         >
+                          {/* <!-- Gradient Background --> */}
+                          <div
+                            style={{
+                              width: "263px",
+                              height: "465px",
+                              background:
+                                "linear-gradient(to bottom left, rgba(186, 230, 253, 0.15), rgba(186, 230, 253, 0.15))",
+                            }}
+                          ></div>
+
+                          {/* <!-- Report Title --> */}
                           <p
                             style={{
-                              fontSize: "12px",
-                              backgroundColor: "black",
-                              color: "white",
-                              padding: "12px 13px",
-                              fontWeight: "bold",
+                              position: "absolute",
+                              top: "20%",
+                              fontSize: "24px",
+                              lineHeight: "32px",
+                              width: "150px",
+                              left: "3%",
+                              textAlign: "right",
+                              color: "#143a47",
                             }}
                           >
-                            [COMPANY LETTERHEAD WITH LOGO]
+                            <span style={{ fontWeight: "bold" }}>
+                              Report from zentrio board
+                            </span>
                           </p>
-                          <div
-                            style={{
-                              width: "100%",
-                              height: "42px",
-                              paddingLeft: "20%",
-                              display: "flex",
-                              justifyContent: "space-between",
-                              flexDirection: "column",
-                            }}
-                          >
-                            <p style={{ fontSize: "12px" }}>[Company Name]</p>
-                            <p style={{ fontSize: "12px" }}>
-                              [Insert Contact Detail]
-                            </p>
-                          </div>
-                        </div>
 
-                        {/* <!-- Bottom Section --> */}
-                        <div
-                          style={{
-                            position: "absolute",
-                            backgroundColor: "white",
-                            width: "285px",
-                            bottom: 0,
-                            right: 0,
-                            color: "#143a47",
-                            display: "flex",
-                            flexDirection: "column",
-                            justifyContent: "space-between",
-                            paddingTop: "2%",
-                          }}
-                        >
+                          {/* <!-- Company Section --> */}
                           <div
                             style={{
-                              width: "100%",
-                              height: "56px",
-                              paddingLeft: "3%",
+                              position: "absolute",
+                              height: "95px",
+                              right: 0,
+                              bottom: "40%",
+                              display: "flex",
+                              flexDirection: "column",
+                              justifyContent: "space-between",
                             }}
                           >
-                            <p style={{ fontSize: "15px" }}>
-                              <span style={{ fontWeight: "bold" }}>
-                                Prepared by:
-                              </span>
+                            <p
+                              style={{
+                                fontSize: "12px",
+                                backgroundColor: "black",
+                                color: "white",
+                                padding: "12px 13px",
+                                fontWeight: "bold",
+                              }}
+                            >
+                              [COMPANY LETTERHEAD WITH LOGO]
                             </p>
-                            <p style={{ fontSize: "15px" }}>
-                              {report?.payload?.boardData?.createdBy?.gender ===
-                              "MALE"
-                                ? `Mr. ${report?.payload?.boardData?.createdBy?.username}`
-                                : `Ms. ${report?.payload?.boardData?.createdBy?.username}`}
-                            </p>
+                            <div
+                              style={{
+                                width: "100%",
+                                height: "42px",
+                                paddingLeft: "20%",
+                                display: "flex",
+                                justifyContent: "space-between",
+                                flexDirection: "column",
+                              }}
+                            >
+                              <p style={{ fontSize: "12px" }}>[Company Name]</p>
+                              <p style={{ fontSize: "12px" }}>
+                                [Insert Contact Detail]
+                              </p>
+                            </div>
                           </div>
-                          <div style={{ paddingLeft: "3%" }}>
-                            <p style={{ fontSize: "12px", height: "48px" }}>
-                              Any inquiries with respect to this report may be
-                              directed to:
-                            </p>
-                            <p style={{ fontSize: "12px", height: "42px" }}>
-                              [Insert Name]
-                            </p>
+
+                          {/* <!-- Bottom Section --> */}
+                          <div
+                            style={{
+                              position: "absolute",
+                              backgroundColor: "white",
+                              width: "285px",
+                              bottom: 0,
+                              right: 0,
+                              color: "#143a47",
+                              display: "flex",
+                              flexDirection: "column",
+                              justifyContent: "space-between",
+                              paddingTop: "2%",
+                            }}
+                          >
+                            <div
+                              style={{
+                                width: "100%",
+                                height: "56px",
+                                paddingLeft: "3%",
+                              }}
+                            >
+                              <p style={{ fontSize: "15px" }}>
+                                <span style={{ fontWeight: "bold" }}>
+                                  Prepared by:
+                                </span>
+                              </p>
+                              <p style={{ fontSize: "15px" }}>
+                                {report?.payload?.boardData?.createdBy
+                                  ?.gender === "MALE"
+                                  ? `Mr. ${report?.payload?.boardData?.createdBy?.username}`
+                                  : `Ms. ${report?.payload?.boardData?.createdBy?.username}`}
+                              </p>
+                            </div>
+                            <div style={{ paddingLeft: "3%" }}>
+                              <p style={{ fontSize: "12px", height: "48px" }}>
+                                Any inquiries with respect to this report may be
+                                directed to:
+                              </p>
+                              <p style={{ fontSize: "12px", height: "42px" }}>
+                                [Insert Name]
+                              </p>
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-                </div>
-                <div onClick={() => selectOnly("item2")} className={`h-[250px] my-5 relative`}>
-                  {/* <!-- Page 1 --> */}
                 <div
-                  className={`absolute scale-[0.3] translate-x-[-34.5%] translate-y-[-35%] ${isSelected.item2 ? `border-3 border-blue-500` : `border-none`}`}
-                  style={{
-                    width: "595px",
-                    height: "842px",
-                    backgroundColor: "white",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "space-between",
-                  }}
+                  onClick={() => selectOnly("item2")}
+                  className={`h-[250px] my-5 relative`}
                 >
-                  <p
-                    style={{
-                      backgroundColor: "#59BAD5",
-                      width: "199px",
-                      height: "40px",
-                      borderTopRightRadius: "12px",
-                      borderBottomLeftRadius: "12px",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      fontSize: "24px",
-                      color: "white",
-                    }}
-                  >
-                    <span style={{ fontWeight: "bold" }}>Reports</span>
-                  </p>
-
+                  {/* <!-- Page 1 --> */}
                   <div
+                    className={`absolute scale-[0.3] translate-x-[-34.5%] translate-y-[-35%] ${
+                      isSelected.item2
+                        ? `border-3 border-blue-500`
+                        : `border-none`
+                    }`}
                     style={{
-                      width: "100%",
-                      height: "20%",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "flex-end",
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: "80%",
-                        height: "auto",
-                        border: "1px solid black",
-                        borderRadius: "5px",
-                      }}
-                    >
-                      <table
-                        style={{
-                          width: "100%",
-                          textAlign: "center",
-                          fontSize: "12px",
-                        }}
-                      >
-                        <thead
-                          style={{
-                            height: "28px",
-                            backgroundColor: "#59BAD5",
-                          }}
-                        >
-                          <tr>
-                            <td style={{ width: "120px" }}>
-                              <span className="text-white">Board Name</span>
-                            </td>
-                            <td
-                              style={{ width: "120px" }}
-                              className="border-x-1 border-black"
-                            >
-                              <span className="text-white">Task</span>
-                            </td>
-                            <td
-                              style={{ width: "120px" }}
-                              className="border-r border-black"
-                            >
-                              <span className="text-white">Version</span>
-                            </td>
-                            <td style={{ width: "120px" }}>
-                              <span className="text-white">Date</span>
-                            </td>
-                          </tr>
-                        </thead>
-                        <tbody style={{ height: "40px" }}>
-                          <tr style={{ borderTop: "1px solid black" }}>
-                            <td>{report?.payload?.boardData?.title}</td>
-                            <td className="border-x-1 border-black">
-                              {totalTasks}
-                            </td>
-                            <td className="border-r border-black">
-                              {report?.payload?.version}
-                            </td>
-                            <td>{report?.payload?.creationDate}</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-
-                  <div
-                    style={{
-                      width: "100%",
-                      height: "30%",
+                      width: "595px",
+                      height: "842px",
+                      backgroundColor: "white",
                       display: "flex",
                       flexDirection: "column",
-                      alignItems: "center",
+                      justifyContent: "space-between",
                     }}
                   >
-                    <div
+                    <p
                       style={{
-                        backgroundColor: "white",
-                        width: "80%",
-                        height: "25%",
-                        display: "flex",
-                        alignItems: "flex-end",
-                        fontSize: "16px",
-                      }}
-                    >
-                      <p
-                        style={{
-                          fontSize: "16px",
-                          background:
-                            "linear-gradient(to right, #59BAD5, #ABAAFF, #59BAD5)",
-                          WebkitBackgroundClip: "text",
-                          backgroundClip: "text",
-                        }}
-                      >
-                        I.&nbsp;&nbsp;Gantt Bar in
-                        <span style={{ color: "transparent" }}>
-                          &nbsp;{report?.payload?.boardData?.title}
-                        </span>
-                      </p>
-                    </div>
-                    <div
-                      style={{
+                        backgroundColor: "#59BAD5",
+                        width: "199px",
+                        height: "40px",
+                        borderTopRightRadius: "12px",
+                        borderBottomLeftRadius: "12px",
                         display: "flex",
                         justifyContent: "center",
                         alignItems: "center",
-                        width: "100%",
-                        height: "75%",
+                        fontSize: "24px",
+                        color: "white",
                       }}
                     >
-                      <div
-                        style={{
-                          width: "50%",
-                          height: "80%",
-                          display: "flex",
-                          justifyContent: "center",
-                          position: "relative",
-                        }}
-                      >
-                        <div
-                          style={{
-                            position: "absolute",
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "flex-end",
-                            height: "100%",
-                            paddingBottom: "5%",
-                          }}
-                        >
-                          <div
-                            style={{
-                              backgroundColor: "purple",
-                              width: "180px",
-                              height: "115px",
-                            }}
-                          ></div>
-                        </div>
-                        {/* <!-- image --> */}
-                        <div
-                          className="img"
-                          style={{ position: "absolute", translate: "10%" }}
-                        >
-                          <Image
-                            src={Laptop}
-                            alt=""
-                            className="w-[80%] h-[80%]"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div
-                    style={{
-                      width: "100%",
-                      height: "40%",
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: "80%",
-                        height: "10%",
-                        display: "flex",
-                        alignItems: "flex-end",
-                        fontSize: "16px",
-                      }}
-                    >
-                      <p style={{ fontSize: "16px" }}>
-                        II.&nbsp;&nbsp;Stages Information
-                      </p>
-                    </div>
-                    <p
-                      style={{
-                        fontSize: "12px",
-                        width: "72.5%",
-                        paddingTop: "2.5%",
-                      }}
-                    >
-                      This section provides a structured overview of the
-                      project's workflow distribution across four stages: To Do,
-                      Progress, Under Review, and Completed.
+                      <span style={{ fontWeight: "bold" }}>Reports</span>
                     </p>
+
                     <div
                       style={{
                         width: "100%",
+                        height: "20%",
                         display: "flex",
                         justifyContent: "center",
-                        backgroundColor: "white",
-                        paddingTop: "5%",
+                        alignItems: "flex-end",
                       }}
                     >
                       <div
                         style={{
+                          width: "80%",
+                          height: "auto",
                           border: "1px solid black",
                           borderRadius: "5px",
-                          width: "65%",
                         }}
                       >
                         <table
                           style={{
-                            fontSize: "12px",
                             width: "100%",
-                            height: "100%",
+                            textAlign: "center",
+                            fontSize: "12px",
                           }}
                         >
                           <thead
                             style={{
-                              color: "white",
+                              height: "28px",
                               backgroundColor: "#59BAD5",
-                              height: "26px",
                             }}
                           >
-                            <tr style={{ borderBottom: "1px solid black" }}>
-                              <td
-                                style={{
-                                  borderRight: "1px solid black",
-                                  paddingLeft: "27px",
-                                }}
-                              >
-                                Stage
+                            <tr>
+                              <td style={{ width: "120px" }}>
+                                <span className="text-white">Board Name</span>
                               </td>
                               <td
-                                style={{
-                                  borderRight: "1px solid black",
-                                  paddingLeft: "27px",
-                                }}
+                                style={{ width: "120px" }}
+                                className="border-x-1 border-black"
                               >
-                                Tasks
+                                <span className="text-white">Task</span>
                               </td>
-                              <td style={{ paddingLeft: "27px" }}>
-                                Checklists
+                              <td
+                                style={{ width: "120px" }}
+                                className="border-r border-black"
+                              >
+                                <span className="text-white">Version</span>
+                              </td>
+                              <td style={{ width: "120px" }}>
+                                <span className="text-white">Date</span>
                               </td>
                             </tr>
                           </thead>
-                          <tbody style={{ backgroundColor: "white" }}>
-                            <tr
-                              style={{
-                                borderBottom: "1px solid black",
-                                height: "32px",
-                              }}
-                            >
-                              <td
-                                style={{
-                                  width: "143px",
-                                  borderRight: "1px solid black",
-                                  paddingLeft: "27px",
-                                }}
-                              >
-                                To Do
+                          <tbody style={{ height: "40px" }}>
+                            <tr style={{ borderTop: "1px solid black" }}>
+                              <td>{report?.payload?.boardData?.title}</td>
+                              <td className="border-x-1 border-black">
+                                {totalTasks}
                               </td>
-                              <td
-                                style={{
-                                  width: "143px",
-                                  borderRight: "1px solid black",
-                                  paddingLeft: "27px",
-                                }}
-                              >
-                                {task.todo} tasks
+                              <td className="border-r border-black">
+                                {report?.payload?.version}
                               </td>
-                              <td
-                                style={{ width: "143px", paddingLeft: "27px" }}
-                              >
-                                {checkList.todo} checklists
-                              </td>
-                            </tr>
-                            <tr
-                              style={{
-                                borderBottom: "1px solid black",
-                                height: "32px",
-                              }}
-                            >
-                              <td
-                                style={{
-                                  width: "143px",
-                                  borderRight: "1px solid black",
-                                  paddingLeft: "27px",
-                                }}
-                              >
-                                Progress
-                              </td>
-                              <td
-                                style={{
-                                  width: "143px",
-                                  borderRight: "1px solid black",
-                                  paddingLeft: "27px",
-                                }}
-                              >
-                                {task.progress} tasks
-                              </td>
-                              <td
-                                style={{ width: "143px", paddingLeft: "27px" }}
-                              >
-                                {checkList.progress} checklists
-                              </td>
-                            </tr>
-                            <tr
-                              style={{
-                                borderBottom: "1px solid black",
-                                height: "32px",
-                              }}
-                            >
-                              <td
-                                style={{
-                                  width: "143px",
-                                  borderRight: "1px solid black",
-                                  paddingLeft: "27px",
-                                }}
-                              >
-                                Under Review
-                              </td>
-                              <td
-                                style={{
-                                  width: "143px",
-                                  borderRight: "1px solid black",
-                                  paddingLeft: "27px",
-                                }}
-                              >
-                                {task.review} tasks
-                              </td>
-                              <td
-                                style={{ width: "143px", paddingLeft: "27px" }}
-                              >
-                                {checkList.review} checklists
-                              </td>
-                            </tr>
-                            <tr
-                              style={{
-                                borderBottom: "1px solid black",
-                                height: "32px",
-                              }}
-                            >
-                              <td
-                                style={{
-                                  width: "143px",
-                                  borderRight: "1px solid black",
-                                  paddingLeft: "27px",
-                                }}
-                              >
-                                Completed
-                              </td>
-                              <td
-                                style={{
-                                  width: "143px",
-                                  borderRight: "1px solid black",
-                                  paddingLeft: "27px",
-                                }}
-                              >
-                                {task.done} tasks
-                              </td>
-                              <td
-                                style={{ width: "143px", paddingLeft: "27px" }}
-                              >
-                                {checkList.done} checklists
-                              </td>
+                              <td>{report?.payload?.creationDate}</td>
                             </tr>
                           </tbody>
                         </table>
                       </div>
                     </div>
-                  </div>
 
-                  <p
-                    style={{
-                      textAlign: "center",
-                      height: "4.5%",
-                      fontSize: "12px",
-                    }}
-                  >
-                    page 1
-                  </p>
-                </div>
-                </div>
-                <div onClick={() => selectOnly("item3")} className={`h-[250px] relative`}>
-                  {/* <!-- Page 2 --> */}
-                <div
-                  className={`absolute scale-[0.3] translate-x-[-34.5%] translate-y-[-35%] ${isSelected.item3 ? `border-3 border-blue-500` : `border-none`}`}
-                  style={{
-                    width: "595px",
-                    height: "842px",
-                    backgroundColor: "white",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <p
-                    style={{
-                      width: "199px",
-                      backgroundColor: "#59BAD5",
-                      height: "40px",
-                      borderTopRightRadius: "12px",
-                      borderBottomLeftRadius: "12px",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      fontSize: "24px",
-                      color: "white",
-                    }}
-                  >
-                    <span style={{ fontWeight: "bold" }}>Reports</span>
-                  </p>
-
-                  <div
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      display: "flex",
-                      flexDirection: "column",
-                      paddingTop: "10%",
-                    }}
-                  >
                     <div
                       style={{
                         width: "100%",
+                        height: "30%",
                         display: "flex",
-                        justifyContent: "center",
+                        flexDirection: "column",
+                        alignItems: "center",
                       }}
                     >
                       <div
                         style={{
-                          height: "100%",
+                          backgroundColor: "white",
+                          width: "80%",
+                          height: "25%",
                           display: "flex",
-                          flexDirection: "column",
-                          width: "85%",
+                          alignItems: "flex-end",
+                          fontSize: "16px",
                         }}
                       >
-                        <p>III.&nbsp;&nbsp;To Do Information</p>
-                        <div>
-                          <div>
-                            <div style={{ paddingTop: "5%" }}>
-                              <div
-                                style={{
-                                  border: "1px solid black",
-                                  borderRadius: "5px",
-                                }}
-                              >
-                                <table
-                                  style={{ width: "100%", fontSize: "12px" }}
-                                >
-                                  <thead
-                                    style={{
-                                      color: "white",
-                                      backgroundColor: "#59BAD5",
-                                    }}
-                                  >
-                                    <tr style={{ height: "26px" }}>
-                                      <td
-                                        style={{
-                                          paddingLeft: "27px",
-                                          borderRight: "1px solid black",
-                                        }}
-                                      >
-                                        Task Title
-                                      </td>
-                                      <td
-                                        style={{
-                                          paddingLeft: "27px",
-                                          borderRight: "1px solid black",
-                                        }}
-                                      >
-                                        Lead
-                                      </td>
-                                      <td style={{ paddingLeft: "27px" }}>
-                                        Subtask Count
-                                      </td>
-                                    </tr>
-                                  </thead>
-                                  <tbody style={{ backgroundColor: "white" }}>
-                                    {report?.payload?.groupedTasks
-                                      .filter(
-                                        (value) => value?.stage == "TO DO"
-                                      )
-                                      .map((item) =>
-                                        item?.tasks?.map((value, index) => (
-                                          <tr
-                                            key={index}
-                                            style={{
-                                              height: "32px",
-                                              borderTop: "1px solid black",
-                                            }}
-                                          >
-                                            <td
-                                              style={{
-                                                paddingLeft: "27px",
-                                                borderRight: "1px solid black",
-                                              }}
-                                            >
-                                              {value?.title}
-                                            </td>
-                                            <td
-                                              style={{
-                                                paddingLeft: "27px",
-                                                borderRight: "1px solid black",
-                                              }}
-                                            >
-                                              {value?.teamLeader?.username}
-                                            </td>
-                                            <td style={{ paddingLeft: "27px" }}>
-                                              {value?.allChecklists.length}
-                                            </td>
-                                          </tr>
-                                        ))
-                                      )}
-                                  </tbody>
-                                </table>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
+                        <p
+                          style={{
+                            fontSize: "16px",
+                            background:
+                              "linear-gradient(to right, #59BAD5, #ABAAFF, #59BAD5)",
+                            WebkitBackgroundClip: "text",
+                            backgroundClip: "text",
+                          }}
+                        >
+                          I.&nbsp;&nbsp;Gantt Bar in
+                          <span style={{ color: "transparent" }}>
+                            &nbsp;{report?.payload?.boardData?.title}
+                          </span>
+                        </p>
                       </div>
-                    </div>
-
-                    <div
-                      style={{
-                        width: "100%",
-                        padding: "5% 0",
-                        display: "flex",
-                        justifyContent: "center",
-                      }}
-                    >
                       <div
                         style={{
-                          height: "100%",
                           display: "flex",
-                          flexDirection: "column",
-                          width: "85%",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          width: "100%",
+                          height: "75%",
                         }}
                       >
-                        <p>IV.&nbsp;&nbsp;Under Review information</p>
-                        <div>
-                          <div style={{ paddingTop: "5%" }}>
-                            <div
-                              style={{
-                                border: "1px solid black",
-                                borderRadius: "5px",
-                              }}
-                            >
-                              <table
-                                style={{ width: "100%", fontSize: "12px" }}
-                              >
-                                <thead
-                                  style={{
-                                    color: "white",
-                                    backgroundColor: "#59BAD5",
-                                  }}
-                                >
-                                  <tr style={{ height: "26px" }}>
-                                    <td
-                                      style={{
-                                        paddingLeft: "27px",
-                                        borderRight: "1px solid black",
-                                      }}
-                                    >
-                                      Task Title
-                                    </td>
-                                    <td
-                                      style={{
-                                        paddingLeft: "27px",
-                                        borderRight: "1px solid black",
-                                      }}
-                                    >
-                                      Lead
-                                    </td>
-                                    <td style={{ paddingLeft: "27px" }}>
-                                      Subtask Count
-                                    </td>
-                                  </tr>
-                                </thead>
-                                <tbody style={{ backgroundColor: "white" }}>
-                                  {report?.payload?.groupedTasks
-                                    .filter(
-                                      (value) => value?.stage == "UNDER_REVIEW"
-                                    )
-                                    .map((item) =>
-                                      item?.tasks?.map((value, index) => (
-                                        <tr
-                                          key={index}
-                                          style={{
-                                            height: "32px",
-                                            borderTop: "1px solid black",
-                                          }}
-                                        >
-                                          <td
-                                            style={{
-                                              paddingLeft: "27px",
-                                              borderRight: "1px solid black",
-                                            }}
-                                          >
-                                            {value?.title}
-                                          </td>
-                                          <td
-                                            style={{
-                                              paddingLeft: "27px",
-                                              borderRight: "1px solid black",
-                                            }}
-                                          >
-                                            {value?.teamLeader?.username}
-                                          </td>
-                                          <td style={{ paddingLeft: "27px" }}>
-                                            {value?.allChecklists.length}
-                                          </td>
-                                        </tr>
-                                      ))
-                                    )}
-                                </tbody>
-                              </table>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div
-                      style={{
-                        width: "100%",
-                        display: "flex",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <div
-                        style={{
-                          height: "100%",
-                          display: "flex",
-                          flexDirection: "column",
-                          width: "85%",
-                        }}
-                      >
-                        <p>V.&nbsp;&nbsp;Progress information</p>
-                        <div>
-                          <div style={{ paddingTop: "5%" }}>
-                            <div
-                              style={{
-                                border: "1px solid black",
-                                borderRadius: "5px",
-                              }}
-                            >
-                              <table
-                                style={{ width: "100%", fontSize: "12px" }}
-                              >
-                                <thead
-                                  style={{
-                                    color: "white",
-                                    backgroundColor: "#59BAD5",
-                                  }}
-                                >
-                                  <tr style={{ height: "26px" }}>
-                                    <td
-                                      style={{
-                                        paddingLeft: "27px",
-                                        borderRight: "1px solid black",
-                                      }}
-                                    >
-                                      Task Title
-                                    </td>
-                                    <td
-                                      style={{
-                                        paddingLeft: "27px",
-                                        borderRight: "1px solid black",
-                                      }}
-                                    >
-                                      Lead
-                                    </td>
-                                    <td style={{ paddingLeft: "27px" }}>
-                                      Subtask Count
-                                    </td>
-                                  </tr>
-                                </thead>
-                                <tbody style={{ backgroundColor: "white" }}>
-                                  {report?.payload?.groupedTasks
-                                    .filter(
-                                      (value) => value?.stage == "IN_PROGRESS"
-                                    )
-                                    .map((item) =>
-                                      item?.tasks?.map((value, index) => (
-                                        <tr
-                                          key={index}
-                                          style={{
-                                            height: "32px",
-                                            borderTop: "1px solid black",
-                                          }}
-                                        >
-                                          <td
-                                            style={{
-                                              paddingLeft: "27px",
-                                              borderRight: "1px solid black",
-                                            }}
-                                          >
-                                            {value?.title}
-                                          </td>
-                                          <td
-                                            style={{
-                                              paddingLeft: "27px",
-                                              borderRight: "1px solid black",
-                                            }}
-                                          >
-                                            {value?.teamLeader?.username}
-                                          </td>
-                                          <td style={{ paddingLeft: "27px" }}>
-                                            {value?.allChecklists.length}
-                                          </td>
-                                        </tr>
-                                      ))
-                                    )}
-                                </tbody>
-                              </table>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <p
-                    style={{
-                      textAlign: "center",
-                      height: "4.5%",
-                      fontSize: "12px",
-                    }}
-                  >
-                    page 2
-                  </p>
-                </div>
-                </div>
-                <div onClick={() => selectOnly("item4")} className={`h-[250px] my-5 relative`}>
-                  {/* <!-- Page 3 --> */}
-                <div
-                  className={`absolute scale-[0.3] translate-x-[-34.5%] translate-y-[-35%] ${isSelected.item4 ? `border-3 border-blue-500` : `border-none`}`}
-                  style={{
-                    width: "595px",
-                    height: "842px",
-                    backgroundColor: "white",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <p
-                    style={{
-                      backgroundColor: "#59BAD5",
-                      width: "199px",
-                      height: "40px",
-                      borderTopRightRadius: "12px",
-                      borderBottomLeftRadius: "12px",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      fontSize: "24px",
-                      color: "white",
-                    }}
-                  >
-                    <span style={{ fontWeight: "bold" }}>Reports</span>
-                  </p>
-
-                  <div
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      display: "flex",
-                      flexDirection: "column",
-                      paddingTop: "10%",
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: "100%",
-                        display: "flex",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <div
-                        style={{
-                          height: "100%",
-                          display: "flex",
-                          flexDirection: "column",
-                          width: "85%",
-                        }}
-                      >
-                        <p>VI.&nbsp;&nbsp;Stage : Done</p>
-                        <div>
-                          <div>
-                            <div style={{ paddingTop: "5%" }}>
-                              <div
-                                style={{
-                                  border: "1px solid black",
-                                  borderRadius: "5px",
-                                }}
-                              >
-                                <table
-                                  style={{ width: "100%", fontSize: "12px" }}
-                                >
-                                  <thead
-                                    style={{
-                                      color: "white",
-                                      backgroundColor: "#59BAD5",
-                                    }}
-                                  >
-                                    <tr style={{ height: "26px" }}>
-                                      <td
-                                        style={{
-                                          paddingLeft: "27px",
-                                          borderRight: "1px solid black",
-                                        }}
-                                      >
-                                        Task Title
-                                      </td>
-                                      <td
-                                        style={{
-                                          paddingLeft: "27px",
-                                          borderRight: "1px solid black",
-                                        }}
-                                      >
-                                        Lead
-                                      </td>
-                                      <td style={{ paddingLeft: "27px" }}>
-                                        Subtask Count
-                                      </td>
-                                    </tr>
-                                  </thead>
-                                  <tbody style={{ backgroundColor: "white" }}>
-                                    {report?.payload?.groupedTasks
-                                      .filter(
-                                        (value) => value?.stage == "COMPLETED"
-                                      )
-                                      .map((item) =>
-                                        item?.tasks?.map((value, index) => (
-                                          <tr
-                                            key={index}
-                                            style={{
-                                              height: "32px",
-                                              borderTop: "1px solid black",
-                                            }}
-                                          >
-                                            <td
-                                              style={{
-                                                paddingLeft: "27px",
-                                                borderRight: "1px solid black",
-                                              }}
-                                            >
-                                              {value?.title}
-                                            </td>
-                                            <td
-                                              style={{
-                                                paddingLeft: "27px",
-                                                borderRight: "1px solid black",
-                                              }}
-                                            >
-                                              {value?.teamLeader?.username}
-                                            </td>
-                                            <td style={{ paddingLeft: "27px" }}>
-                                              {value?.allChecklists.length}
-                                            </td>
-                                          </tr>
-                                        ))
-                                      )}
-                                  </tbody>
-                                </table>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div
-                      style={{
-                        width: "100%",
-                        padding: "5% 0",
-                        display: "flex",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <div
-                        style={{
-                          height: "100%",
-                          display: "flex",
-                          flexDirection: "column",
-                          width: "85%",
-                        }}
-                      >
-                        <p>VII.&nbsp;&nbsp;Subtasks</p>
-                        <div>
-                          {flatData.map((item, index) => (
-                            <div key={index} style={{ paddingTop: "5%" }}>
-                              <div
-                                style={{
-                                  border: "1px solid black",
-                                  borderRadius: "5px",
-                                }}
-                              >
-                                <table
-                                  style={{ width: "100%", fontSize: "12px" }}
-                                >
-                                  <tbody style={{ backgroundColor: "white" }}>
-                                    <tr
-                                      style={{
-                                        height: "32px",
-                                        borderBottom: "1px solid black",
-                                      }}
-                                    >
-                                      <td
-                                        style={{
-                                          paddingLeft: "27px",
-                                          borderRight: "1px solid black",
-                                          color: "white",
-                                          backgroundColor: "#59BAD5",
-                                        }}
-                                      >
-                                        Task Title
-                                      </td>
-                                      <td style={{ paddingLeft: "27px" }}>
-                                        {item.taskTitle}
-                                      </td>
-                                    </tr>
-                                    <tr
-                                      style={{
-                                        height: "32px",
-                                        borderBottom: "1px solid black",
-                                      }}
-                                    >
-                                      <td
-                                        style={{
-                                          paddingLeft: "27px",
-                                          borderRight: "1px solid black",
-                                          color: "white",
-                                          backgroundColor: "#59BAD5",
-                                        }}
-                                      >
-                                        Subtask Title
-                                      </td>
-                                      <td style={{ paddingLeft: "27px" }}>
-                                        {item.checklistTitle}
-                                      </td>
-                                    </tr>
-                                    <tr
-                                      style={{
-                                        height: "32px",
-                                        borderBottom: "1px solid black",
-                                      }}
-                                    >
-                                      <td
-                                        style={{
-                                          paddingLeft: "27px",
-                                          borderRight: "1px solid black",
-                                          color: "white",
-                                          backgroundColor: "#59BAD5",
-                                        }}
-                                      >
-                                        Member
-                                      </td>
-                                      <td style={{ paddingLeft: "27px" }}>
-                                        {item.member?.username}
-                                      </td>
-                                    </tr>
-                                    <tr
-                                      style={{
-                                        height: "32px",
-                                        borderBottom: "1px solid black",
-                                      }}
-                                    >
-                                      <td
-                                        style={{
-                                          paddingLeft: "27px",
-                                          borderRight: "1px solid black",
-                                          color: "white",
-                                          backgroundColor: "#59BAD5",
-                                        }}
-                                      >
-                                        Comments
-                                      </td>
-                                      <td style={{ paddingLeft: "27px" }}>
-                                        {item.comments?.length || 0} comment
-                                        {item.comments?.length !== 1 ? "s" : ""}
-                                      </td>
-                                    </tr>
-                                    <tr
-                                      style={{
-                                        height: "32px",
-                                        borderBottom: "1px solid black",
-                                      }}
-                                    >
-                                      <td
-                                        style={{
-                                          paddingLeft: "27px",
-                                          borderRight: "1px solid black",
-                                          color: "white",
-                                          backgroundColor: "#59BAD5",
-                                        }}
-                                      >
-                                        Start Date
-                                      </td>
-                                      <td style={{ paddingLeft: "27px" }}>
-                                        {item.startDate
-                                          ? new Date(
-                                              item.startDate
-                                            ).toLocaleDateString()
-                                          : "N/A"}
-                                      </td>
-                                    </tr>
-                                    <tr style={{ height: "32px" }}>
-                                      <td
-                                        style={{
-                                          paddingLeft: "27px",
-                                          borderRight: "1px solid black",
-                                          color: "white",
-                                          backgroundColor: "#59BAD5",
-                                        }}
-                                      >
-                                        End Date
-                                      </td>
-                                      <td style={{ paddingLeft: "27px" }}>
-                                        {item.endDate
-                                          ? new Date(
-                                              item.endDate
-                                            ).toLocaleDateString()
-                                          : "N/A"}
-                                      </td>
-                                    </tr>
-                                  </tbody>
-                                </table>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <p
-                    style={{
-                      textAlign: "center",
-                      height: "4.5%",
-                      fontSize: "12px",
-                    }}
-                  >
-                    page 3
-                  </p>
-                </div>
-                </div>
-                <div onClick={() => selectOnly("item5")} className={`h-[250px] relative`}>
-                  {/* <!-- Page 4 --> */}
-                <div
-                  className={`absolute scale-[0.3] translate-x-[-34.5%] translate-y-[-35%] ${isSelected.item5 ? `border-3 border-blue-500` : `border-none`}`}
-                  style={{
-                    width: "595px",
-                    height: "842px",
-                    backgroundColor: "white",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <div
-                    style={{
-                      backgroundColor: "#59BAD5",
-                      width: "199px",
-                      height: "40px",
-                      borderTopRightRadius: "12px",
-                      borderBottomLeftRadius: "12px",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      fontSize: "24px",
-                      color: "white",
-                    }}
-                  >
-                    <span style={{ fontWeight: "bold" }}>Reports</span>
-                  </div>
-
-                  <div
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      display: "flex",
-                      flexDirection: "column",
-                      paddingTop: "10%",
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: "100%",
-                        display: "flex",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <div
-                        style={{
-                          height: "100%",
-                          display: "flex",
-                          flexDirection: "column",
-                          width: "85%",
-                        }}
-                      >
-                        <p>VIII.&nbsp;&nbsp;Monthly Task Information</p>
-
-                        <div style={{ paddingTop: "5%" }}>
+                        <div
+                          style={{
+                            width: "50%",
+                            height: "80%",
+                            display: "flex",
+                            justifyContent: "center",
+                            position: "relative",
+                          }}
+                        >
                           <div
                             style={{
-                              border: "1px solid black",
-                              borderRadius: "5px",
+                              position: "absolute",
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "flex-end",
+                              height: "100%",
+                              paddingBottom: "5%",
                             }}
                           >
-                            <table
+                            <div
                               style={{
-                                width: "100%",
-                                fontSize: "12px",
-                                borderCollapse: "collapse",
+                                backgroundColor: "purple",
+                                width: "180px",
+                                height: "115px",
+                              }}
+                            ></div>
+                          </div>
+                          {/* <!-- image --> */}
+                          <div
+                            className="img"
+                            style={{ position: "absolute", translate: "10%" }}
+                          >
+                            <Image
+                              src={Laptop}
+                              alt=""
+                              className="w-[80%] h-[80%]"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div
+                      style={{
+                        width: "100%",
+                        height: "40%",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: "80%",
+                          height: "10%",
+                          display: "flex",
+                          alignItems: "flex-end",
+                          fontSize: "16px",
+                        }}
+                      >
+                        <p style={{ fontSize: "16px" }}>
+                          II.&nbsp;&nbsp;Stages Information
+                        </p>
+                      </div>
+                      <p
+                        style={{
+                          fontSize: "12px",
+                          width: "72.5%",
+                          paddingTop: "2.5%",
+                        }}
+                      >
+                        This section provides a structured overview of the
+                        project's workflow distribution across four stages: To
+                        Do, Progress, Under Review, and Completed.
+                      </p>
+                      <div
+                        style={{
+                          width: "100%",
+                          display: "flex",
+                          justifyContent: "center",
+                          backgroundColor: "white",
+                          paddingTop: "5%",
+                        }}
+                      >
+                        <div
+                          style={{
+                            border: "1px solid black",
+                            borderRadius: "5px",
+                            width: "65%",
+                          }}
+                        >
+                          <table
+                            style={{
+                              fontSize: "12px",
+                              width: "100%",
+                              height: "100%",
+                            }}
+                          >
+                            <thead
+                              style={{
+                                color: "white",
+                                backgroundColor: "#59BAD5",
+                                height: "26px",
                               }}
                             >
-                              <thead
+                              <tr style={{ borderBottom: "1px solid black" }}>
+                                <td
+                                  style={{
+                                    borderRight: "1px solid black",
+                                    paddingLeft: "27px",
+                                  }}
+                                >
+                                  Stage
+                                </td>
+                                <td
+                                  style={{
+                                    borderRight: "1px solid black",
+                                    paddingLeft: "27px",
+                                  }}
+                                >
+                                  Tasks
+                                </td>
+                                <td style={{ paddingLeft: "27px" }}>
+                                  Checklists
+                                </td>
+                              </tr>
+                            </thead>
+                            <tbody style={{ backgroundColor: "white" }}>
+                              <tr
                                 style={{
-                                  color: "white",
-                                  backgroundColor: "#59BAD5",
-                                  fontSize: "11px",
+                                  borderBottom: "1px solid black",
+                                  height: "32px",
                                 }}
                               >
-                                <tr style={{ height: "32px" }}>
-                                  <td
+                                <td
+                                  style={{
+                                    width: "143px",
+                                    borderRight: "1px solid black",
+                                    paddingLeft: "27px",
+                                  }}
+                                >
+                                  To Do
+                                </td>
+                                <td
+                                  style={{
+                                    width: "143px",
+                                    borderRight: "1px solid black",
+                                    paddingLeft: "27px",
+                                  }}
+                                >
+                                  {task.todo} tasks
+                                </td>
+                                <td
+                                  style={{
+                                    width: "143px",
+                                    paddingLeft: "27px",
+                                  }}
+                                >
+                                  {checkList.todo} checklists
+                                </td>
+                              </tr>
+                              <tr
+                                style={{
+                                  borderBottom: "1px solid black",
+                                  height: "32px",
+                                }}
+                              >
+                                <td
+                                  style={{
+                                    width: "143px",
+                                    borderRight: "1px solid black",
+                                    paddingLeft: "27px",
+                                  }}
+                                >
+                                  Progress
+                                </td>
+                                <td
+                                  style={{
+                                    width: "143px",
+                                    borderRight: "1px solid black",
+                                    paddingLeft: "27px",
+                                  }}
+                                >
+                                  {task.progress} tasks
+                                </td>
+                                <td
+                                  style={{
+                                    width: "143px",
+                                    paddingLeft: "27px",
+                                  }}
+                                >
+                                  {checkList.progress} checklists
+                                </td>
+                              </tr>
+                              <tr
+                                style={{
+                                  borderBottom: "1px solid black",
+                                  height: "32px",
+                                }}
+                              >
+                                <td
+                                  style={{
+                                    width: "143px",
+                                    borderRight: "1px solid black",
+                                    paddingLeft: "27px",
+                                  }}
+                                >
+                                  Under Review
+                                </td>
+                                <td
+                                  style={{
+                                    width: "143px",
+                                    borderRight: "1px solid black",
+                                    paddingLeft: "27px",
+                                  }}
+                                >
+                                  {task.review} tasks
+                                </td>
+                                <td
+                                  style={{
+                                    width: "143px",
+                                    paddingLeft: "27px",
+                                  }}
+                                >
+                                  {checkList.review} checklists
+                                </td>
+                              </tr>
+                              <tr
+                                style={{
+                                  borderBottom: "1px solid black",
+                                  height: "32px",
+                                }}
+                              >
+                                <td
+                                  style={{
+                                    width: "143px",
+                                    borderRight: "1px solid black",
+                                    paddingLeft: "27px",
+                                  }}
+                                >
+                                  Completed
+                                </td>
+                                <td
+                                  style={{
+                                    width: "143px",
+                                    borderRight: "1px solid black",
+                                    paddingLeft: "27px",
+                                  }}
+                                >
+                                  {task.done} tasks
+                                </td>
+                                <td
+                                  style={{
+                                    width: "143px",
+                                    paddingLeft: "27px",
+                                  }}
+                                >
+                                  {checkList.done} checklists
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+
+                    <p
+                      style={{
+                        textAlign: "center",
+                        height: "4.5%",
+                        fontSize: "12px",
+                      }}
+                    >
+                      page 1
+                    </p>
+                  </div>
+                </div>
+                <div
+                  onClick={() => selectOnly("item3")}
+                  className={`h-[250px] relative`}
+                >
+                  {/* <!-- Page 2 --> */}
+                  <div
+                    className={`absolute scale-[0.3] translate-x-[-34.5%] translate-y-[-35%] ${
+                      isSelected.item3
+                        ? `border-3 border-blue-500`
+                        : `border-none`
+                    }`}
+                    style={{
+                      width: "595px",
+                      height: "842px",
+                      backgroundColor: "white",
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <p
+                      style={{
+                        width: "199px",
+                        backgroundColor: "#59BAD5",
+                        height: "40px",
+                        borderTopRightRadius: "12px",
+                        borderBottomLeftRadius: "12px",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        fontSize: "24px",
+                        color: "white",
+                      }}
+                    >
+                      <span style={{ fontWeight: "bold" }}>Reports</span>
+                    </p>
+
+                    <div
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        display: "flex",
+                        flexDirection: "column",
+                        paddingTop: "10%",
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: "100%",
+                          display: "flex",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <div
+                          style={{
+                            height: "100%",
+                            display: "flex",
+                            flexDirection: "column",
+                            width: "85%",
+                          }}
+                        >
+                          <p>III.&nbsp;&nbsp;To Do Information</p>
+                          <div>
+                            <div>
+                              <div style={{ paddingTop: "5%" }}>
+                                <div
+                                  style={{
+                                    border: "1px solid black",
+                                    borderRadius: "5px",
+                                  }}
+                                >
+                                  <table
+                                    style={{ width: "100%", fontSize: "12px" }}
+                                  >
+                                    <thead
+                                      style={{
+                                        color: "white",
+                                        backgroundColor: "#59BAD5",
+                                      }}
+                                    >
+                                      <tr style={{ height: "26px" }}>
+                                        <td
+                                          style={{
+                                            paddingLeft: "27px",
+                                            borderRight: "1px solid black",
+                                          }}
+                                        >
+                                          Task Title
+                                        </td>
+                                        <td
+                                          style={{
+                                            paddingLeft: "27px",
+                                            borderRight: "1px solid black",
+                                          }}
+                                        >
+                                          Lead
+                                        </td>
+                                        <td style={{ paddingLeft: "27px" }}>
+                                          Subtask Count
+                                        </td>
+                                      </tr>
+                                    </thead>
+                                    <tbody style={{ backgroundColor: "white" }}>
+                                      {report?.payload?.groupedTasks
+                                        .filter(
+                                          (value) => value?.stage == "TO DO"
+                                        )
+                                        .map((item) =>
+                                          item?.tasks?.map((value, index) => (
+                                            <tr
+                                              key={index}
+                                              style={{
+                                                height: "32px",
+                                                borderTop: "1px solid black",
+                                              }}
+                                            >
+                                              <td
+                                                style={{
+                                                  paddingLeft: "27px",
+                                                  borderRight:
+                                                    "1px solid black",
+                                                }}
+                                              >
+                                                {value?.title}
+                                              </td>
+                                              <td
+                                                style={{
+                                                  paddingLeft: "27px",
+                                                  borderRight:
+                                                    "1px solid black",
+                                                }}
+                                              >
+                                                {value?.teamLeader?.username}
+                                              </td>
+                                              <td
+                                                style={{ paddingLeft: "27px" }}
+                                              >
+                                                {value?.allChecklists.length}
+                                              </td>
+                                            </tr>
+                                          ))
+                                        )}
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div
+                        style={{
+                          width: "100%",
+                          padding: "5% 0",
+                          display: "flex",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <div
+                          style={{
+                            height: "100%",
+                            display: "flex",
+                            flexDirection: "column",
+                            width: "85%",
+                          }}
+                        >
+                          <p>IV.&nbsp;&nbsp;Under Review information</p>
+                          <div>
+                            <div style={{ paddingTop: "5%" }}>
+                              <div
+                                style={{
+                                  border: "1px solid black",
+                                  borderRadius: "5px",
+                                }}
+                              >
+                                <table
+                                  style={{ width: "100%", fontSize: "12px" }}
+                                >
+                                  <thead
                                     style={{
-                                      paddingLeft: "16px",
-                                      borderRight: "1px solid black",
-                                      borderBottom: "1px solid black",
+                                      color: "white",
+                                      backgroundColor: "#59BAD5",
                                     }}
                                   >
-                                    Month
-                                  </td>
-                                  <td
+                                    <tr style={{ height: "26px" }}>
+                                      <td
+                                        style={{
+                                          paddingLeft: "27px",
+                                          borderRight: "1px solid black",
+                                        }}
+                                      >
+                                        Task Title
+                                      </td>
+                                      <td
+                                        style={{
+                                          paddingLeft: "27px",
+                                          borderRight: "1px solid black",
+                                        }}
+                                      >
+                                        Lead
+                                      </td>
+                                      <td style={{ paddingLeft: "27px" }}>
+                                        Subtask Count
+                                      </td>
+                                    </tr>
+                                  </thead>
+                                  <tbody style={{ backgroundColor: "white" }}>
+                                    {report?.payload?.groupedTasks
+                                      .filter(
+                                        (value) =>
+                                          value?.stage == "UNDER_REVIEW"
+                                      )
+                                      .map((item) =>
+                                        item?.tasks?.map((value, index) => (
+                                          <tr
+                                            key={index}
+                                            style={{
+                                              height: "32px",
+                                              borderTop: "1px solid black",
+                                            }}
+                                          >
+                                            <td
+                                              style={{
+                                                paddingLeft: "27px",
+                                                borderRight: "1px solid black",
+                                              }}
+                                            >
+                                              {value?.title}
+                                            </td>
+                                            <td
+                                              style={{
+                                                paddingLeft: "27px",
+                                                borderRight: "1px solid black",
+                                              }}
+                                            >
+                                              {value?.teamLeader?.username}
+                                            </td>
+                                            <td style={{ paddingLeft: "27px" }}>
+                                              {value?.allChecklists.length}
+                                            </td>
+                                          </tr>
+                                        ))
+                                      )}
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div
+                        style={{
+                          width: "100%",
+                          display: "flex",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <div
+                          style={{
+                            height: "100%",
+                            display: "flex",
+                            flexDirection: "column",
+                            width: "85%",
+                          }}
+                        >
+                          <p>V.&nbsp;&nbsp;Progress information</p>
+                          <div>
+                            <div style={{ paddingTop: "5%" }}>
+                              <div
+                                style={{
+                                  border: "1px solid black",
+                                  borderRadius: "5px",
+                                }}
+                              >
+                                <table
+                                  style={{ width: "100%", fontSize: "12px" }}
+                                >
+                                  <thead
                                     style={{
-                                      paddingLeft: "16px",
-                                      borderRight: "1px solid black",
-                                      borderBottom: "1px solid black",
+                                      color: "white",
+                                      backgroundColor: "#59BAD5",
                                     }}
                                   >
-                                    Task
-                                  </td>
-                                  <td
-                                    style={{
-                                      paddingLeft: "16px",
-                                      borderRight: "1px solid black",
-                                      borderBottom: "1px solid black",
-                                    }}
+                                    <tr style={{ height: "26px" }}>
+                                      <td
+                                        style={{
+                                          paddingLeft: "27px",
+                                          borderRight: "1px solid black",
+                                        }}
+                                      >
+                                        Task Title
+                                      </td>
+                                      <td
+                                        style={{
+                                          paddingLeft: "27px",
+                                          borderRight: "1px solid black",
+                                        }}
+                                      >
+                                        Lead
+                                      </td>
+                                      <td style={{ paddingLeft: "27px" }}>
+                                        Subtask Count
+                                      </td>
+                                    </tr>
+                                  </thead>
+                                  <tbody style={{ backgroundColor: "white" }}>
+                                    {report?.payload?.groupedTasks
+                                      .filter(
+                                        (value) => value?.stage == "IN_PROGRESS"
+                                      )
+                                      .map((item) =>
+                                        item?.tasks?.map((value, index) => (
+                                          <tr
+                                            key={index}
+                                            style={{
+                                              height: "32px",
+                                              borderTop: "1px solid black",
+                                            }}
+                                          >
+                                            <td
+                                              style={{
+                                                paddingLeft: "27px",
+                                                borderRight: "1px solid black",
+                                              }}
+                                            >
+                                              {value?.title}
+                                            </td>
+                                            <td
+                                              style={{
+                                                paddingLeft: "27px",
+                                                borderRight: "1px solid black",
+                                              }}
+                                            >
+                                              {value?.teamLeader?.username}
+                                            </td>
+                                            <td style={{ paddingLeft: "27px" }}>
+                                              {value?.allChecklists.length}
+                                            </td>
+                                          </tr>
+                                        ))
+                                      )}
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <p
+                      style={{
+                        textAlign: "center",
+                        height: "4.5%",
+                        fontSize: "12px",
+                      }}
+                    >
+                      page 2
+                    </p>
+                  </div>
+                </div>
+                <div
+                  onClick={() => selectOnly("item4")}
+                  className={`h-[250px] my-5 relative`}
+                >
+                  {/* <!-- Page 3 --> */}
+                  <div
+                    className={`absolute scale-[0.3] translate-x-[-34.5%] translate-y-[-35%] ${
+                      isSelected.item4
+                        ? `border-3 border-blue-500`
+                        : `border-none`
+                    }`}
+                    style={{
+                      width: "595px",
+                      height: "842px",
+                      backgroundColor: "white",
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <p
+                      style={{
+                        backgroundColor: "#59BAD5",
+                        width: "199px",
+                        height: "40px",
+                        borderTopRightRadius: "12px",
+                        borderBottomLeftRadius: "12px",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        fontSize: "24px",
+                        color: "white",
+                      }}
+                    >
+                      <span style={{ fontWeight: "bold" }}>Reports</span>
+                    </p>
+
+                    <div
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        display: "flex",
+                        flexDirection: "column",
+                        paddingTop: "10%",
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: "100%",
+                          display: "flex",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <div
+                          style={{
+                            height: "100%",
+                            display: "flex",
+                            flexDirection: "column",
+                            width: "85%",
+                          }}
+                        >
+                          <p>VI.&nbsp;&nbsp;Stage : Done</p>
+                          <div>
+                            <div>
+                              <div style={{ paddingTop: "5%" }}>
+                                <div
+                                  style={{
+                                    border: "1px solid black",
+                                    borderRadius: "5px",
+                                  }}
+                                >
+                                  <table
+                                    style={{ width: "100%", fontSize: "12px" }}
                                   >
-                                    Subtask
-                                  </td>
-                                  <td
-                                    style={{
-                                      paddingLeft: "16px",
-                                      borderRight: "1px solid black",
-                                      borderBottom: "1px solid black",
-                                    }}
+                                    <thead
+                                      style={{
+                                        color: "white",
+                                        backgroundColor: "#59BAD5",
+                                      }}
+                                    >
+                                      <tr style={{ height: "26px" }}>
+                                        <td
+                                          style={{
+                                            paddingLeft: "27px",
+                                            borderRight: "1px solid black",
+                                          }}
+                                        >
+                                          Task Title
+                                        </td>
+                                        <td
+                                          style={{
+                                            paddingLeft: "27px",
+                                            borderRight: "1px solid black",
+                                          }}
+                                        >
+                                          Lead
+                                        </td>
+                                        <td style={{ paddingLeft: "27px" }}>
+                                          Subtask Count
+                                        </td>
+                                      </tr>
+                                    </thead>
+                                    <tbody style={{ backgroundColor: "white" }}>
+                                      {report?.payload?.groupedTasks
+                                        .filter(
+                                          (value) => value?.stage == "COMPLETED"
+                                        )
+                                        .map((item) =>
+                                          item?.tasks?.map((value, index) => (
+                                            <tr
+                                              key={index}
+                                              style={{
+                                                height: "32px",
+                                                borderTop: "1px solid black",
+                                              }}
+                                            >
+                                              <td
+                                                style={{
+                                                  paddingLeft: "27px",
+                                                  borderRight:
+                                                    "1px solid black",
+                                                }}
+                                              >
+                                                {value?.title}
+                                              </td>
+                                              <td
+                                                style={{
+                                                  paddingLeft: "27px",
+                                                  borderRight:
+                                                    "1px solid black",
+                                                }}
+                                              >
+                                                {value?.teamLeader?.username}
+                                              </td>
+                                              <td
+                                                style={{ paddingLeft: "27px" }}
+                                              >
+                                                {value?.allChecklists.length}
+                                              </td>
+                                            </tr>
+                                          ))
+                                        )}
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div
+                        style={{
+                          width: "100%",
+                          padding: "5% 0",
+                          display: "flex",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <div
+                          style={{
+                            height: "100%",
+                            display: "flex",
+                            flexDirection: "column",
+                            width: "85%",
+                          }}
+                        >
+                          <p>VII.&nbsp;&nbsp;Subtasks</p>
+                          <div>
+                            {flatData.map((item, index) => (
+                              <div key={index} style={{ paddingTop: "5%" }}>
+                                <div
+                                  style={{
+                                    border: "1px solid black",
+                                    borderRadius: "5px",
+                                  }}
+                                >
+                                  <table
+                                    style={{ width: "100%", fontSize: "12px" }}
                                   >
-                                    Completed
-                                  </td>
-                                  <td
-                                    style={{
-                                      paddingLeft: "16px",
-                                      borderBottom: "1px solid black",
-                                    }}
-                                  >
-                                    Version
-                                  </td>
-                                </tr>
-                              </thead>
-                              <tbody style={{ backgroundColor: "white" }}>
-                                {taskData.map((row, index) => (
-                                  <tr
-                                    key={index}
-                                    style={{
-                                      height: "32px",
-                                      borderBottom: "1px solid black",
-                                    }}
-                                  >
+                                    <tbody style={{ backgroundColor: "white" }}>
+                                      <tr
+                                        style={{
+                                          height: "32px",
+                                          borderBottom: "1px solid black",
+                                        }}
+                                      >
+                                        <td
+                                          style={{
+                                            paddingLeft: "27px",
+                                            borderRight: "1px solid black",
+                                            color: "white",
+                                            backgroundColor: "#59BAD5",
+                                          }}
+                                        >
+                                          Task Title
+                                        </td>
+                                        <td style={{ paddingLeft: "27px" }}>
+                                          {item.taskTitle}
+                                        </td>
+                                      </tr>
+                                      <tr
+                                        style={{
+                                          height: "32px",
+                                          borderBottom: "1px solid black",
+                                        }}
+                                      >
+                                        <td
+                                          style={{
+                                            paddingLeft: "27px",
+                                            borderRight: "1px solid black",
+                                            color: "white",
+                                            backgroundColor: "#59BAD5",
+                                          }}
+                                        >
+                                          Subtask Title
+                                        </td>
+                                        <td style={{ paddingLeft: "27px" }}>
+                                          {item.checklistTitle}
+                                        </td>
+                                      </tr>
+                                      <tr
+                                        style={{
+                                          height: "32px",
+                                          borderBottom: "1px solid black",
+                                        }}
+                                      >
+                                        <td
+                                          style={{
+                                            paddingLeft: "27px",
+                                            borderRight: "1px solid black",
+                                            color: "white",
+                                            backgroundColor: "#59BAD5",
+                                          }}
+                                        >
+                                          Member
+                                        </td>
+                                        <td style={{ paddingLeft: "27px" }}>
+                                          {item.member?.username}
+                                        </td>
+                                      </tr>
+                                      <tr
+                                        style={{
+                                          height: "32px",
+                                          borderBottom: "1px solid black",
+                                        }}
+                                      >
+                                        <td
+                                          style={{
+                                            paddingLeft: "27px",
+                                            borderRight: "1px solid black",
+                                            color: "white",
+                                            backgroundColor: "#59BAD5",
+                                          }}
+                                        >
+                                          Comments
+                                        </td>
+                                        <td style={{ paddingLeft: "27px" }}>
+                                          {item.comments?.length || 0} comment
+                                          {item.comments?.length !== 1
+                                            ? "s"
+                                            : ""}
+                                        </td>
+                                      </tr>
+                                      <tr
+                                        style={{
+                                          height: "32px",
+                                          borderBottom: "1px solid black",
+                                        }}
+                                      >
+                                        <td
+                                          style={{
+                                            paddingLeft: "27px",
+                                            borderRight: "1px solid black",
+                                            color: "white",
+                                            backgroundColor: "#59BAD5",
+                                          }}
+                                        >
+                                          Start Date
+                                        </td>
+                                        <td style={{ paddingLeft: "27px" }}>
+                                          {item.startDate
+                                            ? new Date(
+                                                item.startDate
+                                              ).toLocaleDateString()
+                                            : "N/A"}
+                                        </td>
+                                      </tr>
+                                      <tr style={{ height: "32px" }}>
+                                        <td
+                                          style={{
+                                            paddingLeft: "27px",
+                                            borderRight: "1px solid black",
+                                            color: "white",
+                                            backgroundColor: "#59BAD5",
+                                          }}
+                                        >
+                                          End Date
+                                        </td>
+                                        <td style={{ paddingLeft: "27px" }}>
+                                          {item.endDate
+                                            ? new Date(
+                                                item.endDate
+                                              ).toLocaleDateString()
+                                            : "N/A"}
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <p
+                      style={{
+                        textAlign: "center",
+                        height: "4.5%",
+                        fontSize: "12px",
+                      }}
+                    >
+                      page 3
+                    </p>
+                  </div>
+                </div>
+                <div
+                  onClick={() => selectOnly("item5")}
+                  className={`h-[250px] relative`}
+                >
+                  {/* <!-- Page 4 --> */}
+                  <div
+                    className={`absolute scale-[0.3] translate-x-[-34.5%] translate-y-[-35%] ${
+                      isSelected.item5
+                        ? `border-3 border-blue-500`
+                        : `border-none`
+                    }`}
+                    style={{
+                      width: "595px",
+                      height: "842px",
+                      backgroundColor: "white",
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <div
+                      style={{
+                        backgroundColor: "#59BAD5",
+                        width: "199px",
+                        height: "40px",
+                        borderTopRightRadius: "12px",
+                        borderBottomLeftRadius: "12px",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        fontSize: "24px",
+                        color: "white",
+                      }}
+                    >
+                      <span style={{ fontWeight: "bold" }}>Reports</span>
+                    </div>
+
+                    <div
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        display: "flex",
+                        flexDirection: "column",
+                        paddingTop: "10%",
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: "100%",
+                          display: "flex",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <div
+                          style={{
+                            height: "100%",
+                            display: "flex",
+                            flexDirection: "column",
+                            width: "85%",
+                          }}
+                        >
+                          <p>VIII.&nbsp;&nbsp;Monthly Task Information</p>
+
+                          <div style={{ paddingTop: "5%" }}>
+                            <div
+                              style={{
+                                border: "1px solid black",
+                                borderRadius: "5px",
+                              }}
+                            >
+                              <table
+                                style={{
+                                  width: "100%",
+                                  fontSize: "12px",
+                                  borderCollapse: "collapse",
+                                }}
+                              >
+                                <thead
+                                  style={{
+                                    color: "white",
+                                    backgroundColor: "#59BAD5",
+                                    fontSize: "11px",
+                                  }}
+                                >
+                                  <tr style={{ height: "32px" }}>
                                     <td
                                       style={{
                                         paddingLeft: "16px",
                                         borderRight: "1px solid black",
+                                        borderBottom: "1px solid black",
                                       }}
                                     >
-                                      {row.month}
+                                      Month
                                     </td>
                                     <td
                                       style={{
                                         paddingLeft: "16px",
                                         borderRight: "1px solid black",
+                                        borderBottom: "1px solid black",
                                       }}
                                     >
-                                      {row.tasks}
+                                      Task
                                     </td>
                                     <td
                                       style={{
                                         paddingLeft: "16px",
                                         borderRight: "1px solid black",
+                                        borderBottom: "1px solid black",
                                       }}
                                     >
-                                      {row.subtasks}
+                                      Subtask
                                     </td>
                                     <td
                                       style={{
                                         paddingLeft: "16px",
                                         borderRight: "1px solid black",
+                                        borderBottom: "1px solid black",
                                       }}
                                     >
-                                      {row.completed}
+                                      Completed
                                     </td>
-                                    <td style={{ paddingLeft: "16px" }}>
+                                    <td
+                                      style={{
+                                        paddingLeft: "16px",
+                                        borderBottom: "1px solid black",
+                                      }}
+                                    >
+                                      Version
+                                    </td>
+                                  </tr>
+                                </thead>
+                                <tbody style={{ backgroundColor: "white" }}>
+                                  {taskData.map((row, index) => (
+                                    <tr
+                                      key={index}
+                                      style={{
+                                        height: "32px",
+                                        borderBottom: "1px solid black",
+                                      }}
+                                    >
+                                      <td
+                                        style={{
+                                          paddingLeft: "16px",
+                                          borderRight: "1px solid black",
+                                        }}
+                                      >
+                                        {row.month}
+                                      </td>
+                                      <td
+                                        style={{
+                                          paddingLeft: "16px",
+                                          borderRight: "1px solid black",
+                                        }}
+                                      >
+                                        {row.tasks}
+                                      </td>
+                                      <td
+                                        style={{
+                                          paddingLeft: "16px",
+                                          borderRight: "1px solid black",
+                                        }}
+                                      >
+                                        {row.subtasks}
+                                      </td>
+                                      <td
+                                        style={{
+                                          paddingLeft: "16px",
+                                          borderRight: "1px solid black",
+                                        }}
+                                      >
+                                        {row.completed}
+                                      </td>
+                                      <td style={{ paddingLeft: "16px" }}>
+                                        v{reportVersion}
+                                      </td>
+                                    </tr>
+                                  ))}
+                                  <tr style={{ height: "32px" }}>
+                                    <td
+                                      style={{
+                                        paddingLeft: "16px",
+                                        borderRight: "1px solid black",
+                                        fontWeight: "bold",
+                                      }}
+                                    >
+                                      Total
+                                    </td>
+                                    <td
+                                      style={{
+                                        paddingLeft: "16px",
+                                        borderRight: "1px solid black",
+                                        fontWeight: "bold",
+                                      }}
+                                    >
+                                      {totalTasks}
+                                    </td>
+                                    <td
+                                      style={{
+                                        paddingLeft: "16px",
+                                        borderRight: "1px solid black",
+                                        fontWeight: "bold",
+                                      }}
+                                    >
+                                      {totalChecklists}
+                                    </td>
+                                    <td
+                                      style={{
+                                        paddingLeft: "16px",
+                                        borderRight: "1px solid black",
+                                        fontWeight: "bold",
+                                      }}
+                                    >
+                                      {Object.values(doneTask).reduce(
+                                        (sum, value) => sum + value,
+                                        0
+                                      )}
+                                      % avg
+                                    </td>
+                                    <td
+                                      style={{
+                                        paddingLeft: "16px",
+                                        fontWeight: "bold",
+                                      }}
+                                    >
                                       v{reportVersion}
                                     </td>
                                   </tr>
-                                ))}
-                                <tr style={{ height: "32px" }}>
-                                  <td
-                                    style={{
-                                      paddingLeft: "16px",
-                                      borderRight: "1px solid black",
-                                      fontWeight: "bold",
-                                    }}
-                                  >
-                                    Total
-                                  </td>
-                                  <td
-                                    style={{
-                                      paddingLeft: "16px",
-                                      borderRight: "1px solid black",
-                                      fontWeight: "bold",
-                                    }}
-                                  >
-                                    {totalTasks}
-                                  </td>
-                                  <td
-                                    style={{
-                                      paddingLeft: "16px",
-                                      borderRight: "1px solid black",
-                                      fontWeight: "bold",
-                                    }}
-                                  >
-                                    {totalChecklists}
-                                  </td>
-                                  <td
-                                    style={{
-                                      paddingLeft: "16px",
-                                      borderRight: "1px solid black",
-                                      fontWeight: "bold",
-                                    }}
-                                  >
-                                    {Object.values(doneTask).reduce(
-                                      (sum, value) => sum + value,
-                                      0
-                                    )}
-                                    % avg
-                                  </td>
-                                  <td
-                                    style={{
-                                      paddingLeft: "16px",
-                                      fontWeight: "bold",
-                                    }}
-                                  >
-                                    v{reportVersion}
-                                  </td>
-                                </tr>
-                              </tbody>
-                            </table>
+                                </tbody>
+                              </table>
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </div>
 
-                  <p
-                    style={{
-                      textAlign: "center",
-                      height: "4.5%",
-                      fontSize: "12px",
-                    }}
-                  >
-                    page 4
-                  </p>
-                </div>
+                    <p
+                      style={{
+                        textAlign: "center",
+                        height: "4.5%",
+                        fontSize: "12px",
+                      }}
+                    >
+                      page 4
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -2330,9 +2373,7 @@ export const PDFPreviewer = ({ report }) => {
                               width: "180px",
                               height: "115px",
                             }}
-                          >
-                            
-                          </div>
+                          ></div>
                         </div>
                         {/* <!-- image --> */}
                         <div
@@ -2693,7 +2734,10 @@ export const PDFPreviewer = ({ report }) => {
                                                 borderRight: "1px solid black",
                                               }}
                                             >
-                                              {value?.teamLeader?.username?.username}
+                                              {
+                                                value?.teamLeader?.username
+                                                  ?.username
+                                              }
                                             </td>
                                             <td style={{ paddingLeft: "27px" }}>
                                               {value?.allChecklists.length}

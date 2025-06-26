@@ -9,5 +9,5 @@ export const reportRouteGroup = {
     generateReportInPDFByBoardId: (id) => `${apiConfig.baseUrl}/reports/pdf/boards/${id}`,
 
     // get report version by reportId
-    getReportVersionByReportId: (id) => `${apiConfig.baseUrl}/reports/version/boards/${id}`
+    getReportVersionByReportId: (id) => `${apiConfig.baseUrl}/reports/version/${id}`
 }

@@ -51,7 +51,7 @@ export default function VerticalChart({ report }) {
   return (
     <>
       <div className="w-full h-[426px] flex pb-[1.50%]">
-        <div className="w-[70%]">
+        <div className="w-[80%]">
           <div className="w-full h-[17.5%] flex items-center">
             <div className="w-[70%]">
               <p className="text-[14px] text-black/40">Detail</p>
@@ -91,7 +91,7 @@ export default function VerticalChart({ report }) {
             </div>
           </div>
         </div>
-        <div className="w-[30%] border-gray-200 flex justify-center items-center mb-8 scale-[1.2]">
+        <div className="w-[20%] border-gray-200 flex justify-center items-center mb-8 scale-[1.3]">
           { }
           <div className="w-[140px] text-[11px] flex flex-col justify-end item-center gap-[7.5%] h-[50%]">
             <div className="text-primary h-[35px] bg-[#59BAD5]/10 rounded-full w-full border-primary border flex items-center justify-center">
