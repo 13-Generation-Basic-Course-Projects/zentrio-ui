@@ -9,7 +9,7 @@ import { Card, CardContent } from "../ui/card";
 import {
   X,
   Calendar,
-  Users,
+  Crown,
   Zap,
   ArrowRight,
   Plus,
@@ -158,8 +158,11 @@ export default function CardCreateModal({
                       {managerMember.username || managerMember.name}
                     </div>
                     <div className="text-xs text-gray-500 flex items-center">
-                      <Users className="w-3 h-3 mr-1" />
-                      {managerMember.roles?.[0] || "Manager"}
+                      <Crown className="w-3 h-3 mr-1" />
+                      {managerMember.roles?.[0]
+                        ?.replace("ROLE_", "")
+                        ?.toLowerCase()
+                        ?.replace(/^\w/, (c) => c.toUpperCase()) || "Manager"}
                     </div>
                   </div>
                   <div className="text-xs text-gray-400 flex items-center">

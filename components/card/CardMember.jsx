@@ -10,16 +10,16 @@ const CardMember = ({ members = [], preventUserImage }) => {
   const getRoleIcon = (roles) => {
     if (roles?.includes?.("ROLE_MANAGER") || roles === "ROLE_MANAGER")
       return <Crown className="w-3 h-3 text-amber-600" />;
-    if (roles?.includes?.("ROLE_ADMIN") || roles === "ROLE_ADMIN")
-      return <Shield className="w-3 h-3 text-red-600" />;
+    if (roles?.includes?.("ROLE_LEADER") || roles === "ROLE_LEADER")
+      return <Shield className="w-3 h-3 text-blue-600" />;
     return <User className="w-3 h-3 text-gray-600" />;
   };
 
   const getRoleColor = (roles) => {
     if (roles?.includes?.("ROLE_MANAGER") || roles === "ROLE_MANAGER")
       return "bg-amber-50 text-amber-700 border-amber-200";
-    if (roles?.includes?.("ROLE_ADMIN") || roles === "ROLE_ADMIN")
-      return "bg-red-50 text-red-700 border-red-200";
+    if (roles?.includes?.("ROLE_LEADER") || roles === "ROLE_LEADER")
+      return "bg-blue-50 text-blue-700 border-blue-200";
     return "bg-gray-50 text-gray-700 border-gray-200";
   };
 

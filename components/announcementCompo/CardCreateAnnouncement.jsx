@@ -22,7 +22,7 @@ export default function CardCreateAnnouncement({
   const managerMember = boardMember?.find((member) =>
     member.roles?.some((role) => role === "ROLE_MANAGER")
   );
-  console.log("anal",Announcements?.payload)
+  console.log("anal", Announcements?.payload);
 
   return (
     <div className="mx-auto px-2 py-1">
@@ -52,15 +52,17 @@ export default function CardCreateAnnouncement({
           <div className="p-3">
             <div className="flex items-center gap-3">
               {managerMember && (
-                <div className="relative">
-                  <div className="w-10 h-10 rounded-full overflow-hidden bg-gradient-to-r from-[#59BAD5] to-[#4AB5D1] p-0.5">
-                    <img
-                      src={managerMember.profileImage || preventUserImage}
-                      alt="Profile"
-                      className="w-full h-full object-cover rounded-full bg-white p-0.5"
-                    />
+                <div className="relative w-10 h-10">
+                  <div className="w-full h-full rounded-full overflow-hidden bg-gradient-to-r from-[#59BAD5] to-[#4AB5D1] p-0.5">
+                    <div className="w-full h-full rounded-full overflow-hidden bg-white">
+                      <img
+                        src={managerMember.profileImage || preventUserImage}
+                        alt="Profile"
+                        className="w-full h-full object-cover rounded-full"
+                      />
+                    </div>
                   </div>
-                  <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border border-white"></div>
+                  <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-[2px] border-white" />
                 </div>
               )}
 
