@@ -104,3 +104,29 @@ export const updateFileNameByFileIdService = async ({
     throw error;
   }
 };
+
+export const getDriveFileByIdService = async ({ accessToken, fileId, token }) => {
+  try {
+    const url = driveRouteGroup.getDriveFileById({ accessToken, fileId });
+
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "*/*",
+      },
+    });
+
+    if (!res.ok) {
+      const errorText = await res.text();
+      console.error("❌ Backend failed:", res.status, errorText);
+      throw new Error(`Failed to get drive file. Status: ${res.status}`);
+    }
+
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error("getDriveFileByIdService error: ", error.message);
+    throw error;
+  }
+};

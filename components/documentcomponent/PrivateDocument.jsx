@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import MyDatePicker from "../date/Datepicker";
 import BredCrum from "../bredcrum/MyBredcrum";
 import CardFolder, { CardFile } from "../card/CardDoc";
-import { Autocomplete, AutocompleteItem, Input } from "@heroui/react";
+import { Autocomplete, AutocompleteItem, Button, Input } from "@heroui/react";
 
 export default function Privatedocument({
   modal,
@@ -12,6 +12,7 @@ export default function Privatedocument({
   isHidden,
   workspaceId,
   boardId,
+  boardName,
 }) {
   const data = documents || { payload: [] };
 
@@ -88,7 +89,7 @@ export default function Privatedocument({
     <div className="h-screen flex flex-col">
       <div className="grid grid-cols-1 gap-3">
         <BredCrum
-          board={"Hikko Design"}
+          board={boardName}
           feature={"Document"}
           header={"Document"}
           modal={modal}

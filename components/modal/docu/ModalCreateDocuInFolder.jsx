@@ -12,7 +12,8 @@ import ModalCreateFolder from "./ModalCreateFolder";
 import ModalUploadFile from "./ModalUploadfile";
 import ModalCreateFolderInFolder from "./ModalCreateFolderInFolder";
 import { createDriveFileAction } from "@/action/drive.action";
-import { createDocumentByUploadAction } from "@/action/document.action";
+import ModalUploadFileInFolder from "./ModalUploadfileInFolder";
+import { uploadDocumentToFolderAction } from "@/action/document.action";
 
 export default function ModalCreateDocuInFolder({
   boardId,
@@ -189,12 +190,12 @@ export default function ModalCreateDocuInFolder({
         tokenFromGoogle={tokenFromGoogle}
       />
 
-      <ModalUploadFile
+      <ModalUploadFileInFolder
         isOpen={isUploadModalOpen}
-        onClose={() => setIsUploadModalOpen(false)}
+        onClose={() => setIsUploaModalOpen(false)}
         boardId={boardId}
         folderId={folderId}
-        uploadDocument={createDocumentByUploadAction}
+        uploadDocument={uploadDocumentToFolderAction}
         tokenFromGoogle={tokenFromGoogle}
       />
     </>

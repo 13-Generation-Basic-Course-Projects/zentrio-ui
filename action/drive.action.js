@@ -5,6 +5,7 @@ import { createDriveFileService } from "@/service/document.service";
 import {
   deleteFileByFileIdService,
   downloadFileFromDriveService,
+  getDriveFileByIdService,
   updateFileNameByFileIdService,
 } from "@/service/drive.service";
 import { revalidatePath } from "next/cache";
@@ -92,3 +93,22 @@ export const updateFileNameByFileIdAction = async ({
     throw error;
   }
 };
+
+export const getDriveFileByIdAction = async ({ accessToken, fileId}) => {
+  try {
+    const userToken = await Token();
+    const token = userToken.Credential;
+
+    if (!token) throw new Error("Missing internal token");
+    if (!accessToken || !fileId) {
+      throw new Error("Missing input parameters");
+    }
+
+    const data = await getDriveFileByIdService({accessToken, fileId, token});
+
+    return data;
+  } catch (error) {
+    console.error("❌ getDriveFileByIdAction error:", error.message);
+    throw error;
+  }
+}

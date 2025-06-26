@@ -3,27 +3,30 @@
 import { useState, useEffect } from "react";
 import BredCrum from "../bredcrum/MyBredcrum";
 import MyDatePicker from "../date/DatePicker";
-import CardFolder, { CardFile } from "../card/CardDoc";
-import ModalCreateDocu from "../modal/docu/ModalCreateDocu";
 import { Input } from "@heroui/input";
 import { Autocomplete, AutocompleteItem } from "@heroui/react";
-import { getFileByFolderIdAction } from "@/action/document.action";
 import { SearchIcon } from "lucide-react";
 import ModalCreateDocuInFolder from "../modal/docu/ModalCreateDocuInFolder";
 import CardFolderInFolder, { CardFileInFolder } from "../card/CardDocInFolder";
+import BredcrumDocument from "../bredcrum/BredcrumDocument";
 
 export default function DocumentEachFolder({
   id, // folderId
   boardId,
+  boardName,
   tokenFromGoogle,
   workspaceId,
   isHidden,
   initialData = [],
+  currentFolderMeta,
+  breadcrumbFolders,
 }) {
   const [sortOrder, setSortOrder] = useState("asc");
   const [searchTerm, setSearchTerm] = useState("");
   const [data] = useState(initialData);
   const [selectedDate, setSelectedDate] = useState(null);
+
+  console.log("breadcrumbFolders: ", breadcrumbFolders)
 
   const sortOptions = [
     { key: "asc", label: "A-Z" },
@@ -103,10 +106,7 @@ export default function DocumentEachFolder({
     <div className="h-full flex flex-col">
       <div className="grid grid-cols-1 gap-3">
         <div className="p-0">
-          <BredCrum
-            board={"Hikko Design"}
-            feature={"Document"}
-            header={"Document"}
+          <BredcrumDocument
             modal={[
               <ModalCreateDocuInFolder
                 folderId={id}
@@ -114,6 +114,20 @@ export default function DocumentEachFolder({
                 tokenFromGoogle={tokenFromGoogle}
               />,
             ]}
+            breadcrumbList={[
+              { label: "Workspace", href: `/workspace/${workspaceId}` },
+              { label: boardName, href: "#"},
+              {
+                label: "Document",
+                href: `/dashboard/${workspaceId}/${boardId}/docu`,
+              },
+              // Add real folder trail
+              ...(breadcrumbFolders || []).map((folder) => ({
+                label: folder?.label,
+                href: `/dashboard/${workspaceId}/${boardId}/docu/${folder.id}`,
+              })),
+            ]}
+            header={"Document"}
           />
         </div>
 
