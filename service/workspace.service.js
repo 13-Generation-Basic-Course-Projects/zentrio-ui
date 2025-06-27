@@ -42,32 +42,27 @@ export const createWorkspaceService = async ({ title, description, token }) => {
  *2. for service Get all workspaces -> getAllWorkspaces: `${apiConfig.baseUrl}/api/v1/workspaces`,
  */
 export const getAllWorkspacesService = async ({ token }) => {
-  try {
-    const url = workspaceRouteGroup.getAllWorkspaces();
+  const url = workspaceRouteGroup.getAllWorkspaces();
 
-    const res = await fetch(url, {
-      next: {
-        tags: ["workspaces"], // ✅ Will be revalidated by revalidateTag()
-      },
-      headers: {
-        Authorization: `Bearer ${token}`,
-        // "Content-Type": "application/json",
-      },
-    });
+  const res = await fetch(url, {
+    next: {
+      tags: ["workspaces"], // ✅ Will be revalidated by revalidateTag()
+    },
+    headers: {
+      Authorization: `Bearer ${token}`,
+      // "Content-Type": "application/json",
+    },
+  });
 
-    if (!res.ok) {
-      const errorData = await res.json();
-      throw new Error(
-        errorData.message || `Request failed with status ${res.status}`
-      );
-    }
-
-    const data = await res.json();
-    return data;
-  } catch (error) {
-    console.error("❌ Failed to get all workspaces:", error.message);
-    // throw error;
+  if (!res.ok) {
+    const errorData = await res.json();
+    throw new Error(
+      errorData.message || `Request failed with status ${res.status}`
+    );
   }
+
+  const data = await res.json();
+  return data;
 };
 
 /*
@@ -498,7 +493,7 @@ export const inviteUserToBoardService = async (id, email, roleName, token) => {
 /*
  * 7. Upload cover by board id
  */
-export const uploadBoardCoverService = async ({boardId, file, token}) => {
+export const uploadBoardCoverService = async ({ boardId, file, token }) => {
   try {
     const url = boardRouteGroup.uploadBoardCover(boardId);
 
@@ -792,7 +787,7 @@ export const getOtherWorkSpaceJoinedService = async (token) => {
  * get member by board id
  */
 
-export const getMemberByBoardIdService = async ({boardId, token}) => {
+export const getMemberByBoardIdService = async ({ boardId, token }) => {
   const url = workspaceRouteGroup.getMemeberByBoardId(boardId);
   try {
     console.log(url);
@@ -802,7 +797,6 @@ export const getMemberByBoardIdService = async ({boardId, token}) => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-
     });
     const data = await res.json();
     console.log("📥 Backend responded with member by board id:", data);

@@ -26,8 +26,10 @@ import PopupAction from "../popup/PopupAction";
 import { Button } from "@heroui/react";
 import { BadgeMinus } from "lucide-react";
 
-export default function DashboardSidebar({ getWorKSpaceJoined }) {
+export default function DashboardSidebar({ getWorKSpaceJoined}) {
   console.log("workspace join inside bar", getWorKSpaceJoined);
+
+  
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { toggleSidebar } = useSidebar();
@@ -445,6 +447,7 @@ export default function DashboardSidebar({ getWorKSpaceJoined }) {
                         massageUndo={"No, cancel"}
                         massageDo={"Yes, Leave"}
                         action={[<LeaveButton key="leave-button" />]}
+                        workspaceId={workspaceId}
                       />
                     </div>
                     <div className="hidden group-data-[collapsible=icon]:flex items-center justify-center w-full">
@@ -460,6 +463,7 @@ export default function DashboardSidebar({ getWorKSpaceJoined }) {
                             <BadgeMinus className="w-[18px] h-[18px]" />
                           </div>
                         }
+                        workspaceId={workspaceId}
                       />
                     </div>
                   </div>

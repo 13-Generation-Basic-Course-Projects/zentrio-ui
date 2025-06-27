@@ -22,6 +22,7 @@ export const CardCheckList = ({
   commentCount,
   leaderId,
   imageChecklist,
+  totalCommentLength,
 }) => {
   const finishedAtRaw = finishedAt;
   const FormattedFinishDate = finishedAtRaw.split("T")[0];

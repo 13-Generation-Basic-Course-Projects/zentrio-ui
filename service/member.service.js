@@ -26,7 +26,7 @@ export const getBoardMembersService = async ({ boardId, token }) => {
     }
 
     const data = await res.json();
-    // console.log("Raw member response:", data);
+    console.log("Raw member response:", data);
     return data;
   } catch (error) {
     console.error("❌ Failed to get members:", error.message);

@@ -186,7 +186,8 @@ export default function MyCalender({ tasks, workspaceId }) {
           id: task.taskId,
           title: task.title,
           start: task.startedAt,
-          end: task.finishedAt ?? task.startedAt,
+          end: task.finishedAt,
+          allDay: false,
           extendedProps: {
             type: task.type || "task",
             content: task.description,
@@ -255,7 +256,7 @@ export default function MyCalender({ tasks, workspaceId }) {
       const adjustedTask = {
         ...task,
         end: new Date(
-          new Date(task.end).setDate(new Date(task.end).getDate() + 2)
+          new Date(task.end).setDate(new Date(task.end).getDate() + 1)
         )
           .toISOString()
           .split("T")[0],
@@ -292,13 +293,10 @@ export default function MyCalender({ tasks, workspaceId }) {
     const startDateObj = new Date(`${startDateStr}T17:00:00.000Z`);
     const tillDateObj = new Date(`${endDateStr}T23:00:00.000Z`);
 
-
-
     const selectedDate = new Date(`${endDateStr}T00:00:00.000Z`);
     const currentDate = new Date();
     currentDate.setHours(0, 0, 0, 0);
 
-    
     const formattedStartDate = startDateObj.toISOString();
     const formattedTillDate = tillDateObj.toISOString();
 
@@ -345,7 +343,7 @@ export default function MyCalender({ tasks, workspaceId }) {
         error?.message ||
         "Unknown error occurred";
       console.error("Failed to save/update/delete note:", error);
-      toast.error(errorMsg,{
+      toast.error(errorMsg, {
         position: "top-right",
         autoClose: 4000,
       });
@@ -466,7 +464,6 @@ export default function MyCalender({ tasks, workspaceId }) {
     )}`;
     // console.log("formattedDate in calendar is: ", formattedDate);
 
-
     // COMMENT EVENT BLOCK
     if (type === "comment") {
       if (!isStart) {
@@ -511,6 +508,34 @@ export default function MyCalender({ tasks, workspaceId }) {
     }
 
     // TASK EVENT BLOCK
+    function normalizeDateToDay(date) {
+      return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    }
+
+    const renderDate = event._instance?.range?.start;
+    const currentRenderDate = normalizeDateToDay(new Date(renderDate));
+    const startDate = normalizeDateToDay(new Date(event.start));
+
+    // Adjust end time back by 1ms to make it inclusive on the correct date
+    const rawEndDate = new Date(event.end || event.start);
+    const adjustedEndDate = new Date(rawEndDate.getTime() -2
+   );
+    const endDate = normalizeDateToDay(adjustedEndDate);
+
+    console.log("Start date:", startDate);
+    console.log("Adjusted end date:", adjustedEndDate);
+    console.log("Display end in calendar is:", endDate);
+
+    // Filter: only show between start and adjusted end (inclusive)
+    if (
+      currentRenderDate.getTime() < startDate.getTime() ||
+      currentRenderDate.getTime() > endDate.getTime()
+    ) {
+      return null;
+    }
+    
+    
+    
     if (!isStart) {
       return (
         <div
@@ -520,6 +545,7 @@ export default function MyCalender({ tasks, workspaceId }) {
         />
       );
     }
+   
 
     return (
       <div className="flex flex-col gap-1">

@@ -904,8 +904,12 @@ export const updateCheckListByIdAndTaskIdService = async (
 };
 
 export const uploadImageBoardService = async ({ boardId, image, token }) => {
+  console.log("BoardId in upload image in board : ", boardId);
+  console.log("image in upload image in board : ", image);
+  console.log("token in upload image in board : ", token);
+  
   const url = boardRouteGroup.uploadImageBoard(boardId);
-  console.log("url", url, "image", image, "token", token);
+
 
   const formData = new FormData();
   formData.append("file", image);

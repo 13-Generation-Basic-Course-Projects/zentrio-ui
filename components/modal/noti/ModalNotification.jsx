@@ -363,7 +363,7 @@ export default function ModalNotification({ notificationData }) {
                 </div>
               )}
 
-              <div className="max-h-[350px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+              <div className="max-h-[350px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 pb-[300px]">
                 {notifications.length === 0 ? (
                   <div className="flex flex-col items-center justify-center h-full text-center py-8">
                     <svg

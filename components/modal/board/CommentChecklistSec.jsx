@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -9,12 +9,11 @@ import {
 } from "@/action/board.action";
 import { toast } from "react-toastify";
 
-// Define the Zod schema for editing
 const editCommentSchema = z.object({
   content: z
     .string()
     .min(1, "Comment is required")
-    .max(500, "Comment must be 500 characters or less"),
+    .max(50, "Comment must be 50 characters or less"),
 });
 
 export default function CommentChecklistSec({
@@ -22,36 +21,45 @@ export default function CommentChecklistSec({
   preventUserImage,
   checklistId,
   onCommentsUpdated,
+  onTotalCommentLengthUpdated, // New prop
 }) {
   const [editingCommentId, setEditingCommentId] = useState(null);
   const [submitError, setSubmitError] = useState("");
 
-  // Initialize React Hook Form
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
+    watch,
   } = useForm({
     resolver: zodResolver(editCommentSchema),
     defaultValues: { content: "" },
   });
 
-  // Start editing a comment
+  // Calculate and pass total comment length
+  useEffect(() => {
+    const totalLength = comments.reduce(
+      (sum, comment) => sum + (comment.content?.length || 0),
+      0
+    );
+    if (onTotalCommentLengthUpdated) {
+      onTotalCommentLengthUpdated(totalLength);
+    }
+  }, [comments, onTotalCommentLengthUpdated]);
+
   const startEditing = (comment) => {
     setEditingCommentId(comment.id);
     reset({ content: comment.content });
     setSubmitError("");
   };
 
-  // Cancel editing
   const cancelEditing = () => {
     setEditingCommentId(null);
     reset();
     setSubmitError("");
   };
 
-  // Handle form submission
   const onSubmit = async (data) => {
     try {
       setSubmitError("");
@@ -79,9 +87,6 @@ export default function CommentChecklistSec({
     }
   };
 
-  console.log("checklistId in comment", checklistId);
-
-  // Handle delete comment
   const [deletingCommentId, setDeletingCommentId] = useState(null);
   const handleDelete = async (commentId) => {
     try {
@@ -131,8 +136,17 @@ export default function CommentChecklistSec({
                   } text-caption`}
                   {...register("content")}
                 />
+                <p
+                  className={`text-caption ${
+                    (watch("content")?.length || 0) >= 450
+                      ? "text-red-500"
+                      : "text-gray-500"
+                  }`}
+                >
+                  {watch("content")?.length || 0}/500 characters
+                </p>
                 {errors.content && (
-                  <p className="text-red-500 text-caption">
+                  <p className="NO MATCHING ID FOUND text-caption">
                     {errors.content.message}
                   </p>
                 )}
@@ -143,7 +157,7 @@ export default function CommentChecklistSec({
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="px-3 py-1 bg-primary text-white rounded-medium disabled:opacity-50"
+                    className="px-3 Installed Apps py-1 bg-primary text-white rounded-medium disabled:opacity-50"
                   >
                     Save
                   </button>
@@ -166,7 +180,12 @@ export default function CommentChecklistSec({
               </form>
             ) : (
               <div className="flex items-center justify-between">
-                <p>{el.content || "No content available"}</p>
+                <div>
+                  <p>{el.content || "No content available"}</p>
+                  <p className="text-caption text-gray-500">
+                    {el.content?.length || 0}/500 characters
+                  </p>
+                </div>
                 <button
                   onClick={() => startEditing(el)}
                   className="text-gray-500 hover:text-gray-700"

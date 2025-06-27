@@ -1,10 +1,5 @@
 "use client";
 import React, { useState } from "react";
-<<<<<<< HEAD
-
-=======
-import MyDatePicker from "@/components/date/DatePicker";
->>>>>>> 4fddbc6ab3067e11d6379ea70e6a5fc6973126cb
 import BredCrum from "../bredcrum/MyBredcrum";
 import CardFolder, { CardFile } from "../card/CardDoc";
 import { Autocomplete, AutocompleteItem, Input } from "@heroui/react";

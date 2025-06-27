@@ -11,20 +11,12 @@ import heavyrain from "@/assets/weathericon/heavy-showers.png";
 import thunderstorm from "@/assets/weathericon/thunderstorm-showers.png";
 import cloudyday from "@/assets/weathericon/partly-cloudy-day.png";
 import cloudynight from "@/assets/weathericon/partly-cloudy-night.png";
-
-import {
-  FileText,
-  FolderOpen,
-  Upload,
-  Search,
-  Star,
-  Heart,
-  Sparkles,
-  BarChart3,
-  Calendar,
-  Megaphone,
-  PieChart,
-} from "lucide-react";
+import zentrioLogo from "@/public/image/Zentrio-Logo.svg";
+import calendarIcon from "@/public/image/calendar.svg";
+import kanbanIcon from "@/public/image/kanban.svg";
+import docsIcon from "@/public/image/docs.svg";
+import reportIcon from "@/assets/report.png";
+import { Sparkles } from "lucide-react";
 
 import Image from "next/image";
 
@@ -165,117 +157,17 @@ export default function TeamCardWelcome() {
   // Components
 
   const FourStageWorkflow = () => {
-    const ref = useRef(null);
-    const [currentSlot, setCurrentSlot] = useState("");
-
-    useEffect(() => {
-      const node = ref.current;
-      if (!node) return;
-
-      const findSwapySlot = () => {
-        const slotEl = node.closest("[data-swapy-slot]");
-        return slotEl?.getAttribute("data-swapy-slot") || "";
-      };
-
-      const updateSlot = () => {
-        const newSlot = findSwapySlot();
-        setCurrentSlot((prevSlot) =>
-          prevSlot !== newSlot ? newSlot : prevSlot
-        );
-      };
-
-      updateSlot();
-
-      const observer = new MutationObserver(updateSlot);
-      observer.observe(node.parentNode, {
-        childList: true,
-        subtree: true,
-      });
-
-      // Optional fallback: ResizeObserver (if slot changes via layout)
-      const resizeObserver = new ResizeObserver(updateSlot);
-      resizeObserver.observe(node);
-
-      return () => {
-        observer.disconnect();
-        resizeObserver.disconnect();
-      };
-    }, []);
-
-    const gridColClass =
-      currentSlot === "d"
-        ? "grid-cols-3"
-        : currentSlot === "b"
-        ? "grid-cols-4"
-        : "grid-cols-2";
-
-    const textClass =
-      currentSlot === "d"
-        ? "text-h6 gap-2"
-        : currentSlot === "b"
-        ? "text-caption-tiny flex flex-col"
-        : "text-h5";
-
-    const features = [
-      {
-        label: "Gantt Chart",
-        icon: <BarChart3 className="w-4 h-4 text-white" />,
-        gradient: "from-blue-500 to-indigo-500",
-      },
-      {
-        label: "Calendar",
-        icon: <Calendar className="w-4 h-4 text-white" />,
-        gradient: "from-green-500 to-emerald-500",
-      },
-      {
-        label: "Document",
-        icon: <FileText className="w-4 h-4 text-white" />,
-        gradient: "from-purple-500 to-pink-500",
-      },
-      {
-        label: "Report",
-        icon: <PieChart className="w-4 h-4 text-white" />,
-        gradient: "from-teal-500 to-cyan-500",
-      },
-      {
-        label: "Announcement",
-        icon: <Megaphone className="w-4 h-4 text-white" />,
-        gradient: "from-orange-500 to-red-500",
-        spanCol: true,
-      },
-    ];
-
     return (
-      <div
-        ref={ref}
-        className="bg-gradient-to-br from-primary/10 via-primary/20 to-primary/60 p-3 rounded-3xl h-full shadow-lg  -white/20 flex items-center justify-center"
-      >
-        <div className="w-full">
-          <div
-            className={`grid ${gridColClass} gap-3 transition-all duration-200`}
-          >
-            {features.map(({ label, icon, gradient, spanCol }, idx) => (
-              <div
-                key={idx}
-                className={`${textClass} ${
-                  spanCol ? "col-span-2" : ""
-                } flex items-center bg-white/60 backdrop-blur-sm rounded-xl p-2 shadow-sm  -white/30`}
-              >
-                <div
-                  className={`bg-gradient-to-r ${gradient} p-1.5 rounded-lg shadow-md`}
-                >
-                  {icon}
-                </div>
-                <span className="text-sm font-medium text-gray-800">
-                  {label}
-                </span>
-              </div>
-            ))}
-          </div>
+      <div className="bg-gradient-to-br from-primary/10 via-primary/20 to-primary/60 p-3 rounded-3xl h-full shadow-lg  -white/20 flex items-center justify-center">
+        <div>
+          <p>Make your work keep in one place</p>
         </div>
       </div>
     );
   };
+
+ 
+ 
 
   const CalendarView = () => {
     const today = new Date();
@@ -313,51 +205,6 @@ export default function TeamCardWelcome() {
     );
   };
 
-  const DocumentManager = () => (
-    <div className="bg-gradient-to-tr from-primary/10 via-primary/15 to-primary/90 p-6 rounded-3xl h-full shadow-lg  -white/20">
-      <div className=" flex flex-col items-center justify-center flex-1 min-h-[50px]">
-        <div className="relative mb-3 ">
-          <div className="absolute -top-2 -left-4 transform rotate-12 opacity-60">
-            <div className="bg-white/80 backdrop-blur-sm rounded-lg p-2 shadow-lg  -gray-200/50 w-8 h-12">
-              <div className="bg-gradient-to-r from-pink-200 to-rose-200 rounded h-1.5 mb-1"></div>
-              <div className="bg-gray-200 rounded h-0.5 mb-0.5"></div>
-              <div className="bg-gray-200 rounded h-0.5 mb-0.5"></div>
-              <div className="bg-gray-200 rounded h-0.5 w-3/4"></div>
-            </div>
-          </div>
-
-          <div className="absolute -top-1 -right-3 transform -rotate-6 opacity-70">
-            <div className="bg-white/80 backdrop-blur-sm rounded-lg p-2 shadow-lg  -gray-200/50 w-8 h-12">
-              <div className="bg-gradient-to-r from-green-200 to-emerald-200 rounded h-1.5 mb-1"></div>
-              <div className="bg-gray-200 rounded h-0.5 mb-0.5"></div>
-              <div className="bg-gray-200 rounded h-0.5 mb-0.5"></div>
-              <div className="bg-gray-200 rounded h-0.5 w-2/3"></div>
-            </div>
-          </div>
-
-          <div className="bg-white/90 backdrop-blur-sm rounded-xl p-3 shadow-xl  -white/40 w-12 h-16">
-            <div className="bg-gradient-to-r from-blue-300 to-purple-300 rounded h-2 mb-1.5"></div>
-            <div className="space-y-1">
-              <div className="bg-gray-300 rounded h-0.5"></div>
-              <div className="bg-gray-300 rounded h-0.5"></div>
-              <div className="bg-gray-300 rounded h-0.5 w-4/5"></div>
-              <div className="bg-gray-200 rounded h-0.5 w-3/5"></div>
-            </div>
-            <div className="mt-2 flex justify-center">
-              <Heart className="w-2 h-2 text-pink-400" />
-            </div>
-          </div>
-        </div>
-
-        <div className="flex items-start flex-row">
-          <p className="text-gray-600 text-xs text-center mb-3">
-            Creative workspace awaits
-          </p>
-          <Sparkles className="w-5 h-5 text-yellow-500 animate-pulse" />
-        </div>
-      </div>
-    </div>
-  );
 
   const { day, date, hour, minute, ampm, hour24 } = formatDateTime(time);
   const temperature = weather?.main?.temp;
@@ -414,11 +261,28 @@ export default function TeamCardWelcome() {
           </div>
         </div>
       </div>
-      <div data-swapy-slot="b" className="rounded-large">
-        <div data-swapy-item="b" className="rounded-large h-44">
-          <DocumentManager />
+      <div data-swapy-slot="b" className="rounded-3xl">
+        <div
+          data-swapy-item="b"
+          className="rounded-3xl h-44 hover:scale-[1.01] transition-transform duration-300"
+        >
+          <div className="bg-gradient-to-tr from-primary/20 via-primary/30 to-primary/90 p-6 rounded-3xl h-full shadow-xl ">
+            <div className="flex flex-col items-center justify-center h-full space-y-3">
+              <Image
+                src={zentrioLogo}
+                alt="Zentrio Logo"
+                width={150}
+                height={150}
+                className="drop-shadow-md"
+              />
+              <p className="text-center text-white font-semibold text-lg tracking-wide">
+                Click in. Chill out. Work better.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
+
       <div className="rounded-large">
         <div className="rounded-large h-44">
           <CalendarView />
