@@ -148,7 +148,7 @@ export const CardCheckList = ({
         <div className=" flex items-center justify-between p-4">
           {/* nh test sent nh ot torn map data tee */}
           {matchingFeedback.length < 1 ? (
-            ""
+            <div></div>
           ) : (
             <p className=" p-2 bg-orange-500 text-white rounded-xl ">
               Feedback
