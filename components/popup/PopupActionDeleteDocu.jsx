@@ -31,7 +31,6 @@ export default function PopupActionDeleteDocu({
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   console.log(accessToken);
-  const router = useRouter();
   const handleDelete = async () => {
     try {
       const result = await deleteDocumentAction(accessToken, documentId);
@@ -40,7 +39,6 @@ export default function PopupActionDeleteDocu({
           position: "top-right",
           duration: 4000,
         });
-        router.refresh(); // Refresh only on success
       } else {
         throw new Error("Deletion failed unexpectedly");
       }

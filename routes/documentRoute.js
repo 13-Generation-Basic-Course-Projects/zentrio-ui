@@ -22,8 +22,6 @@ export const documentRouteGroup = {
     `${apiConfig.baseUrl}/documents/boards/${boardId}/?accessToken=${accessToken}`,
   createDriveFile: (name, folderId, fileType, accessToken) =>
     `${apiConfig.baseUrl}/files/create/${fileType}?accessToken=${accessToken}&name=${name}&folderId=${folderId}`,
-  uploadDocumentToFolder: (folderId, accessToken) =>
-    `${apiConfig.baseUrl}/files/upload-image-to-drive?token=${accessToken}&folderId=${folderId}`,
 
   // Get documents (public/private/filters)
   getPublicDocumentsByBoard: (boardId) =>

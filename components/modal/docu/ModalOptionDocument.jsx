@@ -19,8 +19,10 @@ import {
   publicDocumentByIdAction,
   privateDocumentByIdAction,
 } from "@/action/document.action";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PopupActionDeleteDocu from "@/components/popup/PopupActionDeleteDocu";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // Icon components
 const AddNoteIcon = (props) => (
@@ -169,10 +171,11 @@ export default function ModalOptionDocument({
   folderName,
   accessToken,
   isFolder,
-  status,
+  status: initialStatus,
 }) {
   const [isDownloading, setIsDownloading] = useState(false);
   const [isDownloadingZip, setIsDownloadingZip] = useState(false);
+  const [status, setStatus] = useState(initialStatus);
 
   const cleanFolderName = (name) => {
     if (!name) return "folder";
@@ -207,124 +210,168 @@ export default function ModalOptionDocument({
   };
 
   const handleDownloadAsZip = async () => {
-      try {
-        setIsDownloadingZip(true);
-  
-        const { blob, filename } = await downloadAllFilesAsZipAction(
-          {documentId,
-          accessToken,}
-        );
-  
-        if (!blob || !(blob instanceof Blob)) {
-          console.error("No ZIP file to download.");
-          return;
-        }
-  
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-  
-        // Use the backend filename if available, else use sanitized folderName.zip
-        a.download = filename || `${cleanFolderName(folderName)}.zip`;
-  
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        window.URL.revokeObjectURL(url);
-      } catch (error) {
-        console.error("Download ZIP failed:", error);
-      } finally {
-        setIsDownloadingZip(false);
+    try {
+      setIsDownloadingZip(true);
+
+      const { blob, filename } = await downloadAllFilesAsZipAction({
+        documentId,
+        accessToken,
+      });
+
+      if (!blob || !(blob instanceof Blob)) {
+        console.error("No ZIP file to download.");
+        return;
       }
-    };
+
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+
+      // Use the backend filename if available, else use sanitized folderName.zip
+      a.download = filename || `${cleanFolderName(folderName)}.zip`;
+
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Download ZIP failed:", error);
+    } finally {
+      setIsDownloadingZip(false);
+    }
+  };
 
   const handlePublic = async () => {
     try {
       await publicDocumentByIdAction(documentId, accessToken);
+      setStatus("public");
+      toast.success("Document is now public!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     } catch (error) {
       console.error("Public document failed: ", error);
+      setStatus("private");
+      toast.error("Failed to make document public.", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     }
   };
 
   const handlePrivate = async () => {
     try {
       await privateDocumentByIdAction(documentId, accessToken);
+
+      toast.success("Document is now private!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     } catch (error) {
       console.error("Private document failed: ", error);
+      toast.error("Failed to make document public.", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     }
   };
 
   return (
-    <Dropdown className="z-[10]">
-      <DropdownTrigger>
-        <Button variant="" className="p-0 min-w-0 h-auto w-auto">
-          <div className="hover:text-black text-gray-600 px-2 py-1">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="w-4 h-4"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path d="M10 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4z" />
-            </svg>
-          </div>
-        </Button>
-      </DropdownTrigger>
+    <>
+      <Dropdown className="z-[10]">
+        <DropdownTrigger>
+          <Button variant="" className="p-0 min-w-0 h-auto w-auto">
+            <div className="hover:text-black text-gray-600 px-2 py-1">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-4 h-4"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path d="M10 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4z" />
+              </svg>
+            </div>
+          </Button>
+        </DropdownTrigger>
 
-      <DropdownMenu
-        aria-label="Document actions"
-        variant="faded"
-        className="min-w-[220px]"
-        closeOnSelect={false}
-      >
-        {isFolder ? (
-          <DropdownItem
-            key="download-zip"
-            className="w-full hover:bg-default-100"
-            onClick={handleDownloadAsZip}
-            isDisabled={isDownloadingZip}
-            startContent={
-              isDownloadingZip ? (
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-900"></div>
-              ) : (
-                <DownloadZipIcon className="w-4 h-4" />
-              )
-            }
-          >
-            {isDownloadingZip ? "Downloading ZIP..." : "Download as ZIP"}
-          </DropdownItem>
-        ) : (
-          <DropdownItem
-            key="download"
-            className="w-full hover:bg-default-100"
-            onClick={handleDownload}
-            isDisabled={isDownloading}
-            startContent={
-              isDownloading ? (
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-900"></div>
-              ) : (
-                <AddNoteIcon className="w-4 h-4" />
-              )
-            }
-          >
-            {isDownloading ? "Downloading..." : "Download"}
-          </DropdownItem>
-        )}
-
-        {/* Rename */}
-        <DropdownItem
-          key="rename"
-          className="w-full hover:bg-default-100"
-          startContent={<CopyDocumentIcon className="w-4 h-4" />}
+        <DropdownMenu
+          aria-label="Document actions"
+          variant="faded"
+          className="min-w-[220px]"
+          closeOnSelect={false}
         >
-          <ModalRenameFileOrFolder
-            documentId={documentId}
-            tokenFromGoogle={accessToken}
-          />
-        </DropdownItem>
+          {isFolder ? (
+            <DropdownItem
+              key="download-zip"
+              className="w-full hover:bg-default-100"
+              onClick={handleDownloadAsZip}
+              isDisabled={isDownloadingZip}
+              startContent={
+                isDownloadingZip ? (
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-900"></div>
+                ) : (
+                  <DownloadZipIcon className="w-4 h-4" />
+                )
+              }
+            >
+              {isDownloadingZip ? "Downloading ZIP..." : "Download as ZIP"}
+            </DropdownItem>
+          ) : (
+            <DropdownItem
+              key="download"
+              className="w-full hover:bg-default-100"
+              onClick={handleDownload}
+              isDisabled={isDownloading}
+              startContent={
+                isDownloading ? (
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-900"></div>
+                ) : (
+                  <AddNoteIcon className="w-4 h-4" />
+                )
+              }
+            >
+              {isDownloading ? "Downloading..." : "Download"}
+            </DropdownItem>
+          )}
 
-        {/* Details */}
-        {/* <DropdownItem
+          {/* Rename */}
+          <DropdownItem
+            key="rename"
+            className="w-full hover:bg-default-100"
+            startContent={<CopyDocumentIcon className="w-4 h-4" />}
+          >
+            <ModalRenameFileOrFolder
+              documentId={documentId}
+              tokenFromGoogle={accessToken}
+            />
+          </DropdownItem>
+
+          {/* Details */}
+          {/* <DropdownItem
           key="details"
           className="w-full hover:bg-default-100"
           showDivider
@@ -333,51 +380,64 @@ export default function ModalOptionDocument({
           Details
         </DropdownItem> */}
 
-        {/* Delete */}
-        <DropdownItem
-          key="delete"
-          className="w-full hover:bg-default-100"
-          startContent={<DeleteDocumentIcon className="w-4 h-4" />}
-        >
-          <PopupActionDeleteDocu
-            title="Delete Folder"
-            massageTitle="Are you sure?"
-            massageBody="You want to delete it."
-            icon={<IconpopupDelete />}
-            bgcolor="bg-slate-red"
-            massageDo="Yes, Delete"
-            massageUndo="No, Cancel"
-            documentId={documentId}
-            fileId={fileId}
-            accessToken={accessToken}
-          />
-        </DropdownItem>
+          {/* Delete */}
+          <DropdownItem
+            key="delete"
+            className="w-full hover:bg-default-100"
+            startContent={<DeleteDocumentIcon className="w-4 h-4" />}
+          >
+            <PopupActionDeleteDocu
+              title="Delete Folder"
+              massageTitle="Are you sure?"
+              massageBody="You want to delete it."
+              icon={<IconpopupDelete />}
+              bgcolor="bg-slate-red"
+              massageDo="Yes, Delete"
+              massageUndo="No, Cancel"
+              documentId={documentId}
+              fileId={fileId}
+              accessToken={accessToken}
+            />
+          </DropdownItem>
 
-        {/* Public and Private Section */}
-        <DropdownSection className="border-t-1 border-default-200">
-          {status !== "public" ? (
-            <DropdownItem
-              onClick={handlePublic}
-              key="public"
-              className="w-full hover:bg-default-100"
-              showDivider
-              startContent={<PublicIcon className="w-4 h-4" />}
-            >
-              Make Public
-            </DropdownItem>
-          ) : (
-            <DropdownItem
-              onClick={handlePrivate}
-              key="private"
-              className="w-full hover:bg-default-100"
-              showDivider
-              startContent={<PrivateIcon className="w-4 h-4" />}
-            >
-              Make Private
-            </DropdownItem>
-          )}
-        </DropdownSection>
-      </DropdownMenu>
-    </Dropdown>
+          {/* Public and Private Section */}
+          <DropdownSection className="border-t-1 border-default-200">
+            {status !== "public" ? (
+              <DropdownItem
+                onClick={handlePublic}
+                key="public"
+                className="w-full hover:bg-default-100"
+                showDivider
+                startContent={<PublicIcon className="w-4 h-4" />}
+              >
+                Make Public
+              </DropdownItem>
+            ) : (
+              <DropdownItem
+                onClick={handlePrivate}
+                key="private"
+                className="w-full hover:bg-default-100"
+                showDivider
+                startContent={<PrivateIcon className="w-4 h-4" />}
+              >
+                Make Private
+              </DropdownItem>
+            )}
+          </DropdownSection>
+        </DropdownMenu>
+      </Dropdown>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
+    </>
   );
 }

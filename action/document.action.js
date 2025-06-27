@@ -157,27 +157,7 @@ export const createDocumentByUploadAction = async (
     token,
     tokenFromGoogle
   );
-  revalidatePath("/document");
-  return document;
-};
-
-// Upload to folder action
-export const uploadDocumentToFolderAction = async (
-  file,
-  folderId,
-  tokenFromGoogle
-) => {
-  const userToken = await Token();
-  const token = userToken.Credential;
-
-  const document = await uploadDocumentToFolderServie(
-    file,
-    folderId,
-    token,
-    tokenFromGoogle
-  );
-  revalidatePath("/document");
-
+  revalidatePath("/docu");
   return document;
 };
 

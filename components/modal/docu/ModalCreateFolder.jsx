@@ -21,7 +21,6 @@ export default function ModalCreateFolder({
   boardId,
   tokenFromGoogle,
 }) {
-
   const {
     register,
     handleSubmit,
@@ -40,16 +39,20 @@ export default function ModalCreateFolder({
         boardId
       );
 
-      toast.success("Folder created successfully!", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+      console.log("created folder:", createdFolder);
+
+      if (createdFolder?.payload?.success === true) {
+        toast.success("Folder created successfully!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      }
 
       reset();
       onClose();

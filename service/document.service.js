@@ -368,44 +368,6 @@ export const createDriveFileService = async (
 };
 
 /*
- * Upload file to folder
- */
-export const uploadDocumentToFolderServie = async (
-  file,
-  folderId,
-  token,
-  tokenFromGoogle
-) => {
-  try {
-    const url = documentRouteGroup.uploadDocumentToFolder(
-      folderId,
-      tokenFromGoogle
-    );
-    const formData = new FormData();
-    formData.append("file", file);
-
-    const res = await fetch(url, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      body: formData,
-    });
-
-    if (!res.ok) {
-      const errorText = await res.text();
-      console.error("Error in uploadDocumentToFolderServie:", errorText);
-      throw new Error(`Failed to upload file to folder: ${res.status}`);
-    }
-
-    return await res.json();
-  } catch (error) {
-    console.error("Error in uploadDocumentToFolderServie:", error.message);
-    throw error; // Rethrow to handle in action or component
-  }
-};
-
-/*
  * Update document name by document ID
  */
 export const updateDocumentNameByIdService = async (

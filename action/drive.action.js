@@ -7,6 +7,7 @@ import {
   downloadFileFromDriveService,
   getDriveFileByIdService,
   updateFileNameByFileIdService,
+  uploadDocumentToFolderServie,
 } from "@/service/drive.service";
 import { revalidatePath } from "next/cache";
 
@@ -28,7 +29,7 @@ export const createDriveFileAction = async ({
       tokenFromGoogle
     );
 
-    revalidatePath("/document")
+    revalidatePath("/document");
     return document;
   } catch (error) {
     console.error("Error creting file: ", error);
@@ -86,7 +87,7 @@ export const updateFileNameByFileIdAction = async ({
     });
 
     console.log("✅ File name updated:", updated);
-    revalidatePath("/docu")
+    revalidatePath("/docu");
     return updated;
   } catch (error) {
     console.error("❌ updateFileNameByFileIdAction error:", error.message);
@@ -94,7 +95,7 @@ export const updateFileNameByFileIdAction = async ({
   }
 };
 
-export const getDriveFileByIdAction = async ({ accessToken, fileId}) => {
+export const getDriveFileByIdAction = async ({ accessToken, fileId }) => {
   try {
     const userToken = await Token();
     const token = userToken.Credential;
@@ -104,11 +105,32 @@ export const getDriveFileByIdAction = async ({ accessToken, fileId}) => {
       throw new Error("Missing input parameters");
     }
 
-    const data = await getDriveFileByIdService({accessToken, fileId, token});
+    const data = await getDriveFileByIdService({ accessToken, fileId, token });
 
     return data;
   } catch (error) {
     console.error("❌ getDriveFileByIdAction error:", error.message);
     throw error;
   }
-}
+};
+
+// Upload to folder action
+export const uploadDocumentToFolderAction = async ({
+  folderId,
+  tokenFromGoogle,
+  file,
+}) => {
+  const userToken = await Token();
+  const token = userToken.Credential;
+
+  const document = await uploadDocumentToFolderServie({
+    folderId,
+    tokenFromGoogle,
+    file,
+    token,
+  });
+
+  revalidatePath("/docu");
+
+  return document;
+};

@@ -6,10 +6,8 @@ export const config = {
 };
 
 import { Token } from "@/constant/token";
-import {
-  createDocumentByUploadService,
-  uploadDocumentToFolderServie,
-} from "@/service/document.service";
+import { createDocumentByUploadService } from "@/service/document.service";
+import { uploadDocumentToFolderServie } from "@/service/drive.service";
 
 export async function POST(req) {
   try {
@@ -42,12 +40,12 @@ export async function POST(req) {
         accessToken
       );
     } else if (folderId) {
-      result = await uploadDocumentToFolderServie(
-        file,
+      result = await uploadDocumentToFolderServie({
+        accessToken,
         folderId,
+        file,
         token,
-        accessToken
-      );
+      });
     }
 
     return new Response(JSON.stringify(result), {
