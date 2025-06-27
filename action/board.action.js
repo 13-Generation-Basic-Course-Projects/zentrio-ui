@@ -41,6 +41,7 @@ import {
   sendNotificationToSpecificArrayIdService,
   sendNotificationToUserIdService,
 } from "@/service/notification.service";
+import { getBoardMemberAction } from "./member.action";
 
 console.log("test actions must create folders");
 /*
@@ -427,6 +428,8 @@ export const createTaskByBoardIdAndGanttChartIdAction = async (
       token,
     });
 
+    console.log("DDDDDDdddatatahhhhhhhhhhhhhhhhh", data);
+
     // Extract taskId
     const taskId = result.payload?.taskId;
     if (!taskId || typeof taskId !== "string") {
@@ -471,6 +474,10 @@ export const assignLeaderAction = async (taskId, assignId) => {
   try {
     const userToken = await Token();
     const token = userToken?.Credential;
+
+    // leader token not pm token ??
+
+    console.log("token in assignLeaderAction:", token);
     if (!token) {
       throw new Error("No authentication token found");
     }
@@ -480,6 +487,8 @@ export const assignLeaderAction = async (taskId, assignId) => {
       assignId,
       token,
     });
+
+    console.log("Assign leader result:", JSON.stringify(result, null, 2));
 
     // Send notification
     if (result.payload?.boardId) {

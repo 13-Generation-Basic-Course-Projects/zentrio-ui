@@ -41,7 +41,9 @@ export default function useWebSocketNotifications({userId}) {
 
         // ✅ WebSocket
         stompClient = new Client({
+          // webSocketFactory: () => new SockJS("http://16.176.18.10:9100/ws"),
           webSocketFactory: () => new SockJS("http://localhost:8080/ws"),
+          debug: (str) => console.log("STOMP DEBUG:", str),
           connectHeaders: { Authorization: `Bearer ${token}` },
           reconnectDelay: 5000,
           onConnect: () => {

@@ -90,7 +90,8 @@ export default function OtherBoards({ currentUserProfile }) {
           <li key={index} className="flex justify-between items-center gap-4">
             <div className="flex items-center gap-3">
               <div
-                className={`w-10 h-10 rounded-full flex items-center justify-center ${board.textColor} font-semibold ${board.color}`}>
+                className={`w-10 h-10 rounded-full flex items-center justify-center ${board.textColor} font-semibold ${board.color}`}
+              >
                 {board.initial}
               </div>
               <div>

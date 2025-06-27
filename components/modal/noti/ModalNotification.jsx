@@ -55,6 +55,8 @@ export default function ModalNotification() {
     );
   }, [notificationStatus]);
 
+
+
   const formattedNotifications = liveNotifications.map((item, index) => ({
     id: item.id ?? index,
     content: item.content ?? "No content",
@@ -79,6 +81,8 @@ export default function ModalNotification() {
     assignId: item.receiverId ?? null,
     taskTitle: item.title ?? null,
   }));
+
+  console.log("Live Notifications:", formattedNotifications);
 
   const markAllAsRead = () => {
     setIsActive(true);
@@ -136,7 +140,8 @@ export default function ModalNotification() {
     }
   }
 
-  async function handleAccept(notificationId, taskId, assignId) {
+  async function handleAccept(notificationId, taskId, assignId, managerId) {
+    console.log("maangerrrrrrrrrrrrrrrrrr", managerId);
     try {
       setError(null);
       setNotificationStatus((prev) => ({

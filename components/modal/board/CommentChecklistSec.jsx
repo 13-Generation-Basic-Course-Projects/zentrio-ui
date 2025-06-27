@@ -107,7 +107,7 @@ export default function CommentChecklistSec({
 
   return (
     <div className="space-y-1">
-      {comments.map((el) => (
+      {(comments ?? []).map((el) => (
         <div key={el.id}>
           <p className="flex items-center gap-2">
             <img
