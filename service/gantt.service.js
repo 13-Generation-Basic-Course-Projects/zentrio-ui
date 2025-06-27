@@ -109,7 +109,7 @@ export const createGanttBarsByGanttChartIdService = async ({
     });
 
     const result = await res.json();
-    // console.log("📥 Backend responded with:", result);
+    console.log("📥 Backend responded with gantbar:", result);
 
     return result;
   } catch (error) {

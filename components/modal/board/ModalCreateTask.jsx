@@ -230,7 +230,11 @@ export default function ModalCreateTask({
       // Note: The commented success check suggests the result structure may differ.
       // Adjust based on actual API response.
       if (result.status === 400) {
-        throw new Error(result.detail || "Failed to create task");
+        // throw new Error(result.detail || "Failed to create task");
+        toast.error(`"${data.title}"\nfailed create Task unsuccessfully!`, {
+          position: "top-right",
+          autoClose: 3000,
+        });
       }
 
       toast.success(`"${data.title}"\nTask created successfully!`, {

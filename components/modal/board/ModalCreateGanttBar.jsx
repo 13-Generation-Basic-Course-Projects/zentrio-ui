@@ -96,41 +96,102 @@ export default function ModalCreateGanttBar({ input, ganttChartId }) {
   const durationValue = watch("duration");
   const faceValue = watch("face");
 
+  // const showToast = useCallback((type, message, options = {}) => {
+  //   try {
+  //     const toastId = `${type}-${++toastCounter.current}`;
+  //     if (options.preventDuplicate) {
+  //       activeToasts.current.forEach((id) => {
+  //         if (id.startsWith(`${type}-`)) {
+  //           try {
+  //             toast.dismiss(id);
+  //             activeToasts.current.delete(id);
+  //           } catch (err) {
+  //             console.warn("Toast dismiss error:", err);
+  //           }
+  //         }
+  //       });
+  //     }
+
+  //     const toastOptions = {
+  //       toastId,
+  //       position: "top-right",
+  //       autoClose: 3000,
+  //       ...options,
+  //       onClose: () => {
+  //         activeToasts.current.delete(toastId);
+  //         if (options.onClose) options.onClose();
+  //       },
+  //     };
+
+  //     activeToasts.current.add(toastId);
+  //     console.log(`Showing toast: ${type} - ${message}`); // Debugging
+  //     return toast[type](message, toastOptions);
+  //   } catch (error) {
+  //     console.error("Toast error:", error);
+  //     console.log(`${type.toUpperCase()}: ${message}`);
+  //   }
+  // }, []);
+
   const showToast = useCallback((type, message, options = {}) => {
-    try {
-      const toastId = `${type}-${++toastCounter.current}`;
-      if (options.preventDuplicate) {
-        activeToasts.current.forEach((id) => {
-          if (id.startsWith(`${type}-`)) {
-            try {
-              toast.dismiss(id);
-              activeToasts.current.delete(id);
-            } catch (err) {
-              console.warn("Toast dismiss error:", err);
-            }
+  try {
+    const toastId = `${type}-${++toastCounter.current}`;
+    if (options.preventDuplicate) {
+      activeToasts.current.forEach((id) => {
+        if (id.startsWith(`${type}-`) && toast.isActive(id)) {
+          try {
+            toast.dismiss(id);
+            activeToasts.current.delete(id);
+          } catch (err) {
+            console.warn("Toast dismiss error:", err);
           }
-        });
-      }
-
-      const toastOptions = {
-        toastId,
-        position: "top-right",
-        autoClose: 3000,
-        ...options,
-        onClose: () => {
-          activeToasts.current.delete(toastId);
-          if (options.onClose) options.onClose();
-        },
-      };
-
-      activeToasts.current.add(toastId);
-      console.log(`Showing toast: ${type} - ${message}`); // Debugging
-      return toast[type](message, toastOptions);
-    } catch (error) {
-      console.error("Toast error:", error);
-      console.log(`${type.toUpperCase()}: ${message}`);
+        }
+      });
     }
-  }, []);
+
+    const toastOptions = {
+      toastId,
+      position: "top-right",
+      autoClose: 3000,
+      ...options,
+      onClose: () => {
+        activeToasts.current.delete(toastId); // Remove from activeToasts when toast auto-closes
+        if (options.onClose) options.onClose();
+      },
+    };
+
+    activeToasts.current.add(toastId);
+    console.log(`Showing toast: ${type} - ${message}`);
+    return toast[type](message, toastOptions);
+  } catch (error) {
+    console.error("Toast error:", error);
+    console.log(`${type.toUpperCase()}: ${message}`);
+  }
+}, []);
+
+const handleModalClose = useCallback(() => {
+  reset();
+  setPendingItems([]);
+
+  // Create a copy of active toasts to avoid modifying during iteration
+  const currentToasts = Array.from(activeToasts.current);
+
+  currentToasts.forEach((toastId) => {
+    try {
+      // Only dismiss if the toast is still active
+      if (toast.isActive(toastId)) {
+        toast.dismiss(toastId);
+      }
+    } catch (err) {
+      console.warn("Toast cleanup error:", err);
+    } finally {
+      // Always remove from tracking
+      activeToasts.current.delete(toastId);
+    }
+  });
+
+  // Clear the set as final cleanup
+  activeToasts.current.clear();
+}, [reset]);
 
   const onAddToPending = useCallback(
     (data) => {
@@ -184,24 +245,50 @@ export default function ModalCreateGanttBar({ input, ganttChartId }) {
       return;
     }
 
+    const now = new Date();
+    const utc7OffsetMs = 7 * 60 * 60 * 1000; // 7 hours in milliseconds
+    const oneHourMs = 1 * 60 * 60 * 1000; // 1 hour in milliseconds
+    const nowInUtc7PlusOneHour = new Date(
+      now.getTime() + utc7OffsetMs + oneHourMs
+    );
+
     const payload = pendingItems.map((item) => {
       const selectedStartDate = new Date(item.startedAt);
-      const now = new Date();
-      const utc7OffsetMs = 7 * 60 * 60 * 1000; // 7 hours in milliseconds
-      const oneHourMs = 1 * 60 * 60 * 1000; // 1 hour in milliseconds
-      const nowInUtc7PlusOneHour = new Date(
-        now.getTime() + utc7OffsetMs + oneHourMs
-      );
 
+      // Determine the appropriate start date
+      let startDate;
+      const nowInUtc7 = new Date(now.getTime() + utc7OffsetMs);
+      if (selectedStartDate <= nowInUtc7) {
+        // If the selected start date is today or in the past, use today
+        startDate = new Date(
+          nowInUtc7.getFullYear(),
+          nowInUtc7.getMonth(),
+          nowInUtc7.getDate()
+        );
+      } else {
+        // Use the selected start date
+        startDate = new Date(
+          selectedStartDate.getFullYear(),
+          selectedStartDate.getMonth(),
+          selectedStartDate.getDate()
+        );
+      }
+
+      // Set the time to now + 8 hours (UTC+7 + 1 hour)
       const startedAt = new Date(
-        selectedStartDate.getFullYear(),
-        selectedStartDate.getMonth(),
-        selectedStartDate.getDate(),
+        startDate.getFullYear(),
+        startDate.getMonth(),
+        startDate.getDate(),
         nowInUtc7PlusOneHour.getHours(),
         nowInUtc7PlusOneHour.getMinutes(),
         nowInUtc7PlusOneHour.getSeconds(),
         nowInUtc7PlusOneHour.getMilliseconds()
       );
+
+      // If the adjusted startedAt is still in the past, move it to tomorrow
+      if (startedAt <= nowInUtc7) {
+        startedAt.setDate(startedAt.getDate() + 1);
+      }
 
       const finishedAt = new Date(
         new Date(item.finishedAt).getFullYear(),
@@ -248,10 +335,16 @@ export default function ModalCreateGanttBar({ input, ganttChartId }) {
         setPendingItems([]);
         onOpenChange();
       } else {
-        showToast("error", `Failed to create Gantt bars. Please try again.`, {
-          preventDuplicate: true,
-          autoClose: 4000,
-        });
+        showToast(
+          "error",
+          `Failed to create Gantt bars: ${
+            result.detail || "Please try again."
+          }`,
+          {
+            preventDuplicate: true,
+            autoClose: 4000,
+          }
+        );
       }
     } catch (err) {
       console.error("Failed to create Gantt bars:", err);
@@ -266,30 +359,32 @@ export default function ModalCreateGanttBar({ input, ganttChartId }) {
     }
   }, [pendingItems, ganttChartId, showToast, reset, onOpenChange]);
 
-  const handleModalClose = useCallback(() => {
-    reset();
-    setPendingItems([]);
 
-    // Create a copy of the Set to avoid modification during iteration
-    const currentToasts = Array.from(activeToasts.current);
+  
+  // const handleModalClose = useCallback(() => {
+  //   reset();
+  //   setPendingItems([]);
 
-    currentToasts.forEach((toastId) => {
-      try {
-        // Check if toast exists before dismissing
-        if (toast.isActive(toastId)) {
-          toast.dismiss(toastId);
-        }
-      } catch (err) {
-        console.warn("Toast cleanup error:", err);
-      } finally {
-        // Always remove from our tracking
-        activeToasts.current.delete(toastId);
-      }
-    });
+  //   // Create a copy of the Set to avoid modification during iteration
+  //   const currentToasts = Array.from(activeToasts.current);
 
-    // Clear the set as a final cleanup
-    activeToasts.current.clear();
-  }, [reset]);
+  //   currentToasts.forEach((toastId) => {
+  //     try {
+  //       // Check if toast exists before dismissing
+  //       if (toast.isActive(toastId)) {
+  //         toast.dismiss(toastId);
+  //       }
+  //     } catch (err) {
+  //       console.warn("Toast cleanup error:", err);
+  //     } finally {
+  //       // Always remove from our tracking
+  //       activeToasts.current.delete(toastId);
+  //     }
+  //   });
+
+  //   // Clear the set as a final cleanup
+  //   activeToasts.current.clear();
+  // }, [reset]);
 
   const validateDuration = useCallback(
     (value) => {
@@ -331,6 +426,7 @@ export default function ModalCreateGanttBar({ input, ganttChartId }) {
     },
     [showToast]
   );
+
 
   <Controller
     name="duration"

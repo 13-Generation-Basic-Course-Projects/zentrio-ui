@@ -222,7 +222,7 @@ export default function ModalCreateBoard({ Workspaceid }) {
                       )}
 
                       <div className="flex flex-col items-start">
-                        <p className="text-caption-tiny text-title/50">
+                        <p className="text-caption-tiny text-title/50 truncate max-w-[70px]">
                           {selectedOption
                             ? colorOptions.find(
                                 (color) => color.key === selectedOption
