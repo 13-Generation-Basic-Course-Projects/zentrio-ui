@@ -3,12 +3,14 @@
 import { Token } from "@/constant/token";
 import {
   getCurrentUserProfileService,
+  getOtherAchivementByIdService,
   getPreviewProfileService,
   getUserAchievementService,
   updateAchievementService,
   updateProfileImageService,
   updateUserProfileService,
 } from "@/service/profile.service";
+
 import { revalidatePath } from "next/cache";
 
 export const getCurrentUserProfileAction = async () => {
@@ -67,6 +69,18 @@ export const getUserAchievementAction = async () => {
   });
   return result;
 };
+
+
+export const getOtherAchivementByIdAction= async ({userId}) => {
+  console.log("userId member",userId)
+    const userToken = await Token();
+  const token = userToken.Credential;
+  const result = await getOtherAchivementByIdService({
+    token,
+    userId
+  });
+  return result;
+}
 
 export const getPreviewProfileAction = async () => {
   const userToken = await Token();

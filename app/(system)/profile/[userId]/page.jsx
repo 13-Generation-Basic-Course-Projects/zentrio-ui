@@ -1,5 +1,6 @@
 import { getMemberByBoardIdAction } from "@/action/board.action";
 import { getUserByUserIdAction } from "@/action/member.action";
+import { getOtherAchivementByIdAction } from "@/action/profile.action";
 import OtherUserProfile from "@/components/appserver/OtherProfilepage";
 import React from "react";
 
@@ -19,11 +20,15 @@ export default async function MemberProfile({ params, searchParams }) {
    */
   const userIdDetail = await getUserByUserIdAction(userId);
   console.log("userdetails", userIdDetail);
+
+   const otherUserAchivement = await getOtherAchivementByIdAction({userId});
+   
   return (
     <OtherUserProfile
       MemberDetails={MemberDetails}
       userId={userId}
       userIdDetail={userIdDetail?.payload}
+      otherUserAchivement={otherUserAchivement}
     />
   );
 }

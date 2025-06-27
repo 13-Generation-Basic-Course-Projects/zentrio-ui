@@ -11,9 +11,10 @@ export default function ProfileComponentOther({
   MemberDetails,
   userId,
   userIdDetail,
+  otherUserAchivement
 }) {
   console.log("detail the member", MemberDetails);
-  console.log("88", userIdDetail);
+  console.log("88", otherUserAchivement);
   return (
     <div className="min-h-screen p-2">
       <div className="grid grid-cols-1 md:grid-cols-[43%_55%] gap-2 ">
@@ -24,6 +25,7 @@ export default function ProfileComponentOther({
             MemberDetails={MemberDetails?.payload}
             userId={userId}
             userIdDetail={userIdDetail}
+            
           />
         </div>
 
@@ -34,6 +36,7 @@ export default function ProfileComponentOther({
             userAchievement={userAchievement}
             MemberDetails={MemberDetails?.payload}
             userId={userId}
+            otherUserAchivement={otherUserAchivement}
           />
         </div>
       </div>

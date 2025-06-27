@@ -22,5 +22,8 @@ export const profileRouteGroup = {
   getPreviewProfile: () => `${apiConfig.baseUrl}/profiles/preview-profile`,
 
   //updateCurrentProfile
-  updateProfileImgae:()=>`${apiConfig.baseUrl}/files/upload-file`
+  updateProfileImgae:()=>`${apiConfig.baseUrl}/files/upload-file`,
+
+  //get other achivement
+  getOtherAchivementById: (userId) => `${apiConfig.baseUrl}/achievements/users/${userId}`
 };

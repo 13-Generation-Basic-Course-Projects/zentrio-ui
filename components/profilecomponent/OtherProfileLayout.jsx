@@ -28,6 +28,7 @@ export default function OtherProfileLayout({
   userName,
   MemberDetails,
   userIdDetail,
+  otherUserAchivement
 }) {
   const searchParams = useSearchParams();
   const params = useParams(); // Get params from the URL path
@@ -91,7 +92,7 @@ export default function OtherProfileLayout({
   };
 
   const back = searchParams.get("from") || "/"; // Fallback to home
-
+  console.log("first",otherUserAchivement)
   const tabItems = [
     {
       key: "profile",
@@ -101,6 +102,7 @@ export default function OtherProfileLayout({
           MemberDetails={MemberDetails}
           userId={userId}
           userIdDetail={userIdDetail}
+          otherUserAchivement={otherUserAchivement}
         />
       ),
     },
@@ -108,7 +110,7 @@ export default function OtherProfileLayout({
       key: "achievement",
       title: "Achievements",
       content: (
-        <OtherAchievmentTab MemberDetails={MemberDetails} userId={userId} />
+        <OtherAchievmentTab MemberDetails={MemberDetails} userId={userId}  otherUserAchivement={otherUserAchivement}/>
       ),
     },
   ];

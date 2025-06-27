@@ -116,6 +116,7 @@ export default function CardCreateModal({
                 <div className="absolute bottom-40 right-12 w-8 h-8 bg-white/40 rounded-full animate-ping delay-700"></div>
               </div>
 
+
               {/* Content */}
               <div className="relative z-10 h-full flex flex-col justify-center p-12 text-white">
                 <div className="mb-8">
@@ -166,6 +167,7 @@ export default function CardCreateModal({
                 </div>
               )}
             </div>
+
 
             {/* Form Content */}
             <form
@@ -231,6 +233,7 @@ export default function CardCreateModal({
                   </div>
                 </div>
 
+
                 {/* Image Attachments */}
                 {images.length > 0 && (
                   <div className="space-y-3">
@@ -290,6 +293,7 @@ export default function CardCreateModal({
                     </div>
                   </div>
                 )}
+
 
                 {/* Media Upload */}
                 <div className="p-4 border-2 border-dashed border-gray-200 rounded-2xl hover:border-indigo-300 hover:bg-indigo-50/50 transition-all duration-200 group">

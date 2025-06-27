@@ -10,6 +10,7 @@ import {
  * Get board members action
  */
 export const getBoardMemberAction = async (boardId) => {
+  console.log("qqqq",boardId)
   const userToken = await Token();
   const token = userToken.Credential;
   const result = await getBoardMembersService({ boardId, token });

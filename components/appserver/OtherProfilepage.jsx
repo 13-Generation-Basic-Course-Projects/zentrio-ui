@@ -15,23 +15,27 @@ export default function OtherUserProfile({
   MemberDetails,
   userId,
   userIdDetail,
+  otherUserAchivement
 }) {
   const searchParams = useSearchParams();
   const name = searchParams.get("name");
   const profileImage = searchParams.get("profileImage");
   const boardId = searchParams.get("boardId");
   console.log("test", userIdDetail);
+  console.log("otherAchive2",otherUserAchivement)
   return (
     <OtherProfileLayout
       MemberDetails={MemberDetails}
       userName={"Jack Ma"}
       userId={userId}
       userIdDetail={userIdDetail}
+      otherUserAchivement={otherUserAchivement}
       profile={
         <OtherProfileTab
           MemberDetails={MemberDetails}
           userId={userId}
           userIdDetail={userIdDetail}
+          otherUserAchivement={otherUserAchivement}
         />
       }
       acheivment={
@@ -39,6 +43,7 @@ export default function OtherUserProfile({
           MemberDetails={MemberDetails}
           userId={userId}
           userIdDetail={userIdDetail}
+          otherUserAchivement={otherUserAchivement}
         />
       }
     />

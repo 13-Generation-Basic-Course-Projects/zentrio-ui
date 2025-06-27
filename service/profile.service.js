@@ -2,6 +2,8 @@ import { profileRouteGroup } from "@/routes/profileRoute";
 
 
 
+
+
 // call route to config
 export const getCurrentUserProfileService = async ({ token }) => {
   const response = await fetch(profileRouteGroup.getCurrentUserProfile(), {
@@ -41,6 +43,21 @@ export const getUserAchievementService = async ({ token }) => {
   const data = await response.json();
   return data;
 };
+
+export const getOtherAchivementByIdService = async ({token , userId}) => {
+
+    
+    const url = profileRouteGroup.getOtherAchivementById(userId)
+    console.log("UserAction", url)
+    const response = await fetch(url, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  const data = await response.json();
+  console.log("daataa", data)
+  return data;
+}
 
 export const updateAchievementService = async ({ token, payload }) => {
 

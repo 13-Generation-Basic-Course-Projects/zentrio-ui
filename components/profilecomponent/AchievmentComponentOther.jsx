@@ -9,6 +9,8 @@ export default function AchievmentComponentOther({
   userAchievement,
   MemberDetails,
   userId,
+  otherUserAchivement
+
 }) {
   return (
     <div className="min-h-screen p-2">
@@ -18,6 +20,8 @@ export default function AchievmentComponentOther({
           <ActiveBoardsOther
             currentUserProfile={currentUserProfile}
             userAchievement={userAchievement}
+            otherUserAchivement={otherUserAchivement}
+
           />
         </div>
 
