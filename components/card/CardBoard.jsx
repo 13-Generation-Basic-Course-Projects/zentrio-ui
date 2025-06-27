@@ -42,37 +42,7 @@ export default function CardBoard({
   /* State for delete confirmation modal */
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
-  /* State to manage editing mode and edited title */
-  const [editing, setEditing] = useState(false);
-  const [newTitle, setNewTitle] = useState("");
-
-  /* Function to handle rename confirmation */
-
-  const handleTitleUpdate = async () => {
-    if (newTitle.trim() === "") return; // Skip if empty
-
-    try {
-      /* Step 1: Get the existing board data */
-      const response = await getBoardByIdAction(boardId);
-      const existingBoard = response.payload;
-
-      if (!existingBoard) throw new Error("Board not found");
-
-      /* Step 2: Update only the title, keep others */
-      await updateNameBoardAction(boardId, {
-        title: newTitle, // New title
-        description: existingBoard.description, // Preserve old description
-        cover: existingBoard.cover, // Preserve old cover image
-        workspaceId: existingBoard.workspaceId, // Preserve workspace ID
-      });
-
-      console.log("✅ Board title updated to:", newTitle);
-    } catch (error) {
-      console.error("❌ Failed to update board title:", error);
-    }
-
-    setEditing(false); // Hide input after update
-  };
+  stopPropagation()
   // fong
   const [members, setMembers] = useState([]); // State to store members
   const [loading, setLoading] = useState(true); // State for loading

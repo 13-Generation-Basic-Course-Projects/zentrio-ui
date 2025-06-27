@@ -151,7 +151,7 @@ export default function Reportpage({ modal, report, version }) {
 
         { }
         <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mt-5 overflow-y-auto h-screen md:h-fit scrollbar-hidden">
-          <div className="md:col-span-9 md:h-screen flex flex-col  ">
+          <div className="md:col-span-8 md:h-screen flex flex-col  ">
             <div className=" overflow-y-auto scrollbar-hidden pb-40 p-2">
               { }
               <div className="grid grid-cols-4 gap-2">
@@ -204,7 +204,7 @@ export default function Reportpage({ modal, report, version }) {
           </div>
 
           { }
-          <div className="md:col-span-3 space-y-10 md:h-screen flex flex-col ">
+          <div className="md:col-span-4 space-y-10 md:h-screen flex flex-col ">
             <div className=" flex flex-col  gap-2 overflow-y-auto scrollbar-hidden pb-[250px]">
               { }
               <div className="border-1 rounded-medium bg-[#FFFFFF] px-4 pb-4 flex flex-col ">

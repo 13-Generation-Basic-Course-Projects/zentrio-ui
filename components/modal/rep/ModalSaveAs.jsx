@@ -33,7 +33,7 @@ export default function ModalSaveAs({ board }) {
         className="p-0 bg-transparent borde-none"
       >
         <DropdownItem className="p-0 bg-transparent borde-none">
-          <CardBoardReport boardId={board}/>
+          <CardBoardReport boardId={board} />
         </DropdownItem>
       </DropdownMenu>
     </Dropdown>
