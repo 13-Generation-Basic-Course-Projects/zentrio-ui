@@ -670,8 +670,13 @@ export default function KanbanBoard({
                         <div
                           className={`shadow-sm rounded-xl overflow-hidden transition-all duration-300 ease-in-out ${
                             isChecklistHoverTargetCard
-                              ? "ring-2 ring-green-300"
+                              ? "ring-2 ring-orange-300"
                               : ""
+                          } ${
+                            card.finishedAt &&
+                            new Date(card.finishedAt) >= new Date()
+                              ? "bg-white"
+                              : "bg-orange-50 "
                           }`}
                           style={{
                             opacity: isCardDragging ? 0.5 : 1,
@@ -1013,7 +1018,6 @@ export default function KanbanBoard({
                             </div>
                           )}
                         </div>
-
                         <div className="flex items-center justify-center ">
                           <button
                             onClick={() => toggleTaskExpansion(card.id)}
