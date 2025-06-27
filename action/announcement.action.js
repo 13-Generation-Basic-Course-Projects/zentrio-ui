@@ -81,3 +81,33 @@ export const updateAnnouncementByIdAction = async (announId, description, title,
     revalidatePath("/update");
     return result;
 };
+
+export const createCommentByAnnouncementIdAction = async ({ announId, content }) => {
+    console.log("Comment Actionp1",announId, content);
+    
+    const userToken = await Token();
+    const token = userToken.Credential;
+    const result = await createAnnouncementByBoardIdService({ content, announId, token });
+    revalidatePath("/create");
+    return result;
+};
+
+export const editCommentByIdAction = async ({ commentId, content, announId }) => {
+
+    console.log("Comment Actionpu",commentId, content, announId, token);
+    const userToken = await Token();
+    const token = userToken.Credential;
+    const result = await updateAnnouncementByIdService({ content, announId, token });
+    revalidatePath("/update");
+    return result;
+}
+
+export const deleteCommentByIdAction = async ({ commentId }) => {
+    console.log("Comment Actionpd",commentId);
+
+    const userToken = await Token();
+    const token = userToken.Credential;
+    const result = await deleteAnnouncementByIdService({ commentId, token });
+    revalidatePath("/detele");
+    return result;
+}
