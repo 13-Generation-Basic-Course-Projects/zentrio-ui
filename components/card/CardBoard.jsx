@@ -42,11 +42,12 @@ export default function CardBoard({
   /* State for delete confirmation modal */
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
-  stopPropagation()
+  // stopPropagation()
   // fong
   const [members, setMembers] = useState([]); // State to store members
   const [loading, setLoading] = useState(true); // State for loading
   const [error, setError] = useState(null); // State for error handling
+  const [editing, setEditing] = useState(false);
   /* Fetch members when component mounts or boardId changes */
   useEffect(() => {
     const fetchMembers = async () => {
