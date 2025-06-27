@@ -25,6 +25,7 @@ export const CardCheckList = ({
   leaderId,
   imageChecklist,
   totalCommentLength,
+  matchingFeedback,
 }) => {
   const finishedAtRaw = finishedAt;
   const FormattedFinishDate = finishedAtRaw.split("T")[0];
@@ -144,11 +145,15 @@ export const CardCheckList = ({
         }
 
         {/* Footer */}
-        <div className="flex justify-between items-center p-4">
+        <div className=" flex items-center justify-between p-4">
           {/* nh test sent nh ot torn map data tee */}
-          <div className=" p-2 bg-orange-500 text-white rounded-xl ">
-            Feedback
-          </div>
+          {matchingFeedback.length < 1 ? (
+            ""
+          ) : (
+            <p className=" p-2 bg-orange-500 text-white rounded-xl ">
+              Feedback
+            </p>
+          )}
           <StackedProfileChecklist member={member} hidden={1} />
         </div>
         <div className="border-b m-4 items-center border-2"></div>

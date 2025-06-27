@@ -22,6 +22,7 @@ import {
   getBoardByBoardIdService,
   getCheckListByTaskIdService,
   getCommentByCheckListIdService,
+  getFeedBackByTaskIdService,
   getGuestUserDisplayKanbanService,
   getMemberByBoardIdService,
   getTaskByBoardIdAndGanttBarIdService,
@@ -889,4 +890,17 @@ export const assignLeaderNewAction = async (taskId, leaderId, pmId) => {
     console.error("Assign leader action error:", error.message);
     return { success: false, error: error.message };
   }
+};
+/*
+ * getTaskbyBoardId and GanttbarId
+ */
+export const getFeedBackByTaskIdAction = async ({ taskId }) => {
+  const userToken = await Token();
+  const token = userToken.Credential;
+  //console.log(token);
+  const result = await getFeedBackByTaskIdService({
+    taskId,
+    token,
+  });
+  return result;
 };

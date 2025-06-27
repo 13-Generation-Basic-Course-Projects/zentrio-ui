@@ -1161,3 +1161,25 @@ export const assignUserRoleLeadeerNewToBoardService = async ({
     return { success: false, error: error.message };
   }
 };
+
+//fetch feedback
+
+export const getFeedBackByTaskIdService = async ({ taskId, token }) => {
+  try {
+    //console.log("from service ", token);
+    const url = boardRouteGroup.getFeedBackByTaskId(taskId);
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await res.json();
+    console.log("📥 Backend responded with boardDatafeedback:", data);
+
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};

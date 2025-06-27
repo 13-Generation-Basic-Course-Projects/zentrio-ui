@@ -69,4 +69,8 @@ export const boardRouteGroup = {
 
   assignUserRoleLeaderToBoardByNoti: (taskid, assignId, createById) =>
     `${apiConfig.baseUrl}/tasks/${taskid}/pm/${createById}/members/${assignId}`,
+  //get feedback
+
+  getFeedBackByTaskId: (taskId) =>
+    `${apiConfig.baseUrl}/feedback/tasks/${taskId}`,
 };

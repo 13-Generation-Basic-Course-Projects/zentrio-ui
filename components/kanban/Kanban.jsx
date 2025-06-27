@@ -126,6 +126,7 @@ export default function KanbanBoard({
   boardId,
   role,
   workspaceId,
+  feedbackByTaskIds,
 }) {
   const [columns, setColumns] = useState([]);
   const [draggedItem, setDraggedItem] = useState(null);
@@ -955,6 +956,7 @@ export default function KanbanBoard({
                                           }
                                           role={role}
                                           imageChecklist={checklist?.cover}
+                                          feedbackByTaskIds={feedbackByTaskIds}
                                         />
                                       </div>
                                     </div>
