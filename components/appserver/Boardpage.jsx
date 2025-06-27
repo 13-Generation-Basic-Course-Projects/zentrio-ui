@@ -211,7 +211,7 @@ export default function SystemBoard({
         workspaceId={workspaceId}
       />
     ),
-    <StarBoard key="star-board" favBoard={favBoard} />,
+    <StarBoard key="star-board" favBoard={favBoard} boardId={boardId}/>,
   ].filter(Boolean);
 
   // GanttChart modal based on role

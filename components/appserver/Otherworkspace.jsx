@@ -14,6 +14,7 @@ export default function Otherworkspace({
   allMembersInOther,
 }) {
   console.log("All members in other workspace : ", allMembersInOther);
+  console.log("Join board in other workspace : ", boards);
   const pathname = usePathname();
   const includesPathOtherWorkSpace = pathname.includes(
     "/workspace/otherworkspace"
@@ -35,9 +36,8 @@ export default function Otherworkspace({
                 workspaceId="123"
                 projectId="456"
                 boardId={el?.boardId}
-                image={
-                  Workspaceid % 2 == 0 ? "bg-board-green" : "bg-board-primary"
-                }
+                image={el?.cover}
+                images ={el?.image}
                 isFavourite={el?.isFavourite}
                 updateFavAction={updateFavAction}
               />
