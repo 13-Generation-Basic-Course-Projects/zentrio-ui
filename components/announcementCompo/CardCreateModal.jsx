@@ -12,7 +12,6 @@ import {
   Crown,
   Zap,
   ArrowRight,
-  Plus,
   Paperclip,
 } from "lucide-react";
 import { Button } from "@heroui/react";
@@ -83,12 +82,17 @@ export default function CardCreateModal({
   const isFormValid = title.trim() && description.trim();
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-      <Card className="w-full max-w-6xl bg-white rounded-3xl shadow-2xl border-0 overflow-hidden transform transition-all duration-300 scale-100 animate-in slide-in-from-bottom-4">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+      onClick={onClose} // Close modal when clicking outside content
+    >
+      <Card
+        className="w-full max-w-6xl bg-white rounded-3xl shadow-2xl border-0 overflow-hidden transform transition-all duration-300 scale-100 animate-in slide-in-from-bottom-4"
+        onClick={(e) => e.stopPropagation()} // Prevent closing modal on clicks inside
+      >
         <CardContent className="p-0 flex flex-col lg:flex-row min-h-[600px]">
           {/* Left Side - Modern Brand Section */}
           <div className="w-full lg:w-2/5 relative overflow-hidden">
-            {/* <div className="h-full bg-gradient-to-br from-primary via-primary to-white relative"> */}
             <div className="h-full bg-gradient-to-br from-primary via-primary to-white relative">
               <div className="absolute inset-0 bg-white/20 backdrop-blur-md z-0" />
 
@@ -129,13 +133,6 @@ export default function CardCreateModal({
           <div className="w-full  lg:w-3/5 flex flex-col">
             {/* Header */}
             <div className="px-2 py-2 border-b border-gray-100 ">
-              <div className="flex items-center justify-between mb-2 hidden">
-                <div className="flex items-center space-x-3">
-                  <div className="w-[90px] h-[90px] rounded-xl flex items-center justify-center">
-                    <Image src={logo} alt="logo" className=" " />
-                  </div>
-                </div>
-              </div>
               {/* Author info */}
               {managerMember && (
                 <div className="flex items-center space-x-3 p-4 rounded-2xl">
@@ -154,10 +151,10 @@ export default function CardCreateModal({
                     </div> */}
                   </div>
                   <div className="flex-1">
-                    <div className="text-sm font-semibold text-gray-900">
+                    <div className="text-meduim font-semibold text-gray-900">
                       {managerMember.username || managerMember.name}
                     </div>
-                    <div className="text-xs text-gray-500 flex items-center">
+                    <div className="text-small text-gray-500 flex items-center">
                       <Crown className="w-3 h-3 mr-1" />
                       {managerMember.roles?.[0]
                         ?.replace("ROLE_", "")

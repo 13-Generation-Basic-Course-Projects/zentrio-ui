@@ -81,7 +81,7 @@ export default function CommentCompo({ announId, comments, currentUserProfile, b
               <div className="flex justify-between items-start">
                 <div>
                   <div className="font-semibold text-sm">{comment.member.username}</div>
-                  <p className="text-sm text-gray-500">{formatDate(comment.creationDate)}</p>
+                  <p className="text-small text-gray-500">{formatDate(comment.creationDate)}</p>
                 </div>
 
                 {/* Buttons */}
