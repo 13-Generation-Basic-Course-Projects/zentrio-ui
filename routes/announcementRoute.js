@@ -21,12 +21,12 @@ export const announcementRouteGroup = {
     getAllMembersByBoardId: (boardId) => `${apiConfig.baseUrl}/`,
 
     // POST comment
-    createCommentByAnnouncementId: (announId) => `${apiConfig.baseUrl}/comment/announcement/announcement/`,
+    createCommentByAnnouncementId: () => `${apiConfig.baseUrl}/comment/announcement/announcement/`,
 
-    // PUT
+    // PUT comment
     editCommentById: (commentId) => `${apiConfig.baseUrl}/comment/announcement/${commentId}`,
 
-    // DELETE
+    // DELETE comment
     deleteCommentById: (commentId) => `${apiConfig.baseUrl}/comment/announcement/${commentId}`,
 
 };

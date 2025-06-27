@@ -124,9 +124,10 @@ export const updateAnnouncementByIdService = async ({announId, description, titl
   return data; 
 };
 
-export const createCommentByAnnouncementIdService = async ({ announId, content, token }) => {
-  console.log("Service Commentp1", announId, content, token);
-  const url = announcementRouteGroup.createCommentByAnnouncementId(announId);
+export const createCommentByAnnouncementIdService = async ({ content, announcementId, token }) => {
+  console.log("tokennnnnnnnnnnn",token);
+  console.log("idddddddddd",announcementId);
+  const url = announcementRouteGroup.createCommentByAnnouncementId(announcementId);
   const res = await fetch(url, {
     method: "POST",
     headers: {
@@ -134,15 +135,14 @@ export const createCommentByAnnouncementIdService = async ({ announId, content, 
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({ content, announId }),
+    body: JSON.stringify({content,announcementId }),
   });
   const data = await res.json();
-  console.log("Service Commentp2",data)
   return data;
 };
 
-export const editCommentByIdService = async ({ commentId, content, announId, token }) => {
-  console.log("Service Commentpu1",commentId, content, announId, token);
+export const editCommentByIdService = async ({ content, announId, commentId, token }) => {
+  console.log("Service Commentpu1",commentId, content);
   const url = announcementRouteGroup.editCommentById(commentId);
   const res = await fetch(url, {
     method: "PUT",
@@ -150,7 +150,9 @@ export const editCommentByIdService = async ({ commentId, content, announId, tok
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({ content, announId }),
+    body: JSON.stringify(
+      { content,
+      announcementId: announId }),
   });
   const data = await res.json();
   console.log("Service Commentpu2",data);
@@ -158,8 +160,8 @@ export const editCommentByIdService = async ({ commentId, content, announId, tok
 };
 
 export const deleteCommentByIdService = async ({ commentId, token }) => {
-  console.log("Service Commentd1",commentId, token);
-  const url = announcementRouteGroup.deleteAnnouncementById(commentId);
+  // console.log("Service Commentd1",commentId, token);
+  const url = announcementRouteGroup.deleteCommentById(commentId);
   const res = await fetch(url, {
     method: "DELETE",
       headers: {
@@ -167,6 +169,6 @@ export const deleteCommentByIdService = async ({ commentId, token }) => {
       },
   });
   const data = await res.json();
-  console.log("Service Commentd2", data);
+  // console.log("Service Commentd2", data);
   return data;
 };

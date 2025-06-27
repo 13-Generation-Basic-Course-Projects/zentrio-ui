@@ -22,7 +22,7 @@ export default function CardCreateAnnouncement({
   const managerMember = boardMember?.find((member) =>
     member.roles?.some((role) => role === "ROLE_MANAGER")
   );
-  console.log("anal", Announcements?.payload);
+  // console.log("anal", Announcements?.payload);
 
   return (
     <div className="mx-auto px-2 py-1">

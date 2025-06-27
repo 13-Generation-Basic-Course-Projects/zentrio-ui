@@ -6,6 +6,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Pencil, Trash2, Check, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import {
+  editCommentByIdAction,
+  deleteCommentByIdAction,
+} from "@/action/announcement.action";
 
 // Format date function
 function formatDate(dateString) {
@@ -20,7 +24,12 @@ function formatDate(dateString) {
   }).format(date);
 }
 
-export default function CommentCompo({ announId, comments, currentUserProfile, boardMember }) {
+export default function CommentCompo({
+  announId,
+  comments,
+  currentUserProfile,
+  boardMember,
+}) {
   const [editingId, setEditingId] = useState(null);
   const [editedContent, setEditedContent] = useState("");
 
@@ -39,11 +48,22 @@ export default function CommentCompo({ announId, comments, currentUserProfile, b
     setEditedContent(comment.content);
   };
 
-  const handleSave = (commentId) => {
-    console.log("Save edited comment:", commentId, editedContent);
-    // TODO: send updated comment to API
-    setEditingId(null);
-    setEditedContent("");
+  const handleSave = async (commentId) => {
+    try {
+      if (!editedContent.trim()) return;
+
+      await editCommentByIdAction({
+        commentId,
+        content: editedContent,
+        announId,
+      });
+      console.log("asd",announId,commentId,editedContent)
+
+      setEditingId(null);
+      setEditedContent("");
+    } catch (error) {
+      console.error("Failed to edit comment:", error);
+    }
   };
 
   const handleCancel = () => {
@@ -51,9 +71,12 @@ export default function CommentCompo({ announId, comments, currentUserProfile, b
     setEditedContent("");
   };
 
-  const handleDelete = (commentId) => {
-    console.log("Delete comment:", commentId);
-    // TODO: call delete API
+  const handleDelete = async (commentId) => {
+    try {
+      await deleteCommentByIdAction({ commentId });
+    } catch (error) {
+      console.error("Failed to delete comment:", error);
+    }
   };
 
   return (
@@ -80,8 +103,12 @@ export default function CommentCompo({ announId, comments, currentUserProfile, b
             <CardContent className="p-0 space-y-1 flex-1">
               <div className="flex justify-between items-start">
                 <div>
-                  <div className="font-semibold text-sm">{comment.member.username}</div>
-                  <p className="text-small text-gray-500">{formatDate(comment.creationDate)}</p>
+                  <div className="font-semibold text-sm">
+                    {comment.member.username}
+                  </div>
+                  <p className="text-small text-gray-500">
+                    {formatDate(comment.creationDate)}
+                  </p>
                 </div>
 
                 {/* Buttons */}
@@ -131,10 +158,13 @@ export default function CommentCompo({ announId, comments, currentUserProfile, b
               {/* Comment Content or Input */}
               {isEditing ? (
                 <Input
-                  value={editedContent}
-                  onChange={(e) => setEditedContent(e.target.value)}
-                  className="mt-2"
-                />
+  value={editedContent}
+  onChange={(e) => {
+    setEditedContent(e.target.value);
+    console.log("Input value:", e.target.value); // 🔍 log every keystroke
+  }}
+  className="mt-2"
+/>
               ) : (
                 <div className="text-sm text-gray-800">{comment.content}</div>
               )}

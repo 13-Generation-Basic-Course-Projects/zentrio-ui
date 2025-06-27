@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Pin, MessageCircle, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -7,6 +8,7 @@ import ModalOptionAnnoun from "./ModalOptionAnnoun";
 import { LikeReactionButton } from "./ModalLikeComponent";
 import ImageViewer from "./popupImage";
 import CommentCompo from "./CommentCompo";
+import { createCommentByAnnouncementIdAction } from "@/action/announcement.action";
 
 export default function CardPostAnnouncement({
   Announcements,
@@ -14,6 +16,7 @@ export default function CardPostAnnouncement({
   boardId,
   boardMember,
   preventUserImage,
+
 }) {
   const announcementList = Announcements?.payload || [];
 
@@ -23,7 +26,30 @@ export default function CardPostAnnouncement({
   const currentUserRoles = currentUserBoardInfo?.roles || [];
   const isProjectManager = currentUserRoles.includes("ROLE_MANAGER");
 
-  console.log("this is comment",Announcements);
+  // console.log("this is comment", Announcements);
+
+  const [commentInputs, setCommentInputs] = useState({});
+
+  const handleCommentChange = (id, value) => {
+    setCommentInputs((prev) => ({
+      ...prev,
+      [id]: value,
+    }));
+  };
+  
+  const handleSubmitComment = async (announcementId) => {
+    
+    const content = commentInputs[announcementId]?.trim();
+    if (!content) return;
+
+    try {
+      await createCommentByAnnouncementIdAction({ announcementId, content });
+      setCommentInputs((prev) => ({ ...prev, [announcementId]: "" }));
+      // Optionally trigger refresh or manually update comment list if needed
+    } catch (err) {
+      console.error("Failed to post comment", err);
+    }
+  };
 
   return (
     <div className="mx-auto h-screen overflow-hidden px-2 py-1">
@@ -132,7 +158,7 @@ export default function CardPostAnnouncement({
 
               {/* comment list section */}
               <div>
-                <CommentCompo 
+                <CommentCompo
                   boardMember={boardMember}
                   announId={announcement?.announcementId}
                   comments={announcement.comments}
@@ -142,6 +168,7 @@ export default function CardPostAnnouncement({
 
               {/* Comment input section */}
               <div className="flex items-center space-x-3">
+                {/* Profile Picture */}
                 <div className="relative w-10 h-10">
                   <div className="w-full h-full rounded-full overflow-hidden bg-gradient-to-r from-[#59BAD5] to-[#4AB5D1] p-0.5">
                     <div className="w-full h-full rounded-full overflow-hidden bg-white">
@@ -155,21 +182,31 @@ export default function CardPostAnnouncement({
                   <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-[2px] border-white" />
                 </div>
 
+                {/* Comment Input */}
                 <div className="flex-1 bg-gray-100 rounded-full px-4 py-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-500 text-sm">
-                      Comment as {currentUserBoardInfo?.username}
-                    </span>
-
-                    <div className="flex items-center space-x-2">
-                      <Button
-                        variant="ghost"
-                        size="md"
-                        className="p-1 h-auto rounded-full"
-                      >
-                        <Send className="w-6 h-6 text-primary" />
-                      </Button>
-                    </div>
+                    <input
+                      type="text"
+                      placeholder={`Comment as ${currentUserBoardInfo?.username}`}
+                      className="bg-gray-100 text-sm w-full outline-none"
+                      value={commentInputs[announcement.announcementId] || ""}
+                      onChange={(e) =>
+                        handleCommentChange(
+                          announcement.announcementId,
+                          e.target.value
+                        )
+                      }
+                    />
+                    <Button
+                      variant="ghost"
+                      size="md"
+                      className="p-1 h-auto rounded-full"
+                      onClick={() =>
+                        handleSubmitComment(announcement.announcementId)
+                      }
+                    >
+                      <Send className="w-6 h-6 text-primary" />
+                    </Button>
                   </div>
                 </div>
               </div>

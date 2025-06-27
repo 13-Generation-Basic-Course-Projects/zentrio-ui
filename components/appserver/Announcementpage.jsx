@@ -13,21 +13,21 @@ export default function Announcementpage({
   boardMember,
   currentUserProfile,
 }) {
-  console.log("All announcement", Announcements);
-  console.log("kdetttt", boardId);
-  console.log("kdetkoooo", boardMember);
-  console.log("user", currentUserProfile);
+  // console.log("All announcement", Announcements);
+  // console.log("kdetttt", boardId);
+  // console.log("kdetkoooo", boardMember);
+  // console.log("user", currentUserProfile);
   const preventUserImage = preventImage.noProfile;
 
   const currentUserBoardInfo = boardMember.find(
     (member) => member.userId === currentUserProfile?.payload?.user?.userId
   );
-  console.log("gggg", currentUserProfile?.payload?.user?.userId);
-  console.log("info", currentUserBoardInfo);
+  // console.log("gggg", currentUserProfile?.payload?.user?.userId);
+  // console.log("info", currentUserBoardInfo);
   const currentUserRoles = currentUserBoardInfo?.roles || [];
-  console.log("ss", currentUserRoles);
+  // console.log("ss", currentUserRoles);
   const isProjectManager = currentUserRoles.includes("ROLE_MANAGER");
-  console.log("rolemamam", isProjectManager);
+  // console.log("rolemamam", isProjectManager);
 
   // Sort announcements: pinned first, then by date (newest first)
   const sortedAnnouncements = useMemo(() => {
