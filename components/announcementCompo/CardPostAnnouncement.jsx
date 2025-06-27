@@ -50,7 +50,7 @@ export default function CardPostAnnouncement({
 
   return (
     <div className="mx-auto h-screen overflow-hidden px-2 py-1">
-      <div className="h-full overflow-y-auto scrollbar-hidden space-y-4 scroll-container pb-[400px]">
+      <div className="h-full w-4/5 overflow-y-auto scrollbar-hidden space-y-4 scroll-container pb-[400px]">
         {announcementList.map((announcement, index) => (
           <Card
             key={index}

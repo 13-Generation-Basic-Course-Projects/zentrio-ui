@@ -50,6 +50,9 @@ export function ModalEditProfile({ currentUserProfile }) {
   const ownBoards = currentUserProfile?.payload?.ownBoards || [];
   const joinedBoards = currentUserProfile?.payload?.joinedBoards || [];
 
+
+  console.log("Dddddddddddd",currentUserProfile)
+
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [selectedTab, setSelectedTab] = useState("Profile");
   const [selectedAchievements, setSelectedAchievements] = useState(new Set());

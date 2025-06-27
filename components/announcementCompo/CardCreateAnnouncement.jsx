@@ -26,7 +26,7 @@ export default function CardCreateAnnouncement({
 
   return (
     <div className="mx-auto px-2 py-1">
-      <Card className="w-full bg-white shadow-sm border border-gray-200 rounded-xl overflow-hidden">
+      <Card className="w-4/5 bg-white shadow-sm border border-gray-200 rounded-xl overflow-hidden">
         <CardContent className="p-0">
           {/* Compact Header */}
           <div className="bg-gradient-to-r from-[#59BAD5] to-[#4AB5D1] p-3 relative">

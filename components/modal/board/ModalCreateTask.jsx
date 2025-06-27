@@ -130,9 +130,10 @@ export default function ModalCreateTask({
     return getGanttBarStatus(ganttBar) === "not_started";
   };
 
+  // Modified: Only disable expired Gantt bars, allow not-yet-started ones
   const isGanttBarDisabled = (ganttBar) => {
     const status = getGanttBarStatus(ganttBar);
-    return status === "expired" || status === "not_started";
+    return status === "expired"; // Only disable expired, allow not_started
   };
 
   // Helper function to format dates nicely
@@ -162,16 +163,9 @@ export default function ModalCreateTask({
         throw new Error("Invalid Gantt bar ID selected");
       }
 
-      // Check if selected Gantt bar is disabled (expired or not started)
-      if (isGanttBarDisabled(selectedGanttBar)) {
-        const status = getGanttBarStatus(selectedGanttBar);
-        if (status === "expired") {
-          throw new Error("Cannot create task for an expired Gantt bar");
-        } else if (status === "not_started") {
-          throw new Error(
-            "Cannot create task for a Gantt bar that hasn't started yet"
-          );
-        }
+      // Modified: Only check if Gantt bar is expired, allow not-yet-started ones
+      if (isGanttBarExpired(selectedGanttBar)) {
+        throw new Error("Cannot create task for an expired Gantt bar");
       }
 
       // Parse and adjust dates
@@ -533,7 +527,7 @@ export default function ModalCreateTask({
                             statusClass = "text-red-400 opacity-60";
                           } else if (status === "not_started") {
                             statusText = " (Not yet started)";
-                            statusClass = "text-orange-500 opacity-70";
+                            statusClass = "text-blue-500"; // Changed to blue to indicate it's selectable
                           }
 
                           const displayText = `${bar.title} (${
@@ -561,7 +555,7 @@ export default function ModalCreateTask({
                                       className={
                                         status === "expired"
                                           ? "text-red-500"
-                                          : "text-orange-500"
+                                          : "text-blue-500" // Changed to blue for not-yet-started
                                       }
                                     >
                                       {statusText}
