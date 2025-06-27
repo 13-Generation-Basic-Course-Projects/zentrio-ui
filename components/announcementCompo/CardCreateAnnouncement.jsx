@@ -22,11 +22,11 @@ export default function CardCreateAnnouncement({
   const managerMember = boardMember?.find((member) =>
     member.roles?.some((role) => role === "ROLE_MANAGER")
   );
-  console.log("anal", Announcements?.payload);
+  // console.log("anal", Announcements?.payload);
 
   return (
     <div className="mx-auto px-2 py-1">
-      <Card className="w-full bg-white shadow-sm border border-gray-200 rounded-xl overflow-hidden">
+      <Card className="max-w-2xl mx-auto bg-white shadow-sm border border-gray-200 rounded-xl overflow-hidden">
         <CardContent className="p-0">
           {/* Compact Header */}
           <div className="bg-gradient-to-r from-[#59BAD5] to-[#4AB5D1] p-3 relative">
@@ -58,7 +58,7 @@ export default function CardCreateAnnouncement({
                       <img
                         src={managerMember.profileImage || preventUserImage}
                         alt="Profile"
-                        className="w-full h-full object-cover rounded-full"
+                        className="w-full h-full object-cover rounded-full p-0.5"
                       />
                     </div>
                   </div>

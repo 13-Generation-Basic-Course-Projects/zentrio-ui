@@ -14,6 +14,7 @@ import {
   changeStatusTaskAction,
   moveTaskOrderAction,
 } from "@/action/board.action";
+import KanbanDrawer from "./ArchiveDrawer";
 
 // Placeholder component
 const UserAvater = ({ image }) => (
@@ -587,6 +588,9 @@ export default function KanbanBoard({
         workspaceId={workspaceId}
       />
       <StackedUser image={allMemberInBoard} />
+      <div className=" w-full flex justify-start items-center mt-5">
+        <KanbanDrawer />
+      </div>
       {isUpdating && (
         <div className="text-blue-500 p-2">Updating task order...</div>
       )}
@@ -606,6 +610,7 @@ export default function KanbanBoard({
           </div>
         ))}
       </div>
+
       {tasks.length > 0 ? (
         <div className="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 p-2 overflow-hidden">
           {(columns || []).map((column) => (
