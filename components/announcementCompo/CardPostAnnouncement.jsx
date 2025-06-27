@@ -74,13 +74,13 @@ export default function CardPostAnnouncement({
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+    <div className="min-h-screen">
       <div className="mx-auto h-screen overflow-hidden px-4 py-3">
         <div className="h-full overflow-y-auto scrollbar-hidden space-y-6 scroll-container pb-[400px]">
           {announcementList.map((announcement, index) => (
             <Card
               key={index}
-              className="group bg-white/90 backdrop-blur-sm border-0 shadow-xl hover:shadow-2xl transition-all duration-300 rounded-2xl overflow-hidden max-w-2xl mx-auto"
+              className="group bg-white/90 backdrop-blur-sm  shadow-xl hover:shadow-2xl transition-all duration-300 rounded-2xl overflow-hidden max-w-2xl mx-auto border-1"
             >
               <CardContent className="p-0">
                 {/* Header Section */}
