@@ -28,49 +28,72 @@ import { BadgeMinus } from "lucide-react";
 
 export default function DashboardSidebar({ getWorKSpaceJoined}) {
   console.log("workspace join inside bar", getWorKSpaceJoined);
-
-  
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { toggleSidebar } = useSidebar();
 
-  const [role, setRole] = useState("pm"); // default fallback role
-  const [boardId, setBoardId] = useState(null); // State to store boardId
+  const [role, setRole] = useState("");
+  const [boardId, setBoardId] = useState(null);
 
-  // On mount, set role and extract boardId from URL
+ 
+  const pathSegments = pathname.split("/").filter(Boolean);
+  const workspaceId = pathSegments[1] || "1";
+  const projectId = pathSegments[2] || boardId;
+ 
+  
+  const joinedBoards = Array.isArray(getWorKSpaceJoined?.payload)
+    ? getWorKSpaceJoined.payload
+    : Array.isArray(getWorKSpaceJoined)
+    ? getWorKSpaceJoined
+    : [];
+
+
   useEffect(() => {
+    
     const initialRole = searchParams.get("role");
+    const searchBoardId = searchParams.get("boardId");
+
     if (initialRole) {
       setRole(initialRole);
     }
 
-    // Extract boardId based on URL pattern
-    const pathSegments = pathname.split("/").filter(Boolean); // Remove empty segments
-    if (pathSegments.includes("otherworkspace")) {
-      // Pattern 1: /dashboard/otherworkspace/:boardId/:dynamicWord
-      const boardIdIndex = pathSegments.indexOf("otherworkspace") + 1;
-      if (pathSegments[boardIdIndex]) {
-        setBoardId(pathSegments[boardIdIndex]);
+    if (searchBoardId) {
+      setBoardId(searchBoardId);
+    } else {
+      // fallback from pathname
+      let fallbackBoardId = null;
+
+      if (pathSegments.includes("otherworkspace")) {
+        const index = pathSegments.indexOf("otherworkspace") + 1;
+        fallbackBoardId = pathSegments[index] || null;
+      } else if (pathSegments.includes("dashboard")) {
+        const index = pathSegments.indexOf("dashboard") + 2;
+        fallbackBoardId = pathSegments[index] || null;
       }
-    } else if (pathSegments.includes("dashboard")) {
-      // Pattern 2: /dashboard/:workspaceId/:boardId/:dynamicWord
-      const boardIdIndex = pathSegments.indexOf("dashboard") + 2;
-      if (pathSegments[boardIdIndex]) {
-        setBoardId(pathSegments[boardIdIndex]);
+
+      if (fallbackBoardId) {
+        setBoardId(fallbackBoardId);
       }
     }
   }, [pathname, searchParams]);
-  const pathSegments = pathname.split("/").filter((part) => part !== "");
-  const workspaceId = pathSegments[1] || "1"; // Adjusted for correct segment
-  const projectId = pathSegments[2] || "1"; // Adjusted for correct segment
+
+  useEffect(() => {
+    if (joinedBoards.length > 0 && boardId) {
+      const board = joinedBoards.find((b) => b.boardId === boardId);
+      if (board?.role) {
+        setRole(board.role);
+      }
+    }
+  }, [joinedBoards, boardId]);
 
   const isTl = role === "ROLE_LEADER";
   const isMem = role === "ROLE_MEMBER";
+  console.log(" Current Role: ", role);
 
   const items = [
     {
       title: "Board",
-      url: `/dashboard/${workspaceId}/${projectId}/board`,
+      url: `/dashboard/${workspaceId}/${boardId}/board`,
       activeIcon: (active) => (
         <svg
           width={22}
@@ -90,7 +113,7 @@ export default function DashboardSidebar({ getWorKSpaceJoined}) {
     },
     {
       title: "Calendar",
-      url: `/dashboard/${workspaceId}/${projectId}/calendar`,
+      url: `/dashboard/${workspaceId}/${boardId}/calendar`,
       activeIcon: (active) => (
         <svg
           width={22}
@@ -178,7 +201,7 @@ export default function DashboardSidebar({ getWorKSpaceJoined}) {
     },
     {
       title: "Document",
-      url: `/dashboard/${workspaceId}/${projectId}/docu`,
+      url: `/dashboard/${workspaceId}/${boardId}/docu`,
       activeIcon: (active) => (
         <svg
           width={22}
@@ -213,7 +236,7 @@ export default function DashboardSidebar({ getWorKSpaceJoined}) {
     },
     {
       title: "Announcement",
-      url: `/dashboard/${workspaceId}/${projectId}/announcement`,
+      url: `/dashboard/${workspaceId}/${boardId}/announcement`,
       activeIcon: (active) => (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -234,7 +257,7 @@ export default function DashboardSidebar({ getWorKSpaceJoined}) {
     },
     {
       title: "Members",
-      url: `/dashboard/${workspaceId}/${projectId}/member`,
+      url: `/dashboard/${workspaceId}/${boardId}/member`,
       activeIcon: (active) => (
         <svg
           width={22}
@@ -276,7 +299,7 @@ export default function DashboardSidebar({ getWorKSpaceJoined}) {
     },
     {
       title: "Reports",
-      url: `/dashboard/${workspaceId}/${projectId}/report`,
+      url: `/dashboard/${workspaceId}/${boardId}/report`,
       activeIcon: (active) => (
         <svg
           width={22}
@@ -349,7 +372,14 @@ export default function DashboardSidebar({ getWorKSpaceJoined}) {
   const includesPathOtherWorkSpace = pathname.includes(
     "/dashboard/otherworkspace"
   );
-  const filteredItems = includesPathOtherWorkSpace
+
+  /* Prevent showing "Reports"  */
+  const shouldHideReport =
+    includesPathOtherWorkSpace &&
+    role === "ROLE_LEADER" ||
+    role === "ROLE_MEMBER";
+
+  const filteredItems = shouldHideReport
     ? items.filter((item) => item.title !== "Reports")
     : items;
 
