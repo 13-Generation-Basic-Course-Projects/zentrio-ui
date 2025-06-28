@@ -26,7 +26,7 @@ export default function CardCreateAnnouncement({
 
   return (
     <div className="mx-auto px-2 py-1">
-      <Card className="max-w-2xl mx-auto bg-white shadow-sm border border-gray-200 rounded-xl overflow-hidden">
+      <Card className="max-w-3xl mx-auto bg-white shadow-sm border border-gray-200 rounded-xl overflow-hidden">
         <CardContent className="p-0">
           {/* Compact Header */}
           <div className="bg-gradient-to-r from-[#59BAD5] to-[#4AB5D1] p-3 relative">
@@ -52,7 +52,7 @@ export default function CardCreateAnnouncement({
           <div className="p-3">
             <div className="flex items-center gap-3">
               {managerMember && (
-                <div className="relative w-10 h-10">
+                <div className="relative w-11 h-11">
                   <div className="w-full h-full rounded-full overflow-hidden bg-gradient-to-r from-[#59BAD5] to-[#4AB5D1] p-0.5">
                     <div className="w-full h-full rounded-full overflow-hidden bg-white">
                       <img
@@ -62,7 +62,7 @@ export default function CardCreateAnnouncement({
                       />
                     </div>
                   </div>
-                  <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-[2px] border-white" />
+                  <div className="absolute bottom-0.5 right-0 w-3 h-3 bg-green-500 rounded-full border-[2px] border-white" />
                 </div>
               )}
 
