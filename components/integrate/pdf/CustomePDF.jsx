@@ -4,6 +4,8 @@ import Laptop from "@/assets/intergrating/laptop.png";
 import Image from "next/image";
 import { getReportAction } from "@/action/report.action";
 import { useEffect, useRef, useState } from "react";
+import { GenerateDocx } from "../docs/GenerateDocs";
+import { GenerateXlsx } from "../sheets/GenerateSheet";
 
 export const PDFPreviewer = ({ report }) => {
   const myMonth = {
@@ -1523,6 +1525,8 @@ export const FirstPage = ({
               <tr>
                 <td style={{ width: "120px" }}>
                   <span className="text-white">Board Name</span>
+                  <GenerateDocx />
+                  <GenerateXlsx />
                 </td>
                 <td
                   style={{ width: "120px" }}
@@ -1541,16 +1545,27 @@ export const FirstPage = ({
                 </td>
               </tr>
             </thead>
-            <tbody style={{ height: "40px" }}>
-              <tr style={{ borderTop: "1px solid black" }}>
-                <td>{report?.payload?.boardData?.title}</td>
-                <td className="border-x-1 border-black">{totalTasks}</td>
-                <td className="border-r border-black">
-                  {report?.payload?.version}
-                </td>
-                <td>{report?.payload?.creationDate}</td>
-              </tr>
-            </tbody>
+            {report?.payload?.boardData != null ? (
+              <tbody style={{ height: "40px" }}>
+                <tr style={{ borderTop: "1px solid black" }}>
+                  <td>{report?.payload?.boardData?.title}</td>
+                  <td className="border-x-1 border-black">{totalTasks}</td>
+                  <td className="border-r border-black">
+                    {report?.payload?.version}
+                  </td>
+                  <td>{report?.payload?.creationDate}</td>
+                </tr>
+              </tbody>
+            ) : (
+              <tbody style={{ height: "40px" }}>
+                <tr style={{ borderTop: "1px solid black" }}>
+                  <td>{`<No data>}`}</td>
+                  <td className="border-x-1 border-black">{`<No data>}`}</td>
+                  <td className="border-r border-black">{`<No data>}`}</td>
+                  <td>{`<No data>}`}</td>
+                </tr>
+              </tbody>
+            )}
           </table>
         </div>
       </div>
@@ -2342,37 +2357,75 @@ export const SecondPage = ({ report, pageNumber = 2, absolute }) => {
                       <tbody style={{ backgroundColor: "white" }}>
                         {report?.payload?.groupedTasks
                           ?.filter((value) => value?.stage === "TO DO")
-                          ?.map((item) =>
-                            item?.tasks?.map((value, index) => (
-                              <tr
-                                key={index}
-                                style={{
-                                  height: "32px",
-                                  borderTop: "1px solid black",
-                                }}
-                              >
-                                <td
+                          ?.map((item) => item?.tasks.length) != 0 ? (
+                          report?.payload?.groupedTasks
+                            ?.filter((value) => value?.stage === "TO DO")
+                            ?.map((item) =>
+                              item?.tasks?.map((value, index) => (
+                                <tr
+                                  key={index}
                                   style={{
-                                    paddingLeft: "27px",
-                                    borderRight: "1px solid black",
+                                    height: "32px",
+                                    borderTop: "1px solid black",
                                   }}
                                 >
-                                  {value?.title}
-                                </td>
-                                <td
-                                  style={{
-                                    paddingLeft: "27px",
-                                    borderRight: "1px solid black",
-                                  }}
-                                >
-                                  {value?.teamLeader?.username}
-                                </td>
-                                <td style={{ paddingLeft: "27px" }}>
-                                  {value?.allChecklists?.length}
-                                </td>
-                              </tr>
-                            ))
-                          )}
+                                  <td
+                                    style={{
+                                      paddingLeft: "27px",
+                                      borderRight: "1px solid black",
+                                    }}
+                                  >
+                                    {value?.title != null
+                                      ? value?.title
+                                      : `<No data>`}
+                                  </td>
+                                  <td
+                                    style={{
+                                      paddingLeft: "27px",
+                                      borderRight: "1px solid black",
+                                    }}
+                                  >
+                                    {value?.teamLeader?.username
+                                      ? value?.teamLeader?.username
+                                      : `<No data>`}
+                                  </td>
+                                  <td style={{ paddingLeft: "27px" }}>
+                                    {value?.allChecklists?.length
+                                      ? value?.allChecklists?.length
+                                      : `<No data>`}
+                                  </td>
+                                </tr>
+                              ))
+                            )
+                        ) : (
+                          <tr
+                            key={index}
+                            style={{
+                              height: "32px",
+                              borderTop: "1px solid black",
+                            }}
+                          >
+                            <td
+                              style={{
+                                paddingLeft: "27px",
+                                borderRight: "1px solid black",
+                              }}
+                            >
+                              {`<No data>`}
+                            </td>
+                            <td
+                              style={{
+                                paddingLeft: "27px",
+                                borderRight: "1px solid black",
+                              }}
+                            >
+                              {`<No data>`}
+                            </td>
+                            <td style={{ paddingLeft: "27px" }}>
+                              {`<No data>`}
+                            </td>
+                          </tr>
+                        )}
                       </tbody>
                     </table>
                   </div>
@@ -2437,37 +2490,66 @@ export const SecondPage = ({ report, pageNumber = 2, absolute }) => {
                     <tbody style={{ backgroundColor: "white" }}>
                       {report?.payload?.groupedTasks
                         ?.filter((value) => value?.stage === "UNDER_REVIEW")
-                        ?.map((item) =>
-                          item?.tasks?.map((value, index) => (
-                            <tr
-                              key={index}
-                              style={{
-                                height: "32px",
-                                borderTop: "1px solid black",
-                              }}
-                            >
-                              <td
+                        ?.map((item) => item?.tasks.length) != 0 ? (
+                        report?.payload?.groupedTasks
+                          ?.filter((value) => value?.stage === "UNDER_REVIEW")
+                          ?.map((item) =>
+                            item?.tasks?.map((value, index) => (
+                              <tr
+                                key={index}
                                 style={{
-                                  paddingLeft: "27px",
-                                  borderRight: "1px solid black",
+                                  height: "32px",
+                                  borderTop: "1px solid black",
                                 }}
                               >
-                                {value?.title}
-                              </td>
-                              <td
-                                style={{
-                                  paddingLeft: "27px",
-                                  borderRight: "1px solid black",
-                                }}
-                              >
-                                {value?.teamLeader?.username}
-                              </td>
-                              <td style={{ paddingLeft: "27px" }}>
-                                {value?.allChecklists?.length}
-                              </td>
-                            </tr>
-                          ))
-                        )}
+                                <td
+                                  style={{
+                                    paddingLeft: "27px",
+                                    borderRight: "1px solid black",
+                                  }}
+                                >
+                                  {value?.title}
+                                </td>
+                                <td
+                                  style={{
+                                    paddingLeft: "27px",
+                                    borderRight: "1px solid black",
+                                  }}
+                                >
+                                  {value?.teamLeader?.username}
+                                </td>
+                                <td style={{ paddingLeft: "27px" }}>
+                                  {value?.allChecklists?.length}
+                                </td>
+                              </tr>
+                            ))
+                          )
+                      ) : (
+                        <tr
+                          style={{
+                            height: "32px",
+                            borderTop: "1px solid black",
+                          }}
+                        >
+                          <td
+                            style={{
+                              paddingLeft: "27px",
+                              borderRight: "1px solid black",
+                            }}
+                          >
+                            {`<No data>`}
+                          </td>
+                          <td
+                            style={{
+                              paddingLeft: "27px",
+                              borderRight: "1px solid black",
+                            }}
+                          >
+                            {`<No data>`}
+                          </td>
+                          <td style={{ paddingLeft: "27px" }}>{`<No data>`}</td>
+                        </tr>
+                      )}
                     </tbody>
                   </table>
                 </div>
@@ -2529,38 +2611,73 @@ export const SecondPage = ({ report, pageNumber = 2, absolute }) => {
                     </thead>
                     <tbody style={{ backgroundColor: "white" }}>
                       {report?.payload?.groupedTasks
-                        ?.filter((value) => value?.stage === "IN_PROGRESS")
-                        ?.map((item) =>
-                          item?.tasks?.map((value, index) => (
-                            <tr
-                              key={index}
-                              style={{
-                                height: "32px",
-                                borderTop: "1px solid black",
-                              }}
-                            >
-                              <td
+                        ?.filter((value) => value?.stage === "TO DO")
+                        ?.map((item) => item?.tasks.length) != 0 ? (
+                        report?.payload?.groupedTasks
+                          ?.filter((value) => value?.stage === "IN_PROGRESS")
+                          ?.map((item) =>
+                            item?.tasks?.map((value, index) => (
+                              <tr
+                                key={index}
                                 style={{
-                                  paddingLeft: "27px",
-                                  borderRight: "1px solid black",
+                                  height: "32px",
+                                  borderTop: "1px solid black",
                                 }}
                               >
-                                {value?.title}
-                              </td>
-                              <td
-                                style={{
-                                  paddingLeft: "27px",
-                                  borderRight: "1px solid black",
-                                }}
-                              >
-                                {value?.teamLeader?.username}
-                              </td>
-                              <td style={{ paddingLeft: "27px" }}>
-                                {value?.allChecklists?.length}
-                              </td>
-                            </tr>
-                          ))
-                        )}
+                                <td
+                                  style={{
+                                    paddingLeft: "27px",
+                                    borderRight: "1px solid black",
+                                  }}
+                                >
+                                  {value?.title != null
+                                    ? value?.title
+                                    : `<No data>`}
+                                </td>
+                                <td
+                                  style={{
+                                    paddingLeft: "27px",
+                                    borderRight: "1px solid black",
+                                  }}
+                                >
+                                  {value?.teamLeader?.username != null
+                                    ? value?.teamLeader?.username
+                                    : `<No data>`}
+                                </td>
+                                <td style={{ paddingLeft: "27px" }}>
+                                  {value?.allChecklists?.length != null
+                                    ? value?.allChecklists?.length
+                                    : `<No data>`}
+                                </td>
+                              </tr>
+                            ))
+                          )
+                      ) : (
+                        <tr
+                          style={{
+                            height: "32px",
+                            borderTop: "1px solid black",
+                          }}
+                        >
+                          <td
+                            style={{
+                              paddingLeft: "27px",
+                              borderRight: "1px solid black",
+                            }}
+                          >
+                            {`<No data>`}
+                          </td>
+                          <td
+                            style={{
+                              paddingLeft: "27px",
+                              borderRight: "1px solid black",
+                            }}
+                          >
+                            {`<No data>`}
+                          </td>
+                          <td style={{ paddingLeft: "27px" }}>{`<No data>`}</td>
+                        </tr>
+                      )}
                     </tbody>
                   </table>
                 </div>
@@ -3013,37 +3130,74 @@ export const ThirdPage = ({ report, pageNumber = 3, absolute }) => {
                       <tbody style={{ backgroundColor: "white" }}>
                         {report?.payload?.groupedTasks
                           ?.filter((value) => value?.stage === "COMPLETED")
-                          ?.map((item) =>
-                            item?.tasks?.map((value, index) => (
-                              <tr
-                                key={index}
-                                style={{
-                                  height: "32px",
-                                  borderTop: "1px solid black",
-                                }}
-                              >
-                                <td
+                          ?.map((item) => item?.tasks.length) != 0 ? (
+                          report?.payload?.groupedTasks
+                            ?.filter((value) => value?.stage === "COMPLETED")
+                            ?.map((item) =>
+                              item?.tasks?.map((value, index) => (
+                                <tr
+                                  key={index}
                                   style={{
-                                    paddingLeft: "27px",
-                                    borderRight: "1px solid black",
+                                    height: "32px",
+                                    borderTop: "1px solid black",
                                   }}
                                 >
-                                  {value?.title}
-                                </td>
-                                <td
-                                  style={{
-                                    paddingLeft: "27px",
-                                    borderRight: "1px solid black",
-                                  }}
-                                >
-                                  {value?.teamLeader?.username}
-                                </td>
-                                <td style={{ paddingLeft: "27px" }}>
-                                  {value?.allChecklists?.length}
-                                </td>
-                              </tr>
-                            ))
-                          )}
+                                  <td
+                                    style={{
+                                      paddingLeft: "27px",
+                                      borderRight: "1px solid black",
+                                    }}
+                                  >
+                                    {value?.title != null
+                                      ? value?.title
+                                      : `<No data>`}
+                                  </td>
+                                  <td
+                                    style={{
+                                      paddingLeft: "27px",
+                                      borderRight: "1px solid black",
+                                    }}
+                                  >
+                                    {value?.teamLeader?.username != null
+                                      ? value?.teamLeader?.username
+                                      : `<No data>`}
+                                  </td>
+                                  <td style={{ paddingLeft: "27px" }}>
+                                    {value?.allChecklists?.length != null
+                                      ? value?.allChecklists?.length
+                                      : `<No data>`}
+                                  </td>
+                                </tr>
+                              ))
+                            )
+                        ) : (
+                          <tr
+                            style={{
+                              height: "32px",
+                              borderTop: "1px solid black",
+                            }}
+                          >
+                            <td
+                              style={{
+                                paddingLeft: "27px",
+                                borderRight: "1px solid black",
+                              }}
+                            >
+                              {`<No data>`}
+                            </td>
+                            <td
+                              style={{
+                                paddingLeft: "27px",
+                                borderRight: "1px solid black",
+                              }}
+                            >
+                              {`<No data>`}
+                            </td>
+                            <td style={{ paddingLeft: "27px" }}>
+                              {`<No data>`}
+                            </td>
+                          </tr>
+                        )}
                       </tbody>
                     </table>
                   </div>
@@ -3102,7 +3256,7 @@ export const ThirdPage = ({ report, pageNumber = 3, absolute }) => {
                                     Task Title
                                   </td>
                                   <td style={{ paddingLeft: "27px" }}>
-                                    {item.taskTitle}
+                                    {task?.title}
                                   </td>
                                 </tr>
                                 <tr
@@ -3122,7 +3276,7 @@ export const ThirdPage = ({ report, pageNumber = 3, absolute }) => {
                                     Subtask Title
                                   </td>
                                   <td style={{ paddingLeft: "27px" }}>
-                                    {item.checklistTitle}
+                                    {checklist?.title}
                                   </td>
                                 </tr>
                                 <tr
@@ -3142,7 +3296,7 @@ export const ThirdPage = ({ report, pageNumber = 3, absolute }) => {
                                     Member
                                   </td>
                                   <td style={{ paddingLeft: "27px" }}>
-                                    {item.member?.username}
+                                    {member?.username}
                                   </td>
                                 </tr>
                                 <tr
@@ -3162,8 +3316,7 @@ export const ThirdPage = ({ report, pageNumber = 3, absolute }) => {
                                     Comments
                                   </td>
                                   <td style={{ paddingLeft: "27px" }}>
-                                    {item.comments?.length || 0} comment
-                                    {item.comments?.length !== 1 ? "s" : ""}
+                                    {comment.length}
                                   </td>
                                 </tr>
                                 <tr
@@ -3183,11 +3336,11 @@ export const ThirdPage = ({ report, pageNumber = 3, absolute }) => {
                                     Start Date
                                   </td>
                                   <td style={{ paddingLeft: "27px" }}>
-                                    {item.startDate
-                                      ? new Date(
-                                          item.startDate
-                                        ).toLocaleDateString()
-                                      : "N/A"}
+                                    {
+                                      new Date(checklist?.startedAt)
+                                        .toISOString()
+                                        .split("T")[0]
+                                    }
                                   </td>
                                 </tr>
                                 <tr style={{ height: "32px" }}>
@@ -3202,11 +3355,11 @@ export const ThirdPage = ({ report, pageNumber = 3, absolute }) => {
                                     End Date
                                   </td>
                                   <td style={{ paddingLeft: "27px" }}>
-                                    {item.endDate
-                                      ? new Date(
-                                          item.endDate
-                                        ).toLocaleDateString()
-                                      : "N/A"}
+                                    {
+                                      new Date(checklist?.finishedAt)
+                                        .toISOString()
+                                        .split("T")[0]
+                                    }
                                   </td>
                                 </tr>
                               </tbody>
