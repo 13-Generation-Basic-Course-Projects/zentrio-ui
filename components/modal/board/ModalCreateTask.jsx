@@ -1,4 +1,3 @@
-// ModalCreateTask.jsx
 "use client";
 import React, { useState, useMemo } from "react";
 import { useForm, Controller } from "react-hook-form";
@@ -18,7 +17,7 @@ import {
   Autocomplete,
   AutocompleteItem,
 } from "@heroui/react";
-import { parseDate, today, getLocalTimeZone } from "@internationalized/date";
+import { parseDate, today } from "@internationalized/date";
 import { IconAdd } from "../../icon/everyicon";
 import { taskFormSchema } from "@/lib/schemas/createTaskSchema";
 import { createTaskByBoardIdAndGanttChartIdAction } from "@/action/board.action";
@@ -82,6 +81,70 @@ export default function ModalCreateTask({
       }));
   }, [allMemberInBoard]);
 
+  // Helper functions to check Gantt bar status
+  const getGanttBarStatus = (ganttBar) => {
+    const today = new Date();
+    const ganttStartDate = new Date(ganttBar.startedAt);
+    const ganttEndDate = new Date(ganttBar.finishedAt);
+
+    // Set all dates to start of day for proper comparison
+    const todayStart = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate()
+    );
+    const ganttStart = new Date(
+      ganttStartDate.getFullYear(),
+      ganttStartDate.getMonth(),
+      ganttStartDate.getDate()
+    );
+    const ganttEnd = new Date(
+      ganttEndDate.getFullYear(),
+      ganttEndDate.getMonth(),
+      ganttEndDate.getDate()
+    );
+
+    console.log(
+      "Today:",
+      todayStart,
+      "Gantt Start:",
+      ganttStart,
+      "Gantt End:",
+      ganttEnd
+    );
+
+    if (ganttEnd < todayStart) {
+      return "expired"; // Past end date
+    } else if (ganttStart > todayStart) {
+      return "not_started"; // Future start date
+    } else {
+      return "active"; // Currently active
+    }
+  };
+
+  const isGanttBarExpired = (ganttBar) => {
+    return getGanttBarStatus(ganttBar) === "expired";
+  };
+
+  const isGanttBarNotStarted = (ganttBar) => {
+    return getGanttBarStatus(ganttBar) === "not_started";
+  };
+
+  const isGanttBarDisabled = (ganttBar) => {
+    const status = getGanttBarStatus(ganttBar);
+    return status === "expired" || status === "not_started";
+  };
+
+  // Helper function to format dates nicely
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  };
+
   const onSubmit = async (data) => {
     try {
       setApiError(null);
@@ -99,33 +162,37 @@ export default function ModalCreateTask({
         throw new Error("Invalid Gantt bar ID selected");
       }
 
+      // Check if selected Gantt bar is disabled (expired or not started)
+      if (isGanttBarDisabled(selectedGanttBar)) {
+        const status = getGanttBarStatus(selectedGanttBar);
+        if (status === "expired") {
+          throw new Error("Cannot create task for an expired Gantt bar");
+        } else if (status === "not_started") {
+          throw new Error(
+            "Cannot create task for a Gantt bar that hasn't started yet"
+          );
+        }
+      }
+
       // Parse and adjust dates
-      let taskStart = new Date(data.dateRange.start);
+      const taskStart = new Date(data.dateRange.start);
       const taskEnd = new Date(data.dateRange.end);
-      const today = new Date();
-      const isStartDateToday =
-        taskStart.toDateString() === today.toDateString();
 
-      if (isStartDateToday) {
-        // Add 2-minute buffer for today’s start time
-        const currentTime = new Date();
-        const bufferedTime = new Date(currentTime.getTime() + 2 * 60 * 1000);
-        taskStart = new Date(
-          taskStart.getFullYear(),
-          taskStart.getMonth(),
-          taskStart.getDate(),
-          bufferedTime.getHours(),
-          bufferedTime.getMinutes(),
-          bufferedTime.getSeconds()
-        );
-      } else {
-        taskStart.setHours(0, 0, 0, 0);
-      }
+      // Get current time and add 4 minutes
+      const now = new Date();
+      const fourMinutesMs = 4 * 60 * 1000; // 4 minutes in milliseconds
+      const nowPlusFourMinutes = new Date(now.getTime() + fourMinutesMs);
 
-      // Set end date to end of day if no specific time
-      if (taskEnd.getHours() === 0 && taskEnd.getMinutes() === 0) {
-        taskEnd.setHours(23, 59, 59, 999);
-      }
+      // Set taskStart to current time + 4 minutes on the selected start date
+      taskStart.setHours(
+        nowPlusFourMinutes.getHours(),
+        nowPlusFourMinutes.getMinutes(),
+        nowPlusFourMinutes.getSeconds(),
+        nowPlusFourMinutes.getMilliseconds()
+      );
+
+      // Set end date to end of day (23:59:59.999)
+      taskEnd.setHours(23, 59, 59, 999);
 
       // Validate task dates against Gantt bar
       const ganttStart = new Date(selectedGanttBar.startedAt);
@@ -157,8 +224,14 @@ export default function ModalCreateTask({
         ganttChartId
       );
 
-      if (!result.success) {
-        throw new Error(result.error || "Failed to create task");
+      // Note: The commented success check suggests the result structure may differ.
+      // Adjust based on actual API response.
+      if (result.status === 400) {
+        // throw new Error(result.detail || "Failed to create task");
+        toast.error(`"${data.title}"\nfailed create Task unsuccessfully!`, {
+          position: "top-right",
+          autoClose: 3000,
+        });
       }
 
       toast.success(`"${data.title}"\nTask created successfully!`, {
@@ -239,7 +312,6 @@ export default function ModalCreateTask({
                     render={({ field }) => (
                       <Input
                         {...field}
-                        isRequired
                         label="Title"
                         labelPlacement="outside"
                         placeholder="Input your title"
@@ -269,9 +341,8 @@ export default function ModalCreateTask({
                     control={control}
                     render={({ field }) => (
                       <DateRangePicker
-                        isRequired
                         className="max-w-none"
-                        minValue={today(getLocalTimeZone())}
+                        minValue={today("Asia/Bangkok")}
                         maxValue={
                           selectedGanttBar
                             ? parseDate(
@@ -294,7 +365,6 @@ export default function ModalCreateTask({
                           })
                         }
                         label="Task Duration"
-                        labelPlacement="outside"
                         isInvalid={!!errors.dateRange}
                         errorMessage={
                           errors.dateRange?.start?.message ||
@@ -351,7 +421,7 @@ export default function ModalCreateTask({
                               base: "w-full",
                               listboxWrapper: "max-h-[200px]",
                               popoverContent:
-                                "bg-white border border-gray-300 shadow-lg rounded-large pb-[50px]",
+                                "bg-white border border-gray-300 shadow-lg rounded-large pb-[50px] ",
                             }}
                             inputProps={{
                               classNames: {
@@ -389,7 +459,7 @@ export default function ModalCreateTask({
                                   )}
                                   <div className="flex gap-2 items-center justify-between w-full">
                                     <div className="flex gap-2 items-center">
-                                      <span className="text-xs text-gray-500">
+                                      <span className="text-xs text-gray-500 hidden">
                                         {member.email}
                                       </span>
                                       <span className="text-sm font-medium text-gray-900">
@@ -446,19 +516,61 @@ export default function ModalCreateTask({
                           `,
                           value: "text-gray-500",
                         }}
+                        disabledKeys={
+                          ganttbar?.payload
+                            ?.filter((bar) => isGanttBarDisabled(bar))
+                            .map((bar) => bar.ganttBarId) || []
+                        }
                       >
-                        {ganttbar?.payload?.map((bar) => (
-                          <SelectItem
-                            key={bar.ganttBarId}
-                            value={bar.ganttBarId}
-                          >
-                            {`${bar.title} (${bar.face}, ${new Date(
-                              bar.startedAt
-                            ).toLocaleDateString()} - ${new Date(
-                              bar.finishedAt
-                            ).toLocaleDateString()})`}
-                          </SelectItem>
-                        ))}
+                        {ganttbar?.payload?.map((bar) => {
+                          const status = getGanttBarStatus(bar);
+                          let statusText = "";
+                          let statusClass = "";
+
+                          if (status === "expired") {
+                            statusText = " (Expired)";
+                            statusClass = "text-red-400 opacity-60";
+                          } else if (status === "not_started") {
+                            statusText = " (Not yet started)";
+                            statusClass = "text-orange-500 opacity-70";
+                          }
+
+                          const displayText = `${bar.title} (${
+                            bar.face
+                          }) • ${formatDate(bar.startedAt)} - ${formatDate(
+                            bar.finishedAt
+                          )}${statusText}`;
+
+                          return (
+                            <SelectItem
+                              key={bar.ganttBarId}
+                              value={bar.ganttBarId}
+                              textValue={displayText}
+                              className={statusClass}
+                            >
+                              <div className={`flex flex-col ${statusClass}`}>
+                                <div className="font-medium">
+                                  {bar.title} ({bar.face})
+                                </div>
+                                <div className="text-sm text-gray-600">
+                                  {formatDate(bar.startedAt)} -{" "}
+                                  {formatDate(bar.finishedAt)}
+                                  {statusText && (
+                                    <span
+                                      className={
+                                        status === "expired"
+                                          ? "text-red-500"
+                                          : "text-orange-500"
+                                      }
+                                    >
+                                      {statusText}
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            </SelectItem>
+                          );
+                        })}
                       </Select>
                     )}
                   />

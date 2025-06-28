@@ -110,61 +110,25 @@ export default function NotFoundTwo() {
                   ></div>
 
                   <CardContent className="p-8 relative z-10">
-                    <Link href={feature.href} className="block">
-                      <div className="flex flex-col items-center text-center space-y-3">
-                        <div
-                          className={`relative p-4 rounded-2xl bg-gradient-to-br ${feature.gradient} shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110`}
-                        >
-                          <div className="text-white">{feature.icon}</div>
-                          <div className="absolute inset-0 rounded-2xl bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                        </div>
+                    <div className="flex flex-col items-center text-center space-y-3">
+                      <div
+                        className={`relative p-4 rounded-2xl bg-gradient-to-br ${feature.gradient} shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110`}
+                      >
+                        <div className="text-white">{feature.icon}</div>
+                        <div className="absolute inset-0 rounded-2xl bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                      </div>
 
-                        <div>
-                          <h4 className="text-xs font-bold text-slate-800 mb-3 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-purple-600 group-hover:to-pink-600 transition-all duration-300">
-                            {feature.title}
-                          </h4>
-                          {/* <p className="hidden text-slate-600 leading-relaxed group-hover:text-slate-700 transition-colors duration-300">
+                      <div>
+                        <h4 className="text-xs font-bold text-slate-800 mb-3 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-purple-600 group-hover:to-pink-600 transition-all duration-300">
+                          {feature.title}
+                        </h4>
+                        {/* <p className="hidden text-slate-600 leading-relaxed group-hover:text-slate-700 transition-colors duration-300">
                             {feature.description}
                           </p> */}
-                        </div>
                       </div>
-                    </Link>
+                    </div>
                   </CardContent>
                 </Card>
-              ))}
-            </div>
-          </div>
-
-          {/* Help Section */}
-          <div className="hidden bg-gradient-to-br from-slate-50 to-slate-100 rounded-3xl p-8 border border-slate-200 shadow-lg">
-            <div className="flex items-center justify-center gap-2 mb-4">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              <h4 className="text-2xl font-bold text-slate-800">
-                Quick Navigation
-              </h4>
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse delay-300"></div>
-            </div>
-
-            <p className="text-slate-600 mb-6 text-lg">
-              Jump to the most popular sections of our platform:
-            </p>
-
-            <div className="flex flex-wrap justify-center gap-3">
-              {[
-                "Projects",
-                "Tasks",
-                "Calendar",
-                "Settings",
-                "Help Center",
-                "Analytics",
-              ].map((item, index) => (
-                <Link
-                  key={index}
-                  href={`/${item.toLowerCase().replace(" ", "-")}`}
-                  className="group px-6 py-3 bg-white hover:bg-gradient-to-r hover:from-purple-500 hover:to-pink-500 rounded-full text-slate-700 hover:text-white font-medium transition-all duration-300 hover:scale-105 hover:shadow-lg border border-slate-200 hover:border-transparent shadow-sm"
-                >
-                  <span className="transition-colors duration-300">{item}</span>
-                </Link>
               ))}
             </div>
           </div>

@@ -157,10 +157,11 @@ export const updateNoteInCalendarAction = async ({
       token: token,
     });
     console.log("Result in updateNOteInCalendarService: ", result);
+    revalidatePath("/calendar")
     return result;
   } catch (error) {
     console.error("updateNoteInCalendarAction error:", error);
-    throw error;
+    // throw error;
   }
 };
 

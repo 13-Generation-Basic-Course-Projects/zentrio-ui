@@ -121,80 +121,83 @@ export default function WorkSpaceSideBar({
         {/* WORKSPACE LIST */}
         <SidebarGroup className="flex flex-col flex-1 !border-0 px-5 overflow-y-auto scrollbar-hidden">
           <SidebarGroupContent className="flex flex-col flex-1 !border-0 gap-6">
-            <SidebarMenu className="space-y-1 flex flex-col gap-2 !border-0">
+            <SidebarMenu className="space-y-1 flex flex-col gap-2 !border-0 ">
               <SaveWorkspace />
-
               {/* My Workspace Header */}
               <div className="flex items-center justify-between">
                 <p className="text-body-sm font-extrabold">My Workspace</p>
                 <ModalCreateWorkspace createWorkspace={createWorkspace} />
               </div>
 
-              {/* My Workspace Items */}
-              {Array.isArray(workspaceData.payload) &&
-                workspaceData.payload
-                  .slice()
-                  .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-                  .map((item, i) => {
-                    const isActive = pathname.includes(item?.workspaceId);
-                    const bgColor = shouldShowColors
-                      ? workspaceColors[item.workspaceId] ||
-                        colorOptions[i % colorOptions.length].className
-                      : colorOptions[i % colorOptions.length].className;
+              <div className="h-[320px] overflow-y-auto scrollbar-hidden">
+                {/* My Workspace Items */}
+                {Array.isArray(workspaceData.payload) &&
+                  workspaceData.payload
+                    .slice()
+                    .sort(
+                      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+                    )
+                    .map((item, i) => {
+                      const isActive = pathname.includes(item?.workspaceId);
+                      const bgColor = shouldShowColors
+                        ? workspaceColors[item.workspaceId] ||
+                          colorOptions[i % colorOptions.length].className
+                        : colorOptions[i % colorOptions.length].className;
 
-                    return (
-                      <SidebarMenuItem
-                        key={item.workspaceId || i}
-                        className="!border-0 p-0"
-                      >
-                        <SidebarMenuButton
-                          style={{ borderRadius: "0.5rem" }}
-                          asChild
-                          tooltip={item?.title || "Untitled Workspace"}
-                          className={`group flex w-full items-center justify-between rounded-lg transition-colors duration-200 p-0 ${
-                            isActive
-                              ? "bg-slate-100 text-gray-700"
-                              : "hover:bg-slate-100 text-gray-700"
-                          }`}
+                      return (
+                        <SidebarMenuItem
+                          key={item.workspaceId || i}
+                          className="!border-0 p-0"
                         >
-                          <div className="flex items-center justify-between w-full gap-2">
-                            {item?.workspaceId ? (
-                              <Link
-                                href={`/workspace/${item.workspaceId}`}
-                                className="flex items-center gap-2 flex-1 overflow-hidden"
-                              >
-                                <span
-                                  className={`${bgColor} h-5 w-5 rounded-full inline-block flex-shrink-0`}
-                                />
-                                <span className="truncate text-left sm:text-body-sm text-gray-800">
-                                  {item?.title || "Untitled Workspace"}
-                                </span>
-                              </Link>
-                            ) : (
-                              <div className="flex items-center gap-2 flex-1 overflow-hidden">
-                                <span
-                                  style={{ backgroundColor: "#59BAD5" }}
-                                  className="h-5 w-5 rounded-full inline-block flex-shrink-0"
-                                />
-                                <span className="truncate text-left sm:text-body-sm text-gray-800">
-                                  {item?.title || "Invalid Workspace"}
-                                </span>
-                              </div>
-                            )}
+                          <SidebarMenuButton
+                            style={{ borderRadius: "0.5rem" }}
+                            asChild
+                            tooltip={item?.title || "Untitled Workspace"}
+                            className={`group flex w-full items-center justify-between rounded-lg transition-colors duration-200 p-0 ${
+                              isActive
+                                ? "bg-slate-100 text-gray-700"
+                                : "hover:bg-slate-100 text-gray-700"
+                            }`}
+                          >
+                            <div className="flex items-center justify-between w-full gap-2">
+                              {item?.workspaceId ? (
+                                <Link
+                                  href={`/workspace/${item.workspaceId}`}
+                                  className="flex items-center gap-2 flex-1 overflow-hidden"
+                                >
+                                  <span
+                                    className={`${bgColor} h-5 w-5 rounded-full inline-block flex-shrink-0`}
+                                  />
+                                  <span className="truncate text-left sm:text-body-sm text-gray-800">
+                                    {item?.title || "Untitled Workspace"}
+                                  </span>
+                                </Link>
+                              ) : (
+                                <div className="flex items-center gap-2 flex-1 overflow-hidden">
+                                  <span
+                                    style={{ backgroundColor: "#59BAD5" }}
+                                    className="h-5 w-5 rounded-full inline-block flex-shrink-0"
+                                  />
+                                  <span className="truncate text-left sm:text-body-sm text-gray-800">
+                                    {item?.title || "Invalid Workspace"}
+                                  </span>
+                                </div>
+                              )}
 
-                            <ModalOptionWorkspace
-                              workspaceTitle={item?.title}
-                              workspaceId={item?.workspaceId}
-                              deleteWorkspace={deleteWorkspace}
-                              updateNameWorkspace={updateNameWorkspace}
-                              selectedId={selectedId}
-                              setSelectedId={setSelectedId}
-                            />
-                          </div>
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
-                    );
-                  })}
+                              <ModalOptionWorkspace
+                                workspaceTitle={item?.title}
+                                workspaceId={item?.workspaceId}
+                                deleteWorkspace={deleteWorkspace}
+                                updateNameWorkspace={updateNameWorkspace}
+                                selectedId={selectedId}
+                                setSelectedId={setSelectedId}
+                              />
+                            </div>
+                          </SidebarMenuButton>
+                        </SidebarMenuItem>
+                      );
+                    })}
+              </div>
 
               {/* Other Workspace Header */}
               <p className="text-body-sm font-extrabold">Other Workspace</p>
