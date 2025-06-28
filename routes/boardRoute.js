@@ -66,4 +66,11 @@ export const boardRouteGroup = {
   //leave board
 
   leaveTheBoard: (boardId) => `${apiConfig.baseUrl}/boards/${boardId}`,
+
+  assignUserRoleLeaderToBoardByNoti: (taskid, assignId, createById) =>
+    `${apiConfig.baseUrl}/tasks/${taskid}/pm/${createById}/members/${assignId}`,
+  //get feedback
+
+  getFeedBackByTaskId: (taskId) =>
+    `${apiConfig.baseUrl}/feedback/tasks/${taskId}`,
 };

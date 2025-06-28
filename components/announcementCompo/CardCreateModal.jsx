@@ -146,15 +146,15 @@ export default function CardCreateModal({
                         />
                       </div>
                     </div>
-                    <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 rounded-full border-2 border-white flex items-center justify-center">
+                    {/* <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 rounded-full border-2 border-white flex items-center justify-center">
                       <div className="w-2 h-2 bg-white rounded-full"></div>
-                    </div>
+                    </div> */}
                   </div>
                   <div className="flex-1">
-                    <div className="text-sm font-semibold text-gray-900">
+                    <div className="text-meduim font-semibold text-gray-900">
                       {managerMember.username || managerMember.name}
                     </div>
-                    <div className="text-xs text-gray-500 flex items-center">
+                    <div className="text-small text-gray-500 flex items-center">
                       <Crown className="w-3 h-3 mr-1" />
                       {managerMember.roles?.[0]
                         ?.replace("ROLE_", "")

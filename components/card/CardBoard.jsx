@@ -27,10 +27,11 @@ export default function CardBoard({
   updateFavAction,
   isFavourite,
   includesPathOtherWorkSpace,
+  isFavBtn,
 }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-
+  console.log("is fav", isFavBtn);
   /* Extract workspaceId and projectId from the current URL */
   const pathSegments = pathname.split("/");
   const workspaceId = pathSegments[2] || "defaultWorkspace";
@@ -42,12 +43,41 @@ export default function CardBoard({
   /* State for delete confirmation modal */
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
-  // stopPropagation()
+  /* State to manage editing mode and edited title */
+  const [editing, setEditing] = useState(false);
+  const [newTitle, setNewTitle] = useState("");
+
+  /* Function to handle rename confirmation */
+
+  const handleTitleUpdate = async () => {
+    if (newTitle.trim() === "") return; // Skip if empty
+
+    try {
+      /* Step 1: Get the existing board data */
+      const response = await getBoardByIdAction(boardId);
+      const existingBoard = response.payload;
+
+      if (!existingBoard) throw new Error("Board not found");
+
+      /* Step 2: Update only the title, keep others */
+      await updateNameBoardAction(boardId, {
+        title: newTitle, // New title
+        description: existingBoard.description, // Preserve old description
+        cover: existingBoard.cover, // Preserve old cover image
+        workspaceId: existingBoard.workspaceId, // Preserve workspace ID
+      });
+
+      console.log("✅ Board title updated to:", newTitle);
+    } catch (error) {
+      console.error("❌ Failed to update board title:", error);
+    }
+
+    setEditing(false); // Hide input after update
+  };
   // fong
   const [members, setMembers] = useState([]); // State to store members
   const [loading, setLoading] = useState(true); // State for loading
   const [error, setError] = useState(null); // State for error handling
-  const [editing, setEditing] = useState(false);
   /* Fetch members when component mounts or boardId changes */
   useEffect(() => {
     const fetchMembers = async () => {
@@ -100,33 +130,39 @@ export default function CardBoard({
             {title}
           </p>
         )}
-
         {/* Favorite (star) toggle button */}
-        <button
-          onClick={async (e) => {
-            e.preventDefault();
-            e.stopPropagation();
 
-            const newFavoriteStatus = !favorited;
-            setFavorited(newFavoriteStatus); // Optimistic UI
+        {isFavBtn !== false ? (
+          <button
+            onClick={async (e) => {
+              e.preventDefault();
+              e.stopPropagation();
 
-            try {
-              await updateFavAction({
-                boardId,
-                isFavourite: newFavoriteStatus,
-              });
+              const newFavoriteStatus = !favorited;
+              setFavorited(newFavoriteStatus); // Optimistic UI
 
-              console.log(`✅ Favorite status updated to ${newFavoriteStatus}`);
-            } catch (error) {
-              console.error("❌ Failed to update favorite status:", error);
-              setFavorited(!newFavoriteStatus); // Revert if error
-            }
-          }}
-          className="text-yellow-500 hover:text-yellow-600 p-3"
-          aria-label="Toggle favorite"
-        >
-          {favorited ? <StarIconSolid /> : <StarIconOutline />}
-        </button>
+              try {
+                await updateFavAction({
+                  boardId,
+                  isFavourite: newFavoriteStatus,
+                });
+
+                console.log(
+                  `✅ Favorite status updated to ${newFavoriteStatus}`
+                );
+              } catch (error) {
+                console.error("❌ Failed to update favorite status:", error);
+                setFavorited(!newFavoriteStatus); // Revert if error
+              }
+            }}
+            className="text-yellow-500 hover:text-yellow-600 p-3"
+            aria-label="Toggle favorite"
+          >
+            {favorited ? <StarIconSolid /> : <StarIconOutline />}
+          </button>
+        ) : (
+          ""
+        )}
       </CardHeader>
 
       {/* Card Body: background image or placeholder */}

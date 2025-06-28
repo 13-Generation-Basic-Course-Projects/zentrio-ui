@@ -14,7 +14,10 @@ import {
   deleteAllNotificationAction,
   deleteNotificationByIdAction,
 } from "@/action/notification.action";
-import { assignLeaderAction, declineLeaderAction } from "@/action/board.action";
+import {
+  assignLeaderAction, // New action for accepting leader role
+  declineLeaderAction,
+} from "@/action/board.action";
 import { toast } from "react-toastify";
 
 export default function ModalNotification({ notificationData }) {
@@ -51,27 +54,27 @@ export default function ModalNotification({ notificationData }) {
 
     const formatted = notificationData.payload.map((item, index) => ({
       id: item.id ?? index,
-      content: item.content ?? "No content",
+      content: item.content ?? item.message ?? "No content",
       action: item.action ?? "",
       createdAt: item.createdAt?.split("T")[0] ?? item.date ?? "",
       read: item.read ?? item.isRead ?? false,
       notificationId: item.notificationId ?? item.id ?? index,
       sender: item.sender
         ? {
-            userId: item.sender.userId,
-            username: item.sender.username,
-            email: item.sender.email,
-            contact: item.sender.contact,
-            gender: item.sender.gender,
-            location: item.sender.location,
-            position: item.sender.position,
-            profileImage: item.sender.profileImage,
+            userId: item.sender.userId ?? item.projectManagerId,
+            username: item.sender.username ?? "Unknown Sender",
+            email: item.sender.email ?? "",
+            contact: item.sender.contact ?? "",
+            gender: item.sender.gender ?? "",
+            location: item.sender.location ?? "",
+            position: item.sender.position ?? "",
+            profileImage: item.sender.profileImage ?? "",
           }
-        : { userId: null, username: "Unknown Sender" },
+        : { userId: item.projectManagerId ?? null, username: "Unknown Sender" },
       type: item.type ?? "general",
       taskId: item.taskId ?? null,
       assignId: item.receiverId ?? null,
-      taskTitle: item.title ?? null,
+      taskTitle: item.taskTitle ?? item.title ?? "Untitled Task",
     }));
     setNotifications(formatted);
   }, [notificationData]);
@@ -159,7 +162,17 @@ export default function ModalNotification({ notificationData }) {
         },
       }));
 
-      const result = await assignLeaderAction(taskId, assignId);
+      const notification = notifications.find(
+        (n) => n.notificationId === notificationId
+      );
+      const pmId = notification?.sender?.userId;
+      if (!pmId || !taskId || !assignId) {
+        throw new Error("Missing pmId, taskId, or assignId");
+      }
+
+      console.log("handleAccept inputs:", { taskId, assignId, pmId });
+
+      const result = await assignLeaderAction(taskId, assignId, pmId);
       if (!result.success) {
         throw new Error(result.error || "Failed to accept leader role");
       }
@@ -172,7 +185,7 @@ export default function ModalNotification({ notificationData }) {
           isApproved: true,
         },
       }));
-      await handleDelete(notificationId); // Delete notification from server
+      await handleDelete(notificationId);
       toast.success("Successfully accepted team leader role!", {
         position: "top-right",
         autoClose: 3000,
@@ -207,7 +220,17 @@ export default function ModalNotification({ notificationData }) {
         },
       }));
 
-      const result = await declineLeaderAction(taskId, assignId);
+      const notification = notifications.find(
+        (n) => n.notificationId === notificationId
+      );
+      const pmId = notification?.sender?.userId;
+      if (!pmId || !taskId || !assignId) {
+        throw new Error("Missing pmId, taskId, or assignId");
+      }
+
+      console.log("handleDecline inputs:", { taskId, assignId, pmId });
+
+      const result = await declineLeaderAction(taskId, assignId, pmId);
       if (!result.success) {
         throw new Error(result.error || "Failed to decline leader role");
       }
@@ -220,7 +243,7 @@ export default function ModalNotification({ notificationData }) {
           isApproved: false,
         },
       }));
-      await handleDelete(notificationId); // Delete notification from server
+      await handleDelete(notificationId);
       toast.success("Successfully declined team leader role.", {
         position: "top-right",
         autoClose: 3000,

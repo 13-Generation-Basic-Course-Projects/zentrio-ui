@@ -39,6 +39,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { CameraIcon } from "lucide-react";
 import { CardCheckList } from "@/components/card/CardChecklist";
+import FeedbackDisplay from "./FeedbackOfTask";
 
 const initialState = {
   activeTab: "add",
@@ -688,6 +689,7 @@ const ModalDetailChecklist = ({
   boardId,
   isModalDisabled,
   imageChecklist,
+  feedbackByTaskIds,
 }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const { state, dispatch, shouldStayOpen } = useChecklistData(
@@ -916,6 +918,12 @@ const ModalDetailChecklist = ({
     commentCount: state.comments.length,
     totalCommentLength,
   });
+
+  const matchingFeedback =
+    feedbackByTaskIds
+      ?.flat() // Flatten the array of arrays into a single array
+      .filter((feedback) => feedback?.taskId === taskId) || [];
+
   return (
     <div>
       {role == "ROLE_MEMBER" || role == "ROLE_MANAGER" ? (
@@ -987,6 +995,7 @@ const ModalDetailChecklist = ({
             finishedAt={finishedAt}
             leaderId={leaderId}
             imageChecklist={displayImage}
+            matchingFeedback={matchingFeedback} // ng use muy taskId
           />
         </div>
       </Button>
@@ -1100,6 +1109,17 @@ const ModalDetailChecklist = ({
                     <CameraIcon className="h-6 w-6 text-gray-600" />
                   </button>
                 </div>
+                {/* newwwwww */}
+                <div>
+                  {/* Existing modal content */}
+                  <FeedbackDisplay
+                    taskTitle={title}
+                    matchingFeedback={matchingFeedback}
+                  />
+                  {/* Other modal content */}
+                </div>
+
+                {/* newwwww */}
                 <div className="flex flex-col">
                   {/* title and delete button */}
                   <div className="flex items-center justify-between gap-4 p-4 bg-white">
