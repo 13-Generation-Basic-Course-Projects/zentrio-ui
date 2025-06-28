@@ -14,27 +14,56 @@ import {
 import mailIcon from "@/assets/mail.png";
 import { Select, SelectItem } from "@heroui/react";
 
-// Form + Validation
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { inviteMemberSchema } from "@/lib/schemas/invitememberSchema";
 import { inviteMemberToBoardAction } from "@/action/board.action";
-import { Link } from "lucide-react";
+import { Link, Shield, Crown, Users } from "lucide-react";
+
+const formatRole = (role) => {
+  const iconClass = "w-4 h-4 inline-block mr-1";
+  const baseClass =
+    "inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border";
+
+  const roleMap = {
+    ROLE_MANAGER: (
+      <span
+        className={`${baseClass} bg-yellow-50 text-orange-700 border-yellow-300`}
+      >
+        <Crown className={iconClass} /> Manager
+      </span>
+    ),
+    ROLE_LEADER: (
+      <span
+        className={`${baseClass} bg-indigo-50 text-indigo-700 border-indigo-300`}
+      >
+        <Shield className={iconClass} /> Leader
+      </span>
+    ),
+    ROLE_MEMBER: (
+      <span
+        className={`${baseClass} bg-green-50 text-green-700 border-green-300`}
+      >
+        <Users className={iconClass} /> Member
+      </span>
+    ),
+  };
+
+  return (
+    roleMap[role] || (
+      <span className={`${baseClass} bg-gray-100 text-gray-600 border`}> 
+        <Users className={iconClass} />
+        {role?.replace("ROLE_", "").toLowerCase().replace(/^\w/, (c) => c.toUpperCase())}
+      </span>
+    )
+  );
+};
 
 export const roles = [
   { key: "team leader", label: "Team Leader" },
   { key: "member", label: "Member" },
 ];
 
-export const members = [
-  { id: 1, name: "Rosskan", role: "Member", color: "bg-progress-blue" },
-  { id: 2, name: "Visa", role: "Member", color: "bg-progress-orange" },
-  { id: 3, name: "ChhengLeap", role: "Member", color: "bg-progress-green" },
-  { id: 4, name: "Fong", role: "Team Leader", color: "bg-progress-green" },
-  { id: 5, name: "Senghun", role: "Member", color: "bg-progress-green" },
-];
-
-// Function to generate avatar color based on email
 const getAvatarColor = (email) => {
   const colors = [
     "bg-progress-blue",
@@ -47,16 +76,9 @@ const getAvatarColor = (email) => {
   return colors[index];
 };
 
-// Function to get first letter of email or name
-const getInitial = (str) => {
-  return str.charAt(0).toUpperCase();
-};
+const getInitial = (str) => str.charAt(0).toUpperCase();
 
-export default function ModalInviteMember({
-  boardId,
-  allMemberInBoard,
-  workspaceId,
-}) {
+export default function ModalInviteMember({ boardId, allMemberInBoard, workspaceId }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [newMembers, setNewMembers] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
@@ -73,25 +95,19 @@ export default function ModalInviteMember({
     formState: { errors },
   } = useForm({
     resolver: zodResolver(inviteMemberSchema),
-    defaultValues: {
-      email: "",
-      role: "",
-    },
+    defaultValues: { email: "", role: "" },
   });
 
-  console.log("+++log workspaceId", workspaceId);
-  // Watch form values to determine button text and state
   const watchedEmail = watch("email");
   const watchedRole = watch("role");
   const isFormFilled = watchedEmail && watchedRole;
 
-  // Function to generate and copy the invite link
   const copyInviteLink = async () => {
     const inviteLink = `http://localhost:3000/guestuser/${workspaceId}/${boardId}`;
     try {
       await navigator.clipboard.writeText(inviteLink);
       setCopySuccess("Link copied to clipboard!");
-      setTimeout(() => setCopySuccess(""), 3000); // Clear message after 3 seconds
+      setTimeout(() => setCopySuccess(""), 3000);
     } catch (err) {
       setCopySuccess("Failed to copy link");
       console.error("Failed to copy: ", err);
@@ -101,9 +117,7 @@ export default function ModalInviteMember({
   const onSubmit = (data) => {
     setErrorMessage("");
     setSuccessMessage("");
-
     if (isFormFilled) {
-      // Add to pending list
       const newMember = {
         id: Date.now(),
         email: data.email,
@@ -119,22 +133,15 @@ export default function ModalInviteMember({
 
   const sendAllInvites = async () => {
     if (newMembers.length === 0) return;
-
     setErrorMessage("");
     setSuccessMessage("");
     setIsLoading(true);
-
     try {
       const inviteData = newMembers.map((member) => ({
         email: member.email,
         roleName: member.role === "team leader" ? "ROLE_LEADER" : "ROLE_MEMBER",
       }));
-
-      const result = await inviteMemberToBoardAction({
-        boardId,
-        workspaceId,
-        data: inviteData,
-      });
+      const result = await inviteMemberToBoardAction({ boardId, workspaceId, data: inviteData });
       if (result.success) {
         setSuccessMessage(`Sent ${newMembers.length} invites successfully`);
         setNewMembers([]);
@@ -151,7 +158,7 @@ export default function ModalInviteMember({
   const removeNewMember = (id) => {
     setNewMembers((prev) => prev.filter((member) => member.id !== id));
   };
-  console.log("log in invite memeber", allMemberInBoard);
+
   return (
     <div className="relative">
       <Button
@@ -324,14 +331,13 @@ export default function ModalInviteMember({
                           />
                           <div>
                             <p className="font-medium">{member?.username}</p>
-                            <p className="text-body-sm text-description">
-                              Roles: {member?.roles.join(", ")}
-                            </p>
+                            {/* <p className="text-body-sm text-description">
+                              Roles: {member?.roles.map(formatRole).join(", ")}
+                            </p> */}
                           </div>
                         </div>
                         <p className="text-caption text-description">
-                          {member.roles[0]}{" "}
-                          {/* or display all roles if you want */}
+                          {formatRole(member.roles[0])}
                         </p>
                       </li>
                     ))}
@@ -359,13 +365,13 @@ export default function ModalInviteMember({
                             <div>
                               <p className="font-medium">{member.email}</p>
                               <p className="text-body-sm text-description">
-                                Role: {member.role}
+                                Role: {formatRole(member.role)}
                               </p>
                             </div>
                           </div>
                           <div className="flex items-center gap-2">
                             <p className="text-caption text-description">
-                              {member.role}
+                              {formatRole(member.role)}
                             </p>
                             <Button
                               size="sm"

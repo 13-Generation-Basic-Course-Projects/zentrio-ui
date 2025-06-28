@@ -56,6 +56,7 @@ export default function SystemBoard({
   workspaceId,
   currentUserProfile,
   myUserId,
+  feedbackByTaskIds,
 }) {
   if (
     !boardData ||
@@ -65,7 +66,7 @@ export default function SystemBoard({
     return <NotFound />;
   }
 
-  console.log("currentUserProfile={currentUserProfile}", currentUserProfile);
+  console.log("feedbackByTaskIds", feedbackByTaskIds);
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const email = searchParams.get("email");
@@ -211,7 +212,7 @@ export default function SystemBoard({
         workspaceId={workspaceId}
       />
     ),
-    <StarBoard key="star-board" favBoard={favBoard} boardId={boardId}/>,
+    <StarBoard key="star-board" favBoard={favBoard} boardId={boardId} />,
   ].filter(Boolean);
 
   // GanttChart modal based on role
@@ -264,6 +265,7 @@ export default function SystemBoard({
           ganttbar={ganttbar}
           boardId={boardId}
           workspaceId={workspaceId}
+          feedbackByTaskIds={feedbackByTaskIds}
         />
       ),
     },

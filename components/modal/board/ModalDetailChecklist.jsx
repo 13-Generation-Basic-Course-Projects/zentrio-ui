@@ -39,6 +39,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { CameraIcon } from "lucide-react";
 import { CardCheckList } from "@/components/card/CardChecklist";
+import FeedbackDisplay from "./FeedbackOfTask";
 
 const initialState = {
   activeTab: "add",
@@ -131,8 +132,9 @@ const useChecklistData = (checklistId, isOpen) => {
     dispatch({ type: "SET_COMMENTS", payload: [] });
     try {
       const result = await getCommentByCheckListIdAction(checklistId);
+      console.log("Fetched comments:", result);
       if (result.success) {
-        dispatch({ type: "SET_COMMENTS", payload: result.data || [] });
+        dispatch({ type: "SET_COMMENTS", payload: result.payload || [] }); // Use result.payload
       } else {
         dispatch({
           type: "SET_ERROR",
@@ -156,11 +158,11 @@ const useChecklistData = (checklistId, isOpen) => {
   }, [checklistId]);
 
   useEffect(() => {
-    if (isOpen && checklistId && !fetchingRef.current) {
+    if (checklistId && !fetchingRef.current) {
       fetchComments();
       fetchAttachments();
     }
-  }, [isOpen, checklistId, fetchComments, fetchAttachments]);
+  }, [checklistId, fetchComments, fetchAttachments]); // Removed isOpen dependency
 
   return { state, dispatch, shouldStayOpen };
 };
@@ -687,12 +689,14 @@ const ModalDetailChecklist = ({
   boardId,
   isModalDisabled,
   imageChecklist,
+  feedbackByTaskIds,
 }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const { state, dispatch, shouldStayOpen } = useChecklistData(
     checklistId,
     isOpen
   );
+  const [totalCommentLength, setTotalCommentLength] = useState(0); // Add state
 
   console.log("hhhh", image);
   const {
@@ -771,16 +775,32 @@ const ModalDetailChecklist = ({
     [onOpenChange]
   );
 
+  // Calculate totalCommentLength when state.comments changes
+  useEffect(() => {
+    const totalLength = state.comments.reduce(
+      (sum, comment) => sum + (comment.content?.length || 0),
+      0
+    );
+    console.log("Calculated totalCommentLength:", totalLength);
+    setTotalCommentLength(totalLength);
+  }, [state.comments]);
+
+  // ... rest of the code ...
+
   const handleCommentsUpdated = useCallback(
     (dataOrUpdater) => {
       shouldStayOpen.current = true;
-      dispatch({
-        type: "SET_COMMENTS",
-        payload:
-          typeof dataOrUpdater === "function"
-            ? dataOrUpdater(state.comments)
-            : dataOrUpdater,
-      });
+      const newComments =
+        typeof dataOrUpdater === "function"
+          ? dataOrUpdater(state.comments)
+          : dataOrUpdater;
+      dispatch({ type: "SET_COMMENTS", payload: newComments });
+      // Update totalCommentLength
+      const totalLength = newComments.reduce(
+        (sum, comment) => sum + (comment.content?.length || 0),
+        0
+      );
+      setTotalCommentLength(totalLength);
       setTimeout(() => {
         shouldStayOpen.current = false;
       }, 100);
@@ -893,6 +913,17 @@ const ModalDetailChecklist = ({
   const displayImage = imageChecklist
     ? imageChecklist
     : "https://media.sproutsocial.com/uploads/2024/01/facebook-cover-image.svg";
+
+  console.log("Rendering CardCheckList with:", {
+    commentCount: state.comments.length,
+    totalCommentLength,
+  });
+
+  const matchingFeedback =
+    feedbackByTaskIds
+      ?.flat() // Flatten the array of arrays into a single array
+      .filter((feedback) => feedback?.taskId === taskId) || [];
+
   return (
     <div>
       {role == "ROLE_MEMBER" || role == "ROLE_MANAGER" ? (
@@ -960,9 +991,11 @@ const ModalDetailChecklist = ({
             member={member || []}
             checkedListId={id}
             commentCount={state.comments.length}
+            totalCommentLength={totalCommentLength}
             finishedAt={finishedAt}
             leaderId={leaderId}
             imageChecklist={displayImage}
+            matchingFeedback={matchingFeedback} // ng use muy taskId
           />
         </div>
       </Button>
@@ -1076,6 +1109,17 @@ const ModalDetailChecklist = ({
                     <CameraIcon className="h-6 w-6 text-gray-600" />
                   </button>
                 </div>
+                {/* newwwwww */}
+                <div>
+                  {/* Existing modal content */}
+                  <FeedbackDisplay
+                    taskTitle={title}
+                    matchingFeedback={matchingFeedback}
+                  />
+                  {/* Other modal content */}
+                </div>
+
+                {/* newwwww */}
                 <div className="flex flex-col">
                   {/* title and delete button */}
                   <div className="flex items-center justify-between gap-4 p-4 bg-white">

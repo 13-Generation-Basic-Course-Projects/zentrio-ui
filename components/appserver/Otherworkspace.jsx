@@ -37,9 +37,10 @@ export default function Otherworkspace({
                 projectId="456"
                 boardId={el?.boardId}
                 image={el?.cover}
-                images ={el?.image}
+                images={el?.image}
                 isFavourite={el?.isFavourite}
                 updateFavAction={updateFavAction}
+                isFavBtn={false}
               />
             ))}
 

@@ -1,8 +1,10 @@
 import React from "react";
 import { IconEllipsisVertical } from "../icon/everyicon";
 
-export default function OtherBoards({ currentUserProfile }) {
+export default function OtherBoards({ currentUserProfile, userAchievement }) {
   const otherBoards = currentUserProfile?.payload?.joinedBoards || [];
+  console.log("otherBoards", otherBoards);
+  console.log("my data", currentUserProfile);
   // const boards = [
   //   { role: "Owner", color: "bg-gray-300", date: "01-Jan-2025 to 01-May-2025" },
   //   {
@@ -90,7 +92,8 @@ export default function OtherBoards({ currentUserProfile }) {
           <li key={index} className="flex justify-between items-center gap-4">
             <div className="flex items-center gap-3">
               <div
-                className={`w-10 h-10 rounded-full flex items-center justify-center ${board.textColor} font-semibold ${board.color}`}>
+                className={`w-10 h-10 rounded-full flex items-center justify-center ${board.textColor} font-semibold ${board.color}`}
+              >
                 {board.initial}
               </div>
               <div>

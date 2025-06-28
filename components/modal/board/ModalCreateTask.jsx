@@ -178,20 +178,17 @@ export default function ModalCreateTask({
       const taskStart = new Date(data.dateRange.start);
       const taskEnd = new Date(data.dateRange.end);
 
-      // Get current time in UTC+7 and add 1 hour
+      // Get current time and add 4 minutes
       const now = new Date();
-      const utc7OffsetMs = 7 * 60 * 60 * 1000; // 7 hours in milliseconds
-      const oneHourMs = 1 * 60 * 60 * 1000; // 1 hour in milliseconds
-      const nowInUtc7PlusOneHour = new Date(
-        now.getTime() + utc7OffsetMs + oneHourMs
-      );
+      const fourMinutesMs = 4 * 60 * 1000; // 4 minutes in milliseconds
+      const nowPlusFourMinutes = new Date(now.getTime() + fourMinutesMs);
 
-      // Set taskStart to current time + 1 hour in UTC+7 on the selected start date
+      // Set taskStart to current time + 4 minutes on the selected start date
       taskStart.setHours(
-        nowInUtc7PlusOneHour.getHours(),
-        nowInUtc7PlusOneHour.getMinutes(),
-        nowInUtc7PlusOneHour.getSeconds(),
-        nowInUtc7PlusOneHour.getMilliseconds()
+        nowPlusFourMinutes.getHours(),
+        nowPlusFourMinutes.getMinutes(),
+        nowPlusFourMinutes.getSeconds(),
+        nowPlusFourMinutes.getMilliseconds()
       );
 
       // Set end date to end of day (23:59:59.999)
@@ -230,7 +227,11 @@ export default function ModalCreateTask({
       // Note: The commented success check suggests the result structure may differ.
       // Adjust based on actual API response.
       if (result.status === 400) {
-        throw new Error(result.detail || "Failed to create task");
+        // throw new Error(result.detail || "Failed to create task");
+        toast.error(`"${data.title}"\nfailed create Task unsuccessfully!`, {
+          position: "top-right",
+          autoClose: 3000,
+        });
       }
 
       toast.success(`"${data.title}"\nTask created successfully!`, {
@@ -311,7 +312,6 @@ export default function ModalCreateTask({
                     render={({ field }) => (
                       <Input
                         {...field}
-                        isRequired
                         label="Title"
                         labelPlacement="outside"
                         placeholder="Input your title"
@@ -365,7 +365,6 @@ export default function ModalCreateTask({
                           })
                         }
                         label="Task Duration"
-                        labelPlacement="outside"
                         isInvalid={!!errors.dateRange}
                         errorMessage={
                           errors.dateRange?.start?.message ||
