@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { toast } from "react-toastify";
+
 import {
   Pencil,
   Trash2,
@@ -76,16 +78,22 @@ export default function CommentCompo({
     try {
       if (!editedContent.trim()) return;
 
-      await editCommentByIdAction({
+      const res = await editCommentByIdAction({
         commentId,
         content: editedContent,
         announId,
       });
-      console.log("asd", announId, commentId, editedContent);
+
+      if (res?.success) {
+        toast.success("Comment updated successfully!");
+      } else {
+        toast.error("Failed to update comment.");
+      }
 
       setEditingId(null);
       setEditedContent("");
     } catch (error) {
+      toast.error("An error occurred while updating the comment.");
       console.error("Failed to edit comment:", error);
     }
   };
@@ -97,8 +105,15 @@ export default function CommentCompo({
 
   const handleDelete = async (commentId) => {
     try {
-      await deleteCommentByIdAction({ commentId });
+      const res = await deleteCommentByIdAction({ commentId });
+
+      if (res?.success) {
+        toast.success("Comment deleted successfully!");
+      } else {
+        toast.error("Failed to delete comment.");
+      }
     } catch (error) {
+      toast.error("An error occurred while deleting the comment.");
       console.error("Failed to delete comment:", error);
     }
   };

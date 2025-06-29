@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { toast } from "react-toastify";
+
 import {
   Pin,
   MessageCircle,
@@ -48,9 +50,19 @@ export default function CardPostAnnouncement({
     if (!content) return;
 
     try {
-      await createCommentByAnnouncementIdAction({ announcementId, content });
-      setCommentInputs((prev) => ({ ...prev, [announcementId]: "" }));
+      const res = await createCommentByAnnouncementIdAction({
+        announcementId,
+        content,
+      });
+
+      if (res?.success) {
+        toast.success("Comment posted successfully!");
+        setCommentInputs((prev) => ({ ...prev, [announcementId]: "" }));
+      } else {
+        toast.error("Failed to post comment.");
+      }
     } catch (err) {
+      toast.error("An error occurred while posting the comment.");
       console.error("Failed to post comment", err);
     }
   };
