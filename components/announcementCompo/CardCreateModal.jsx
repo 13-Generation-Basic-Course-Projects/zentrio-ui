@@ -2,18 +2,12 @@
 import preImage from "@/assets/folderdynamiccolor.png";
 import thumbup from "@/assets/thumbupdynamiccolor.png";
 import logo from "@/public/image/Zentrio-Logo.png";
+import { toast } from "react-toastify";
 
 import Image from "next/image";
 import { useState } from "react";
 import { Card, CardContent } from "../ui/card";
-import {
-  X,
-  Calendar,
-  Crown,
-  Zap,
-  ArrowRight,
-  Paperclip,
-} from "lucide-react";
+import { X, Calendar, Crown, Zap, ArrowRight, Paperclip } from "lucide-react";
 import { Button } from "@heroui/react";
 import {
   createAnnouncementByBoardIdAction,
@@ -66,10 +60,23 @@ export default function CardCreateModal({
       if (images.length > 0) {
         await uploadMultiImgByBoardIdAction(boardId, images);
       }
-      await createAnnouncementByBoardIdAction({ title, description, boardId });
-      onClose();
+
+      const announcement = await createAnnouncementByBoardIdAction({
+        title,
+        description,
+        boardId,
+      });
+
+      // ✅ Check status and show toast
+      if (announcement?.success ) {
+        toast.success("Announcement created successfully!");
+        onClose();
+      } else {
+        toast.error("Failed to create announcement. Please try again.");
+      }
     } catch (error) {
       console.error("Failed to create announcement", error);
+      toast.error("An unexpected error occurred.");
     } finally {
       setLoading(false);
     }
