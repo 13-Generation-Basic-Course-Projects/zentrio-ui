@@ -1,7 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import { Pin, MessageCircle, Send, Heart, MoreHorizontal, Eye, Calendar, Crown } from "lucide-react";
+import { toast } from "react-toastify";
+
+import {
+  Pin,
+  MessageCircle,
+  Send,
+  Heart,
+  MoreHorizontal,
+  Eye,
+  Calendar,
+  Crown,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import ModalOptionAnnoun from "./ModalOptionAnnoun";
@@ -33,31 +44,47 @@ export default function CardPostAnnouncement({
       [id]: value,
     }));
   };
-  
+
   const handleSubmitComment = async (announcementId) => {
     const content = commentInputs[announcementId]?.trim();
     if (!content) return;
 
     try {
-      await createCommentByAnnouncementIdAction({ announcementId, content });
-      setCommentInputs((prev) => ({ ...prev, [announcementId]: "" }));
+      const res = await createCommentByAnnouncementIdAction({
+        announcementId,
+        content,
+      });
+
+      if (res?.success) {
+        toast.success("Comment posted successfully!");
+        setCommentInputs((prev) => ({ ...prev, [announcementId]: "" }));
+      } else {
+        toast.error("Failed to post comment.");
+      }
     } catch (err) {
+      toast.error("An error occurred while posting the comment.");
       console.error("Failed to post comment", err);
     }
   };
 
   const getInitials = (username) => {
-    return username?.split(' ').map(name => name[0]).join('').toUpperCase() || 'U';
+    return (
+      username
+        ?.split(" ")
+        .map((name) => name[0])
+        .join("")
+        .toUpperCase() || "U"
+    );
   };
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+    return date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
@@ -65,11 +92,13 @@ export default function CardPostAnnouncement({
     const date = new Date(dateString);
     const now = new Date();
     const diffInSeconds = Math.floor((now - date) / 1000);
-    
+
     if (diffInSeconds < 60) return "just now";
     if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`;
-    if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h ago`;
-    if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)}d ago`;
+    if (diffInSeconds < 86400)
+      return `${Math.floor(diffInSeconds / 3600)}h ago`;
+    if (diffInSeconds < 604800)
+      return `${Math.floor(diffInSeconds / 86400)}d ago`;
     return formatDate(dateString);
   };
 
@@ -80,7 +109,7 @@ export default function CardPostAnnouncement({
           {announcementList.map((announcement, index) => (
             <Card
               key={index}
-              className="group bg-white/90 backdrop-blur-sm  shadow-xl hover:shadow-2xl transition-all duration-300 rounded-2xl overflow-hidden max-w-2xl mx-auto border-1"
+              className="group bg-white/90 backdrop-blur-sm  shadow-xl hover:shadow-2xl transition-all duration-300 rounded-2xl overflow-hidden max-w-3xl mx-auto border-1"
             >
               <CardContent className="p-0">
                 {/* Header Section */}
@@ -89,7 +118,7 @@ export default function CardPostAnnouncement({
                     <div className="flex items-center gap-4">
                       {/* Enhanced Profile Avatar */}
                       <div className="relative">
-                        <div className="w-14 h-14 rounded-full bg-gradient-to-br from-primary via-purple-500 to-pink-500 p-0.5 shadow-lg">
+                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary via-purple-500 to-pink-500 p-0.5 shadow-lg">
                           <div className="w-full h-full rounded-full bg-white p-0.5">
                             {announcement.createdBy?.imageUrl ? (
                               <img
@@ -171,7 +200,7 @@ export default function CardPostAnnouncement({
 
                   {/* Image Viewer */}
                   {announcement.imageUrl?.length > 0 && (
-                    <div className="mb-4 rounded-xl overflow-hidden">
+                    <div className="mb-4 overflow-hidden">
                       <ImageViewer urls={announcement.imageUrl} />
                     </div>
                   )}
@@ -209,47 +238,54 @@ export default function CardPostAnnouncement({
                   </div>
 
                   {/* Enhanced Comment Input */}
-                  <div className="flex items-center gap-3 p-4 bg-white rounded-xl border border-gray-200 shadow-sm">
+                  <div className="flex items-center gap-3 p-4 bg-white rounded-xl border border-gray-200 shadow-sm hover:scale-[1.02] transition-transform duration-200">
                     {/* Current User Avatar */}
-                    <div className="relative w-10 h-10 flex-shrink-0">
-                      <div className="w-full h-full rounded-full bg-gradient-to-br from-blue-500 to-purple-600 p-0.5">
-                        <div className="w-full h-full rounded-full bg-white flex items-center justify-center">
-                          {currentUserBoardInfo?.profileImage ? (
-                            <img
-                              src={currentUserBoardInfo.profileImage}
-                              alt="Profile"
-                              className="w-full h-full object-cover rounded-full p-0.5"
-                            />
-                          ) : (
-                            <div className="w-full h-full rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold text-sm">
-                              {getInitials(currentUserBoardInfo?.username)}
-                            </div>
-                          )}
-                        </div>
+                    <div className="relative w-9 h-9 flex-shrink-0">
+                      <div className="w-full h-full rounded-full ring-2 ring-primary ring-offset-2 ring-offset-white">
+                        {currentUserBoardInfo?.profileImage ? (
+                          <img
+                            src={currentUserBoardInfo.profileImage}
+                            alt="Profile"
+                            className="w-full h-full object-cover rounded-full"
+                          />
+                        ) : (
+                          <div className="w-full h-full rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold text-sm">
+                            {getInitials(currentUserBoardInfo?.username)}
+                          </div>
+                        )}
                       </div>
-                      <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white" />
+                      <div className="absolute -bottom-0.5 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white" />
                     </div>
 
                     {/* Input Field */}
                     <div className="flex-1 flex items-center gap-2">
                       <input
                         type="text"
-                        placeholder={`Comment as ${currentUserBoardInfo?.username || 'User'}`}
+                        placeholder={`Comment as ${
+                          currentUserBoardInfo?.username || "User"
+                        }`}
                         className="flex-1 bg-transparent outline-none text-sm placeholder-gray-500"
                         value={commentInputs[announcement.announcementId] || ""}
                         onChange={(e) =>
-                          handleCommentChange(announcement.announcementId, e.target.value)
+                          handleCommentChange(
+                            announcement.announcementId,
+                            e.target.value
+                          )
                         }
                         onKeyPress={(e) => {
-                          if (e.key === 'Enter') {
+                          if (e.key === "Enter") {
                             handleSubmitComment(announcement.announcementId);
                           }
                         }}
                       />
                       <Button
                         size="sm"
-                        onClick={() => handleSubmitComment(announcement.announcementId)}
-                        disabled={!commentInputs[announcement.announcementId]?.trim()}
+                        onClick={() =>
+                          handleSubmitComment(announcement.announcementId)
+                        }
+                        disabled={
+                          !commentInputs[announcement.announcementId]?.trim()
+                        }
                         className="bg-primary hover:bg-blue-300 justify-center items-center text-white rounded-full p-2 shadow-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         <Send className="w-4 h-4" />

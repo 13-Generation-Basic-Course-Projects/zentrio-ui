@@ -4,7 +4,18 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Pencil, Trash2, Check, X, Crown, MessageCircle, ChevronDown, ChevronUp } from "lucide-react";
+import { toast } from "react-toastify";
+
+import {
+  Pencil,
+  Trash2,
+  Check,
+  X,
+  Crown,
+  MessageCircle,
+  ChevronDown,
+  ChevronUp,
+} from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
   editCommentByIdAction,
@@ -29,11 +40,12 @@ function getTimeAgo(dateString) {
   const date = new Date(dateString);
   const now = new Date();
   const diffInSeconds = Math.floor((now - date) / 1000);
-  
+
   if (diffInSeconds < 60) return "just now";
   if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`;
   if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h ago`;
-  if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)}d ago`;
+  if (diffInSeconds < 604800)
+    return `${Math.floor(diffInSeconds / 86400)}d ago`;
   return formatDate(dateString);
 }
 
@@ -66,16 +78,22 @@ export default function CommentCompo({
     try {
       if (!editedContent.trim()) return;
 
-      await editCommentByIdAction({
+      const res = await editCommentByIdAction({
         commentId,
         content: editedContent,
         announId,
       });
-      console.log("asd", announId, commentId, editedContent);
+
+      if (res?.success) {
+        toast.success("Comment updated successfully!");
+      } else {
+        toast.error("Failed to update comment.");
+      }
 
       setEditingId(null);
       setEditedContent("");
     } catch (error) {
+      toast.error("An error occurred while updating the comment.");
       console.error("Failed to edit comment:", error);
     }
   };
@@ -87,19 +105,34 @@ export default function CommentCompo({
 
   const handleDelete = async (commentId) => {
     try {
-      await deleteCommentByIdAction({ commentId });
+      const res = await deleteCommentByIdAction({ commentId });
+
+      if (res?.success) {
+        toast.success("Comment deleted successfully!");
+      } else {
+        toast.error("Failed to delete comment.");
+      }
     } catch (error) {
+      toast.error("An error occurred while deleting the comment.");
       console.error("Failed to delete comment:", error);
     }
   };
 
   const getUserRole = (userId) => {
-    const userBoardInfo = boardMember?.find(member => member.userId === userId);
+    const userBoardInfo = boardMember?.find(
+      (member) => member.userId === userId
+    );
     return userBoardInfo?.roles || [];
   };
 
   const getInitials = (username) => {
-    return username?.split(' ').map(name => name[0]).join('').toUpperCase() || 'U';
+    return (
+      username
+        ?.split(" ")
+        .map((name) => name[0])
+        .join("")
+        .toUpperCase() || "U"
+    );
   };
 
   // Don't render if no comments
@@ -109,7 +142,9 @@ export default function CommentCompo({
         <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-1">
           <MessageCircle className="w-6 h-6 text-gray-400" />
         </div>
-        <p className="text-gray-500 text-sm">No comments yet. Be the first to comment!</p>
+        <p className="text-gray-500 text-sm">
+          No comments yet. Be the first to comment!
+        </p>
       </div>
     );
   }
@@ -134,33 +169,30 @@ export default function CommentCompo({
           const isManager = userRoles.includes("ROLE_MANAGER");
 
           return (
-            <Card 
-              key={index} 
-              className="group hover:shadow-md transition-all duration-300 border-0 shadow-sm bg-white/80 backdrop-blur-sm hover:bg-white rounded-xl"
+            <Card
+              key={index}
+              className="group hover:shadow-md transition-all duration-300 border-0 shadow-sm bg-white/80 backdrop-blur-sm hover:bg-white rounded-xl hover:scale-[1.02]"
             >
               <CardContent className="p-4">
                 <div className="flex gap-3">
                   {/* Enhanced Profile Avatar */}
                   <div className="relative flex-shrink-0">
-                    <div className="w-10 h-10 rounded-full bg-primary p-0.5 shadow-md">
-                      <div className="w-full h-full rounded-full bg-white flex items-center justify-center">
-                        {comment.member.imageUrl ? (
-                          <Image
-                            src={comment.member.imageUrl}
-                            alt={comment.member.username}
-                            width={40}
-                            height={40}
-                            className="object-cover w-full h-full rounded-full"
-                          />
-                        ) : (
-                          <div className="w-full h-full rounded-full bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center text-white font-semibold text-sm">
-                            {getInitials(comment.member.username)}
-                          </div>
-                        )}
-                      </div>
+                    <div className="w-9 h-9 rounded-full ring-2 ring-primary ring-offset-2 ring-offset-white overflow-hidden flex items-center justify-center bg-gradient-to-br from-primary to-purple-600 text-white font-semibold text-sm">
+                      {comment.member.imageUrl ? (
+                        <Image
+                          src={comment.member.imageUrl}
+                          alt={comment.member.username}
+                          width={40}
+                          height={40}
+                          className="object-cover w-full h-full rounded-full"
+                        />
+                      ) : (
+                        getInitials(comment.member.username)
+                      )}
                     </div>
+
                     {isManager && (
-                      <div className="absolute -top-0.5 -right-0.5 w-4 h-4 border-white border-2 bg-yellow-500 rounded-full flex items-center justify-center shadow-md">
+                      <div className="absolute -top-1 -right-1.5 w-4 h-4 border-white border-2 bg-yellow-500 rounded-full flex items-center justify-center shadow-md">
                         <Crown className="w-2.5 h-2.5 text-white" />
                       </div>
                     )}
@@ -174,11 +206,11 @@ export default function CommentCompo({
                           <h4 className="font-semibold text-gray-900 text-sm">
                             {comment.member.username}
                           </h4>
-                          {isManager && (
+                          {/* {isManager && (
                             <span className="px-2 py-0.5 bg-yellow-100 text-yellow-800 text-xs font-medium rounded-full">
                               Manager
                             </span>
-                          )}
+                          )} */}
                           {isOwner && (
                             <span className="px-2 py-0.5 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">
                               You
@@ -188,7 +220,7 @@ export default function CommentCompo({
                         <p className="text-xs text-gray-500 flex items-center gap-1">
                           <span>{getTimeAgo(comment.creationDate)}</span>
                           <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
-                          <span>{formatDate(comment.creationDate)}</span>
+                          {/* <span>{formatDate(comment.creationDate)}</span> */}
                         </p>
                       </div>
 
@@ -293,7 +325,8 @@ export default function CommentCompo({
             ) : (
               <>
                 <ChevronDown className="w-4 h-4 mr-2" />
-                Show {remainingCommentsCount} More {remainingCommentsCount === 1 ? 'Comment' : 'Comments'}
+                Show {remainingCommentsCount} More{" "}
+                {remainingCommentsCount === 1 ? "Comment" : "Comments"}
               </>
             )}
           </Button>

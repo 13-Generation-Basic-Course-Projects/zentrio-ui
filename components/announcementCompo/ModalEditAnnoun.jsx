@@ -15,6 +15,8 @@ import preImage from "@/assets/folderdynamiccolor.png";
 import thumbup from "@/assets/thumbupdynamiccolor.png";
 import logo from "@/public/image/Zentrio-Logo.png";
 import { ArrowRight, Calendar, Crown, Zap } from "lucide-react";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function ModalEditAnnoun({
   title,
@@ -35,14 +37,21 @@ export default function ModalEditAnnoun({
     if (!titleState || !description) return;
     setLoading(true);
     try {
-      await updateAnnouncementByIdAction(
+      const res = await updateAnnouncementByIdAction(
         announId,
         description,
         titleState,
         boardId
       );
-      onClose();
+
+      if (res?.success) {
+        toast.success("Updated successfully!");
+        onClose();
+      } else {
+        toast.error("Failed to update announcement.");
+      }
     } catch (error) {
+      toast.error("Something went wrong while updating.");
       console.error("Failed to update announcement", error);
     } finally {
       setLoading(false);

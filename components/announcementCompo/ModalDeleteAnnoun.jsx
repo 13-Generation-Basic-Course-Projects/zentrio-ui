@@ -10,6 +10,7 @@ import {
   useDisclosure,
 } from "@heroui/react";
 import { deleteAnnouncementByIdAction } from "@/action/announcement.action";
+import { toast } from "react-toastify";
 
 export default function ModalDeleteAnnoun({
   title,
@@ -26,8 +27,19 @@ export default function ModalDeleteAnnoun({
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-  const handleDelete = async (id) => {
-    await deleteAnnouncementByIdAction(id);
+  const handleDelete = async (id, onClose) => {
+    try {
+      const res = await deleteAnnouncementByIdAction(id);
+      if (res?.success) {
+        toast.success("Announcement deleted successfully!");
+        onClose(); // Close the modal only if successful
+      } else {
+        toast.error("Failed to delete announcement.");
+      }
+    } catch (error) {
+      toast.error("Something went wrong while deleting.");
+      console.error("Delete error:", error);
+    }
   };
 
   return (
@@ -60,9 +72,7 @@ export default function ModalDeleteAnnoun({
                 swapButton ? (
                   <ModalFooter>
                     <form action={action}>
-                      <Button
-                        className="bg-slate-red text-white font-semibold"
-                      >
+                      <Button className="bg-slate-red text-white font-semibold">
                         <p className="text-red-500">{massageDo}</p>
                       </Button>
                     </form>
@@ -86,7 +96,7 @@ export default function ModalDeleteAnnoun({
                     <form action={action}>
                       <Button
                         className="bg-slate-red text-white font-semibold"
-                        onPress={() => handleDelete(announId) && onClose} 
+                        onPress={() => handleDelete(announId, onClose)}
                       >
                         <p className="text-red-500">{massageDo}</p>
                       </Button>
