@@ -9,6 +9,9 @@ export default async function MemberProfile({ params, searchParams }) {
   const { userId } = params;
   console.log("Board ID:", boardId);
   console.log("User ID:", userId, "Board ID:", boardId);
+
+
+
   /*
    * get member
    */

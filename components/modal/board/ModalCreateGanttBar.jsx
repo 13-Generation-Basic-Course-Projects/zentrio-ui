@@ -250,14 +250,14 @@ const handleModalClose = useCallback(() => {
     const oneHourMs = 1 * 60 * 60 * 1000; // 1 hour in milliseconds
     const sixMinutesMs = 6 * 60 * 1000; // 6 minutes in milliseconds (5 + 1)
     const nowInUtc7PlusOneHour = new Date(
-      now.getTime() + sixMinutesMs + oneHourMs
+      now.getTime() + utc7OffsetMs + oneHourMs
     );
     const payload = pendingItems.map((item) => {
       const selectedStartDate = new Date(item.startedAt);
 
       // Determine the appropriate start date
       let startDate;
-      const nowInUtc7 = new Date(now.getTime() + sixMinutesMs);
+      const nowInUtc7 = new Date(now.getTime() + utc7OffsetMs);
       if (selectedStartDate <= nowInUtc7) {
         // If the selected start date is today or in the past, use today
         startDate = new Date(
