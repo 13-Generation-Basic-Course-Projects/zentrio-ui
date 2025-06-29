@@ -1015,44 +1015,10 @@ const ModalDetailChecklist = ({
             <>
               <ModalHeader className="flex flex-row justify-between items-center sticky top-0 z-10 bg-white">
                 <div className="flex flex-wrap justify-start items-center gap-2">
-                  <svg
-                    width="12"
-                    height="14"
-                    viewBox="0 0 12 14"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M8 2.5H2C1.44772 2.5 1 2.94772 1 3.5C1 4.05228 1.44772 4.5 2 4.5V12C2 12.5523 2.44772 13 3 13H8C8.55228 13 9 12.5523 9 12C9 11.4477 8.55228 11 8 11V3.5C8 2.94772 8.44772 2.5 8 2.5Z"
-                      stroke="#000000"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M3 5H7"
-                      stroke="#000000"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M3 7.5H7"
-                      stroke="#000000"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M3 10H5"
-                      stroke="#000000"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M3.5 0.5H10C10.2652 0.5 10.5196 0.605357 10.7071 0.792893C10.8946 0.98043 11 1.23478 11 1.5V2"
-                      stroke="#000000"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6.429 9.75 2.25 12l4.179 2.25m0-4.5 5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-4.179 2.25m0 0L21.75 12l-4.179 2.25m0 0 4.179 2.25L12 21.75 2.25 16.5l4.179-2.25m11.142 0-5.571 3-5.571-3" />
+                </svg>
+
                   <p className="text-h5 font-medium break-words max-w-full">
                     {taskTitle || "Task Name"}
                   </p>
@@ -1090,13 +1056,17 @@ const ModalDetailChecklist = ({
                   </div>
                 )}
 
+                {/* this is for change image checklist  */}
                 <div className="border rounded-medium flex justify-center items-center relative w-full h-40">
                   <img
                     src={displayImage}
                     alt="Checklist Image"
                     className="w-full h-full object-cover rounded-medium"
                   />
-                  <input
+                  {role === "ROLE_MEMBER" ? "": (
+
+                    <>
+                    <input
                     type="file"
                     accept="image/*"
                     ref={fileInputRef}
@@ -1111,6 +1081,9 @@ const ModalDetailChecklist = ({
                   >
                     <CameraIcon className="h-6 w-6 text-gray-600" />
                   </button>
+                    
+                    </>
+                  )}
                 </div>
                 {/* newwwwww */}
                 <div>
