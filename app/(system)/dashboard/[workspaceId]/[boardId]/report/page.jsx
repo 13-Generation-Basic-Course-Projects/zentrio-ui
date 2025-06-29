@@ -52,7 +52,7 @@ export default async function Report({ params }) {
         roleJoined={role}
         modal={[
           <BtnPreview key="btn-preview" report={reportData} />,
-          <ModalSaveAs key="modal-save-as" board={boardId} />,
+          <ModalSaveAs key="modal-save-as" board={boardId} report={reportData}/>,
         ]}
         report={reportData}
         version={reportVersionData}

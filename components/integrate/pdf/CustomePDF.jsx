@@ -4,8 +4,6 @@ import Laptop from "@/assets/intergrating/laptop.png";
 import Image from "next/image";
 import { getReportAction } from "@/action/report.action";
 import { useEffect, useRef, useState } from "react";
-import { GenerateDocx } from "../docs/GenerateDocs";
-import { GenerateXlsx } from "../sheets/GenerateSheet";
 
 export const PDFPreviewer = ({ report }) => {
   const myMonth = {
@@ -400,7 +398,7 @@ export const PDFPreviewer = ({ report }) => {
               >
                 <p className="text-h2 select-none">-</p>
               </div>
-              <p className="text-body-sm h-6 w-14 flex justify-center items-center bg-black">
+              <p className="text-body-sm h-6 w-14 flex justify-center items-center cursor-default bg-black">
                 {(scale * 100).toFixed(0)}%
               </p>
               <div
@@ -411,7 +409,7 @@ export const PDFPreviewer = ({ report }) => {
               </div>
             </div>
           </div>
-          <div className="w-8 h-8 hover:bg-black flex justify-center items-center cursor-pointer"></div>
+          <div className="w-8 h-8 flex justify-center items-center"></div>
         </div>
 
         {/* this body */}
@@ -1459,6 +1457,8 @@ export const FirstPage = ({
       [itemKey]: true,
     });
   };
+
+  console.log("សម្តេចពុក: ", report.payload)
   return (
     <div
       className={`${absolute} ${
@@ -1525,8 +1525,6 @@ export const FirstPage = ({
               <tr>
                 <td style={{ width: "120px" }}>
                   <span className="text-white">Board Name</span>
-                  <GenerateDocx />
-                  <GenerateXlsx />
                 </td>
                 <td
                   style={{ width: "120px" }}
