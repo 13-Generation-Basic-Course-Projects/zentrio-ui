@@ -64,10 +64,10 @@ export const updateAchievementService = async ({ token, payload }) => {
       achievementId = existingData?.payload?.achievementId;
     }
   } catch (err) {
-    console.warn(
-      "Error fetching existing achievements, assuming new user:",
-      err
-    );
+    ////console.warn(
+     // "Error fetching existing achievements, assuming new user:",
+      //err
+    //);
     // Default to POST
   }
 
@@ -130,8 +130,8 @@ export const getPreviewProfileService = async ({ token }) => {
 
 export const updateProfileImageService = async ({ token, formData }) => {
   const url =profileRouteGroup.updateProfileImgae();
-  console.log("url", url);
-  console.log("datakakak", formData);
+  ////console.log("url", url);
+  ////console.log("datakakak", formData);
   const response = await fetch(url,{
     method: "POST",
     headers: {
@@ -145,6 +145,6 @@ export const updateProfileImageService = async ({ token, formData }) => {
   }
 
   const data = await response.json();
-  console.log("vit_profile",data)
+  ////console.log("vit_profile",data)
   return data;
 };

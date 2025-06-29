@@ -33,7 +33,7 @@ export const createWorkspaceService = async ({ title, description, token }) => {
     const data = await res.json();
     return data;
   } catch (error) {
-    console.error("❌ Failed to create workspace:", error.message);
+    //console.error("❌ Failed to create workspace:", error.message);
     throw error;
   }
 };
@@ -88,7 +88,7 @@ export const getWorkspaceByIdService = async (id, token) => {
     const data = await res.json();
     return data;
   } catch (error) {
-    console.error("❌ Failed to get workspace by id:", error.message);
+    //console.error("❌ Failed to get workspace by id:", error.message);
     throw error;
   }
 };
@@ -97,7 +97,7 @@ export const getWorkspaceByIdService = async (id, token) => {
  * 4. for service Delete workspace by id -> deleteWorkspaceById: (id) => `${apiConfig.baseUrl}/api/v1/workspaces/${id}`,
  */
 export const deleteWorkspaceByIdService = async ({ id, token }) => {
-  console.log("Delete id service : ", id);
+  //console.log("Delete id service : ", id);
   try {
     const url = workspaceRouteGroup.deleteWorkspaceById(id);
     const res = await fetch(url, {
@@ -121,7 +121,7 @@ export const deleteWorkspaceByIdService = async ({ id, token }) => {
     const data = await res.json();
     return data;
   } catch (error) {
-    console.error("❌ Failed to delete workspace by id:", error.message);
+    //console.error("❌ Failed to delete workspace by id:", error.message);
     throw error;
   }
 };
@@ -194,7 +194,7 @@ export const getWorkspacesByUserService = async ({ token }) => {
     const data = await res.json();
     return data;
   } catch (error) {
-    console.error("❌ Failed to get workspace by users:", error.message);
+    //console.error("❌ Failed to get workspace by users:", error.message);
     throw error;
   }
 };
@@ -222,7 +222,7 @@ export const getWorkspacesByUserIdService = async (userId, token) => {
 
     return await res.json();
   } catch (error) {
-    console.error("❌ Failed to get workspace by user ID:", error.message);
+    //console.error("❌ Failed to get workspace by user ID:", error.message);
     throw error;
   }
 };
@@ -252,7 +252,7 @@ export const getWorkspacesByTitleService = async (title, token) => {
 
     return await res.json();
   } catch (error) {
-    console.error("❌ Failed to get workspace by user ID:", error.message);
+    //console.error("❌ Failed to get workspace by user ID:", error.message);
     throw error;
   }
 };
@@ -287,7 +287,7 @@ export const getBoardByIdService = async ({ boardId, token }) => {
 
     return await res.json();
   } catch (error) {
-    console.error("❌ Failed to get board by ID:", error.message);
+    //console.error("❌ Failed to get board by ID:", error.message);
     throw error;
   }
 };
@@ -303,12 +303,12 @@ export const updateBoardByIdService = async ({
   workspaceId,
   token,
 }) => {
-  console.log("🔁 Sending update payload in service:", {
-    title,
-    description,
-    cover,
-    workspaceId,
-  });
+  // //console.log("🔁 Sending update payload in service:", {
+  //   title,
+  //   description,
+  //   cover,
+  //   workspaceId,
+  // });
 
   const url = boardRouteGroup.updateBoardById(boardId);
 
@@ -348,8 +348,8 @@ export const updateFavBoardByIdService = async ({
     boardId
   )}?isFavourite=${isFavourite}`;
 
-  console.log("🔐 Using token in service:", token);
-  console.log("🌐 Final request URL:", url);
+  //console.log("🔐 Using token in service:", token);
+  //console.log("🌐 Final request URL:", url);
 
   try {
     const res = await fetch(url, {
@@ -368,7 +368,7 @@ export const updateFavBoardByIdService = async ({
 
     return await res.json();
   } catch (error) {
-    console.error("❌ Failed to update favourite board:", error.message);
+    //console.error("❌ Failed to update favourite board:", error.message);
     throw error;
   }
 };
@@ -397,7 +397,7 @@ export const getAllBoardsService = async ({ token }) => {
 
     return await res.json();
   } catch (error) {
-    console.error("❌ Failed to get all boards:", error.message);
+    //console.error("❌ Failed to get all boards:", error.message);
     throw error;
   }
 };
@@ -424,7 +424,7 @@ export const createBoardService = async ({
     if (cover) {
       formData.append("cover", cover);
     }
-    console.log("FormData contents in service:", formData);
+    //console.log("FormData contents in service:", formData);
 
     const res = await fetch(url, {
       next: {
@@ -452,7 +452,7 @@ export const createBoardService = async ({
 
     return await res.json();
   } catch (error) {
-    console.error("❌ Failed to create board by workspace id :", error.message);
+    //console.error("❌ Failed to create board by workspace id :", error.message);
     throw error;
   }
 };
@@ -482,10 +482,10 @@ export const inviteUserToBoardService = async (id, email, roleName, token) => {
 
     return await res.json();
   } catch (error) {
-    console.error(
-      "❌ Failed to invite any users to specific board :",
-      error.message
-    );
+    //console.error(
+   //   "❌ Failed to invite any users to specific board :",
+     // error.message
+    //);
     throw error;
   }
 };
@@ -515,10 +515,10 @@ export const uploadBoardCoverService = async ({ boardId, file, token }) => {
 
     return await res.json();
   } catch (error) {
-    console.error(
-      "❌ Failed to upload board cover by specific board id :",
-      error.message
-    );
+    //console.error(
+    //  "❌ Failed to upload board cover by specific board id :",
+     // error.message
+    //);
     throw error;
   }
 };
@@ -561,7 +561,7 @@ export const assignUserRoleService = async (
 
     return await res.json();
   } catch (error) {
-    console.error("❌ Failed to assign user role to board:", error.message);
+    //console.error("❌ Failed to assign user role to board:", error.message);
     throw error;
   }
 };
@@ -590,10 +590,10 @@ export const getBoardsByUserIdService = async (id, token) => {
 
     return await res.json();
   } catch (error) {
-    console.error(
-      "❌ Failed to get board by id with current user id :",
-      error.message
-    );
+    //console.error(
+    //  "❌ Failed to get board by id with current user id :",
+      //error.message
+    //);
     throw error;
   }
 };
@@ -617,7 +617,7 @@ export const getBoardCoverService = async (id, filename, token) => {
 
     return await res.blob(); // Return image blob
   } catch (error) {
-    console.error("❌ Failed to get board cover:", error.message);
+    //console.error("❌ Failed to get board cover:", error.message);
     throw error;
   }
 };
@@ -632,7 +632,7 @@ export const getBoardsByWorkspaceIdService = async ({ workspaceId, token }) => {
 
   try {
     const url = boardRouteGroup.getBoardsByWorkspaceId(workspaceId);
-    console.log("🌐 Fetching boards from:", url);
+    //console.log("🌐 Fetching boards from:", url);
 
     const res = await fetch(url, {
       method: "GET",
@@ -645,13 +645,13 @@ export const getBoardsByWorkspaceIdService = async ({ workspaceId, token }) => {
 
     if (!res.ok) {
       // Optionally log status-specific messages
-      console.warn(`⚠️ Server responded with status ${res.status}`);
+      //console.warn(`⚠️ Server responded with status ${res.status}`);
       return null; // 👈 Return null to indicate failure
     }
 
     return await res.json();
   } catch (error) {
-    console.error("❌ Failed to get boards by workspace ID:", error);
+    //console.error("❌ Failed to get boards by workspace ID:", error);
     return null; // 👈 Prevent undefined
   }
 };
@@ -676,7 +676,7 @@ export const getBoardByTitleService = async (title, token) => {
 
     return await res.json();
   } catch (error) {
-    console.error("❌ Failed to get board by title:", error.message);
+    //console.error("❌ Failed to get board by title:", error.message);
     throw error;
   }
 };
@@ -701,7 +701,7 @@ export const getBoardsForCurrentUserService = async (token) => {
 
     return await res.json();
   } catch (error) {
-    console.error("❌ Failed to get boards for current user:", error.message);
+    //console.error("❌ Failed to get boards for current user:", error.message);
     throw error;
   }
 };
@@ -710,7 +710,7 @@ export const getBoardsForCurrentUserService = async (token) => {
  * 16. Deleted board by id and workspace id
  */
 export const deleteBoardService = async ({ id, workspaceId, token }) => {
-  console.log("WorkspaceId in delete board service: ", workspaceId);
+  //console.log("WorkspaceId in delete board service: ", workspaceId);
   try {
     const url = boardRouteGroup.deleteBoard(id, workspaceId);
 
@@ -730,7 +730,7 @@ export const deleteBoardService = async ({ id, workspaceId, token }) => {
 
     return await res.json();
   } catch (error) {
-    console.error("❌ Failed to delete board:", error.message);
+    //console.error("❌ Failed to delete board:", error.message);
     throw error;
   }
 };
@@ -738,10 +738,10 @@ export const deleteBoardService = async ({ id, workspaceId, token }) => {
  * get all  favorite
  */
 export const getFavoriteBoardService = async (userId, token) => {
-  console.log("service id", userId);
+  //console.log("service id", userId);
   const url = boardRouteGroup.getFavoriteBoard(userId);
   try {
-    console.log(url);
+    //console.log(url);
     const res = await fetch(url, {
       method: "GET",
       headers: {
@@ -750,11 +750,11 @@ export const getFavoriteBoardService = async (userId, token) => {
       },
     });
     const data = await res.json();
-    console.log("📥 Backend responded with favboard:", data);
+    //console.log("📥 Backend responded with favboard:", data);
 
     return data; // just return the data, don’t redirect here
   } catch (error) {
-    console.error("bug", error.message);
+    //console.error("bug", error.message);
     throw error;
   }
 };
@@ -765,7 +765,7 @@ export const getFavoriteBoardService = async (userId, token) => {
 export const getOtherWorkSpaceJoinedService = async (token) => {
   const url = workspaceRouteGroup.getOtherWorkSpaceJoined();
   try {
-    console.log(url);
+    //console.log(url);
     const res = await fetch(url, {
       method: "GET",
       headers: {
@@ -774,11 +774,11 @@ export const getOtherWorkSpaceJoinedService = async (token) => {
       },
     });
     const data = await res.json();
-    console.log("📥 Backend responded with favboard:", data);
+    //console.log("📥 Backend responded with favboard:", data);
 
     return data; // just return the data, don’t redirect here
   } catch (error) {
-    console.error("bug", error.message);
+    //console.error("bug", error.message);
     throw error;
   }
 };
@@ -790,7 +790,7 @@ export const getOtherWorkSpaceJoinedService = async (token) => {
 export const getMemberByBoardIdService = async ({ boardId, token }) => {
   const url = workspaceRouteGroup.getMemeberByBoardId(boardId);
   try {
-    console.log(url);
+    //console.log(url);
     const res = await fetch(url, {
       method: "GET",
       headers: {
@@ -799,11 +799,11 @@ export const getMemberByBoardIdService = async ({ boardId, token }) => {
       },
     });
     const data = await res.json();
-    console.log("📥 Backend responded with member by board id:", data);
+    //console.log("📥 Backend responded with member by board id:", data);
 
     return data; // just return the data, don’t redirect here
   } catch (error) {
-    console.error("bug", error.message);
+    //console.error("bug", error.message);
     throw error;
   }
 };

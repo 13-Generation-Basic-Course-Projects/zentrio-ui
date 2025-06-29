@@ -10,8 +10,6 @@ import {
   DropdownSection,
   Avatar,
 } from "@heroui/react";
-import ModalDelete from "../ModalDelete";
-import PopupAction from "@/components/popup/PopupAction";
 import { IconpopupDelete } from "@/components/icon/Iconpopup";
 import {
   downloadAllFilesAsZipAction,
@@ -20,6 +18,8 @@ import {
 import { useState } from "react";
 import { downloadFileFromDriveAction } from "@/action/drive.action";
 import { ModalRenameFileOrFolderInFolder } from "./ModalRenameDocuInFolder";
+import PopupActionDeleteDocu from "@/components/popup/PopupActionDeleteDocu";
+import PopupActionDeleteDriveFile from "@/components/popup/PopupActionDeleteDriveFile";
 
 // Icon components
 const AddNoteIcon = (props) => (
@@ -251,7 +251,7 @@ export default function ModalOptionDocumentInFolder({
           className="w-full hover:bg-default-100"
           startContent={<DeleteDocumentIcon className="w-4 h-4" />}
         >
-          <PopupAction
+          <PopupActionDeleteDriveFile
             title="Delete Folder"
             massageTitle="Are you sure?"
             massageBody="You want to delete it."
