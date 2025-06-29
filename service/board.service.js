@@ -659,7 +659,7 @@ export const changeStatusTaskService = async (taskId, token, type) => {
  * cheng  task to underreview
  */
 export const changeStageToUnderReviewService = async (taskId, token, stage) => {
-  try {
+  
     //console.log("from service ", token);
     const url = boardRouteGroup.changeStagToUnderReview(taskId, stage);
     console.log(url);
@@ -674,9 +674,7 @@ export const changeStageToUnderReviewService = async (taskId, token, stage) => {
     console.log("📥 Backend responded with change status completed:", data);
 
     return data;
-  } catch (error) {
-    throw error;
-  }
+ 
 };
 
 export const FeedBackService = async (taskId, token, comment) => {

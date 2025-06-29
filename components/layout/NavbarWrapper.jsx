@@ -17,7 +17,9 @@ export default function NavbarWrapper({
         pathname.match(
           /\/dashboard\/(otherworkspace\/)?[^/]+\/[^/]+\/docu$/
         ))) ||
-    pathname === "/profile";
+    pathname === "/profile" ||
+    // New condition for /guestuser/:workspaceId/:boardId
+    pathname?.startsWith("/guestuser/");
 
   if (hideNavbar) return null;
 
