@@ -62,10 +62,10 @@ export default function BredCrumGanttChart({
       data: { title: trimmedHeader },
     });
     console.log("result", result);
-    if (result.data.title !== "Forbidden") {
+    if (result.data.title !== "Forbidden" && result.data.title !== "Bad Request") {
       setEditableHeader(trimmedHeader);
       toast.success("Header updated successfully!");
-    } else if (result.data.title === "Forbidden") {
+    } else if (result.data.title === "Forbidden" ||  result.data.title === "Bad Request") {
       toast.error(result.error || "You are not authorized to update this header.Only Project Manager can update the header");
       setTempHeader(editableHeader);
     }

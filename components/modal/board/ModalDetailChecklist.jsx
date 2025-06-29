@@ -924,6 +924,9 @@ const ModalDetailChecklist = ({
       ?.flat() // Flatten the array of arrays into a single array
       .filter((feedback) => feedback?.taskId === taskId) || [];
 
+
+      console.log("this is role ",role);  
+
   return (
     <div>
       {role == "ROLE_MEMBER" || role == "ROLE_MANAGER" ? (
@@ -1122,7 +1125,7 @@ const ModalDetailChecklist = ({
                 {/* newwwww */}
                 <div className="flex flex-col">
                   {/* title and delete button */}
-                  <div className="flex items-center justify-between gap-4 p-4 bg-white">
+                  {role === "ROLE_MEMBER" ? "": (<div className="flex items-center justify-between gap-4 p-4 bg-white">
                     {isEditingTitle ? (
                       <div className="flex-1 min-w-0">
                         <input
@@ -1184,7 +1187,8 @@ const ModalDetailChecklist = ({
                         taskId={taskId}
                       />
                     </div>
-                  </div>
+                  </div>) }
+                  
 
                   <div className="flex flex-wrap justify-between items-center mt-5">
                     <StackedProfileChecklist

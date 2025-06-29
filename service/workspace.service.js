@@ -483,8 +483,8 @@ export const inviteUserToBoardService = async (id, email, roleName, token) => {
     return await res.json();
   } catch (error) {
     //console.error(
-   //   "❌ Failed to invite any users to specific board :",
-     // error.message
+    //   "❌ Failed to invite any users to specific board :",
+    // error.message
     //);
     throw error;
   }
@@ -517,7 +517,7 @@ export const uploadBoardCoverService = async ({ boardId, file, token }) => {
   } catch (error) {
     //console.error(
     //  "❌ Failed to upload board cover by specific board id :",
-     // error.message
+    // error.message
     //);
     throw error;
   }
@@ -592,7 +592,7 @@ export const getBoardsByUserIdService = async (id, token) => {
   } catch (error) {
     //console.error(
     //  "❌ Failed to get board by id with current user id :",
-      //error.message
+    //error.message
     //);
     throw error;
   }
