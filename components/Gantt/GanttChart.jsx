@@ -9,6 +9,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "../../styles/ganttchart.css";
 import BredCrum from "../bredcrum/MyBredcrum";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import BredCrumGanttChart from "../bredcrum/BredcrumGanttChart";
 
 // Helper function to calculate duration in days
 const calculateDurationDays = (start, end) => {
@@ -123,6 +124,9 @@ export default function GanttChart({
   workspaceId,
   deleteGanttBarsByGanttChartIdAction, // Add this as a prop
   onGanttBarDeleted, // Optional callback to refresh data after deletion
+  
+  ganttChartId,
+  boardId,
 }) {
   const calendarRef = useRef(null);
   const [viewTitle, setViewTitle] = useState("");
@@ -601,7 +605,7 @@ export default function GanttChart({
 
   return (
     <div className="flex flex-col h-screen bg-white">
-      <BredCrum
+      <BredCrumGanttChart
         board={"Project Dashboard"}
         feature={"Gantt Chart"}
         header={
@@ -609,6 +613,8 @@ export default function GanttChart({
             ? ganttChartName
             : "Gantt Chart"
         }
+        ganttChartId={ganttChartId}
+        boardId ={boardId}
         modal={modal}
         workspaceId={workspaceId}
       />
