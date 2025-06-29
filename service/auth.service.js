@@ -71,7 +71,7 @@ export const loginZentrioCredentailService = async ({ email, password }) => {
     console.log("📥 Backend responded with:", data);
     console.log("BBBBB", data?.payload?.token);
 
-    return data; // just return the data, don’t redirect here
+    return data; // just return the data, don't redirect here
   } catch (error) {
     console.error("Login service error:", error.message);
     throw error;
@@ -230,7 +230,11 @@ export const forgotPasswordService = async ({
 export const loginGoogleService = async ({ idToken }) => {
   try {
     const url = `${apiConfig.baseUrl}/auths/login/third-party`;
-    console.log("Google ID Token:", idToken);
+    console.log("🔍 Google Login Debug:");
+    console.log("URL:", url);
+    console.log("Google ID Token:", idToken ? "Present" : "Missing");
+    console.log("Backend URL:", apiConfig.baseUrl);
+    
     const response = await fetch(url, {
       method: "POST",
       headers: {
@@ -238,21 +242,33 @@ export const loginGoogleService = async ({ idToken }) => {
       },
       body: JSON.stringify({ idToken, provider: "google" }),
     });
+    
+    console.log("Backend Response Status:", response.status);
+    console.log("Backend Response Headers:", Object.fromEntries(response.headers.entries()));
+    
     const data = await response.json();
-    console.log("Backend Response:", data);
+    console.log("Backend Response Data:", data);
+    
     if (!response.ok) {
+      console.error("❌ Backend request failed:", response.status, data);
       return {
         success: false,
-        message: data.message || "Authentication failed",
+        message: data.message || `Backend error: ${response.status}`,
         status: response.status,
+        error: data,
       };
     }
+    
     if (!data.success) {
+      console.error("❌ Backend authentication failed:", data);
       return {
         success: false,
         message: data.message || "Backend authentication failed",
+        error: data,
       };
     }
+    
+    console.log("✅ Backend authentication successful:", data);
     return {
       success: true,
       payload: {
@@ -266,7 +282,8 @@ export const loginGoogleService = async ({ idToken }) => {
       },
     };
   } catch (error) {
-    console.error("LoginGoogleService error:", error.message);
+    console.error("❌ LoginGoogleService error:", error.message);
+    console.error("Error details:", error);
     return {
       success: false,
       message: "Failed to authenticate with backend",
