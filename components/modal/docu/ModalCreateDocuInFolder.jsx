@@ -14,6 +14,7 @@ import {
   createDocumentByUploadAction,
   createDriveFileAction,
 } from "@/action/document.action";
+import ModalCreateFolderInFolder from "./ModalCreateFolderInFolder";
 
 export default function ModalCreateDocuInFolder({
   boardId,
@@ -183,10 +184,10 @@ export default function ModalCreateDocuInFolder({
       </Dropdown>
 
       {/* Modals */}
-      <ModalCreateFolder
+      <ModalCreateFolderInFolder
         isOpen={isCreateFolderOpen}
         onClose={() => setIsCreateFolderOpen(false)}
-        boardId={boardId}
+        folderId={folderId}
         tokenFromGoogle={tokenFromGoogle}
       />
 

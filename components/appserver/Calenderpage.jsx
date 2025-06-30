@@ -32,10 +32,6 @@ import {
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-// ========================================
-// UTILITY FUNCTIONS
-// ========================================
-
 const normalizeDateToDay = (date) => {
   if (!(date instanceof Date)) {
     date = new Date(date);
@@ -43,7 +39,7 @@ const normalizeDateToDay = (date) => {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate());
 };
 
-export default function MyCalender({ tasks }) {
+export default function MyCalender({ tasks, workspaceId }) {
   const colorList = [
     {
       bg: "bg-red-500",
@@ -190,7 +186,8 @@ export default function MyCalender({ tasks }) {
           id: task.taskId,
           title: task.title,
           start: task.startedAt,
-          end: task.finishedAt ?? task.startedAt,
+          end: task.finishedAt,
+          allDay: false,
           extendedProps: {
             type: task.type || "task",
             content: task.description,
@@ -259,7 +256,7 @@ export default function MyCalender({ tasks }) {
       const adjustedTask = {
         ...task,
         end: new Date(
-          new Date(task.end).setDate(new Date(task.end).getDate() + 2)
+          new Date(task.end).setDate(new Date(task.end).getDate() + 1)
         )
           .toISOString()
           .split("T")[0],
@@ -293,41 +290,12 @@ export default function MyCalender({ tasks }) {
       initialNoteValue && trimmedNoteValue !== initialNoteValue;
     const isDeletedNote = initialNoteValue && !trimmedNoteValue;
 
-    const startDateObj = new Date(`${startDateStr}T00:00:00.000Z`);
-    const endDateObj = new Date(`${endDateStr}T00:00:00.000Z`);
-
-    const tillDateObj = new Date(endDateObj);
-    tillDateObj.setHours(23, 59, 59, 999);
+    const startDateObj = new Date(`${startDateStr}T17:00:00.000Z`);
+    const tillDateObj = new Date(`${endDateStr}T23:00:00.000Z`);
 
     const selectedDate = new Date(`${endDateStr}T00:00:00.000Z`);
-<<<<<<< HEAD
-    // Prevent creating notes on the last day of the task period
-    // Compare the selected date with the task end date
-
-    // if (selectedDate.getTime() === endDateObj.getTime()) {
-    //   toast.error("Cannot create notes on the last day of the task period!", {
-    //     position: "top-right",
-    //     autoClose: 4000,
-    //   });
-    //   return;
-    // }
-
-    // Prevent past-dated notes
-    // if (endDateStr > tillDateObj) {
-    //   toast.error("Cannot create or update notes in the past!");
-    //   return;
-    // }
-=======
     const currentDate = new Date();
     currentDate.setHours(0, 0, 0, 0);
-
-    // Compare only the date part (not time) for last day check
-    const selectedOnlyDate = new Date(`${endDateStr}T00:00:00.000Z`);
-    const endDateOnlyObj = new Date(endDateObj);
-    endDateOnlyObj.setHours(0, 0, 0, 0);
-    console.log("selectedDateeeeeeeeeeeeeeee: ", selectedDate);
-    console.log("EndDateOnlyObjeeeeeeeeeeeeeee: ",endDateOnlyObj);
->>>>>>> 5bdc11017249877a01270fdd342721150e24725b
 
     const formattedStartDate = startDateObj.toISOString();
     const formattedTillDate = tillDateObj.toISOString();
@@ -345,7 +313,10 @@ export default function MyCalender({ tasks }) {
         );
 
         if (response?.error) {
-          toast.error(response.error.detail || "Error saving note");
+          toast.error(response.error.detail || "Error saving note", {
+            position: "top-right",
+            autoClose: 4000,
+          });
           return { success: false, message: response.error.detail };
         }
 
@@ -371,8 +342,11 @@ export default function MyCalender({ tasks }) {
         error?.response?.data?.detail ||
         error?.message ||
         "Unknown error occurred";
-      console.error("❌ Failed to save/update/delete note:", error);
-      toast.error(errorMsg);
+      console.error("Failed to save/update/delete note:", error);
+      toast.error(errorMsg, {
+        position: "top-right",
+        autoClose: 4000,
+      });
       return { success: false, message: errorMsg };
     } finally {
       setIsLoading(false);
@@ -426,7 +400,7 @@ export default function MyCalender({ tasks }) {
 
     if (!selectedTaskId) {
       handleCancel();
-      toast.error("⚠️ Selection must be within a task duration.", {
+      toast.error("Selection must be within a task duration.", {
         position: "top-right",
         autoClose: 4000,
       });
@@ -447,7 +421,7 @@ export default function MyCalender({ tasks }) {
 
     if (!matchingTask) {
       handleCancel();
-      toast.error("⚠️ Selection must be within a task duration.", {
+      toast.error("Selection must be within a task duration.", {
         position: "top-right",
         autoClose: 4000,
       });
@@ -484,9 +458,11 @@ export default function MyCalender({ tasks }) {
       });
 
     const displayEnd = new Date(realEnd || event.end);
+    console.log("Display end in calendar is: ", displayEnd);
     const formattedDate = `${formatDate(event.start)} - ${formatDate(
       displayEnd
     )}`;
+    // console.log("formattedDate in calendar is: ", formattedDate);
 
     // COMMENT EVENT BLOCK
     if (type === "comment") {
@@ -532,6 +508,34 @@ export default function MyCalender({ tasks }) {
     }
 
     // TASK EVENT BLOCK
+    function normalizeDateToDay(date) {
+      return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    }
+
+    const renderDate = event._instance?.range?.start;
+    const currentRenderDate = normalizeDateToDay(new Date(renderDate));
+    const startDate = normalizeDateToDay(new Date(event.start));
+
+    // Adjust end time back by 1ms to make it inclusive on the correct date
+    const rawEndDate = new Date(event.end || event.start);
+    const adjustedEndDate = new Date(rawEndDate.getTime() -2
+   );
+    const endDate = normalizeDateToDay(adjustedEndDate);
+
+    console.log("Start date:", startDate);
+    console.log("Adjusted end date:", adjustedEndDate);
+    console.log("Display end in calendar is:", endDate);
+
+    // Filter: only show between start and adjusted end (inclusive)
+    if (
+      currentRenderDate.getTime() < startDate.getTime() ||
+      currentRenderDate.getTime() > endDate.getTime()
+    ) {
+      return null;
+    }
+    
+    
+    
     if (!isStart) {
       return (
         <div
@@ -541,6 +545,7 @@ export default function MyCalender({ tasks }) {
         />
       );
     }
+   
 
     return (
       <div className="flex flex-col gap-1">
@@ -569,25 +574,14 @@ export default function MyCalender({ tasks }) {
     );
   };
 
-  // ========================================
-  // MAIN RENDER
-  // ========================================
-
   return (
     <div className="p-4 h-screen flex flex-col overflow-hidden relative">
-      <BredCrum board="Hikko Design" feature="Calender" header="Calender" />
-
-      {/* Loading overlay */}
-      {/* {isLoading && (
-        <div className="absolute inset-0 bg-black bg-opacity-20 flex items-center justify-center z-50">
-          <div className="bg-white p-4 rounded-lg shadow-lg">
-            <div className="flex items-center gap-2">
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
-              <span>Updating calendar...</span>
-            </div>
-          </div>
-        </div>
-      )} */}
+      <BredCrum
+        board="Hikko Design"
+        feature="Calender"
+        header="Calender"
+        workspaceId={workspaceId}
+      />
 
       {/* Main content grid */}
       <div className="flex flex-1 overflow-hidden scrollbar-hidden gap-4">
@@ -695,10 +689,6 @@ export default function MyCalender({ tasks }) {
 
             return (
               <div className="absolute z-50 w-[50%] bottom-32 left-0 right-36 mx-auto">
-                {/* <h2 className="text-body-sm mb-2 text-primary font-semibold">
-                  Add note for {startDate.toLocaleDateString()}{" "}
-                  {!isSingleDay && `- ${endDate.toLocaleDateString()}`}
-                </h2> */}
                 <input
                   type="text"
                   value={noteValue}
@@ -718,22 +708,6 @@ export default function MyCalender({ tasks }) {
                   className="w-full px-3 py-2 text-body-sm border border-gray-300 rounded-medium outline-none text-sm focus:ring-2 focus:ring-primary"
                   disabled={isLoading}
                 />
-                {/* <div className="flex gap-2 mt-2">
-                  <button
-                    onClick={handleSave}
-                    disabled={isLoading || !noteValue.trim()}
-                    className="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 disabled:opacity-50"
-                  >
-                    {isLoading ? "Saving..." : "Save"}
-                  </button>
-                  <button
-                    onClick={handleCancel}
-                    disabled={isLoading}
-                    className="px-3 py-1 bg-gray-300 text-gray-700 rounded text-sm hover:bg-gray-400 disabled:opacity-50"
-                  >
-                    Cancel
-                  </button>
-                </div> */}
               </div>
             );
           })()}

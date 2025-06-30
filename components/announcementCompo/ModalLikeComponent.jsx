@@ -120,6 +120,7 @@ export function LikeReactionButton({ announId, reacts, currentUserProfile }) {
     .slice(0, 3)
     .map(([type]) => type);
 
+
   const getEmoji = (type) => {
     const found = reactions.find(r => r.label.toUpperCase() === type);
     return found ? (

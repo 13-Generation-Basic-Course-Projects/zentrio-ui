@@ -118,48 +118,44 @@ export default function ActiveBoards({ userAchievement }) {
   return (
     <div className="rounded-xl shadow bg-white flex flex-col">
       <div>
-        <div className="flex justify-between py-4 px-4 border-b-1 border-stroke">
-          <h3 className="text-body font-semibold">Active Boards</h3>
-          <IconEllipsisVertical
-            strokeWidth={2}
-            color={"currentColor"}
-            size={6}
-          />
-        </div>
-        <div
-          className={`grid grid-cols-2 text-body-sm font-semibold text-description bg-gray-100 p-4`}>
-          <span>Board Name</span>
+        <div className="sticky top-0 z-10 bg-white">
+          <div className="flex justify-between py-4 px-4 border-b-1 border-stroke ">
+            <h3 className="text-body font-semibold  ">Active Boards</h3>
+            <IconEllipsisVertical
+              strokeWidth={2}
+              color={"currentColor"}
+              size={6}
+            />
+          </div>
+          <div
+            className={`grid grid-cols-2 text-body-sm font-semibold text-description bg-gray-100 p-4 `}>
+            <span>Board Name</span>
+          </div>
         </div>
         <ul className="p-4 space-y-3 mt-2">
-          {processedBoards.map((board) => (
-            <li
-              key={board.boardId}
-              className="grid grid-cols-12 items-center gap-4">
-              <div className="flex items-center gap-3 col-span-3">
-                <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center ${board?.textColor} font-semibold ${board.color}`}>
-                  {board.initial}
+          {Object.entries(userAchievement?.payload || {}).map(([boardName, board], index) => {
+            const percent = parseFloat(board.completionRate);
+           
+            return (
+              <li key={index} className="grid grid-cols-12 items-center gap-4">
+                <div className="flex items-center gap-3 col-span-3">
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center bg-indigo-100 text-indigo-600 font-semibold">
+                    {boardName.charAt(0).toUpperCase()}
+                  </div>
+                  <div>
+                    <p className="font-medium">{board.boardName}</p>
+                    <p className="text-body-sm text-description">Completed: {board.completedTasks}</p>
+                    <p className="text-label-sm text-description">Total: {board.totalTasks}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="font-medium">{board.title}</p>
-                  <p className="text-body-sm text-description">
-                    Role: {board.isOwner ? "Owner" : board.roleDisplay}
-                  </p>
-                  <p className="text-label-sm text-description">
-                    Date: {createdAt}
-                  </p>
-                </div>
-              </div>
-              {board.showProgress && (
                 <div className="col-span-9">
-                  <ProgressBar
-                    percent={board.percent}
-                    color={board.progressColor}
-                  />
+                  <ProgressBar percent={percent}  />
                 </div>
-              )}
-            </li>
-          ))}
+              </li>
+            );
+          })}
+
+
         </ul>
       </div>
     </div>

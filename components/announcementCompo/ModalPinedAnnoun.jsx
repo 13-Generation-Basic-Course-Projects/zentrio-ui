@@ -10,6 +10,7 @@ import {
   useDisclosure,
 } from "@heroui/react";
 import {  pinedAnnouncementByIdAction } from "@/action/announcement.action";
+import { toast } from "react-toastify";
 
 
 export default function ModalPinedAnnoun({
@@ -29,8 +30,18 @@ export default function ModalPinedAnnoun({
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const handlePined = async (announId) => {
-    await pinedAnnouncementByIdAction(announId);
-  };
+  try {
+    const res = await pinedAnnouncementByIdAction(announId);
+    if (res?.success) {
+      toast.success("Announcement pinned successfully!");
+    } else {
+      toast.error("Failed to pin announcement.");
+    }
+  } catch (error) {
+    toast.error("Something went wrong while pinning.");
+    console.error("Pin error:", error);
+  }
+};
 
   return (
     <>

@@ -18,6 +18,7 @@ export const getCurrentUserProfileAction = async () => {
   const result = await getCurrentUserProfileService({
     token,
   });
+  console.log("Result current user action : ", result);
   return result;
 };
 

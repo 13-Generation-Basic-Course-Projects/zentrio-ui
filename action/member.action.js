@@ -12,10 +12,11 @@ import {
 export const getBoardMemberAction = async (boardId) => {
   const userToken = await Token();
   const token = userToken.Credential;
+  
   const result = await getBoardMembersService({ boardId, token });
 
   // return result;
-  console.log("getBoardMembersService result:", result);
+  console.log("getBoardMembersAction result:", result);
 
   return Array.isArray(result?.payload) ? result.payload : [];
 };

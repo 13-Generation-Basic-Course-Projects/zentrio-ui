@@ -10,18 +10,16 @@ import { Token } from "@/constant/token";
 
 export default async function BoardLayout({ children, params }) {
   const session = await auth();
-  const boardId = params?.boardId;
+  const boardId = (await params).boardId;
+  const workspaceId = (await params).workspaceId;
 
   const getDocuments = await getDocumentsByBoardAction(boardId);
   const publicDocuments = await getPublicDocumentsByBoardAction(boardId);
 
-  // const refresh_token = session?.user?.google?.refreshToken;
-  // const tokenFromGoogle = await refreshAccessToken(refresh_token);
-
-  // console.log("refresh token ", refresh_token)
   const userToken = await Token();
   const token = userToken.GoogleDocumentToken;
 
+  // const tokenFromGoogle = "ya29.a0AW4XtxjmO36PU4vEhXhB6gyXpb_Um9wMecy153P4YRr7lbQaC5zR0qVTHvsNpKsmcSrt9ofkJ4633QrkEglksfLYbUF_YKfQWVpRgULGi4RTN_pa-J-8EQWOCkcjanCB6EkpvRisb_zSI5PcSOOTmXjmwG0Heh9HS42cPFlrygaCgYKARASARcSFQHGX2MiTyWDkwYvZZfQWcsybwPyeA0177";
   const tokenFromGoogle = token;
 
   console.log("debug", tokenFromGoogle);
@@ -34,6 +32,8 @@ export default async function BoardLayout({ children, params }) {
   const noImage = preventImage.noProfile;
   const preventUserImage = imageUser == null ? noImage : imageUser;
 
+  const { id } = params;
+  console.log("this is the boardid", boardId);
   return (
     <div>
       <DocumentAutherize
@@ -43,6 +43,8 @@ export default async function BoardLayout({ children, params }) {
         boardId={boardId}
         tokenFromGoogle={tokenFromGoogle}
         preventUserImage={preventUserImage}
+        workspaceId={workspaceId}
+        docIdPagedocIdPage={id}
       />
       <div>{children}</div>
     </div>

@@ -41,12 +41,20 @@ export default function PopupActionTaskMove({
   });
 
   const handleDelete = async () => {
-    try {
+    
       const result = await changeStageToUnderReviewAction(
         taskId,
         "UNDER_REVIEW"
       );
       console.log("respon delete", result);
+      if(result?.title === "Bad Request" || result?.status == 400){
+        toast.error(`Task move stage unsuccessfull ${result?.detail}`, {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+        });
+      }
+    else{
       toast.success("Task move stage successfully!", {
         position: "top-right",
         autoClose: 3000,
@@ -55,17 +63,8 @@ export default function PopupActionTaskMove({
         pauseOnHover: true,
         draggable: true,
       });
-    } catch (error) {
-      console.error("Delete failed", error);
-      toast.error("Failed to move task!", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-      });
     }
+    
   };
 
   return (

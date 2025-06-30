@@ -12,7 +12,6 @@ import {
 import { IconpopupDelete } from "@/components/icon/Iconpopup";
 import { useRouter } from "next/navigation";
 import { deleteDocumentAction } from "@/action/document.action";
-import { deleteFileByFileIdAction } from "@/action/drive.action";
 import { deleteCheckListByTaskIdAction } from "@/action/board.action";
 import { toast } from "react-toastify";
 export default function PopupAction({
@@ -23,7 +22,6 @@ export default function PopupAction({
   massageBody,
   massageUndo,
   massageDo,
-  fileId,
   documentId,
   accessToken,
   color,
@@ -34,18 +32,20 @@ export default function PopupAction({
   taskId,
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  
-  console.log("fileid: ", fileId, accessToken);
 
+  console.log(accessToken);
   const router = useRouter();
   const handleDelete = async () => {
     try {
-      if (documentId) {
-        await deleteDocumentAction(accessToken, documentId);
-      }
-      if (fileId) {
-        await deleteFileByFileIdAction({ fileId, accessToken });
-        
+      const result = await deleteCheckListByTaskIdAction(checkListId, taskId);
+      if (result?.status === "success" || result?.success) {
+        toast.success("You have deleted the checklist successfully", {
+          position: "top-right",
+          duration: 4000,
+        });
+        router.refresh(); // Refresh only on success
+      } else {
+        throw new Error("Deletion failed unexpectedly");
       }
     } catch (error) {
       console.error("Delete failed:", error);

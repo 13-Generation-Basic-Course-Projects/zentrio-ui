@@ -5,6 +5,7 @@ import {
   getBoardByBoardIdAction,
   getCheckListByTaskIdAction,
   getCommentByCheckListIdAction,
+  getFeedBackByTaskIdAction,
   getMemberByBoardIdAction,
   getTaskByBoardIdAction,
   getTaskByBoardIdAndGanttBarIdAction,
@@ -15,11 +16,15 @@ import {
   getGanttChartByBoardIdAction,
 } from "@/action/gantt.action";
 import { preventImage } from "@/constant/preventimage";
-import { getCurrentUserProfileAction } from "@/action/profile.action";
+import {
+  getCurrentUserProfileAction,
+  getPreviewProfileAction,
+} from "@/action/profile.action";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import NotFound from "@/app/not-found";
 import { getOtherWorkSpaceJoinedAction } from "@/action/workspace.action";
+
 // Utility function to fetch ganttChartId
 async function fetchGanttChartId(boardId) {
   const FALLBACK_STRING = "No data available";
@@ -31,6 +36,7 @@ async function fetchGanttChartId(boardId) {
     return FALLBACK_STRING;
   }
 }
+
 async function fetchGanttChartName(boardId) {
   const FALLBACK_STRING = "No data available";
   try {
@@ -48,19 +54,16 @@ export default async function BoardLayout({ children, params }) {
   const FALLBACK_ARRAY = [];
   const FALLBACK_OBJECT = {};
   const boardId = params?.boardId || FALLBACK_STRING;
-  const workspaceId = await params.workspaceId;
+  const workspaceId = params?.workspaceId || FALLBACK_STRING;
 
   /*
    * Get ganttChartId using the utility function
    */
   const ganttChartId = await fetchGanttChartId(boardId);
   const ganttChartName = await fetchGanttChartName(boardId);
-  console.log("test gant chart id", ganttChartId); // Log inside BoardLayout
-  try {
-    /*
-     * Get prop id with fallback
-     */
+  console.log("test gant chart id", ganttChartId);
 
+  try {
     const session = await auth();
 
     /*
@@ -184,9 +187,38 @@ export default async function BoardLayout({ children, params }) {
       console.error("Error processing checklists:", error);
     }
 
-    //pf
     /*
-     * This function is the main entry point for the profile page.
+     * Get feedback for each task with error handling
+     */
+    let feedbackByTaskIds = FALLBACK_ARRAY;
+    try {
+      if (Array.isArray(allTasks) && allTasks.length > 0) {
+        const feedbackPromises = allTasks.map(async (task) => {
+          try {
+            if (task?.taskId) {
+              const feedback = await getFeedBackByTaskIdAction({
+                taskId: task.taskId,
+              });
+              return feedback?.payload || null;
+            }
+            return null;
+          } catch (error) {
+            console.error(
+              `Error fetching feedback for task ${task?.taskId}:`,
+              error
+            );
+            return null;
+          }
+        });
+        const resolvedFeedback = await Promise.all(feedbackPromises);
+        feedbackByTaskIds = resolvedFeedback.filter(Boolean);
+      }
+    } catch (error) {
+      console.error("Error processing feedback:", error);
+    }
+
+    /*
+     * Get current user profile
      */
     const currentUserProfile = await getCurrentUserProfileAction();
     const imageUser = currentUserProfile?.payload?.user?.profileImage;
@@ -194,31 +226,24 @@ export default async function BoardLayout({ children, params }) {
     const preventUserImage = imageUser == null ? noImage : imageUser;
     console.log("what inside layout and userprofile", imageUser);
 
-    // /**
-    //  * get comment
-    //  * */
-    // const getCommentByChecklistId = await getCommentByCheckListIdAction(
-    //   checklistbyTaskIds
-    // );
-    // Extract checklistId values from checklistbyTaskIds
-
     /*
-     * get board by board id
+     * Get board by board id
      */
     const boardData = await getBoardByBoardIdAction(boardId);
     console.log("boardData", boardData);
+
     /*
-     * get create id
+     * Get all tasks
      */
     const allTask = await getTaskByBoardIdAction(boardId);
     console.log("task response", allTask);
 
-    /**
-     * workspace joined
+    /*
+     * Get workspace joined
      */
-    //workspace other
     const getWorKSpaceJoined = await getOtherWorkSpaceJoinedAction();
     console.log("getWorKSpaceJoined other", getWorKSpaceJoined);
+
     // Search through all workspaces and their otherBoards to find the matching board
     let matchingBoard = null;
     let matchingWorkspace = null;
@@ -231,7 +256,7 @@ export default async function BoardLayout({ children, params }) {
       if (board) {
         matchingBoard = board;
         matchingWorkspace = workspace;
-        break; // Found it, no need to continue searching
+        break;
       }
     }
 
@@ -245,6 +270,13 @@ export default async function BoardLayout({ children, params }) {
       console.log("Board belongs to workspace:", matchingWorkspace.title);
     }
     const matchingBoardForNotPM = matchingBoard;
+
+    /*
+     * Get board favorite
+     */
+    const getUserDetials = await getPreviewProfileAction();
+    const myUserId = getUserDetials?.payload?.userId;
+
     return (
       <div>
         <SystemBoard
@@ -268,6 +300,8 @@ export default async function BoardLayout({ children, params }) {
           getWorKSpaceJoined={getWorKSpaceJoined}
           matchingBoardForNotPM={matchingBoardForNotPM}
           currentUserProfile={currentUserProfile}
+          myUserId={myUserId}
+          feedbackByTaskIds={feedbackByTaskIds} // Pass feedback data to SystemBoard
         />
         <ToastContainer position="top-right" autoClose={3000} />
         <main>{children}</main>
@@ -293,6 +327,8 @@ export default async function BoardLayout({ children, params }) {
           getWorKSpaceJoined={getWorKSpaceJoined}
           matchingBoardForNotPM={matchingBoardForNotPM}
           currentUserProfile={currentUserProfile}
+          myUserId={myUserId}
+          feedbackByTaskIds={FALLBACK_ARRAY} // Pass fallback feedback data
         />
         <main>{children}</main>
       </div>

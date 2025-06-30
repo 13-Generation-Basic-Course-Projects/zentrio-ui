@@ -17,8 +17,10 @@ export default function MyFavoriteBoard({
   updateNameBoardAction,
   updateFavAction,
   myFavBoard,
+  memberData,
 }) {
   console.log("log fav", myFavBoard);
+  console.log("memberData fav", memberData);
   return (
     <div className="w-full grid grid-cols-12 h-full">
       <div className="col-span-9 flex flex-col overflow-hidden p-3 min-h-0">
@@ -42,11 +44,14 @@ export default function MyFavoriteBoard({
                     boardId={board.boardId}
                     title={board.title}
                     image={colorClass}
+                    imageCover={board.image}
                     isFavourite={board.isFavourite}
                     deleteBoardAction={deleteBoardAction}
                     updateNameBoardAction={updateNameBoardAction}
                     updateFavAction={updateFavAction}
                     role="pm"
+                    memberData={memberData}
+                    isFavBoardDelete={true}
                   />
                 );
               })
@@ -62,7 +67,7 @@ export default function MyFavoriteBoard({
       </div>
 
       <div className="col-span-3 p-2">
-        <CardMember />
+        <CardMember members={memberData} />
       </div>
     </div>
   );

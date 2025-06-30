@@ -1,8 +1,9 @@
 "use client";
 
 import BredCrum from "../bredcrum/MyBredcrum";
-import MyDatePicker from "../date/DatePicker";
+
 import CardFolder, { CardFile } from "../card/CardDoc";
+import MyDatePicker from "../date/DatePicker";
 import ModalCreateDocu from "../modal/docu/ModalCreateDocu";
 import { Input } from "@heroui/input";
 import {
@@ -92,7 +93,7 @@ export default function AllDocument({ boardId, documents, tokenFromGoogle }) {
         <div className="flex items-center justify-between pb-5">
           <div className="flex flex-row items-end gap-4 mb-4">
             <div className="flex-1">
-              <MyDatePicker className="h-12"/>
+              <MyDatePicker className="h-12" />
             </div>
 
             <div className="w-40">

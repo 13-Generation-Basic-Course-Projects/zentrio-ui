@@ -26,12 +26,20 @@ export const ganttRouteGroup = {
   //get
   getAllGanttBar: () => `${apiConfig.baseUrl}/gantt-bars`,
   getAllGanttBarByGanttChartID: (ganttChartId) =>
-    `${apiConfig.baseUrl}/gantt-bars/gantt-charts/${ganttChartId}`,
+    `${apiConfig.baseUrl}/gantt-bars/ganttCharts/${ganttChartId}`,
 
   //post
   createGanttBar: () => `${apiConfig.baseUrl}/gantt-bars/gantt-charts`, //Created gantt bars with specific gantt charts ID
 
   //delete
   deleteGanttBar: (ganttbarId, ganttChartId) =>
-    `${apiConfig.baseUrl}/gantt-bars/${ganttbarId}/ganttChart/${ganttChartId}`, //delete
+    `${apiConfig.baseUrl}/gantt-bars/${ganttbarId}/ganttCharts/${ganttChartId}`, //delete
+
+  //update ganttbar by gantbarid and body is need ganttchartid
+  updateGanttBar: (ganttbarId) =>
+    `${apiConfig.baseUrl}/gantt-bars/${ganttbarId}/ganttCharts/`,
+
+  //new update date like from start to end date
+  updateForDate: (ganttBarId) =>
+    `${apiConfig.baseUrl}/gantt-bars/${ganttBarId}/ganttCharts`, //Updated gantt chart by ID with current boards
 };

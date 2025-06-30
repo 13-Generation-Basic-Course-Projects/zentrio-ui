@@ -16,7 +16,7 @@ export default function HorizontalChart({
     { browser: "Todo", visitors: todo, color: "#64A9F6" },
     { browser: "In Progress", visitors: progress, color: "#5FC381" },
     { browser: "Under Review", visitors: review, color: "#F59E0B" },
-    { browser: "Done", visitors: done, color: "#64A9F6" }, 
+    { browser: "Done", visitors: done, color: "#64A9F6" },
   ];
 
   const maxVisitors = Math.max(...data.map((d) => d.visitors));
@@ -30,7 +30,7 @@ export default function HorizontalChart({
   const barAreaWidth = viewBoxWidth - labelWidth - padding * 2;
 
   return (
-    <div className="p-6 rounded-xl shadow-sm bg-white w-full">
+    <div className="p-6 border-1 rounded-medium bg-white w-full">
       <h2 className="text-xl font-semibold mb-3 text-gray-800 flex items-center gap-2">
         <TrendingUp className="w-5 h-5 text-blue-500" /> Total of Checklist
       </h2>

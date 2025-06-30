@@ -12,17 +12,21 @@ import iconMember from "@/assets/memberSideBar.png";
 import Image from "next/image";
 import ModalDelete from "../modal/ModalDelete";
 import { usePathname, useSearchParams } from "next/navigation";
+import { StackedUser } from "../useravatar/StackUser";
 
 // Props expected: title, image, isFavourite, boardId, workspaceId, updateFavAction, deleteBoardAction
 export default function CardBoardFavorite({
   title,
   image,
+  imageCover,
   boardId,
   // workspaceId,
   isFavourite,
   updateFavAction,
   deleteBoardAction,
   role,
+  memberData,
+  isFavBoardDelete,
 }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -36,6 +40,8 @@ export default function CardBoardFavorite({
 
   const [favorited, setFavorited] = useState(isFavourite);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+
+  console.log("Image in fav card board: ", imageCover);
 
   return (
     <Card className="py-4 h-[340px] rounded-xl shadow-sm">
@@ -84,16 +90,11 @@ export default function CardBoardFavorite({
               className={`rounded-xl w-full h-32 bg-cover bg-center ${image}`}
               aria-label={`Card background for ${title}`}
             />
-          ) : image ? (
-            <img
-              src={image}
-              alt={`Card background for ${title}`}
-              className="object-cover rounded-xl w-full h-32"
-            />
           ) : (
-            <div
-              className="rounded-xl w-full h-32 bg-gray-200"
-              aria-label={`No image available for ${title}`}
+            <img
+              src={imageCover}
+              alt={`Card background for ${imageCover}`}
+              className="object-cover rounded-xl w-full h-32"
             />
           )}
         </Link>
@@ -101,7 +102,7 @@ export default function CardBoardFavorite({
 
       {/* Footer */}
       <CardFooter className="pt-2 px-4 flex flex-col items-start space-y-4">
-        <StackedProfiles />
+        <StackedUser image={memberData} />
         <div className="flex w-full justify-between text-sm text-gray-600">
           {/* Members icon and text */}
           <div className="flex items-center gap-1">
@@ -110,33 +111,42 @@ export default function CardBoardFavorite({
               className="w-[16px] h-[16px]"
               alt="Members icon"
             />
-            <p className="text-body-sm">13 Members</p>
+            <p className="text-body-sm">
+              {memberData.length === 0
+                ? "No member"
+                : `${memberData.length} ${
+                    memberData.length === 1 ? "Member" : "Members"
+                  }`}
+            </p>
           </div>
+          {isFavBoardDelete ? (
+            ""
+          ) : (
+            <div className="flex items-center text-progress-red py-5 gap-1">
+              <button onClick={() => setIsDeleteOpen(true)}>
+                <IconDelete />
+              </button>
 
+              {isDeleteOpen && (
+                <ModalDelete
+                  isOpen={isDeleteOpen}
+                  onClose={() => setIsDeleteOpen(false)}
+                  messageTitle="Are you sure?"
+                  messageBody="You want to delete this board."
+                  messageUndo="Cancel"
+                  messageDo="Delete"
+                  action={async () => {
+                    if (deleteBoardAction && boardId && workspaceId) {
+                      await deleteBoardAction(boardId, workspaceId);
+                      console.log("Delete confirmed!");
+                      setIsDeleteOpen(false);
+                    }
+                  }}
+                />
+              )}
+            </div>
+          )}
           {/* Delete button and confirmation modal */}
-          <div className="flex items-center text-progress-red py-5 gap-1">
-            <button onClick={() => setIsDeleteOpen(true)}>
-              <IconDelete />
-            </button>
-
-            {isDeleteOpen && (
-              <ModalDelete
-                isOpen={isDeleteOpen}
-                onClose={() => setIsDeleteOpen(false)}
-                messageTitle="Are you sure?"
-                messageBody="You want to delete this board."
-                messageUndo="Cancel"
-                messageDo="Delete"
-                action={async () => {
-                  if (deleteBoardAction && boardId && workspaceId) {
-                    await deleteBoardAction(boardId, workspaceId);
-                    console.log("Delete confirmed!");
-                    setIsDeleteOpen(false);
-                  }
-                }}
-              />
-            )}
-          </div>
         </div>
       </CardFooter>
     </Card>

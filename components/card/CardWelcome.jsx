@@ -1,367 +1,307 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
-import {
-  Sun,
-  CloudSun,
-  Moon,
-  Bed,
-  Users,
-  CheckSquare,
-  Clock,
-} from "lucide-react";
+import { createSwapy } from "swapy";
+import React, { useState, useRef, useEffect } from "react";
 
-const formatTime = () => {
-  const now = new Date();
-  const hours = now.getHours();
-  const minutes = now.getMinutes().toString().padStart(2, "0");
+import clearday from "@/assets/weathericon/clear-day.png";
+import clearnight from "@/assets/weathericon/clear-night.png";
+import cloudy from "@/assets/weathericon/cloudy.png";
+import overcast from "@/assets/weathericon/overcast.png";
+import heavyrain from "@/assets/weathericon/heavy-showers.png";
+import thunderstorm from "@/assets/weathericon/thunderstorm-showers.png";
+import cloudyday from "@/assets/weathericon/partly-cloudy-day.png";
+import cloudynight from "@/assets/weathericon/partly-cloudy-night.png";
+import zentrioLogo from "@/public/image/Zentrio-Logo.svg";
+import calendarIcon from "@/public/image/calendar.svg";
+import kanbanIcon from "@/public/image/kanban.svg";
+import docsIcon from "@/public/image/docs.svg";
+import reportIcon from "@/assets/report.png";
+import { Sparkles } from "lucide-react";
+
+import Image from "next/image";
+
+// Format current day/time
+function formatDateTime(date) {
+  const days = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+  const d = new Date(date);
+  const hours = d.getHours();
+  const hour12 = hours % 12 === 0 ? 12 : hours % 12;
   const ampm = hours >= 12 ? "PM" : "AM";
-  const formattedHours = (hours % 12 || 12).toString().padStart(2, "0");
-  return `${formattedHours}:${minutes} ${ampm}`;
-};
 
-const formatDate = () => {
-  const now = new Date();
-  const options = {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
+  return {
+    day: days[d.getDay()],
+    date: `${d.getMonth() + 1}/${d.getDate()}`,
+    hour: hour12.toString().padStart(2, "0"),
+    minute: d.getMinutes().toString().padStart(2, "0"),
+    ampm,
+    hour24: hours,
   };
-  return now.toLocaleDateString("en-US", options);
-};
+}
 
-const getGreetingData = () => {
-  const hours = new Date().getHours();
+// Return gradient background based on weather type and time
+function getWeatherColor(condition, hour) {
+  const isDay = hour >= 6 && hour < 18;
 
-  if (hours >= 5 && hours < 12) {
-    return {
-      greeting: "Good Morning",
-      message: "Let's start the day with your team goals!",
-      icon: <Sun className="text-yellow-400 w-6 h-6" />,
-      bgColor: "from-blue-50 via-indigo-50 to-purple-50",
-      accentColor: "bg-yellow-100",
-      textColor: "text-gray-800",
-      timeColor: "text-indigo-700",
-    };
-  } else if (hours >= 12 && hours < 17) {
-    return {
-      greeting: "Good Afternoon",
-      message: "Keep the team momentum strong!",
-      icon: <CloudSun className="text-orange-400 w-6 h-6" />,
-      bgColor: "from-orange-50 via-yellow-50 to-red-50",
-      accentColor: "bg-orange-100",
-      textColor: "text-gray-800",
-      timeColor: "text-orange-700",
-    };
-  } else if (hours >= 17 && hours < 21) {
-    return {
-      greeting: "Good Evening",
-      message: "Time to review today's achievements!",
-      icon: <Moon className="text-purple-400 w-6 h-6" />,
-      bgColor: "from-purple-50 via-pink-50 to-rose-50",
-      accentColor: "bg-purple-100",
-      textColor: "text-gray-800",
-      timeColor: "text-purple-700",
-    };
-  } else {
-    return {
-      greeting: "Good Night",
-      message: "Rest well, new tasks await tomorrow!",
-      icon: <Bed className="text-blue-400 w-6 h-6" />,
-      bgColor: "from-slate-50 via-blue-50 to-indigo-50",
-      accentColor: "bg-blue-100",
-      textColor: "text-gray-800",
-      timeColor: "text-blue-700",
-    };
+  switch (condition) {
+    case "Clear":
+    case "Sunny":
+      return isDay
+        ? "from-[#56CCF2] to-[#2F80ED]" // Bright sky blue to royal blue
+        : "from-[#0F2027] via-[#203A43] to-[#2C5364]"; // Deep night gradient
+
+    case "Clouds":
+      return isDay
+        ? "from-primary/80 via-primary/50 to-[#FFFFFF]" // Light cloudy to steel blue
+        : "from-[#2C3E50] to-[#59BAD5]"; // Cool dusk shades
+
+    case "Overcast":
+      return "from-[#757F9A] to-[#59BAD5]"; // Overcast greyish-blue
+
+    case "Rain":
+    case "Drizzle":
+      return "from-[#3a7bd5] to-[#59BAD5]"; // Fresh rain blue shades
+
+    case "Thunderstorm":
+    case "Lightning":
+      return "from-[#59BAD5] to-[#59BAD5]"; // Dark stormy blues
+
+    case "Snow":
+      return "from-[#59BAD5] to-[#59BAD5]"; // Soft icy whites & blues
+
+    default:
+      return "from-[#59BAD5] to-[#59BAD5]"; // fallback: refreshing cyan shades
   }
-};
+}
 
-// Background images data
-const backgroundImages = [
-  {
-    url: "https://images.unsplash.com/photo-1542626991-cbc4e32524cc?q=80&w=1169&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    // overlay:
-    //   "bg-gradient-to-br from-blue-500/60 via-purple-500/40 to-indigo-600/60",
-  },
-  {
-    url: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-    // overlay:
-    //   "bg-gradient-to-br from-green-500/60 via-teal-500/40 to-blue-600/60",
-  },
-  {
-    url: "https://images.unsplash.com/photo-1515378960530-7c0da6231fb1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-    // overlay:
-    //   "bg-gradient-to-br from-orange-500/60 via-red-500/40 to-pink-600/60",
-  },
-];
+// Return icon path based on weather condition
+function getCustomWeatherIcon(condition, hour) {
+  const isDay = hour >= 6 && hour < 18;
 
-export default function TeamWelcomeCard() {
-  const [currentTime, setCurrentTime] = useState("");
-  const [currentDate, setCurrentDate] = useState("");
-  const [mounted, setMounted] = useState(false);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  switch (condition) {
+    case "Clear":
+    case "Sunny":
+      return isDay ? clearday : clearnight;
 
-  const greetingData = useMemo(() => getGreetingData(), []);
+    case "Clouds":
+      return isDay ? cloudyday : cloudynight;
+
+    case "Overcast":
+      return overcast;
+
+    case "Rain":
+    case "Drizzle":
+      return heavyrain;
+
+    case "Thunderstorm":
+    case "Lightning":
+      return thunderstorm;
+
+    default:
+      return cloudy; // fallback for unknown condition
+  }
+}
+
+export default function TeamCardWelcome() {
+  const swapy = useRef(null);
+  const container = useRef(null);
+  const [time, setTime] = useState(new Date());
+  const [weather, setWeather] = useState(null);
 
   useEffect(() => {
-    setMounted(true);
+    const interval = setInterval(() => setTime(new Date()), 1000);
+    return () => clearInterval(interval);
+  }, []);
 
-    const updateTime = () => {
-      setCurrentTime(formatTime());
-      setCurrentDate(formatDate());
-    };
+  useEffect(() => {
+    const apiKey = "247a59dc9dfeb4159eb6e357fc7d0e41"; // replace with your API key
+    const city = "Phnom Penh";
 
-    updateTime();
-    const timeIntervalId = setInterval(updateTime, 60000); // Update every minute
+    fetch(
+      `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.cod !== 200) {
+          console.error("Weather API error:", data.message);
+          return;
+        }
+        setWeather(data);
+      })
+      .catch((err) => console.error("Weather fetch error:", err));
+  }, []);
 
-    // Slideshow effect - change image every 5 seconds
-    const slideshowIntervalId = setInterval(() => {
-      setCurrentImageIndex(
-        (prevIndex) => (prevIndex + 1) % backgroundImages.length
-      );
-    }, 5000);
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (container.current) {
+        swapy.current = createSwapy(container.current);
+        swapy.current.onSwap((event) => {
+          console.log("swap", event);
+        });
+      }
+    }, 100);
 
     return () => {
-      clearInterval(timeIntervalId);
-      clearInterval(slideshowIntervalId);
+      clearTimeout(timeout);
+      swapy.current?.destroy();
     };
   }, []);
 
-  if (!mounted) {
+  // Components
+
+  const FourStageWorkflow = () => {
     return (
-      <div className="rounded-2xl mt-6 mb-4 h-[240px] bg-gradient-to-br from-gray-100 to-gray-200 animate-pulse shadow-sm" />
+      <div className="bg-gradient-to-br from-primary/10 via-primary/20 to-primary/60 p-3 rounded-3xl h-full shadow-lg  -white/20 flex items-center justify-center">
+        <div>
+          <p>Make your work keep in one place</p>
+        </div>
+      </div>
     );
-  }
+  };
 
+ 
+ 
+
+  const CalendarView = () => {
+    const today = new Date();
+
+    return (
+      <div className="relative bg-gradient-to-bl from-primary/10 via-primary/20 to-primary/80 p-6 rounded-3xl h-full shadow-lg  -white/20">
+        {/* Month and Year */}
+        <div className="flex flex-row items-start space-x-3 mb-3">
+          <p className="text-xl uppercase font-semibold text-gray-700">
+            {today.toLocaleDateString("en-US", { month: "long" })}
+          </p>
+          <p className="text-lg font-bold text-gray-700">
+            {today.getFullYear()}
+          </p>
+        </div>
+
+        {/* Day and Weekday */}
+        <div className="absolute left-[8%] top-[36%] flex items-baseline space-x-2 justify-center">
+          <p className="text-[50px] font-bold text-white">{today.getDate()}</p>
+          <p className="text-h5 uppercase text-white">
+            {today.toLocaleDateString("en-US", { weekday: "short" })}
+          </p>
+        </div>
+
+        {/* Hour at Top-Right */}
+        <div className="absolute top-36 right-6 text-right">
+          <p className="text-lg font-semibold text-gray-700">
+            {today.toLocaleTimeString("en-US", {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
+          </p>
+        </div>
+      </div>
+    );
+  };
+
+
+  const { day, date, hour, minute, ampm, hour24 } = formatDateTime(time);
+  const temperature = weather?.main?.temp;
+  const weatherDesc = weather?.weather?.[0]?.description;
+  const weatherMain = weather?.weather?.[0]?.main;
+  const feelsLike = weather?.main?.feels_like;
+  const humidity = weather?.main?.humidity;
+
+  const weatherGradient = getWeatherColor(weatherMain, hour24);
+  const weatherIcon = getCustomWeatherIcon(weatherMain, hour24);
   return (
-    <div className="relative overflow-hidden rounded-2xl mt-6 mb-4 shadow-lg hover:shadow-xl transition-all duration-300 border border-white/20">
-      {/* Background Images Slideshow */}
-      <div className="h-[330px] w-full relative overflow-hidden">
-        {backgroundImages.map((bg, index) => (
+    <div
+      ref={container}
+      className="grid grid-cols-4 grid-rows-2 gap-4 p-4 mt-2"
+    >
+      <div className="rounded-large col-span-3">
+        <div className="rounded-large h-44">
+          {/* Weather Card */}
           <div
-            key={index}
-            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-              index === currentImageIndex ? "opacity-100" : "opacity-0"
-            }`}
+            className={`col-span-2 row-span-2 bg-gradient-to-br ${weatherGradient} rounded-2xl p-4 text-white flex flex-col justify-between shadow-lg transition-all duration-500`}
           >
-            <div
-              className="w-full h-full bg-cover bg-center bg-no-repeat"
-              style={{ backgroundImage: `url(${bg.url})` }}
-            />
-            <div className={`absolute inset-0 ${bg.overlay}`} />
-          </div>
-        ))}
-
-        {/* Animated Stars */}
-        <div className="absolute inset-0 overflow-hidden rounded-2xl z-10">
-          <div className="star star-1 w-3 h-3"></div>
-          <div className="star star-2 w-2 h-2"></div>
-          <div className="star star-3 w-4 h-4"></div>
-          <div className="star star-4 w-3 h-3"></div>
-          <div className="star star-5 w-4 h-4"></div>
-          <div className="star star-6 w-2 h-2"></div>
-          <div className="star star-7 w-3 h-3"></div>
-          <div className="star star-8 w-2 h-2"></div>
-          <div className="star star-9 w-3 h-3"></div>
-          <div className="star star-10 w-4 h-4"></div>
-          <div className="star star-11 w-2 h-2"></div>
-          <div className="star star-12 w-3 h-3"></div>
-        </div>
-
-        {/* Subtle Pattern Overlay */}
-        <div className="absolute inset-0 opacity-30 z-10">
-          <div className="absolute top-10 left-10 w-2 h-2 bg-white/40 rounded-full"></div>
-          <div className="absolute top-20 right-20 w-1 h-1 bg-white/60 rounded-full"></div>
-          <div className="absolute bottom-20 left-20 w-1.5 h-1.5 bg-white/50 rounded-full"></div>
-          <div className="absolute bottom-10 right-10 w-2 h-2 bg-white/40 rounded-full"></div>
-        </div>
-
-        {/* Content */}
-        <div className="relative flex items-center justify-between px-8 py-8 h-full z-20">
-          {/* Left Content */}
-          <div className="flex-1 space-y-4">
-            {/* Header Section */}
-            <div>
-              <h1 className="text-h2 md:text-4xl font-bold text-white mb-2 leading-tight drop-shadow-lg">
-                Welcome to{" "}
-                <span className="text-h1 bg-gradient-to-r from-[#59BAD5]/90 to-[#59BAD5]/80 bg-clip-text text-transparent">
-                  Zentrio
+            <div className="flex items-center justify-between text-sm">
+              <span>{`${day}, ${date}`}</span>
+              {weather?.name && weather?.sys?.country && (
+                <span className="ml-2 text-xs bg-white/20 px-3 py-0.5 rounded-full">
+                  {weather.name}, {weather.sys.country}
                 </span>
-              </h1>
-              <div className="flex items-center space-x-2 text-white/90">
-                <Users className="w-4 h-4" />
-                <span className="text-sm font-medium drop-shadow">
-                  Team Task Management
-                </span>
-              </div>
+              )}
             </div>
 
-            {/* Greeting & Time Section */}
-            <div className="space-y-3">
-              {/* Greeting with Icon */}
-              <div className="inline-flex items-center space-x-3 px-4 py-2 rounded-full bg-white/20 backdrop-blur-sm border border-white/30">
-                {greetingData.icon}
-                <span className="text-lg font-semibold text-white drop-shadow">
-                  {greetingData.greeting}
-                </span>
-              </div>
-
-              {/* Date & Time */}
-              <div className="space-y-1">
-                <div className="flex items-center space-x-2">
-                  <Clock className="w-4 h-4 text-white" />
-                  <span className="text-xl font-mono text-white font-bold drop-shadow">
-                    {currentTime}
-                  </span>
+            <div className="flex items-center gap-4 mt-2">
+              <Image
+                src={weatherIcon}
+                alt={weatherDesc || "Weather"}
+                height={106}
+                className="drop-shadow-md"
+              />
+              <div>
+                <div className="text-4xl font-bold leading-tight">
+                  {temperature ? `${Math.round(temperature)}°C` : "--"}
                 </div>
-                <p className="text-white/90 text-sm font-medium drop-shadow">
-                  {currentDate}
-                </p>
+                <div className="text-xl capitalize">
+                  {weatherDesc || "Loading..."}
+                </div>
+                {feelsLike && humidity && (
+                  <div className="text-sm mt-1">
+                    {`Feels like: ${Math.round(
+                      feelsLike
+                    )}°C | Humidity: ${humidity}%`}
+                  </div>
+                )}
               </div>
-
-              {/* Message */}
-              <p className="text-white text-base max-w-md leading-relaxed font-medium drop-shadow">
-                {greetingData.message}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-swapy-slot="b" className="rounded-3xl">
+        <div
+          data-swapy-item="b"
+          className="rounded-3xl h-44 hover:scale-[1.01] transition-transform duration-300"
+        >
+          <div className="bg-gradient-to-tr from-primary/20 via-primary/30 to-primary/90 p-6 rounded-3xl h-full shadow-xl ">
+            <div className="flex flex-col items-center justify-center h-full space-y-3">
+              <Image
+                src={zentrioLogo}
+                alt="Zentrio Logo"
+                width={150}
+                height={150}
+                className="drop-shadow-md"
+              />
+              <p className="text-center text-white font-semibold text-lg tracking-wide">
+                Click in. Chill out. Work better.
               </p>
             </div>
           </div>
-
-          {/* Right Side - Team Icon */}
-          <div className="hidden lg:flex items-center justify-center">
-            <div className="relative">
-              {/* Main Circle */}
-              <div className="w-32 h-32 bg-white/70 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg border border-white/30">
-                <CheckSquare className="w-12 h-12 text-indigo-600" />
-              </div>
-
-              {/* Floating Elements */}
-              <div className="absolute -top-2 -right-2 w-8 h-8 bg-green-100 rounded-full flex items-center justify-center shadow-md">
-                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-              </div>
-              <div className="absolute -bottom-2 -left-2 w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center shadow-md">
-                <Users className="w-3 h-3 text-blue-600" />
-              </div>
-            </div>
-          </div>
-
-          {/* Mobile Right Side */}
-          <div className="lg:hidden flex items-center">
-            <div className="w-16 h-16 bg-white/60 rounded-full flex items-center justify-center backdrop-blur-sm shadow-md">
-              <CheckSquare className="w-8 h-8 text-indigo-600" />
-            </div>
-          </div>
-        </div>
-
-        {/* Slideshow Indicators */}
-        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-30">
-          {backgroundImages.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentImageIndex(index)}
-              className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                index === currentImageIndex
-                  ? "bg-white scale-125"
-                  : "bg-white/50 hover:bg-white/70"
-              }`}
-            />
-          ))}
         </div>
       </div>
 
-      {/* Star Animation Styles */}
-      <style jsx>{`
-        .star {
-          position: absolute;
-          background: white;
-          clip-path: polygon(
-            50% 0%,
-            61% 35%,
-            98% 35%,
-            68% 57%,
-            79% 91%,
-            50% 70%,
-            21% 91%,
-            32% 57%,
-            2% 35%,
-            39% 35%
-          );
-          animation: twinkle 3s ease-in-out infinite;
-        }
+      <div className="rounded-large">
+        <div className="rounded-large h-44">
+          <CalendarView />
+        </div>
+      </div>
 
-        .star-1 {
-          top: 15%;
-          left: 10%;
-          animation-delay: 0s;
-        }
-        .star-2 {
-          top: 25%;
-          left: 80%;
-          animation-delay: 0.5s;
-        }
-        .star-3 {
-          top: 40%;
-          left: 15%;
-          animation-delay: 1s;
-        }
-        .star-4 {
-          top: 60%;
-          left: 70%;
-          animation-delay: 1.5s;
-        }
-        .star-5 {
-          top: 80%;
-          left: 20%;
-          animation-delay: 2s;
-        }
-        .star-6 {
-          top: 30%;
-          left: 60%;
-          animation-delay: 2.5s;
-        }
-        .star-7 {
-          top: 70%;
-          left: 85%;
-          animation-delay: 0.3s;
-        }
-        .star-8 {
-          top: 50%;
-          left: 40%;
-          animation-delay: 0.8s;
-        }
-        .star-9 {
-          top: 20%;
-          left: 45%;
-          animation-delay: 1.3s;
-        }
-        .star-10 {
-          top: 85%;
-          left: 55%;
-          animation-delay: 1.8s;
-        }
-        .star-11 {
-          top: 35%;
-          left: 90%;
-          animation-delay: 2.3s;
-        }
-        .star-12 {
-          top: 65%;
-          left: 5%;
-          animation-delay: 0.6s;
-        }
-
-        @keyframes twinkle {
-          0%,
-          100% {
-            opacity: 0.3;
-            transform: scale(1);
-          }
-          50% {
-            opacity: 1;
-            transform: scale(1.2);
-          }
-        }
-      `}</style>
+      <div data-swapy-slot="d" className="rounded-large col-span-3">
+        <div
+          data-swapy-item="d"
+          className="w-full rounded-large h-44 overflow-hidden border-1 border-primary"
+        >
+          {/* <FourStageWorkflow /> */}
+          <img
+            src="https://www.bitrix24.com/upload/optimizer/converted/images/content_en/tools/tasks_and_projects/index/tasks_and_projects-img-block-1.jpg.webp?1749567480869"
+            alt="img promote"
+            className="h-full w-full object-cover object-top"
+          />
+        </div>
+      </div>
     </div>
   );
 }

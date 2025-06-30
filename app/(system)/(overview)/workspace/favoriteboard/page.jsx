@@ -2,6 +2,7 @@ import { getPreviewProfileAction } from "@/action/profile.action";
 import {
   getAllBoardsAction,
   getFavoriteBoardAction,
+  getMemberByBoardIdAction,
   updateFavBoardByIdAction,
 } from "@/action/workspace.action";
 import MyFavoriteBoard from "@/components/appserver/FavoriteBoard";
@@ -22,10 +23,57 @@ export default async function WorkspaceArea() {
   const myFavBoard = await getFavoriteBoardAction(myUserId);
   console.log("getFavoriteBoardAction in favorite", myFavBoard);
   console.log("myUserId", myUserId);
+
+  let allMembers = [];
+  
+      if (
+        Array.isArray(myFavBoard?.payload) &&
+        myFavBoard?.payload?.length > 0
+      ) {
+        const boardIds = myFavBoard?.payload
+          .filter((board) => board.boardId)
+          .map((board) => board.boardId);
+        console.log("Board IDs in page workspace:", boardIds);
+
+        if (boardIds.length === 0) {
+          console.log("No valid board IDs found.");
+        } else {
+          // Fetch members sequentially
+          for (const boardId of boardIds) {
+            try {
+              const response = await getMemberByBoardIdAction(boardId);
+              const members = response?.payload || [];
+              allMembers.push(...members);
+            } catch (error) {
+              console.error(
+                `Failed to fetch members for boardId ${boardId}:`,
+                error
+              );
+            }
+          }
+
+          // Deduplicate by userId
+          allMembers = allMembers.reduce((unique, member) => {
+            if (
+              member.userId &&
+              !unique.some((m) => m.userId === member.userId)
+            ) {
+              unique.push(member);
+            }
+            return unique;
+          }, []);
+
+          console.log("Members in page fav workspace:", allMembers);
+        }
+      } else {
+        console.log("No boards found in workspace.");
+      }
+     
   return (
     <MyFavoriteBoard
       updateFavAction={updateFavBoardByIdAction}
       myFavBoard={myFavBoard}
+      memberData={allMembers}
     />
   );
 }

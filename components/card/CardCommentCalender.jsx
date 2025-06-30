@@ -10,10 +10,11 @@ import Image from "next/image";
 import commentlogo from "../../assets/Comment.png";
 import profile from "../../public/image/minh.png";
 import { SquarePen, AlarmClock, Trash2 } from "lucide-react";
-import { calendarUpdateNoteAction } from "@/action/calendar.action";
+// import { calendarUpdateNoteAction } from "@/action/calendar.action";
 import {
   deleteNoteInCalendarAction,
   getAllNoteInCalendarAction,
+  updateNoteInCalendarAction,
 } from "@/action/calendarV2.action";
 import ModalDelete from "../modal/ModalDelete";
 
@@ -49,12 +50,13 @@ export default function CardTCommentCalender({
     taskId: null,
   });
 
+
   // Refs to prevent unnecessary re-fetches
   const prevSelectedTaskIdRef = useRef();
   const prevNoteRefreshKeyRef = useRef();
   const isLoadingRef = useRef(false);
 
-  // Memoized fetch function to prevent recreation on every render
+  // fetch function to prevent recreation on every render
   const fetchNotesForTask = useCallback(async (taskId) => {
     // Prevent concurrent fetches
     if (isLoadingRef.current) return;
@@ -93,7 +95,7 @@ export default function CardTCommentCalender({
       setIsLoading(false);
       isLoadingRef.current = false;
     }
-  }, []); // Empty dependency array since we're not using any external variables
+  }, []); 
 
   // Optimized useEffect with proper dependency checking
   useEffect(() => {
@@ -113,7 +115,7 @@ export default function CardTCommentCalender({
     }
   }, [selectedTaskId, noteRefreshKey, fetchNotesForTask]);
 
-  // Memoized update handler
+  //  update handler
   const handleUpdateNoteInline = useCallback(
     async (noteData) => {
       if (!editingNoteText.trim()) {
@@ -121,9 +123,10 @@ export default function CardTCommentCalender({
         return;
       }
 
+      //this action have been updated
       try {
-        const result = await calendarUpdateNoteAction({
-          noteId: noteData.calendarId,
+        const result = await updateNoteInCalendarAction({
+          calendarId: noteData.calendarId,
           noted: editingNoteText,
           startDate: noteData.notedAt,
           tillDate: noteData.tillDate,
@@ -140,17 +143,20 @@ export default function CardTCommentCalender({
               : note
           )
         );
+       
 
         setEditingNoteId(null);
         setEditingNoteText("");
       } catch (err) {
         console.error("Failed to update note:", err);
+        fetchNotesForTask(selectedTaskId);
       }
     },
-    [editingNoteText]
+    [fetchNotesForTask, editingNoteText]
   );
+  
 
-  // Memoized delete handler
+  //  delete handler
   const handleDeleteNote = useCallback(
     async (calendarId, taskId) => {
       if (!calendarId || !taskId) {
@@ -202,7 +208,7 @@ export default function CardTCommentCalender({
         <h1 className="text-title text-h6 font-semibold">
           {selectedTaskId && selectedTask ? (
             <>
-              Comments in{" "}
+              Notes in{" "}
               <span className="text-primary">{selectedTask.title}</span>
             </>
           ) : (

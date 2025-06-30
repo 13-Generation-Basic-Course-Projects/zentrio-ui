@@ -16,6 +16,7 @@ import ModalCreateGanttBar from "../modal/board/ModalCreateGanttBar";
 import { data } from "autoprefixer";
 import NotFound from "@/app/not-found";
 import { checkEmailForClearAction } from "@/action/board.action";
+import DrawerGanttBarFetch from "../Gantt/DrawerGanttBar";
 
 const clearAllCookies = () => {
   console.log(" Starting to clear all cookies...");
@@ -55,6 +56,8 @@ export default function SystemBoard({
   matchingBoardForNotPM,
   workspaceId,
   currentUserProfile,
+  myUserId,
+  feedbackByTaskIds,
 }) {
   if (
     !boardData ||
@@ -64,7 +67,7 @@ export default function SystemBoard({
     return <NotFound />;
   }
 
-  console.log("currentUserProfile={currentUserProfile}", currentUserProfile);
+  console.log("feedbackByTaskIds", feedbackByTaskIds);
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const email = searchParams.get("email");
@@ -199,6 +202,7 @@ export default function SystemBoard({
         allMemberInBoard={allMemberInBoard}
         isGanttChartId={ganttChartId}
         setActiveTab={setActiveTab}
+        userId={myUserId}
       />
     ),
     role === "ROLE_MANAGER" && (
@@ -209,7 +213,7 @@ export default function SystemBoard({
         workspaceId={workspaceId}
       />
     ),
-    <StarBoard key="star-board" favBoard={favBoard} />,
+    <StarBoard key="star-board" favBoard={favBoard} boardId={boardId} />,
   ].filter(Boolean);
 
   // GanttChart modal based on role
@@ -222,6 +226,7 @@ export default function SystemBoard({
             boardId={boardId}
             ganttChartId={ganttChartId}
           />,
+          <DrawerGanttBarFetch ganttChartId={ganttChartId}/>,
           <ModalCreateGanttBar
             key="create-gantt-bar"
             boardId={boardId}
@@ -261,6 +266,8 @@ export default function SystemBoard({
           boardData={boardData}
           ganttbar={ganttbar}
           boardId={boardId}
+          workspaceId={workspaceId}
+          feedbackByTaskIds={feedbackByTaskIds}
         />
       ),
     },
@@ -356,6 +363,10 @@ export default function SystemBoard({
           modal={ganttModal}
           ganttbar={ganttbar}
           ganttChartName={ganttChartName}
+          boardId={boardId}
+          ganttChartId={ganttChartId}
+          workspaceId={workspaceId}
+          
         />
       ),
     },

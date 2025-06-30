@@ -235,98 +235,117 @@ export default function ModalOptionTask({
             }
           >
             {stage == "UNDER_REVIEW" ? (
-              <PopupActionTaskMoveComplete
-                title={"move to completed"}
-                massageTitle={"Are you sure?"}
-                massageBody={"You want to move to Completed ?"}
-                icon={
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="size-6"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="m15 15 6-6m0 0-6-6m6 6H9a6 6 0 0 0 0 12h3"
-                    />
-                  </svg>
-                }
-                bgcolor={"bg-slate-red"}
-                massageDo={"Yes, Move"}
-                documentId={documentId}
-                accessToken={accessToken}
-                massageUndo={"No, Cancel"}
-                taskId={taskId}
-                ganttBarId={currentGanttBarId}
-                boardId={boardId}
-              />
+              <>
+                {" "}
+                {role == "ROLE_MANAGER" || role == "ROLE_MEMBER" ? (
+                  ""
+                ) : (
+                  <PopupActionTaskMoveComplete
+                    title={"move to completed"}
+                    massageTitle={"Are you sure?"}
+                    massageBody={"You want to move to Completed ?"}
+                    icon={
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="size-6"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="m15 15 6-6m0 0-6-6m6 6H9a6 6 0 0 0 0 12h3"
+                        />
+                      </svg>
+                    }
+                    bgcolor={"bg-slate-red"}
+                    massageDo={"Yes, Move"}
+                    documentId={documentId}
+                    accessToken={accessToken}
+                    massageUndo={"No, Cancel"}
+                    taskId={taskId}
+                    ganttBarId={currentGanttBarId}
+                    boardId={boardId}
+                  />
+                )}
+              </>
             ) : stage == "IN_PROGRESS" ? (
-              <PopupActionTaskMove
-                title={"move to under review"}
-                massageTitle={"Are you sure?"}
-                massageBody={"You want to move to Under Review ?"}
-                icon={
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="size-6"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="m15 15 6-6m0 0-6-6m6 6H9a6 6 0 0 0 0 12h3"
-                    />
-                  </svg>
-                }
-                bgcolor={"bg-slate-red"}
-                massageDo={"Yes, Move"}
-                documentId={documentId}
-                accessToken={accessToken}
-                massageUndo={"No, Cancel"}
-                taskId={taskId}
-                ganttBarId={currentGanttBarId}
-                boardId={boardId}
-              />
+              <>
+                {role == "ROLE_LEADER" ? (
+                  <PopupActionTaskMove
+                    title={"move to under review"}
+                    massageTitle={"Are you sure?"}
+                    massageBody={"You want to move to Under Review ?"}
+                    icon={
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="size-6"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="m15 15 6-6m0 0-6-6m6 6H9a6 6 0 0 0 0 12h3"
+                        />
+                      </svg>
+                    }
+                    bgcolor={"bg-slate-red"}
+                    massageDo={"Yes, Move"}
+                    documentId={documentId}
+                    accessToken={accessToken}
+                    massageUndo={"No, Cancel"}
+                    taskId={taskId}
+                    ganttBarId={currentGanttBarId}
+                    boardId={boardId}
+                  />
+                ) : (
+                  ""
+                )}
+              </>
             ) : (
               ""
             )}
             {stage === "COMPLETED" ? (
-              <PopupActionTaskMoveInProgress
-                title={"move to in progress"}
-                massageTitle={"Are you sure?"}
-                massageBody={"You want to report to in progress ?"}
-                icon={
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="size-6"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3"
-                    />
-                  </svg>
-                }
-                bgcolor={"bg-slate-red"}
-                massageDo={"Yes, Move"}
-                documentId={documentId}
-                accessToken={accessToken}
-                massageUndo={"No, Cancel"}
-                taskId={taskId}
-                ganttBarId={currentGanttBarId}
-                boardId={boardId}
-              />
+              <>
+                {role == "ROLE_MANAGER" ? (
+                  <PopupActionTaskMoveInProgress
+                    title={"move to in progress"}
+                    massageTitle={"Are you sure?"}
+                    massageBody={"You want to report to in progress ?"}
+                    icon={
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="size-6"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3"
+                        />
+                      </svg>
+                    }
+                    bgcolor={"bg-slate-red"}
+                    massageDo={"Yes, Move"}
+                    documentId={documentId}
+                    accessToken={accessToken}
+                    massageUndo={"No, Cancel"}
+                    taskId={taskId}
+                    ganttBarId={currentGanttBarId}
+                    boardId={boardId}
+                  />
+                ) : (
+                  ""
+                )}
+              </>
             ) : (
               ""
             )}

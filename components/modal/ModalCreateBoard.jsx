@@ -19,6 +19,7 @@ import {
   uploadImageBoardAction,
 } from "@/action/workspace.action";
 
+// SVG icons as data URLs (could be moved to a separate file for reusability)
 const svgIconInput = encodeURIComponent(`
   <svg width="20" height="22" viewBox="0 0 20 22" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M5.99805 15H9.99805M5.99805 10H13.998" stroke="#59BAD5" strokeWidth="1.5" strokeLinecap="round"/>
@@ -97,8 +98,7 @@ export default function ModalCreateBoard({ Workspaceid }) {
           cover: selectedOption,
           workspaceId: Workspaceid,
         });
-        console.log("Boarddddddddddddddd: ", board);
-        setCreatedBoardId(board);
+     
       } else {
         board = await createBoardAction({
           title: data.title,
@@ -110,16 +110,16 @@ export default function ModalCreateBoard({ Workspaceid }) {
         const image = fileInputRef.current?.files?.[0];
         console.log("cccccc", image);
         if (!image) {
-          console.warn("⚠️ No file selected!");
+          console.warn(" No file selected!");
           return;
         }
 
         await uploadImageBoardAction({ boardId: board?.boardId, image });
-        console.warn("⚠️ No image or color selected.");
+        console.warn("No image or color selected.");
         return;
       }
     } catch (error) {
-      console.error("❌ Error creating board:", error);
+      console.error(" Error creating board:", error);
       return;
     } finally {
       reset();
@@ -140,6 +140,9 @@ export default function ModalCreateBoard({ Workspaceid }) {
       console.warn("Board created but no ID found!");
     }
   };
+
+ 
+
 
   return (
     <>
@@ -200,7 +203,7 @@ export default function ModalCreateBoard({ Workspaceid }) {
                 </div>
 
                 {/* Cover select */}
-                <div className="flex flex-col items-start justify-center space-y-2">
+                <div className="flex flex-col space-y-2">
                   <label className="text-label-sm">Cover</label>
                   <div className="relative">
                     <button
@@ -219,7 +222,7 @@ export default function ModalCreateBoard({ Workspaceid }) {
                       )}
 
                       <div className="flex flex-col items-start">
-                        <p className="text-caption-tiny text-title/50">
+                        <p className="text-caption-tiny text-title/50 truncate max-w-[70px]">
                           {selectedOption
                             ? colorOptions.find(
                                 (color) => color.key === selectedOption
