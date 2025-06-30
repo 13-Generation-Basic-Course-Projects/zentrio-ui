@@ -52,8 +52,6 @@ export const getUserAchievementService = async ({ token }) => {
 
 
 export const updateAchievementService = async ({ token, payload }) => {
-  console.log("payload", payload);
-
   let method = "POST";
   let endpoint = profileRouteGroup.setUpAchievementCurrentUser({ token });
   let achievementId = null;
@@ -61,24 +59,26 @@ export const updateAchievementService = async ({ token, payload }) => {
   // Step 1: Check if existing data is present
   try {
     const existingData = await getUserAchievementService({ token });
+    console.log("Existing achievement data:", existingData);
 
     const details = existingData?.payload?.details || {};
     const ownBoard = details.ownBoard || [];
     const otherBoard = details.otherBoard || [];
 
+    achievementId = existingData?.payload?.achievementId || null;
+
     const hasData = ownBoard.length > 0 || otherBoard.length > 0;
 
-    if (hasData) {
+    if (hasData && achievementId) {
       method = "PUT";
       endpoint = profileRouteGroup.updateAchievementCurrentUser({ token });
-      achievementId = existingData?.payload?.achievementId;
     }
   } catch (err) {
-    ////console.warn(
-     // "Error fetching existing achievements, assuming new user:",
-      //err
-    //);
-    // Default to POST
+    console.warn(
+      "Error fetching existing achievements, defaulting to POST:",
+      err
+    );
+    // Default method = POST
   }
 
   // Step 2: Prepare request body
@@ -96,9 +96,15 @@ export const updateAchievementService = async ({ token, payload }) => {
     ),
   };
 
+  // Include achievementId if updating
   if (method === "PUT" && achievementId) {
     requestBody.achievementId = achievementId;
   }
+
+  console.log(
+    `Sending ${method} request to ${endpoint} with body:`,
+    requestBody
+  );
 
   // Step 3: Make request
   const response = await fetch(endpoint, {
@@ -110,14 +116,16 @@ export const updateAchievementService = async ({ token, payload }) => {
     body: JSON.stringify(requestBody),
   });
 
-  const result = await response.json();
-
   if (!response.ok) {
+    const errorResult = await response.json();
+    console.error("API error response:", errorResult);
     throw new Error(`${method} request failed`);
   }
 
+  const result = await response.json();
   return result;
 };
+
 
 // call route to config
 export const getPreviewProfileService = async ({ token }) => {

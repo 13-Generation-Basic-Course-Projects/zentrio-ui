@@ -22,7 +22,7 @@ import {
   updateWorkspaceByIdService,
   uploadBoardCoverService,
 } from "@/service/workspace.service";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 /*
  * 1. action for create workspaces
@@ -177,7 +177,8 @@ export const updateFavBoardByIdAction = async ({ boardId, isFavourite }) => {
     token,
   });
 
-  revalidatePath("/boards");
+  // revalidatePath("/boards");
+  revalidateTag("workspace");
   return result;
 };
 

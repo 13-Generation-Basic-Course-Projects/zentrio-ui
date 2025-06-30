@@ -217,7 +217,7 @@ export default function CommentCompo({
                             </span>
                           )}
                         </div>
-                        <p className="text-xs text-gray-500 flex items-center gap-1">
+                        <p className="text-small text-gray-500 flex items-center gap-1">
                           <span>{getTimeAgo(comment.creationDate)}</span>
                           <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
                           {/* <span>{formatDate(comment.creationDate)}</span> */}
@@ -283,12 +283,18 @@ export default function CommentCompo({
                             value={editedContent}
                             onChange={(e) => {
                               setEditedContent(e.target.value);
-                              console.log("Input value:", e.target.value);
+                            }}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter" && !e.shiftKey) {
+                                e.preventDefault();
+                                handleSave(editingId);
+                              }
                             }}
                             className="w-full p-3 border-2 border-blue-200 focus:border-primary rounded-xl bg-white shadow-sm text-sm"
                             placeholder="Edit your comment..."
                             autoFocus
                           />
+
                           <div className="text-xs text-gray-500">
                             Press Enter to save, or use the buttons above
                           </div>

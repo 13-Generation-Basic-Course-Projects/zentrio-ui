@@ -165,6 +165,8 @@ export function ModalRenameTask({ taskId, boardId }) {
         ganttBarId
       );
 
+      console.log("REsult from updateTaskByIdAction:", result);
+
       toast.success("Task updated successfully", {
         position: "top-right",
         autoClose: 2500,

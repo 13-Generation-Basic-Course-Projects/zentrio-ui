@@ -26,7 +26,7 @@ export const ganttRouteGroup = {
   //get
   getAllGanttBar: () => `${apiConfig.baseUrl}/gantt-bars`,
   getAllGanttBarByGanttChartID: (ganttChartId) =>
-    `${apiConfig.baseUrl}/gantt-bars/ganttCharts/${ganttChartId}`,
+    `${apiConfig.baseUrl}/gantt-bars/gantt-charts/${ganttChartId}`,
 
   //post
   createGanttBar: () => `${apiConfig.baseUrl}/gantt-bars/gantt-charts`, //Created gantt bars with specific gantt charts ID

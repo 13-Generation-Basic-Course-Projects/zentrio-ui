@@ -14,6 +14,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import ModalDelete from "../modal/ModalDelete";
 import { StackedUser } from "../useravatar/StackUser";
 import { getMemberByBoardIdAction } from "@/action/board.action";
+import { toast } from "react-toastify";
 
 export default function CardBoard({
   title,
@@ -28,7 +29,6 @@ export default function CardBoard({
   isFavourite,
   includesPathOtherWorkSpace,
   isFavBtn,
-  otherBoardImage
 }) {
   
 
@@ -65,19 +65,22 @@ export default function CardBoard({
 
       /* Step 2: Update only the title, keep others */
       await updateNameBoardAction(boardId, {
-        title: newTitle, // New title
-        description: existingBoard.description, // Preserve old description
-        cover: existingBoard.cover, // Preserve old cover image
-        workspaceId: existingBoard.workspaceId, // Preserve workspace ID
+        title: newTitle,
+        description: existingBoard.description,
+        cover: existingBoard.cover,
+        workspaceId: existingBoard.workspaceId,
       });
 
-      console.log("✅ Board title updated to:", newTitle);
+      console.log("Board title updated to:", newTitle);
+      toast.success("You have successfully updated the board title");
     } catch (error) {
-      console.error("❌ Failed to update board title:", error);
+      toast.error("Failed to update the board title");
+      console.error(" Failed to update board title:", error);
     }
 
     setEditing(false); // Hide input after update
   };
+
   // fong
   const [members, setMembers] = useState([]); // State to store members
   const [loading, setLoading] = useState(true); // State for loading
@@ -91,7 +94,7 @@ export default function CardBoard({
         const allMemberInBoard = membersResponse?.payload || [];
         setMembers(allMemberInBoard);
       } catch (err) {
-        console.error("❌ Failed to fetch members:", err);
+        console.error("Failed to fetch members:", err);
         setError("Failed to load members");
         setMembers([]); // Fallback to empty array
       } finally {
@@ -101,7 +104,7 @@ export default function CardBoard({
 
     fetchMembers();
   }, [boardId]);
-  console.log("other", includesPathOtherWorkSpace);
+  console.log("member", members);
   return (
     <Card className="py-4 h-[340px] rounded-xl shadow-sm">
       {/* Card Header: shows editable title and favorite button */}
@@ -145,13 +148,22 @@ export default function CardBoard({
               const newFavoriteStatus = !favorited;
               setFavorited(newFavoriteStatus); // Optimistic UI
 
-                // remove try catch
+              try {
                 await updateFavAction({
                   boardId,
                   isFavourite: newFavoriteStatus,
                 });
 
-               
+                toast.success(
+                  newFavoriteStatus
+                    ? "Added to favorites"
+                    : "Removed from favorites"
+                );
+              } catch (error) {
+                console.error(" Failed to update favorite status:", error);
+                toast.error(" Failed to update favorite status");
+                setFavorited(!newFavoriteStatus); // Revert if error
+              }
             }}
             className="text-yellow-500 hover:text-yellow-600 p-3"
             aria-label="Toggle favorite"
@@ -171,9 +183,9 @@ export default function CardBoard({
               className={`rounded-xl w-full h-32 bg-cover bg-center ${image}`}
               aria-label={`Card background for ${title}`}
             />
-          ) : image ||  otherBoardImage ? (
+          ) : image ? (
             <img
-              src={includesPathOtherWorkSpace ?  otherBoardImage : images}
+              src={images}
               alt={images || "Board cover image"}
               className="w-full h-32 object-cover rounded-xl"
             />
@@ -230,9 +242,16 @@ export default function CardBoard({
                     messageUndo="Cancel"
                     messageDo="Delete"
                     action={async () => {
-                      await deleteBoardAction(boardId, workspaceId);
-                      console.log("Delete confirmed!");
-                      setIsDeleteOpen(false);
+                      try {
+                        await deleteBoardAction(boardId, workspaceId);
+                        toast.success("Board deleted successfully");
+                        console.log("Delete confirmed!");
+                      } catch (error) {
+                        console.error(" Failed to delete board:", error);
+                        toast.error(" Failed to delete board");
+                      } finally {
+                        setIsDeleteOpen(false);
+                      }
                     }}
                   />
                 </>

@@ -357,6 +357,8 @@ export const updateFavBoardByIdService = async ({
       headers: {
         Authorization: `Bearer ${token}`,
       },
+      next: { tags: ["workspace"] }
+
     });
 
     // if (!res.ok) {
