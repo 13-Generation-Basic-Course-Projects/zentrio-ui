@@ -165,7 +165,7 @@ export const getAllGanttBarByGanttChartIDService = async ({
       },
     });
     const data = await res.json();
-    console.log("📥 Backend responded with:", data);
+    console.log("📥 Backend responded with gannt bar by gantt chart id", data);
 
     return data;
   } catch (error) {

@@ -10,7 +10,7 @@ import "../../styles/ganttchart.css";
 import BredCrum from "../bredcrum/MyBredcrum";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import BredCrumGanttChart from "../bredcrum/BredcrumGanttChart";
-
+import { deleteGanttBarsByGanttChartIdAction } from "@/action/gantt.action";
 // Helper function to calculate duration in days
 const calculateDurationDays = (start, end) => {
   try {
@@ -121,8 +121,7 @@ export default function GanttChart({
   modal,
   ganttbar,
   ganttChartName,
-  workspaceId,
-  deleteGanttBarsByGanttChartIdAction, // Add this as a prop
+  workspaceId, // Add this as a prop
   onGanttBarDeleted, // Optional callback to refresh data after deletion
   
   ganttChartId,

@@ -123,13 +123,15 @@ export const createGanttBarsByGanttChartIdService = async ({
  */
 export const deleteGanttBarsByGanttChartIdService = async ({
   ganttChartId,
-  ganttbarId,
+  ganttBarId, 
   token,
 }) => {
-  try {
-    // //console.log("from service", { ganttChartId, ganttbarId, token });
 
-    const url = ganttRouteGroup.deleteGanttBar(ganttbarId, ganttChartId);
+  console.log("from service", {   ganttChartId,
+    ganttBarId, token });
+
+    const url = ganttRouteGroup.deleteGanttBar( ganttChartId,
+      ganttBarId);
 
     const res = await fetch(url, {
       method: "DELETE",
@@ -143,10 +145,7 @@ export const deleteGanttBarsByGanttChartIdService = async ({
     ////console.log("📥 Backend responded with:", result);
 
     return result;
-  } catch (error) {
-    //console.error("🐞 Error:", error.message);
-    throw error;
-  }
+ 
 };
 
 /*
