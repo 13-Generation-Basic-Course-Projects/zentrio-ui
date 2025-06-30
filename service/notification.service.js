@@ -1,5 +1,6 @@
 "use server";
 
+import { apiConfig } from "@/constant/baseurl";
 import { notificationRouteGroup } from "@/routes/notificationRoute";
 
 export const sendNotificationForAllUserService = async ({ token, data }) => {
@@ -16,7 +17,7 @@ export const sendNotificationForAllUserService = async ({ token, data }) => {
   );
   if (!response.ok) {
     const text = await response.text(); // Log raw body
-    console.error("Notification API error:", response.status, text);
+    //console.error("Notification API error:", response.status, text);
     throw new Error("Failed to send notification");
   }
 
@@ -25,7 +26,7 @@ export const sendNotificationForAllUserService = async ({ token, data }) => {
   try {
     return JSON.parse(resultText);
   } catch (err) {
-    console.warn("Response is not valid JSON:", resultText);
+    //console.warn("Response is not valid JSON:", resultText);
     return { message: "Notification sent, but no JSON returned" };
   }
 };
@@ -67,7 +68,7 @@ export const sendNotificationToUserIdService = async (
       };
     }
   } catch (error) {
-    console.error("Error sending notification to user:", error.message);
+    //console.error("Error sending notification to user:", error.message);
     throw error;
   }
 };
@@ -75,9 +76,9 @@ export const sendNotificationToUserIdService = async (
 export const getNotificationForUserIdService = async ({ userId, token }) => {
   // Validate userId to ensure it's not undefined or null before making the request
   if (!userId) {
-    console.error(
-      "Error: userId is undefined or null. Cannot fetch notifications."
-    );
+    //console.error(
+   //   "Error: userId is undefined or null. Cannot fetch notifications."
+    //);
     throw new Error("userId is required to fetch notifications.");
   }
 
@@ -96,9 +97,9 @@ export const getNotificationForUserIdService = async ({ userId, token }) => {
 
 export const deleteNotificationByIdService = async (notificationId, token) => {
   if (!notificationId) {
-    console.error(
-      "Error: notificationId is undefined or null. Cannot delete notification."
-    );
+    //console.error(
+    //  "Error: notificationId is undefined or null. Cannot delete notification."
+    //);
     throw new Error("notificationId is required to delete notification.");
   }
 
@@ -113,11 +114,11 @@ export const deleteNotificationByIdService = async (notificationId, token) => {
       },
     });
 
-    console.log("response", response);
+    //console.log("response", response);
 
     return response;
   } catch (error) {
-    console.error("Can't delete notification:", error);
+    //console.error("Can't delete notification:", error);
     throw error;
   }
 };
@@ -134,7 +135,43 @@ export const deleteAllNotificationService = async (token) => {
     });
     return response;
   } catch (error) {
-    console.error("Can't delete notification:", error);
+    //console.error("Can't delete notification:", error);
+    throw error;
+  }
+};
+
+//new
+
+export const sendNotificationToSpecificArrayIdService = async (data, token) => {
+  const url = `${apiConfig.baseUrl}/notifications/sendSpecificToUsers`;
+
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    });
+
+    const resultText = await response.text();
+
+    if (!response.ok) {
+      throw new Error(
+        `Failed to send notification. Status: ${response.status}. Body: ${resultText}`
+      );
+    }
+
+    try {
+      return JSON.parse(resultText);
+    } catch (err) {
+      return {
+        message: resultText || "Notification sent (no JSON returned)",
+      };
+    }
+  } catch (error) {
+    //console.error("Error sending notification:", error.message);
     throw error;
   }
 };

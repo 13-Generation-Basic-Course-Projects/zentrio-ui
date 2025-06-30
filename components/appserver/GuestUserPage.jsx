@@ -7,6 +7,7 @@ import { StackedUser } from "../useravatar/StackUser"; // Adjust path as needed
 import { EmptyKanban } from "./EmptyKanban"; // Adjust path as needed
 import ModalDetailChecklist from "../modal/board/ModalDetailChecklist"; // Adjust path as needed
 import CardDateChecklist from "../card/CardDateChecklist"; // Adjust path as needed
+import GuestDrawerCompo from "../justguestuserthing/GuestDrawer";
 
 // Placeholder component
 const UserAvater = ({ image }) => (
@@ -140,8 +141,7 @@ export default function GuestKanbanBoardCompo({
 
   return (
     <>
-      <h1>Hello guest user</h1>
-      <div className="w-full h-screen flex flex-col">
+      <div className="w-full h-screen flex flex-col p-5">
         <BredCrum
           board={
             boardData?.payload?.title ||
@@ -286,6 +286,7 @@ export default function GuestKanbanBoardCompo({
                                       role="ROLE_GUEST"
                                       style={{ pointerEvents: "none" }} // Disable all pointer events
                                       isModalDisabled={true}
+                                      imageChecklist={checklist?.cover}
                                     />
                                   </div>
                                 </div>
@@ -331,6 +332,9 @@ export default function GuestKanbanBoardCompo({
         ) : (
           <EmptyKanban />
         )}
+      </div>
+      <div className="absolute bottom-5 left-3">
+        <GuestDrawerCompo />
       </div>
     </>
   );

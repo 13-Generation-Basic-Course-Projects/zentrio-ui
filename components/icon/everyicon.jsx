@@ -1,3 +1,4 @@
+import { preventImage } from "@/constant/preventimage";
 import { ModalAssignMemberToCheckLisk } from "../modal/board/ModalAssignMemberChecklist";
 
 export function SideBarIcon({ strokwidth, size, color }) {
@@ -258,7 +259,7 @@ export function StackedProfileChecklist({
   role,
 }) {
   console.log("=====", allMemberChecklist);
-
+  const prevent = preventImage.noProfile;
   return (
     <div className="flex items-center space-x-[-14px]">
       {member.slice(0, 4).map((user, index) => (
@@ -278,7 +279,7 @@ export function StackedProfileChecklist({
         <div className="w-8 h-8 rounded-full bg-gray-300 text-btn-sm flex items-center justify-center border-2 border-white shadow">
           <img
             key={"no member"}
-            src={preventUserImage}
+            src={prevent}
             alt={"no member"}
             className="w-8 h-8 rounded-full border-2 border-white shadow"
           />

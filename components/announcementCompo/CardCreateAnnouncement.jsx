@@ -22,10 +22,11 @@ export default function CardCreateAnnouncement({
   const managerMember = boardMember?.find((member) =>
     member.roles?.some((role) => role === "ROLE_MANAGER")
   );
+  // console.log("anal", Announcements?.payload);
 
   return (
     <div className="mx-auto px-2 py-1">
-      <Card className="w-full bg-white shadow-sm border border-gray-200 rounded-xl overflow-hidden">
+      <Card className="max-w-3xl mx-auto bg-white shadow-sm border border-gray-200 rounded-xl overflow-hidden">
         <CardContent className="p-0">
           {/* Compact Header */}
           <div className="bg-gradient-to-r from-[#59BAD5] to-[#4AB5D1] p-3 relative">
@@ -41,7 +42,7 @@ export default function CardCreateAnnouncement({
 
               {/* Compact stats */}
               <div className="flex items-center space-x-3 text-white/90 text-xs">
-                <span>{Announcements?.length || 0} posts</span>
+                <span>{Announcements?.payload?.length || 0} posts</span>
                 <span>{boardMember?.length || 0} members</span>
               </div>
             </div>
@@ -51,15 +52,17 @@ export default function CardCreateAnnouncement({
           <div className="p-3">
             <div className="flex items-center gap-3">
               {managerMember && (
-                <div className="relative">
-                  <div className="w-10 h-10 rounded-full overflow-hidden bg-gradient-to-r from-[#59BAD5] to-[#4AB5D1] p-0.5">
-                    <img
-                      src={managerMember.profileImage || preventUserImage}
-                      alt="Profile"
-                      className="w-full h-full object-cover rounded-full bg-white p-0.5"
-                    />
+                <div className="relative w-11 h-11">
+                  <div className="w-full h-full rounded-full overflow-hidden bg-gradient-to-r from-[#59BAD5] to-[#4AB5D1] p-0.5">
+                    <div className="w-full h-full rounded-full overflow-hidden bg-white">
+                      <img
+                        src={managerMember.profileImage || preventUserImage}
+                        alt="Profile"
+                        className="w-full h-full object-cover rounded-full p-0.5"
+                      />
+                    </div>
                   </div>
-                  <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border border-white"></div>
+                  <div className="absolute bottom-0.5 right-0 w-3 h-3 bg-green-500 rounded-full border-[2px] border-white" />
                 </div>
               )}
 

@@ -9,11 +9,17 @@ export default function NavbarWrapper({
   preventUserImage,
 }) {
   const pathname = usePathname();
-  // Hide navbar if on certain paths
+
+  // Hide navbar if:
   const hideNavbar =
-    (pathname.startsWith("/dashboard/") &&
-      (pathname.includes("/board") || pathname.includes("/docu"))) ||
-    pathname === "/profile";
+    (pathname?.startsWith("/dashboard/") &&
+      (pathname.includes("/board") ||
+        pathname.match(
+          /\/dashboard\/(otherworkspace\/)?[^/]+\/[^/]+\/docu$/
+        ))) ||
+    pathname === "/profile" ||
+    // New condition for /guestuser/:workspaceId/:boardId
+    pathname?.startsWith("/guestuser/");
 
   if (hideNavbar) return null;
 

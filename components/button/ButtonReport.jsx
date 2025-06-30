@@ -11,14 +11,14 @@ import {
 } from "@heroui/react";
 import React from "react";
 import dynamic from "next/dynamic";
-import PDFPreview from "../integrate/pdf/PreviewPDF";
 import { PDFPreviewer } from "../integrate/pdf/CustomePDF";
 
-// const PDFPreview = dynamic(() => import("../integrate/pdf/PreviewPD"), {
+// const PDFPreview = dynamic(() => import("../integrate/pdf/CustomePDF"), {
 //   ssr: false,
 // });
 export const BtnPreview = ({ report }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const dataReport = report;
 
   return (
     <>
@@ -43,7 +43,7 @@ export const BtnPreview = ({ report }) => {
         <ModalContent>
           {(onClose) => (
             <>
-              <PDFPreviewer report={report}/>
+              <PDFPreviewer report={dataReport}/>
             </>
           )}
         </ModalContent>

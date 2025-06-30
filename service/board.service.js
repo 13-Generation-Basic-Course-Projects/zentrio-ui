@@ -165,7 +165,7 @@ export const getAllGanttBarByGanttChartIDService = async ({
       },
     });
     const data = await res.json();
-    console.log("📥 Backend responded with:", data);
+    console.log("📥 Backend responded with gannt bar by gantt chart id", data);
 
     return data;
   } catch (error) {
@@ -244,52 +244,52 @@ export const createTaskByBoardIdAndGanttChartIdService = async ({
   data,
   token,
 }) => {
-  try {
-    const payload = {
-      title: data.title,
-      description: data.description,
-      startedAt: data.startedAt,
-      finishedAt: data.finishedAt,
-      boardId,
-      ganttBarId: data.ganttBarId,
-      leaderId: data.leaderId || null, // Include leaderId
-    };
-    console.log("Service payload:", payload);
-    console.log("Service params:", { boardId, ganttChartId, token });
-    const url = boardRouteGroup.createTaskByBoardIdAndGanttBarId(
-      boardId,
-      ganttChartId
-    );
-    console.log("Request URL:", url);
+  const payload = {
+    title: data.title,
+    description: data.description,
+    startedAt: data.startedAt,
+    finishedAt: data.finishedAt,
+    boardId,
+    ganttBarId: data.ganttBarId,
+  };
+  // leaderId: data.leaderId || null, // Include leaderId
+  console.log("Service payload:", payload);
+  console.log("Service params: create task", {
+    boardId,
+    ganttChartId,
+    token,
+  });
+  const url = boardRouteGroup.createTaskByBoardIdAndGanttBarId(
+    boardId,
+    ganttChartId
+  );
+  console.log("Request URL:", url);
 
-    const res = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(payload),
-    });
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload),
+  });
 
-    if (!res.ok) {
-      let errorMessage = `Failed to create task: ${res.statusText} (${res.status})`;
-      try {
-        const errorData = await res.json();
-        errorMessage = errorData.message || errorMessage;
-      } catch (jsonError) {
-        console.error("Failed to parse error response:", jsonError);
-      }
-      throw new Error(errorMessage);
-    }
+  // if (!res.ok) {
+  //   let errorMessage = `Failed to create task: ${res.statusText} (${res.status})`;
+  //   try {
+  //     const errorData = await res.json();
+  //     errorMessage = errorData.message || errorMessage;
+  //   } catch (jsonError) {
+  //     console.error("Failed to parse error response:", jsonError);
+  //   }
+  //   throw new Error(errorMessage);
+  // }
 
-    const result = await res.json();
-    console.log("Backend responded with:", JSON.stringify(result, null, 2));
+  const result = await res.json();
+  console.log("result from post task", result);
+  console.log("Backend responded with:", JSON.stringify(result, null, 2));
 
-    return result;
-  } catch (error) {
-    console.error("Create task service error:", error.message);
-    throw error;
-  }
+  return result;
 };
 
 /*
@@ -659,7 +659,7 @@ export const changeStatusTaskService = async (taskId, token, type) => {
  * cheng  task to underreview
  */
 export const changeStageToUnderReviewService = async (taskId, token, stage) => {
-  try {
+  
     //console.log("from service ", token);
     const url = boardRouteGroup.changeStagToUnderReview(taskId, stage);
     console.log(url);
@@ -671,12 +671,10 @@ export const changeStageToUnderReviewService = async (taskId, token, stage) => {
       },
     });
     const data = await res.json();
-    console.log("📥 Backend responded with change status:", data);
+    console.log("📥 Backend responded with change status completed:", data);
 
     return data;
-  } catch (error) {
-    throw error;
-  }
+ 
 };
 
 export const FeedBackService = async (taskId, token, comment) => {
@@ -690,11 +688,11 @@ export const FeedBackService = async (taskId, token, comment) => {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
-        body: JSON.stringify({
-          comment: comment,
-          taskId: taskId,
-        }),
       },
+      body: JSON.stringify({
+        comment: comment.comment,
+        taskId: taskId,
+      }),
     });
     const data = await res.json();
     console.log("📥 Backend responded with change feedback:", data);
@@ -813,15 +811,9 @@ export const updateTaskByIdService = async ({
       ganttBarId,
     }),
   });
-
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({}));
-    throw new Error(
-      error.message || `Failed to update task: ${response.status}`
-    );
-  }
-
-  return response.json();
+  const data = await response.json();
+  console.log("err update", data);
+  return data;
 };
 
 /*
@@ -910,8 +902,11 @@ export const updateCheckListByIdAndTaskIdService = async (
 };
 
 export const uploadImageBoardService = async ({ boardId, image, token }) => {
+  console.log("BoardId in upload image in board : ", boardId);
+  console.log("image in upload image in board : ", image);
+  console.log("token in upload image in board : ", token);
+
   const url = boardRouteGroup.uploadImageBoard(boardId);
-  console.log("url", url, "image", image, "token", token);
 
   const formData = new FormData();
   formData.append("file", image);
@@ -994,10 +989,7 @@ export const getGuestUserDisplayKanbanService = async ({
   workspaceId,
   boardId,
 }) => {
-  const url = boardRouteGroup.getGuestUserDisplayKanban(
-    workspaceId,
-    boardId,
-  );
+  const url = boardRouteGroup.getGuestUserDisplayKanban(workspaceId, boardId);
   console.log("get task url : ", url);
 
   const response = await fetch(url, {
@@ -1088,5 +1080,104 @@ export const uploadCoverChecklistService = async ({
     return result;
   } catch (error) {
     console.error("Upload cover error:", error);
+  }
+};
+
+/**
+ *  leave the board
+ */
+
+/*
+ * delete task
+ */
+export const leaveTheBoardService = async (boardId, token) => {
+  try {
+    //console.log("from service ", token);
+    const url = boardRouteGroup.leaveTheBoard(boardId);
+    const res = await fetch(url, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await res.json();
+    console.log("📥 Backend responded with leave the baord", data);
+
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/*
+ * assign leader
+ */
+export const assignUserRoleLeadeerNewToBoardService = async ({
+  taskId,
+  leaderId,
+  pmId,
+  token,
+}) => {
+  try {
+    // Construct and log the endpoint
+    const endpoint = `/api/v1/tasks/${taskId}/pm/${pmId}/members/${leaderId}`;
+    console.log("Calling endpoint:", endpoint);
+
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      // Add body if required by the endpoint
+      // body: JSON.stringify({ role: "leader" }),
+    });
+
+    const result = await response.json();
+
+    // if (!response.ok) {
+    //   if (response.status === 401) {
+    //     throw new Error(
+    //       "Unauthorized: Invalid token or PM ID does not match authenticated user"
+    //     );
+    //   }
+    //   throw new Error(result.message || "Failed to assign leader");
+    // }
+    console.log("nyfong nyfong", result);
+    return {
+      success: true,
+      payload: result.payload || {
+        boardId: result.boardId,
+        taskId,
+        title: result.title,
+        createdBy: pmId,
+      },
+    };
+  } catch (error) {
+    console.error("Service error:", error.message);
+    return { success: false, error: error.message };
+  }
+};
+
+//fetch feedback
+
+export const getFeedBackByTaskIdService = async ({ taskId, token }) => {
+  try {
+    //console.log("from service ", token);
+    const url = boardRouteGroup.getFeedBackByTaskId(taskId);
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await res.json();
+    console.log("📥 Backend responded with boardDatafeedback:", data);
+
+    return data;
+  } catch (error) {
+    throw error;
   }
 };

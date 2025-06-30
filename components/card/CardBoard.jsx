@@ -18,6 +18,7 @@ import { getMemberByBoardIdAction } from "@/action/board.action";
 export default function CardBoard({
   title,
   image,
+  images,
   role,
   deleteBoardAction,
   boardId,
@@ -25,10 +26,13 @@ export default function CardBoard({
   getBoardByIdAction,
   updateFavAction,
   isFavourite,
+  includesPathOtherWorkSpace,
+  isFavBtn,
+  otherBoardImage
 }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-
+  console.log("is fav", isFavBtn);
   /* Extract workspaceId and projectId from the current URL */
   const pathSegments = pathname.split("/");
   const workspaceId = pathSegments[2] || "defaultWorkspace";
@@ -94,13 +98,14 @@ export default function CardBoard({
 
     fetchMembers();
   }, [boardId]);
-  console.log("member", members);
+  console.log("other", includesPathOtherWorkSpace);
   return (
     <Card className="py-4 h-[340px] rounded-xl shadow-sm">
       {/* Card Header: shows editable title and favorite button */}
       <CardHeader className="pb-0 pt-2 px-4 flex justify-between items-center">
-        {editing ? (
+        {editing && !includesPathOtherWorkSpace ? (
           /* Input for editing title */
+
           <input
             type="text"
             className="text-body-sm font-semibold text-primary bg-transparent border-b border-primary focus:outline-none"
@@ -126,47 +131,47 @@ export default function CardBoard({
             {title}
           </p>
         )}
-
         {/* Favorite (star) toggle button */}
-        <button
-          onClick={async (e) => {
-            e.preventDefault();
-            e.stopPropagation();
 
-            const newFavoriteStatus = !favorited;
-            setFavorited(newFavoriteStatus); // Optimistic UI
+        {isFavBtn !== false ? (
+          <button
+            onClick={async (e) => {
+              e.preventDefault();
+              e.stopPropagation();
 
-            try {
-              await updateFavAction({
-                boardId,
-                isFavourite: newFavoriteStatus,
-              });
+              const newFavoriteStatus = !favorited;
+              setFavorited(newFavoriteStatus); // Optimistic UI
 
-              console.log(`✅ Favorite status updated to ${newFavoriteStatus}`);
-            } catch (error) {
-              console.error("❌ Failed to update favorite status:", error);
-              setFavorited(!newFavoriteStatus); // Revert if error
-            }
-          }}
-          className="text-yellow-500 hover:text-yellow-600 p-3"
-          aria-label="Toggle favorite"
-        >
-          {favorited ? <StarIconSolid /> : <StarIconOutline />}
-        </button>
+                // remove try catch
+                await updateFavAction({
+                  boardId,
+                  isFavourite: newFavoriteStatus,
+                });
+
+               
+            }}
+            className="text-yellow-500 hover:text-yellow-600 p-3"
+            aria-label="Toggle favorite"
+          >
+            {favorited ? <StarIconSolid /> : <StarIconOutline />}
+          </button>
+        ) : (
+          ""
+        )}
       </CardHeader>
 
       {/* Card Body: background image or placeholder */}
-      <CardBody className="overflow-visible py-2">
+      <CardBody className="overflow-visible py-2 ">
         <Link href={`/dashboard/${workspaceId}/${boardId}/board`}>
           {image && image.startsWith("bg-") ? (
             <div
               className={`rounded-xl w-full h-32 bg-cover bg-center ${image}`}
               aria-label={`Card background for ${title}`}
             />
-          ) : image ? (
+          ) : image ||  otherBoardImage ? (
             <img
-              src={image}
-              alt={image || "Board cover image"}
+              src={includesPathOtherWorkSpace ?  otherBoardImage : images}
+              alt={images || "Board cover image"}
               className="w-full h-32 object-cover rounded-xl"
             />
           ) : (
@@ -199,32 +204,38 @@ export default function CardBoard({
           </div>
 
           {/* Delete button and confirmation modal */}
-          <div className="flex items-center text-progress-red py-5 gap-1">
-            <button
-              onClick={() => setIsDeleteOpen(true)}
-              className="flex items-center space-x-2 hover:bg-slate-50 rounded-medium text-caption"
-            >
-              <IconDelete />
-              <span>Remove</span>
-            </button>
+          {includesPathOtherWorkSpace ? (
+            ""
+          ) : (
+            <div className="flex items-center text-progress-red py-5 gap-1">
+              <button
+                onClick={() => setIsDeleteOpen(true)}
+                className="flex items-center space-x-2 hover:bg-slate-50 rounded-medium text-caption"
+              >
+                <IconDelete />
+                <span>Remove</span>
+              </button>
 
-            {/* Delete confirmation modal */}
-            {isDeleteOpen && (
-              <ModalDelete
-                isOpen={isDeleteOpen}
-                onClose={() => setIsDeleteOpen(false)}
-                messageTitle="Are you sure?"
-                messageBody="You want delete this board."
-                messageUndo="Cancel"
-                messageDo="Delete"
-                action={async () => {
-                  await deleteBoardAction(boardId, workspaceId);
-                  console.log("Delete confirmed!");
-                  setIsDeleteOpen(false);
-                }}
-              />
-            )}
-          </div>
+              {/* Delete confirmation modal */}
+              {isDeleteOpen && (
+                <>
+                  <ModalDelete
+                    isOpen={isDeleteOpen}
+                    onClose={() => setIsDeleteOpen(false)}
+                    messageTitle="Are you sure?"
+                    messageBody="You want delete this board."
+                    messageUndo="Cancel"
+                    messageDo="Delete"
+                    action={async () => {
+                      await deleteBoardAction(boardId, workspaceId);
+                      console.log("Delete confirmed!");
+                      setIsDeleteOpen(false);
+                    }}
+                  />
+                </>
+              )}
+            </div>
+          )}
         </div>
       </CardFooter>
     </Card>

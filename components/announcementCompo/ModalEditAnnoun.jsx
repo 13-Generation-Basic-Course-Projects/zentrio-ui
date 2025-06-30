@@ -14,7 +14,9 @@ import Image from "next/image";
 import preImage from "@/assets/folderdynamiccolor.png";
 import thumbup from "@/assets/thumbupdynamiccolor.png";
 import logo from "@/public/image/Zentrio-Logo.png";
-import { ArrowRight, Calendar, Users, Zap } from "lucide-react";
+import { ArrowRight, Calendar, Crown, Zap } from "lucide-react";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function ModalEditAnnoun({
   title,
@@ -26,16 +28,30 @@ export default function ModalEditAnnoun({
 }) {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const [titleState, setTitleState] = useState(Announcement?.title || "");
-  const [description, setDescription] = useState(Announcement?.description || "");
+  const [description, setDescription] = useState(
+    Announcement?.description || ""
+  );
   const [loading, setLoading] = useState(false);
 
   const handleUpdate = async () => {
     if (!titleState || !description) return;
     setLoading(true);
     try {
-      await updateAnnouncementByIdAction(announId, description, titleState, boardId);
-      onClose();
+      const res = await updateAnnouncementByIdAction(
+        announId,
+        description,
+        titleState,
+        boardId
+      );
+
+      if (res?.success) {
+        toast.success("Updated successfully!");
+        onClose();
+      } else {
+        toast.error("Failed to update announcement.");
+      }
     } catch (error) {
+      toast.error("Something went wrong while updating.");
       console.error("Failed to update announcement", error);
     } finally {
       setLoading(false);
@@ -73,7 +89,11 @@ export default function ModalEditAnnoun({
                 {/* Left side */}
                 <div className="w-full lg:w-2/5 relative bg-gradient-to-br from-primary via-primary to-white">
                   <div className="absolute inset-0 bg-white/20 backdrop-blur-md z-0"></div>
-                  <Image src={preImage} alt="Pre Image" className="absolute w-full h-auto" />
+                  <Image
+                    src={preImage}
+                    alt="Pre Image"
+                    className="absolute w-full h-auto"
+                  />
                   <Image
                     src={thumbup}
                     alt="Thumb Up"
@@ -103,23 +123,29 @@ export default function ModalEditAnnoun({
                           <div className="w-12 h-12 rounded-full overflow-hidden bg-gradient-to-r from-indigo-400 to-purple-400 p-0.5">
                             <div className="w-full h-full rounded-full overflow-hidden bg-white p-0.5">
                               <img
-                                src={managerMember.profileImage || preventUserImage}
+                                src={
+                                  managerMember.profileImage || preventUserImage
+                                }
                                 alt="Profile"
                                 className="w-full h-full object-cover rounded-full"
                               />
                             </div>
                           </div>
-                          <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 rounded-full border-2 border-white flex items-center justify-center">
+                          {/* <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 rounded-full border-2 border-white flex items-center justify-center">
                             <div className="w-2 h-2 bg-white rounded-full"></div>
-                          </div>
+                          </div> */}
                         </div>
                         <div className="flex-1">
                           <div className="text-sm font-semibold text-gray-900">
                             {managerMember.username || managerMember.name}
                           </div>
                           <div className="text-xs text-gray-500 flex items-center">
-                            <Users className="w-3 h-3 mr-1" />
-                            {managerMember.roles?.[0] || "Manager"}
+                            <Crown className="w-3 h-3 mr-1" />
+                            {managerMember.roles?.[0]
+                              ?.replace("ROLE_", "")
+                              ?.toLowerCase()
+                              ?.replace(/^\w/, (c) => c.toUpperCase()) ||
+                              "Manager"}
                           </div>
                         </div>
                         <div className="text-xs text-gray-400 flex items-center">
@@ -133,7 +159,8 @@ export default function ModalEditAnnoun({
                   <ModalBody className="flex-1 px-8 py-6 space-y-6">
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-gray-700 flex items-center">
-                        Announcement Title<span className="text-red-500 ml-1">*</span>
+                        Announcement Title
+                        <span className="text-red-500 ml-1">*</span>
                       </label>
                       <input
                         type="text"

@@ -9,7 +9,7 @@ const VerticalChartNoSSR = dynamic(() => import("../chart/VerticalChart"), {
   ssr: false,
 });
 
-export default function Reportpage({ modal, report }) {
+export default function Reportpage({ modal, report, version }) {
   const task = {
     todo: 0,
     progress: 0,
@@ -108,13 +108,33 @@ export default function Reportpage({ modal, report }) {
     });
   });
 
-  const getVersion = report?.payload;
+  const getVersion = version?.payload;
 
   const groupedTasks = report?.payload?.groupedTasks;
   console.log("apple", groupedTasks);
   if (groupedTasks == null) {
     return <></>;
   }
+
+  const dateForCreate = getVersion?.map((item) => {
+    const date = new Date(
+      item?.data?.boardData?.createdAt[0],              // year
+      item?.data?.boardData?.createdAt[1] - 1,          // month (0-based in JS)
+      item?.data?.boardData?.createdAt[2],              // day
+      item?.data?.boardData?.createdAt[3],              // hour
+      item?.data?.boardData?.createdAt[4],              // minute
+      item?.data?.boardData?.createdAt[5],              // second
+      item?.data?.boardData?.createdAt[6] // microseconds → milliseconds
+    )
+
+    const current = new Date();
+
+    const convert = current - date;
+
+    // return convert > 0 ? convert : 0;
+    return String(convert / 86400000).split('.')[0];
+  })
+
   return (
     <>
       <div className="p-5">
@@ -125,11 +145,11 @@ export default function Reportpage({ modal, report }) {
           modal={modal}
         />
 
-        {}
+        { }
         <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mt-5 overflow-y-auto h-screen md:h-fit scrollbar-hidden">
           <div className="md:col-span-8 md:h-screen flex flex-col  ">
             <div className=" overflow-y-auto scrollbar-hidden pb-40 p-2">
-              {}
+              { }
               <div className="grid grid-cols-4 gap-2">
                 {tasks.map((item, index) => (
                   <div
@@ -160,15 +180,15 @@ export default function Reportpage({ modal, report }) {
                   </div>
                 ))}
               </div>
-              {}
-              {}
+              { }
+              { }
 
-              <div className="mt-10">
+              <div className="mt-5 border-1 rounded-medium pl-8 pr-16 pb-8">
                 <VerticalChartNoSSR report={report} />
               </div>
 
-              {}
-              <div className="mt-10">
+              { }
+              <div className="mt-5">
                 <HorizontalChart
                   amtChklistTodo={cheklist.inTodo}
                   amtChklistProgress={cheklist.inProgress}
@@ -179,24 +199,24 @@ export default function Reportpage({ modal, report }) {
             </div>
           </div>
 
-          {}
+          { }
           <div className="md:col-span-4 space-y-10 md:h-screen flex flex-col ">
             <div className=" flex flex-col  gap-2 overflow-y-auto scrollbar-hidden pb-[250px]">
-              {}
-              <div className="border-1 rounded-medium bg-[#FFFFFF] shadow-small p-4 flex flex-col ">
-                <h1 className="text-left py-5 text-h6 text-title/50">
+              { }
+              <div className="border-1 rounded-medium bg-[#FFFFFF] px-4 pb-4 flex flex-col ">
+                <h1 className="text-left pb-5 pt-4 text-h6 text-title/50">
                   Amount of Members
                 </h1>
                 <p className="border border-title/10 w-full my-2"></p>
                 <div className="relative w-[200px] h-[200px] mx-auto">
-                  {}
+                  { }
                   <div className="absolute w-[160px] h-[160px] bg-blue-500 rounded-full border-3 border-bgColor flex items-center justify-center">
                     <p className="text-h3 text-white font-semibold">
                       {userRole.m}
                     </p>
                   </div>
 
-                  {}
+                  { }
                   <div
                     className="absolute w-[100px] h-[100px] bg-purple-500 rounded-full border-3 border-bgColor flex items-center justify-center"
                     style={{ top: "20px", left: "120px" }}
@@ -206,7 +226,7 @@ export default function Reportpage({ modal, report }) {
                     </p>
                   </div>
 
-                  {}
+                  { }
                   <div
                     className="absolute w-[80px] h-[80px] bg-black rounded-full border-3 border-bgColor flex items-center justify-center"
                     style={{ top: "80px", left: "110px" }}
@@ -232,8 +252,8 @@ export default function Reportpage({ modal, report }) {
                 </div>
               </div>
 
-              {}
-              <div className="border-1 rounded-medium bg-[#FFFFFF] shadow-small p-4 flex flex-col h-[300px] ">
+              { }
+              <div className="border-1 rounded-medium bg-[#FFFFFF] p-4 flex flex-col h-[300px] mt-3">
                 <h1 className="flex items-center gap-2 text-h6 text-title font-semibold py-5">
                   <span className="inline-block w-5 h-5">
                     <svg
@@ -250,13 +270,13 @@ export default function Reportpage({ modal, report }) {
                   Version History
                 </h1>
                 <div className="relative  max-h-auto  overflow-y-auto scrollbar-hidden">
-                  {}
-                  <div className="absolute h-full left-[20px] top-5 bottom-5 border-l border-gray-300"></div>
+                  { }
 
-                  {}
+
+                  { }
                   <div className="flex flex-col space-y-8 relative z-10">
-                    {}
-                    {allVersion.map((item, index) => (
+                    { }
+                    {/* {allVersion.map((item, index) => (
                       <div className="flex items-start space-x-4" key={index}>
                         <div className="flex-shrink-0 w-[40px] h-[30px] bg-primary text-white rounded-full flex items-center justify-center font-semibold text-caption">
                           {item}
@@ -267,8 +287,63 @@ export default function Reportpage({ modal, report }) {
                             {report?.payload?.boardData?.createdBy?.username}
                           </p>
                         </div>
+                        <div className="absolute h-full left-[0.75%] -z-30 top-5 bottom-5 border-l border-gray-300"></div>
                       </div>
-                    ))}
+                    ))} */}
+
+                    {
+                      getVersion?.map((item, index) => (
+                        <div className="flex items-start space-x-4" key={index}>
+                          <div className="flex-shrink-0 w-[40px] h-[30px] bg-primary text-white rounded-full flex items-center justify-center font-semibold text-caption">
+                            {item?.data?.version}
+                          </div>
+                          <div className="flex flex-col space-y-1">
+                            <p className="text-h6">ZenTrio Reporting Document</p>
+                            <p className="text-caption-tiny text-title/50">
+                              {item?.data?.boardData?.createdBy?.username}
+                              &nbsp;·&nbsp;
+                              {(() => {
+                                const createdDate = new Date(
+                                  item?.data?.boardData?.createdAt[0],
+                                  item?.data?.boardData?.createdAt[1] - 1,
+                                  item?.data?.boardData?.createdAt[2],
+                                  item?.data?.boardData?.createdAt[3],
+                                  item?.data?.boardData?.createdAt[4],
+                                  item?.data?.boardData?.createdAt[5],
+                                  item?.data?.boardData?.createdAt[6] || 0
+                                );
+
+                                const timeDiff = new Date() - createdDate;
+
+                                if (timeDiff <= 0) return 'now';
+
+                                const value = timeDiff > 31536000000 ? String(timeDiff / 31536000000).split('.')[0]
+                                  : timeDiff > 2592000000 ? String(timeDiff / 2592000000).split('.')[0]
+                                    : timeDiff > 86400000 ? String(timeDiff / 86400000).split('.')[0]
+                                      : timeDiff > 3600000 ? String(timeDiff / 3600000).split('.')[0]
+                                        : timeDiff > 60000 ? String(timeDiff / 60000).split('.')[0]
+                                          : timeDiff > 1000 ? String(timeDiff / 1000).split('.')[0]
+                                            : 0;
+
+                                const unit = timeDiff > 31536000000 ? 'year'
+                                  : timeDiff > 2592000000 ? 'month'
+                                    : timeDiff > 86400000 ? 'day'
+                                      : timeDiff > 3600000 ? 'hour'
+                                        : timeDiff > 60000 ? 'minute'
+                                          : timeDiff > 1000 ? 'second'
+                                            : '';
+
+                                if (value == 0) return 'now';
+
+                                return `${value} ${unit}${value > 1 ? 's' : ''} ago`;
+                              })()}
+                            </p>
+                          </div>
+                          <div className="absolute h-full left-[0.75%] -z-30 top-5 bottom-5 border-l border-gray-300"></div>
+                        </div>
+                      ))
+                    }
+
                   </div>
                 </div>
               </div>

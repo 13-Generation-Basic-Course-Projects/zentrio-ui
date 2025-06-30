@@ -11,4 +11,7 @@ export const calenderRouteGroup = {
   //delete
   deteteNoteByNoteIdTaskId: (noteId, taskId) =>
     `${apiConfig.baseUrl}/calendars/${noteId}/tasks/${taskId}`,
+  //add new
+  updateNoteByIdFromCalendar: (calendarId) =>
+    `${apiConfig.baseUrl}/calendars/${calendarId}`, // update note by id from calendar
 };

@@ -14,6 +14,7 @@ import {
   changeStatusTaskAction,
   moveTaskOrderAction,
 } from "@/action/board.action";
+import KanbanDrawer from "./ArchiveDrawer";
 
 // Placeholder component
 const UserAvater = ({ image }) => (
@@ -125,6 +126,7 @@ export default function KanbanBoard({
   boardId,
   role,
   workspaceId,
+  feedbackByTaskIds,
 }) {
   const [columns, setColumns] = useState([]);
   const [draggedItem, setDraggedItem] = useState(null);
@@ -560,6 +562,7 @@ export default function KanbanBoard({
     try {
       const result = await changeStatusTaskAction(taskId, newStatus);
       if (result.success) {
+        // Update columns state
         setColumns((prev) =>
           prev.map((column) => ({
             ...column,
@@ -569,8 +572,11 @@ export default function KanbanBoard({
           }))
         );
       } else {
+        console.error("Failed to update task status:", result.error);
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error("Error updating task status:", error.message);
+    }
   };
 
   return (
@@ -583,6 +589,9 @@ export default function KanbanBoard({
         workspaceId={workspaceId}
       />
       <StackedUser image={allMemberInBoard} />
+      <div className=" w-full flex justify-start items-center mt-5">
+        <KanbanDrawer />
+      </div>
       {isUpdating && (
         <div className="text-blue-500 p-2">Updating task order...</div>
       )}
@@ -602,6 +611,7 @@ export default function KanbanBoard({
           </div>
         ))}
       </div>
+
       {tasks.length > 0 ? (
         <div className="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 p-2 overflow-hidden">
           {(columns || []).map((column) => (
@@ -661,8 +671,13 @@ export default function KanbanBoard({
                         <div
                           className={`shadow-sm rounded-xl overflow-hidden transition-all duration-300 ease-in-out ${
                             isChecklistHoverTargetCard
-                              ? "ring-2 ring-green-300"
+                              ? "ring-2 ring-orange-300"
                               : ""
+                          } ${
+                            card.finishedAt &&
+                            new Date(card.finishedAt) >= new Date()
+                              ? "bg-white"
+                              : "bg-orange-50 "
                           }`}
                           style={{
                             opacity: isCardDragging ? 0.5 : 1,
@@ -735,7 +750,7 @@ export default function KanbanBoard({
                                 </div>
                                 {/* consider */}
 
-                                <div className="flex justify-end items-center hidden">
+                                <div className="flex justify-end items-center  hidden">
                                   <button
                                     onClick={() =>
                                       handleStatusChange(
@@ -940,6 +955,8 @@ export default function KanbanBoard({
                                             )?.teamLeader?.userId || null
                                           }
                                           role={role}
+                                          imageChecklist={checklist?.cover}
+                                          feedbackByTaskIds={feedbackByTaskIds}
                                         />
                                       </div>
                                     </div>
@@ -970,7 +987,7 @@ export default function KanbanBoard({
                                   <div
                                     className={`col-span-8 flex items-center`}
                                   >
-                                    {role == "ROLE_MEMBER" ? (
+                                    {role == "ROLE_MEMBER" || role == "ROLE_MANAGER" ? (
                                       ""
                                     ) : (
                                       <ModalCreateChecklist
@@ -982,7 +999,7 @@ export default function KanbanBoard({
                                         stage={
                                           tasks.find(
                                             (task) => task.taskId === card.id
-                                          )?.stage || "TO_DO"
+                                          )?.stage || "TO DO"
                                         }
                                       />
                                     )}
@@ -1003,11 +1020,10 @@ export default function KanbanBoard({
                             </div>
                           )}
                         </div>
-
                         <div className="flex items-center justify-center ">
                           <button
                             onClick={() => toggleTaskExpansion(card.id)}
-                            className="text-gray-400 hover:text-gray-600 p-1 rounded hover:bg-gray-100"
+                            className="text-gray-400 hover:text-gray-600 p-1 rounded hover:bg-gray-100 p-4 rounded-large"
                           >
                             {card.expanded ? (
                               <ChevronUp size={16} />

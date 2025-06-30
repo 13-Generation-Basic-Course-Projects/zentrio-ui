@@ -303,12 +303,13 @@ export const uploadImageBoardAction = async ({ boardId, image }) => {
   console.log("kakakak", image);
   const userToken = await Token();
   const token = userToken.Credential;
-  console.log("token", token);
+  console.log("sad token", token);
   const result = await uploadImageBoardService({
     boardId,
     image,
     token,
   });
+  revalidatePath("/workspaces");
   return result;
 };
 

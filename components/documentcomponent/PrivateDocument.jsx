@@ -1,10 +1,9 @@
 "use client";
 import React, { useState } from "react";
-import MyDatePicker from "../date/Datepicker";
 import BredCrum from "../bredcrum/MyBredcrum";
 import CardFolder, { CardFile } from "../card/CardDoc";
 import { Autocomplete, AutocompleteItem, Input } from "@heroui/react";
-import ModalCreateDocu from "../modal/docu/ModalCreateDocu";
+import MyDatePicker from "../date/DatePicker";
 
 export default function Privatedocument({
   modal,
@@ -12,6 +11,7 @@ export default function Privatedocument({
   tokenFromGoogle,
   isHidden,
   workspaceId,
+  boardId,
 }) {
   const data = documents || { payload: [] };
 
@@ -83,6 +83,9 @@ export default function Privatedocument({
       }
     });
 
+  console.log("boardId private", boardId);
+  console.log("skan id ", boardId);
+  const dependId = boardId;
   return (
     <div className="h-screen flex flex-col">
       <div className="grid grid-cols-1 gap-3">
@@ -93,6 +96,7 @@ export default function Privatedocument({
           modal={modal}
           workspaceId={workspaceId}
         />
+
         <div className="flex items-center justify-between pb-5">
           <div className="flex flex-row items-end gap-4 mb-4">
             <div className="flex-1">
@@ -117,6 +121,7 @@ export default function Privatedocument({
               </Autocomplete>
             </div>
           </div>
+
           <div className="w-[340px] rounded-2xl flex justify-center items-center text-white">
             <Input
               isClearable
@@ -165,6 +170,8 @@ export default function Privatedocument({
                     isFolder={el.category === "Folder"}
                     tokenFromGoogle={tokenFromGoogle}
                     isHidden={isHidden}
+                    workspaceId={workspaceId}
+                    boardId={dependId}
                   />
                 ))
             ) : (

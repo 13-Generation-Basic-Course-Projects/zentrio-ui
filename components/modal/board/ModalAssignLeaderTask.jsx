@@ -38,6 +38,9 @@ export function ModalAssignLeaderTask({
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState(
+    currentLeader?.userId || ""
+  );
 
   // Initialize form
   const {
@@ -103,9 +106,27 @@ export function ModalAssignLeaderTask({
   const handleCancel = () => {
     onOpenChange(false);
     reset();
+    setSelectedUserId(currentLeader?.userId || "");
   };
 
+  const handleSelectionChange = (keys) => {
+    const userId = Array.from(keys)[0];
+    setSelectedUserId(userId);
+    setValue("userId", userId);
+  };
+
+  // Filter out users with ROLE_MANAGER
+  const selectableMembers = allMemberInBoard.filter(
+    (member) => !member.roles.includes("ROLE_MANAGER")
+  );
+
+  // Get selected member for display
+  const selectedMember = selectableMembers.find(
+    (m) => m.userId === selectedUserId
+  );
+
   console.log("data member", allMemberInBoard);
+  console.log("selectable members", selectableMembers);
 
   return (
     <>
@@ -162,28 +183,44 @@ export function ModalAssignLeaderTask({
                       Select Leader <span className="text-progress-red">*</span>
                     </label>
                     <Select
-                      {...register("userId")}
                       placeholder="Select a leader"
                       className={`border rounded-small text-caption ${
                         errors.userId
                           ? "border-progress-red"
                           : "border-gray-300"
                       }`}
-                      onSelectionChange={(keys) => {
-                        const userId = Array.from(keys)[0];
-                        setValue("userId", userId);
-                      }}
-                      defaultSelectedKeys={
-                        currentLeader?.userId ? [currentLeader.userId] : []
-                      }
+                      selectedKeys={selectedUserId ? [selectedUserId] : []}
+                      onSelectionChange={handleSelectionChange}
                       isInvalid={!!errors.userId}
                       errorMessage={errors.userId?.message}
+                      renderValue={(items) => {
+                        return items.map((item) => {
+                          const member = selectableMembers.find(
+                            (m) => m.userId === item.key
+                          );
+                          return (
+                            <div
+                              key={item.key}
+                              className="flex items-center gap-2"
+                            >
+                              <img
+                                src={member?.profileImage || preventPf}
+                                alt={member?.username || "User"}
+                                width={20}
+                                height={20}
+                                className="rounded-full object-cover"
+                              />
+                              <span>{member?.username || "Unknown"}</span>
+                            </div>
+                          );
+                        });
+                      }}
                     >
-                      {allMemberInBoard.map((member) => (
+                      {selectableMembers.map((member) => (
                         <SelectItem
                           key={member.userId}
                           value={member.userId}
-                          className="flex items-center gap-2"
+                          textValue={member.username}
                         >
                           <div className="flex items-center gap-2">
                             <img
@@ -193,7 +230,7 @@ export function ModalAssignLeaderTask({
                               height={24}
                               className="rounded-full object-cover"
                             />
-                            {member.username}
+                            <span>{member.username}</span>
                           </div>
                         </SelectItem>
                       ))}

@@ -141,6 +141,9 @@ export default function ModalCreateBoard({ Workspaceid }) {
     }
   };
 
+ 
+
+
   return (
     <>
       <Button
@@ -200,7 +203,7 @@ export default function ModalCreateBoard({ Workspaceid }) {
                 </div>
 
                 {/* Cover select */}
-                <div className="flex flex-col items-start justify-center space-y-2">
+                <div className="flex flex-col space-y-2">
                   <label className="text-label-sm">Cover</label>
                   <div className="relative">
                     <button
@@ -219,7 +222,7 @@ export default function ModalCreateBoard({ Workspaceid }) {
                       )}
 
                       <div className="flex flex-col items-start">
-                        <p className="text-caption-tiny text-title/50">
+                        <p className="text-caption-tiny text-title/50 truncate max-w-[70px]">
                           {selectedOption
                             ? colorOptions.find(
                                 (color) => color.key === selectedOption
