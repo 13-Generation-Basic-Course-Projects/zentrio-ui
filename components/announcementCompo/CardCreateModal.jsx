@@ -67,7 +67,7 @@ export default function CardCreateModal({
         boardId,
       });
 
-      // ✅ Check status and show toast
+      // Check status and show toast
       if (announcement?.success ) {
         toast.success("Announcement created successfully!");
         onClose();
