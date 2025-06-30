@@ -13,6 +13,8 @@ import ProgressBar from "./ProgressBar";
 function ProfileDetailsCard({ currentUserProfile, userAchievement }) {
   const userDetails = currentUserProfile?.payload?.user || {};
 
+  console.log("userAchievement:", userAchievement);
+
   // Extract achievement data from your object structure
   const achievementData =
     userAchievement?.success && userAchievement?.payload

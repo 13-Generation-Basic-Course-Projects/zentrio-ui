@@ -41,6 +41,7 @@ export default function Otherworkspace({
                 isFavourite={el?.isFavourite}
                 updateFavAction={updateFavAction}
                 isFavBtn={false}
+                otherBoardImage={el?.imageUrl}
               />
             ))}
 

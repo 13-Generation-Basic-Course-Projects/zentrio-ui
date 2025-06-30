@@ -47,20 +47,15 @@ export const updateAchievementService = async ({ token, payload }) => {
   let endpoint = profileRouteGroup.setUpAchievementCurrentUser({ token });
   let achievementId = null;
 
-  // Step 1: Check if existing data is present
   try {
     const existingData = await getUserAchievementService({ token });
     console.log("Existing achievement data:", existingData);
 
-    const details = existingData?.payload?.details || {};
-    const ownBoard = details.ownBoard || [];
-    const otherBoard = details.otherBoard || [];
-
     achievementId = existingData?.payload?.achievementId || null;
 
-    const hasData = ownBoard.length > 0 || otherBoard.length > 0;
+    console.log("achievementId:", achievementId);
 
-    if (hasData && achievementId) {
+    if (achievementId) {
       method = "PUT";
       endpoint = profileRouteGroup.updateAchievementCurrentUser({ token });
     }
@@ -69,10 +64,8 @@ export const updateAchievementService = async ({ token, payload }) => {
       "Error fetching existing achievements, defaulting to POST:",
       err
     );
-    // Default method = POST
   }
 
-  // Step 2: Prepare request body
   const requestBody = {
     details: payload?.achievements?.reduce(
       (acc, item) => {
@@ -87,7 +80,6 @@ export const updateAchievementService = async ({ token, payload }) => {
     ),
   };
 
-  // Include achievementId if updating
   if (method === "PUT" && achievementId) {
     requestBody.achievementId = achievementId;
   }
@@ -97,7 +89,6 @@ export const updateAchievementService = async ({ token, payload }) => {
     requestBody
   );
 
-  // Step 3: Make request
   const response = await fetch(endpoint, {
     method,
     headers: {
@@ -113,9 +104,9 @@ export const updateAchievementService = async ({ token, payload }) => {
     throw new Error(`${method} request failed`);
   }
 
-  const result = await response.json();
-  return result;
+  return await response.json();
 };
+
 
 
 // call route to config

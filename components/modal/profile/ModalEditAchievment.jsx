@@ -122,7 +122,6 @@ export function ModalEditAchievment({ currentUserProfile }) {
   );
 
   const handleSave = async () => {
-    console.log("Saving achievements...");
     const selectedBoards = combinedBoards.filter((board) =>
       selectedAchievements.has(board.id)
     );

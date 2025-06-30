@@ -2,6 +2,7 @@ import NextTopLoader from "nextjs-toploader";
 import "./globals.css";
 import { Provider } from "@radix-ui/react-tooltip";
 import OneSignalInitializer from "@/components/onesignal/OneSignalInitializer";
+import { ToastContainer } from "react-toastify";
 
 export const metadata = {
   title: "Zentrio | 안녕하세요",
@@ -21,6 +22,7 @@ export default function Layout({ children }) {
         {/* </NextUIProvider> */}
         {/* Onesignal */}
         <OneSignalInitializer />
+        <ToastContainer position="top-right" autoClose={4000} />
       </body>
     </html>
   );

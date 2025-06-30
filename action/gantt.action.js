@@ -111,7 +111,7 @@ export const updateGanttChartByIdAction = async ({
  */
 export const deleteGanttBarsByGanttChartIdAction = async ({
   ganttChartId,
-  ganttbarId,
+  ganttBarId, 
 }) => {
   const userToken = await Token();
   const token = userToken.Credential;
@@ -119,7 +119,7 @@ export const deleteGanttBarsByGanttChartIdAction = async ({
 
   const result = await deleteGanttBarsByGanttChartIdService({
     ganttChartId,
-    ganttbarId,
+    ganttBarId, 
     token,
   });
   return result;

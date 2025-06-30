@@ -16,6 +16,7 @@ import ModalCreateGanttBar from "../modal/board/ModalCreateGanttBar";
 import { data } from "autoprefixer";
 import NotFound from "@/app/not-found";
 import { checkEmailForClearAction } from "@/action/board.action";
+import DrawerGanttBarFetch from "../Gantt/DrawerGanttBar";
 
 const clearAllCookies = () => {
   console.log(" Starting to clear all cookies...");
@@ -225,6 +226,7 @@ export default function SystemBoard({
             boardId={boardId}
             ganttChartId={ganttChartId}
           />,
+          <DrawerGanttBarFetch ganttChartId={ganttChartId} />,
           <ModalCreateGanttBar
             key="create-gantt-bar"
             boardId={boardId}
@@ -364,7 +366,6 @@ export default function SystemBoard({
           boardId={boardId}
           ganttChartId={ganttChartId}
           workspaceId={workspaceId}
-          
         />
       ),
     },
