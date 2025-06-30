@@ -10,13 +10,13 @@ import {
   useDisclosure,
 } from "@heroui/react";
 import { useState, useEffect } from "react";
-
+import { deleteGanttBarsByGanttChartIdAction } from "@/action/gantt.action";
 export default function DrawerGanttBarFetch({ ganttChartId }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [ganttBars, setGanttBars] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
- console.log("ganttChartId", ganttChartId);
+
   // Fetch Gantt bars when the drawer is opened
   useEffect(() => {
     if (isOpen) {
@@ -24,7 +24,9 @@ export default function DrawerGanttBarFetch({ ganttChartId }) {
         setLoading(true);
         setError(null);
         try {
-          const response = await getAllGanttBarByGanttChartIDAction({ganttChartId});
+          const response = await getAllGanttBarByGanttChartIDAction({
+            ganttChartId,
+          });
           if (response.success) {
             setGanttBars(response.payload);
           } else {
@@ -40,9 +42,27 @@ export default function DrawerGanttBarFetch({ ganttChartId }) {
     }
   }, [isOpen, ganttChartId]);
 
+  // Delete Gantt bar handler
+  const handleDelete = async (ganttBarId) => {
+    try {
+      setLoading(true);
+      const response = await deleteGanttBarsByGanttChartIdAction({
+        ganttChartId,
+        ganttBarId,
+      });
+      if (response.success) {
+        // Remove the deleted bar from state
+        setGanttBars(ganttBars.filter((bar) => bar.ganttBarId !== ganttBarId));
+      } else {
+        setError(response.message || "Failed to delete Gantt bar");
+      }
+    } catch (err) {
+      setError("An error occurred while deleting the Gantt bar");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-
-  // delete sepacic ganntbar
   return (
     <>
       <Button
@@ -76,28 +96,40 @@ export default function DrawerGanttBarFetch({ ganttChartId }) {
                         key={bar.ganttBarId}
                         className="p-4 border rounded-lg shadow-sm"
                       >
-                        <h3 className="font-semibold">{bar.title}</h3>
-                        <p>
-                          <strong>Phase:</strong> {bar.face}
-                        </p>
-                        <p>
-                          <strong>Start:</strong>{" "}
-                          {new Date(bar.startedAt).toLocaleDateString()}
-                        </p>
-                        <p>
-                          <strong>End:</strong>{" "}
-                          {new Date(bar.finishedAt).toLocaleDateString()}
-                        </p>
-                        {bar.teamLeader.length > 0 ? (
-                          <p>
-                            <strong>Team Leaders:</strong>{" "}
-                            {bar.teamLeader
-                              .map((leader) => leader.username)
-                              .join(", ")}
-                          </p>
-                        ) : (
-                          <p>No team leaders assigned.</p>
-                        )}
+                        <div className="flex justify-between items-center">
+                          <div>
+                            <h3 className="font-semibold">{bar.title}</h3>
+                            <p>
+                              <strong>Phase:</strong> {bar.face}
+                            </p>
+                            <p>
+                              <strong>Start:</strong>{" "}
+                              {new Date(bar.startedAt).toLocaleDateString()}
+                            </p>
+                            <p>
+                              <strong>End:</strong>{" "}
+                              {new Date(bar.finishedAt).toLocaleDateString()}
+                            </p>
+                            {bar.teamLeader.length > 0 ? (
+                              <p>
+                                <strong>Team Leaders:</strong>{" "}
+                                {bar.teamLeader
+                                  .map((leader) => leader.username)
+                                  .join(", ")}
+                              </p>
+                            ) : (
+                              <p>No team leaders assigned.</p>
+                            )}
+                          </div>
+                          <Button
+                            color="danger"
+                            variant="light"
+                            onPress={() => handleDelete(bar.ganttBarId)}
+                            className="ml-4"
+                          >
+                            Delete
+                          </Button>
+                        </div>
                       </li>
                     ))}
                   </ul>

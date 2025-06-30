@@ -226,7 +226,7 @@ export default function SystemBoard({
             boardId={boardId}
             ganttChartId={ganttChartId}
           />,
-          <DrawerGanttBarFetch ganttChartId={ganttChartId}/>,
+          <DrawerGanttBarFetch ganttChartId={ganttChartId} />,
           <ModalCreateGanttBar
             key="create-gantt-bar"
             boardId={boardId}
@@ -366,7 +366,6 @@ export default function SystemBoard({
           boardId={boardId}
           ganttChartId={ganttChartId}
           workspaceId={workspaceId}
-          
         />
       ),
     },

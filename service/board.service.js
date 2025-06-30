@@ -165,7 +165,7 @@ export const getAllGanttBarByGanttChartIDService = async ({
       },
     });
     const data = await res.json();
-    console.log("📥 Backend responded with gannt bar by gantt chart id", data);
+    console.log("📥 Backend responded with:", data);
 
     return data;
   } catch (error) {
@@ -659,22 +659,20 @@ export const changeStatusTaskService = async (taskId, token, type) => {
  * cheng  task to underreview
  */
 export const changeStageToUnderReviewService = async (taskId, token, stage) => {
-  
-    //console.log("from service ", token);
-    const url = boardRouteGroup.changeStagToUnderReview(taskId, stage);
-    console.log(url);
-    const res = await fetch(url, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const data = await res.json();
-    console.log("📥 Backend responded with change status completed:", data);
+  //console.log("from service ", token);
+  const url = boardRouteGroup.changeStagToUnderReview(taskId, stage);
+  console.log(url);
+  const res = await fetch(url, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  const data = await res.json();
+  console.log("📥 Backend responded with change status completed:", data);
 
-    return data;
- 
+  return data;
 };
 
 export const FeedBackService = async (taskId, token, comment) => {
