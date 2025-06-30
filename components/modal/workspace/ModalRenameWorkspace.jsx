@@ -10,6 +10,7 @@ import {
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RenameSchema } from "@/lib/schemas/workspaceSchema";
+import { toast } from "react-toastify";
 
 export default function ModalRenameWorkspace({
   isOpen,
@@ -34,8 +35,10 @@ export default function ModalRenameWorkspace({
         await updateNameWorkspace(workspaceId, data);
         reset();
         onClose(); // close modal after success
+        toast.success("You renamed workspace successfully");
       } catch (err) {
         console.error(err);
+        toast.error("You failed to renamed workspace");
       }
     });
   };
