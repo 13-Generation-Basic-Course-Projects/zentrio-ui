@@ -20,29 +20,33 @@ export default function CardCreateModal({
   boardMember,
   preventUserImage,
 }) {
-  // max size 10 mb
-  const MAX_SIZE_MB = 10;
-
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [focusedField, setFocusedField] = useState(null);
 
+  const MAX_SIZE_MB = 10;
+
   const handleImageChange = (e) => {
     const newFiles = Array.from(e.target.files || []);
 
-    // Check size of each selected file
+    const validFiles = [];
+
     for (const file of newFiles) {
       if (file.size > MAX_SIZE_MB * 1024 * 1024) {
-        alert(
-          `File "${file.name}" is too large! Maximum size is ${MAX_SIZE_MB}MB.`
+        toast.error(
+          `${file.name} is larger than ${MAX_SIZE_MB} MB`
         );
-        return;
+      } else {
+        validFiles.push(file);
       }
     }
 
-    setImages((prev) => [...prev, ...newFiles]);
+    if (validFiles.length > 0) {
+      setImages((prev) => [...prev, ...validFiles]);
+    }
+
     e.target.value = null;
   };
 
@@ -68,7 +72,7 @@ export default function CardCreateModal({
       });
 
       // Check status and show toast
-      if (announcement?.success ) {
+      if (announcement?.success) {
         toast.success("Announcement created successfully!");
         onClose();
       } else {

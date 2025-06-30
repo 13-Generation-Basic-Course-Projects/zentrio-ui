@@ -217,7 +217,7 @@ export default function CommentCompo({
                             </span>
                           )}
                         </div>
-                        <p className="text-xs text-gray-500 flex items-center gap-1">
+                        <p className="text-small text-gray-500 flex items-center gap-1">
                           <span>{getTimeAgo(comment.creationDate)}</span>
                           <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
                           {/* <span>{formatDate(comment.creationDate)}</span> */}
