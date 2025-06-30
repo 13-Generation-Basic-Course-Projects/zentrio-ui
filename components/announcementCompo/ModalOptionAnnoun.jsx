@@ -7,14 +7,12 @@ import {
   DropdownItem,
   cn,
 } from "@heroui/react";
-import { IconpopupDelete, IconPopupEdit, IconPopupPined } from "@/components/icon/Iconpopup";
+import { useState } from "react";
+import { IconpopupDelete, IconPopupPined } from "@/components/icon/Iconpopup";
 
 import ModalDeleteAnnoun from "./ModalDeleteAnnoun";
 import ModalPinedAnnoun from "./ModalPinedAnnoun";
 import ModalEditAnnoun from "./ModalEditAnnoun";
-
-
-// icon components directly in the same file
 
 const EditAnnouncementIcon = (props) => (
   <svg
@@ -79,85 +77,102 @@ export default function ModalOptionAnnoun({
   boardMember,
   preventUserImage,
 }) {
+  const [showEdit, setShowEdit] = useState(false);
+  const [showPin, setShowPin] = useState(false);
+  const [showDelete, setShowDelete] = useState(false);
 
-  const iconClasses ="text-xl text-default-500 pointer-events-none flex-shrink-0";
+  const iconClasses =
+    "text-xl text-default-500 pointer-events-none flex-shrink-0";
 
   return (
-    <Dropdown className="z-[10px]">
-      <DropdownTrigger>
-        <div className="p-0 min-w-0 h-auto w-auto cursor-pointer">
-          <div className="hover:text-black text-gray-600 px-2 py-1">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="w-4 h-4"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path d="M10 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4z" />
-            </svg>
+    <>
+      <Dropdown className="z-[10px]">
+        <DropdownTrigger>
+          <div className="p-0 min-w-0 h-auto w-auto cursor-pointer">
+            <div className="hover:text-black text-gray-600 px-2 py-1">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-4 h-4"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path d="M10 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4z" />
+              </svg>
+            </div>
           </div>
-        </div>
-      </DropdownTrigger>
+        </DropdownTrigger>
 
-      <DropdownMenu
-        aria-label="Dropdown menu with description"
-        variant="faded"
-        className="w-full min-w-[200px] "
-        closeOnSelect={false}
-      >
-        <DropdownItem
-          key="pined"
-          className="w-full hover:bg-default-100"
-          showDivider
-          startContent={<PinnedAnnouncementIcon className={iconClasses} />}
+        <DropdownMenu
+          aria-label="Dropdown menu"
+          variant="faded"
+          className="min-w-[200px]"
         >
-          <ModalPinedAnnoun
-            title={"Pin"}
-            massageTitle={"Are you sure?"}
-            massageBody={"You want to pined it."}
-            icon={<IconPopupPined />}
-            bgcolor={"bg-slate-blue"}
-            massageDo={"Yes, Pined"}
-            massageUndo={"No, Cancel"}
-            announId={announId}
-          />
-        </DropdownItem>
+          <DropdownItem
+            key="pin"
+            showDivider
+            startContent={<PinnedAnnouncementIcon className={iconClasses} />}
+            onClick={() => setShowPin(true)}
+          >
+            <span>Pin</span>
+          </DropdownItem>
 
-        <DropdownItem
-          key="edit"
-          className="w-full hover:bg-default-100"
-          showDivider
-          startContent={<EditAnnouncementIcon className={iconClasses} />}
-        >
-          <ModalEditAnnoun
-            title={"Edit"}
-            icon={<IconPopupEdit />}
-            announId={announId}
-            boardId={boardId}
-            Announcement={Announcement}
-            boardMember={boardMember}
-            preventUserImage={preventUserImage}
-          />
-        </DropdownItem>
+          <DropdownItem
+            key="edit"
+            showDivider
+            startContent={<EditAnnouncementIcon className={iconClasses} />}
+            onClick={() => setShowEdit(true)}
+          >
+            <span>Edit</span>
+          </DropdownItem>
 
-        <DropdownItem
-          key="delete"
-          className="w-full hover:bg-default-100 mb-1"
-          startContent={<DeleteDocumentIcon className={cn(iconClasses)} />}
-        >
-          <ModalDeleteAnnoun
-            title={"Delete"}
-            massageTitle={"Are you sure?"}
-            massageBody={"You want to delete it."}
-            icon={<IconpopupDelete />}
-            bgcolor={"bg-slate-red"}
-            massageDo={"Yes, Delete"}
-            massageUndo={"No, Cancel"}
-            announId={announId}
-            onDeleteSuccess={announId}
-          />
-        </DropdownItem>
-      </DropdownMenu>
-    </Dropdown>
+          <DropdownItem
+            key="delete"
+            className="mb-1"
+            startContent={<DeleteDocumentIcon className={cn(iconClasses)} />}
+            onClick={() => setShowDelete(true)}
+          >
+            <span>Delete</span>
+          </DropdownItem>
+        </DropdownMenu>
+      </Dropdown>
+
+      {/* Independent modals triggered by local state */}
+      <ModalPinedAnnoun
+        title="Pin"
+        massageTitle="Are you sure?"
+        massageBody="You want to pin it."
+        icon={<IconPopupPined />}
+        bgcolor="bg-slate-blue"
+        massageDo="Yes, Pin"
+        massageUndo="No, Cancel"
+        announId={announId}
+        isOpen={showPin}
+        onClose={() => setShowPin(false)}
+      />
+
+      <ModalEditAnnoun
+        isOpen={showEdit}
+        onClose={() => setShowEdit(false)}
+        title="Edit"
+        announId={announId}
+        boardId={boardId}
+        Announcement={Announcement}
+        boardMember={boardMember}
+        preventUserImage={preventUserImage}
+      />
+
+      <ModalDeleteAnnoun
+        title="Delete"
+        massageTitle="Are you sure?"
+        massageBody="You want to delete it."
+        icon={<IconpopupDelete />}
+        bgcolor="bg-slate-red"
+        massageDo="Yes, Delete"
+        massageUndo="No, Cancel"
+        announId={announId}
+        isOpen={showDelete}
+        onClose={() => setShowDelete(false)}
+      />
+    </>
   );
 }
