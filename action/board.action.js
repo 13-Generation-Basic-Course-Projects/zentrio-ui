@@ -3,6 +3,7 @@ import { Token } from "@/constant/token";
 import {
   assignMemberInChecklistService,
   assignMemberToChecklistService,
+  assignUserRoleLeadeerNewToBoardService,
   assignUserRoleLeadeerToBoardService,
   chageStatusCheckListService,
   changeStageToUnderReviewService,
@@ -21,6 +22,7 @@ import {
   getBoardByBoardIdService,
   getCheckListByTaskIdService,
   getCommentByCheckListIdService,
+  getFeedBackByTaskIdService,
   getGuestUserDisplayKanbanService,
   getMemberByBoardIdService,
   getTaskByBoardIdAndGanttBarIdService,
@@ -447,6 +449,7 @@ export const createTaskByBoardIdAndGanttChartIdAction = async (
         type: "leader_assignment",
         boardId: boardId,
         taskId: taskId,
+        projectManagerId: data.createdBy, // Use createdBy as projectManagerId
         // checklistId omitted as it's optional
       };
 
@@ -499,6 +502,7 @@ export const assignLeaderAction = async (taskId, assignId) => {
         type: "leader_assignment",
         boardId: result.payload.boardId,
         taskId: taskId,
+        taskId: result.payload.createdBy,
       };
 
       try {
@@ -832,5 +836,80 @@ export const leaveTheBoardAction = async (boardId) => {
   const result = await leaveTheBoardService(boardId, token);
   revalidatePath("/board");
 
+  return result;
+};
+
+//new assign
+export const assignLeaderNewAction = async (taskId, leaderId, pmId) => {
+  try {
+    // Log input parameters for debugging
+    console.log("assignLeaderNewAction inputs:", { taskId, leaderId, pmId });
+
+    const userToken = await Token();
+    const token = userToken?.Credential;
+    if (!token) {
+      throw new Error("No authentication token found");
+    }
+
+    // Log token for debugging (avoid in production)
+    console.log("Token:", token);
+
+    const result = await assignUserRoleLeadeerNewToBoardService({
+      taskId,
+      leaderId, // Previously assignId
+      pmId,
+      token,
+    });
+
+    // Log service result
+    console.log("Service result:", result);
+
+    // Send notification
+    if (result.success && result.payload?.boardId) {
+      const notificationData = {
+        userIds: [leaderId],
+        title: "Leader Assignment",
+        content: `You have been assigned as the leader for task "${
+          result.payload.title || "Task ID: " + taskId
+        }"`,
+        type: "leader_assignment",
+        boardId: result.payload.boardId,
+        taskId: taskId,
+        receiverId: leaderId,
+        projectManagerId: pmId,
+        taskTitle: result.payload.title || "Untitled Task",
+      };
+
+      try {
+        const notiResult = await sendNotificationToSpecificArrayIdService(
+          notificationData,
+          token
+        );
+        console.log("Notification result:", notiResult);
+      } catch (error) {
+        console.warn("Failed to send notification:", error.message);
+      }
+    } else {
+      console.warn("No boardId in result or assignment failed:", result);
+    }
+
+    revalidatePath("/assignLd");
+    return { success: true, data: result };
+  } catch (error) {
+    console.error("Assign leader action error:", error.message);
+    return { success: false, error: error.message };
+  }
+};
+/*
+ * getTaskbyBoardId and GanttbarId
+ */
+export const getFeedBackByTaskIdAction = async ({ taskId }) => {
+  const userToken = await Token();
+  const token = userToken.Credential;
+  //console.log(token);
+  const result = await getFeedBackByTaskIdService({
+    taskId,
+    token,
+  });
   return result;
 };

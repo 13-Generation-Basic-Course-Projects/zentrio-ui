@@ -18,11 +18,11 @@ export const getGanttBarService = async ({ token }) => {
       },
     });
     const data = await res.json();
-    //// console.log("📥 Backend responded with:", data);
+    //// //console.log("📥 Backend responded with:", data);
 
     return data; // just return the data, don’t redirect here
   } catch (error) {
-    console.error("Login service error:", error.message);
+    //console.error("Login service error:", error.message);
     throw error;
   }
 };
@@ -43,11 +43,11 @@ export const getGanttBarByGanttChartIdService = async ({
       },
     });
     const data = await res.json();
-    // console.log("📥 Backend responded with:", data);
+    // //console.log("📥 Backend responded with:", data);
 
     return data; // just return the data, don’t redirect here
   } catch (error) {
-    console.error("Login service error:", error.message);
+    //console.error("Login service error:", error.message);
     throw error;
   }
 };
@@ -70,11 +70,11 @@ export const getGanttChartByBoardIdService = async ({ boardId, token }) => {
       },
     });
     const data = await res.json();
-    // console.log("📥 Backend responded with:", data);
+    // //console.log("📥 Backend responded with:", data);
 
     return data; // just return the data, don’t redirect here
   } catch (error) {
-    console.error("Login service error:", error.message);
+    //console.error("Login service error:", error.message);
     throw error;
   }
 };
@@ -88,7 +88,7 @@ export const createGanttBarsByGanttChartIdService = async ({
   token,
 }) => {
   try {
-    console.log("from service", { ganttChartId, data, token });
+    //console.log("from service", { ganttChartId, data, token });
 
     const url = ganttRouteGroup.createGanttBar();
     const bodyToSend = data.map((item) => ({
@@ -109,11 +109,11 @@ export const createGanttBarsByGanttChartIdService = async ({
     });
 
     const result = await res.json();
-     console.log("📥 Backend responded with gantbar: ", result);
+    //console.log("📥 Backend responded with gantbar:", result);
 
     return result;
   } catch (error) {
-    console.error("🐞 Error:", error.message);
+    //console.error("🐞 Error:", error.message);
     throw error;
   }
 };
@@ -127,7 +127,7 @@ export const deleteGanttBarsByGanttChartIdService = async ({
   token,
 }) => {
   try {
-    console.log("from service", { ganttChartId, ganttbarId, token });
+    // //console.log("from service", { ganttChartId, ganttbarId, token });
 
     const url = ganttRouteGroup.deleteGanttBar(ganttbarId, ganttChartId);
 
@@ -140,11 +140,11 @@ export const deleteGanttBarsByGanttChartIdService = async ({
     });
 
     const result = await res.json();
-    //console.log("📥 Backend responded with:", result);
+    ////console.log("📥 Backend responded with:", result);
 
     return result;
   } catch (error) {
-    console.error("🐞 Error:", error.message);
+    //console.error("🐞 Error:", error.message);
     throw error;
   }
 };
@@ -152,14 +152,15 @@ export const deleteGanttBarsByGanttChartIdService = async ({
 /*
  * create gantt bar by GantchartId
  */
-export const updateGantChartBytIdService = async ({
+// src/service/gantt.service.js
+export async function updateGantChartBytIdService({
   ganttChartId,
   boardId,
   data,
   token,
-}) => {
-  try {
-    console.log("from service", { ganttChartId, boardId, token });
+}) {
+  
+    console.log("from service", { ganttChartId, boardId, token, data });
 
     const url = ganttRouteGroup.updateGanttChart(ganttChartId);
 
@@ -168,16 +169,15 @@ export const updateGantChartBytIdService = async ({
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
-        body: JSON.stringify({ title: data.title, boardId: boardId }),
       },
+      body: JSON.stringify({ title: data.title, boardId }), // Moved body out of headers
     });
 
-    const result = await res.json();
-    //  console.log("📥 Backend responded with:", result);
 
-    return result;
-  } catch (error) {
-    console.error("🐞 Error:", error.message);
-    throw error;
-  }
+
+    const result = await res.json();
+    console.log("📥 Backend responded with:", result);
+
+    return { success: true, data: result };
+  
 };

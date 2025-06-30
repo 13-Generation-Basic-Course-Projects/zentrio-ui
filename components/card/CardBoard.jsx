@@ -27,10 +27,11 @@ export default function CardBoard({
   updateFavAction,
   isFavourite,
   includesPathOtherWorkSpace,
+  isFavBtn,
 }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-
+  console.log("is fav", isFavBtn);
   /* Extract workspaceId and projectId from the current URL */
   const pathSegments = pathname.split("/");
   const workspaceId = pathSegments[2] || "defaultWorkspace";
@@ -129,33 +130,39 @@ export default function CardBoard({
             {title}
           </p>
         )}
-
         {/* Favorite (star) toggle button */}
-        <button
-          onClick={async (e) => {
-            e.preventDefault();
-            e.stopPropagation();
 
-            const newFavoriteStatus = !favorited;
-            setFavorited(newFavoriteStatus); // Optimistic UI
+        {isFavBtn !== false ? (
+          <button
+            onClick={async (e) => {
+              e.preventDefault();
+              e.stopPropagation();
 
-            try {
-              await updateFavAction({
-                boardId,
-                isFavourite: newFavoriteStatus,
-              });
+              const newFavoriteStatus = !favorited;
+              setFavorited(newFavoriteStatus); // Optimistic UI
 
-              console.log(`✅ Favorite status updated to ${newFavoriteStatus}`);
-            } catch (error) {
-              console.error("❌ Failed to update favorite status:", error);
-              setFavorited(!newFavoriteStatus); // Revert if error
-            }
-          }}
-          className="text-yellow-500 hover:text-yellow-600 p-3"
-          aria-label="Toggle favorite"
-        >
-          {favorited ? <StarIconSolid /> : <StarIconOutline />}
-        </button>
+              try {
+                await updateFavAction({
+                  boardId,
+                  isFavourite: newFavoriteStatus,
+                });
+
+                console.log(
+                  `✅ Favorite status updated to ${newFavoriteStatus}`
+                );
+              } catch (error) {
+                console.error("❌ Failed to update favorite status:", error);
+                setFavorited(!newFavoriteStatus); // Revert if error
+              }
+            }}
+            className="text-yellow-500 hover:text-yellow-600 p-3"
+            aria-label="Toggle favorite"
+          >
+            {favorited ? <StarIconSolid /> : <StarIconOutline />}
+          </button>
+        ) : (
+          ""
+        )}
       </CardHeader>
 
       {/* Card Body: background image or placeholder */}

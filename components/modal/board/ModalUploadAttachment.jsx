@@ -18,6 +18,7 @@ const ModalUploadAttachment = ({
   boardId,
   checklistId,
   onAttachmentSelected,
+  role, // Add role prop for potential integration with other components
 }) => {
   if (!isOpen) return null;
   const targetRef = React.useRef(null);
@@ -32,7 +33,8 @@ const ModalUploadAttachment = ({
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [uploading, setUploading] = useState(false); // Add uploading state
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleApply = () => {
     const trimmedLink = link.trim();
@@ -80,46 +82,54 @@ const ModalUploadAttachment = ({
   };
 
   const handleUpload = async () => {
+    // No role restriction for upload; all users can upload
     if (!checklistId) {
       console.error("ChecklistId is required for upload");
+      setError("Checklist ID is required.");
       return;
     }
 
     if (selectedFiles.length === 0 && appliedLinks.length === 0) {
       console.log("No files or links selected");
+      setError("Please select a file or link to upload.");
       return;
     }
 
     if (selectedFiles.length > 1 || appliedLinks.length > 1) {
-      alert("Only one attachment is allowed per checklist.");
+      setError("Only one attachment is allowed per checklist.");
       return;
     }
 
     setUploading(true);
+    setError(null);
 
     try {
-      let details = {};
+      let details = {
+        additionalProp1: "",
+        additionalProp2: "",
+        additionalProp3: "",
+      };
 
       if (selectedFiles.length > 0) {
         const file = selectedFiles[0];
         details = {
-          fileName: file.title || file.description || "Untitled Document",
-          type: "file",
-          description: file.description || "",
-          documentId: file.id, // assuming your backend uses this
+          additionalProp1: file.title || file.description || "Untitled Document",
+          additionalProp2: "file",
+          additionalProp3: file.description || "",
+          documentId: file.id, // Include documentId if required by backend
         };
       } else if (appliedLinks.length > 0) {
         const link = appliedLinks[0];
         details = {
-          fileName: link,
-          type: "link",
-          url: link,
+          additionalProp1: link,
+          additionalProp2: "link",
+          additionalProp3: link,
         };
       }
 
-      console.log("Uploading with details:", details);
+      console.log("Uploading with details:", { details });
 
-      const result = await postAttactmentAction(checklistId, details);
+      const result = await postAttactmentAction(checklistId, { details });
 
       if (result) {
         console.log("Upload successful:", result);
@@ -138,7 +148,7 @@ const ModalUploadAttachment = ({
       }
     } catch (error) {
       console.error("Upload failed:", error);
-      // Optional: display error to user
+      setError("Failed to upload attachment. Please try again.");
     } finally {
       setUploading(false);
     }
@@ -248,6 +258,7 @@ const ModalUploadAttachment = ({
     if (!isOpen) {
       setSelectedFiles([]);
       setAppliedLinks([]);
+      setError(null);
     }
   }, [isOpen]);
 
@@ -293,6 +304,27 @@ const ModalUploadAttachment = ({
             </ModalHeader>
             <ModalBody>
               <div className="text-title">
+                {/* Error message display */}
+                {error && (
+                  <div className="text-sm text-red-500 p-2 bg-gray-50 rounded border border-red-200 mb-4">
+                    <div className="flex items-center">
+                      <svg
+                        className="h-4 w-4 mr-2 text-red-500"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                      {error}
+                    </div>
+                  </div>
+                )}
                 <div className="flex flex-wrap items-center justify-between">
                   <p className="text-h6 text-title/80">Choose file here</p>
                   <div>
@@ -448,7 +480,6 @@ const ModalUploadAttachment = ({
                 </p>
                 {selectedFiles.length > 0 || appliedLinks.length > 0 ? (
                   <div className="flex flex-col space-y-3 mt-4 h-[150px] overflow-auto scrollbar-hidden">
-                    {/* Display selected files */}
                     {selectedFiles.map((file, index) => (
                       <div
                         key={`file-${index}`}
@@ -496,8 +527,6 @@ const ModalUploadAttachment = ({
                         </button>
                       </div>
                     ))}
-
-                    {/* Display applied links */}
                     {appliedLinks.map((link, index) => (
                       <div
                         key={`link-${index}`}

@@ -37,6 +37,9 @@ export const ganttRouteGroup = {
 
   //update ganttbar by gantbarid and body is need ganttchartid
   updateGanttBar: (ganttbarId) =>
-    `${apiConfig.baseUrl}/gantt-bars/${ganttbarId}/ganttCharts/
-`,
+    `${apiConfig.baseUrl}/gantt-bars/${ganttbarId}/ganttCharts/`,
+
+  //new update date like from start to end date
+  updateForDate: (ganttBarId) =>
+    `${apiConfig.baseUrl}/gantt-bars/${ganttBarId}/ganttCharts`, //Updated gantt chart by ID with current boards
 };

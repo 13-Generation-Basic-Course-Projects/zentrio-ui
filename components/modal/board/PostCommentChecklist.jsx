@@ -39,8 +39,6 @@ export default function PostCommentChecklist({ checklistId, onCommentPosted }) {
         content: data.content,
       });
 
-      console.log("Result afater post comment:", result);
-
       if (result.success) {
         console.log("Comment posted successfully:", result.data);
 

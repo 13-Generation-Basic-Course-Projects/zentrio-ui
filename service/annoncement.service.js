@@ -19,13 +19,13 @@ export const createAnnouncementByBoardIdService = async ({
     body: JSON.stringify({ title, description, boardId }),
   });
   const data = await res.json();
-  console.log("create announcement", data);
+  //console.log("create announcement", data);
   return data;
 };
 
 export const uploadMultiImgByBoardIdService = async ({ boardId, image, token }) => {
   const url = announcementRouteGroup.uploadMultiImgByBoardId(boardId);
-  console.log("url",url)
+  //console.log("url",url)
   const formData = new FormData();
   formData.append("boardId", boardId);
 
@@ -35,7 +35,7 @@ export const uploadMultiImgByBoardIdService = async ({ boardId, image, token }) 
       formData.append("files", file); // Make sure this matches your backend field name
     });
   }
-  console.log("kakak",formData)
+  //console.log("kakak",formData)
 
   const res = await fetch(url, {
     method: "POST",
@@ -48,7 +48,7 @@ export const uploadMultiImgByBoardIdService = async ({ boardId, image, token }) 
   });
 
   const data = await res.json();
-  console.log("img announcement", data);
+  //console.log("img announcement", data);
   return data;
 };
 
@@ -65,15 +65,15 @@ export const getAllAnnouncementByBoardIdService = async ({
     },
   });
   const data = await res.json();
-  console.log("get all announcements", data);
+  //console.log("get all announcements", data);
   return data;
 };
 
 export const deleteAnnouncementByIdService = async (id, token) => {
-  console.log("Delete id service : ", id, token);
+  //console.log("Delete id service : ", id, token);
   
     const url = announcementRouteGroup.deleteAnnouncementById(id);
-    console.log(url)
+    //console.log(url)
     const res = await fetch(url, {
       method: "DELETE",
       headers: {
@@ -82,14 +82,14 @@ export const deleteAnnouncementByIdService = async (id, token) => {
     });
 
     const data = await res.json();
-    console.log("backend respone", data)
+    //console.log("backend respone", data)
     return data;
   
   
 };
 
 export const pinedAnnouncementByIdService = async (announId, token) => {
-  console.log("pin id service",announId);
+  //console.log("pin id service",announId);
 
   const url = announcementRouteGroup.pinedAnnouncementById(announId);
   const res = await fetch(url, {
@@ -104,7 +104,7 @@ export const pinedAnnouncementByIdService = async (announId, token) => {
 };
 
 export const updateAnnouncementByIdService = async ({announId, description, title, boardId, token}) => {
-  console.log("update announ service",announId, description, title, boardId, token);
+  //console.log("update announ service",announId, description, title, boardId, token);
   const payload={
     description: description,
     title: title,
@@ -120,6 +120,55 @@ export const updateAnnouncementByIdService = async ({announId, description, titl
     body: JSON.stringify(payload)
   });
   const data = await res.json();
-  console.log("update data", data);
+  //console.log("update data", data);
   return data; 
+};
+
+export const createCommentByAnnouncementIdService = async ({ content, announcementId, token }) => {
+  //console.log("tokennnnnnnnnnnn",token);
+  //console.log("idddddddddd",announcementId);
+  const url = announcementRouteGroup.createCommentByAnnouncementId(announcementId);
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      accept: "*/*",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({content,announcementId }),
+  });
+  const data = await res.json();
+  return data;
+};
+
+export const editCommentByIdService = async ({ content, announId, commentId, token }) => {
+  //console.log("Service Commentpu1",commentId, content);
+  const url = announcementRouteGroup.editCommentById(commentId);
+  const res = await fetch(url, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(
+      { content,
+      announcementId: announId }),
+  });
+  const data = await res.json();
+  //console.log("Service Commentpu2",data);
+  return data;
+};
+
+export const deleteCommentByIdService = async ({ commentId, token }) => {
+  // //console.log("Service Commentd1",commentId, token);
+  const url = announcementRouteGroup.deleteCommentById(commentId);
+  const res = await fetch(url, {
+    method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+  });
+  const data = await res.json();
+  // //console.log("Service Commentd2", data);
+  return data;
 };

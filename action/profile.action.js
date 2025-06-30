@@ -18,6 +18,7 @@ export const getCurrentUserProfileAction = async () => {
   const result = await getCurrentUserProfileService({
     token,
   });
+  console.log("Result current user action : ", result);
   return result;
 };
 
@@ -51,7 +52,7 @@ export const updateUserProfileAction = async (data) => {
 };
 
 export const updateAchievementAction = async (payload) => {
-  console.log("paylaod data", payload);
+  console.log("PAYLOAD DATA IN ACTION", payload);
   const userToken = await Token();
   const token = userToken.Credential;
   const result = await updateAchievementService({ token, payload });

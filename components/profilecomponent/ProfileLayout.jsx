@@ -37,6 +37,9 @@ export default function ProfileLayout({
   currentUserProfile,
 }) {
   const data = currentUserProfile?.payload?.user || {};
+
+  console.log("Current User Profile:", currentUserProfile);
+
   const tabItems = [
     { key: "profile", title: "Profile", content: profile },
     { key: "achievement", title: "Achievements", content: acheivment },

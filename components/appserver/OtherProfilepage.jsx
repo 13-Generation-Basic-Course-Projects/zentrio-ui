@@ -27,6 +27,7 @@ export default function OtherUserProfile({
       userName={"Jack Ma"}
       userId={userId}
       userIdDetail={userIdDetail}
+      
       profile={
         <OtherProfileTab
           MemberDetails={MemberDetails}

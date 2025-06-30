@@ -8,7 +8,8 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../../styles/ganttchart.css";
 import BredCrum from "../bredcrum/MyBredcrum";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import BredCrumGanttChart from "../bredcrum/BredcrumGanttChart";
 
 // Helper function to calculate duration in days
 const calculateDurationDays = (start, end) => {
@@ -121,11 +122,17 @@ export default function GanttChart({
   ganttbar,
   ganttChartName,
   workspaceId,
+  deleteGanttBarsByGanttChartIdAction, // Add this as a prop
+  onGanttBarDeleted, // Optional callback to refresh data after deletion
+  
+  ganttChartId,
+  boardId,
 }) {
   const calendarRef = useRef(null);
   const [viewTitle, setViewTitle] = useState("");
   const [viewRange, setViewRange] = useState({ start: null, end: null });
   const [isInitialized, setIsInitialized] = useState(false);
+  const [deletingEventId, setDeletingEventId] = useState(null);
 
   console.log("log gant bar again ", ganttbar);
 
@@ -133,6 +140,59 @@ export default function GanttChart({
   const stableGanttbar = useMemo(() => {
     return ganttbar;
   }, [ganttbar?.payload?.length, ganttbar?.payload]);
+
+  // Handle delete action
+  const handleDeleteEvent = useCallback(async (eventInfo) => {
+    const { id: ganttBarId, extendedProps } = eventInfo.event;
+    const { ganttChartId } = extendedProps;
+    
+    if (!deleteGanttBarsByGanttChartIdAction) {
+      toast.error("Delete function not available", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+      return;
+    }
+
+    // Prevent multiple delete attempts
+    if (deletingEventId === ganttBarId) {
+      return;
+    }
+
+    // Show confirmation dialog
+    const confirmDelete = window.confirm(
+      `Are you sure you want to delete "${eventInfo.event.title}"? This action cannot be undone.`
+    );
+    
+    if (!confirmDelete) {
+      return;
+    }
+
+    setDeletingEventId(ganttBarId);
+
+    try {
+      // Call the delete action
+      await deleteGanttBarsByGanttChartIdAction(ganttChartId, ganttBarId);
+      
+      toast.success("Task deleted successfully", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+
+      // Call the callback to refresh data if provided
+      if (onGanttBarDeleted) {
+        onGanttBarDeleted();
+      }
+    } catch (error) {
+      console.error("Error deleting gantt bar:", error);
+      toast.error("Failed to delete task. Please try again.", {
+        position: "top-right",
+        autoClose: 4000,
+      });
+    } finally {
+      setDeletingEventId(null);
+    }
+  }, [deleteGanttBarsByGanttChartIdAction, onGanttBarDeleted, deletingEventId]);
 
   // Use useMemo to process ganttbar data only when it changes
   const { resources, events, dynamicFaceMap } = useMemo(() => {
@@ -273,16 +333,40 @@ export default function GanttChart({
     const teamLeaders = eventInfo.event.extendedProps.teamLeader || [];
     const phaseName =
       eventInfo.event.extendedProps.formattedFace || "Unknown Phase";
+    const isDeleting = deletingEventId === eventInfo.event.id;
 
     return (
       <div
-        className={`rounded-r-[10px] h-full p-0 overflow-hidden cursor-default`}
+        className={`rounded-r-[10px] h-full p-0 overflow-hidden cursor-default relative group ${
+          isDeleting ? 'opacity-50' : ''
+        }`}
         style={{
           backgroundColor: eventInfo.event.backgroundColor,
           borderLeft: `4px solid ${eventInfo.event.borderColor}`,
         }}
         title={`${eventInfo.event.title}\nPhase: ${phaseName}\nDuration: ${eventInfo.event.extendedProps.duration}`}
       >
+        {/* Delete button - only show if delete function is available */}
+        {deleteGanttBarsByGanttChartIdAction && (
+          <button
+            className="absolute top-1 right-1 w-5 h-5 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handleDeleteEvent(eventInfo);
+            }}
+            disabled={isDeleting}
+            title="Delete task"
+          >
+            
+            {isDeleting ? (
+              <div className="w-3 h-3 border border-white border-t-transparent rounded-full animate-spin"></div>
+            ) : (
+              <X size={12} />
+            )}
+          </button>
+        )}
+
         <div className="w-full h-full flex justify-between items-center px-3 py-1">
           <div className="flex-grow mr-2 overflow-hidden">
             <h2 className="text-[14px] font-semibold text-gray-800 truncate">
@@ -331,7 +415,7 @@ export default function GanttChart({
         </div>
       </div>
     );
-  }, []);
+  }, [deleteGanttBarsByGanttChartIdAction, handleDeleteEvent, deletingEventId]);
 
   // Modified date range calculation to show full months
   const { minDate, maxDate } = useMemo(() => {
@@ -386,15 +470,27 @@ export default function GanttChart({
 
   // Handle event click with useCallback
   const handleEventClick = useCallback((info) => {
-    toast.info("This Gantt chart is read-only. You cannot modify tasks.", {
-      position: "top-right",
-      autoClose: 4000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-    });
-  }, []);
+    // If delete function is available, show different message
+    if (deleteGanttBarsByGanttChartIdAction) {
+      toast.info("Hover over the task and click the delete button to remove it.", {
+        position: "top-right",
+        autoClose: 4000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+    } else {
+      toast.info("This Gantt chart is read-only. You cannot modify tasks.", {
+        position: "top-right",
+        autoClose: 4000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+    }
+  }, [deleteGanttBarsByGanttChartIdAction]);
 
   // Navigation handlers with useCallback
   const handleToday = useCallback(() => {
@@ -509,7 +605,7 @@ export default function GanttChart({
 
   return (
     <div className="flex flex-col h-screen bg-white">
-      <BredCrum
+      <BredCrumGanttChart
         board={"Project Dashboard"}
         feature={"Gantt Chart"}
         header={
@@ -517,6 +613,8 @@ export default function GanttChart({
             ? ganttChartName
             : "Gantt Chart"
         }
+        ganttChartId={ganttChartId}
+        boardId ={boardId}
         modal={modal}
         workspaceId={workspaceId}
       />

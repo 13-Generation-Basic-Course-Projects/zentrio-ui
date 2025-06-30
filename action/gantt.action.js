@@ -88,7 +88,7 @@ export const createGanttBarsByGanttChartIdAction = async ({
 /*
  * update gantchart
  */
-export const updateGantChartBytIdAction = async ({
+export const updateGanttChartByIdAction = async ({
   ganttChartId,
   boardId,
   data,
