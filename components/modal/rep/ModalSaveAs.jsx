@@ -8,11 +8,11 @@ import {
   DropdownItem,
   Button,
 } from "@heroui/react";
-export default function ModalSaveAs({ board , report}) {
+export default function ModalSaveAs({ board , report }) {
   return (
-    <Dropdown className="p-0 bg-transparent borde-none">
+    <Dropdown className={`p-0 bg-transparent borde-none`}>
       <DropdownTrigger>
-        <Button className="flex items-center gap-2 bg-white text-btn-sm border border-primary">
+        <Button className={`flex items-center gap-2 bg-white text-btn-sm border border-primary ${report?.payload?.groupedTasks.length == 0 ? `cursor-not-allowed` : ``}`} disabled={report?.payload?.groupedTasks.length == 0}>
           <span>
             <svg
               viewBox="0 0 24 24"

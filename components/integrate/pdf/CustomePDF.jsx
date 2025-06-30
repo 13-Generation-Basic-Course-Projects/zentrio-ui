@@ -2397,7 +2397,7 @@ export const SecondPage = ({ report, pageNumber = 2, absolute }) => {
                             )
                         ) : (
                           <tr
-                            key={index}
+                          
                             style={{
                               height: "32px",
                               borderTop: "1px solid black",

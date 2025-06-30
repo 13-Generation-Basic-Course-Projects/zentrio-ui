@@ -45,7 +45,6 @@ export default async function Report({ params }) {
   const role = getRoleByBoardId(boardId, currentUserProfile);
   console.log("sadd", role);
   const roleNeverJoined = null;
-  console.log("Report Version: ", reportVersionData.payload)
   console.log("BoardId: ", boardId)
   return (
     <>
@@ -54,7 +53,7 @@ export default async function Report({ params }) {
         roleJoined={role}
         modal={[
           <BtnPreview key="btn-preview" report={reportData} />,
-          <ModalSaveAs key="modal-save-as" board={boardId} report={reportData}/>,
+          <ModalSaveAs key="modal-save-as" board={boardId} report={reportData} />,
         ]}
         report={reportData}
         version={reportVersionData}
