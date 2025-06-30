@@ -8,25 +8,40 @@ import {
   DrawerFooter,
   Button,
   useDisclosure,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Input,
+  Select,
+  SelectItem,
 } from "@heroui/react";
 import { useState, useEffect } from "react";
-import { deleteGanttBarsByGanttChartIdAction } from "@/action/gantt.action";
+import { deleteGanttBarsByGanttChartIdAction , updateGantBarBytGantChartIdAction} from "@/action/gantt.action";
 import {
   Calendar,
   Users,
   Clock,
   Trash2,
   BarChart3,
-  Target,
-  Zap,
+  Edit,
 } from "lucide-react";
 
 export default function DrawerGanttBarFetch({ ganttChartId }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { isOpen: isEditOpen, onOpen: onEditOpen, onClose: onEditClose } = useDisclosure();
   const [ganttBars, setGanttBars] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [deletingId, setDeletingId] = useState(null);
+  const [editingBar, setEditingBar] = useState(null);
+  const [editForm, setEditForm] = useState({
+    title: "",
+    startedAt: "",
+    finishedAt: "",
+    face: "",
+  });
 
   // Fetch Gantt bars when the drawer is opened
   useEffect(() => {
@@ -62,7 +77,6 @@ export default function DrawerGanttBarFetch({ ganttChartId }) {
         ganttBarId,
       });
       if (response.success) {
-        // Remove the deleted bar from state with animation
         setGanttBars(ganttBars.filter((bar) => bar.ganttBarId !== ganttBarId));
       } else {
         setError(response.message || "Failed to delete Gantt bar");
@@ -74,26 +88,65 @@ export default function DrawerGanttBarFetch({ ganttChartId }) {
     }
   };
 
+  // Edit Gantt bar handler
+  const handleEditOpen = (bar) => {
+    setEditingBar(bar);
+    setEditForm({
+      title: bar.title,
+      startedAt: new Date(bar.startedAt).toISOString().split("T")[0],
+      finishedAt: new Date(bar.finishedAt).toISOString().split("T")[0],
+      face: bar.face,
+    });
+    onEditOpen();
+  };
+
+  const handleEditSubmit = async () => {
+    try {
+      const response = await updateGantBarBytGantChartIdAction({
+        ganttBarId: editingBar.ganttBarId,
+        ganttChartId,
+        title: editForm.title,
+        startedAt: new Date(editForm.startedAt).toISOString(),
+        finishedAt: new Date(editForm.finishedAt).toISOString(),
+        face: editForm.face,
+      });
+      if (response.success) {
+        setGanttBars(
+          ganttBars.map((bar) =>
+            bar.ganttBarId === editingBar.ganttBarId
+              ? { ...bar, ...editForm, startedAt: new Date(editForm.startedAt), finishedAt: new Date(editForm.finishedAt) }
+              : bar
+          )
+        );
+        onEditClose();
+      } else {
+        setError(response.message || "Failed to update Gantt bar");
+      }
+    } catch (err) {
+      setError("An error occurred while updating the Gantt bar");
+    }
+  };
+
   const getPhaseColor = (phase) => {
     const colors = {
-      Development: "from-blue-500 to-purple-600",
-      Design: "from-pink-500 to-rose-500",
-      Testing: "from-green-500 to-emerald-600",
-      Planning: "from-orange-500 to-amber-500",
-      Deployment: "from-indigo-500 to-blue-600",
-      Review: "from-teal-500 to-cyan-600",
+      PLANNING: "from-blue-500 to-purple-600",
+      REQUIREMENT_ANALYSIS: "from-pink-500 to-rose-500",
+      DESIGN: "from-green-500 to-emerald-600",
+      IMPLEMENTATION: "from-orange-500 to-amber-500",
+      TESTING_AND_REVIEW: "from-indigo-500 to-blue-600",
+      DEPLOYMENT_AND_MAINTENANCE: "from-teal-500 to-cyan-600",
     };
     return colors[phase] || "from-gray-500 to-gray-600";
   };
 
   const getPhaseIcon = (phase) => {
     const icons = {
-      Development: "💻",
-      Design: "🎨",
-      Testing: "🧪",
-      Planning: "📋",
-      Deployment: "🚀",
-      Review: "👀",
+      PLANNING: "📋",
+      REQUIREMENT_ANALYSIS: "📝",
+      DESIGN: "🎨",
+      IMPLEMENTATION: "💻",
+      TESTING_AND_REVIEW: "🧪",
+      DEPLOYMENT_AND_MAINTENANCE: "🚀",
     };
     return icons[phase] || "📊";
   };
@@ -119,11 +172,20 @@ export default function DrawerGanttBarFetch({ ganttChartId }) {
     return diffDays;
   };
 
+  const phaseOptions = [
+    "PLANNING",
+    "REQUIREMENT_ANALYSIS",
+    "DESIGN",
+    "IMPLEMENTATION",
+    "TESTING_AND_REVIEW",
+    "DEPLOYMENT_AND_MAINTENANCE",
+  ];
+
   return (
     <>
       <Button
         onPress={onOpen}
-        className="group relative overflow-hidden flex items-center gap-3 px-6 py-3 text-sm font-semibold text-white bg-primary border-0 rounded-xl shadow-lg hover:bg-black  h-12"
+        className="group relative overflow-hidden flex items-center gap-3 px-6 py-3 text-sm font-semibold text-white bg-primary border-0 rounded-xl shadow-lg hover:bg-black h-12"
       >
         <BarChart3 className="w-5 h-5 relative z-10" />
         <span className="relative z-10">My Gantt Bars</span>
@@ -205,7 +267,6 @@ export default function DrawerGanttBarFetch({ ganttChartId }) {
                             animation: "fadeInUp 0.6s ease-out forwards",
                           }}
                         >
-                          {/* Gradient overlay */}
                           <div
                             className={`absolute inset-0 bg-gradient-to-r ${getPhaseColor(
                               bar.face
@@ -215,7 +276,6 @@ export default function DrawerGanttBarFetch({ ganttChartId }) {
                           <div className="relative p-6">
                             <div className="flex items-start justify-between">
                               <div className="flex-1">
-                                {/* Header */}
                                 <div className="flex items-center gap-4 mb-4">
                                   <div className="flex-1">
                                     <h3 className="text-xl font-bold text-gray-900 mb-1">
@@ -233,9 +293,7 @@ export default function DrawerGanttBarFetch({ ganttChartId }) {
                                   </div>
                                 </div>
 
-                                {/* Details Grid */}
                                 <div className="grid md:grid-cols-2 gap-4">
-                                  {/* Timeline */}
                                   <div className="bg-gray-50/60 rounded-lg p-4 border border-gray-100/50">
                                     <div className="flex items-center gap-2 mb-3">
                                       <Calendar className="w-4 h-4 text-blue-600" />
@@ -286,7 +344,6 @@ export default function DrawerGanttBarFetch({ ganttChartId }) {
                                     </div>
                                   </div>
 
-                                  {/* Team Leaders */}
                                   <div className="bg-gray-50/60 rounded-lg p-4 border border-gray-100/50">
                                     <div className="flex items-center gap-2 mb-3">
                                       <Users className="w-4 h-4 text-green-600" />
@@ -324,8 +381,15 @@ export default function DrawerGanttBarFetch({ ganttChartId }) {
                                 </div>
                               </div>
 
-                              {/* Delete Button */}
-                              <div className="ml-4">
+                              <div className="ml-4 flex gap-2">
+                                <Button
+                                  color="primary"
+                                  variant="light"
+                                  onPress={() => handleEditOpen(bar)}
+                                  className="group/btn relative min-w-12 h-12 rounded-xl border-2 border-transparent hover:border-blue-200 transition-all duration-300"
+                                >
+                                  <Edit className="w-4 h-4 group-hover/btn:scale-110 transition-transform duration-200" />
+                                </Button>
                                 <Button
                                   color="danger"
                                   variant="light"
@@ -371,6 +435,53 @@ export default function DrawerGanttBarFetch({ ganttChartId }) {
         </DrawerContent>
       </Drawer>
 
+      <Modal isOpen={isEditOpen} onClose={onEditClose}>
+        <ModalContent>
+          <ModalHeader>Edit Gantt Bar</ModalHeader>
+          <ModalBody>
+            <Input
+              label="Title"
+              value={editForm.title}
+              onChange={(e) => setEditForm({ ...editForm, title: e.target.value })}
+              className="mb-4"
+            />
+            <Input
+              label="Start Date"
+              type="date"
+              value={editForm.startedAt}
+              onChange={(e) => setEditForm({ ...editForm, startedAt: e.target.value })}
+              className="mb-4"
+            />
+            <Input
+              label="End Date"
+              type="date"
+              value={editForm.finishedAt}
+              onChange={(e) => setEditForm({ ...editForm, finishedAt: e.target.value })}
+              className="mb-4"
+            />
+            <Select
+              label="Phase"
+              value={editForm.face}
+              onChange={(e) => setEditForm({ ...editForm, face: e.target.value })}
+            >
+              {phaseOptions.map((phase) => (
+                <SelectItem key={phase} value={phase}>
+                  {phase}
+                </SelectItem>
+              ))}
+            </Select>
+          </ModalBody>
+          <ModalFooter>
+            <Button color="danger" variant="light" onPress={onEditClose}>
+              Cancel
+            </Button>
+            <Button color="primary" onPress={handleEditSubmit}>
+              Save
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
       <style jsx>{`
         @keyframes fadeInUp {
           from {
@@ -386,3 +497,4 @@ export default function DrawerGanttBarFetch({ ganttChartId }) {
     </>
   );
 }
+

@@ -180,10 +180,19 @@ export async function updateGantChartBytIdService({
  */
 export async function updateGantBarBytGantChartIdService({
   ganttBarId,
-  data,
+  ganttChartId,
+  title,
+  startedAt,
+  finishedAt,
+  face,
   token,
 }) {
-  console.log("from service", {token, data });
+  console.log("from service", {token,  ganttBarId,
+    ganttChartId,
+    title,
+    startedAt,
+    finishedAt,
+    face, });
 
   const url = ganttRouteGroup.updateGanttBar(ganttBarId);
 
@@ -193,7 +202,12 @@ export async function updateGantBarBytGantChartIdService({
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({ title: data.title, boardId }), 
+    body: JSON.stringify({  
+      ganttChartId,
+      title,
+      startedAt,
+      finishedAt,
+      face,}), 
   });
 
   const result = await res.json();

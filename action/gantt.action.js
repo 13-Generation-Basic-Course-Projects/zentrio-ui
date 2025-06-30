@@ -130,14 +130,26 @@ export const deleteGanttBarsByGanttChartIdAction = async ({
  * update the  gantt bar
  */
 export const updateGantBarBytGantChartIdAction = async ({
-  ganttBarId, 
+  
+  ganttBarId,
+  ganttChartId,
+  title,
+  startedAt,
+  finishedAt,
+  face,
 }) => {
   const userToken = await Token();
   const token = userToken.Credential;
   console.log(token);
 
   const result = await updateGantBarBytGantChartIdService({
-    ganttBarId, 
+    
+    ganttBarId,
+    ganttChartId,
+    title,
+    startedAt,
+    finishedAt,
+    face,
     token,
   });
   return result;
