@@ -28,6 +28,7 @@ export default function CardBoard({
   isFavourite,
   includesPathOtherWorkSpace,
   isFavBtn,
+  otherBoardImage
 }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -97,7 +98,7 @@ export default function CardBoard({
 
     fetchMembers();
   }, [boardId]);
-  console.log("member", members);
+  console.log("other", includesPathOtherWorkSpace);
   return (
     <Card className="py-4 h-[340px] rounded-xl shadow-sm">
       {/* Card Header: shows editable title and favorite button */}
@@ -141,19 +142,13 @@ export default function CardBoard({
               const newFavoriteStatus = !favorited;
               setFavorited(newFavoriteStatus); // Optimistic UI
 
-              try {
+                // remove try catch
                 await updateFavAction({
                   boardId,
                   isFavourite: newFavoriteStatus,
                 });
 
-                console.log(
-                  `✅ Favorite status updated to ${newFavoriteStatus}`
-                );
-              } catch (error) {
-                console.error("❌ Failed to update favorite status:", error);
-                setFavorited(!newFavoriteStatus); // Revert if error
-              }
+               
             }}
             className="text-yellow-500 hover:text-yellow-600 p-3"
             aria-label="Toggle favorite"
@@ -173,9 +168,9 @@ export default function CardBoard({
               className={`rounded-xl w-full h-32 bg-cover bg-center ${image}`}
               aria-label={`Card background for ${title}`}
             />
-          ) : image ? (
+          ) : image ||  otherBoardImage ? (
             <img
-              src={images}
+              src={includesPathOtherWorkSpace ?  otherBoardImage : images}
               alt={images || "Board cover image"}
               className="w-full h-32 object-cover rounded-xl"
             />
