@@ -123,6 +123,7 @@ export const deleteGanttBarsByGanttChartIdAction = async ({
     ganttBarId, 
     token,
   });
+  revalidatePath("/gantbar");
   return result;
 };
 
@@ -152,5 +153,6 @@ export const updateGantBarBytGantChartIdAction = async ({
     face,
     token,
   });
+  revalidatePath("/gantbar");                  
   return result;
 };

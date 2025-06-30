@@ -30,6 +30,8 @@ export default function CardBoard({
   includesPathOtherWorkSpace,
   isFavBtn,
 }) {
+  
+
   const pathname = usePathname();
   const searchParams = useSearchParams();
   console.log("is fav", isFavBtn);
@@ -49,6 +51,7 @@ export default function CardBoard({
   const [newTitle, setNewTitle] = useState("");
 
   /* Function to handle rename confirmation */
+  
 
   const handleTitleUpdate = async () => {
     if (newTitle.trim() === "") return; // Skip if empty

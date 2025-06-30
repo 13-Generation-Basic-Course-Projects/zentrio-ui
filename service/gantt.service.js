@@ -1,4 +1,5 @@
 import { ganttRouteGroup } from "@/routes/ganttRoute";
+import { revalidatePath } from "next/cache";
 
 /*
  *       GANTT BAR
@@ -212,6 +213,6 @@ export async function updateGantBarBytGantChartIdService({
 
   const result = await res.json();
   console.log("📥 Backend responded with ganttbar update:", result);
-
+  
   return { success: true, data: result };
 }

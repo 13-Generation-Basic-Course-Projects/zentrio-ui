@@ -123,13 +123,14 @@ export default function GanttChart({
   workspaceId,
   ganttChartId,
   boardId,
+  boardData
 }) {
   const calendarRef = useRef(null);
   const [viewTitle, setViewTitle] = useState("");
   const [viewRange, setViewRange] = useState({ start: null, end: null });
   const [isInitialized, setIsInitialized] = useState(false);
 
-  console.log("log gant bar again ", ganttbar);
+  console.log("log gant bar again ", boardData);
 
   // Stable reference for ganttbar to prevent unnecessary recalculations
   const stableGanttbar = useMemo(() => {
@@ -512,7 +513,7 @@ export default function GanttChart({
   return (
     <div className="flex flex-col h-screen bg-white">
       <BredCrumGanttChart
-        board={"Project Dashboard"}
+         board={boardData?.payload.title || "Hikko Design"}
         feature={"Gantt Chart"}
         header={
           ganttChartName !== "No data available"

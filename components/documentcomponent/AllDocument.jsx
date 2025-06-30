@@ -14,7 +14,7 @@ import {
 } from "@heroui/react";
 import { useState } from "react";
 
-export default function AllDocument({ boardId, documents, tokenFromGoogle }) {
+export default function AllDocument({ boardId, documents, tokenFromGoogle ,boardName}) {
   // const data = documentData;
   const data = documents || [];
   console.log("document in all document", documents);
@@ -78,7 +78,7 @@ export default function AllDocument({ boardId, documents, tokenFromGoogle }) {
       <div className="grid grid-cols-1 gap-3">
         <div className="p-0">
           <BredCrum
-            board={"Hikko Design"}
+            board={boardName}
             feature={"Document"}
             header={"Document"}
             modal={[

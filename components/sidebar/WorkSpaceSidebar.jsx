@@ -44,6 +44,7 @@ export default function WorkSpaceSideBar({
   updateNameWorkspace,
   getWorKSpaceJoined,
 }) {
+  console.log("ssss",workspaceData)
   const pathname = usePathname();
   const { toggleSidebar } = useSidebar();
   const [selectedId, setSelectedId] = useState("");
