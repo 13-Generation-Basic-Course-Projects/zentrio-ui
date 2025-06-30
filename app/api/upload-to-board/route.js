@@ -7,7 +7,6 @@ export const config = {
 
 import { Token } from "@/constant/token";
 import { createDocumentByUploadService } from "@/service/document.service";
-import { uploadDocumentToFolderServie } from "@/service/drive.service";
 
 export async function POST(req) {
   try {
@@ -15,9 +14,8 @@ export async function POST(req) {
     const file = formData.get("multipartFile");
     const accessToken = formData.get("accessToken");
     const boardId = formData.get("boardId");
-    const folderId = formData.get("folderId"); // optionally included
 
-    if (!file || !accessToken || (!boardId && !folderId)) {
+    if (!file || !accessToken || !boardId) {
       return new Response(JSON.stringify({ error: "Missing input" }), {
         status: 400,
         headers: { "Content-Type": "application/json" },
@@ -30,30 +28,19 @@ export async function POST(req) {
     const formPayload = new FormData();
     formPayload.append("multipartFile", file);
 
-    let result;
-
-    if (boardId) {
-      result = await createDocumentByUploadService(
-        formPayload,
-        boardId,
-        token,
-        accessToken
-      );
-    } else if (folderId) {
-      result = await uploadDocumentToFolderServie({
-        accessToken,
-        folderId,
-        file,
-        token,
-      });
-    }
+    const result = await createDocumentByUploadService(
+      formPayload,
+      boardId,
+      token,
+      accessToken
+    );
 
     return new Response(JSON.stringify(result), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
-    console.error("Upload API error:", error);
+    console.error("Upload to board error:", error);
     return new Response(JSON.stringify({ error: "Upload failed" }), {
       status: 500,
       headers: { "Content-Type": "application/json" },

@@ -1,4 +1,4 @@
-"use server";
+'use server';
 
 import { Token } from "@/constant/token";
 import { createDriveFileService } from "@/service/document.service";
@@ -26,7 +26,7 @@ export const createDriveFileAction = async ({
       folderId,
       fileType,
       token,
-      tokenFromGoogle
+      tokenFromGoogle,
     );
 
     revalidatePath("/document");
@@ -43,7 +43,7 @@ export const deleteFileByFileIdAction = async ({ fileId, accessToken }) => {
   const token = userToken.Credential;
 
   const file = await deleteFileByFileIdService({ accessToken, fileId, token });
-  revalidatePath("/document");
+  revalidatePath('/document');
 
   return file;
 };

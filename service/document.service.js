@@ -108,6 +108,7 @@ export const getFileByFolderIdService = async ({
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
+          next: { revalidate: 60 },
         },
       }
     );
@@ -298,6 +299,9 @@ export const createDocumentService = async (data, token) => {
 /*
  * Create new document by file upload
  */
+/*
+ * Create new document by file upload
+ */
 export const createDocumentByUploadService = async (
   formData,
   boardId,
@@ -325,7 +329,7 @@ export const createDocumentByUploadService = async (
     return await res.json();
   } catch (error) {
     console.error("Error in createDocumentByUploadService:", error.message);
-    throw error; // Rethrow to handle in action or component
+    throw error;
   }
 };
 

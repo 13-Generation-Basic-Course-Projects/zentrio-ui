@@ -8,6 +8,8 @@ import { auth } from "@/auth";
 import DocumentAutherize from "@/components/appserver/Documentpage";
 import { preventImage } from "@/constant/preventimage";
 import { Token } from "@/constant/token";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default async function BoardLayout({ children, params }) {
   const session = await auth();
@@ -58,6 +60,7 @@ export default async function BoardLayout({ children, params }) {
         docIdPagedocIdPage={id}
       />
       <div>{children}</div>
+      <ToastContainer />
     </div>
   );
 }

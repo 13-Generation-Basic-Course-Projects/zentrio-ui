@@ -39,12 +39,10 @@ export default function ModalCreateFolder({
         boardId
       );
 
-      console.log("created folder:", createdFolder);
-
-      if (createdFolder?.payload?.success === true) {
+      if (createdFolder?.status === "CREATED" || createdFolder?.success === true) {
         toast.success("Folder created successfully!", {
           position: "top-right",
-          autoClose: 5000,
+          autoClose: 4000,
           hideProgressBar: false,
           closeOnClick: false,
           pauseOnHover: true,
@@ -60,7 +58,7 @@ export default function ModalCreateFolder({
       console.error("Error creating folder:", error);
       toast.error("Failed to create folder. Please try again.", {
         position: "top-right",
-        autoClose: 5000,
+        autoClose: 4000,
         hideProgressBar: false,
         closeOnClick: false,
         pauseOnHover: true,
@@ -122,18 +120,6 @@ export default function ModalCreateFolder({
           )}
         </ModalContent>
       </Modal>
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick={false}
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
     </>
   );
 }

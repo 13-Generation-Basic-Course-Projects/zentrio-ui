@@ -9,6 +9,7 @@ import { SearchIcon } from "lucide-react";
 import ModalCreateDocuInFolder from "../modal/docu/ModalCreateDocuInFolder";
 import CardFolderInFolder, { CardFileInFolder } from "../card/CardDocInFolder";
 import BredcrumDocument from "../bredcrum/BredcrumDocument";
+import { getFileByFolderIdAction } from "@/action/document.action";
 
 export default function DocumentEachFolder({
   id, // folderId
@@ -18,7 +19,6 @@ export default function DocumentEachFolder({
   workspaceId,
   isHidden,
   initialData = [],
-  currentFolderMeta,
   breadcrumbFolders,
 }) {
   const [sortOrder, setSortOrder] = useState("asc");

@@ -21,8 +21,7 @@ import {
 } from "@/action/document.action";
 import { useEffect, useState } from "react";
 import PopupActionDeleteDocu from "@/components/popup/PopupActionDeleteDocu";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 
 // Icon components
 const AddNoteIcon = (props) => (
@@ -243,29 +242,26 @@ export default function ModalOptionDocument({
 
   const handlePublic = async () => {
     try {
-      await publicDocumentByIdAction(documentId, accessToken);
-      setStatus("public");
-      toast.success("Document is now public!", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+      const result = await publicDocumentByIdAction(documentId, accessToken);
+
+      if (result?.success) {
+        setStatus("public");
+        toast.dismiss();
+        toast.success("Document is now public!", {
+          position: "top-right",
+          autoClose: 5000,
+          theme: "light",
+        });
+      } else {
+        throw new Error(result?.message || "Unknown error");
+      }
     } catch (error) {
       console.error("Public document failed: ", error);
       setStatus("private");
-      toast.error("Failed to make document public.", {
+      toast.dismiss();
+      toast.error(`${error.message}`, {
         position: "top-right",
         autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
         theme: "light",
       });
     }
@@ -273,28 +269,25 @@ export default function ModalOptionDocument({
 
   const handlePrivate = async () => {
     try {
-      await privateDocumentByIdAction(documentId, accessToken);
+      const result = await privateDocumentByIdAction(documentId, accessToken);
 
-      toast.success("Document is now private!", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+      if (result?.success) {
+        setStatus("private");
+        toast.dismiss();
+        toast.success("Document is now private!", {
+          position: "top-right",
+          autoClose: 5000,
+          theme: "light",
+        });
+      } else {
+        throw new Error(result?.message || "Unknown error");
+      }
     } catch (error) {
       console.error("Private document failed: ", error);
-      toast.error("Failed to make document public.", {
+      toast.dismiss();
+      toast.error(`${error.message}`, {
         position: "top-right",
         autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
         theme: "light",
       });
     }
@@ -367,6 +360,7 @@ export default function ModalOptionDocument({
             <ModalRenameFileOrFolder
               documentId={documentId}
               tokenFromGoogle={accessToken}
+              isFolder={isFolder}
             />
           </DropdownItem>
 
@@ -386,18 +380,35 @@ export default function ModalOptionDocument({
             className="w-full hover:bg-default-100"
             startContent={<DeleteDocumentIcon className="w-4 h-4" />}
           >
-            <PopupActionDeleteDocu
-              title="Delete Folder"
-              massageTitle="Are you sure?"
-              massageBody="You want to delete it."
-              icon={<IconpopupDelete />}
-              bgcolor="bg-slate-red"
-              massageDo="Yes, Delete"
-              massageUndo="No, Cancel"
-              documentId={documentId}
-              fileId={fileId}
-              accessToken={accessToken}
-            />
+            {isFolder ? (
+              <PopupActionDeleteDocu
+                title="Delete Folder"
+                massageTitle="Are you sure?"
+                massageBody="You want to delete it."
+                icon={<IconpopupDelete />}
+                bgcolor="bg-slate-red"
+                massageDo="Yes, Delete"
+                massageUndo="No, Cancel"
+                documentId={documentId}
+                fileId={fileId}
+                accessToken={accessToken}
+                isFolder={isFolder}
+              />
+            ) : (
+              <PopupActionDeleteDocu
+                title="Delete file"
+                massageTitle="Are you sure?"
+                massageBody="You want to delete it."
+                icon={<IconpopupDelete />}
+                bgcolor="bg-slate-red"
+                massageDo="Yes, Delete"
+                massageUndo="No, Cancel"
+                documentId={documentId}
+                fileId={fileId}
+                accessToken={accessToken}
+                isFolder={isFolder}
+              />
+            )}
           </DropdownItem>
 
           {/* Public and Private Section */}
@@ -426,18 +437,6 @@ export default function ModalOptionDocument({
           </DropdownSection>
         </DropdownMenu>
       </Dropdown>
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
     </>
   );
 }

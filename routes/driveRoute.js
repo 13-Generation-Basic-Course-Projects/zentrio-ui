@@ -9,6 +9,6 @@ export const driveRouteGroup = {
   `${apiConfig.baseUrl}/files/rename?accessToken=${accessToken}&fileId=${fileId}&newName=${encodeURIComponent(newName)}`,
   getDriveFileById: ({ accessToken, fileId }) =>
   `${apiConfig.baseUrl}/files/file?accessToken=${accessToken}&fileId=${fileId}`,
-  uploadDocumentToFolder: (folderId, accessToken) =>
-  `${apiConfig.baseUrl}/files/upload-image-to-drive?token=${accessToken}&folderId=${folderId}`,
+  uploadDocumentToFolder: (folderId, token) =>
+  `${apiConfig.baseUrl}/files/upload-image-to-drive?token=${token}&folderId=${folderId}`,
 };

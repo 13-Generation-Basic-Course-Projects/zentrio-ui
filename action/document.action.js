@@ -74,10 +74,10 @@ export const downloadDocumentByDocumentIdAction = async (
 };
 
 // Download as zip action
-export const downloadAllFilesAsZipAction = async (
-  {documentId,
-  accessToken}
-) => {
+export const downloadAllFilesAsZipAction = async ({
+  documentId,
+  accessToken,
+}) => {
   const userToken = await Token();
   const token = userToken.Credential;
 
@@ -197,16 +197,32 @@ export const updateDocumentNameByIdAction = async (
 
 // public document (update)
 export const publicDocumentByIdAction = async (documentId, tokenFromGoogle) => {
-  const userToken = await Token();
-  const token = userToken.Credential;
+  try {
+    const userToken = await Token();
+    const token = userToken.Credential;
 
-  const updated = await publicDocumentByIdService(
-    documentId,
-    token,
-    tokenFromGoogle
-  );
-  revalidatePath("/docu");
-  return updated;
+    const updated = await publicDocumentByIdService(
+      documentId,
+      token,
+      tokenFromGoogle
+    );
+
+    revalidatePath("/docu");
+
+    if (updated?.success) {
+      return { success: true, message: "Document made public successfully." };
+    } else {
+      return {
+        success: false,
+        message: updated?.message || "Failed to make document public.",
+      };
+    }
+  } catch (error) {
+    return {
+      success: false,
+      message: error.message || "Unexpected error while making public.",
+    };
+  }
 };
 
 // Private document (update)
@@ -214,16 +230,32 @@ export const privateDocumentByIdAction = async (
   documentId,
   tokenFromGoogle
 ) => {
-  const userToken = await Token();
-  const token = userToken.Credential;
+  try {
+    const userToken = await Token();
+    const token = userToken.Credential;
 
-  const updated = await privateDocumentByIdService(
-    documentId,
-    token,
-    tokenFromGoogle
-  );
-  revalidatePath("/docu");
-  return updated;
+    const updated = await privateDocumentByIdService(
+      documentId,
+      token,
+      tokenFromGoogle
+    );
+
+    revalidatePath("/docu");
+
+    if (updated?.success) {
+      return { success: true, message: "Document made private successfully." };
+    } else {
+      return {
+        success: false,
+        message: updated?.message || "Failed to make document private.",
+      };
+    }
+  } catch (error) {
+    return {
+      success: false,
+      message: error.message || "Unexpected error while making private.",
+    };
+  }
 };
 
 /* new add

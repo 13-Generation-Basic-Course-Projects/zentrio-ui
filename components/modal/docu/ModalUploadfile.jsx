@@ -11,6 +11,8 @@ import {
 } from "@heroui/react";
 import uploadIcon from "@/assets/uploadicon.svg";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 export default function ModalUploadFile({
   isOpen,
@@ -23,6 +25,7 @@ export default function ModalUploadFile({
   const [selectedFile, setSelectedFile] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
   const inputRef = useRef(null);
+  const router = useRouter();
 
   const handleFileSelect = (event) => {
     const file = event.target.files?.[0];
@@ -52,15 +55,10 @@ export default function ModalUploadFile({
       const formData = new FormData();
       formData.append("multipartFile", selectedFile);
       formData.append("accessToken", tokenFromGoogle);
+      formData.append("boardId", boardId);
+      const uploadUrl = "/api/upload-to-board";
 
-      // Append either boardId or folderId depending on what is provided
-      if (boardId) {
-        formData.append("boardId", boardId);
-      } else if (folderId) {
-        formData.append("folderId", folderId);
-      }
-
-      const res = await fetch("/api/upload", {
+      const res = await fetch(uploadUrl, {
         method: "POST",
         body: formData,
       });
@@ -71,15 +69,16 @@ export default function ModalUploadFile({
         throw new Error(result.error || "Upload failed");
       }
 
-      console.log("Upload success:", result);
+      toast.success("File uploaded successfully!", {
+        position: "top-right",
+        duration: 4000,
+      });
       setFileName("");
       setSelectedFile(null);
+      router.refresh();
       onClose();
-
-      // Optionally reload page or refresh data
-      // window.location.reload();
     } catch (error) {
-      console.error("Upload failed:", error);
+      toast.error(error.message || "Upload failed.");
     } finally {
       setIsUploading(false);
     }

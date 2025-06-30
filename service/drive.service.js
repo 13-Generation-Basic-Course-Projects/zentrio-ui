@@ -145,19 +145,20 @@ export const getDriveFileByIdService = async ({
 /*
  * Upload file to folder
  */
+/*
+ * Upload file to folder
+ */
 export const uploadDocumentToFolderServie = async ({
   tokenFromGoogle,
   folderId,
-  file,
+  formData,
   token,
 }) => {
   try {
     const url = driveRouteGroup.uploadDocumentToFolder({
       folderId,
-      tokenFromGoogle,
+      token: tokenFromGoogle,
     });
-    const formData = new FormData();
-    formData.append("file", file);
 
     const res = await fetch(url, {
       method: "POST",
@@ -176,6 +177,6 @@ export const uploadDocumentToFolderServie = async ({
     return await res.json();
   } catch (error) {
     console.error("Error in uploadDocumentToFolderServie:", error.message);
-    throw error; // Rethrow to handle in action or component
+    throw error;
   }
 };

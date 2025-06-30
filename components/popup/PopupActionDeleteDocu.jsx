@@ -22,11 +22,12 @@ export default function PopupActionDeleteDocu({
   massageDo,
   documentId,
   accessToken,
+  isFolder,
   color,
   swapButton,
   action,
-  successMessage = "File or folder deleted successfully.",
-  errorMessage = "Failed to delete the file or folder",
+  successMessage,
+  errorMessage,
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
@@ -35,20 +36,29 @@ export default function PopupActionDeleteDocu({
     try {
       const result = await deleteDocumentAction(accessToken, documentId);
       if (result?.status === "success" || result?.success) {
-        toast.success(successMessage, {
-          position: "top-right",
-          duration: 4000,
-        });
+        toast.success(
+          successMessage ||
+            (isFolder
+              ? "Folder deleted successfully."
+              : "File deleted successfully."),
+          {
+            position: "top-right",
+            duration: 4000,
+          }
+        );
       } else {
         throw new Error("Deletion failed unexpectedly");
       }
     } catch (error) {
       console.error("Delete failed:", error);
       toast.error(
-        `${errorMessage}: ${error.message || "Unknown error"}`,
+        errorMessage ||
+          (isFolder
+            ? "Failed to delete the folder"
+            : "Failed to delete the file"),
         {
           position: "top-right",
-          duration: 4000,
+          autoClose: 4000,
         }
       );
     }

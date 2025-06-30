@@ -11,11 +11,11 @@ import {
 } from "@heroui/react";
 import uploadIcon from "@/assets/uploadicon.svg";
 import Image from "next/image";
+import { toast } from "react-toastify";
 
 export default function ModalUploadFileInFolder({
   isOpen,
   onClose,
-  boardId, // optional: ID of board to upload to
   folderId, // optional: ID of folder to upload to (if uploading to folder)
   tokenFromGoogle,
 }) {
@@ -41,8 +41,8 @@ export default function ModalUploadFileInFolder({
       console.error("No file selected");
       return;
     }
-    if (!boardId && !folderId) {
-      console.error("No boardId or folderId provided");
+    if (!folderId || !tokenFromGoogle) {
+      console.error("Missing folderId or token");
       return;
     }
 
@@ -50,17 +50,11 @@ export default function ModalUploadFileInFolder({
 
     try {
       const formData = new FormData();
-      formData.append("multipartFile", selectedFile);
-      formData.append("accessToken", tokenFromGoogle);
+      formData.append("token", tokenFromGoogle);
+      formData.append("folderId", folderId);
+      formData.append("file", selectedFile);
 
-      // Append either boardId or folderId depending on what is provided
-      if (boardId) {
-        formData.append("boardId", boardId);
-      } else if (folderId) {
-        formData.append("folderId", folderId);
-      }
-
-      const res = await fetch("/api/upload", {
+      const res = await fetch("/api/upload-to-folder", {
         method: "POST",
         body: formData,
       });
@@ -68,18 +62,20 @@ export default function ModalUploadFileInFolder({
       const result = await res.json();
 
       if (!res.ok) {
+        console.error("Server error:", result);
         throw new Error(result.error || "Upload failed");
       }
 
-      console.log("Upload success:", result);
+      toast.success("File uploaded successfully!", {
+        position: "top-right",
+        duration: 4000,
+      })
       setFileName("");
       setSelectedFile(null);
       onClose();
-
-      // Optionally reload page or refresh data
-      // window.location.reload();
     } catch (error) {
       console.error("Upload failed:", error);
+      toast.error(error.message || "Upload failed.");
     } finally {
       setIsUploading(false);
     }

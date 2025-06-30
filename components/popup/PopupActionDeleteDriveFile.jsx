@@ -9,8 +9,6 @@ import {
   useDisclosure,
 } from "@heroui/react";
 
-import { useRouter } from "next/navigation";
-import { deleteDocumentAction } from "@/action/document.action";
 import { toast } from "react-toastify";
 import { deleteFileByFileIdAction } from "@/action/drive.action";
 export default function PopupActionDeleteDriveFile({
@@ -22,17 +20,16 @@ export default function PopupActionDeleteDriveFile({
   massageUndo,
   massageDo,
   fileId,
+  action,
   accessToken,
   color,
   swapButton,
-  action,
   successMessage = "File or folder deleted successfully.",
   errorMessage = "Failed to delete the file or folder",
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   console.log(accessToken);
-  const router = useRouter();
   const handleDelete = async () => {
     try {
       const result = await deleteFileByFileIdAction({fileId, accessToken});
@@ -41,7 +38,6 @@ export default function PopupActionDeleteDriveFile({
           position: "top-right",
           duration: 4000,
         });
-        router.refresh(); // Refresh only on success
       } else {
         throw new Error("Deletion failed unexpectedly");
       }
