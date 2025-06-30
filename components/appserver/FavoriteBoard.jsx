@@ -82,6 +82,7 @@ export default function MyFavoriteBoard({
       <div className="col-span-3 p-2">
         <CardMember members={memberData} />
       </div>
+      
     </div>
   );
 }

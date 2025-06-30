@@ -18,6 +18,7 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createWorkspaceSchema } from "@/lib/schemas/workspaceSchema";
+import { toast } from "react-toastify";
 
 const colorOptions = [
   { key: "red", label: "Red", className: "bg-board-red" },
@@ -112,6 +113,8 @@ export default function ModalCreateWorkspace({ createWorkspace }) {
         }
       }
 
+      toast.success("Workspace created successfully");
+
       reset();
       setSelectedOption(null);
       onOpenChange(false);
@@ -121,6 +124,7 @@ export default function ModalCreateWorkspace({ createWorkspace }) {
       });
     } catch (err) {
       console.error("Error creating workspace:", err);
+      toast.error("Failed to create workspace");
     }
   };
 
