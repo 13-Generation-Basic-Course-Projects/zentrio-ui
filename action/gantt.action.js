@@ -6,6 +6,7 @@ import {
   getGanttBarByGanttChartIdService,
   getGanttBarService,
   getGanttChartByBoardIdService,
+  updateGantBarBytGantChartIdService,
   updateGantChartBytIdService,
 } from "@/service/gantt.service";
 import { revalidatePath } from "next/cache";
@@ -119,6 +120,23 @@ export const deleteGanttBarsByGanttChartIdAction = async ({
 
   const result = await deleteGanttBarsByGanttChartIdService({
     ganttChartId,
+    ganttBarId, 
+    token,
+  });
+  return result;
+};
+
+/*
+ * update the  gantt bar
+ */
+export const updateGantBarBytGantChartIdAction = async ({
+  ganttBarId, 
+}) => {
+  const userToken = await Token();
+  const token = userToken.Credential;
+  console.log(token);
+
+  const result = await updateGantBarBytGantChartIdService({
     ganttBarId, 
     token,
   });

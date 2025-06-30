@@ -145,7 +145,7 @@ export const deleteGanttBarsByGanttChartIdService = async ({
 };
 
 /*
- * create gantt bar by GantchartId
+ * update gantt by GantchartId
  */
 // src/service/gantt.service.js
 export async function updateGantChartBytIdService({
@@ -169,6 +169,35 @@ export async function updateGantChartBytIdService({
 
   const result = await res.json();
   console.log("📥 Backend responded with:", result);
+
+  return { success: true, data: result };
+}
+
+
+
+/*
+ * update gantt bar by GantchartId
+ */
+export async function updateGantBarBytGantChartIdService({
+  ganttBarId,
+  data,
+  token,
+}) {
+  console.log("from service", {token, data });
+
+  const url = ganttRouteGroup.updateGanttBar(ganttBarId);
+
+  const res = await fetch(url, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ title: data.title, boardId }), 
+  });
+
+  const result = await res.json();
+  console.log("📥 Backend responded with ganttbar update:", result);
 
   return { success: true, data: result };
 }
