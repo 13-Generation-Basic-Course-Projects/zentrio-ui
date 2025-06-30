@@ -7,6 +7,8 @@ import { BtnPreview, BtnSaveAs } from "@/components/button/ButtonReport";
 import ModalSaveAs from "@/components/modal/rep/ModalSaveAs";
 import { Token } from "@/constant/token";
 import React from "react";
+import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css'
 
 export default async function Report({ params }) {
   // const boardId = `d4f6ed17-3f68-48b4-9cbb-fa141a2d2000`;
@@ -57,6 +59,7 @@ export default async function Report({ params }) {
         report={reportData}
         version={reportVersionData}
       />
+      <ToastContainer />
     </>
   );
 }

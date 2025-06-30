@@ -36,7 +36,7 @@ export default function VerticalChart({ report }) {
     done: 0,
   };
 
-  report?.payload?.groupedTasks.forEach((item) => {
+  report?.payload?.groupedTasks?.forEach((item) => {
     if (item.stage == "TO DO") {
       task.todo = task.todo + item.count;
     } else if (item.stage == "IN_PROGRESS") {
@@ -231,27 +231,27 @@ export const MonthlyChart = ({ report }) => {
       COMPLETED: Array(12).fill(0),
     };
 
-    if (!report || !report.groupedTasks) {
+    if (!report || !report?.groupedTasks) {
       console.warn("generateMonthlyStageData: No groupedTasks found");
       return monthlyStageData;
     }
 
-    report.groupedTasks.forEach((group) => {
+    report?.groupedTasks?.forEach((group) => {
       const stage = group?.stage;
       if (!stage || !(stage in monthlyStageData)) {
         console.warn(`Unknown stage encountered: "${stage}"`);
         return; // skip unknown stages
       }
 
-      if (!group.tasks || !Array.isArray(group.tasks)) {
+      if (!group?.tasks || !Array.isArray(group?.tasks)) {
         console.warn(`No tasks array found for stage: "${stage}"`);
         return;
       }
 
-      group.tasks.forEach((task) => {
-        const date = new Date(task.finishedAt);
+      group?.tasks?.forEach((task) => {
+        const date = new Date(task?.finishedAt);
         if (isNaN(date)) {
-          console.warn(`Invalid finishedAt date: "${task.finishedAt}"`);
+          console.warn(`Invalid finishedAt date: "${task?.finishedAt}"`);
           return; // skip invalid dates
         }
 
@@ -291,7 +291,7 @@ export const MonthlyChart = ({ report }) => {
           "Nov",
           "Dec",
         ],
-        datasets: Object.entries(monthlyStageData).map(([stage, data]) => ({
+        datasets: Object.entries(monthlyStageData)?.map(([stage, data]) => ({
           label: stage,
           data,
           borderWidth: 2,
@@ -412,7 +412,7 @@ export const WeeklyChart = ({ report }) => {
     const weeklyData = {};
 
     const allDates = (report?.payload?.groupedTasks || [])
-      .flatMap((group) =>
+      ?.flatMap((group) =>
         (group.tasks || []).map(
           (task) =>
             new Date(task.finishedAt || task.updatedAt || task.createdAt)
@@ -430,8 +430,8 @@ export const WeeklyChart = ({ report }) => {
 
     const maxWeek = 4;
 
-    (report?.payload?.groupedTasks || []).forEach((group) => {
-      (group.tasks || []).forEach((task) => {
+    (report?.payload?.groupedTasks || [])?.forEach((group) => {
+      (group.tasks || [])?.forEach((task) => {
         const taskDate = new Date(
           task.finishedAt || task.updatedAt || task.createdAt
         );
@@ -452,7 +452,7 @@ export const WeeklyChart = ({ report }) => {
 
   const dataStages = [
     ...new Set(
-      Object.values(weeklyData).flatMap((weekData) => Object.keys(weekData))
+      Object.values(weeklyData)?.flatMap((weekData) => Object.keys(weekData))
     ),
   ];
 
@@ -467,7 +467,7 @@ export const WeeklyChart = ({ report }) => {
     COMPLETED: "hsl(145, 53%, 67%)",
   };
 
-  const datasets = allStages.map((stage, index) => {
+  const datasets = allStages?.map((stage, index) => {
     const defaultColors = [
       "hsl(194, 54%, 60%)",
       "hsl(215, 89%, 69%)",

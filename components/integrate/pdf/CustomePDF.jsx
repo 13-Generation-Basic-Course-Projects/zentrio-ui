@@ -822,19 +822,19 @@ export const Cover = ({ report, absolute }) => {
         task?.allChecklists?.forEach((checklist) => {
           checklist?.members?.forEach((member) => {
             flattened.push({
-              stage: group.stage,
-              taskId: task.taskId,
-              taskTitle: task.title,
-              taskDescription: task.description,
-              checklistId: checklist.checklistId,
-              checklistTitle: checklist.title,
-              checklistDescription: checklist.description,
+              stage: group?.stage,
+              taskId: task?.taskId,
+              taskTitle: task?.title,
+              taskDescription: task?.description,
+              checklistId: checklist?.checklistId,
+              checklistTitle: checklist?.title,
+              checklistDescription: checklist?.description,
               member: member,
-              attachments: checklist.attachment,
-              comments: checklist.allComments,
-              startDate: checklist.startedAt,
-              endDate: checklist.finishedAt,
-              status: checklist.status,
+              attachments: checklist?.attachment,
+              comments: checklist?.allComments,
+              startDate: checklist?.startedAt,
+              endDate: checklist?.finishedAt,
+              status: checklist?.status,
             });
           });
         });

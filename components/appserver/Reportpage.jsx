@@ -23,7 +23,7 @@ export default function Reportpage({ modal, report, version }) {
     m: 0,
   };
 
-  report?.payload?.groupedTasks.forEach((item) => {
+  report?.payload?.groupedTasks?.forEach((item) => {
     if (item.stage == "TO DO") {
       task.todo = task.todo + item.count;
     } else if (item.stage == "IN_PROGRESS") {
@@ -74,7 +74,7 @@ export default function Reportpage({ modal, report, version }) {
 
   const totalTask = task.todo + task.progress + task.review + task.done;
 
-  report?.payload?.allMembers.forEach((item) => {
+  report?.payload?.allMembers?.forEach((item) => {
     if (item.roleName === "ROLE_MANAGER") {
       userRole.pm = item.total;
     } else if (item.roleName === "ROLE_LEADER") {
@@ -94,8 +94,8 @@ export default function Reportpage({ modal, report, version }) {
     inDone: 0,
   };
 
-  report?.payload?.groupedTasks.forEach((item) => {
-    item?.tasks.forEach((value) => {
+  report?.payload?.groupedTasks?.forEach((item) => {
+    item?.tasks?.forEach((value) => {
       if (item.stage == "TO DO") {
         cheklist.inTodo = cheklist.inTodo + value.allChecklists.length;
       } else if (item.stage == "IN_PROGRESS") {
@@ -135,9 +135,9 @@ export default function Reportpage({ modal, report, version }) {
     return String(convert / 86400000).split('.')[0];
   })
 
-  console.log("Seng Ngoun is gay: ", getVersion.map((item) => item?.data))
-  console.log("Username: ", Object.values(report?.payload).map((item) => item?.data?.boardData?.createdBy?.username))
-  console.log("Be not Gay: ", Object.entries(report?.payload).map((item) => item?.data?.version))
+  console.log("Seng Ngoun is gay: ", getVersion?.map((item) => item?.data))
+  console.log("Username: ", Object.values(report?.payload)?.map((item) => item?.data?.boardData?.createdBy?.username))
+  console.log("Be not Gay: ", Object.entries(report?.payload)?.map((item) => item?.data?.version))
   console.log("ah hong tix tix: ", dateForCreate)
   return (
     <>
@@ -155,7 +155,7 @@ export default function Reportpage({ modal, report, version }) {
             <div className=" overflow-y-auto scrollbar-hidden pb-40 p-2">
               { }
               <div className="grid grid-cols-4 gap-2">
-                {tasks.map((item, index) => (
+                {tasks?.map((item, index) => (
                   <div
                     key={index}
                     className={`rounded-medium p-5 text-h6 font-semibold ${item.textColor} ${item.bgColor}`}
@@ -296,7 +296,7 @@ export default function Reportpage({ modal, report, version }) {
                     ))} */}
 
                     {
-                      getVersion.map((item, index) => (
+                      getVersion?.map((item, index) => (
                         <div className="flex items-start space-x-4" key={index}>
                           <div className="flex-shrink-0 w-[40px] h-[30px] bg-primary text-white rounded-full flex items-center justify-center font-semibold text-caption">
                             {item?.data?.version}

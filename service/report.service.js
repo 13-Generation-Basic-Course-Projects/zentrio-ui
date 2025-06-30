@@ -31,7 +31,7 @@ export const generateReportByBoardIdService = async ({ boardId, zentrioToken } =
     const blob = await res.blob();
 
     const contentDisposition = res.headers.get("content-disposition");
-    let fileName = "document.pdf";
+    let fileName = `document.pdf`;
 
     if (contentDisposition && contentDisposition.includes("filename=")) {
         const match = contentDisposition.match(
