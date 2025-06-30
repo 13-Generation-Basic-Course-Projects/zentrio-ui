@@ -40,6 +40,7 @@ import { toast } from "react-toastify";
 import { CameraIcon } from "lucide-react";
 import { CardCheckList } from "@/components/card/CardChecklist";
 import FeedbackDisplay from "./FeedbackOfTask";
+import ImagePopup from "@/components/announcementCompo/ModalPopUpImaage";
 
 const initialState = {
   activeTab: "add",
@@ -1058,11 +1059,8 @@ const ModalDetailChecklist = ({
 
                 {/* this is for change image checklist  */}
                 <div className="border rounded-medium flex justify-center items-center relative w-full h-40">
-                  <img
-                    src={displayImage}
-                    alt="Checklist Image"
-                    className="w-full h-full object-cover rounded-medium"
-                  />
+                   <ImagePopup url={imageChecklist} alt={title} />
+
                   {role === "ROLE_MEMBER" ? "": (
 
                     <>

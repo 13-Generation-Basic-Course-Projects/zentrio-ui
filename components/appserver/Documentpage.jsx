@@ -12,8 +12,9 @@ export default function DocumentAutherize({
   preventUserImage,
   workspaceId,
   docIdPage,
+  boardName
 }) {
-  console.log("object workId", workspaceId);
+  console.log("object workId", boardName);
   return (
     <>
       <DocumentLayout
@@ -25,6 +26,7 @@ export default function DocumentAutherize({
         tokenFromGoogle={tokenFromGoogle}
         preventUserImage={preventUserImage}
         docIdPage={docIdPage}
+        boardName={boardName}
         privatedocument={
           <Privatedocument
             title="Private"
@@ -33,6 +35,7 @@ export default function DocumentAutherize({
             workspaceId={workspaceId}
             boardId={boardId}
             docIdPage={docIdPage}
+            boardName={boardName}
           />
         }
         publicdocument={
@@ -43,6 +46,7 @@ export default function DocumentAutherize({
             workspaceId={workspaceId}
             boardId={boardId}
             docIdPage={docIdPage}
+            boardName={boardName}
           />
         }
       />

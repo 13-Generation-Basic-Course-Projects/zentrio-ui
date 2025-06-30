@@ -21,6 +21,7 @@ export default function DocumentLayout({
   boardId,
   preventUserImage,
   workspaceId,
+  boardName
 }) {
   const [activeTab, setActiveTab] = useState("personal");
   const pathname = usePathname();
@@ -46,7 +47,7 @@ export default function DocumentLayout({
     {
       key: "personal",
       title: "Personal",
-      content: <PrivateDocument boardId={boardId} />,
+      content: <PrivateDocument boardId={boardId}  boardName={boardName}/>,
       icon: (isActive) => (
         <svg
           width={14}
@@ -65,7 +66,7 @@ export default function DocumentLayout({
     {
       key: "public",
       title: "Public",
-      content: <PublicDocument boardId={boardId} />,
+      content: <PublicDocument boardId={boardId}  boardName={boardName}/>,
       icon: (isActive) => (
         <svg
           width={17}
@@ -162,6 +163,8 @@ export default function DocumentLayout({
                 isHidden={false}
                 boardId={boardId}
                 workspaceId={workspaceId}
+                 boardName={boardName}
+                
               />
             )}
             {activeTab === "public" && (
@@ -171,6 +174,8 @@ export default function DocumentLayout({
                 isHidden={true}
                 boardId={boardId}
                 workspaceId={workspaceId}
+                boardName={boardName}
+
               />
             )}
             {/* {activeTab === null && (

@@ -12,6 +12,7 @@ export default function Privatedocument({
   isHidden,
   workspaceId,
   boardId,
+  boardName
 }) {
   const data = documents || { payload: [] };
 
@@ -90,7 +91,7 @@ export default function Privatedocument({
     <div className="h-screen flex flex-col">
       <div className="grid grid-cols-1 gap-3">
         <BredCrum
-          board={"Hikko Design"}
+          board={boardName}
           feature={"Document"}
           header={"Document"}
           modal={modal}

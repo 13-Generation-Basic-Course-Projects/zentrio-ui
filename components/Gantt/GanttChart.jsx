@@ -126,6 +126,7 @@ export default function GanttChart({
   
   ganttChartId,
   boardId,
+  boardData
 }) {
   const calendarRef = useRef(null);
   const [viewTitle, setViewTitle] = useState("");
@@ -605,15 +606,14 @@ export default function GanttChart({
   return (
     <div className="flex flex-col h-screen bg-white">
       <BredCrumGanttChart
-        board={"Project Dashboard"}
+         board={boardData?.payload.title || "Hikko Design"}
         feature={"Gantt Chart"}
         header={
           ganttChartName !== "No data available"
             ? ganttChartName
             : "Gantt Chart"
         }
-        ganttChartId={ganttChartId}
-        boardId ={boardId}
+
         modal={modal}
         workspaceId={workspaceId}
       />
