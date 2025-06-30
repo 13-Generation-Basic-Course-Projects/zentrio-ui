@@ -135,7 +135,7 @@ export default function Reportpage({ modal, report, version }) {
     return String(convert / 86400000).split('.')[0];
   })
 
-  console.log("Seng Ngoun is gay: ", getVersion.map((item) => item?.data))
+  console.log("Seng Ngoun is gay: ", getVersion?.map((item) => item?.data))
   console.log("Username: ", Object.values(report?.payload).map((item) => item?.data?.boardData?.createdBy?.username))
   console.log("Be not Gay: ", Object.entries(report?.payload).map((item) => item?.data?.version))
   console.log("ah hong tix tix: ", dateForCreate)
@@ -296,7 +296,7 @@ export default function Reportpage({ modal, report, version }) {
                     ))} */}
 
                     {
-                      getVersion.map((item, index) => (
+                      getVersion?.map((item, index) => (
                         <div className="flex items-start space-x-4" key={index}>
                           <div className="flex-shrink-0 w-[40px] h-[30px] bg-primary text-white rounded-full flex items-center justify-center font-semibold text-caption">
                             {item?.data?.version}
