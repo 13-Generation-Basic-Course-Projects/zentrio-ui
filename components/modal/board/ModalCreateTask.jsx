@@ -430,8 +430,7 @@ const onSubmit = async (data) => {
       <Button
         onPress={onOpen}
         className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-primary border border-gray-300 rounded-[8px] shadow-sm hover:bg-[#000] h-[50px]"
-        fullWidth="true"
-      >
+        fullWidth="true">
         <IconAdd />
         Create
       </Button>
@@ -449,8 +448,7 @@ const onSubmit = async (data) => {
                 )}
                 <form
                   onSubmit={handleSubmit(onSubmit)}
-                  className="grid grid-cols-1 gap-4"
-                >
+                  className="grid grid-cols-1 gap-4">
                   <Controller
                     name="title"
                     control={control}
@@ -585,15 +583,13 @@ const onSubmit = async (data) => {
                                 `,
                                 input: "text-black",
                               },
-                            }}
-                          >
+                            }}>
                             {memberOptions.map((member) => (
                               <AutocompleteItem
                                 key={member.key}
                                 value={member.key}
                                 textValue={member.label}
-                                className="hover:bg-gray-50"
-                              >
+                                className="hover:bg-gray-50">
                                 <div className="flex items-center gap-2 py-1">
                                   {member.profileImage ? (
                                     <img
@@ -622,8 +618,7 @@ const onSubmit = async (data) => {
                                             {member.roles.map((role, index) => (
                                               <span
                                                 key={index}
-                                                className="text-xs px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full"
-                                              >
+                                                className="text-xs px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full">
                                                 {role.replace("ROLE_", "")}
                                               </span>
                                             ))}
@@ -669,8 +664,7 @@ const onSubmit = async (data) => {
                           ganttbar?.payload
                             ?.filter((bar) => isGanttBarDisabled(bar))
                             .map((bar) => bar.ganttBarId) || []
-                        }
-                      >
+                        }>
                         {ganttbar?.payload?.map((bar) => {
                           const status = getGanttBarStatus(bar);
                           let statusText = "";
@@ -695,8 +689,7 @@ const onSubmit = async (data) => {
                               key={bar.ganttBarId}
                               value={bar.ganttBarId}
                               textValue={displayText}
-                              className={statusClass}
-                            >
+                              className={statusClass}>
                               <div className={`flex flex-col ${statusClass}`}>
                                 <div className="font-medium">
                                   {bar.title} ({bar.face})
@@ -761,8 +754,7 @@ const onSubmit = async (data) => {
                       type="button"
                       className="bg-transparent border-1 border-bgColor"
                       radius="full"
-                      onPress={handleClose}
-                    >
+                      onPress={handleClose}>
                       Cancel
                     </Button>
                     <Button
@@ -770,8 +762,7 @@ const onSubmit = async (data) => {
                       color="primary"
                       radius="full"
                       isLoading={isSubmitting}
-                      isDisabled={isSubmitting}
-                    >
+                      isDisabled={isSubmitting}>
                       Save
                     </Button>
                   </div>

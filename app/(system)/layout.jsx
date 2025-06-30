@@ -26,6 +26,7 @@ import {
   sendNotificationToUserIdAction,
 } from "@/action/notification.action";
 import OneSignalInitializer from "@/components/onesignal/OneSignalInitializer";
+import ModalNotification from "@/components/modal/noti/ModalNotification";
 //import { LoadingBarContainer } from "react-top-loading-bar";
 export const metadata = {
   title: "Zentrio | Task Mangement",
@@ -74,7 +75,7 @@ export default async function SystemLayout({ children, params }) {
     return (
       // <LoadingBarContainer>
       <SidebarProvider className="bg-bgColor">
-        <OneSignalInitializer userId={myUserId}/>
+        <OneSignalInitializer userId={myUserId} />
         <SidebarRenderer
           workspaceData={workspaceData}
           workspaceUsersData={workspaceUsersData}
