@@ -33,6 +33,7 @@ import {
   moveTaskOrderService,
   postCommentByCheckListIdService,
   updateCheckListByIdAndTaskIdService,
+  updateCheckListDateByIdAndTaskIdService,
   updateGanttBarByGanttBarIdService,
   updateTaskByIdService,
   uploadCoverChecklistService,
@@ -909,6 +910,26 @@ export const getFeedBackByTaskIdAction = async ({ taskId }) => {
   //console.log(token);
   const result = await getFeedBackByTaskIdService({
     taskId,
+    token,
+  });
+  return result;
+};
+
+/* add new action for update date in checklist */
+export const updateCheckListDateByIdAndTaskIdAction = async ({
+  finishedAt,
+  checklistId,
+}) => {
+  console.log("Request Body in update date checklist Action: ", {
+    finishedAt,
+    checklistId,
+  });
+  const userToken = await Token();
+  const token = userToken.Credential;
+
+  const result = await updateCheckListDateByIdAndTaskIdService({
+    finishedAt,
+    checklistId,
     token,
   });
   return result;
