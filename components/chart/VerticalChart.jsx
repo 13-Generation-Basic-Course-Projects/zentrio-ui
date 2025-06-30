@@ -59,8 +59,9 @@ export default function VerticalChart({ report }) {
             </div>
             <div className="flex rounded-[16px] bg-black/5 px-[1.5%] py-[1%]">
               <p
-                className={`px-[11px] pt-[7px] cursor-pointer pb-[8px] ${weeklyClick ? "bg-black text-white" : "text-black/40"
-                  } text-[11px] rounded-[10px]`}
+                className={`px-[11px] pt-[7px] cursor-pointer pb-[8px] ${
+                  weeklyClick ? "bg-black text-white" : "text-black/40"
+                } text-[11px] rounded-[10px]`}
                 onClick={() => {
                   setWeeklyClick(true);
                   setMonthlyClick(false);
@@ -69,8 +70,9 @@ export default function VerticalChart({ report }) {
                 Weekly
               </p>
               <p
-                className={`px-[11px] pt-[7px] cursor-pointer pb-[8px] ${monthlyClick ? "bg-black text-white" : "text-black/40"
-                  } text-[11px] rounded-[10px]`}
+                className={`px-[11px] pt-[7px] cursor-pointer pb-[8px] ${
+                  monthlyClick ? "bg-black text-white" : "text-black/40"
+                } text-[11px] rounded-[10px]`}
                 onClick={() => {
                   setMonthlyClick(true);
                   setWeeklyClick(false);
@@ -82,7 +84,7 @@ export default function VerticalChart({ report }) {
           </div>
           <div className="w-[97.5%] border-t h-[85%] flex justify-end">
             <div className="w-[98.25%] h-[90%] flex justify-center items-center pt-[12.5%] pr-[5%]">
-              { }
+              {}
               {monthlyClick ? (
                 <MonthlyChart report={report} />
               ) : (
@@ -92,7 +94,7 @@ export default function VerticalChart({ report }) {
           </div>
         </div>
         <div className="w-[30%] border-gray-200 flex justify-center items-center mb-8 scale-[1.2]">
-          { }
+          {}
           <div className="w-[140px] text-[11px] flex flex-col justify-end item-center gap-[7.5%] h-[50%]">
             <div className="text-primary h-[35px] bg-[#59BAD5]/10 rounded-full w-full border-primary border flex items-center justify-center">
               <svg
@@ -106,7 +108,7 @@ export default function VerticalChart({ report }) {
               </svg>
               <p className="pl-[7.5%]">All Categories</p>
             </div>
-            { }
+            {}
             <div className="flex items-center w-full px-[10%]">
               <div className="flex items-center w-[60%]">
                 <svg
@@ -120,7 +122,9 @@ export default function VerticalChart({ report }) {
                     cx="6.42755"
                     cy="6.50373"
                     r="5.35941"
-                    stroke="hsl(210, 70%, 85%)"
+                    stroke={
+                      weeklyClick ? `hsl(194, 54%, 60%)` : `hsl(201, 52%, 59%)`
+                    }
                     strokeWidth="1.19098"
                   />
                 </svg>
@@ -128,9 +132,9 @@ export default function VerticalChart({ report }) {
               </div>
               <p className="w-[40%] text-right text-[9px]">{task.todo}</p>
             </div>
-            { }
+            {}
 
-            { }
+            {}
             <div className="flex items-center w-full px-[10%]">
               <div className="flex items-center w-[60%]">
                 <svg
@@ -144,7 +148,9 @@ export default function VerticalChart({ report }) {
                     cx="6.42755"
                     cy="6.50373"
                     r="5.35941"
-                    stroke="hsl(40, 70%, 85%)"
+                    stroke={
+                      weeklyClick ? `hsl(215, 89%, 69%)` : `hsl(201, 52%, 59%)`
+                    }
                     strokeWidth="1.19098"
                   />
                 </svg>
@@ -152,9 +158,9 @@ export default function VerticalChart({ report }) {
               </div>
               <p className="w-[40%] text-right text-[9px]">{task.progress}</p>
             </div>
-            { }
+            {}
 
-            { }
+            {}
             <div className="flex items-center w-full px-[10%]">
               <div className="flex items-center w-[100%]">
                 <svg
@@ -168,7 +174,9 @@ export default function VerticalChart({ report }) {
                     cx="6.42755"
                     cy="6.50373"
                     r="5.35941"
-                    stroke="hsl(260, 70%, 85%)"
+                    stroke={
+                      weeklyClick ? `hsl(16, 89%, 66%)` : `hsl(201, 52%, 59%)`
+                    }
                     strokeWidth="1.19098"
                   />
                 </svg>
@@ -176,9 +184,9 @@ export default function VerticalChart({ report }) {
               </div>
               <p className="w-[40%] text-right text-[9px]">{task.review}</p>
             </div>
-            { }
+            {}
 
-            { }
+            {}
             <div className="flex items-center w-full px-[10%]">
               <div className="flex items-center w-[60%]">
                 <svg
@@ -192,7 +200,9 @@ export default function VerticalChart({ report }) {
                     cx="6.42755"
                     cy="6.50373"
                     r="5.35941"
-                    stroke="hsl(160, 70%, 85%)"
+                    stroke={
+                      weeklyClick ? `hsl(145, 53%, 67%)` : `hsl(201, 52%, 59%)`
+                    }
                     strokeWidth="1.19098"
                   />
                 </svg>
@@ -200,9 +210,9 @@ export default function VerticalChart({ report }) {
               </div>
               <p className="w-[40%] text-right text-[9px]">{task.done}</p>
             </div>
-            { }
+            {}
           </div>
-          { }
+          {}
         </div>
       </div>
     </>
@@ -340,22 +350,22 @@ export const MonthlyChart = ({ report }) => {
           y: {
             beginAtZero: true,
             border: {
-              display: false,        
-              color: '#333',        
-              width: 2,           
+              display: false,
+              color: "#333",
+              width: 2,
               dash: [5, 5],
             },
             grid: {
               display: true,
-              color: function(context) {
+              color: function (context) {
                 if (context.tick.value === context.chart.scales.y.min) {
-                  return 'transparent';
+                  return "transparent";
                 }
-                return '#e0e0e0'; 
+                return "#e0e0e0";
               },
               lineWidth: 1,
               drawBorder: false,
-          },
+            },
           },
           x: {
             grid: {
@@ -386,63 +396,56 @@ export const WeeklyChart = ({ report }) => {
   const canvasRef = useRef(null);
   const chartRef = useRef(null);
 
-  const getWeekStart = (date) => {
+  const getFixedWeekNumber = (date, baseDate) => {
     const d = new Date(date);
-    const day = d.getDay();
-    const diff = d.getDate() - day + (day === 0 ? -6 : 1);
-    return new Date(d.setDate(diff));
-  };
+    const start = new Date(baseDate.getFullYear(), baseDate.getMonth(), 1);
+    const end = new Date(baseDate.getFullYear(), baseDate.getMonth() + 1, 0);
 
-  const getWeekNumber = (date, baseDate) => {
-    const weekStart = getWeekStart(date);
-    const baseWeekStart = getWeekStart(baseDate);
-    const diffTime = weekStart.getTime() - baseWeekStart.getTime();
-    const diffWeeks = Math.floor(diffTime / (7 * 24 * 60 * 60 * 1000));
-    return diffWeeks + 1;
+    const totalDays = end.getDate();
+    const daysPerWeek = Math.ceil(totalDays / 4);
+    const day = d.getDate();
+
+    return Math.min(4, Math.ceil(day / daysPerWeek));
   };
 
   const processWeeklyData = () => {
     const weeklyData = {};
 
-    let earliestDate = null;
+    const allDates = (report?.payload?.groupedTasks || [])
+      .flatMap((group) =>
+        (group.tasks || []).map(
+          (task) =>
+            new Date(task.finishedAt || task.updatedAt || task.createdAt)
+        )
+      )
+      .filter(Boolean);
+
+    if (allDates.length === 0) return { weeklyData: {}, maxWeek: 4 };
+
+    const baseDate = new Date(
+      allDates[0].getFullYear(),
+      allDates[0].getMonth(),
+      1
+    );
+
+    const maxWeek = 4;
 
     (report?.payload?.groupedTasks || []).forEach((group) => {
       (group.tasks || []).forEach((task) => {
-        const taskDate = task.finishedAt || task.updatedAt || task.createdAt;
-        if (taskDate) {
-          const date = new Date(taskDate);
-          if (!earliestDate || date < earliestDate) {
-            earliestDate = date;
-          }
+        const taskDate = new Date(
+          task.finishedAt || task.updatedAt || task.createdAt
+        );
+        const weekNum = getFixedWeekNumber(taskDate, baseDate);
+
+        if (weekNum >= 1 && weekNum <= maxWeek) {
+          if (!weeklyData[weekNum]) weeklyData[weekNum] = {};
+          const stage = task.stage || "Unknown";
+          weeklyData[weekNum][stage] = (weeklyData[weekNum][stage] || 0) + 1;
         }
       });
     });
 
-    if (!earliestDate) return { weeklyData: {}, maxWeek: 7 };
-
-    (report?.payload?.groupedTasks || []).forEach((group) => {
-      (group.tasks || []).forEach((task) => {
-        const taskDate = task.finishedAt || task.updatedAt || task.createdAt;
-        if (taskDate) {
-          const date = new Date(taskDate);
-          const weekNum = getWeekNumber(date, earliestDate);
-
-          if (weekNum > 0 && weekNum <= 7) {
-            if (!weeklyData[weekNum]) {
-              weeklyData[weekNum] = {};
-            }
-
-            const stage = task.stage || "Unknown";
-            if (!weeklyData[weekNum][stage]) {
-              weeklyData[weekNum][stage] = 0;
-            }
-            weeklyData[weekNum][stage]++;
-          }
-        }
-      });
-    });
-
-    return { weeklyData, maxWeek: 7 };
+    return { weeklyData, maxWeek };
   };
 
   const { weeklyData, maxWeek } = processWeeklyData();
@@ -458,24 +461,19 @@ export const WeeklyChart = ({ report }) => {
     : [...dataStages, "DONE"];
 
   const stageColors = {
-    TO_DO: "hsl(210, 70%, 85%)",
-    TODO: "hsl(210, 70%, 85%)",
-    IN_PROGRESS: "hsl(40, 70%, 85%)",
-    UNDER_REVIEW: "hsl(260, 70%, 85%)",
-    DONE: "hsl(160, 70%, 85%)",
-    COMPLETED: "hsl(160, 70%, 85%)",
+    "TO DO": "hsl(194, 54%, 60%)",
+    IN_PROGRESS: "hsl(215, 89%, 69%)",
+    UNDER_REVIEW: "hsl(16, 89%, 66%)",
+    COMPLETED: "hsl(145, 53%, 67%)",
   };
 
   const datasets = allStages.map((stage, index) => {
     const defaultColors = [
-      "hsl(210, 70%, 85%)",
-      "hsl(210, 70%, 85%)",
-      "hsl(40, 70%, 85%)",
-      "hsl(260, 70%, 85%)",
-      "hsl(160, 70%, 85%)",
-      "hsl(160, 70%, 85%)",
+      "hsl(194, 54%, 60%)",
+      "hsl(215, 89%, 69%)",
+      "hsl(16, 89%, 66%)",
+      "hsl(145, 53%, 67%)",
     ];
-
     return {
       label: stage.replace("_", " "),
       data: Array.from({ length: maxWeek }, (_, i) => {
@@ -510,7 +508,7 @@ export const WeeklyChart = ({ report }) => {
         maintainAspectRatio: false,
         elements: {
           bar: {
-            borderRadius: 6,
+            borderRadius: 12,
           },
         },
         plugins: {
@@ -522,23 +520,23 @@ export const WeeklyChart = ({ report }) => {
           y: {
             beginAtZero: true,
             border: {
-              display: false,        
-              color: '#333',        
-              width: 2,           
+              display: false,
+              color: "#333",
+              width: 2,
               dash: [5, 5],
             },
             grid: {
               display: true,
-              color: function(context) {
+              color: function (context) {
                 if (context.tick.value === context.chart.scales.y.min) {
-                  return 'transparent';
+                  return "transparent";
                 }
-                return '#e0e0e0'; 
+                return "#e0e0e0";
               },
               lineWidth: 1,
               drawBorder: false,
+            },
           },
-        },
           x: {
             grid: {
               display: false,
