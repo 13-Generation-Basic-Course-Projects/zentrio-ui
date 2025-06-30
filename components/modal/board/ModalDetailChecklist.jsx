@@ -17,7 +17,7 @@ import {
   Card,
   DateRangePicker,
 } from "@heroui/react";
-import { parseDate } from "@internationalized/date";
+import { parseDate, parseDateTime } from "@internationalized/date";
 import { IconAdd, StackedProfileChecklist } from "../../icon/everyicon";
 import ModalUploadAttachment from "./ModalUploadAttachment";
 import Trash from "@/components/button/Trash";
@@ -252,7 +252,6 @@ const useDescriptionEditor = (taskId, checklistId, isOpen) => {
       fetchTask();
     }
   }, [isOpen, taskId, checklistId]);
-  
 
   const handleEditClick = () => {
     setIsEditing(true);
@@ -305,8 +304,29 @@ const useDescriptionEditor = (taskId, checklistId, isOpen) => {
     async (value) => {
       console.log("DateRangePicker onChange raw:", value);
 
+      // Compare checklist start vs task start
+      if (value.start) {
+        // Extract only date parts (YYYY-MM-DD) for comparison
+        const checklistStartStr = `${value.start.year}-${String(
+          value.start.month
+        ).padStart(2, "0")}-${String(value.start.day).padStart(2, "0")}`;
+        const taskStartStr = taskStartedAt ? taskStartedAt.split("T")[0] : null;
+
+        if (taskStartStr && checklistStartStr !== taskStartStr) {
+          toast.error(
+            "Checklist start date must be the same as task start date"
+          );
+          return; // prevent further processing if needed
+        }
+      }
+
       const end = value.end
-        ? new Date(value.end.year, value.end.month - 1, value.end.day)
+        ? new Date(
+            `${value.end.year}-${String(value.end.month).padStart(
+              2,
+              "0"
+            )}-${String(value.end.day).padStart(2, "0")}T17:00:00`
+          )
         : null;
 
       console.log("Parsed End Date:", end?.toISOString());
@@ -340,7 +360,6 @@ const useDescriptionEditor = (taskId, checklistId, isOpen) => {
     },
     [taskStartedAt, checklistId]
   );
-  
 
   const handleSaveTitle = useCallback(async () => {
     console.log("handleSaveTitle called with changedFields:", [
@@ -745,7 +764,6 @@ const ModalDetailChecklist = ({
     taskStartedAt,
     taskFinishedAt,
   } = useDescriptionEditor(taskId, checklistId, isOpen);
- 
 
   console.log("log taskStatedAt :", taskStartedAt);
   console.log("log taskFinishedAt :", taskFinishedAt);
@@ -1228,7 +1246,6 @@ const ModalDetailChecklist = ({
                         value={dateRange}
                         onChange={handleDateRangeChange}
                         selectorButtonPlacement="end"
-                       
                         label="Checklist Dates"
                         disabled={loading}
                         minValue={minCalendarDate}
