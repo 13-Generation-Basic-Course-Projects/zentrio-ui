@@ -9,11 +9,15 @@ import {
   useDisclosure,
 } from "@heroui/react";
 import { updateDocumentNameByIdAction } from "@/action/document.action";
+import { toast } from "react-toastify";
 
 /* rename foc in document */
 export function ModalRenameFileOrFolder({
   documentId,
   tokenFromGoogle,
+  successMessage,
+  errorMessage,
+  isFolder,
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [newName, setNewName] = useState("");
@@ -25,9 +29,34 @@ export function ModalRenameFileOrFolder({
         newName,
         tokenFromGoogle
       );
+
+      if (updatedDoc?.status === "success" || updatedDoc?.success) {
+        toast.success(
+          successMessage ||
+            (isFolder
+              ? "Folder renamed successfully."
+              : "File renamed successfully."),
+          {
+            position: "top-right",
+            duration: 4000,
+          }
+        );
+      } else {
+        throw new Error("Deletion failed unexpectedly");
+      }
       close();
     } catch (error) {
       console.error("Rename failed:", error);
+      toast.error(
+        errorMessage ||
+          (isFolder
+            ? "Failed to rename the folder"
+            : "Failed to rename the file"),
+        {
+          position: "top-right",
+          autoClose: 4000,
+        }
+      );
     }
   };
 

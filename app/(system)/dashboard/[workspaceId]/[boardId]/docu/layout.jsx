@@ -1,3 +1,4 @@
+import { getBoardByBoardIdAction } from "@/action/board.action";
 import {
   getDocumentsByBoardAction,
   getPublicDocumentsByBoardAction,
@@ -7,6 +8,8 @@ import { auth } from "@/auth";
 import DocumentAutherize from "@/components/appserver/Documentpage";
 import { preventImage } from "@/constant/preventimage";
 import { Token } from "@/constant/token";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default async function BoardLayout({ children, params }) {
   const session = await auth();
@@ -34,6 +37,14 @@ export default async function BoardLayout({ children, params }) {
 
   const { id } = params;
   console.log("this is the boardid", boardId);
+  let boardName = "board";
+
+  try {
+    const boardRes = await getBoardByBoardIdAction(boardId);
+    boardName = boardRes?.payload?.title || "board";
+  } catch (error) {
+    console.error("Server fetch error:", error);
+  }
   return (
     <div>
       <DocumentAutherize
@@ -41,12 +52,14 @@ export default async function BoardLayout({ children, params }) {
         documents={getDocuments}
         publicDocuments={publicDocuments}
         boardId={boardId}
+        boardName={boardName}
         tokenFromGoogle={tokenFromGoogle}
         preventUserImage={preventUserImage}
         workspaceId={workspaceId}
         docIdPagedocIdPage={id}
       />
       <div>{children}</div>
+      <ToastContainer />
     </div>
   );
 }
