@@ -2,8 +2,6 @@ import CardBoardFavorite from "../card/CardBoardFavorite";
 import CardMember from "../card/CardMember";
 import Bar from "../bredcrum/Bar";
 
-// Assuming colorOptions and actions like deleteBoardAction, updateNameBoardAction, updateFavAction are imported or passed down properly.
-
 const colorOptions = [
   { key: "red", label: "Red", className: "bg-board-red" },
   { key: "blue", label: "Blue Sky", className: "bg-board-primary" },
@@ -18,9 +16,12 @@ export default function MyFavoriteBoard({
   updateFavAction,
   myFavBoard,
   memberData,
+  memberMap,
 }) {
   console.log("log fav", myFavBoard);
-  console.log("memberData fav", memberData);
+  console.log("memberDMap fav", memberMap);
+
+
   return (
     <div className="w-full grid grid-cols-12 h-full">
       <div className="col-span-9 flex flex-col overflow-hidden p-3 min-h-0">
@@ -30,12 +31,24 @@ export default function MyFavoriteBoard({
           0 ? (
             myFavBoard.payload
               .filter((board) => board.isFavourite)
-              .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // optional sort
+              .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) 
               .map((board, i) => {
+                let image = "";
+                const boardMembers = memberMap[board.boardId] || [];
+
                 const matchedColor = colorOptions.find(
                   (c) => c.key === board.cover
                 );
-                const colorClass = matchedColor?.className || board.cover;
+                if (matchedColor) {
+                  image = matchedColor.className; 
+                } else if (
+                  board.image?.startsWith("http") ||
+                  board.image?.startsWith("data:")
+                ) {
+                  image = board.image; // External URL or data URI
+                } else {
+                  image = "bg-gray-200";
+                }
 
                 return (
                   <CardBoardFavorite
@@ -43,14 +56,14 @@ export default function MyFavoriteBoard({
                     workspaceId={board.workspaceId}
                     boardId={board.boardId}
                     title={board.title}
-                    image={colorClass}
-                    imageCover={board.image}
+                    image={image}
+                    images={board?.image}
                     isFavourite={board.isFavourite}
                     deleteBoardAction={deleteBoardAction}
                     updateNameBoardAction={updateNameBoardAction}
                     updateFavAction={updateFavAction}
                     role="pm"
-                    memberData={memberData}
+                    memberData={boardMembers}
                     isFavBoardDelete={true}
                   />
                 );
