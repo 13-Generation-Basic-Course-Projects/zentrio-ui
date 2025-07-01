@@ -1,3 +1,4 @@
+
 "use client";
 import { getAllGanttBarByGanttChartIDAction } from "@/action/board.action";
 import {
@@ -8,25 +9,45 @@ import {
   DrawerFooter,
   Button,
   useDisclosure,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Input,
+  Select,
+  SelectItem,
+  DateRangePicker,
 } from "@heroui/react";
 import { useState, useEffect } from "react";
-import { deleteGanttBarsByGanttChartIdAction } from "@/action/gantt.action";
+import { useForm, Controller } from "react-hook-form";
+import { deleteGanttBarsByGanttChartIdAction,updateGantBarBytGantChartIdAction} from "@/action/gantt.action";
 import {
   Calendar,
   Users,
   Clock,
   Trash2,
   BarChart3,
-  Target,
-  Zap,
+  Edit,
 } from "lucide-react";
+import { parseDate, today } from "@internationalized/date";
 
 export default function DrawerGanttBarFetch({ ganttChartId }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { isOpen: isEditOpen, onOpen: onEditOpen, onClose: onEditClose } = useDisclosure();
   const [ganttBars, setGanttBars] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [deletingId, setDeletingId] = useState(null);
+  const [editingBar, setEditingBar] = useState(null);
+
+  const { control, handleSubmit, formState: { errors }, reset } = useForm({
+    defaultValues: {
+      title: "",
+      dateRange: { start: null, end: null },
+      face: "",
+    },
+  });
 
   // Fetch Gantt bars when the drawer is opened
   useEffect(() => {
@@ -62,7 +83,6 @@ export default function DrawerGanttBarFetch({ ganttChartId }) {
         ganttBarId,
       });
       if (response.success) {
-        // Remove the deleted bar from state with animation
         setGanttBars(ganttBars.filter((bar) => bar.ganttBarId !== ganttBarId));
       } else {
         setError(response.message || "Failed to delete Gantt bar");
@@ -74,26 +94,83 @@ export default function DrawerGanttBarFetch({ ganttChartId }) {
     }
   };
 
+  // Edit Gantt bar handler
+  const handleEditOpen = (bar) => {
+    setEditingBar(bar);
+    reset({
+      title: bar.title,
+      dateRange: {
+        start: parseDate(bar.startedAt.split("T")[0]),
+        end: parseDate(bar.finishedAt.split("T")[0]),
+      },
+      face: bar.face,
+    });
+    onEditOpen();
+  };
+
+  const handleEditSubmit = async (data) => {
+    try {
+      // Convert dates to ISO 8601 format with time component
+      const startedAt = `${data.dateRange.start.toString()}T00:00:00.000Z`;
+      const finishedAt = `${data.dateRange.end.toString()}T00:00:00.000Z`;
+
+      const response = await updateGantBarBytGantChartIdAction({
+        ganttBarId: editingBar.ganttBarId,
+        ganttChartId,
+        title: data.title,
+        startedAt,
+        finishedAt,
+        face: data.face,
+      });
+      if (response.success) {
+        setGanttBars(
+          ganttBars.map((bar) =>
+            bar.ganttBarId === editingBar.ganttBarId
+              ? {
+                  ...bar,
+                  title: data.title,
+                  startedAt: new Date(startedAt),
+                  finishedAt: new Date(finishedAt),
+                  face: data.face,
+                }
+              : bar
+          )
+        );
+        onEditClose();
+      } else {
+        setError(response.message || "Failed to update Gantt bar");
+      }
+    } catch (err) {
+      setError("An error occurred while updating the Gantt bar");
+    }
+  };
+
+  const isGanttBarNotStarted = (bar) => {
+    const startDate = new Date(bar.startedAt);
+    const currentDate = new Date();
+    return startDate > currentDate;
+  };
+
   const getPhaseColor = (phase) => {
     const colors = {
-      Development: "from-blue-500 to-purple-600",
-      Design: "from-pink-500 to-rose-500",
-      Testing: "from-green-500 to-emerald-600",
-      Planning: "from-orange-500 to-amber-500",
-      Deployment: "from-indigo-500 to-blue-600",
-      Review: "from-teal-500 to-cyan-600",
+      PLANNING: "from-blue-500 to-purple-600",
+      REQUIREMENT_ANALYSIS: "from-pink-500 to-rose-500",
+      DESIGN: "from-green-500 to-emerald-600",
+      IMPLEMENTATION: "from-orange-500 to-amber-500",
+      TESTING_AND_REVIEW: "from-indigo-500 to-blue-600",
+      DEPLOYMENT_AND_MAINTENANCE: "from-teal-500 to-cyan-600",
     };
     return colors[phase] || "from-gray-500 to-gray-600";
   };
 
   const getPhaseIcon = (phase) => {
     const icons = {
-      Development: "💻",
-      Design: "🎨",
-      Testing: "🧪",
-      Planning: "📋",
-      Deployment: "🚀",
-      Review: "👀",
+      PLANNING: "📋",
+      REQUIREMENT_ANALYSIS: "📝",
+      DESIGN: "🎨",
+      IMPLEMENTATION: "💻",
+      TESTING_AND_REVIEW: "🧪",
+      DEPLOYMENT_AND_MAINTENANCE: "🚀",
     };
     return icons[phase] || "📊";
   };
@@ -119,11 +196,20 @@ export default function DrawerGanttBarFetch({ ganttChartId }) {
     return diffDays;
   };
 
+  const phaseOptions = [
+    "PLANNING",
+    "REQUIREMENT_ANALYSIS",
+    "DESIGN",
+    "IMPLEMENTATION",
+    "TESTING_AND_REVIEW",
+    "DEPLOYMENT_AND_MAINTENANCE",
+  ];
+
   return (
     <>
       <Button
         onPress={onOpen}
-        className="group relative overflow-hidden flex items-center gap-3 px-6 py-3 text-sm font-semibold text-white bg-primary border-0 rounded-xl shadow-lg hover:bg-black  h-12"
+        className="group relative overflow-hidden flex items-center gap-3 px-6 py-3 text-sm font-semibold text-white bg-primary border-0 rounded-xl shadow-lg hover:bg-black h-12"
       >
         <BarChart3 className="w-5 h-5 relative z-10" />
         <span className="relative z-10">My Gantt Bars</span>
@@ -200,12 +286,7 @@ export default function DrawerGanttBarFetch({ ganttChartId }) {
                               ? "opacity-50 scale-95"
                               : "hover:-translate-y-1"
                           }`}
-                          style={{
-                            animationDelay: `${index * 100}ms`,
-                            animation: "fadeInUp 0.6s ease-out forwards",
-                          }}
                         >
-                          {/* Gradient overlay */}
                           <div
                             className={`absolute inset-0 bg-gradient-to-r ${getPhaseColor(
                               bar.face
@@ -215,7 +296,6 @@ export default function DrawerGanttBarFetch({ ganttChartId }) {
                           <div className="relative p-6">
                             <div className="flex items-start justify-between">
                               <div className="flex-1">
-                                {/* Header */}
                                 <div className="flex items-center gap-4 mb-4">
                                   <div className="flex-1">
                                     <h3 className="text-xl font-bold text-gray-900 mb-1">
@@ -233,9 +313,7 @@ export default function DrawerGanttBarFetch({ ganttChartId }) {
                                   </div>
                                 </div>
 
-                                {/* Details Grid */}
                                 <div className="grid md:grid-cols-2 gap-4">
-                                  {/* Timeline */}
                                   <div className="bg-gray-50/60 rounded-lg p-4 border border-gray-100/50">
                                     <div className="flex items-center gap-2 mb-3">
                                       <Calendar className="w-4 h-4 text-blue-600" />
@@ -254,6 +332,7 @@ export default function DrawerGanttBarFetch({ ganttChartId }) {
                                           ).toLocaleDateString("en-US", {
                                             month: "short",
                                             day: "numeric",
+                                            year: "numeric",
                                           })}
                                         </span>
                                       </div>
@@ -267,6 +346,7 @@ export default function DrawerGanttBarFetch({ ganttChartId }) {
                                           ).toLocaleDateString("en-US", {
                                             month: "short",
                                             day: "numeric",
+                                            year: "numeric",
                                           })}
                                         </span>
                                       </div>
@@ -286,7 +366,6 @@ export default function DrawerGanttBarFetch({ ganttChartId }) {
                                     </div>
                                   </div>
 
-                                  {/* Team Leaders */}
                                   <div className="bg-gray-50/60 rounded-lg p-4 border border-gray-100/50">
                                     <div className="flex items-center gap-2 mb-3">
                                       <Users className="w-4 h-4 text-green-600" />
@@ -324,19 +403,26 @@ export default function DrawerGanttBarFetch({ ganttChartId }) {
                                 </div>
                               </div>
 
-                              {/* Delete Button */}
-                              <div className="ml-4">
+                              <div className="ml-4 flex gap-2">
+                                <Button
+                                  color="primary"
+                                  variant="light"
+                                  onPress={() => handleEditOpen(bar)}
+                                  className="group relative min-w-12 h-12 rounded-xl border-2 border-transparent hover:border-blue-200 transition-all duration-300"
+                                >
+                                  <Edit className="w-4 h-4 group-hover:scale-110 transition-transform duration-200" />
+                                </Button>
                                 <Button
                                   color="danger"
                                   variant="light"
                                   onPress={() => handleDelete(bar.ganttBarId)}
                                   disabled={isDeleting}
-                                  className="group/btn relative min-w-12 h-12 rounded-xl border-2 border-transparent hover:border-red-200 transition-all duration-300"
+                                  className="group relative min-w-12 h-12 rounded-xl border-2 border-transparent hover:border-red-200 transition-all duration-300"
                                 >
                                   {isDeleting ? (
                                     <div className="w-4 h-4 border-2 border-red-300 border-t-red-600 rounded-full animate-spin"></div>
                                   ) : (
-                                    <Trash2 className="w-4 h-4 group-hover/btn:scale-110 transition-transform duration-200" />
+                                    <Trash2 className="w-4 h-4 group-hover:scale-110 transition-transform duration-200" />
                                   )}
                                 </Button>
                               </div>
@@ -370,6 +456,142 @@ export default function DrawerGanttBarFetch({ ganttChartId }) {
           )}
         </DrawerContent>
       </Drawer>
+
+      <Modal isOpen={isEditOpen} onClose={onEditClose} size="xl">
+        <ModalContent>
+          <ModalHeader>Edit Gantt Bar</ModalHeader>
+          <ModalBody>
+            <form onSubmit={handleSubmit(handleEditSubmit)}>
+              <Controller
+                name="title"
+                control={control}
+                rules={{ required: "Title is required" }}
+                render={({ field }) => (
+                  <Input
+                    // label="Title"
+                    value={field.value}
+                    onChange={field.onChange}
+                    isInvalid={!!errors.title}
+                    errorMessage={errors.title?.message}
+                    className="mb-4"
+                    classNames={{
+                      inputWrapper: `
+                        bg-white 
+                        border
+                        border-gray-300
+                        shadow-none
+                        rounded-small
+                        px-3
+                        py-6
+                        ${errors.title ? "border-red-500" : ""}
+                      `,
+                      input: "text-black",
+                      label: "text-label font-medium",
+                    }}
+                  />
+                )}
+              />
+              <Controller
+                name="dateRange"
+                control={control}
+                rules={{
+                  required: "Deadline is required",
+                  validate: {
+                    validRange: (value) =>
+                      value.start && value.end && value.start <= value.end
+                        ? true
+                        : "End date must be after or equal to start date",
+                  },
+                }}
+                render={({ field }) => (
+                  <DateRangePicker
+                    className="max-w-none"
+                    minValue={today("Asia/Bangkok")}
+                    value={
+                      field.value.start && field.value.end
+                        ? {
+                            start: parseDate(field.value.start.toString()),
+                            end: parseDate(field.value.end.toString()),
+                          }
+                        : null
+                    }
+                    onChange={(value) =>
+                      field.onChange({
+                        start: value.start,
+                        end: value.end,
+                      })
+                    }
+                    label="Deadline"
+                    isInvalid={!!errors.dateRange}
+                    errorMessage={
+                      errors.dateRange?.start?.message ||
+                      errors.dateRange?.end?.message ||
+                      errors.dateRange?.message
+                    }
+                    classNames={{
+                      inputWrapper: `
+                        bg-white 
+                        border
+                        border-gray-300
+                        shadow-none
+                        rounded-small
+                        px-3
+                        py-6
+                        ${errors.dateRange ? "border-red-500" : ""}
+                      `,
+                      input: "text-black",
+                      label: "text-label font-medium",
+                    }}
+                  />
+                )}
+              />
+              <Controller
+                name="face"
+                control={control}
+                rules={{ required: "Phase is required" }}
+                render={({ field }) => (
+                  <Select
+                    label="Phase"
+                    value={field.value}
+                    onChange={field.onChange}
+                    isInvalid={!!errors.face}
+                    errorMessage={errors.face?.message}
+                    classNames={{
+                      trigger: `
+                        bg-white 
+                        border
+                        border-gray-300
+                        shadow-none
+                        rounded-small
+                        mt-5
+                        px-3
+                        py-6
+                        ${errors.face ? "border-red-500" : ""}
+                      `,
+                      value: "text-black",
+                      label: "text-label font-medium",
+                    }}
+                  >
+                    {phaseOptions.map((phase) => (
+                      <SelectItem key={phase} value={phase}>
+                        {phase}
+                      </SelectItem>
+                    ))}
+                  </Select>
+                )}
+              />
+            </form>
+          </ModalBody>
+          <ModalFooter>
+            <Button color="danger" variant="light" onPress={onEditClose}>
+              Cancel
+            </Button>
+            <Button color="primary" onPress={handleSubmit(handleEditSubmit)}>
+              Save
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
 
       <style jsx>{`
         @keyframes fadeInUp {

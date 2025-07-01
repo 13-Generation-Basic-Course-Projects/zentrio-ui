@@ -32,4 +32,8 @@ export const checklistRouteGroup = {
   //add new upload cover
   uploadCoverChecklist: (checklistId) =>
     `${apiConfig.baseUrl}/checklists/${checklistId}/cover`,
+
+  //add new update date
+  uploadChecklistDate: () =>
+    `${apiConfig.baseUrl}/checklists/date-line`,
 };

@@ -1,3 +1,4 @@
+import { getBoardByBoardIdAction } from "@/action/board.action";
 import {
   createNoteInCalendarAction,
   getGanttBarByGanttChartIdAction,
@@ -14,6 +15,8 @@ export default async function Calendar({ params }) {
   // Extract boardId from route parameters
   const boardId = (await params).boardId || FALLBACK_STRING;
   const workspaceId =(await params).workspaceId || FALLBACK_STRING;
+    const boardData= await getBoardByBoardIdAction(boardId);
+  const boardName= boardData?.payload?.title;
 
   // Authenticate user session
   const session = await auth();
@@ -34,7 +37,7 @@ export default async function Calendar({ params }) {
     // Step 4: Render the calendar component
     return (
       <div>
-        <MyCalender tasks={allTasks} workspaceId={workspaceId} />
+        <MyCalender tasks={allTasks} workspaceId={workspaceId} boardName={boardName}/>
       </div>
     );
   } catch (error) {

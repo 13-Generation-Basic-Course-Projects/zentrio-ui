@@ -18,6 +18,9 @@ import { zentrioLoginCredentailAction } from "../../../../action/auth.action";
 export const SigninForm = () => {
   const router = useRouter();
 
+  // setError
+  const [backendError, setBackendError] = useState("");
+
   // Only need "confirm" for password visibility in this form, right?
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
@@ -34,6 +37,8 @@ export const SigninForm = () => {
     const result = await zentrioLoginCredentailAction(data);
     if (result?.success) {
       router.push("/workspace");
+    } else {
+      setBackendError(result?.error || "Login failed. Please try again.");
     }
   };
 
@@ -103,14 +108,10 @@ export const SigninForm = () => {
             </div>
 
             {/* Remember Me and Forgot Password */}
-            <div className="flex items-center justify-end -mt-[10px]">
-              {/* <div className="flex items-center gap-7 text-description">
-                <Checkbox
-                  label="Remember Me"
-                  {...register("rememberMe")}
-                  className="text-[16px] w-[12px] text-description"
-                /> Remember Me
-              </div> */}
+            <div className="flex items-center justify-between -mt-[10px] h-[24px]">
+              <div className="text-danger text-sm">
+                {backendError ? <p>{backendError}</p> : <span>&nbsp;</span>}
+              </div>
               <Link href="/forgot-password" className="text-[16px] text-danger">
                 Forgot Password?
               </Link>
@@ -121,8 +122,7 @@ export const SigninForm = () => {
           <div className="flex flex-col gap-[10px] w-full mt-9">
             <Button
               type="submit"
-              className="w-full h-[48px] max-w-none bg-primary text-white border-none text-[20px] capitalize font-semibold rounded-[10px]"
-            >
+              className="w-full h-[48px] max-w-none bg-primary text-white border-none text-[20px] capitalize font-semibold rounded-[10px]">
               Login
             </Button>
 

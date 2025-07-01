@@ -72,8 +72,6 @@ export default async function SystemLayout({ children, params }) {
 
     const notificationData = await getNotificationForUserIdAction(myUserId);
 
-
-
     return (
       // <LoadingBarContainer>
       <SidebarProvider className="bg-bgColor">
@@ -88,7 +86,8 @@ export default async function SystemLayout({ children, params }) {
           getWorKSpaceJoined={getWorKSpaceJoined}
         />
         <div
-          className={" font-poppin h-screen overflow-hidden  bg-white  w-full"}>
+          className={" font-poppin h-screen overflow-hidden  bg-white  w-full"}
+        >
           {/* <SidebarTrigger className="fixed top-0  z-[30]" /> */}
           <div className="w-full  ">
             <NavbarWrapper

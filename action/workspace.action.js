@@ -107,6 +107,7 @@ export const getAllWorkspaceForUserAction = async () => {
   const userToken = await Token();
   const token = userToken.Credential;
   const result = await getWorkspacesByUserService({ token });
+ 
   return result;
 };
 

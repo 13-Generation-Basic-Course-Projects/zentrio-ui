@@ -19,6 +19,7 @@ export default function DocumentLayout({
   publicDocuments,
   tokenFromGoogle,
   boardId,
+  boardName,
   preventUserImage,
   workspaceId,
 }) {
@@ -162,6 +163,7 @@ export default function DocumentLayout({
                 isHidden={false}
                 boardId={boardId}
                 workspaceId={workspaceId}
+                boardName={boardName}
               />
             )}
             {activeTab === "public" && (
@@ -171,6 +173,7 @@ export default function DocumentLayout({
                 isHidden={true}
                 boardId={boardId}
                 workspaceId={workspaceId}
+                boardName={boardName}
               />
             )}
             {/* {activeTab === null && (

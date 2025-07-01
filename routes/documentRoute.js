@@ -10,7 +10,8 @@ export const documentRouteGroup = {
     `${apiConfig.baseUrl}/documents/${documentId}?accessToken=${accessToken}`,
 
   // Access control
-  makeDocumentPrivate: (documentId, accessToken) => `${apiConfig.baseUrl}/documents/${documentId}/private?accessToken=${accessToken}`,
+  makeDocumentPrivate: (documentId, accessToken) =>
+    `${apiConfig.baseUrl}/documents/${documentId}/private?accessToken=${accessToken}`,
   makeDocumentPublic: (documentId, accessToken) =>
     `${apiConfig.baseUrl}/documents/public-document/${documentId}?accessToken=${accessToken}`,
 
@@ -21,20 +22,15 @@ export const documentRouteGroup = {
     `${apiConfig.baseUrl}/documents/boards/${boardId}/?accessToken=${accessToken}`,
   createDriveFile: (name, folderId, fileType, accessToken) =>
     `${apiConfig.baseUrl}/files/create/${fileType}?accessToken=${accessToken}&name=${name}&folderId=${folderId}`,
-  uploadDocumentToFolder: (folderId, accessToken) =>
-    `${apiConfig.baseUrl}/files/upload-image-to-drive?token=${accessToken}&folderId=${folderId}`,
 
   // Get documents (public/private/filters)
   getPublicDocumentsByBoard: (boardId) =>
     `${apiConfig.baseUrl}/documents/public-documents/boards/${boardId}`,
   downloadDocumentByDocumentId: (documentId, accessToken) =>
     `${apiConfig.baseUrl}/documents/download/${documentId}?accessToken=${accessToken}`,
-  downloadAllFilesAsZip: (documentId, accessToken) =>
-    `${
-      apiConfig.baseUrl
-    }/documents/download-folder/${documentId}?accessToken=${encodeURIComponent(
-      accessToken
-    )}`,
+  downloadAllFilesAsZip: ({documentId, accessToken}) =>
+  `${apiConfig.baseUrl}/documents/download-folder/${documentId}?accessToken=${encodeURIComponent(accessToken)}`,
+
   getAllDocumentsByBoard: (boardId) =>
     `${apiConfig.baseUrl}/documents/boards/${boardId}`,
   getDocumentsByType: (boardId, mineType) =>
@@ -48,10 +44,8 @@ export const documentRouteGroup = {
   //new add route
   getAllDocumentByBoardId: (boardId) =>
     `${apiConfig.baseUrl}/documents/boards/${boardId}`,
-  postAttactment: (checklistId) =>
+  postAttachment: (checklistId) =>
     `${apiConfig.baseUrl}/attachments?checklistId=${checklistId}`,
-  postAttactment: (checklistId) =>
-    `${apiConfig.baseUrl}/attachments?checklistId=${checklistId}`,
-  getAttactment: (checklistId) =>
+  getAttachment: (checklistId) =>
     `${apiConfig.baseUrl}/attachments/checklists/${checklistId}`,
 };

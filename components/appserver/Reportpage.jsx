@@ -139,7 +139,7 @@ export default function Reportpage({ modal, report, version }) {
     <>
       <div className="p-5">
         <BredCrum
-          board={"Hikoko Design"}
+          board={ report?.payload?.boardData?.title}
           feature={"Reports"}
           header={"Reports"}
           modal={modal}

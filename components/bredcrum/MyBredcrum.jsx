@@ -25,7 +25,7 @@ export default function BredCrum({ board, feature, user, header, modal,workspace
                 {feature}
               </a>
             </li>
-        
+            
             <li>
               <a href="#" className="hover:text-blueActive">
                 {user}

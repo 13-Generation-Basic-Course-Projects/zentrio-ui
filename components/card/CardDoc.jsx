@@ -50,6 +50,7 @@ export default function CardFolder({
             <ModalOptionDocument
               documentId={documentId}
               isFolder={isFolder}
+              folderName={title}
               accessToken={tokenFromGoogle}
               status={status}
             />

@@ -346,15 +346,14 @@ export default function ProfileLayout({
               window.history.length > 1
                 ? window.history.back()
                 : (window.location.href = "/dashboard");
-            }}
-          >
+            }}>
             <IconReturnLeft strokeWidth={2} size={5} color={"currentColor"} />
             Go Back
           </Button>
 
           <div className="absolute bottom-[-60px] left-1/2 -translate-x-1/2 w-32 h-32 rounded-full border-4 border-white p-1 group cursor-pointer bg-white shadow-2xl overflow-hidden transition-all duration-300 hover:scale-105">
             <img
-              className="rounded-full object-cover w-full h-full"
+              className="rounded-full object-cover w-full h-full border-2 border-primary p-[2px]"
               src={
                 localPreview ||
                 serverImage ||
@@ -447,8 +446,7 @@ export default function ProfileLayout({
                   activeTab === tab.key
                     ? "text-blue-600"
                     : "text-gray-500 hover:text-gray-700"
-                }`}
-              >
+                }`}>
                 {tab.title}
                 {activeTab === tab.key && (
                   <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full"></div>
@@ -488,8 +486,7 @@ export default function ProfileLayout({
               <button
                 onClick={resetCropModal}
                 className="p-1 rounded-full hover:bg-white/10 transition-colors duration-200"
-                disabled={isUploading}
-              >
+                disabled={isUploading}>
                 <X className="w-4 h-4 text-white/80 hover:text-white" />
               </button>
             </div>
@@ -503,8 +500,7 @@ export default function ProfileLayout({
                   onComplete={setCompletedCrop}
                   aspect={1}
                   className="w-full"
-                  ruleOfThirds
-                >
+                  ruleOfThirds>
                   <img
                     ref={imgRef}
                     src={imgSrc}
@@ -526,8 +522,7 @@ export default function ProfileLayout({
                 <button
                   onClick={handleCropSave}
                   disabled={!completedCrop || isUploading}
-                  className="flex-1 py-2.5 px-4 text-sm font-medium text-white bg-gradient-to-r  from-[#59BAD5]  via-[#0098c6] to-[#4ccbe1] hover:from-[#4ccbe1] hover:to-[#59BAD5] rounded-[10px] shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2"
-                >
+                  className="flex-1 py-2.5 px-4 text-sm font-medium text-white bg-gradient-to-r  from-[#59BAD5]  via-[#0098c6] to-[#4ccbe1] hover:from-[#4ccbe1] hover:to-[#59BAD5] rounded-[10px] shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2">
                   {isUploading ? (
                     <>
                       <Loader2 className="w-4 h-4 animate-spin" />
@@ -543,8 +538,7 @@ export default function ProfileLayout({
                 <button
                   onClick={resetCropModal}
                   disabled={isUploading}
-                  className="flex-1 py-2.5 px-4 text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:border-[#59BAD5] rounded-[10px] shadow-sm hover:shadow transition-all duration-200 flex items-center justify-center gap-2"
-                >
+                  className="flex-1 py-2.5 px-4 text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:border-[#59BAD5] rounded-[10px] shadow-sm hover:shadow transition-all duration-200 flex items-center justify-center gap-2">
                   <X className="w-4 h-4" />
                   <span>CANCEL</span>
                 </button>
@@ -560,6 +554,10 @@ export default function ProfileLayout({
           </div>
         </div>
       )}
+
+      <div className="bg-blue-400 p-4 text-center text-black z-50">
+        <p>Hello btn</p>
+      </div>
 
       {/* Custom Styles
       <style jsx>{`

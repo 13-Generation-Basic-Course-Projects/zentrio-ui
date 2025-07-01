@@ -33,8 +33,8 @@ function ProfileDetailsCard({ currentUserProfile, userAchievement }) {
 
   return (
     <div className="flex flex-col gap-2 overflow-y-auto">
-      <div className="p-4 rounded-xl shadow bg-white">
-        <h3 className="text-md font-semibold mb-2 sticky top-0 z-20">
+      <div className="p-4 rounded-xl shadow bg-red sticky top-0 z-50">
+        <h3 className="text-md font-semibold mb-2">
           Overall Board Completeness
         </h3>
         <ProgressBar

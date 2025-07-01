@@ -10,11 +10,12 @@ import {
 import { IconAdd } from "../../icon/everyicon";
 import ModalCreateFolder from "./ModalCreateFolder";
 import ModalUploadFile from "./ModalUploadfile";
-import {
-  createDocumentByUploadAction,
-  createDriveFileAction,
-} from "@/action/document.action";
 import ModalCreateFolderInFolder from "./ModalCreateFolderInFolder";
+import {
+  createDriveFileAction,
+  uploadDocumentToFolderAction,
+} from "@/action/drive.action";
+import ModalUploadFileInFolder from "./ModalUploadfileInFolder";
 
 export default function ModalCreateDocuInFolder({
   boardId,
@@ -191,12 +192,11 @@ export default function ModalCreateDocuInFolder({
         tokenFromGoogle={tokenFromGoogle}
       />
 
-      <ModalUploadFile
+      <ModalUploadFileInFolder
         isOpen={isUploadModalOpen}
         onClose={() => setIsUploadModalOpen(false)}
-        boardId={boardId}
         folderId={folderId}
-        uploadDocument={createDocumentByUploadAction}
+        uploadDocument={uploadDocumentToFolderAction}
         tokenFromGoogle={tokenFromGoogle}
       />
     </>

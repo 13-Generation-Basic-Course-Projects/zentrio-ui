@@ -8,6 +8,7 @@ export default function DocumentAutherize({
   documents,
   publicDocuments,
   boardId,
+  boardName,
   tokenFromGoogle,
   preventUserImage,
   workspaceId,
@@ -21,6 +22,7 @@ export default function DocumentAutherize({
         documents={documents}
         publicDocuments={publicDocuments}
         boardId={boardId}
+        boardName={boardName}
         workspaceId={workspaceId}
         tokenFromGoogle={tokenFromGoogle}
         preventUserImage={preventUserImage}

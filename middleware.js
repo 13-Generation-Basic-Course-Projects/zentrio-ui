@@ -42,7 +42,6 @@ export async function middleware(req) {
 export const config = {
   matcher: [
     "/workspace/:path*",
-
     "/dashboard/:path*",
     "/login",
     "/register",

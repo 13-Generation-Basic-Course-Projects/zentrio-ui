@@ -14,13 +14,13 @@ import {
 import BredCrum from "@/components/bredcrum/MyBredcrum";
 import ModalSignIn from "./ModalSignIn";
 
-export default function WelcomePage({ workspaceId }) {
+export default function WelcomePage({ workspaceId ,boardName}) {
   return (
     <div className="h-full ">
       {/* Breadcrumb Section */}
       <div className="p-5">
         <BredCrum
-          board={"Hikko Design"}
+          board={boardName}
           feature={"Document"}
           header={"Document"}
           modal={[<ModalSignIn />]}

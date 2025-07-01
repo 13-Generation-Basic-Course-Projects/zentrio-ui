@@ -44,6 +44,11 @@ export async function zentrioLoginCredentailAction(data) {
         console.log("err at login creadentail", e);
       }
       return res;
+    } else {
+      return {
+        success: false,
+        error: res?.error || "Invalid email or password",
+      }
     }
   } catch (error) {
     console.log("Login error:", error);
