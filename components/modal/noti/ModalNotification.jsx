@@ -19,6 +19,7 @@ import {
   declineLeaderAction,
 } from "@/action/board.action";
 import { toast } from "react-toastify";
+import { CheckCircle } from "lucide-react";
 
 export default function ModalNotification({ notificationData }) {
   const [isActive, setIsActive] = useState(false);
@@ -334,7 +335,7 @@ export default function ModalNotification({ notificationData }) {
                     viewBox="0 0 17 18"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
-                    className="text-gray-500 hover:text-gray-600 cursor-pointer"
+                    className="text-gray-500 hover:text-gray-600 "
                     title="Notification settings"
                     aria-label="Notification settings"
                   >
@@ -386,188 +387,362 @@ export default function ModalNotification({ notificationData }) {
                 </div>
               )}
 
-              <div className="max-h-[350px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 pb-[300px]">
+              <div className="max-h-[400px] overflow-y-auto scrollbar-none relative">
+
                 {notifications.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center h-full text-center py-8">
-                    <svg
-                      width="48"
-                      height="48"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="mb-3 text-gray-400"
-                    >
-                      <path
-                        d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M13.73 21a2 2 0 0 1-3.46 0"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                    <p className="text-gray-500 text-sm">No notifications</p>
+                  <div className="flex flex-col items-center justify-center h-full text-center py-12 px-6">
+                    <div className="relative">
+                      {/* Bell icon with premium styling */}
+                      <div className="relative z-10 w-16 h-16 bg-gradient-to-r from-[#49bbda] to-[#0a8dbd] rounded-2xl flex items-center justify-center shadow-lg">
+                        <svg
+                          width="28"
+                          height="28"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="text-white"
+                        >
+                          <path
+                            d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                          <path
+                            d="M13.73 21a2 2 0 0 1-3.46 0"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+
+                    <h3 className="text-lg font-semibold text-gray-800 mt-6 mb-2">
+                      All caught up!
+                    </h3>
+                    <p className="text-gray-500 text-sm leading-relaxed max-w-sm">
+                      You have no new notifications. We'll notify you when
+                      something important happens.
+                    </p>
                   </div>
                 ) : (
-                  displayedNotifications.map((notificationItem) => (
-                    <div
-                      key={notificationItem.notificationId}
-                      className={`flex justify-between items-start ${
-                        markAllRead || notificationItem.read
-                          ? "bg-white"
-                          : "bg-blue-50"
-                      } py-4 px-4 border-b border-gray-100 hover:bg-gray-50 transition-colors duration-200`}
-                    >
-                      <div className="flex gap-3 flex-1">
-                        <div className="flex-shrink-0">
-                          <Image
-                            src={
-                              notificationItem.sender.profileImage || ActiveIcon
-                            }
-                            width={5}
-                            height={5}
-                            alt="Profile icon"
-                            className="w-10 h-10 rounded-full"
-                          />
-                        </div>
-                        <div className="flex flex-col gap-1">
-                          <p className="text-sm font-medium text-gray-800">
-                            {notificationItem.sender?.username ??
-                              "Unknown sender"}
-                          </p>
-                          <p className="text-xs text-gray-600">
-                            {notificationItem.content}
-                          </p>
-                          {notificationItem.type === "leader_assignment" && (
-                            <p className="text-xs text-gray-600">
-                              Task: {notificationItem.taskTitle}
-                            </p>
-                          )}
-                          <p className="text-xs text-gray-500">
-                            {notificationItem.createdAt}
-                          </p>
+                  <div className="space-y-3 p-4">
+                    {displayedNotifications.map((notificationItem, index) => (
+                      <div
+                        key={notificationItem.notificationId}
+                        className={`group relative overflow-hidden rounded-3xl border-2 transition-all duration-300 hover:scale-[1.01] hover:shadow-2xl ${
+                          markAllRead || notificationItem.read
+                            ? "bg-white/90 backdrop-blur-sm border-gray-200/60 hover:bg-white hover:border-gray-300"
+                            : "bg-gradient-to-br from-indigo-50/90 to-purple-50/90 backdrop-blur-sm border-indigo-200/60 hover:from-indigo-50 hover:to-purple-50 shadow-lg hover:border-indigo-300"
+                        }`}
+                        style={{
+                          animationDelay: `${index * 75}ms`,
+                          animation: "slideInUp 0.5s ease-out forwards",
+                        }}
+                      >
+                        {/* Unread glow effect */}
+                        {!markAllRead && !notificationItem.read && (
+                          <div className="absolute inset-0 bg-gradient-to-br from-[#49bbda]/10 to-[#0a8dbd]/10 rounded-3xl"></div>
+                        )}
+
+                        {/* Main Content Layout */}
+                        <div className="relative z-10">
+                          {/* Header Section */}
+                          <div className="flex items-center justify-between p-5 pb-3">
+                            <div className="flex items-center gap-3">
+                              {/* Profile Image */}
+                              <div className="relative">
+                                <div className="w-14 h-14 rounded-2xl overflow-hidden ring-3 ring-white shadow-xl">
+                                  <Image
+                                    src={
+                                      notificationItem.sender.profileImage ||
+                                      ActiveIcon
+                                    }
+                                    width={56}
+                                    height={56}
+                                    alt="Profile"
+                                    className="w-full h-full object-cover"
+                                  />
+                                </div>
+                                {!markAllRead && !notificationItem.read && (
+                                  <div className="absolute -top-2 -right-2 w-5 h-5 bg-gradient-to-r from-[#49bbda] to-[#0a8dbd] rounded-full border-3 border-white shadow-lg">
+                                    <div className="w-full h-full bg-gradient-to-r from-[#49bbda] to-[#0a8dbd] rounded-full animate-ping opacity-75"></div>
+                                  </div>
+                                )}
+                              </div>
+
+                              {/* User Info */}
+                              <div>
+                                <h4 className="font-bold text-gray-900 text-base">
+                                  {notificationItem.sender?.username ??
+                                    "Unknown sender"}
+                                </h4>
+                                <span className="text-xs text-gray-500 font-medium">
+                                  {notificationItem.createdAt}
+                                </span>
+                              </div>
+                            </div>
+
+                            {/* Delete Button */}
+                            <button
+                              onClick={() =>
+                                handleDelete(notificationItem.notificationId)
+                              }
+                              className="opacity-0 group-hover:opacity-100 transition-all duration-200 p-3 hover:bg-red-50 rounded-2xl hover:scale-110 active:scale-95"
+                              title="Delete notification"
+                              aria-label="Delete notification"
+                            >
+                              <svg
+                                width="20"
+                                height="22"
+                                viewBox="0 0 17 20"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="text-gray-400 hover:text-red-500 transition-colors duration-200"
+                              >
+                                <path
+                                  d="M14.625 4.58333L14.125 12.9375C13.99625 15.0722 13.9325 16.1389 13.40625 16.9063C13.1475 17.2875 12.8125 17.6088 12.40625 17.8475C11.5925 18.3333 10.53125 18.3333 8.40625 18.3333C6.28125 18.3333 5.21875 18.3333 4.40625 17.8475C4 17.6088 3.65625 17.2875 3.40625 16.9063C2.875 16.1389 2.8125 15.0722 2.6875 12.9375L2.1875 4.58333"
+                                  stroke="currentColor"
+                                  strokeWidth="1.5"
+                                  strokeLinecap="round"
+                                />
+                                <path
+                                  d="M0.875 4.58333H15.875M11.7812 4.58333L11.2187 3.41667C10.8437 2.63889 10.6562 2.25 10.3437 2C10.2812 1.94444 10.2187 1.88889 10.1562 1.83333C9.78125 1.66667 9.34375 1.66667 8.46875 1.66667C7.59375 1.66667 7.15625 1.66667 6.78125 1.83333C6.71875 1.88889 6.65625 1.94444 6.59375 2C6.28125 2.25 6.09375 2.63889 5.71875 3.41667L5.15625 4.58333"
+                                  stroke="currentColor"
+                                  strokeWidth="1.5"
+                                  strokeLinecap="round"
+                                />
+                              </svg>
+                            </button>
+                          </div>
+
+                          {/* Content Section */}
+                          <div className="px-5 pb-4">
+                            <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-4 border border-gray-100/50">
+                              <p className="text-sm text-gray-700 leading-relaxed font-medium">
+                                {notificationItem.content}
+                              </p>
+
+                              {/* Task Info */}
+                              {notificationItem.type ===
+                                "leader_assignment" && (
+                                <div className="mt-3 flex items-center gap-3 p-3 bg-gradient-to-r from-gray-50/80 to-gray-100/80 rounded-xl border border-gray-200/50">
+                                  <div className="flex items-center justify-center w-8 h-8 bg-gradient-to-r from-[#49bbda] to-[#0a8dbd] rounded-lg shadow-sm">
+                                    <CheckCircle className="w-4 h-4 text-white" />
+                                  </div>
+                                  <div>
+                                    <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                                      Task Assignment
+                                    </span>
+                                    <p className="text-sm font-bold text-gray-800">
+                                      {notificationItem.taskTitle}
+                                    </p>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* Action Section */}
                           {notificationItem.type === "leader_assignment" &&
                             !notificationStatus[notificationItem.notificationId]
                               ?.isApproved &&
                             !notificationStatus[notificationItem.notificationId]
                               ?.isActive && (
-                              <div className="flex gap-2 mt-2">
-                                <button
-                                  onClick={() =>
-                                    handleAccept(
-                                      notificationItem.notificationId,
-                                      notificationItem.taskId,
-                                      notificationItem.assignId
-                                    )
-                                  }
-                                  disabled={
-                                    notificationStatus[
+                              <div className="px-5 pb-5">
+                                <div className="flex gap-4">
+                                  <button
+                                    onClick={() =>
+                                      handleAccept(
+                                        notificationItem.notificationId,
+                                        notificationItem.taskId,
+                                        notificationItem.assignId
+                                      )
+                                    }
+                                    disabled={
+                                      notificationStatus[
+                                        notificationItem.notificationId
+                                      ]?.isPending
+                                    }
+                                    className={`flex-1 px-6 py-3.5 text-sm font-bold rounded-2xl transition-all duration-200 ${
+                                      notificationStatus[
+                                        notificationItem.notificationId
+                                      ]?.isPending
+                                        ? "bg-gradient-to-r from-indigo-300 to-purple-300 text-white cursor-not-allowed"
+                                        : "bg-gradient-to-r from-[#49bbda] to-[#0a8dbd] text-white shadow-xl hover:shadow-2xl hover:scale-[1.03] active:scale-[0.97] hover:from-[#5ac5e3] hover:to-[#1296c7]"
+                                    }`}
+                                  >
+                                    {notificationStatus[
                                       notificationItem.notificationId
-                                    ]?.isPending
-                                  }
-                                  className={`px-3 py-1.5 text-white text-xs font-medium rounded-full ${
-                                    notificationStatus[
+                                    ]?.isPending ? (
+                                      <div className="flex items-center justify-center gap-2">
+                                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                        Accepting...
+                                      </div>
+                                    ) : (
+                                      <div className="flex items-center justify-center gap-2">
+                                        <svg
+                                          width="16"
+                                          height="16"
+                                          viewBox="0 0 24 24"
+                                          fill="none"
+                                          className="text-white"
+                                        >
+                                          <path
+                                            d="M20 6L9 17l-5-5"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                          />
+                                        </svg>
+                                        Accept Role
+                                      </div>
+                                    )}
+                                  </button>
+
+                                  <button
+                                    onClick={() =>
+                                      handleDecline(
+                                        notificationItem.notificationId,
+                                        notificationItem.taskId,
+                                        notificationItem.assignId
+                                      )
+                                    }
+                                    disabled={
+                                      notificationStatus[
+                                        notificationItem.notificationId
+                                      ]?.isPending 
+                                    }
+                                    className={`px-6 py-3.5 text-sm font-bold rounded-2xl transition-all duration-200 ${
+                                      notificationStatus[
+                                        notificationItem.notificationId
+                                      ]?.isPending
+                                        ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                                        : "bg-white border-2 border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 hover:scale-[1.03] active:scale-[0.97] shadow-lg hover:shadow-xl"
+                                    }`}
+                                  >
+                                    {notificationStatus[
                                       notificationItem.notificationId
-                                    ]?.isPending
-                                      ? "bg-blue-300 cursor-not-allowed"
-                                      : "bg-blue-600 hover:bg-blue-700"
-                                  } transition-colors duration-200`}
-                                  aria-label="Accept leader role"
-                                >
-                                  {notificationStatus[
-                                    notificationItem.notificationId
-                                  ]?.isPending
-                                    ? "Accepting..."
-                                    : "Accept"}
-                                </button>
-                                <button
-                                  onClick={() =>
-                                    handleDecline(
-                                      notificationItem.notificationId,
-                                      notificationItem.taskId,
-                                      notificationItem.assignId
-                                    )
-                                  }
-                                  disabled={
-                                    notificationStatus[
-                                      notificationItem.notificationId
-                                    ]?.isPending
-                                  }
-                                  className={`px-3 py-1.5 text-white text-xs font-medium rounded-full ${
-                                    notificationStatus[
-                                      notificationItem.notificationId
-                                    ]?.isPending
-                                      ? "bg-red-300 cursor-not-allowed"
-                                      : "bg-red-600 hover:bg-red-700"
-                                  } transition-colors duration-200`}
-                                  aria-label="Decline leader role"
-                                >
-                                  {notificationStatus[
-                                    notificationItem.notificationId
-                                  ]?.isPending
-                                    ? "Declining..."
-                                    : "Decline"}
-                                </button>
+                                    ]?.isPending ? (
+                                      <div className="flex items-center justify-center gap-2">
+                                        <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
+                                        Declining...
+                                      </div>
+                                    ) : (
+                                      <div className="flex items-center justify-center gap-2">
+                                        <svg
+                                          width="16"
+                                          height="16"
+                                          viewBox="0 0 24 24"
+                                          fill="none"
+                                          className="text-red-600"
+                                        >
+                                          <path
+                                            d="M18 6L6 18"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                          />
+                                          <path
+                                            d="M6 6l12 12"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                          />
+                                        </svg>
+                                        Decline
+                                      </div>
+                                    )}
+                                  </button>
+                                </div>
                               </div>
                             )}
+
+                          {/* Status Messages */}
                           {notificationStatus[notificationItem.notificationId]
                             ?.isApproved && (
-                            <p className="mt-2 text-xs text-green-600 font-medium">
-                              Accepted
-                            </p>
+                            <div className="mx-5 mb-5">
+                              <div className="flex items-center gap-3 p-4 bg-green-50/80 backdrop-blur-sm rounded-2xl border-2 border-green-200/50">
+                                <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center shadow-lg">
+                                  <svg
+                                    width="20"
+                                    height="20"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    className="text-white"
+                                  >
+                                    <path
+                                      d="M20 6L9 17l-5-5"
+                                      stroke="currentColor"
+                                      strokeWidth="2"
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                    />
+                                  </svg>
+                                </div>
+                                <div>
+                                  <p className="text-sm font-bold text-green-800">
+                                    Successfully Accepted
+                                  </p>
+                                  <p className="text-xs text-green-600">
+                                    You are now the task leader
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
                           )}
+
                           {!notificationStatus[notificationItem.notificationId]
                             ?.isApproved &&
                             notificationStatus[notificationItem.notificationId]
                               ?.isActive && (
-                              <p className="mt-2 text-xs text-red-600 font-medium">
-                                Declined
-                              </p>
+                              <div className="mx-5 mb-5">
+                                <div className="flex items-center gap-3 p-4 bg-red-50/80 backdrop-blur-sm rounded-2xl border-2 border-red-200/50">
+                                  <div className="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center shadow-lg">
+                                    <svg
+                                      width="20"
+                                      height="20"
+                                      viewBox="0 0 24 24"
+                                      fill="none"
+                                      className="text-white"
+                                    >
+                                      <path
+                                        d="M18 6L6 18"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                      />
+                                      <path
+                                        d="M6 6l12 12"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                      />
+                                    </svg>
+                                  </div>
+                                  <div>
+                                    <p className="text-sm font-bold text-red-800">
+                                      Role Declined
+                                    </p>
+                                    <p className="text-xs text-red-600">
+                                      You have declined this leadership role
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
                             )}
                         </div>
                       </div>
-                      <div className="flex flex-col items-center justify-center pr-2">
-                        {!markAllRead && !notificationItem.read && (
-                          <div className="w-2 h-2 rounded-full bg-blue-500 mb-2"></div>
-                        )}
-                        <button
-                          onClick={() =>
-                            handleDelete(notificationItem.notificationId)
-                          }
-                          className="text-red-500 hover:text-red-600 transition-colors duration-200 hover:scale-110"
-                          title="Delete notification"
-                          aria-label="Delete notification"
-                        >
-                          <svg
-                            width="17"
-                            height="20"
-                            viewBox="0 0 17 20"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M14.625 4.58333L14.125 12.9375C13.99625 15.0722 13.9325 16.1389 13.40625 16.9063C13.1475 17.2875 12.8125 17.6088 12.40625 17.8475C11.5925 18.3333 10.53125 18.3333 8.40625 18.3333C6.28125 18.3333 5.21875 18.3333 4.40625 17.8475C4 17.6088 3.65625 17.2875 3.40625 16.9063C2.875 16.1389 2.8125 15.0722 2.6875 12.9375L2.1875 4.58333"
-                              stroke="currentColor"
-                              strokeWidth="1.5"
-                              strokeLinecap="round"
-                            />
-                            <path
-                              d="M0.875 4.58333H15.875M11.7812 4.58333L11.2187 3.41667C10.8437 2.63889 10.6562 2.25 10.3437 2C10.2812 1.94444 10.2187 1.88889 10.1562 1.83333C9.78125 1.66667 9.34375 1.66667 8.46875 1.66667C7.59375 1.66667 7.15625 1.66667 6.78125 1.83333C6.71875 1.88889 6.65625 1.94444 6.59375 2C6.28125 2.25 6.09375 2.63889 5.71875 3.41667L5.15625 4.58333"
-                              stroke="currentColor"
-                              strokeWidth="1.5"
-                              strokeLinecap="round"
-                            />
-                          </svg>
-                        </button>
-                      </div>
-                    </div>
-                  ))
+                    ))}
+                  </div>
                 )}
               </div>
 
@@ -590,8 +765,8 @@ export default function ModalNotification({ notificationData }) {
                   <button
                     className={`text-sm ${
                       isActive
-                        ? "text-gray-400 cursor-default"
-                        : "text-blue-600 hover:text-blue-700"
+                        ? "text-gray-400"
+                        : "text-primary hover:text-primary"
                     } transition-colors duration-200`}
                     onClick={markAllAsRead}
                     disabled={isActive}
