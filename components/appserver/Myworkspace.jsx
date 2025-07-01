@@ -95,7 +95,7 @@ export default function Myworkspace({
       ) : (
         <div className="w-full grid grid-cols-12 h-full">
           <div className="col-span-9 flex flex-col overflow-hidden p-3 min-h-0">
-            <Bar title="My Boards" btn="see all" />
+            <Bar title="My Boards" btn="see all" WorkspaceId={Workspaceid}/>  //add workspaceId
             <div className="grid grid-cols-3 gap-3 scrollbar-hidden px-2 pb-[200px] py-4 overflow-y-auto flex-1 min-h-0">
               {getBoardByWorkspaceId.payload.length > 0 ? (
                 <>
