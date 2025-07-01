@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "react-toastify";
@@ -59,10 +60,8 @@ export default function CommentCompo({
   const [editedContent, setEditedContent] = useState("");
   const [showAllComments, setShowAllComments] = useState(false);
 
-  // Get current user ID
   const currentUserId = currentUserProfile?.payload?.user?.userId;
 
-  // Get current user's board roles
   const currentUserBoardInfo = boardMember?.find(
     (member) => member.userId === currentUserId
   );
@@ -135,7 +134,6 @@ export default function CommentCompo({
     );
   };
 
-  // Don't render if no comments
   if (!comments || comments.length === 0) {
     return (
       <div className="text-center py-8">
@@ -149,7 +147,6 @@ export default function CommentCompo({
     );
   }
 
-  // Determine which comments to show
   const commentsToShow = showAllComments ? comments : comments.slice(0, 1);
   const remainingCommentsCount = comments.length - 1;
 
@@ -159,7 +156,6 @@ export default function CommentCompo({
 
   return (
     <div className="space-y-4">
-      {/* Comments List */}
       <div className="space-y-4">
         {commentsToShow.map((comment, index) => {
           const isEditing = editingId === comment.id;
@@ -175,28 +171,40 @@ export default function CommentCompo({
             >
               <CardContent className="p-4">
                 <div className="flex gap-3">
-                  {/* Enhanced Profile Avatar */}
-                  <div className="relative flex-shrink-0">
-                    <div className="w-9 h-9 rounded-full ring-2 ring-primary ring-offset-2 ring-offset-white overflow-hidden flex items-center justify-center bg-gradient-to-br from-primary to-purple-600 text-white font-semibold text-sm">
-                      {comment.member.imageUrl ? (
-                        <Image
-                          src={comment.member.imageUrl}
-                          alt={comment.member.username}
-                          width={40}
-                          height={40}
-                          className="object-cover w-full h-full rounded-full"
-                        />
-                      ) : (
-                        getInitials(comment.member.username)
+                  {/* Avatar with profile link */}
+                  <Link
+                    href={{
+                      pathname: `/profile/${comment.member.userId}`,
+                      query: {
+                        name: comment.member.username,
+                        boardId: currentUserBoardInfo?.boardId,
+                        profileImage: comment.member.imageUrl,
+                      },
+                    }}
+                    passHref
+                  >
+                    <div className="relative flex-shrink-0 cursor-pointer hover:opacity-90 transition-opacity">
+                      <div className="w-9 h-9 rounded-full ring-2 ring-primary ring-offset-2 ring-offset-white overflow-hidden flex items-center justify-center bg-gradient-to-br from-primary to-purple-600 text-white font-semibold text-sm">
+                        {comment.member.imageUrl ? (
+                          <Image
+                            src={comment.member.imageUrl}
+                            alt={comment.member.username}
+                            width={40}
+                            height={40}
+                            className="object-cover w-full h-full rounded-full"
+                          />
+                        ) : (
+                          getInitials(comment.member.username)
+                        )}
+                      </div>
+
+                      {isManager && (
+                        <div className="absolute -top-1 -right-1.5 w-4 h-4 border-white border-2 bg-yellow-500 rounded-full flex items-center justify-center shadow-md">
+                          <Crown className="w-2.5 h-2.5 text-white" />
+                        </div>
                       )}
                     </div>
-
-                    {isManager && (
-                      <div className="absolute -top-1 -right-1.5 w-4 h-4 border-white border-2 bg-yellow-500 rounded-full flex items-center justify-center shadow-md">
-                        <Crown className="w-2.5 h-2.5 text-white" />
-                      </div>
-                    )}
-                  </div>
+                  </Link>
 
                   {/* Content */}
                   <div className="flex-1 min-w-0">
@@ -206,11 +214,6 @@ export default function CommentCompo({
                           <h4 className="font-semibold text-gray-900 text-sm">
                             {comment.member.username}
                           </h4>
-                          {/* {isManager && (
-                            <span className="px-2 py-0.5 bg-yellow-100 text-yellow-800 text-xs font-medium rounded-full">
-                              Manager
-                            </span>
-                          )} */}
                           {isOwner && (
                             <span className="px-2 py-0.5 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">
                               You
@@ -219,12 +222,11 @@ export default function CommentCompo({
                         </div>
                         <p className="text-small text-gray-500 flex items-center gap-1">
                           <span>{getTimeAgo(comment.creationDate)}</span>
-                          <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
-                          {/* <span>{formatDate(comment.creationDate)}</span> */}
+                          <span className="w-1 h-1 bg-gray-300 rounded-full" />
                         </p>
                       </div>
 
-                      {/* Enhanced Action Buttons */}
+                      {/* Action Buttons */}
                       <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                         {isEditing ? (
                           <>
@@ -275,7 +277,7 @@ export default function CommentCompo({
                       </div>
                     </div>
 
-                    {/* Enhanced Comment Content */}
+                    {/* Comment content */}
                     <div className="mt-2">
                       {isEditing ? (
                         <div className="space-y-2">
@@ -294,7 +296,6 @@ export default function CommentCompo({
                             placeholder="Edit your comment..."
                             autoFocus
                           />
-
                           <div className="text-xs text-gray-500">
                             Press Enter to save, or use the buttons above
                           </div>
@@ -315,7 +316,7 @@ export default function CommentCompo({
         })}
       </div>
 
-      {/* Show More/Less Button */}
+      {/* Show More / Less */}
       {comments.length > 1 && (
         <div className="flex justify-center">
           <Button
