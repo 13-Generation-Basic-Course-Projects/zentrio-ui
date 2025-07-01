@@ -156,10 +156,10 @@ export default function CardPostAnnouncement({
                               </div>
                             )}
                           </div>
-                          <div className="flex items-center gap-2 text-sm text-gray-500">
+                          <div className="flex items-center gap-2 text-small text-gray-500">
                             <Calendar className="w-4 h-4" />
-                            <span>{getTimeAgo(announcement.createdAt)}</span>
-                            <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
+                            {/* <span>{getTimeAgo(announcement.createdAt)}</span>
+                            <span className="w-1 h-1 bg-gray-300 rounded-full"></span> */}
                             <span>{formatDate(announcement.createdAt)}</span>
                           </div>
                         </div>
@@ -229,11 +229,12 @@ export default function CardPostAnnouncement({
                       announId={announcement?.announcementId}
                       comments={announcement.comments}
                       currentUserProfile={currentUserProfile}
+                      boardId={boardId}
                     />
                   </div>
 
                   <div className="flex items-center gap-3 p-4 bg-white rounded-xl border border-gray-200 shadow-sm hover:scale-[1.02] transition-transform duration-200">
-                    {/* ✅ Avatar with Link to Profile */}
+                    {/* Avatar with Link to Profile */}
                     <Link
                       href={{
                         pathname: `/profile/${currentUserProfile?.payload?.user?.userId}`,
@@ -259,7 +260,7 @@ export default function CardPostAnnouncement({
                             </div>
                           )}
                         </div>
-                        <div className="absolute -bottom-0.5 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white" />
+                        {/* <div className="absolute -bottom-0.5 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white" /> */}
                       </div>
                     </Link>
 

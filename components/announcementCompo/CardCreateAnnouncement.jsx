@@ -72,7 +72,7 @@ export default function CardCreateAnnouncement({
                       />
                     </div>
                   </div>
-                  <div className="absolute bottom-0.5 right-0 w-3 h-3 bg-green-500 rounded-full border-[2px] border-white" />
+                  {/* <div className="absolute bottom-0.5 right-0 w-3 h-3 bg-green-500 rounded-full border-[2px] border-white" /> */}
                 </Link>
               )}
 

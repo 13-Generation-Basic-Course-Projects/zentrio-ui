@@ -55,6 +55,7 @@ export default function CommentCompo({
   comments,
   currentUserProfile,
   boardMember,
+  boardId
 }) {
   const [editingId, setEditingId] = useState(null);
   const [editedContent, setEditedContent] = useState("");
@@ -146,6 +147,7 @@ export default function CommentCompo({
       </div>
     );
   }
+  console.log("booo",boardId)
 
   const commentsToShow = showAllComments ? comments : comments.slice(0, 1);
   const remainingCommentsCount = comments.length - 1;
@@ -177,7 +179,7 @@ export default function CommentCompo({
                       pathname: `/profile/${comment.member.userId}`,
                       query: {
                         name: comment.member.username,
-                        boardId: currentUserBoardInfo?.boardId,
+                        boardId: boardId,
                         profileImage: comment.member.imageUrl,
                       },
                     }}
@@ -221,7 +223,7 @@ export default function CommentCompo({
                           )}
                         </div>
                         <p className="text-small text-gray-500 flex items-center gap-1">
-                          <span>{getTimeAgo(comment.creationDate)}</span>
+                          {/* <span>{getTimeAgo(comment.creationDate)}</span> */}
                           <span className="w-1 h-1 bg-gray-300 rounded-full" />
                         </p>
                       </div>
