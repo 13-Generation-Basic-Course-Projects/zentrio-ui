@@ -27,6 +27,9 @@ import {
   BookOpen,
   ClipboardList,
   Lightbulb,
+  Rocket,
+  Zap,
+  CheckCircle,
 } from "lucide-react";
 import React, { useState } from "react";
 // import zentrio from "..././public/mylogo.svg";
@@ -39,8 +42,7 @@ const userRoles = {
     icon: <Crown className="w-7 h-7 text-primary" />,
     description:
       "Leads the entire workspace with full control over boards, roles, timelines, and team structure. Sets direction and ensures smooth project execution.",
-    guide:
-      "Full access and project oversight.",
+    guide: "Full access and project oversight.",
   },
   teamLeader: {
     title: "Team Leader",
@@ -48,8 +50,7 @@ const userRoles = {
     icon: <ShieldCheck className="w-7 h-7 text-primary" />,
     description:
       "Manages day-to-day task flow within a project. Assigns tasks, tracks progress, and supports team coordination from planning to delivery.",
-    guide:
-      "Mid-level role to coordinate tasks, people, and progress.",
+    guide: "Mid-level role to coordinate tasks, people, and progress.",
   },
   member: {
     title: "Member",
@@ -57,8 +58,7 @@ const userRoles = {
     icon: <Users className="w-7 h-7 text-primary" />,
     description:
       "Focuses on completing assigned tasks and collaborating across the project. Contributes directly to progress and team success.",
-    guide:
-      "Focused on task execution and communication.",
+    guide: "Focused on task execution and communication.",
   },
   guest: {
     title: "Guest",
@@ -66,8 +66,7 @@ const userRoles = {
     icon: <Eye className="w-7 h-7 text-primary" />,
     description:
       "View-only access to stay informed on project activity. Ideal for stakeholders who need visibility without editing rights.",
-    guide:
-      "Read-only access for external stakeholders.",
+    guide: "Read-only access for external stakeholders.",
   },
 };
 
@@ -426,107 +425,117 @@ export default function ZenTrioGuide() {
 
                   {/* Progress Stepper */}
                   <div className="relative">
-  <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-gray-200"></div>
-  <div className="space-y-4">
-    {guideSteps[selectedRole].map((stepData, index) => (
-      <div
-        key={index}
-        className="relative flex gap-6 group"
-        onClick={() => setActiveStep(index)}
-      >
-        <div className="flex flex-col items-center">
-          <div
-            className={`w-8 h-8 rounded-full flex items-center justify-center z-10 flex-shrink-0 transition-all
+                    <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-gray-200"></div>
+                    <div className="space-y-4">
+                      {guideSteps[selectedRole].map((stepData, index) => (
+                        <div
+                          key={index}
+                          className="relative flex gap-6 group"
+                          onClick={() => setActiveStep(index)}
+                        >
+                          <div className="flex flex-col items-center">
+                            <div
+                              className={`w-8 h-8 rounded-full flex items-center justify-center z-10 flex-shrink-0 transition-all
               ${
                 activeStep >= index
                   ? "bg-primary ring-4 ring-blue-100"
                   : "bg-gray-200"
               }`}
-          >
-            <span className={`font-bold text-sm ${
-              activeStep >= index ? "text-white" : "text-gray-600"
-            }`}>
-              {stepData.step}
-            </span>
-          </div>
-          {index < guideSteps[selectedRole].length - 1 && (
-            <div
-              className={`h-12 w-0.5 transition-all ${
-                activeStep > index ? "bg-primary" : "bg-gray-200"
-              }`}
-            ></div>
-          )}
-        </div>
+                            >
+                              <span
+                                className={`font-bold text-sm ${
+                                  activeStep >= index
+                                    ? "text-white"
+                                    : "text-gray-600"
+                                }`}
+                              >
+                                {stepData.step}
+                              </span>
+                            </div>
+                            {index < guideSteps[selectedRole].length - 1 && (
+                              <div
+                                className={`h-12 w-0.5 transition-all ${
+                                  activeStep > index
+                                    ? "bg-primary"
+                                    : "bg-gray-200"
+                                }`}
+                              ></div>
+                            )}
+                          </div>
 
-        <Card
-          className={`w-full shadow-sm transition-all cursor-pointer
+                          <Card
+                            className={`w-full shadow-sm transition-all cursor-pointer
             ${
               activeStep === index
                 ? "border-primary border-2"
                 : "hover:shadow-md hover:border-gray-300 border"
             }`}
-        >
-          <CardHeader className="pb-3">
-            <div className="flex items-start gap-4 w-full">
-              <div className="flex-1">
-                <h4
-                  className={`text-xl font-bold transition-all ${
-                    activeStep === index ? "text-primary" : "text-default-800"
-                  }`}
-                >
-                  {stepData.title}
-                </h4>
-                <p className="text-default-600 mt-2 text-base">
-                  {stepData.description}
-                </p>
-              </div>
-            </div>
-          </CardHeader>
-          {activeStep === index && (
-            <CardBody className="pt-4">
-              <div className="ml-2">
-                <h5 className="font-semibold mb-4 text-default-700 text-lg flex items-center">
-                  <ClipboardList className="w-7 h-7 text-primary" />
-                  <span className="px-3">Action Steps:</span>
-                </h5>
-                <div className="space-y-3 mb-6">
-                  {stepData.actions.map((action, actionIndex) => (
-                    <div
-                      key={actionIndex}
-                      className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg"
-                    >
-                      <div className="w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center flex-shrink-0 mt-0.5">
-                        {actionIndex + 1}
-                      </div>
-                      <span className="text-default-700 leading-relaxed">
-                        {action}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-                <div className="bg-gradient-to-r from-amber-50 to-orange-50 border-l-4 border-amber-400 p-5 rounded-r-lg">
-                  <div className="flex items-start gap-3">
-                    <div className="text-2xl">
-                      <Lightbulb className="w-7 h-7 text-amber-500" />
-                    </div>
-                    <div>
-                      <span className="font-bold text-amber-800 px-3">
-                        Pro Tip:
-                      </span>
-                      <span className="text-amber-700 leading-relaxed">
-                        {stepData.tips}
-                      </span>
+                          >
+                            <CardHeader className="pb-3">
+                              <div className="flex items-start gap-4 w-full">
+                                <div className="flex-1">
+                                  <h4
+                                    className={`text-xl font-bold transition-all ${
+                                      activeStep === index
+                                        ? "text-primary"
+                                        : "text-default-800"
+                                    }`}
+                                  >
+                                    {stepData.title}
+                                  </h4>
+                                  <p className="text-default-600 mt-2 text-base">
+                                    {stepData.description}
+                                  </p>
+                                </div>
+                              </div>
+                            </CardHeader>
+                            {activeStep === index && (
+                              <CardBody className="pt-4">
+                                <div className="ml-2">
+                                  <h5 className="font-semibold mb-4 text-default-700 text-lg flex items-center">
+                                    <ClipboardList className="w-7 h-7 text-primary" />
+                                    <span className="px-3">Action Steps:</span>
+                                  </h5>
+                                  <div className="space-y-3 mb-6">
+                                    {stepData.actions.map(
+                                      (action, actionIndex) => (
+                                        <div
+                                          key={actionIndex}
+                                          className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg"
+                                        >
+                                          <div className="w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center flex-shrink-0 mt-0.5">
+                                            {actionIndex + 1}
+                                          </div>
+                                          <span className="text-default-700 leading-relaxed">
+                                            {action}
+                                          </span>
+                                        </div>
+                                      )
+                                    )}
+                                  </div>
+                                  <div className="bg-gradient-to-r from-amber-50 to-orange-50 border-l-4 border-amber-400 p-5 rounded-r-lg">
+                                    <div className="flex items-start gap-3">
+                                      <div className="text-2xl">
+                                        <Lightbulb className="w-7 h-7 text-amber-500" />
+                                      </div>
+                                      <div>
+                                        <span className="font-bold text-amber-800 px-3">
+                                          Pro Tip:
+                                        </span>
+                                        <span className="text-amber-700 leading-relaxed">
+                                          {stepData.tips}
+                                        </span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </CardBody>
+                            )}
+                          </Card>
+                        </div>
+                      ))}
                     </div>
                   </div>
-                </div>
-              </div>
-            </CardBody>
-          )}
-        </Card>
-      </div>
-    ))}
-  </div>
-</div>
 
                   {/* ZenTrio Features Detail */}
                   <Card className="bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 border-2 border-blue-100/50 shadow-lg">
@@ -579,76 +588,87 @@ export default function ZenTrioGuide() {
                         ))}
                       </div>
 
-                      <div className="mt-12 p-8 bg-white/70 rounded-xl border border-white/80 shadow-sm">
-                        <div className="text-center mb-6">
-                          <div className="w-12 h-12 bg-gradient-to-r from-[#49bbda] to-[#0a8dbd] rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-                            <Goal className="w-6 h-6 text-white" />
+                      <div className="mt-12 p-8 bg-white rounded-2xl border border-gray-100 shadow-2xl">
+                        <div className="text-center mb-10">
+                          <div className="relative inline-block mb-6">
+                            <div className="absolute -inset-2 bg-gradient-to-r from-[#49bbda] to-[#0a8dbd] rounded-2xl blur opacity-20"></div>
+                            <div className="relative w-16 h-16 bg-gradient-to-r from-[#49bbda] to-[#0a8dbd] rounded-2xl flex items-center justify-center shadow-lg">
+                              <Rocket className="w-7 h-7 text-white" />
+                            </div>
                           </div>
-                          <h5 className="font-bold text-xl text-gray-800 mb-2">
-                            Ready to Get Started?
+                          <h5 className="text-3xl font-bold text-gray-900 mb-3">
+                            Supercharge Your Workflow
                           </h5>
-                          <p className="text-default-500 max-w-lg mx-auto">
-                            Jump right in or explore our learning resources
+                          <p className="text-gray-500 text-lg max-w-lg mx-auto">
+                            Premium tools to accelerate your productivity
                           </p>
                         </div>
 
-                        <div className="grid md:grid-cols-2 gap-8 text-sm">
-                          <div className="bg-white p-5 rounded-lg border border-gray-100 shadow-xs">
-                            <div className="flex items-center gap-3 mb-3">
-                              <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center text-blue-600">
-                                <Link2 className="w-7 h-7 text-primary" />
+                        <div className="grid md:grid-cols-2 gap-6">
+                          {/* Quick Access Card */}
+                          <div className="relative group">
+                            <div className="absolute -inset-0.5 bg-gradient-to-r from-[#49bbda] to-[#0a8dbd] rounded-xl blur opacity-15 group-hover:opacity-20 transition duration-200"></div>
+                            <div className="relative bg-white p-6 rounded-xl border border-gray-100 h-full">
+                              <div className="flex items-center gap-4 mb-5">
+                                <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center">
+                                  <Zap className="w-6 h-6 text-primary" />
+                                </div>
+                                <h6 className="font-bold text-gray-900 text-lg">
+                                  Express Access
+                                </h6>
                               </div>
-                              <h6 className="font-semibold text-gray-800 text-base">
-                                Quick Access
-                              </h6>
+                              <ul className="space-y-3">
+                                {[
+                                  "Role-specific dashboard",
+                                  "Google Drive integration",
+                                  "Notification settings",
+                                  "Team workspace",
+                                ].map((item, i) => (
+                                  <li
+                                    key={i}
+                                    className="flex items-start gap-3"
+                                  >
+                                    <CheckCircle className="w-5 h-5 text-blue-primary mt-0.5 flex-shrink-0 text-primary" />
+                                    <span className="text-gray-700">
+                                      {item}
+                                    </span>
+                                  </li>
+                                ))}
+                              </ul>
                             </div>
-                            <ul className="text-gray-600 space-y-2 pl-2">
-                              <li className="flex items-start gap-2">
-                                <span className="text-primary mt-1">•</span>
-                                <span>Access your role-specific dashboard</span>
-                              </li>
-                              <li className="flex items-start gap-2">
-                                <span className="text-primary mt-1">•</span>
-                                <span>Set up Google Drive integration</span>
-                              </li>
-                              <li className="flex items-start gap-2">
-                                <span className="text-primary mt-1">•</span>
-                                <span>Configure notification preferences</span>
-                              </li>
-                              <li className="flex items-start gap-2">
-                                <span className="text-primary mt-1">•</span>
-                                <span>Join your team workspace</span>
-                              </li>
-                            </ul>
                           </div>
 
-                          <div className="bg-white p-5 rounded-lg border border-gray-100 shadow-xs">
-                            <div className="flex items-center gap-3 mb-3">
-                              <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center text-purple-600">
-                                <BookOpen className="w-7 h-7 text-primary" />
+                          {/* Learning Resources Card */}
+                          <div className="relative group">
+                            <div className="absolute -inset-0.5 bg-gradient-to-r from-[#49bbda] to-[#0a8dbd] rounded-xl blur opacity-15 group-hover:opacity-20 transition duration-200"></div>
+                            <div className="relative bg-white p-6 rounded-xl border border-gray-100 h-full">
+                              <div className="flex items-center gap-4 mb-5">
+                                <div className="w-12 h-12 bg-purple-50 rounded-lg flex items-center justify-center">
+                                  <BookOpen className="w-6 h-6 text-primary" />
+                                </div>
+                                <h6 className="font-bold text-gray-900 text-lg">
+                                  Expert Resources
+                                </h6>
                               </div>
-                              <h6 className="font-semibold text-gray-800 text-base">
-                                Learning Resources
-                              </h6>
+                              <ul className="space-y-3">
+                                {[
+                                  "Interactive tutorials",
+                                  "Best practice guides",
+                                  "Team collaboration playbooks",
+                                  "Priority support",
+                                ].map((item, i) => (
+                                  <li
+                                    key={i}
+                                    className="flex items-start gap-3"
+                                  >
+                                    <CheckCircle className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                                    <span className="text-gray-700">
+                                      {item}
+                                    </span>
+                                  </li>
+                                ))}
+                              </ul>
                             </div>
-                            <ul className="text-gray-600 space-y-2 pl-2">
-                              <li className="flex items-start gap-2">
-                                <span className="text-primary mt-1">•</span>
-                                <span>Interactive feature tutorials</span>
-                              </li>
-                              <li className="flex items-start gap-2">
-                                <span className="text-primary mt-1">•</span>
-                                <span>Best practices documentation</span>
-                              </li>
-                              <li className="flex items-start gap-2">
-                                <span className="text-primary mt-1">•</span>
-                                <span>Team collaboration guides</span>
-                              </li>
-                              <li className="flex items-start gap-2">
-                                <span className="text-primary mt-1">•</span>
-                                <span>Troubleshooting support</span>
-                              </li>
-                            </ul>
                           </div>
                         </div>
                       </div>
@@ -658,14 +678,6 @@ export default function ZenTrioGuide() {
               </DrawerBody>
 
               <DrawerFooter className="border-t bg-gradient-to-r from-blue-50 to-purple-50">
-                <Button
-                  color="default"
-                  variant="bordered"
-                  onPress={onClose}
-                  className="font-semibold"
-                >
-                  Close Guide
-                </Button>
                 <Button
                   className="bg-gradient-to-r from-[#49bbda] to-[#0a8dbd] text-white font-semibold shadow-lg"
                   onPress={onClose}
