@@ -4,8 +4,8 @@ import { getDriveFileByIdAction } from "@/action/drive.action";
 import DocumentEachFolder from "@/components/documentcomponent/DocumentEachFolder";
 import { NavbarAuthorized } from "@/components/layout/NavbarAutherized";
 import { Token } from "@/constant/token";
-import React from "react";
 
+export const dynamic = "force-dynamic";
 export default async function page({ params }) {
   const { id } = await params;
   const { workspaceId } = await params;

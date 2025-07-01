@@ -29,7 +29,7 @@ export const createDriveFileAction = async ({
       tokenFromGoogle,
     );
 
-    revalidateTag("documents");
+    revalidatePath("/document");
     return document;
   } catch (error) {
     console.error("Error creting file: ", error);
@@ -130,7 +130,7 @@ export const uploadDocumentToFolderAction = async ({
     token,
   });
 
-  revalidateTag("documents");
+  revalidatePath("/docu");
 
   return document;
 };

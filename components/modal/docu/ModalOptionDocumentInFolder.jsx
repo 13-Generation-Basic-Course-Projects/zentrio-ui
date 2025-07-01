@@ -116,6 +116,7 @@ export default function ModalOptionDocumentInFolder({
   fileName,
   folderName,
   accessToken,
+  onSuccess,
 }) {
   const [isDownloading, setIsDownloading] = useState(false);
   const [isDownloadingZip, setIsDownloadingZip] = useState(false);
@@ -252,6 +253,7 @@ export default function ModalOptionDocumentInFolder({
           <ModalRenameFileOrFolderInFolder
             tokenFromGoogle={accessToken}
             fileId={fileId}
+            isFolder={isFolder}
           />
         </DropdownItem>
 
@@ -261,18 +263,35 @@ export default function ModalOptionDocumentInFolder({
           className="w-full hover:bg-default-100"
           startContent={<DeleteDocumentIcon className="w-4 h-4" />}
         >
-          <PopupActionDeleteDriveFile
-            title="Delete Folder"
-            massageTitle="Are you sure?"
-            massageBody="You want to delete it."
-            icon={<IconpopupDelete />}
-            bgcolor="bg-slate-red"
-            massageDo="Yes, Delete"
-            massageUndo="No, Cancel"
-            fileId={fileId}
-            accessToken={accessToken}
-            refreshCallback
-          />
+          {isFolder ? (
+            <PopupActionDeleteDriveFile
+              title="Delete Folder"
+              massageTitle="Are you sure?"
+              massageBody="You want to delete it."
+              icon={<IconpopupDelete />}
+              bgcolor="bg-slate-red"
+              massageDo="Yes, Delete"
+              massageUndo="No, Cancel"
+              fileId={fileId}
+              isFolder={isFolder}
+              accessToken={accessToken}
+              refreshCallback
+            />
+          ) : (
+            <PopupActionDeleteDriveFile
+              title="Delete File"
+              massageTitle="Are you sure?"
+              massageBody="You want to delete it."
+              icon={<IconpopupDelete />}
+              bgcolor="bg-slate-red"
+              massageDo="Yes, Delete"
+              massageUndo="No, Cancel"
+              fileId={fileId}
+              isFolder={isFolder}
+              accessToken={accessToken}
+              refreshCallback
+            />
+          )}
         </DropdownItem>
       </DropdownMenu>
     </Dropdown>

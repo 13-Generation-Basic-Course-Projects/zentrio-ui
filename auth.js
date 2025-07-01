@@ -68,7 +68,7 @@ export const {
           access_type: "offline",
           response_type: "code",
           scope:
-            "openid email profile https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/drive",
+            " https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/drive",
         },
       },
     }),
