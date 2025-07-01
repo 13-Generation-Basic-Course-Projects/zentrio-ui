@@ -5,10 +5,6 @@ import Image from "next/image";
 import { getReportAction } from "@/action/report.action";
 import { useRef, useState, useEffect } from "react";
 
-const PAGE_HEIGHT = 842; // A4 height in pixels
-const HEADER_FOOTER_HEIGHT = 90; // Space for header/footer
-const ROW_HEIGHT = 32; // Your table row height
-
 export const PDFPreviewer = ({ report }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = 5;
@@ -2921,67 +2917,204 @@ export const ThirdPage = ({ report, pageNumber = 3, absolute }) => {
           >
             <p>VII.&nbsp;&nbsp;Subtasks</p>
             <div>
-              {(() => {
-                // Log the entire nested structure
-                console.log(
-                  "យកដៃច្របាច់ថ្ងាស់:",
-                  report?.payload?.groupedTasks
-                );
+              {report?.payload?.groupedTasks?.flatMap(
+                (allTask, taskGroupIndex) =>
+                  allTask?.tasks?.flatMap((task, taskIndex) =>
+                    task?.allChecklists?.flatMap((checklist, checklistIndex) =>
+                      checklist?.members?.flatMap((member, memberIndex) =>
+                        member?.allComments?.map((comment, commentIndex) => {
+                          // Create a unique composite key
+                          const uniqueKey = `comment-${taskGroupIndex}-${taskIndex}-${checklistIndex}-${memberIndex}-${commentIndex}`;
 
-                // Log each level with indices for debugging
-                report?.payload?.groupedTasks?.forEach(
-                  (allTask, taskGroupIndex) => {
-                    console.log(`យកដៃច្របាច់ថ្ងាស់ ${taskGroupIndex}:`, allTask);
+                          // Skip rendering if essential data is missing
+                          if (!task || !checklist || !member || !comment)
+                            return null;
 
-                    allTask?.tasks?.forEach((task, taskIndex) => {
-                      console.log(`  យកដៃច្របាច់ថ្ងាស់ ${taskIndex}:`, task);
-
-                      task?.allChecklists?.forEach(
-                        (checklist, checklistIndex) => {
-                          console.log(
-                            `    យកដៃច្របាច់ថ្ងាស់ ${checklistIndex}:`,
-                            checklist
+                          return (
+                            <div
+                              key={uniqueKey}
+                              style={{ paddingTop: "5%", marginBottom: "20px" }}
+                            >
+                              <div
+                                style={{
+                                  border: "1px solid black",
+                                  borderRadius: "5px",
+                                  backgroundColor: "#fff",
+                                }}
+                              >
+                                <table
+                                  style={{
+                                    width: "100%",
+                                    fontSize: "12px",
+                                    borderCollapse: "collapse",
+                                  }}
+                                >
+                                  <tbody>
+                                    <tr style={{ height: "32px" }}>
+                                      <td
+                                        style={{
+                                          paddingLeft: "27px",
+                                          border: "1px solid black",
+                                          color: "white",
+                                          backgroundColor: "#59BAD5",
+                                          width: "30%",
+                                        }}
+                                      >
+                                        Task Title
+                                      </td>
+                                      <td
+                                        style={{
+                                          paddingLeft: "27px",
+                                          border: "1px solid #ddd",
+                                          backgroundColor: "#f9f9f9",
+                                        }}
+                                      >
+                                        {task?.title || (
+                                          <span style={{ color: "#999" }}>
+                                            No title
+                                          </span>
+                                        )}
+                                      </td>
+                                    </tr>
+                                    <tr style={{ height: "32px" }}>
+                                      <td
+                                        style={{
+                                          paddingLeft: "27px",
+                                          border: "1px solid black",
+                                          color: "white",
+                                          backgroundColor: "#59BAD5",
+                                        }}
+                                      >
+                                        Subtask Title
+                                      </td>
+                                      <td
+                                        style={{
+                                          paddingLeft: "27px",
+                                          border: "1px solid #ddd",
+                                          backgroundColor: "#f9f9f9",
+                                        }}
+                                      >
+                                        {checklist?.title || (
+                                          <span style={{ color: "#999" }}>
+                                            No checklist title
+                                          </span>
+                                        )}
+                                      </td>
+                                    </tr>
+                                    <tr style={{ height: "32px" }}>
+                                      <td
+                                        style={{
+                                          paddingLeft: "27px",
+                                          border: "1px solid black",
+                                          color: "white",
+                                          backgroundColor: "#59BAD5",
+                                        }}
+                                      >
+                                        Member
+                                      </td>
+                                      <td
+                                        style={{
+                                          paddingLeft: "27px",
+                                          border: "1px solid #ddd",
+                                          backgroundColor: "#f9f9f9",
+                                        }}
+                                      >
+                                        {member?.username || (
+                                          <span style={{ color: "#999" }}>
+                                            No member
+                                          </span>
+                                        )}
+                                      </td>
+                                    </tr>
+                                    <tr style={{ height: "32px" }}>
+                                      <td
+                                        style={{
+                                          paddingLeft: "27px",
+                                          border: "1px solid black",
+                                          color: "white",
+                                          backgroundColor: "#59BAD5",
+                                        }}
+                                      >
+                                        Comments
+                                      </td>
+                                      <td
+                                        style={{
+                                          paddingLeft: "27px",
+                                          border: "1px solid #ddd",
+                                          backgroundColor: "#f9f9f9",
+                                        }}
+                                      >
+                                        {comment?.length || 0}
+                                      </td>
+                                    </tr>
+                                    <tr style={{ height: "32px" }}>
+                                      <td
+                                        style={{
+                                          paddingLeft: "27px",
+                                          border: "1px solid black",
+                                          color: "white",
+                                          backgroundColor: "#59BAD5",
+                                        }}
+                                      >
+                                        Start Date
+                                      </td>
+                                      <td
+                                        style={{
+                                          paddingLeft: "27px",
+                                          border: "1px solid #ddd",
+                                          backgroundColor: "#f9f9f9",
+                                        }}
+                                      >
+                                        {checklist?.startedAt ? (
+                                          new Date(
+                                            checklist.startedAt
+                                          ).toLocaleDateString()
+                                        ) : (
+                                          <span style={{ color: "#999" }}>
+                                            No start date
+                                          </span>
+                                        )}
+                                      </td>
+                                    </tr>
+                                    <tr style={{ height: "32px" }}>
+                                      <td
+                                        style={{
+                                          paddingLeft: "27px",
+                                          border: "1px solid black",
+                                          color: "white",
+                                          backgroundColor: "#59BAD5",
+                                        }}
+                                      >
+                                        End Date
+                                      </td>
+                                      <td
+                                        style={{
+                                          paddingLeft: "27px",
+                                          border: "1px solid #ddd",
+                                          backgroundColor: "#f9f9f9",
+                                        }}
+                                      >
+                                        {checklist?.finishedAt ? (
+                                          new Date(
+                                            checklist.finishedAt
+                                          ).toLocaleDateString()
+                                        ) : (
+                                          <span style={{ color: "#999" }}>
+                                            No end date
+                                          </span>
+                                        )}
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
                           );
-
-                          checklist?.members?.forEach((member, memberIndex) => {
-                            console.log(`      យកដៃច្របាច់ថ្ងាស់ ${memberIndex}:`, member);
-
-                            member?.allComments?.forEach(
-                              (comment, commentIndex) => {
-                                console.log(
-                                  `        យកដៃច្របាច់ថ្ងាស់ ${commentIndex}:`,
-                                  comment
-                                );
-
-                                // Log the complete path for this comment
-                                console.log(
-                                  `យកដៃច្របាច់ថ្ងាស់ ${taskGroupIndex}-${taskIndex}-${checklistIndex}-${memberIndex}-${commentIndex}:`,
-                                  {
-                                    taskGroupIndex,
-                                    taskIndex,
-                                    checklistIndex,
-                                    memberIndex,
-                                    commentIndex,
-                                    taskTitle: task?.title,
-                                    checklistTitle: checklist?.title,
-                                    memberName: member?.username,
-                                    commentLength: comment?.length,
-                                    startedAt: checklist?.startedAt,
-                                    finishedAt: checklist?.finishedAt,
-                                  }
-                                );
-                              }
-                            );
-                          });
-                        }
-                      );
-                    });
-                  }
-                );
-
-                // Return null so nothing renders
-                return null;
-              })()}
+                        })
+                      )
+                    )
+                  )
+              )}
             </div>
           </div>
         </div>
@@ -3609,27 +3742,4 @@ export const FourthPage = ({ absolute, report }) => {
       </p>
     </div>
   );
-};
-
-export const calculatePageBreaks = (items, itemHeight, maxPageHeight) => {
-  const pages = [];
-  let currentPage = [];
-  let currentHeight = 0;
-
-  items.forEach((item, index) => {
-    if (currentHeight + itemHeight > maxPageHeight) {
-      pages.push(currentPage);
-      currentPage = [item];
-      currentHeight = itemHeight;
-    } else {
-      currentPage.push(item);
-      currentHeight += itemHeight;
-    }
-  });
-
-  if (currentPage.length > 0) {
-    pages.push(currentPage);
-  }
-
-  return pages;
 };
