@@ -488,7 +488,7 @@ export const deleteTaskService = async (taskId, boardId, ganttbarId, token) => {
       },
     });
     const data = await res.json();
-    // console.log("📥 Backend responded with delete:", data);
+    console.log("📥 Backend responded with delete:", data);
 
     return data;
   } catch (error) {
@@ -1221,4 +1221,30 @@ export const updateCheckListDateByIdAndTaskIdService = async ({
   }
 
   return response.status === 204 ? { success: true } : response.json();
+};
+
+
+
+export const reAssignTeamLeaderService = async (taskId,assigneeId, token) => {
+  try {
+    console.log("from service", 
+      taskId,assigneeId,
+      token
+    );
+    const url = boardRouteGroup.reAssignTeamLeader(taskId,assigneeId);
+    console.log(url);
+    const res = await fetch(url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const result = await res.json();
+    console.log("📥 Backend responded with reassign team leader:", result);
+
+    return result;
+  } catch (error) {
+    throw error;
+  }
 };

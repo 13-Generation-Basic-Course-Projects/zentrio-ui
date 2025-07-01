@@ -1007,9 +1007,9 @@ export default function KanbanBoard({
                                   <div className="col-span-4 p-2">
                                     <CardDateChecklist
                                       date={
-                                        card.startedAt
+                                        card.finishedAt
                                           ? new Date(
-                                              card.startedAt
+                                              card.finishedAt
                                             ).toLocaleDateString()
                                           : "N/A"
                                       }

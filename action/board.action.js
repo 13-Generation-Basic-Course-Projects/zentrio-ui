@@ -765,7 +765,6 @@ export const getTaskByTaskIdAction = async (taskId) => {
     taskId,
     token,
   });
-  revalidatePath("/member");
   console.log("getTaskByTaskIdAction result: ", result);
   return result;
 };
