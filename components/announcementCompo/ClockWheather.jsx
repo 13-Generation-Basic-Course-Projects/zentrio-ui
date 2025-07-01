@@ -48,30 +48,31 @@ function getWeatherColor(condition, hour) {
     case "Clear":
     case "Sunny":
       return isDay
-        ? "from-[#56CCF2] to-[#2F80ED]" // Bright sky blue to royal blue
-        : "from-[#0F2027] via-[#203A43] to-[#2C5364]"; // Deep night gradient
+        ? "from-[#7FDEF7] to-[#35C9F6]" // rich but soft sunny cyan
+        : "from-[#76BDFE] to-[#A1D8FF]"; // calm clear night
 
     case "Clouds":
+    case "Broken Clouds":
       return isDay
-        ? "from-[#BBD2C5] via-[#536976] to-[#292E49]" // Light cloudy to steel blue
-        : "from-[#2C3E50] to-[#4CA1AF]"; // Cool dusk shades
+        ? "from-[#99DBF5] to-[#61A4F1]" // moderate cloudy cyan
+        : "from-[#7BBDFE] to-[#4DA8DA]"; // night clouds with depth
 
     case "Overcast":
-      return "from-[#757F9A] to-[#D7DDE8]"; // Overcast greyish-blue
+      return "from-[#8ED6E3] to-[#58B4C3]"; // cooler soft grey-blue
 
     case "Rain":
     case "Drizzle":
-      return "from-[#3a7bd5] to-[#00d2ff]"; // Fresh rain blue shades
+      return "from-[#5CC6E8] to-[#4CA1E0]"; // richer rainy cyan
 
     case "Thunderstorm":
     case "Lightning":
-      return "from-[#141E30] to-[#243B55]"; // Dark stormy blues
+      return "from-[#4CA1E0] to-[#3B8AC4]"; // dark-ish but still cyan-safe
 
     case "Snow":
-      return "from-[#E0EAFC] to-[#CFDEF3]"; // Soft icy whites & blues
+      return "from-[#B3E9F9] to-[#87D4EC]"; // bright icy blue (not white)
 
     default:
-      return "from-[#B2FEFA] to-[#0ED2F7]"; // fallback: refreshing cyan shades
+      return "from-[#7FDEF7] to-[#35C9F6]"; // default: lively cyan gradient
   }
 }
 
