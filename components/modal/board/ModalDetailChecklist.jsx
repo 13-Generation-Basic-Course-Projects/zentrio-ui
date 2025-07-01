@@ -37,7 +37,7 @@ import {
 } from "@/action/board.action";
 import PostCommentChecklist from "./PostCommentChecklist";
 import CommentChecklistSec from "./CommentChecklistSec";
-import { getAttactmentAction } from "@/action/document.action";
+import { getAttachmentAction, getAttactmentAction } from "@/action/document.action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { CameraIcon } from "lucide-react";
@@ -57,6 +57,7 @@ const initialState = {
   currentStatus: "IN_PROGRESS",
 };
 
+
 const reducer = (state, action) => {
   switch (action.type) {
     case "SET_ACTIVE_TAB":
@@ -71,9 +72,9 @@ const reducer = (state, action) => {
       return { ...state, loading: action.payload };
     case "SET_ERROR":
       return { ...state, error: action.payload };
-    case "SET_ATTENDMENTS":
+    case "SET_ATTACHMENTS":
       return { ...state, attachments: action.payload };
-    case "SET_ATTENDMENT_ERROR":
+    case "SET_ATTACHMENT_ERROR":
       return { ...state, attachmentError: action.payload };
     case "SET_CURRENT_STATUS":
       return { ...state, currentStatus: action.payload };
@@ -97,34 +98,45 @@ const useChecklistData = (checklistId, isOpen) => {
   const fetchAttachments = useCallback(async () => {
     if (!checklistId || fetchingRef.current) return;
     fetchingRef.current = true;
-    shouldStayOpen.current = true;
+
     dispatch({ type: "SET_LOADING", payload: true });
-    dispatch({ type: "SET_ATTENDMENT_ERROR", payload: null });
-    dispatch({ type: "SET_ATTENDMENTS", payload: [] });
+    dispatch({ type: "SET_ATTACHMENT_ERROR", payload: null });
+
     try {
-      const result = await getAttactmentAction(checklistId);
-      if (result.success) {
-        dispatch({ type: "SET_ATTENDMENTS", payload: [result.payload] });
+      const result = await getAttachmentAction(checklistId); // Fixed typo
+      console.log("RESULT IN MODAL:", result);
+
+      if (result.success && result.payload) {
+        // Convert single object to array for consistency
+        const attachments = Array.isArray(result.payload)
+          ? result.payload
+          : [result.payload];
+        dispatch({ type: "SET_ATTACHMENTS", payload: attachments });
       } else {
         dispatch({
-          type: "SET_ATTENDMENT_ERROR",
+          type: "SET_ATTACHMENT_ERROR",
           payload: result.error || "Failed to load attachments",
         });
       }
     } catch (err) {
       dispatch({
-        type: "SET_ATTENDMENT_ERROR",
+        type: "SET_ATTACHMENT_ERROR",
         payload:
-          err.status === 404
+          err?.status === 404
             ? "No attachments found"
             : "An unexpected error occurred",
       });
     } finally {
       dispatch({ type: "SET_LOADING", payload: false });
       fetchingRef.current = false;
-      shouldStayOpen.current = false;
     }
   }, [checklistId]);
+
+  useEffect(() => {
+    if (checklistId && !fetchingRef.current) {
+      fetchAttachments();
+    }
+  }, [fetchAttachments]);
 
   const fetchComments = useCallback(async () => {
     if (!checklistId || fetchingRef.current) return;
@@ -137,7 +149,7 @@ const useChecklistData = (checklistId, isOpen) => {
       const result = await getCommentByCheckListIdAction(checklistId);
       console.log("Fetched comments:", result);
       if (result.success) {
-        dispatch({ type: "SET_COMMENTS", payload: result.payload || [] }); // Use result.payload
+        dispatch({ type: "SET_COMMENTS", payload: result.payload || [] });
       } else {
         dispatch({
           type: "SET_ERROR",
@@ -165,7 +177,7 @@ const useChecklistData = (checklistId, isOpen) => {
       fetchComments();
       fetchAttachments();
     }
-  }, [checklistId, fetchComments, fetchAttachments]); // Removed isOpen dependency
+  }, [checklistId, fetchComments, fetchAttachments]);
 
   return { state, dispatch, shouldStayOpen };
 };
@@ -1484,6 +1496,73 @@ const ModalDetailChecklist = ({
 
                 {/* this is  atteactment  + commment */}
 
+   {/* this is  atteactment  + commment */}
+
+   {state.selectedAttachment && (
+                  <div className="mt-4 p-3 border rounded-md border-gray-200">
+                    <p className="font-bold">
+                      Selected Attachment:{" "}
+                      <span>
+                        {state.selectedAttachment.details?.fileName ||
+                          "Unknown"}
+                      </span>
+                    </p>
+                    <div className="flex items-center gap-x-2">
+                      <img
+                        src={getFileIcon(
+                          state.selectedAttachment.details?.fileName
+                        )}
+                        alt={
+                          state.selectedAttachment.details?.fileName || "File"
+                        }
+                        className="h-5 w-5"
+                      />
+                      <a
+                        href={state.selectedAttachment.drive_url}
+                        target="_blank"
+                        rel="noreferrer noopener"
+                        className="text-blue-600 hover:text-blue-800">
+                        View
+                      </a>
+                      <Button
+                        onClick={() =>
+                          dispatch({
+                            type: "SET_SELECTED_ATTACHMENT",
+                            payload: null,
+                          })
+                        }
+                        className="ml-2 text-sm px-4 py-2 bg-red-600 text-white rounded-md">
+                        Remove
+                      </Button>
+                    </div>
+                  </div>
+                )}
+                <div className="flex gap-x-4 border-b border-gray-300 mt-3">
+                  <button
+                    className={`py-2 px-4 ${
+                      state.activeTab === "add"
+                        ? "border-b-2 border-blue-600 text-blue-600 font-bold"
+                        : "text-gray-600"
+                    }`}
+                    onClick={() =>
+                      dispatch({ type: "SET_ACTIVE_TAB", payload: "add" })
+                    }
+                    disabled={loading}>
+                    Add Attatchments
+                  </button>
+                  <button
+                    className={`py-2 px-4 ${
+                      state.activeTab === "all"
+                        ? "border-b-2 border-blue-600 text-blue-600 font-bold"
+                        : "text-gray-600"
+                    }`}
+                    onClick={() =>
+                      dispatch({ type: "SET_ACTIVE_TAB", payload: "all" })
+                    }
+                    disabled={state.loading}>
+                    All Attachments ({state.attachments.length})
+                  </button>
+                </div>
                 <div className="mt-4 mb-5">
                   {state.activeTab === "add" && (
                     <div className="space-y-4">
@@ -1493,8 +1572,7 @@ const ModalDetailChecklist = ({
                           className="w-full text-title/50 text-caption p-4 border rounded-medium border-gray-400 flex justify-between items-center cursor-pointer"
                           onClick={() =>
                             dispatch({ type: "SET_MODAL_OPEN", payload: true })
-                          }
-                        >
+                          }>
                           Choose file here...
                           <svg
                             width="18"
@@ -1502,8 +1580,7 @@ const ModalDetailChecklist = ({
                             viewBox="0 0 18 20"
                             fill="none"
                             xmlns="http://www.w3.org/2000/svg"
-                            className="inline-block cursor-pointer ml-2"
-                          >
+                            className="inline-block cursor-pointer ml-2">
                             <path
                               d="M3.33398 18.2243H15.0007C15.4427 18.2243 15.8666 18.0487 16.1792 17.7361C16.4917 17.4236 16.6673 16.9996 16.6673 16.5576V5.72428L12.5007 1.55762H5.00065C4.55862 1.55762 4.1347 1.73321 3.82214 2.04577C3.50958 2.35833 3.33398 2.78226 3.33398 3.22428V6.55762"
                               stroke="#59BAD5"
@@ -1520,6 +1597,7 @@ const ModalDetailChecklist = ({
                             />
                           </svg>
                         </div>
+                        {/* do it here */}
                         {state.isModalOpen && (
                           <ModalUploadAttachment
                             boardId={boardId}
@@ -1535,28 +1613,23 @@ const ModalDetailChecklist = ({
                           />
                         )}
                       </div>
-
-                      {/* comment */}
                       <div className="space-y-2">
                         <PostCommentChecklist checklistId={checklistId} />
                       </div>
-                      {/* comment */}
                       {state.error ? (
                         <div
                           className={`text-center p-4 ${
                             state.error === "No comments yet"
                               ? "text-gray-500"
                               : "text-red-500"
-                          }`}
-                        >
+                          }`}>
                           {state.error}
                           {state.error !== "No comments yet" && (
                             <Button
                               onClick={() =>
                                 dispatch({ type: "SET_COMMENTS", payload: [] })
                               }
-                              className="ml-2 text-sm px-4 py-2 bg-blue-600 text-white rounded-full"
-                            >
+                              className="ml-2 text-sm px-4 py-2 bg-blue-600 text-white rounded-md">
                               Retry
                             </Button>
                           )}
@@ -1572,52 +1645,57 @@ const ModalDetailChecklist = ({
                   )}
                   {state.activeTab === "all" && (
                     <div className="h-[400px] overflow-auto scrollbar-hidden">
-                      {state.error ? (
+                      {state.loading ? (
+                        <div className="text-center p-4 text-gray-500">
+                          Loading attachments...
+                        </div>
+                      ) : state.attachmentError ? (
                         <div className="text-red-500 text-center p-4">
-                          {state.error}
-                          {state.error !== "No actions available" && (
+                          {state.attachmentError}
+                          {state.attachmentError !== "No attachments found" && (
                             <Button
                               onClick={() =>
-                                dispatch({ type: "SET_ACTIONS", payload: [] })
+                                dispatch({
+                                  type: "SET_ATTACHMENTS",
+                                  payload: [],
+                                })
                               }
-                              className="ml-2 text-sm px-4 py-2 bg-blue-600 text-white rounded-md"
-                            >
+                              className="ml-2 text-sm px-4 py-2 bg-blue-600 text-white rounded-md">
                               Retry
                             </Button>
                           )}
                         </div>
-                      ) : state.actions.length === 0 ? (
+                      ) : state.attachments.length === 0 ? (
                         <div className="text-center p-4 text-gray-500">
-                          No actions available.
+                          No attachments available.
                         </div>
                       ) : (
-                        state.actions.map((action) => (
+                        state.attachments.map((attachment) => (
                           <div
-                            key={action.actionId}
-                            className="mb-4 p-3 border rounded-md border-gray-200"
-                          >
+                            key={attachment.attachmentId}
+                            className="mb-4 p-3 border rounded-md border-gray-200">
                             <p className="text-sm text-gray-600">
                               Created on{" "}
-                              {new Date(action.createdAt).toLocaleString()}
+                              {new Date(attachment.createdAt).toLocaleString()}
                             </p>
                             <div className="mt-2 flex items-center gap-x-2">
                               <img
-                                src={getFileIcon(action.fileName)}
-                                alt={action.fileName || "File"}
+                                src={getFileIcon(attachment.details.links)}
+                                alt="Attachment"
                                 className="h-5 w-5"
                               />
-                              {action?.url ? (
+                              {attachment.details.links ? (
                                 <a
-                                  href={action.url}
+                                  href={attachment.details.links}
                                   target="_blank"
                                   rel="noreferrer noopener"
-                                  className="text-blue-600 hover:text-blue-800"
-                                >
-                                  {action.fileName || "Unnamed File"}
+                                  className="text-blue-600 hover:text-blue-800">
+                                  {attachment.details.links ||
+                                    `Attachment ${attachment.attachmentId}`}
                                 </a>
                               ) : (
                                 <span className="text-gray-600">
-                                  {action.fileName || "Unnamed File"} (No link
+                                  Attachment {attachment.attachmentId} (No link
                                   available)
                                 </span>
                               )}

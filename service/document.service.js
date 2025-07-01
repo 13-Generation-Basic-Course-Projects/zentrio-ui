@@ -509,39 +509,13 @@ export const getAllDocumentByBoardIdSerivce = async ({ boardId, token }) => {
 /* new add
  * post attactment
  */
-export const postAttactmentService = async ({
-  checklistId,
-  details,
-  token,
-}) => {
-  try {
-    const url = documentRouteGroup.postAttactment(checklistId);
 
-    const res = await fetch(url, {
-      method: "POST",
-      headers: {
-        Accept: "*/*",
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-        body: JSON.stringify({
-          details: details,
-        }),
-      },
-    });
-
-    const result = await res.json();
-
-    return result;
-  } catch (error) {
-    console.error("Error : ", error.message);
-  }
-};
 
 /* new add
  * post attactment
  */
 export const getAttactmentService = async ({ checklistId, token }) => {
-  try {
+  
     const url = documentRouteGroup.getAttactment(checklistId);
     console.log("Fetching from URL:", url);
 
@@ -556,6 +530,30 @@ export const getAttactmentService = async ({ checklistId, token }) => {
 
     console.log("Response status:", res.status);
     console.log("Response ok:", res.ok);
+    const result = await res.json();
+    console.log("in serviceee fetch data", result);
+    return result;
+};
+
+
+
+
+
+
+
+export const getAttachmentService = async ({ checklistId, token }) => {
+  try {
+    const url = documentRouteGroup.getAttactment(checklistId);
+    console.log("Fetching from URL:", url);
+
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        Accept: "*/*",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
     // Check if the response is ok (status 200-299)
     if (!res.ok) {
@@ -583,5 +581,34 @@ export const getAttactmentService = async ({ checklistId, token }) => {
       success: false,
       error: `Network error: ${error.message}`,
     };
+  }
+};
+
+
+export const postAttachmentService = async ({ checklistId, details, token }) => {
+
+
+  console.log("DEtaila dataaaaaaaaaaaaaaaaaa", details);
+  
+  try {
+    const url = documentRouteGroup.postAttactment(checklistId);
+  
+      console.log("url in post attachment service", url);
+      console.log("token in post attachment service", token);
+      console.log("checklist id", checklistId);
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        Accept: "*/*",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(details), // Remove the extra wrapping
+    });
+
+    const result = await res.json();
+    return result;
+  } catch (error) {
+    console.error("Error : ", error.message);
   }
 };
