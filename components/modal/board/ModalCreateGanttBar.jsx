@@ -248,10 +248,10 @@ const handleModalClose = useCallback(() => {
     const now = new Date();
     const utc7OffsetMs = 7 * 60 * 60 * 1000; // 7 hours in milliseconds
     const oneHourMs = 1 * 60 * 60 * 1000; // 1 hour in milliseconds
+    const sixMinutesMs = 6 * 60 * 1000; // 6 minutes in milliseconds (5 + 1)
     const nowInUtc7PlusOneHour = new Date(
       now.getTime() + utc7OffsetMs + oneHourMs
     );
-
     const payload = pendingItems.map((item) => {
       const selectedStartDate = new Date(item.startedAt);
 
@@ -521,8 +521,7 @@ const handleModalClose = useCallback(() => {
           <Button
             onPress={onOpen}
             className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-primary border border-gray-300 rounded-[8px] shadow-sm hover:bg-[#000] h-[50px]"
-            fullWidth
-          >
+            fullWidth>
             <IconAdd />
             Create
           </Button>
@@ -531,8 +530,7 @@ const handleModalClose = useCallback(() => {
             isOpen={isOpen}
             onOpenChange={onOpenChange}
             onClose={handleModalClose}
-            size="xl"
-          >
+            size="xl">
             <ModalContent>
               {(onClose) => (
                 <>
@@ -646,13 +644,11 @@ const handleModalClose = useCallback(() => {
                                 popoverContent:
                                   "bg-white border border-gray-200 shadow-md rounded-md",
                                 listbox: "bg-white text-gray-700",
-                              }}
-                            >
+                              }}>
                               {faceOptions.map((option) => (
                                 <AutocompleteItem
                                   key={option.key}
-                                  textValue={option.label}
-                                >
+                                  textValue={option.label}>
                                   {option.label}
                                 </AutocompleteItem>
                               ))}
@@ -677,8 +673,7 @@ const handleModalClose = useCallback(() => {
                             ({ title, startedAt, finishedAt, face }, idx) => (
                               <div
                                 key={`${title}-${idx}`}
-                                className="flex items-center justify-between bg-bgColor rounded-large px-4 py-2 w-auto"
-                              >
+                                className="flex items-center justify-between bg-bgColor rounded-large px-4 py-2 w-auto">
                                 <span>
                                   {`${title} (${face.replace(
                                     /_/g,
@@ -693,8 +688,7 @@ const handleModalClose = useCallback(() => {
                                   type="button"
                                   onClick={() => handleRemovePendingItem(idx)}
                                   className="text-progress-red/70 hover:text-progress-red ml-2"
-                                  aria-label="Delete"
-                                >
+                                  aria-label="Delete">
                                   <X size={16} />
                                 </button>
                               </div>
@@ -714,8 +708,7 @@ const handleModalClose = useCallback(() => {
                             !faceValue ||
                             !!errors.duration
                           }
-                          className="w-full bg-bgColor text-primary font-medium py-3 rounded-full border border-title/20 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
+                          className="w-full bg-bgColor text-primary font-medium py-3 rounded-full border border-title/20 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed">
                           Add to Pending
                         </button>
                       </div>
@@ -729,16 +722,14 @@ const handleModalClose = useCallback(() => {
                         onPress={() => {
                           handleModalClose();
                           onClose();
-                        }}
-                      >
+                        }}>
                         Cancel
                       </Button>
                       <Button
                         color="primary"
                         radius="full"
                         disabled={pendingItems.length === 0}
-                        onPress={onSaveAllItems}
-                      >
+                        onPress={onSaveAllItems}>
                         Save ({pendingItems.length})
                       </Button>
                     </div>

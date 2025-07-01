@@ -10,8 +10,6 @@ import {
   DropdownSection,
   Avatar,
 } from "@heroui/react";
-import ModalDelete from "../ModalDelete";
-import PopupAction from "@/components/popup/PopupAction";
 import { IconpopupDelete } from "@/components/icon/Iconpopup";
 import {
   downloadAllFilesAsZipAction,
@@ -20,6 +18,7 @@ import {
 import { useState } from "react";
 import { downloadFileFromDriveAction } from "@/action/drive.action";
 import { ModalRenameFileOrFolderInFolder } from "./ModalRenameDocuInFolder";
+import PopupActionDeleteDriveFile from "@/components/popup/PopupActionDeleteDriveFile";
 
 // Icon components
 const AddNoteIcon = (props) => (
@@ -113,12 +112,18 @@ const DownloadZipIcon = (props) => (
 
 export default function ModalOptionDocumentInFolder({
   fileId,
-  accessToken,
   isFolder,
+  fileName,
+  folderName,
+  accessToken,
 }) {
   const [isDownloading, setIsDownloading] = useState(false);
   const [isDownloadingZip, setIsDownloadingZip] = useState(false);
-  const [showUsers, setShowUsers] = useState(false);
+
+  const cleanFolderName = (name) => {
+    if (!name) return "folder";
+    return name.replace(/[^a-zA-Z0-9-_ ]/g, "").replace(/\s+/g, "_");
+  };
 
   const handleDownload = async () => {
     try {
@@ -153,24 +158,29 @@ export default function ModalOptionDocumentInFolder({
     try {
       setIsDownloadingZip(true);
 
-      const { blob, filename } = await downloadAllFilesAsZipAction(
+      const { blob, filename } = await downloadFileFromDriveAction({
         fileId,
-        accessToken
-      );
+        accessTokenFromGoogle: accessToken,
+      });
+
+      if (!blob || !(blob instanceof Blob)) {
+        console.error("No ZIP file to download.");
+        return;
+      }
 
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = filename;
+
+      // Use the backend filename if available, else use sanitized folderName.zip
+      a.download = filename || `${cleanFolderName(folderName)}.zip`;
+
       document.body.appendChild(a);
       a.click();
-
-      // Cleanup
       a.remove();
       window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Download ZIP failed:", error);
-      // You might want to show a user-friendly error message here
     } finally {
       setIsDownloadingZip(false);
     }
@@ -240,8 +250,8 @@ export default function ModalOptionDocumentInFolder({
           startContent={<CopyDocumentIcon className="w-4 h-4" />}
         >
           <ModalRenameFileOrFolderInFolder
-            fileId={fileId}
             tokenFromGoogle={accessToken}
+            fileId={fileId}
           />
         </DropdownItem>
 
@@ -251,7 +261,7 @@ export default function ModalOptionDocumentInFolder({
           className="w-full hover:bg-default-100"
           startContent={<DeleteDocumentIcon className="w-4 h-4" />}
         >
-          <PopupAction
+          <PopupActionDeleteDriveFile
             title="Delete Folder"
             massageTitle="Are you sure?"
             massageBody="You want to delete it."

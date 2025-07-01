@@ -18,6 +18,8 @@ import {
   createBoardAction,
   uploadImageBoardAction,
 } from "@/action/workspace.action";
+import { toast } from "react-toastify";
+
 
 // SVG icons as data URLs (could be moved to a separate file for reusability)
 const svgIconInput = encodeURIComponent(`
@@ -88,7 +90,7 @@ export default function ModalCreateBoard({ Workspaceid }) {
   };
 
   const onSubmit = async (data) => {
-    let board = null; // declare outside try
+    let board = null;
 
     try {
       if (selectedOption) {
@@ -98,7 +100,8 @@ export default function ModalCreateBoard({ Workspaceid }) {
           cover: selectedOption,
           workspaceId: Workspaceid,
         });
-     
+
+        toast.success(" Board created with color successfully");
       } else {
         board = await createBoardAction({
           title: data.title,
@@ -108,18 +111,18 @@ export default function ModalCreateBoard({ Workspaceid }) {
         });
 
         const image = fileInputRef.current?.files?.[0];
-        console.log("cccccc", image);
         if (!image) {
-          console.warn(" No file selected!");
+          toast.warn(" No image selected for upload.");
           return;
         }
 
         await uploadImageBoardAction({ boardId: board?.boardId, image });
-        console.warn("No image or color selected.");
+        toast.success(" Board created with image successfully");
         return;
       }
     } catch (error) {
       console.error(" Error creating board:", error);
+      toast.error(" Failed to create board");
       return;
     } finally {
       reset();
@@ -131,16 +134,11 @@ export default function ModalCreateBoard({ Workspaceid }) {
       onOpenChange(false);
     }
 
-    // Extract boardId here
-    const boardId = board?.id; // Use optional chaining to be safe
-
-    if (boardId) {
-      console.log("Board ID:", boardId);
-    } else {
-      console.warn("Board created but no ID found!");
+   
+    if (board?.id) {
+      console.log("Board ID:", board.id);
     }
   };
-
  
 
 

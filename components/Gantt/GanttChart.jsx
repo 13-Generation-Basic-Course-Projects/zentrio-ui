@@ -7,7 +7,7 @@ import interactionPlugin from "@fullcalendar/interaction";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../../styles/ganttchart.css";
-import BredCrum from "../bredcrum/MyBredcrum";
+import BredCrumGanttChart from "../bredcrum/BredcrumGanttChart";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 // Helper function to calculate duration in days
@@ -121,13 +121,16 @@ export default function GanttChart({
   ganttbar,
   ganttChartName,
   workspaceId,
+  ganttChartId,
+  boardId,
+  boardData
 }) {
   const calendarRef = useRef(null);
   const [viewTitle, setViewTitle] = useState("");
   const [viewRange, setViewRange] = useState({ start: null, end: null });
   const [isInitialized, setIsInitialized] = useState(false);
 
-  console.log("log gant bar again ", ganttbar);
+  console.log("log gant bar again ", boardData);
 
   // Stable reference for ganttbar to prevent unnecessary recalculations
   const stableGanttbar = useMemo(() => {
@@ -276,7 +279,7 @@ export default function GanttChart({
 
     return (
       <div
-        className={`rounded-r-[10px] h-full p-0 overflow-hidden cursor-default`}
+        className="rounded-r-[10px] h-full p-0 overflow-hidden cursor-default"
         style={{
           backgroundColor: eventInfo.event.backgroundColor,
           borderLeft: `4px solid ${eventInfo.event.borderColor}`,
@@ -370,7 +373,7 @@ export default function GanttChart({
     return `${formatDate(projectMin)} - ${formatDate(projectMax)}`;
   }, [events]);
 
-  // Handle dates set with useCallback to prevent recreation
+  // Handle dates set with useCallback
   const handleDatesSet = useCallback((dateInfo) => {
     setViewTitle(dateInfo.view.title);
     setViewRange({
@@ -509,14 +512,16 @@ export default function GanttChart({
 
   return (
     <div className="flex flex-col h-screen bg-white">
-      <BredCrum
-        board={"Project Dashboard"}
+      <BredCrumGanttChart
+         board={boardData?.payload.title || "Hikko Design"}
         feature={"Gantt Chart"}
         header={
           ganttChartName !== "No data available"
             ? ganttChartName
             : "Gantt Chart"
         }
+        ganttChartId={ganttChartId}
+        boardId={boardId}
         modal={modal}
         workspaceId={workspaceId}
       />
@@ -528,7 +533,6 @@ export default function GanttChart({
               year: "numeric",
             })}
         </div>
-        {/* hide sen */}
         <div className="flex flex-col items-center text-sm text-gray-600 font-medium hidden">
           <div className="mb-1">
             Current View:{" "}

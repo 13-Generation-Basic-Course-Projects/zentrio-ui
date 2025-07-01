@@ -10,7 +10,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 export default async function page({params}) {
 
-  const boardId = params.boardId;
+  const boardId = params?.boardId ;
   const Announcements = await getAllAnnouncementByBoardIdAction(boardId);
   const boardMember = await getBoardMemberAction(boardId);
   const currentUserProfile = await getCurrentUserProfileAction();

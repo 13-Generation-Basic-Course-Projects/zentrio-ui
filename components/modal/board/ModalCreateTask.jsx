@@ -130,9 +130,10 @@ export default function ModalCreateTask({
     return getGanttBarStatus(ganttBar) === "not_started";
   };
 
+  // Updated: Only disable expired Gantt bars, allow not_started ones
   const isGanttBarDisabled = (ganttBar) => {
     const status = getGanttBarStatus(ganttBar);
-    return status === "expired" || status === "not_started";
+    return status === "expired"; // Only disable expired bars
   };
 
   // Helper function to format dates nicely
@@ -145,121 +146,265 @@ export default function ModalCreateTask({
     });
   };
 
-  const onSubmit = async (data) => {
-    try {
-      setApiError(null);
+  // const onSubmit = async (data) => {
+  //   try {
+  //     setApiError(null);
 
-      // Validate ganttChartId
-      if (!ganttChartId || ganttChartId === "No data available") {
-        throw new Error("No valid Gantt chart available");
-      }
+  //     // Validate ganttChartId
+  //     if (!ganttChartId || ganttChartId === "No data available") {
+  //       throw new Error("No valid Gantt chart available");
+  //     }
 
-      // Validate ganttBarId
-      const selectedGanttBar = ganttbar?.payload?.find(
-        (bar) => bar.ganttBarId === data.ganttBarId
-      );
-      if (!selectedGanttBar) {
-        throw new Error("Invalid Gantt bar ID selected");
-      }
+  //     // Validate ganttBarId
+  //     const selectedGanttBar = ganttbar?.payload?.find(
+  //       (bar) => bar.ganttBarId === data.ganttBarId
+  //     );
+  //     if (!selectedGanttBar) {
+  //       throw new Error("Invalid Gantt bar ID selected");
+  //     }
 
-      // Check if selected Gantt bar is disabled (expired or not started)
-      if (isGanttBarDisabled(selectedGanttBar)) {
-        const status = getGanttBarStatus(selectedGanttBar);
-        if (status === "expired") {
-          throw new Error("Cannot create task for an expired Gantt bar");
-        } else if (status === "not_started") {
-          throw new Error(
-            "Cannot create task for a Gantt bar that hasn't started yet"
-          );
-        }
-      }
+  //     // Updated: Only check for expired status, allow not_started
+  //     if (isGanttBarExpired(selectedGanttBar)) {
+  //       throw new Error("Cannot create task for an expired Gantt bar");
+  //     }
 
-      // Parse and adjust dates
-      const taskStart = new Date(data.dateRange.start);
-      const taskEnd = new Date(data.dateRange.end);
+  //     // Parse and adjust dates
+  //     const taskStart = new Date(data.dateRange.start);
+  //     const taskEnd = new Date(data.dateRange.end);
 
-      // Get current time and add 4 minutes
-      const now = new Date();
-      const fourMinutesMs = 4 * 60 * 1000; // 4 minutes in milliseconds
-      const nowPlusFourMinutes = new Date(now.getTime() + fourMinutesMs);
+  //     // Get current time and add 4 minutes
+  //     const now = new Date();
+  //     const fourMinutesMs = 4 * 60 * 1000; // 4 minutes in milliseconds
+  //     const nowPlusFourMinutes = new Date(now.getTime() + fourMinutesMs);
 
-      // Set taskStart to current time + 4 minutes on the selected start date
+  //     // For not_started Gantt bars, set task start time based on Gantt bar start date
+  //     const ganttBarStatus = getGanttBarStatus(selectedGanttBar);
+  //     if (ganttBarStatus === "not_started") {
+  //       // If Gantt bar hasn't started, use the Gantt bar's start date/time
+  //       const ganttStartDate = new Date(selectedGanttBar.startedAt);
+  //       taskStart.setHours(
+  //         ganttStartDate.getHours(),
+  //         ganttStartDate.getMinutes(),
+  //         ganttStartDate.getSeconds(),
+  //         ganttStartDate.getMilliseconds()
+  //       );
+  //     } else {
+  //       // For active Gantt bars, set taskStart to current time + 4 minutes on the selected start date
+  //       taskStart.setHours(
+  //         nowPlusFourMinutes.getHours(),
+  //         nowPlusFourMinutes.getMinutes(),
+  //         nowPlusFourMinutes.getSeconds(),
+  //         nowPlusFourMinutes.getMilliseconds()
+  //       );
+  //     }
+
+  //     // Set end date to end of day (23:59:59.999)
+  //     taskEnd.setHours(23, 59, 59, 999);
+
+  //     // Validate task dates against Gantt bar
+  //     const ganttStart = new Date(selectedGanttBar.startedAt);
+  //     const ganttEnd = new Date(selectedGanttBar.finishedAt);
+  //     if (taskStart < ganttStart) {
+  //       throw new Error(
+  //         `Task start date must be on or after Gantt bar start date (${ganttStart.toLocaleDateString()})`
+  //       );
+  //     }
+  //     if (taskEnd > ganttEnd) {
+  //       throw new Error(
+  //         `Task end date must be on or before Gantt bar end date (${ganttEnd.toLocaleDateString()})`
+  //       );
+  //     }
+
+  //     const payload = {
+  //       title: data.title,
+  //       description: data.description,
+  //       startedAt: taskStart.toISOString(),
+  //       finishedAt: taskEnd.toISOString(),
+  //       boardId: boardId,
+  //       ganttBarId: data.ganttBarId,
+  //       leaderId: data.teamLeader || null,
+  //     };
+
+  //     const result = await createTaskByBoardIdAndGanttChartIdAction(
+  //       payload,
+  //       boardId,
+  //       ganttChartId
+  //     );
+
+  //     // Note: The commented success check suggests the result structure may differ.
+  //     // Adjust based on actual API response.
+  //     if (result.status === 400) {
+  //       // throw new Error(result.detail || "Failed to create task");
+  //       toast.error(`"${data.title}"\nfailed create Task unsuccessfully!`, {
+  //         position: "top-right",
+  //         autoClose: 3000,
+  //       });
+  //     }
+
+  //     toast.success(`"${data.title}"\nTask created successfully!`, {
+  //       position: "top-right",
+  //       autoClose: 3000,
+  //     });
+
+  //     reset();
+  //     onOpenChange();
+  //   } catch (error) {
+  //     console.error("Error creating task:", error.message);
+  //     setApiError(
+  //       error.message.includes("Gantt bar")
+  //         ? `Gantt Bar Error: ${error.message}`
+  //         : `Error: ${error.message}`
+  //     );
+  //     toast.error(
+  //       error.message.includes("Gantt bar")
+  //         ? `Gantt Bar Error: ${error.message}`
+  //         : `Error: ${error.message}`,
+  //       {
+  //         position: "top-right",
+  //         autoClose: 3000,
+  //       }
+  //     );
+  //   }
+  // };
+// Fixed logic for setting task start time
+const onSubmit = async (data) => {
+  try {
+    setApiError(null);
+
+    // Validate ganttChartId
+    if (!ganttChartId || ganttChartId === "No data available") {
+      throw new Error("No valid Gantt chart available");
+    }
+
+    // Validate ganttBarId
+    const selectedGanttBar = ganttbar?.payload?.find(
+      (bar) => bar.ganttBarId === data.ganttBarId
+    );
+    if (!selectedGanttBar) {
+      throw new Error("Invalid Gantt bar ID selected");
+    }
+
+    // Updated: Only check for expired status, allow not_started
+    if (isGanttBarExpired(selectedGanttBar)) {
+      throw new Error("Cannot create task for an expired Gantt bar");
+    }
+
+    // Parse and adjust dates
+    const taskStart = new Date(data.dateRange.start);
+    const taskEnd = new Date(data.dateRange.end);
+
+    // Get current time and add 4 minutes
+    const now = new Date();
+    const fourMinutesMs = 4 * 60 * 1000; // 4 minutes in milliseconds
+    const nowPlusFourMinutes = new Date(now.getTime() + fourMinutesMs);
+
+    // Get Gantt bar start and end times
+    const ganttStartDate = new Date(selectedGanttBar.startedAt);
+    const ganttEndDate = new Date(selectedGanttBar.finishedAt);
+
+    // For not_started Gantt bars, set task start time based on Gantt bar start date
+    const ganttBarStatus = getGanttBarStatus(selectedGanttBar);
+    
+    if (ganttBarStatus === "not_started") {
+      // If Gantt bar hasn't started, use the Gantt bar's start date/time
       taskStart.setHours(
-        nowPlusFourMinutes.getHours(),
-        nowPlusFourMinutes.getMinutes(),
-        nowPlusFourMinutes.getSeconds(),
-        nowPlusFourMinutes.getMilliseconds()
+        ganttStartDate.getHours(),
+        ganttStartDate.getMinutes(),
+        ganttStartDate.getSeconds(),
+        ganttStartDate.getMilliseconds()
+      );
+    } else {
+      // For active Gantt bars, we need to be more careful
+      // Set task start time to the later of:
+      // 1. Current time + 4 minutes
+      // 2. Gantt bar start time (if it's later today)
+      
+      // Create a date with today's date but Gantt bar's time
+      const todayWithGanttTime = new Date(taskStart);
+      todayWithGanttTime.setHours(
+        ganttStartDate.getHours(),
+        ganttStartDate.getMinutes(),
+        ganttStartDate.getSeconds(),
+        ganttStartDate.getMilliseconds()
       );
 
-      // Set end date to end of day (23:59:59.999)
-      taskEnd.setHours(23, 59, 59, 999);
+      // Use the later of the two times
+      const effectiveStartTime = nowPlusFourMinutes > todayWithGanttTime 
+        ? nowPlusFourMinutes 
+        : todayWithGanttTime;
 
-      // Validate task dates against Gantt bar
-      const ganttStart = new Date(selectedGanttBar.startedAt);
-      const ganttEnd = new Date(selectedGanttBar.finishedAt);
-      if (taskStart < ganttStart) {
-        throw new Error(
-          `Task start date must be on or after Gantt bar start date (${ganttStart.toLocaleDateString()})`
-        );
-      }
-      if (taskEnd > ganttEnd) {
-        throw new Error(
-          `Task end date must be on or before Gantt bar end date (${ganttEnd.toLocaleDateString()})`
-        );
-      }
-
-      const payload = {
-        title: data.title,
-        description: data.description,
-        startedAt: taskStart.toISOString(),
-        finishedAt: taskEnd.toISOString(),
-        boardId: boardId,
-        ganttBarId: data.ganttBarId,
-        leaderId: data.teamLeader || null,
-      };
-
-      const result = await createTaskByBoardIdAndGanttChartIdAction(
-        payload,
-        boardId,
-        ganttChartId
+      taskStart.setHours(
+        effectiveStartTime.getHours(),
+        effectiveStartTime.getMinutes(),
+        effectiveStartTime.getSeconds(),
+        effectiveStartTime.getMilliseconds()
       );
+    }
 
-      // Note: The commented success check suggests the result structure may differ.
-      // Adjust based on actual API response.
-      if (result.status === 400) {
-        // throw new Error(result.detail || "Failed to create task");
-        toast.error(`"${data.title}"\nfailed create Task unsuccessfully!`, {
-          position: "top-right",
-          autoClose: 3000,
-        });
-      }
+    // Set end date to end of day (23:59:59.999)
+    taskEnd.setHours(23, 59, 59, 999);
 
-      toast.success(`"${data.title}"\nTask created successfully!`, {
+    // Validate task dates against Gantt bar
+    if (taskStart < ganttStartDate) {
+      throw new Error(
+        `Task start time cannot be before Gantt bar start time (${ganttStartDate.toLocaleString()})`
+      );
+    }
+    if (taskEnd > ganttEndDate) {
+      throw new Error(
+        `Task end date must be on or before Gantt bar end date (${ganttEndDate.toLocaleDateString()})`
+      );
+    }
+
+    const payload = {
+      title: data.title,
+      description: data.description,
+      startedAt: taskStart.toISOString(),
+      finishedAt: taskEnd.toISOString(),
+      boardId: boardId,
+      ganttBarId: data.ganttBarId,
+      leaderId: data.teamLeader || null,
+    };
+
+    const result = await createTaskByBoardIdAndGanttChartIdAction(
+      payload,
+      boardId,
+      ganttChartId
+    );
+
+    if (result.status === 400) {
+      toast.error(`"${data.title}"\nfailed create Task unsuccessfully!`, {
         position: "top-right",
         autoClose: 3000,
       });
-
-      reset();
-      onOpenChange();
-    } catch (error) {
-      console.error("Error creating task:", error.message);
-      setApiError(
-        error.message.includes("Gantt bar")
-          ? `Gantt Bar Error: ${error.message}`
-          : `Error: ${error.message}`
-      );
-      toast.error(
-        error.message.includes("Gantt bar")
-          ? `Gantt Bar Error: ${error.message}`
-          : `Error: ${error.message}`,
-        {
-          position: "top-right",
-          autoClose: 3000,
-        }
-      );
+      return;
     }
-  };
 
+    toast.success(`"${data.title}"\nTask created successfully!`, {
+      position: "top-right",
+      autoClose: 3000,
+    });
+
+    reset();
+    onOpenChange();
+  } catch (error) {
+    console.error("Error creating task:", error.message);
+    setApiError(
+      error.message.includes("Gantt bar")
+        ? `Gantt Bar Error: ${error.message}`
+        : `Error: ${error.message}`
+    );
+    toast.error(
+      error.message.includes("Gantt bar")
+        ? `Gantt Bar Error: ${error.message}`
+        : `Error: ${error.message}`,
+      {
+        position: "top-right",
+        autoClose: 3000,
+      }
+    );
+  }
+};
   const handleClose = () => {
     reset();
     setApiError(null);
@@ -285,8 +430,7 @@ export default function ModalCreateTask({
       <Button
         onPress={onOpen}
         className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-primary border border-gray-300 rounded-[8px] shadow-sm hover:bg-[#000] h-[50px]"
-        fullWidth="true"
-      >
+        fullWidth="true">
         <IconAdd />
         Create
       </Button>
@@ -304,8 +448,7 @@ export default function ModalCreateTask({
                 )}
                 <form
                   onSubmit={handleSubmit(onSubmit)}
-                  className="grid grid-cols-1 gap-4"
-                >
+                  className="grid grid-cols-1 gap-4">
                   <Controller
                     name="title"
                     control={control}
@@ -342,7 +485,11 @@ export default function ModalCreateTask({
                     render={({ field }) => (
                       <DateRangePicker
                         className="max-w-none"
-                        minValue={today("Asia/Bangkok")}
+                        minValue={
+                          selectedGanttBar && isGanttBarNotStarted(selectedGanttBar)
+                            ? parseDate(selectedGanttBar.startedAt.split("T")[0])
+                            : today("Asia/Bangkok")
+                        }
                         maxValue={
                           selectedGanttBar
                             ? parseDate(
@@ -436,15 +583,13 @@ export default function ModalCreateTask({
                                 `,
                                 input: "text-black",
                               },
-                            }}
-                          >
+                            }}>
                             {memberOptions.map((member) => (
                               <AutocompleteItem
                                 key={member.key}
                                 value={member.key}
                                 textValue={member.label}
-                                className="hover:bg-gray-50"
-                              >
+                                className="hover:bg-gray-50">
                                 <div className="flex items-center gap-2 py-1">
                                   {member.profileImage ? (
                                     <img
@@ -473,8 +618,7 @@ export default function ModalCreateTask({
                                             {member.roles.map((role, index) => (
                                               <span
                                                 key={index}
-                                                className="text-xs px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full"
-                                              >
+                                                className="text-xs px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full">
                                                 {role.replace("ROLE_", "")}
                                               </span>
                                             ))}
@@ -520,8 +664,7 @@ export default function ModalCreateTask({
                           ganttbar?.payload
                             ?.filter((bar) => isGanttBarDisabled(bar))
                             .map((bar) => bar.ganttBarId) || []
-                        }
-                      >
+                        }>
                         {ganttbar?.payload?.map((bar) => {
                           const status = getGanttBarStatus(bar);
                           let statusText = "";
@@ -531,8 +674,8 @@ export default function ModalCreateTask({
                             statusText = " (Expired)";
                             statusClass = "text-red-400 opacity-60";
                           } else if (status === "not_started") {
-                            statusText = " (Not yet started)";
-                            statusClass = "text-orange-500 opacity-70";
+                            statusText = " (Scheduled)";
+                            statusClass = "text-blue-600"; // Changed to blue for scheduled/upcoming
                           }
 
                           const displayText = `${bar.title} (${
@@ -546,8 +689,7 @@ export default function ModalCreateTask({
                               key={bar.ganttBarId}
                               value={bar.ganttBarId}
                               textValue={displayText}
-                              className={statusClass}
-                            >
+                              className={statusClass}>
                               <div className={`flex flex-col ${statusClass}`}>
                                 <div className="font-medium">
                                   {bar.title} ({bar.face})
@@ -560,7 +702,9 @@ export default function ModalCreateTask({
                                       className={
                                         status === "expired"
                                           ? "text-red-500"
-                                          : "text-orange-500"
+                                          : status === "not_started"
+                                          ? "text-blue-600"
+                                          : "text-green-600"
                                       }
                                     >
                                       {statusText}
@@ -610,8 +754,7 @@ export default function ModalCreateTask({
                       type="button"
                       className="bg-transparent border-1 border-bgColor"
                       radius="full"
-                      onPress={handleClose}
-                    >
+                      onPress={handleClose}>
                       Cancel
                     </Button>
                     <Button
@@ -619,8 +762,7 @@ export default function ModalCreateTask({
                       color="primary"
                       radius="full"
                       isLoading={isSubmitting}
-                      isDisabled={isSubmitting}
-                    >
+                      isDisabled={isSubmitting}>
                       Save
                     </Button>
                   </div>

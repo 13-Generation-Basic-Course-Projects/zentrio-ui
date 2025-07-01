@@ -987,7 +987,7 @@ export default function KanbanBoard({
                                   <div
                                     className={`col-span-8 flex items-center`}
                                   >
-                                    {role == "ROLE_MEMBER" ? (
+                                    {role == "ROLE_MEMBER" || role == "ROLE_MANAGER" ? (
                                       ""
                                     ) : (
                                       <ModalCreateChecklist

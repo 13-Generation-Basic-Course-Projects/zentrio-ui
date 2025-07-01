@@ -6,6 +6,7 @@ import {
   getGanttBarByGanttChartIdService,
   getGanttBarService,
   getGanttChartByBoardIdService,
+  updateGantBarBytGantChartIdService,
   updateGantChartBytIdService,
 } from "@/service/gantt.service";
 import { revalidatePath } from "next/cache";
@@ -88,7 +89,7 @@ export const createGanttBarsByGanttChartIdAction = async ({
 /*
  * update gantchart
  */
-export const updateGantChartBytIdAction = async ({
+export const updateGanttChartByIdAction = async ({
   ganttChartId,
   boardId,
   data,
@@ -111,7 +112,7 @@ export const updateGantChartBytIdAction = async ({
  */
 export const deleteGanttBarsByGanttChartIdAction = async ({
   ganttChartId,
-  ganttbarId,
+  ganttBarId, 
 }) => {
   const userToken = await Token();
   const token = userToken.Credential;
@@ -119,8 +120,39 @@ export const deleteGanttBarsByGanttChartIdAction = async ({
 
   const result = await deleteGanttBarsByGanttChartIdService({
     ganttChartId,
-    ganttbarId,
+    ganttBarId, 
     token,
   });
+  revalidatePath("/gantbar");
+  return result;
+};
+
+/*
+ * update the  gantt bar
+ */
+export const updateGantBarBytGantChartIdAction = async ({
+  
+  ganttBarId,
+  ganttChartId,
+  title,
+  startedAt,
+  finishedAt,
+  face,
+}) => {
+  const userToken = await Token();
+  const token = userToken.Credential;
+  console.log(token);
+
+  const result = await updateGantBarBytGantChartIdService({
+    
+    ganttBarId,
+    ganttChartId,
+    title,
+    startedAt,
+    finishedAt,
+    face,
+    token,
+  });
+  revalidatePath("/gantbar");                  
   return result;
 };

@@ -659,24 +659,20 @@ export const changeStatusTaskService = async (taskId, token, type) => {
  * cheng  task to underreview
  */
 export const changeStageToUnderReviewService = async (taskId, token, stage) => {
-  try {
-    //console.log("from service ", token);
-    const url = boardRouteGroup.changeStagToUnderReview(taskId, stage);
-    console.log(url);
-    const res = await fetch(url, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const data = await res.json();
-    console.log("📥 Backend responded with change status completed:", data);
+  //console.log("from service ", token);
+  const url = boardRouteGroup.changeStagToUnderReview(taskId, stage);
+  console.log(url);
+  const res = await fetch(url, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  const data = await res.json();
+  console.log("📥 Backend responded with change status completed:", data);
 
-    return data;
-  } catch (error) {
-    throw error;
-  }
+  return data;
 };
 
 export const FeedBackService = async (taskId, token, comment) => {
@@ -1182,4 +1178,47 @@ export const getFeedBackByTaskIdService = async ({ taskId, token }) => {
   } catch (error) {
     throw error;
   }
+};
+
+
+
+/* add new service for update date in checklist */
+export const updateCheckListDateByIdAndTaskIdService = async ({
+  finishedAt,
+ checklistId,
+  token
+}) => {
+  console.log("Token in update checklist service: ", token);
+
+  console.log("Request Body in update date checklist service: ", {
+    finishedAt,
+   checklistId,
+  });
+
+  const url = checklistRouteGroup.uploadChecklistDate();
+  console.log("Request URL", url);
+  const response = await fetch(url, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      finishedAt,
+      checklistId,
+    }),
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    console.error("Backend error response update date checklist: ", error);
+    if (response.status === 401 || response.status === 403) {
+      throw new Error("Authentication required or token is invalid");
+    }
+    throw new Error(
+      error.message || `Failed to update date checklist: ${response.status}`
+    );
+  }
+
+  return response.status === 204 ? { success: true } : response.json();
 };

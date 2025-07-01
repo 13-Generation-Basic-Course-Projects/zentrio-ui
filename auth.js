@@ -74,7 +74,7 @@ export const {
     }),
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
-      // clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       authorization: {
         params: {
           prompt: "consent",
@@ -97,6 +97,12 @@ export const {
       }
 
       if (account && account.provider === "google") {
+        console.log("🔍 Google OAuth Account Debug:");
+        console.log("Provider:", account.provider);
+        console.log("ID Token present:", !!account.id_token);
+        console.log("Access Token present:", !!account.access_token);
+        console.log("Refresh Token present:", !!account.refresh_token);
+        
         token.idToken = account.id_token;
         token.accessToken = account.access_token;
         token.refreshToken = account.refresh_token;
@@ -120,11 +126,15 @@ export const {
         }
 
         try {
+          console.log("🔍 Calling loginGoogleService with ID token...");
           const backendResponse = await loginGoogleService({
             idToken: account.id_token,
           });
 
+          console.log("🔍 Backend response received:", backendResponse);
+
           if (backendResponse?.success) {
+            console.log("✅ Backend login successful");
             token.backendToken = backendResponse.payload.token;
             token.id = backendResponse.payload.user?.userId || token.sub;
             token.email = backendResponse.payload.user?.email || token.email;
@@ -132,11 +142,13 @@ export const {
               backendResponse.payload.user?.username || token.name;
             token.role = backendResponse.payload.user?.role || "user";
           } else {
-            console.error("Backend login failed:", backendResponse?.message);
+            console.error("❌ Backend login failed:", backendResponse?.message);
+            console.error("Backend response details:", backendResponse);
             return null;
           }
         } catch (error) {
-          console.error("Error calling loginGoogleService:", error.message);
+          console.error("❌ Error calling loginGoogleService:", error.message);
+          console.error("Error details:", error);
           return null;
         }
       }
@@ -163,7 +175,7 @@ export const {
       return session;
     },
   },
-  // secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET,
   pages: {
     signIn: "/login",
   },

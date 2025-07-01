@@ -33,7 +33,7 @@ export default async function OverviewLayout({ children }) {
           <div className="col-span-9 flex flex-col pt-4 overflow-hidden ">
             <CardWelcomeComponent />
           </div>
-          <div className="col-span-3   mt-10">
+          <div className="col-span-3 mt-10 pr-2">
             <SmallCalendar />
           </div>
         </div>

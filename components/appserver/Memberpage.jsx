@@ -33,6 +33,7 @@ export default function Memberpage({
   workspaceId,
   allMemberInBoard,
   currentUserProfile,
+  boardName
 }) {
   if (boardMember.status >= 400 || boardMember.type === "about:blank") {
     return <NotFound />;
@@ -124,33 +125,30 @@ export default function Memberpage({
   const [filterRange, setFilterRange] = useState("all");
 
   // Filter members based on search term (username or email) and filter
-  const filteredMembers = members.filter((member) => {
+const filteredMembers = members
+  .filter((member) => {
     const search = searchTerm.toLowerCase();
-    const matchSearch =
+    return (
       member.username.toLowerCase().includes(search) ||
-      member.email.toLowerCase().includes(search);
-
-    if (filterRange === "all") return matchSearch;
-
-    const joinedDate = new Date(
-      member.joinedAt || member.createdAt || "2025-06-01T00:00:00Z"
-    ); // fallback date
-    const now = new Date();
-    const diffDays = (now - joinedDate) / (1000 * 60 * 60 * 24);
-
-    if (filterRange === "week" && diffDays <= 7) return matchSearch;
-    if (filterRange === "month" && diffDays <= 30) return matchSearch;
-    if (filterRange === "year" && diffDays <= 365) return matchSearch;
-
-    return false;
+      member.email.toLowerCase().includes(search)
+    );
+  })
+  .sort((a, b) => {
+    if (filterRange === "az") {
+      return a.username.localeCompare(b.username);
+    }
+    if (filterRange === "za") {
+      return b.username.localeCompare(a.username);
+    }
+    return 0;
   });
 
   const filterOptions = [
     { key: "all", label: "All" },
-    { key: "week", label: "Last week" },
-    { key: "month", label: "Last month" },
-    { key: "year", label: "Last year" },
+    { key: "az", label: "A → Z" },
+    { key: "za", label: "Z → A" },
   ];
+
 
   // Pagination calculations use filteredMembers instead of all members
   const [currentPage, setCurrentPage] = useState(1);
@@ -212,7 +210,7 @@ export default function Memberpage({
   return (
     <div className="p-4 ">
       {/* Breadcrumb */}
-      <BredCrum board={"Hikko Design"} feature={"Members"} header={"Member"} workspaceId={workspaceId} />
+      <BredCrum board={boardName} feature={"Members"} header={"Member"} workspaceId={workspaceId} />
       <div className="flex justify-between">
         <div className="flex items-center w-[600px] h-[45px] border border-gray-200 rounded-[16px] overflow-hidden bg-white text-input text-title">
           <div className="relative flex items-center gap-2 border-r border-gray-200 pr-4 pl-3 py-2">
@@ -233,6 +231,7 @@ export default function Memberpage({
                   </AutocompleteItem>
                 ))}
               </Autocomplete>
+
             </div>
           </div>
 
@@ -278,11 +277,10 @@ export default function Memberpage({
               {currentMembers.map((member, index) => (
                 <tr
                   key={member.userId}
-                  className={`${
-                    (index + indexOfFirstMember) % 2 !== 0
+                  className={`${(index + indexOfFirstMember) % 2 !== 0
                       ? "bg-gray-50/50"
                       : "bg-white"
-                  } hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 hover:shadow-md transition-all duration-300 ease-in-out group`}
+                    } hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 hover:shadow-md transition-all duration-300 ease-in-out group`}
                 >
                   {/* Index Number */}
                   <td className="px-6 py-4">
@@ -361,11 +359,10 @@ export default function Memberpage({
                           <PopoverTrigger className="cursor-pointer">
                             <div className="p-1 rounded-full hover:bg-blue-100 transition-colors duration-200">
                               <ChevronUp
-                                className={`w-4 h-4 transform transition-transform duration-300 ${
-                                  openPopoverId === member.userId
+                                className={`w-4 h-4 transform transition-transform duration-300 ${openPopoverId === member.userId
                                     ? "rotate-180 text-blue-600"
                                     : "text-gray-500"
-                                }`}
+                                  }`}
                               />
                             </div>
                           </PopoverTrigger>
@@ -418,7 +415,7 @@ export default function Memberpage({
                   {/* Action for delete */}
                   <td className="px-6 py-4">
                     {userRoleBaseOnCurrentUser === "ROLE_MANAGER" &&
-                    member.userId !== currentUserProfile.payload.user.userId ? (
+                      member.userId !== currentUserProfile.payload.user.userId ? (
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         className="w-4 h-4 cursor-pointer"
@@ -440,10 +437,9 @@ export default function Memberpage({
               isOpen={isModalOpen}
               onClose={closeModal}
               messageTitle="Are you sure?"
-              messageBody={`Do you want to delete ${
-                members.find((m) => m.userId === selectedUserId)?.username ||
+              messageBody={`Do you want to delete ${members.find((m) => m.userId === selectedUserId)?.username ||
                 "this member"
-              } from the board?`}
+                } from the board?`}
               messageUndo="No, Cancel"
               messageDo="Yes, Delete"
               action={deleteMemberAction}
