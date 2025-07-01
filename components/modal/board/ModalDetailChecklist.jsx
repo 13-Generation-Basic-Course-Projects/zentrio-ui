@@ -1684,20 +1684,35 @@ const ModalDetailChecklist = ({
                                 alt="Attachment"
                                 className="h-5 w-5"
                               />
+
                               {attachment.details.links ? (
-                                <a
-                                  href={attachment.details.links}
-                                  target="_blank"
-                                  rel="noreferrer noopener"
-                                  className="text-blue-600 hover:text-blue-800">
-                                  {attachment.details.links ||
-                                    `Attachment ${attachment.attachmentId}`}
-                                </a>
+                                <div className="flex flex-col space-y-1">
+                                  {attachment.details.links
+                                    .split(",")
+                                    .map((link, index) => (
+                                      <a
+                                        key={index}
+                                        href={link}
+                                        target="_blank"
+                                        rel="noreferrer noopener"
+                                        className="text-blue-600 hover:text-blue-800 break-all">
+                                        {link}
+                                      </a>
+                                    ))}
+                                </div>
                               ) : (
                                 <span className="text-gray-600">
                                   Attachment {attachment.attachmentId} (No link
                                   available)
                                 </span>
+                              )}
+                            </div>
+
+                            <div className="bg-blue-300">
+                              {attachment?.details?.drive_url && (
+                                <a href={attachment.details.drive_url} target="_blank" rel="noreferrer noopener" className="text-blue-600 hover:text-blue-800">
+                                  Drive URL: {attachment.details.drive_url}
+                                </a>
                               )}
                             </div>
                           </div>

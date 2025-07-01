@@ -102,16 +102,21 @@ const ModalUploadAttachment = ({
     setError(null);
 
     const documentIds = selectedFiles.map((file) => file.documentId);
-    const links = appliedLinks;
+    // Extract drive URLs from selected files
+    const driveUrls = selectedFiles
+      .filter((file) => file.drive_url)
+      .map((file) => file.drive_url);
 
-    // ✅ convert array to comma-separated string for backend
     const detailsPayload = {
       details: {
         ...(documentIds.length > 0 && {
           documentIds: documentIds.join(","),
         }),
-        ...(links.length > 0 && {
-          links: links.join(","),
+        ...(appliedLinks.length > 0 && {
+          links: appliedLinks.join(","),
+        }),
+        ...(driveUrls.length > 0 && {
+          drive_url: driveUrls.join(","),
         }),
       },
     };
@@ -123,8 +128,6 @@ const ModalUploadAttachment = ({
 
     try {
       const result = await postAttactmentAction(checklistId, detailsPayload);
-      console.log("Upload result:", result);
-
       if (result.success) {
         onAttachmentSelected(result.payload);
         setSelectedFiles([]);
@@ -140,7 +143,6 @@ const ModalUploadAttachment = ({
         );
       }
     } catch (error) {
-      console.error("Upload failed:", error);
       const errorMessage = error.message.includes("JSON parse error")
         ? "Invalid data format sent to server. Please ensure links are valid URLs."
         : error.message || "Failed to upload attachment";
@@ -153,7 +155,6 @@ const ModalUploadAttachment = ({
       setUploading(false);
     }
   };
-  
 
   const formatDate = (dateString) => {
     if (!dateString) return "No date";
@@ -367,13 +368,21 @@ const ModalUploadAttachment = ({
                               <div className="flex justify-between items-center text-h6">
                                 <div className="flex items-center space-x-2 flex-1 min-w-0">
                                   <FileIcon documentType={item?.documentType} />
-                                  <p
-                                    className="truncate"
-                                    title={item?.description || item?.title}>
-                                    {item?.description ||
-                                      item?.title ||
-                                      "Untitled Document"}
-                                  </p>
+                                  <div className="flex-1 min-w-0">
+                                    <p
+                                      className="truncate"
+                                      title={item?.description || item?.title}>
+                                      {item?.description ||
+                                        item?.title ||
+                                        "Untitled Document"}
+                                    </p>
+                                    {/* Show indication if file has drive URL */}
+                                    {item?.drive_url && (
+                                      <p className="text-xs text-green-600">
+                                        📁 Google Drive File
+                                      </p>
+                                    )}
+                                  </div>
                                 </div>
                                 <p className="text-title/50 text-caption-tiny ml-2 flex-shrink-0">
                                   {formatDate(item?.creationDate)}
@@ -467,6 +476,10 @@ const ModalUploadAttachment = ({
                 <p className="text-title font-semibold mt-8">
                   Selected Files: {selectedFiles.length} | Links:{" "}
                   {appliedLinks.length}
+                  {selectedFiles.filter((file) => file.drive_url).length > 0 &&
+                    ` | Drive Files: ${
+                      selectedFiles.filter((file) => file.drive_url).length
+                    }`}
                 </p>
                 {selectedFiles.length > 0 || appliedLinks.length > 0 ? (
                   <div className="flex flex-col space-y-3 mt-4 h-[150px] overflow-auto scrollbar-hidden">
@@ -484,6 +497,11 @@ const ModalUploadAttachment = ({
                             </p>
                             <p className="text-caption text-gray-600">
                               {formatDate(file.creationDate)} • File
+                              {file.drive_url && (
+                                <span className="text-green-600 ml-1">
+                                  • Google Drive
+                                </span>
+                              )}
                             </p>
                           </div>
                         </div>
