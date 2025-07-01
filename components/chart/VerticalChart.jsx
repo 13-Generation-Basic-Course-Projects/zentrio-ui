@@ -93,7 +93,7 @@ export default function VerticalChart({ report }) {
             </div>
           </div>
         </div>
-        <div className="w-[30%] border-gray-200 flex justify-center items-center mb-8 scale-[1.2]">
+        <div className="w-[30%] border-gray-200 flex justify-center items-center mb-8 scale-[1.2] lg:scale-[1.3]">
           {}
           <div className="w-[140px] text-[11px] flex flex-col justify-end item-center gap-[7.5%] h-[50%]">
             <div className="text-primary h-[35px] bg-[#59BAD5]/10 rounded-full w-full border-primary border flex items-center justify-center">

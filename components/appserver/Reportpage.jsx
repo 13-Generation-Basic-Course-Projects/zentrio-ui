@@ -151,7 +151,7 @@ export default function Reportpage({ modal, report, version }) {
 
         { }
         <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mt-5 overflow-y-auto h-screen md:h-fit scrollbar-hidden">
-          <div className="md:col-span-8 md:h-screen flex flex-col  ">
+          <div className="md:col-span-8 md:h-screen flex flex-col lg:col-span-9">
             <div className=" overflow-y-auto scrollbar-hidden pb-40 p-2">
               { }
               <div className="grid grid-cols-4 gap-2">
@@ -204,7 +204,7 @@ export default function Reportpage({ modal, report, version }) {
           </div>
 
           { }
-          <div className="md:col-span-4 space-y-10 md:h-screen flex flex-col ">
+          <div className="md:col-span-4 space-y-10 md:h-screen flex flex-col lg:col-span-3">
             <div className=" flex flex-col  gap-2 overflow-y-auto scrollbar-hidden pb-[250px]">
               { }
               <div className="border-1 rounded-medium bg-[#FFFFFF] px-4 pb-4 flex flex-col ">
@@ -302,7 +302,7 @@ export default function Reportpage({ modal, report, version }) {
                             {item?.data?.version}
                           </div>
                           <div className="flex flex-col space-y-1">
-                            <p className="text-h6">ZenTrio Reporting Document</p>
+                            <p className="text-h6">{report?.payload?.boardData?.title}.pdf</p>
                             <p className="text-caption-tiny text-title/50">
                               {item?.data?.boardData?.createdBy?.username}
                               &nbsp;·&nbsp;

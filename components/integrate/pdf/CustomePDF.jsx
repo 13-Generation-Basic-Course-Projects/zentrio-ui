@@ -3,517 +3,216 @@
 import Laptop from "@/assets/intergrating/laptop.png";
 import Image from "next/image";
 import { getReportAction } from "@/action/report.action";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
+
+const PAGE_HEIGHT = 842; // A4 height in pixels
+const HEADER_FOOTER_HEIGHT = 90; // Space for header/footer
+const ROW_HEIGHT = 32; // Your table row height
 
 export const PDFPreviewer = ({ report }) => {
-  const myMonth = {
-    january: 0,
-    february: 0,
-    march: 0,
-    april: 0,
-    may: 0,
-    june: 0,
-    july: 0,
-    august: 0,
-    september: 0,
-    october: 0,
-    november: 0,
-    december: 0,
-  };
-
-  const myMonthChecklist = {
-    january: 0,
-    february: 0,
-    march: 0,
-    april: 0,
-    may: 0,
-    june: 0,
-    july: 0,
-    august: 0,
-    september: 0,
-    october: 0,
-    november: 0,
-    december: 0,
-  };
-
-  const task = {
-    todo: 0,
-    progress: 0,
-    review: 0,
-    done: 0,
-  };
-
-  const checkList = {
-    todo: 0,
-    progress: 0,
-    review: 0,
-    done: 0,
-  };
-
-  const doneTask = {
-    january: 0,
-    february: 0,
-    march: 0,
-    april: 0,
-    may: 0,
-    june: 0,
-    july: 0,
-    august: 0,
-    september: 0,
-    october: 0,
-    november: 0,
-    december: 0,
-  };
-
-  report?.payload?.groupedTasks.map((group) => {
-    const stage = group?.stage.toUpperCase();
-    const count = group?.count || 0;
-
-    const checklistCount = group?.tasks.reduce((acc, task) => {
-      return acc + (task.allChecklists.length || 0);
-    }, 0);
-
-    switch (stage) {
-      case "TO DO":
-        task.todo = count;
-        checkList.todo = checklistCount;
-        break;
-      case "IN_PROGRESS":
-        task.progress = count;
-        checkList.progress = checklistCount;
-        break;
-      case "UNDER_REVIEW":
-        task.review = count;
-        checkList.review = checklistCount;
-        break;
-      case "COMPLETED":
-        task.done = count;
-        checkList.done = checklistCount;
-        break;
-      default:
-        console.log("Unknown stage:", stage);
-        break;
-    }
-  });
-
-  const reportVersion = report?.payload?.version;
-
-  report?.payload?.groupedTasks.map((allTasks) => {
-    const filterMonth = allTasks?.tasks.map((item) =>
-      new Date(item.finishedAt).getMonth()
-    );
-    const stage = allTasks?.stage;
-
-    if (filterMonth.includes(0)) {
-      if (stage === "COMPLETED") {
-        doneTask.january = doneTask.january + allTasks?.count;
-      }
-      myMonth.january = myMonth.january + allTasks?.count;
-      myMonthChecklist.january += allTasks?.tasks.reduce(
-        (sum, value) => sum + (value?.allChecklists?.length || 0),
-        0
-      );
-    } else if (filterMonth.includes(1)) {
-      if (stage === "COMPLETED") {
-        doneTask.february = doneTask.february + allTasks?.count;
-      }
-      myMonth.february = myMonth.february + allTasks?.count;
-      myMonthChecklist.february += allTasks?.tasks.reduce(
-        (sum, value) => sum + (value?.allChecklists?.length || 0),
-        0
-      );
-    } else if (filterMonth.includes(2)) {
-      if (stage === "COMPLETED") {
-        doneTask.march = doneTask.march + allTasks?.count;
-      }
-      myMonth.march = myMonth.march + allTasks?.count;
-      myMonthChecklist.march += allTasks?.tasks.reduce(
-        (sum, value) => sum + (value?.allChecklists?.length || 0),
-        0
-      );
-    } else if (filterMonth.includes(3)) {
-      if (stage === "COMPLETED") {
-        doneTask.april = doneTask.april + allTasks?.count;
-      }
-      myMonth.april = myMonth.april + allTasks?.count;
-      myMonthChecklist.april += allTasks?.tasks.reduce(
-        (sum, value) => sum + (value?.allChecklists?.length || 0),
-        0
-      );
-    } else if (filterMonth.includes(4)) {
-      if (stage === "COMPLETED") {
-        doneTask.may = doneTask.may + allTasks?.count;
-      }
-      myMonth.may = myMonth.may + allTasks?.count;
-      myMonthChecklist.may += allTasks?.tasks.reduce(
-        (sum, value) => sum + (value?.allChecklists?.length || 0),
-        0
-      );
-    } else if (filterMonth.includes(5)) {
-      if (stage === "COMPLETED") {
-        doneTask.june = doneTask.june + allTasks?.count;
-      }
-      myMonth.june = myMonth.june + allTasks?.count;
-      myMonthChecklist.june += allTasks?.tasks.reduce(
-        (sum, value) => sum + (value?.allChecklists?.length || 0),
-        0
-      );
-    } else if (filterMonth.includes(6)) {
-      if (stage === "COMPLETED") {
-        doneTask.july = doneTask.july + allTasks?.count;
-      }
-      myMonth.july = myMonth.july + allTasks?.count;
-      myMonthChecklist.july += allTasks?.tasks.reduce(
-        (sum, value) => sum + (value?.allChecklists?.length || 0),
-        0
-      );
-    } else if (filterMonth.includes(7)) {
-      if (stage === "COMPLETED") {
-        doneTask.august = doneTask.august + allTasks?.count;
-      }
-      myMonth.august = myMonth.august + allTasks?.count;
-      myMonthChecklist.august += allTasks?.tasks.reduce(
-        (sum, value) => sum + (value?.allChecklists?.length || 0),
-        0
-      );
-    } else if (filterMonth.includes(8)) {
-      if (stage === "COMPLETED") {
-        doneTask.september = doneTask.september + allTasks?.count;
-      }
-      myMonth.september = myMonth.september + allTasks?.count;
-      myMonthChecklist.september += allTasks?.tasks.reduce(
-        (sum, value) => sum + (value?.allChecklists?.length || 0),
-        0
-      );
-    } else if (filterMonth.includes(9)) {
-      if (stage === "COMPLETED") {
-        doneTask.october = doneTask.october + allTasks?.count;
-      }
-      myMonth.october = myMonth.october + allTasks?.count;
-      myMonthChecklist.october += allTasks?.tasks.reduce(
-        (sum, value) => sum + (value?.allChecklists?.length || 0),
-        0
-      );
-    } else if (filterMonth.includes(10)) {
-      if (stage === "COMPLETED") {
-        doneTask.november = doneTask.november + allTasks?.count;
-      }
-      myMonth.november = myMonth.november + allTasks?.count;
-      myMonthChecklist.november += allTasks?.tasks.reduce(
-        (sum, value) => sum + (value?.allChecklists?.length || 0),
-        0
-      );
-    } else if (filterMonth.includes(11)) {
-      if (stage === "COMPLETED") {
-        doneTask.december = doneTask.december + allTasks?.count;
-      }
-      myMonth.december = myMonth.december + allTasks?.count;
-      myMonthChecklist.december += allTasks?.tasks.reduce(
-        (sum, value) => sum + (value?.allChecklists?.length || 0),
-        0
-      );
-    }
-  });
-
-  const totalChecklists = Object.values(myMonthChecklist).reduce(
-    (sum, value) => sum + value,
-    0
-  );
-
-  const totalTasks = Object.values(myMonth).reduce(
-    (sum, value) => sum + value,
-    0
-  );
-
-  console.log("Task: ", totalTasks);
-
-  const taskData = [
-    {
-      month: "January",
-      tasks: myMonth.january,
-      subtasks: myMonthChecklist.january,
-      completed: ((doneTask.january / totalTasks) * 100).toFixed(2) + "%",
-    },
-    {
-      month: "February",
-      tasks: myMonth.february,
-      subtasks: myMonthChecklist.february,
-      completed: ((doneTask.february / totalTasks) * 100).toFixed(2) + "%",
-    },
-    {
-      month: "March",
-      tasks: myMonth.march,
-      subtasks: myMonthChecklist.march,
-      completed: ((doneTask.march / totalTasks) * 100).toFixed(2) + "%",
-    },
-    {
-      month: "April",
-      tasks: myMonth.april,
-      subtasks: myMonthChecklist.april,
-      completed: ((doneTask.april / totalTasks) * 100).toFixed(2) + "%",
-    },
-    {
-      month: "May",
-      tasks: myMonth.may,
-      subtasks: myMonthChecklist.may,
-      completed: ((doneTask.may / totalTasks) * 100).toFixed(2) + "%",
-    },
-    {
-      month: "June",
-      tasks: myMonth.june,
-      subtasks: myMonthChecklist.june,
-      completed: ((doneTask.june / totalTasks) * 100).toFixed(2) + "%",
-    },
-    {
-      month: "July",
-      tasks: myMonth.july,
-      subtasks: myMonthChecklist.july,
-      completed: ((doneTask.july / totalTasks) * 100).toFixed(2) + "%",
-    },
-    {
-      month: "August",
-      tasks: myMonth.august,
-      subtasks: myMonthChecklist.august,
-      completed: ((doneTask.august / totalTasks) * 100).toFixed(2) + "%",
-    },
-    {
-      month: "September",
-      tasks: myMonth.september,
-      subtasks: myMonthChecklist.september,
-      completed: ((doneTask.september / totalTasks) * 100).toFixed(2) + "%",
-    },
-    {
-      month: "October",
-      tasks: myMonth.october,
-      subtasks: myMonthChecklist.october,
-      completed: ((doneTask.october / totalTasks) * 100).toFixed(2) + "%",
-    },
-    {
-      month: "November",
-      tasks: myMonth.november,
-      subtasks: myMonthChecklist.november,
-      completed: ((doneTask.november / totalTasks) * 100).toFixed(2) + "%",
-    },
-    {
-      month: "December",
-      tasks: myMonth.december,
-      subtasks: myMonthChecklist.december,
-      completed: ((doneTask.december / totalTasks) * 100).toFixed(2) + "%",
-    },
-  ];
-
-  const flattenReportData = (report) => {
-    const flattened = [];
-
-    report?.payload?.groupedTasks?.forEach((group) => {
-      group?.tasks?.forEach((task) => {
-        task?.allChecklists?.forEach((checklist) => {
-          checklist?.members?.forEach((member) => {
-            flattened.push({
-              stage: group.stage,
-              taskId: task.taskId,
-              taskTitle: task.title,
-              taskDescription: task.description,
-              checklistId: checklist.checklistId,
-              checklistTitle: checklist.title,
-              checklistDescription: checklist.description,
-              member: member,
-              attachments: checklist.attachment,
-              comments: checklist.allComments,
-              startDate: checklist.startedAt,
-              endDate: checklist.finishedAt,
-              status: checklist.status,
-            });
-          });
-        });
-      });
-    });
-
-    return flattened;
-  };
-
-  const flatData = flattenReportData(report);
-
-  console.log("Report: ", flattenReportData(report));
-
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = 5;
   const [scale, setScale] = useState(1);
   const zoomRef = useRef(null);
+  const scrollRef = useRef(null);
+  const pageRefs = useRef([]);
 
+  // Initialize page refs
+  useEffect(() => {
+    pageRefs.current = pageRefs.current.slice(0, totalPages);
+  }, [totalPages]);
+
+  // Scroll to the specified page
+  const scrollToPage = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    if (pageRefs.current[pageNumber - 1]) {
+      scrollRef.current.scrollTo({
+        top: pageRefs.current[pageNumber - 1].offsetTop,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  // Handle keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "ArrowRight" && currentPage < totalPages) {
+        scrollToPage(currentPage + 1);
+      } else if (e.key === "ArrowLeft" && currentPage > 1) {
+        scrollToPage(currentPage - 1);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [currentPage, totalPages]);
+
+  // Handle scroll events to update current page
+  const handleScroll = () => {
+    if (!scrollRef.current) return;
+
+    const scrollPosition = scrollRef.current.scrollTop;
+    const pageHeights = pageRefs.current.map((ref) => ref?.offsetHeight || 0);
+    let accumulatedHeight = 0;
+
+    for (let i = 0; i < pageHeights.length; i++) {
+      accumulatedHeight += pageHeights[i];
+      if (scrollPosition < accumulatedHeight) {
+        setCurrentPage(i + 1);
+        break;
+      }
+    }
+  };
+
+  // Zoom functions
   const zoomIn = () => setScale((prev) => Math.min(prev + 0.1, 3));
   const zoomOut = () => setScale((prev) => Math.max(prev - 0.1, 0.5));
 
-  const scrollRef = useRef(null);
-  const totalPages = 5;
-  const [currentPage, setCurrentPage] = useState(1);
-
-  // Scroll to next/previous page
-  const scrollToPage = (pageNumber) => {
-    const container = scrollRef.current;
-    const pageWidth = container.clientWidth;
-    container.scrollTo({
-      left: pageWidth * (pageNumber - 1),
-      behavior: "smooth",
-    });
-  };
-
-  const [isSelected, setIsSelected] = useState({
-    item1: false,
-    item2: false,
-    item3: false,
-    item4: false,
-    item5: false,
-  });
-
-  const selectOnly = (itemKey) => {
-    setIsSelected({
-      item1: false,
-      item2: false,
-      item3: false,
-      item4: false,
-      item5: false,
-      [itemKey]: true,
-    });
-  };
+  // ... (keep all the existing data processing logic)
 
   return (
-    <>
-      <div className="w-full h-screen overflow-y-hidden">
-        {/* this header */}
-        <div className="h-[5%] bg-[#323639] flex items-center px-[2.5%] justify-between">
-          <div className="text-h5 text-white">
-            <p className="font-medium">Report v1</p>
+    <div className="w-full h-screen overflow-y-hidden">
+      {/* Header with navigation controls */}
+      <div className="h-[5%] bg-[#323639] flex items-center px-[2.5%] justify-between">
+        <div className="text-h5 text-white">
+          <p className="font-medium">Report v1</p>
+        </div>
+        <div className="flex w-[437px] justify-center">
+          <div className="flex items-center w-28 justify-evenly text-white text-body-sm pr-4">
+            <button
+              onClick={() => scrollToPage(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="disabled:opacity-50"
+            >
+              &lt;
+            </button>
+            <p className="w-6 h-6 bg-black flex justify-center items-center">
+              {currentPage}
+            </p>
+            <p>/</p>
+            <p>{totalPages}</p>
+            <button
+              onClick={() => scrollToPage(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="disabled:opacity-50"
+            >
+              &gt;
+            </button>
           </div>
-          <div className="flex w-[437px] justify-center">
-            <div className="flex items-center w-28 justify-evenly text-white text-body-sm pr-4">
-              <p className="w-6 h-6 bg-black flex justify-center items-center">
-                {currentPage}
-              </p>
-              <p>/</p>
-              <p>{totalPages}</p>
+          <div className="flex items-center text-white justify-evenly w-40 h-7 pl-3 border-l border-gray-100/50">
+            <div
+              onClick={zoomOut}
+              className="w-8 h-8 flex justify-center items-center cursor-pointer hover:bg-black"
+            >
+              <p className="text-h2 select-none">-</p>
             </div>
-            <div className="flex items-center text-white justify-evenly w-40 h-7 pl-3 border-l border-gray-100/50">
-              <div
-                onClick={zoomOut}
-                className="w-8 h-8 flex justify-center items-center cursor-pointer hover:bg-black"
-              >
-                <p className="text-h2 select-none">-</p>
-              </div>
-              <p className="text-body-sm h-6 w-14 flex justify-center items-center cursor-default bg-black">
-                {(scale * 100).toFixed(0)}%
-              </p>
-              <div
-                onClick={zoomIn}
-                className="w-8 h-8 hover:bg-black flex items-center cursor-pointer justify-center"
-              >
-                <p className="text-h2 select-none">+</p>
-              </div>
+            <p className="text-body-sm h-6 w-14 flex justify-center items-center cursor-default bg-black">
+              {(scale * 100).toFixed(0)}%
+            </p>
+            <div
+              onClick={zoomIn}
+              className="w-8 h-8 hover:bg-black flex items-center cursor-pointer justify-center"
+            >
+              <p className="text-h2 select-none">+</p>
             </div>
           </div>
-          <div className="w-8 h-8 flex justify-center items-center"></div>
+        </div>
+        <div className="w-8 h-8 flex justify-center items-center"></div>
+      </div>
+
+      {/* Main content area */}
+      <div className="w-full h-[95%] flex relative">
+        {/* Sidebar with page thumbnails */}
+        <div className="absolute top-0 left-0 h-full w-[15%] z-10">
+          <div className="bg-title h-full overflow-y-scroll overflow-x-hidden scrollbar-hide">
+            <div className="py-[10%] pl-10 pr-10 h-full">
+              {[1, 2, 3, 4, 5].map((pageNum) => (
+                <div
+                  key={`thumbnail-${pageNum}`}
+                  onClick={() => scrollToPage(pageNum)}
+                  className={`h-[260px] w-48 relative mb-5 cursor-pointer ${
+                    currentPage === pageNum ? "border-2 border-blue-500" : ""
+                  }`}
+                >
+                  {pageNum === 1 && (
+                    <Cover
+                      absolute="absolute scale-[0.3] translate-x-[-34.5%] translate-y-[-35%]"
+                      report={report}
+                    />
+                  )}
+                  {pageNum === 2 && (
+                    <FirstPage
+                      absolute="absolute scale-[0.3] translate-x-[-34.5%] translate-y-[-35%]"
+                      height="842px"
+                      width="595px"
+                      report={report}
+                      LaptopImage={Laptop}
+                    />
+                  )}
+                  {pageNum === 3 && (
+                    <SecondPage
+                      absolute="absolute scale-[0.3] translate-x-[-34.5%] translate-y-[-35%]"
+                      report={report}
+                    />
+                  )}
+                  {pageNum === 4 && (
+                    <ThirdPage
+                      absolute="absolute scale-[0.3] translate-x-[-34.5%] translate-y-[-35%]"
+                      report={report}
+                    />
+                  )}
+                  {pageNum === 5 && (
+                    <FourthPage
+                      absolute="absolute scale-[0.3] translate-x-[-34.5%] translate-y-[-35%]"
+                      report={report}
+                    />
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
-        {/* this body */}
-        <div className="w-full h-[95%] flex relative justify-end">
-          {/* this pdf sidebar */}
-          <div className="absolute top-0 left-0 h-full w-[15%] z-10">
-            <div className="bg-title h-full overflow-y-scroll overflow-x-hidden scrollbar-hide">
-              <div className="py-[10%] pl-10 pr-10 h-full">
-                <div
-                  onClick={() => selectOnly("item1")}
-                  className={`h-[250px] relative`}
-                >
-                  {/* <!-- Cover --> */}
-                  <Cover
-                    absolute={`absolute scale-[0.3] translate-x-[-34.5%] translate-y-[-35%]`}
-                    report={report}
-                  />
-                </div>
-                <div
-                  onClick={() => selectOnly("item2")}
-                  className={`h-[250px] my-5 relative`}
-                >
-                  {/* <!-- Page 1 --> */}
-                  <FirstPage
-                    absolute={`absolute scale-[0.3] translate-x-[-34.5%] translate-y-[-35%]`}
-                    height={`842px`}
-                    width={`595px`}
-                    report={report}
-                    LaptopImage={Laptop}
-                  />
-                </div>
-                <div
-                  onClick={() => selectOnly("item3")}
-                  className={`h-[250px] relative`}
-                >
-                  {/* <!-- Page 2 --> */}
-                  <SecondPage
-                    absolute={`absolute scale-[0.3] translate-x-[-34.5%] translate-y-[-35%]`}
-                    report={report}
-                  />
-                </div>
-                <div
-                  onClick={() => selectOnly("item4")}
-                  className={`h-[250px] my-5 relative`}
-                >
-                  {/* <!-- Page 3 --> */}
-                  <ThirdPage
-                    absolute={`absolute scale-[0.3] translate-x-[-34.5%] translate-y-[-35%]`}
-                    report={report}
-                  />
-                </div>
-                <div
-                  onClick={() => selectOnly("item5")}
-                  className={`h-[250px] relative`}
-                >
-                  {/* <!-- Page 4 --> */}
-                  <FourthPage
-                    absolute={`absolute scale-[0.3] translate-x-[-34.5%] translate-y-[-35%]`}
-                    report={report}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* this pdf display */}
-          <div className="h-auto w-full pl-10 flex justify-center pt-[2.5%] overflow-y-scroll scrollbar-hide bg-[#D3D3D3]">
-            <div
-              ref={zoomRef}
-              style={{
-                transform: `scale(${scale})`,
-                transformOrigin: "top center",
-                transition: "transform 0.2s ease-in-out",
-              }}
-            >
-              <div
-                className="flex flex-col justiify-center gap-20"
-                ref={scrollRef}
-              >
-                {/* <!-- Cover --> */}
+        {/* Main PDF display */}
+        <div
+          ref={scrollRef}
+          className="h-auto w-full pl-[15%] pt-[2.5%] overflow-y-scroll scrollbar-hide bg-[#D3D3D3]"
+          onScroll={handleScroll}
+        >
+          <div
+            ref={zoomRef}
+            style={{
+              transform: `scale(${scale})`,
+              transformOrigin: "top center",
+              transition: "transform 0.2s ease-in-out",
+            }}
+          >
+            <div className="flex flex-col items-center gap-20 pb-20">
+              <div ref={(el) => (pageRefs.current[0] = el)}>
                 <Cover report={report} />
-
-                {/* <!-- Page 1 --> */}
+              </div>
+              <div ref={(el) => (pageRefs.current[1] = el)}>
                 <FirstPage
                   report={report}
-                  height={`842px`}
-                  width={`595px`}
+                  height="842px"
+                  width="595px"
                   LaptopImage={Laptop}
                 />
-
-                {/* <!-- Page 2 --> */}
+              </div>
+              <div ref={(el) => (pageRefs.current[2] = el)}>
                 <SecondPage report={report} />
-
-                {/* <!-- Page 3 --> */}
+              </div>
+              <div ref={(el) => (pageRefs.current[3] = el)}>
                 <ThirdPage report={report} />
-
-                {/* <!-- Page 4 --> */}
+              </div>
+              <div ref={(el) => (pageRefs.current[4] = el)}>
                 <FourthPage report={report} />
               </div>
             </div>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
@@ -1458,7 +1157,7 @@ export const FirstPage = ({
     });
   };
 
-  console.log("សម្តេចពុក: ", report.payload)
+  console.log("សម្តេចពុក: ", report.payload);
   return (
     <div
       className={`${absolute} ${
@@ -2397,7 +2096,6 @@ export const SecondPage = ({ report, pageNumber = 2, absolute }) => {
                             )
                         ) : (
                           <tr
-                          
                             style={{
                               height: "32px",
                               borderTop: "1px solid black",
@@ -3223,152 +2921,67 @@ export const ThirdPage = ({ report, pageNumber = 3, absolute }) => {
           >
             <p>VII.&nbsp;&nbsp;Subtasks</p>
             <div>
-              {report?.payload?.groupedTasks.map((allTask) =>
-                allTask?.tasks.map((task) =>
-                  task?.allChecklists.map((checklist) =>
-                    checklist?.members.map((member) =>
-                      member?.allComments.map((comment) => (
-                        <div key={index} style={{ paddingTop: "5%" }}>
-                          <div
-                            style={{
-                              border: "1px solid black",
-                              borderRadius: "5px",
-                            }}
-                          >
-                            <table style={{ width: "100%", fontSize: "12px" }}>
-                              <tbody style={{ backgroundColor: "white" }}>
-                                <tr
-                                  style={{
-                                    height: "32px",
-                                    borderBottom: "1px solid black",
-                                  }}
-                                >
-                                  <td
-                                    style={{
-                                      paddingLeft: "27px",
-                                      borderRight: "1px solid black",
-                                      color: "white",
-                                      backgroundColor: "#59BAD5",
-                                    }}
-                                  >
-                                    Task Title
-                                  </td>
-                                  <td style={{ paddingLeft: "27px" }}>
-                                    {task?.title}
-                                  </td>
-                                </tr>
-                                <tr
-                                  style={{
-                                    height: "32px",
-                                    borderBottom: "1px solid black",
-                                  }}
-                                >
-                                  <td
-                                    style={{
-                                      paddingLeft: "27px",
-                                      borderRight: "1px solid black",
-                                      color: "white",
-                                      backgroundColor: "#59BAD5",
-                                    }}
-                                  >
-                                    Subtask Title
-                                  </td>
-                                  <td style={{ paddingLeft: "27px" }}>
-                                    {checklist?.title}
-                                  </td>
-                                </tr>
-                                <tr
-                                  style={{
-                                    height: "32px",
-                                    borderBottom: "1px solid black",
-                                  }}
-                                >
-                                  <td
-                                    style={{
-                                      paddingLeft: "27px",
-                                      borderRight: "1px solid black",
-                                      color: "white",
-                                      backgroundColor: "#59BAD5",
-                                    }}
-                                  >
-                                    Member
-                                  </td>
-                                  <td style={{ paddingLeft: "27px" }}>
-                                    {member?.username}
-                                  </td>
-                                </tr>
-                                <tr
-                                  style={{
-                                    height: "32px",
-                                    borderBottom: "1px solid black",
-                                  }}
-                                >
-                                  <td
-                                    style={{
-                                      paddingLeft: "27px",
-                                      borderRight: "1px solid black",
-                                      color: "white",
-                                      backgroundColor: "#59BAD5",
-                                    }}
-                                  >
-                                    Comments
-                                  </td>
-                                  <td style={{ paddingLeft: "27px" }}>
-                                    {comment.length}
-                                  </td>
-                                </tr>
-                                <tr
-                                  style={{
-                                    height: "32px",
-                                    borderBottom: "1px solid black",
-                                  }}
-                                >
-                                  <td
-                                    style={{
-                                      paddingLeft: "27px",
-                                      borderRight: "1px solid black",
-                                      color: "white",
-                                      backgroundColor: "#59BAD5",
-                                    }}
-                                  >
-                                    Start Date
-                                  </td>
-                                  <td style={{ paddingLeft: "27px" }}>
-                                    {
-                                      new Date(checklist?.startedAt)
-                                        .toISOString()
-                                        .split("T")[0]
-                                    }
-                                  </td>
-                                </tr>
-                                <tr style={{ height: "32px" }}>
-                                  <td
-                                    style={{
-                                      paddingLeft: "27px",
-                                      borderRight: "1px solid black",
-                                      color: "white",
-                                      backgroundColor: "#59BAD5",
-                                    }}
-                                  >
-                                    End Date
-                                  </td>
-                                  <td style={{ paddingLeft: "27px" }}>
-                                    {
-                                      new Date(checklist?.finishedAt)
-                                        .toISOString()
-                                        .split("T")[0]
-                                    }
-                                  </td>
-                                </tr>
-                              </tbody>
-                            </table>
-                          </div>
-                        </div>
-                      ))
-                    )
-                  )
-                )
-              )}
+              {(() => {
+                // Log the entire nested structure
+                console.log(
+                  "យកដៃច្របាច់ថ្ងាស់:",
+                  report?.payload?.groupedTasks
+                );
+
+                // Log each level with indices for debugging
+                report?.payload?.groupedTasks?.forEach(
+                  (allTask, taskGroupIndex) => {
+                    console.log(`យកដៃច្របាច់ថ្ងាស់ ${taskGroupIndex}:`, allTask);
+
+                    allTask?.tasks?.forEach((task, taskIndex) => {
+                      console.log(`  យកដៃច្របាច់ថ្ងាស់ ${taskIndex}:`, task);
+
+                      task?.allChecklists?.forEach(
+                        (checklist, checklistIndex) => {
+                          console.log(
+                            `    យកដៃច្របាច់ថ្ងាស់ ${checklistIndex}:`,
+                            checklist
+                          );
+
+                          checklist?.members?.forEach((member, memberIndex) => {
+                            console.log(`      យកដៃច្របាច់ថ្ងាស់ ${memberIndex}:`, member);
+
+                            member?.allComments?.forEach(
+                              (comment, commentIndex) => {
+                                console.log(
+                                  `        យកដៃច្របាច់ថ្ងាស់ ${commentIndex}:`,
+                                  comment
+                                );
+
+                                // Log the complete path for this comment
+                                console.log(
+                                  `យកដៃច្របាច់ថ្ងាស់ ${taskGroupIndex}-${taskIndex}-${checklistIndex}-${memberIndex}-${commentIndex}:`,
+                                  {
+                                    taskGroupIndex,
+                                    taskIndex,
+                                    checklistIndex,
+                                    memberIndex,
+                                    commentIndex,
+                                    taskTitle: task?.title,
+                                    checklistTitle: checklist?.title,
+                                    memberName: member?.username,
+                                    commentLength: comment?.length,
+                                    startedAt: checklist?.startedAt,
+                                    finishedAt: checklist?.finishedAt,
+                                  }
+                                );
+                              }
+                            );
+                          });
+                        }
+                      );
+                    });
+                  }
+                );
+
+                // Return null so nothing renders
+                return null;
+              })()}
             </div>
           </div>
         </div>
@@ -3996,4 +3609,27 @@ export const FourthPage = ({ absolute, report }) => {
       </p>
     </div>
   );
+};
+
+export const calculatePageBreaks = (items, itemHeight, maxPageHeight) => {
+  const pages = [];
+  let currentPage = [];
+  let currentHeight = 0;
+
+  items.forEach((item, index) => {
+    if (currentHeight + itemHeight > maxPageHeight) {
+      pages.push(currentPage);
+      currentPage = [item];
+      currentHeight = itemHeight;
+    } else {
+      currentPage.push(item);
+      currentHeight += itemHeight;
+    }
+  });
+
+  if (currentPage.length > 0) {
+    pages.push(currentPage);
+  }
+
+  return pages;
 };
