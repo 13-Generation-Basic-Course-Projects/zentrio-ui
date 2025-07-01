@@ -22,7 +22,7 @@ export default function Layout({ children }) {
         {/* </NextUIProvider> */}
         {/* Onesignal */}
         <OneSignalInitializer />
-        <ToastContainer position="top-right" autoClose={4000} />
+        {/* <ToastContainer position="top-right" autoClose={4000} /> */}
       </body>
     </html>
   );

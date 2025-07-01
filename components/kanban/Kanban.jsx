@@ -15,6 +15,7 @@ import {
   moveTaskOrderAction,
 } from "@/action/board.action";
 import KanbanDrawer from "./ArchiveDrawer";
+import BredCrumKanban from "../bredcrum/BredcrumKanban";
 
 // Placeholder component
 const UserAvater = ({ image }) => (
@@ -581,11 +582,19 @@ export default function KanbanBoard({
 
   return (
     <div className="w-full h-screen flex flex-col">
-      <BredCrum
+      {/* <BredCrum
         board={boardData?.payload.title || "Hikko Design"}
         feature={"Board"}
         header={boardData?.payload.title || "Hikko Design"}
         modal={modal}
+        workspaceId={workspaceId}
+      /> */}
+      <BredCrumKanban
+        board={boardData?.payload.title || "Hikko Design"}
+        feature={"Board"}
+        header={boardData?.payload.title || "Hikko Design"}
+        modal={modal}
+        boardId={boardId}
         workspaceId={workspaceId}
       />
       <StackedUser image={allMemberInBoard} />
@@ -987,7 +996,8 @@ export default function KanbanBoard({
                                   <div
                                     className={`col-span-8 flex items-center`}
                                   >
-                                    {role == "ROLE_MEMBER" || role == "ROLE_MANAGER" ? (
+                                    {role == "ROLE_MEMBER" ||
+                                    role == "ROLE_MANAGER" ? (
                                       ""
                                     ) : (
                                       <ModalCreateChecklist

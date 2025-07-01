@@ -16,6 +16,7 @@ import {
   useDisclosure,
   Card,
   DateRangePicker,
+  DatePicker,
 } from "@heroui/react";
 import { parseDate, parseDateTime } from "@internationalized/date";
 import { IconAdd, StackedProfileChecklist } from "../../icon/everyicon";
@@ -300,47 +301,59 @@ const useDescriptionEditor = (taskId, checklistId, isOpen) => {
     setError(null);
   }, []);
 
-  const handleDateRangeChange = useCallback(
+  const handleFinishedAtChange = useCallback(
     async (value) => {
-      console.log("DateRangePicker onChange raw:", value);
+      console.log("DatePicker onChange raw:", value);
 
-      // Compare checklist start vs task start
-      if (value.start) {
-        // Extract only date parts (YYYY-MM-DD) for comparison
-        const checklistStartStr = `${value.start.year}-${String(
-          value.start.month
-        ).padStart(2, "0")}-${String(value.start.day).padStart(2, "0")}`;
-        const taskStartStr = taskStartedAt ? taskStartedAt.split("T")[0] : null;
-
-        if (taskStartStr && checklistStartStr !== taskStartStr) {
-          toast.error(
-            "Checklist start date must be the same as task start date"
-          );
-          return; // prevent further processing if needed
-        }
-      }
-
-      const end = value.end
-        ? new Date(
-            `${value.end.year}-${String(value.end.month).padStart(
-              2,
-              "0"
-            )}-${String(value.end.day).padStart(2, "0")}T17:00:00`
-          )
-        : null;
-
-      console.log("Parsed End Date:", end?.toISOString());
-
-      if (!end) {
+      if (!value) {
         toast.error("Finish date is required");
         return;
       }
 
-      // Call backend to update finishedAt only
+      const selectedDate = new Date(
+        value.year,
+        value.month - 1,
+        value.day,
+        17,
+        0,
+        0,
+        0
+      );
+
+      if (isNaN(selectedDate.getTime())) {
+        toast.error("Invalid date selected");
+        return;
+      }
+
+      const todayDate = new Date();
+      todayDate.setHours(0, 0, 0, 0);
+      if (selectedDate < todayDate) {
+        toast.error("Finish date cannot be in the past");
+        return;
+      }
+
+      const taskStart = taskStartedAt ? new Date(taskStartedAt) : null;
+      const taskFinish = taskFinishedAt ? new Date(taskFinishedAt) : null;
+      if (
+        (taskStart && selectedDate < taskStart) ||
+        (taskFinish && selectedDate > taskFinish)
+      ) {
+        toast.error("Finish date must be within the task’s valid date range");
+        return;
+      }
+
+      if (
+        checklistData?.startedAt &&
+        selectedDate < new Date(checklistData.startedAt)
+      ) {
+        toast.error("Finish date cannot be before start date");
+        return;
+      }
+
       try {
         if (checklistId) {
           const res = await updateCheckListDateByIdAndTaskIdAction({
-            finishedAt: end.toISOString(),
+            finishedAt: selectedDate.toISOString(),
             checklistId,
           });
           console.log("✔ Checklist finishedAt updated:", res);
@@ -349,16 +362,20 @@ const useDescriptionEditor = (taskId, checklistId, isOpen) => {
       } catch (err) {
         console.error("❌ Failed to update checklist:", err);
         toast.error("Failed to update checklist date");
+        return;
       }
 
-      // Only update the end date in local state
       setDateRange((prev) => ({
-        start: prev.start, // keep original start
-        end: value.end,
+        start: prev.start,
+        end: {
+          year: value.year,
+          month: value.month,
+          day: value.day,
+        },
       }));
       setChangedFields((prev) => new Set(prev).add("finishedAt"));
     },
-    [taskStartedAt, checklistId]
+    [checklistId, taskStartedAt, taskFinishedAt, checklistData?.startedAt]
   );
 
   const handleSaveTitle = useCallback(async () => {
@@ -683,6 +700,9 @@ const useDescriptionEditor = (taskId, checklistId, isOpen) => {
     setError(null);
   };
 
+  const isOldChecklist = checklistData?.startedAt
+    ? new Date(checklistData.startedAt) < new Date("2025-01-01")
+    : false;
   return {
     taskData: checklistData,
     newDescription,
@@ -703,9 +723,11 @@ const useDescriptionEditor = (taskId, checklistId, isOpen) => {
     handleTitleChange,
     handleCancel,
     dateRange,
-    handleDateRangeChange,
+    // handleDateRangeChange,
+    handleFinishedAtChange,
     taskStartedAt,
     taskFinishedAt,
+    isOldChecklist,
   };
 };
 
@@ -740,6 +762,10 @@ const ModalDetailChecklist = ({
   const [totalCommentLength, setTotalCommentLength] = useState(0); // Add state
 
   console.log("hhhh", image);
+  const disablePastDates = (date) => {
+    const todayDate = today(getLocalTimeZone());
+    return isBefore(date, todayDate);
+  };
   const {
     taskData,
     newDescription,
@@ -760,9 +786,11 @@ const ModalDetailChecklist = ({
     handleTitleChange,
     handleCancel,
     dateRange,
-    handleDateRangeChange,
+    // handleDateRangeChange,
+    handleFinishedAtChange,
     taskStartedAt,
     taskFinishedAt,
+    isOldChecklist,
   } = useDescriptionEditor(taskId, checklistId, isOpen);
 
   console.log("log taskStatedAt :", taskStartedAt);
@@ -773,6 +801,8 @@ const ModalDetailChecklist = ({
   const maxCalendarDate = taskFinishedAt
     ? parseDate(taskFinishedAt.split("T")[0])
     : undefined;
+
+ 
 
   const fileIcons = {
     pdf: "https://cdn-icons-png.flaticon.com/128/4726/4726010.png",
@@ -1239,17 +1269,28 @@ const ModalDetailChecklist = ({
                       role={role}
                     />
                     <div className="max-w-[400px] w-full flex flex-row gap-4">
-                      <DateRangePicker
+                      <DatePicker
                         showMonthAndYearPickers
                         variant="inline"
                         size="sm"
-                        value={dateRange}
-                        onChange={handleDateRangeChange}
+                        onChange={handleFinishedAtChange}
                         selectorButtonPlacement="end"
-                        label="Checklist Dates"
-                        disabled={loading}
+                        label="Checklist Finish Date"
+                        disabled={loading || isOldChecklist}
                         minValue={minCalendarDate}
                         maxValue={maxCalendarDate}
+                        value={
+                          dateRange.end
+                            ? parseDate(
+                                `${dateRange.end.year}-${String(
+                                  dateRange.end.month
+                                ).padStart(2, "0")}-${String(
+                                  dateRange.end.day
+                                ).padStart(2, "0")}`
+                              )
+                            : null
+                        }
+                        shouldDisableDate={disablePastDates}
                       />
                     </div>
                   </div>
