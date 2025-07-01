@@ -941,8 +941,8 @@ export default function CardBoardReport({ boardId, reports, allDataReport }) {
               <p className="font-medium text-body-sm">
                 {reports?.boardData?.title}.pdf
               </p>
-              <button className="text-title/50 text-caption-tiny hover:underline text-left">
-                Rename
+              <button className="text-title/50 text-caption-tiny cursor-default text-left">
+                {new Date(reports?.boardData?.createdAt).toISOString().split('T')[0]}
               </button>
             </div>
           </div>
@@ -969,8 +969,8 @@ export default function CardBoardReport({ boardId, reports, allDataReport }) {
               <p className="font-medium text-body-sm">
                 {reports?.boardData?.title}.doc
               </p>
-              <button className="text-title/50 text-caption-tiny hover:underline text-left">
-                Rename
+              <button className="text-title/50 text-caption-tiny cursor-default text-left">
+                {new Date(reports?.boardData?.createdAt).toISOString().split('T')[0]}
               </button>
             </div>
           </div>
@@ -997,8 +997,8 @@ export default function CardBoardReport({ boardId, reports, allDataReport }) {
               <p className="font-medium text-body-sm">
                 {reports?.boardData?.title}.xlsx
               </p>
-              <button className="text-title/50 text-caption-tiny hover:underline text-left">
-                Rename
+              <button className="text-title/50 text-caption-tiny cursor-default text-left">
+                {new Date(reports?.boardData?.createdAt).toISOString().split('T')[0]}
               </button>
             </div>
           </div>
