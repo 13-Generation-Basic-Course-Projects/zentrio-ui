@@ -1,4 +1,5 @@
 import { ganttRouteGroup } from "@/routes/ganttRoute";
+import { revalidatePath } from "next/cache";
 
 /*
  *       GANTT BAR
@@ -145,7 +146,7 @@ export const deleteGanttBarsByGanttChartIdService = async ({
 };
 
 /*
- * create gantt bar by GantchartId
+ * update gantt by GantchartId
  */
 // src/service/gantt.service.js
 export async function updateGantChartBytIdService({
@@ -170,5 +171,48 @@ export async function updateGantChartBytIdService({
   const result = await res.json();
   console.log("📥 Backend responded with:", result);
 
+  return { success: true, data: result };
+}
+
+
+
+/*
+ * update gantt bar by GantchartId
+ */
+export async function updateGantBarBytGantChartIdService({
+  ganttBarId,
+  ganttChartId,
+  title,
+  startedAt,
+  finishedAt,
+  face,
+  token,
+}) {
+  console.log("from service", {token,  ganttBarId,
+    ganttChartId,
+    title,
+    startedAt,
+    finishedAt,
+    face, });
+
+  const url = ganttRouteGroup.updateGanttBar(ganttBarId);
+
+  const res = await fetch(url, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({  
+      ganttChartId,
+      title,
+      startedAt,
+      finishedAt,
+      face,}), 
+  });
+
+  const result = await res.json();
+  console.log("📥 Backend responded with ganttbar update:", result);
+  
   return { success: true, data: result };
 }

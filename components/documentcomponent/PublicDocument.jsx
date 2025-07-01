@@ -1,9 +1,9 @@
 "use client";
 import React, { useState } from "react";
+import MyDatePicker from "../date/Datepicker";
 import BredCrum from "../bredcrum/MyBredcrum";
 import CardFolder, { CardFile } from "../card/CardDoc";
 import { Autocomplete, AutocompleteItem, Input } from "@heroui/react";
-import MyDatePicker from "../date/DatePicker";
 export default function PublicDocument({
   modal,
   publicDocuments,
@@ -11,7 +11,7 @@ export default function PublicDocument({
   isHidden,
   workspaceId,
   boardId,
-  boardName
+  boardName,
 }) {
   const payload = publicDocuments?.payload || [];
 
@@ -207,7 +207,7 @@ export default function PublicDocument({
                     status={el.status || "personal"}
                     date={el.date}
                     type={el.type}
-                    link={el.driveUrl}
+                    link={el.link}
                     documentId={el?.id}
                     folderId={el?.folderId}
                     tokenFromGoogle={tokenFromGoogle}

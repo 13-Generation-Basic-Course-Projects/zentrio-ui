@@ -354,7 +354,7 @@ export default function ProfileLayout({
 
           <div className="absolute bottom-[-60px] left-1/2 -translate-x-1/2 w-32 h-32 rounded-full border-4 border-white p-1 group cursor-pointer bg-white shadow-2xl overflow-hidden transition-all duration-300 hover:scale-105">
             <img
-              className="rounded-full object-cover w-full h-full"
+              className="rounded-full object-cover w-full h-full border-2 border-primary p-[2px]"
               src={
                 localPreview ||
                 serverImage ||
