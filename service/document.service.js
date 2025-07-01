@@ -584,31 +584,78 @@ export const getAttachmentService = async ({ checklistId, token }) => {
   }
 };
 
-
-export const postAttachmentService = async ({ checklistId, details, token }) => {
-
-
-  console.log("DEtaila dataaaaaaaaaaaaaaaaaa", details);
-  
+//au
+export const postAttachmentService = async ({
+  checklistId,
+  details,
+  token,
+}) => {
   try {
-    const url = documentRouteGroup.postAttactment(checklistId);
-  
-      console.log("url in post attachment service", url);
-      console.log("token in post attachment service", token);
-      console.log("checklist id", checklistId);
+    // 1. Get existing attachment
+    const existingAttachments = await getAttachmentService({
+      checklistId,
+      token,
+    });
+
+    console.log("exxxxxxxxxxxx", existingAttachments);
+
+    const hasExisting =
+      existingAttachments?.success && existingAttachments?.payload;
+    const attachmentId =
+      existingAttachments?.payload?.attachmentId;
+
+    console.log("aaaaaaaaaaaaa", attachmentId);
+    const method = hasExisting ? "PUT" : "POST";
+    const url = hasExisting
+      ? documentRouteGroup.updateAttachment(attachmentId, checklistId)
+      : documentRouteGroup.postAttactment(checklistId);
+
+    if (!url) throw new Error("URL could not be resolved");
+
+    console.log(`Sending ${method} to:`, url);
+
     const res = await fetch(url, {
-      method: "POST",
+      method,
       headers: {
         Accept: "*/*",
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(details), // Remove the extra wrapping
+      body: JSON.stringify(details),
     });
 
     const result = await res.json();
     return result;
   } catch (error) {
-    console.error("Error : ", error.message);
+    console.error("Error in postAttachmentService:", error.message);
+    throw error;
   }
 };
+
+// export const postAttachmentService = async ({ checklistId, details, token }) => {
+
+
+//   console.log("DEtaila dataaaaaaaaaaaaaaaaaa", details);
+  
+//   try {
+//     const url = documentRouteGroup.postAttactment(checklistId);
+  
+//       console.log("url in post attachment service", url);
+//       console.log("token in post attachment service", token);
+//       console.log("checklist id", checklistId);
+//     const res = await fetch(url, {
+//       method: "POST",
+//       headers: {
+//         Accept: "*/*",
+//         "Content-Type": "application/json",
+//         Authorization: `Bearer ${token}`,
+//       },
+//       body: JSON.stringify(details), // Remove the extra wrapping
+//     });
+
+//     const result = await res.json();
+//     return result;
+//   } catch (error) {
+//     console.error("Error : ", error.message);
+//   }
+// };

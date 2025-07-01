@@ -50,4 +50,10 @@ export const documentRouteGroup = {
     `${apiConfig.baseUrl}/attachments?checklistId=${checklistId}`,
   getAttactment: (checklistId) =>
     `${apiConfig.baseUrl}/attachments/checklists/${checklistId}`,
+
+
+  //new
+
+  updateAttachment: (attachmentId, checklistId) =>
+    `${apiConfig.baseUrl}/attachments/${attachmentId}/checklists/${checklistId}`, // ✅ matches your backend
 };
