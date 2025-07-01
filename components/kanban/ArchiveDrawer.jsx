@@ -38,36 +38,36 @@ const userRoles = {
     color: "danger",
     icon: <Crown className="w-7 h-7 text-primary" />,
     description:
-      "Ultimate project authority with full access to all features including board creation, Gantt chart management, team oversight, and strategic decision-making",
+      "Leads the entire workspace with full control over boards, roles, timelines, and team structure. Sets direction and ensures smooth project execution.",
     guide:
-      "Ultimate project authority with full access to all features including Kanban view, document collaboration, and personal calendar",
+      "Full access and project oversight.",
   },
   teamLeader: {
     title: "Team Leader",
     color: "warning",
     icon: <ShieldCheck className="w-7 h-7 text-primary" />,
     description:
-      "Operational task coordinator responsible for team guidance, task assignment, progress tracking, and ensuring deliverable quality within assigned project areas",
+      "Manages day-to-day task flow within a project. Assigns tasks, tracks progress, and supports team coordination from planning to delivery.",
     guide:
-      "Operational task coordinator with access to Kanban view, document collaboration, and personal calendar features",
+      "Mid-level role to coordinate tasks, people, and progress.",
   },
   member: {
     title: "Member",
     color: "primary",
     icon: <Users className="w-7 h-7 text-primary" />,
     description:
-      "Task executor focused on completing assigned work, updating progress status, collaborating with teammates, and contributing to project deliverables",
+      "Focuses on completing assigned tasks and collaborating across the project. Contributes directly to progress and team success.",
     guide:
-      "Task executor with access to Kanban view, document collaboration, and personal calendar features",
+      "Focused on task execution and communication.",
   },
   guest: {
     title: "Guest",
     color: "default",
     icon: <Eye className="w-7 h-7 text-primary" />,
     description:
-      "External stakeholder with limited view-only access to specific project information via shared workspace links",
+      "View-only access to stay informed on project activity. Ideal for stakeholders who need visibility without editing rights.",
     guide:
-      "External stakeholder with view-only access to shared workspace information",
+      "Read-only access for external stakeholders.",
   },
 };
 
@@ -75,81 +75,64 @@ const guideSteps = {
   projectManager: [
     {
       step: 1,
-      title: "Invite Member to Board",
+      title: "Invite Members to Board",
       description:
         "Learn how to add team members to your project board and assign them appropriate roles.",
       actions: [
-        "Click the (Invite) button in the board page",
-        "Enter team member email addresses",
-        "Choose member roles (Team Leader or Member) from the dropdown menu",
-        "Add to pending for multiple invite",
-        "Click (Send Invitations) to notify all selected team members",
+        "Go to the board page and click (Invite)",
+        "Enter email addresses",
+        "Choose roles (Team Leader or Member)",
+        "Add multiple members to pending list",
+        "Click (Send All Invites) to notify team members",
       ],
-      tips: "Assign Team Leader roles to experienced members who can help coordinate specific project areas",
+      tips: " Important: No tasks can move forward until members are invited and roles are assigned.",
     },
     {
       step: 2,
-      title: "Create Gantt Chart and Gantt Bar",
+      title: "Create Gantt Chart and Gantt Bars",
       description:
         "A Gantt chart is a visual project management tool that displays tasks, timelines, and dependencies in horizontal bar format, allowing you to see the entire project timeline at a glance and track progress against planned schedules.",
       actions: [
-        "Click the (Create) button in the board page by giving the Gantt Chart title",
-        "Add main project phases by clicking (Create) to create Gantt Bars",
-        "Set Gantt Bar durations by dragging the timeline bars or entering specific dates",
-        "Select the specific phases for a bar",
-        "Save",
+        "Click (Create) on board page > Enter Gantt chart title",
+        "Click (Create) again to add Gantt bars (within project phases)",
+        "Set durations by dragging timeline or entering dates",
+        "Select each phase > Save",
       ],
-      tips: "Use different colors for Gantt bars to distinguish between phases and priority levels",
+      tips: "Gantt Chart must be created first before creating or assigning tasks.",
     },
     {
       step: 3,
-      title: "Optional to Create Tasks",
+      title: "Create High-Level Tasks",
       description:
         "Create high-level tasks that can be broken down further by Team Leaders into detailed checklists.",
       actions: [
-        "Navigate to the (Tasks) section in your project board",
-        "Click (Create New Task) button",
-        "Enter task title and detailed description",
-        "Set task priority level (High, Medium, Low)",
-        "Assign the task to a specific Team Leader",
-        "Set estimated completion date and effort required",
-        "Add relevant tags or categories for better organization",
-        "Save the task and notify the assigned Team Leader",
+        "Back  to (Board) page again > Click (Create)",
+        "Add title, description, and assign to a Team Leader while creating or manual assign after created",
+        "Set deadline, and select a Gantt bar > Save",
       ],
-      tips: "Keep tasks at a strategic level - let Team Leaders handle the detailed breakdown",
+      tips: "The first created task will goes to “TO DO” stage",
     },
     {
       step: 4,
-      title: "Approve when Task goes to (Completed) Stage and Feedback",
+      title: "Review and Approve Completed Tasks",
       description:
         "Review and approve completed tasks while providing constructive feedback to maintain quality standards.",
       actions: [
-        "Navigate to tasks in (Completed) status on the Kanban board",
-        "Click on the completed task to open detailed view",
-        "Review all checklist items and deliverables thoroughly",
-        "Check attached documents and work outputs",
-        "Provide detailed feedback in the comments section",
-        "Choose to either (Approve) or (Request Changes)",
-        "If approved, move task to (Final Approval) status",
-        "If changes needed, move back to (Under Review) with specific feedback",
-        "Notify Team Leader and Members about the decision",
+        "Go to (Completed) tasks in Kanban view",
+        "Open task and review checklists and documents",
+        "Leave feedback by click on menu button",
       ],
-      tips: "Provide specific, actionable feedback to help team members improve their work quality",
+      tips: "",
     },
     {
       step: 5,
-      title: "View and Generate Report",
+      title: "Generate Reports",
       description:
         "Access comprehensive project analytics and generate detailed reports for stakeholders.",
       actions: [
-        "Click on (Reports) tab in the main navigation menu",
-        "Select report type (Progress, Performance, Timeline, Resource Utilization)",
-        "Choose date range and specific team members to include",
-        "Configure report parameters and filters",
-        "Preview the report before generating final version",
-        "Click (Generate Report) to create PDF or Excel format",
-        "Download or share the report with relevant stakeholders",
-        "Schedule automatic report generation for regular updates",
+        "Click (Reports) on sidebar from main menu ",
+        "Choose to Preview first or Generate",
+        "Generate as PDF/Excel/Docs by click on (Save As)",
       ],
       tips: "Set up weekly automated reports to keep stakeholders informed without manual effort",
     },
@@ -157,123 +140,90 @@ const guideSteps = {
   teamLeader: [
     {
       step: 1,
-      title: "Create Tasks",
+      title: "Create Detailed Tasks",
       description:
         "After accepting assignment from Project Manager, break down project components into manageable tasks for your team members.",
       actions: [
-        "Access your assigned project area from the dashboard",
-        "Click (Create New Task) in your designated section",
-        "Enter comprehensive task title and detailed description",
-        "Set task priority level and estimated effort required",
-        "Define task objectives and expected deliverables clearly",
-        "Attach relevant reference documents or resources",
-        "Set realistic deadline based on project timeline",
-        "Save the task in (To Do) status on the Kanban board",
+        "Access assigned board > Click (Create)",
+        "Enter title, description and set deadlines",
+        "Select the existed Gantt bar > Save",
       ],
-      tips: "Write clear task descriptions to minimize confusion and back-and-forth communication",
+      tips: "The first created task will goes to “TO DO” stage",
     },
     {
       step: 2,
-      title: "Create Checklists (Inside Tasks)",
+      title: "Create Checklists Inside Tasks",
       description:
         "Break down tasks into specific, actionable checklist items that can be assigned to individual team members.",
       actions: [
-        "Open the task you want to add checklists to",
-        "Click (Add Checklist) button within the task details",
-        "Enter specific checklist item title and description",
-        "Set individual checklist priority and estimated time",
-        "Add detailed instructions or acceptance criteria",
-        "Attach supporting files or reference materials if needed",
-        "Set checklist status to (Not Started)",
-        "Repeat process to create multiple checklist items within the task",
+        "Open a task > Click (Add New Checklist)",
+        "Enter title, description, set deadline",
+        "Save",
       ],
-      tips: "Keep checklist items small and specific - each should take no more than a few hours to complete",
+      tips: "",
     },
     {
       step: 3,
-      title: "Assign Member to Checklists",
+      title: " Assign Members to Checklists",
       description:
         "Delegate specific checklist items to appropriate team members based on their skills and availability.",
       actions: [
-        "Open the task containing the checklists you want to assign",
-        "Click on the specific checklist item you want to assign",
-        "Click (Assign Member) dropdown menu",
-        "Select the appropriate team member from the available list",
-        "Set assignment deadline and priority level",
-        "Send notification to the assigned member with context",
-        "Monitor assignment status and member acceptance",
-        "Follow up if assignment is not accepted within reasonable time",
+        "Open checklist > Click (Assign Member) button",
+        "Select members in the board > Notify the member",
       ],
-      tips: "Match checklist assignments to member expertise to ensure quality and efficiency",
+      tips: "",
     },
     {
       step: 4,
-      title: "Move Tasks Through Four Stages",
+      title: "Move Tasks Across Four-Stages",
       description:
         "Guide tasks through the workflow stages while ensuring all checklists are properly completed first.",
       actions: [
-        "Monitor task progress on the Kanban board regularly",
-        "Verify all checklists are moved from (IN PROGRESS) to (DONE) status first",
-        "Only after all checklists are (DONE), move task from (To Do) to (In Progress)",
-        "Track work progress and provide guidance as needed",
-        "When work is complete, move task to (Under Review) status",
-        "Conduct quality review and gather necessary approvals",
-        "Move task to (Completed) status for Project Manager final approval",
-        "Important Note: Tasks cannot advance to next stage until ALL checklists within that task are marked as (DONE)",
+        "Zentrio uses a clear four-stage workflow: To Do → In Progress → Under Review → Completed.",
+        "Tasks begin in the (To Do) stage once created.",
+        "After tasks are assigned and accepted, the task will move to (In Progress) automatically.",
+        "Once all checklists are marked as (Done), Team Leader can move  to (Under Review).",
+        "After Team Leader finish reviewing, they can finalizes the task by moving it to (Completed). ",
       ],
-      tips: "Use the Kanban board filters to quickly see tasks that are ready to move to the next stage",
+      tips: " Important: Tasks cannot move to 'Under Review' if any checklist is still marked as 'In Progress'. All checklists must be 'Done' first.",
     },
   ],
   member: [
     {
       step: 1,
-      title: "Work on Checklist",
+      title: "Work on Assigned Checklist Items",
       description:
         "After accepting assignment from Team Leader, focus on completing assigned checklist items efficiently and effectively.",
       actions: [
-        "Access your assigned checklists from the personal dashboard",
-        "Open the specific checklist item you want to work on",
-        "Change checklist status from (Not Started) to (In Progress)",
-        "Review all requirements and acceptance criteria carefully",
-        "Gather necessary resources and reference materials",
-        "Execute the work according to specifications",
-        "Update progress regularly and communicate any blockers",
-        "When work is complete, change status from (In Progress) to (Done)",
-        "Attach completed deliverables or evidence of completion",
-        "Notify Team Leader that checklist item is ready for review",
+        "Access assigned checklist from dashboard",
+        "Accept checklist",
+        "Complete task, attach deliverables, upload any files",
+        "Notify Team Leader by personal chat or communication ",
       ],
-      tips: "Update your checklist status frequently to keep Team Leaders informed of your progress",
+      tips: "Important: Members only interact with checklist items. They must accept it before starting work.",
     },
     {
       step: 2,
-      title: "Comment Under Checklist",
+      title: "Use Comments to Communicate",
       description:
         "Maintain clear communication with Team Leaders and other members through checklist comments.",
       actions: [
-        "Open the checklist item you want to comment on",
-        "Scroll to the comments section at the bottom",
-        "Click (Add Comment) to open the text editor",
-        "Write clear, specific comments about progress, questions, or issues",
-        "Use @mentions to notify specific team members if needed",
-        "Attach relevant files or screenshots to support your comments",
-        "Choose comment visibility (Team Leader only or All Members)",
-        "Click (Post Comment) to share with the team",
-        "Respond to comments from Team Leaders promptly",
-        "Use comments to ask questions or report blockers immediately",
+        "Go to checklist > Click (Add Comment)",
+        "Share updates, ask questions, or flag issues",
       ],
-      tips: "Use comments proactively to communicate challenges before they become major blockers",
+      tips: "",
     },
   ],
   guest: [
     {
       step: 1,
-      title: "View the Whole Board but Not Edit",
+      title: " View Project Progress and Materials",
       description:
         "Access shared project information as an external stakeholder while maintaining project security through read-only permissions.",
       actions: [
-        "Click on the shared workspace link provided by the Project Manager",
-        "Browse through the complete project board and all visible information",
-        "View task progress across all four stages (To Do, In Progress, Under Review, Completed)",
+        "Open shared board link",
+        "Browse board stages, Gantt charts, and tasks",
+        "Monitor timelines and overall progress with read-only access",
       ],
       tips: "Save shared links in your browser bookmarks for quick access to project updates and stay informed about project progress",
     },
@@ -315,7 +265,7 @@ const zentRioFeatures = [
 
 export default function ZenTrioGuide() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [selectedRole, setSelectedRole] = useState("member");
+  const [selectedRole, setSelectedRole] = useState("projectManager");
   const [activeStep, setActiveStep] = useState(0);
 
   return (
@@ -462,7 +412,7 @@ export default function ZenTrioGuide() {
                         {userRoles[selectedRole].title} Workflow Guide
                       </h3>
                       <p className="text-default-600 mt-1">
-                        {userRoles[selectedRole].description}
+                        {userRoles[selectedRole].guide}
                       </p>
                     </div>
                     <Chip
@@ -476,152 +426,107 @@ export default function ZenTrioGuide() {
 
                   {/* Progress Stepper */}
                   <div className="relative">
-                    <div className="absolute left-4 h-full w-0.5 bg-gray-200 top-8"></div>
-                    <div className="space-y-8">
-                      {guideSteps[selectedRole].map((stepData, index) => (
-                        <div
-                          key={index}
-                          className="relative flex gap-6 group"
-                          onClick={() => setActiveStep(index)}
-                        >
-                          <div className="flex flex-col items-center">
-                            <div
-                              className={`w-8 h-8 rounded-full flex items-center justify-center z-10 flex-shrink-0 transition-all
-                              ${
-                                activeStep === index
-                                  ? selectedRole === "projectManager"
-                                    ? "bg-primary ring-4 ring-blue-100"
-                                    : selectedRole === "teamLeader"
-                                    ? "bg-primary ring-4 ring-blue-100"
-                                    : selectedRole === "member"
-                                    ? "bg-primary ring-4 ring-blue-100"
-                                    : "bg-primary ring-4 ring-blue-100"
-                                  : "bg-gray-200"
-                              }
-                              `}
-                            >
-                              <span className="text-white font-bold text-sm">
-                                {stepData.step}
-                              </span>
-                            </div>
-                            {index ===
-                            guideSteps[selectedRole].length - 1 ? null : (
-                              <div
-                                className={`h-16 w-0.5 transition-all ${
-                                  activeStep >= index
-                                    ? selectedRole === "projectManager"
-                                      ? "bg-primary"
-                                      : selectedRole === "teamLeader"
-                                      ? "bg-primary"
-                                      : selectedRole === "member"
-                                      ? "bg-primary"
-                                      : "bg-primary"
-                                    : "bg-gray-200"
-                                }`}
-                              ></div>
-                            )}
-                          </div>
+  <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-gray-200"></div>
+  <div className="space-y-4">
+    {guideSteps[selectedRole].map((stepData, index) => (
+      <div
+        key={index}
+        className="relative flex gap-6 group"
+        onClick={() => setActiveStep(index)}
+      >
+        <div className="flex flex-col items-center">
+          <div
+            className={`w-8 h-8 rounded-full flex items-center justify-center z-10 flex-shrink-0 transition-all
+              ${
+                activeStep >= index
+                  ? "bg-primary ring-4 ring-blue-100"
+                  : "bg-gray-200"
+              }`}
+          >
+            <span className={`font-bold text-sm ${
+              activeStep >= index ? "text-white" : "text-gray-600"
+            }`}>
+              {stepData.step}
+            </span>
+          </div>
+          {index < guideSteps[selectedRole].length - 1 && (
+            <div
+              className={`h-12 w-0.5 transition-all ${
+                activeStep > index ? "bg-primary" : "bg-gray-200"
+              }`}
+            ></div>
+          )}
+        </div>
 
-                          <Card
-                            className={`w-full shadow-sm transition-all cursor-pointer
-                              ${
-                                activeStep === index
-                                  ? selectedRole === "projectManager"
-                                    ? "border-primary border-2"
-                                    : selectedRole === "teamLeader"
-                                    ? "border-primary border-2"
-                                    : selectedRole === "member"
-                                    ? "border-primary border-2"
-                                    : "border-primary border-2"
-                                  : "hover:shadow-md hover:border-gray-300 border"
-                              }
-                            `}
-                          >
-                            <CardHeader className="pb-3">
-                              <div className="flex items-start gap-4 w-full">
-                                <div className="flex-1">
-                                  <h4
-                                    className={`text-xl font-bold transition-all ${
-                                      activeStep === index
-                                        ? selectedRole === "projectManager"
-                                          ? "text-primary"
-                                          : selectedRole === "teamLeader"
-                                          ? "text-primary"
-                                          : selectedRole === "member"
-                                          ? "text-primary"
-                                          : "text-primary"
-                                        : "text-default-800"
-                                    }`}
-                                  >
-                                    {stepData.title}
-                                  </h4>
-                                  <p className="text-default-600 mt-2 text-base">
-                                    {stepData.description}
-                                  </p>
-                                </div>
-                              </div>
-                            </CardHeader>
-                            {activeStep === index && (
-                              <CardBody className="pt-4">
-                                <div className="ml-2">
-                                  <h5 className="font-semibold mb-4 text-default-700 text-lg flex  items-center">
-                                    <ClipboardList className="w-7 h-7 text-primary " />
-                                    <span className="px-3">Action Steps:</span>
-                                  </h5>
-                                  <div className="space-y-3 mb-6">
-                                    {stepData.actions.map(
-                                      (action, actionIndex) => (
-                                        <div
-                                          key={actionIndex}
-                                          className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg"
-                                        >
-                                          <div
-                                            className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5
-                                          ${
-                                            selectedRole === "projectManager"
-                                              ? "bg-primary text-white"
-                                              : selectedRole === "teamLeader"
-                                              ? "bg-primary text-white"
-                                              : selectedRole === "member"
-                                              ? "bg-primary text-white"
-                                              : "bg-primary text-white"
-                                          }`}
-                                          >
-                                            {actionIndex + 1}
-                                          </div>
-                                          <span className="text-default-700 leading-relaxed">
-                                            {action}
-                                          </span>
-                                        </div>
-                                      )
-                                    )}
-                                  </div>
-                                  <div className="bg-gradient-to-r from-amber-50 to-orange-50 border-l-4 border-amber-400 p-5 rounded-r-lg">
-                                    <div className="flex items-start gap-3">
-                                      <div className="text-2xl">
-                                        <Lightbulb className="w-7 h-7 text-amber-500" />
-                                      </div>
-                                      <div>
-                                        <span className="font-bold text-amber-800">
-                                          <span className="px-3">
-                                            {" "}
-                                            Pro Tip:{" "}
-                                          </span>
-                                        </span>
-                                        <span className="text-amber-700 leading-relaxed">
-                                          {stepData.tips}
-                                        </span>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </CardBody>
-                            )}
-                          </Card>
-                        </div>
-                      ))}
+        <Card
+          className={`w-full shadow-sm transition-all cursor-pointer
+            ${
+              activeStep === index
+                ? "border-primary border-2"
+                : "hover:shadow-md hover:border-gray-300 border"
+            }`}
+        >
+          <CardHeader className="pb-3">
+            <div className="flex items-start gap-4 w-full">
+              <div className="flex-1">
+                <h4
+                  className={`text-xl font-bold transition-all ${
+                    activeStep === index ? "text-primary" : "text-default-800"
+                  }`}
+                >
+                  {stepData.title}
+                </h4>
+                <p className="text-default-600 mt-2 text-base">
+                  {stepData.description}
+                </p>
+              </div>
+            </div>
+          </CardHeader>
+          {activeStep === index && (
+            <CardBody className="pt-4">
+              <div className="ml-2">
+                <h5 className="font-semibold mb-4 text-default-700 text-lg flex items-center">
+                  <ClipboardList className="w-7 h-7 text-primary" />
+                  <span className="px-3">Action Steps:</span>
+                </h5>
+                <div className="space-y-3 mb-6">
+                  {stepData.actions.map((action, actionIndex) => (
+                    <div
+                      key={actionIndex}
+                      className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg"
+                    >
+                      <div className="w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center flex-shrink-0 mt-0.5">
+                        {actionIndex + 1}
+                      </div>
+                      <span className="text-default-700 leading-relaxed">
+                        {action}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                <div className="bg-gradient-to-r from-amber-50 to-orange-50 border-l-4 border-amber-400 p-5 rounded-r-lg">
+                  <div className="flex items-start gap-3">
+                    <div className="text-2xl">
+                      <Lightbulb className="w-7 h-7 text-amber-500" />
+                    </div>
+                    <div>
+                      <span className="font-bold text-amber-800 px-3">
+                        Pro Tip:
+                      </span>
+                      <span className="text-amber-700 leading-relaxed">
+                        {stepData.tips}
+                      </span>
                     </div>
                   </div>
+                </div>
+              </div>
+            </CardBody>
+          )}
+        </Card>
+      </div>
+    ))}
+  </div>
+</div>
 
                   {/* ZenTrio Features Detail */}
                   <Card className="bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 border-2 border-blue-100/50 shadow-lg">
