@@ -97,6 +97,7 @@ export default function Announcementpage({
         <CardAllMembers
           boardMember={boardMember}
           preventUserImage={preventUserImage}
+          boardId={boardId}
         />
         <ClockWeather />
       </div>

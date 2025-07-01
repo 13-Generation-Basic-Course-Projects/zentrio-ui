@@ -22,7 +22,7 @@ export default async function page({params}) {
           boardMember={boardMember}
           currentUserProfile={currentUserProfile}
       />
-      <ToastContainer position="top-right" autoClose={3000}/>
+      <ToastContainer/>
     </div>
   );
 };

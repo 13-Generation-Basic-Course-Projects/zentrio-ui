@@ -20,7 +20,7 @@ export default function OtherUserProfile({
   const name = searchParams.get("name");
   const profileImage = searchParams.get("profileImage");
   const boardId = searchParams.get("boardId");
-  console.log("test", userIdDetail);
+  console.log("testeee", userIdDetail);
   return (
     <OtherProfileLayout
       MemberDetails={MemberDetails}
