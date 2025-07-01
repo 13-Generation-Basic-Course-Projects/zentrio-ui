@@ -12,6 +12,7 @@ import {
 import ModalDelete from "../ModalDelete";
 import { useState } from "react";
 import ModalRenameWorkspace from "./ModalRenameWorkspace";
+import { toast } from "react-toastify";
 
 // icon components directly in the same file
 const AddNoteIcon = (props) => (
@@ -230,11 +231,13 @@ export default function ModalOptionWorkspace({
             deleteWorkspace(selectedId)
               .then(() => setDeleteModalOpen(false))
               .catch(console.error);
+              toast.success("Workspace deleted successfully.");
           } else if (deleteType === "other" && deleteUserWorkspace) {
             deleteUserWorkspace(selectedId)
               .then(() => setDeleteModalOpen(false))
               .catch(console.error);
           } else {
+            toast.error("Failed to delete the workspace.");
             console.error("No valid delete function or type provided.");
           }
         }}

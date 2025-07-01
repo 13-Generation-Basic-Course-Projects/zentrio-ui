@@ -1,3 +1,4 @@
+import { getBoardByBoardIdAction } from "@/action/board.action";
 import {
   getDocumentsByBoardAction,
   getPublicDocumentsByBoardAction,
@@ -18,7 +19,8 @@ export default async function BoardLayout({ children, params }) {
 
   const userToken = await Token();
   const token = userToken.GoogleDocumentToken;
-
+  const boardData= await getBoardByBoardIdAction(boardId);
+  const boardName= boardData?.payload?.title;
   // const tokenFromGoogle = "ya29.a0AW4XtxjmO36PU4vEhXhB6gyXpb_Um9wMecy153P4YRr7lbQaC5zR0qVTHvsNpKsmcSrt9ofkJ4633QrkEglksfLYbUF_YKfQWVpRgULGi4RTN_pa-J-8EQWOCkcjanCB6EkpvRisb_zSI5PcSOOTmXjmwG0Heh9HS42cPFlrygaCgYKARASARcSFQHGX2MiTyWDkwYvZZfQWcsybwPyeA0177";
   const tokenFromGoogle = token;
 
@@ -45,6 +47,7 @@ export default async function BoardLayout({ children, params }) {
         preventUserImage={preventUserImage}
         workspaceId={workspaceId}
         docIdPagedocIdPage={id}
+        boardName={boardName}
       />
       <div>{children}</div>
     </div>

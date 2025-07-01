@@ -166,9 +166,6 @@ export default function TeamCardWelcome() {
     );
   };
 
- 
- 
-
   const CalendarView = () => {
     const today = new Date();
 
@@ -204,7 +201,6 @@ export default function TeamCardWelcome() {
       </div>
     );
   };
-
 
   const { day, date, hour, minute, ampm, hour24 } = formatDateTime(time);
   const temperature = weather?.main?.temp;
@@ -296,7 +292,7 @@ export default function TeamCardWelcome() {
         >
           {/* <FourStageWorkflow /> */}
           <img
-            src="https://www.bitrix24.com/upload/optimizer/converted/images/content_en/tools/tasks_and_projects/index/tasks_and_projects-img-block-1.jpg.webp?1749567480869"
+            src="https://imgur.com/SzAKfGB.png"
             alt="img promote"
             className="h-full w-full object-cover object-top"
           />

@@ -5,6 +5,7 @@ import Link from "next/link";
 import userProfile from "@/assets/profile.png";
 import ModalNotification from "../modal/noti/ModalNotification";
 export function NavbarAuthorized({ user, notificationData, preventUserImage }) {
+
   return (
     <>
       {/* Navbar */}
@@ -15,7 +16,7 @@ export function NavbarAuthorized({ user, notificationData, preventUserImage }) {
             {/* Right side - Notification and Profile */}
             <div className="flex items-center gap-4">
               {/* Notification Icon */}
-              <ModalNotification notificationData={notificationData} />
+              <ModalNotification notificationData={notificationData}/>
 
               {/* Profile */}
               <Link href="/profile">

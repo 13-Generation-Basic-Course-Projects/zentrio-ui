@@ -6,6 +6,7 @@ import {
   getGanttBarByGanttChartIdService,
   getGanttBarService,
   getGanttChartByBoardIdService,
+  updateGantBarBytGantChartIdService,
   updateGantChartBytIdService,
 } from "@/service/gantt.service";
 import { revalidatePath } from "next/cache";
@@ -122,5 +123,36 @@ export const deleteGanttBarsByGanttChartIdAction = async ({
     ganttBarId, 
     token,
   });
+  revalidatePath("/gantbar");
+  return result;
+};
+
+/*
+ * update the  gantt bar
+ */
+export const updateGantBarBytGantChartIdAction = async ({
+  
+  ganttBarId,
+  ganttChartId,
+  title,
+  startedAt,
+  finishedAt,
+  face,
+}) => {
+  const userToken = await Token();
+  const token = userToken.Credential;
+  console.log(token);
+
+  const result = await updateGantBarBytGantChartIdService({
+    
+    ganttBarId,
+    ganttChartId,
+    title,
+    startedAt,
+    finishedAt,
+    face,
+    token,
+  });
+  revalidatePath("/gantbar");                  
   return result;
 };

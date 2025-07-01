@@ -39,7 +39,7 @@ const normalizeDateToDay = (date) => {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate());
 };
 
-export default function MyCalender({ tasks, workspaceId }) {
+export default function MyCalender({ tasks, workspaceId, boardName }) {
   const colorList = [
     {
       bg: "bg-red-500",
@@ -577,7 +577,7 @@ export default function MyCalender({ tasks, workspaceId }) {
   return (
     <div className="p-4 h-screen flex flex-col overflow-hidden relative">
       <BredCrum
-        board="Hikko Design"
+        board={boardName}
         feature="Calender"
         header="Calender"
         workspaceId={workspaceId}

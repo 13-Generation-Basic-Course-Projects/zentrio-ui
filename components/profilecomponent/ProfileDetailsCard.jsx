@@ -1,3 +1,4 @@
+// ProfileDetailsCard.js
 import { Shield } from "lucide-react";
 import {
   IconDate,
@@ -9,15 +10,42 @@ import {
 } from "../icon/everyicon";
 import ProgressBar from "./ProgressBar";
 
-function ProfileDetailsCard({ currentUserProfile }) {
+function ProfileDetailsCard({ currentUserProfile, userAchievement }) {
   const userDetails = currentUserProfile?.payload?.user || {};
+
+  // Extract achievement data from your object structure
+  const achievementData =
+    userAchievement?.success && userAchievement?.payload
+      ? userAchievement.payload
+      : {};
+
+  // Convert completionRate string to number for ProgressBar
+  const getPercentageNumber = (completionRate) => {
+    if (!completionRate) return 0;
+    // Remove the % sign and convert to number
+    return parseInt(completionRate.replace("%", ""));
+  };
+
+  console.log("Achievement data:", userAchievement);
+  console.log("Extracted achievement payload:", achievementData);
+
   return (
     <div className="flex flex-col gap-2 overflow-y-auto">
       <div className="p-4 rounded-xl shadow bg-red sticky top-0 z-50">
         <h3 className="text-md font-semibold mb-2">
           Overall Board Completeness
         </h3>
-        <ProgressBar />
+        <ProgressBar
+          percent={getPercentageNumber(achievementData?.completionRate)}
+        />
+
+        {/* Optional: Show task completion info */}
+        <div className="mt-2 text-sm text-gray-600">
+          <p>
+            Completed Tasks: {achievementData?.completedTasks || 0} /{" "}
+            {achievementData?.totalTasks || 0}
+          </p>
+        </div>
       </div>
 
       <div className="rounded-xl shadow bg-white">

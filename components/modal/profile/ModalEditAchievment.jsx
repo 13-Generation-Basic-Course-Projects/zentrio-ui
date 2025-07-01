@@ -39,6 +39,10 @@ export const gender = [
 ];
 
 export function ModalEditAchievment({ currentUserProfile }) {
+
+
+  console.log("Current User Profile: in the achievement", currentUserProfile);
+
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [selectedTab, setSelectedTab] = useState("Achievement");
   const [selectedAchievements, setSelectedAchievements] = useState(new Set());
@@ -118,10 +122,10 @@ export function ModalEditAchievment({ currentUserProfile }) {
   );
 
   const handleSave = async () => {
+    console.log("Saving achievements...");
     const selectedBoards = combinedBoards.filter((board) =>
       selectedAchievements.has(board.id)
     );
-
     const payload = {
       achievements: selectedBoards.map((board) => ({
         boardId: board.id,

@@ -148,7 +148,7 @@ export default function CardPostAnnouncement({
                             </div>
                           )}
                         </div>
-                        <div className="flex items-center gap-2 text-sm text-gray-500">
+                        <div className="flex items-center gap-2 text-small text-gray-500">
                           <Calendar className="w-4 h-4" />
                           <span>{getTimeAgo(announcement.createdAt)}</span>
                           <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
