@@ -292,7 +292,7 @@ export default function TeamCardWelcome() {
         >
           {/* <FourStageWorkflow /> */}
           <img
-            src="https://imgur.com/SzAKfGB.png"
+            src="https://imgur.com/ZTvePf9.png"
             alt="img promote"
             className="h-full w-full object-cover object-top"
           />
