@@ -1222,3 +1222,54 @@ export const updateCheckListDateByIdAndTaskIdService = async ({
 
   return response.status === 204 ? { success: true } : response.json();
 };
+
+
+/* add new service for update date in checklist */
+export const updateTaskDateByIdAndTaskIdService = async ({
+  taskId,
+  finishedAt,
+  token,
+}) => {
+  console.log("Token in update checklist service: ", token);
+  console.log("Request Body in update date task service: ", {
+    taskId,
+    finishedAt,
+  });
+
+  const url = taskRouteGroup.updateDateLineTask();
+  console.log("Request URL", url);
+
+  const response = await fetch(url, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      taskId,
+      finishedAt,
+    }),
+  });
+
+  const isNoContent = response.status === 204;
+
+  let data = null;
+  if (!isNoContent) {
+    try {
+      data = await response.json(); // ✅ Only read once
+    } catch (e) {
+      console.error("Failed to parse JSON:", e);
+      data = {};
+    }
+  }
+
+  if (!response.ok) {
+    console.error("Backend error response update date task: ", data);
+    if (response.status === 401 || response.status === 403) {
+      throw new Error("You have no permission on this task");
+    }
+    throw new Error(data?.message || `Failed to update date task: ${response.status}`);
+  }
+
+  return isNoContent ? { success: true } : data;
+};

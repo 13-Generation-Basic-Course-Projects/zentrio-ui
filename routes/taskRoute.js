@@ -16,4 +16,7 @@ export const taskRouteGroup = {
 
   /* //add new */
   getTaskByTaskId: (taskId) => `${apiConfig.baseUrl}/tasks/${taskId}`, //get task by task id
+
+  //update date line task
+  updateDateLineTask : () => `${apiConfig.baseUrl}/tasks/date-line`
 };

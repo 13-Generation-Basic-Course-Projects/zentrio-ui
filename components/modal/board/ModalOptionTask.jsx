@@ -23,7 +23,8 @@ import PopupActionTask from "@/components/popup/PopupActionTask";
 import { ModalAssignLeaderTask } from "./ModalAssignLeaderTask";
 import PopupActionTaskMove from "@/components/popup/PopupActionTaskMove";
 import PopupActionTaskMoveComplete from "@/components/popup/PopupActionTaskMoveCompleted";
-import PopupActionTaskMoveInProgress from "@/components/popup/PopupActionTaskMoveInProgress";
+
+import ModalEditDateTask from "./ModalEditDateTask";
 
 // icon components directly in the same file
 const AddNoteIcon = (props) => (
@@ -142,7 +143,7 @@ export default function ModalOptionTask({
 
   // Get the ganttBarId for current taskId
   const currentGanttBarId = getGanttBarIdByTaskId(taskId);
-  console.log("current gantbarid", currentGanttBarId);
+  console.log("current gantbarid", ganttbarData);
   return (
     <Dropdown className="-z-[10px]">
       <DropdownTrigger>
@@ -168,9 +169,8 @@ export default function ModalOptionTask({
       >
         <DropdownItem
           key="copy"
-          className={`w-full hover:bg-default-100 ${
-            role == "ROLE_MEMBER" ? `hidden` : ``
-          }`}
+          className={`w-full hover:bg-default-100 ${role == "ROLE_MEMBER" ? `hidden` : ``
+            }`}
           startContent={<CopyDocumentIcon className={iconClasses} />}
         >
           <ModalRenameTask
@@ -183,9 +183,8 @@ export default function ModalOptionTask({
 
         <DropdownItem
           key="delete"
-          className={`w-full hover:bg-default-100 mb-1  ${
-            role == "ROLE_MEMBER" ? `hidden` : ``
-          }`}
+          className={`w-full hover:bg-default-100 mb-1  ${role == "ROLE_MEMBER" ? `hidden` : ``
+            }`}
           startContent={<DeleteDocumentIcon className={cn(iconClasses)} />}
         >
           <PopupActionTask
@@ -209,9 +208,8 @@ export default function ModalOptionTask({
         ) : (
           <DropdownItem
             key="move"
-            className={`w-full hover:bg-default-100 mb-1  ${
-              role == "ROLE_MEMBER" || role == "ROLE_MANGER" ? `hidden` : ``
-            }`}
+            className={`w-full hover:bg-default-100 mb-1  ${role == "ROLE_MEMBER" || role == "ROLE_MANGER" ? `hidden` : ``
+              }`}
             startContent={
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -355,14 +353,13 @@ export default function ModalOptionTask({
         )}
 
         <DropdownSection
-          className={`border-t-1 border-default-200 pt-1 ${
-            role == "ROLE_MEMBER" ||
+          className={`border-t-1 border-default-200 pt-1 ${role == "ROLE_MEMBER" ||
             stage !== "TO DO" ||
             role == "ROLE_LEADER" ||
             stage !== "TO DO"
-              ? `hidden`
-              : ``
-          }`}
+            ? `hidden`
+            : ``
+            }`}
         >
           <DropdownItem className="w-full hover:bg-default-100">
             <ModalAssignLeaderTask
@@ -370,7 +367,21 @@ export default function ModalOptionTask({
               taskId={taskId}
             />
           </DropdownItem>
+
+
         </DropdownSection>
+        <DropdownItem
+          key="edit-date"
+          className="w-full hover:bg-default-100"
+        >
+          <ModalEditDateTask 
+            taskId={taskId}
+            currentStartDate={tasks?.find(task => task?.taskId === taskId)?.startedAt}
+            currentEndDate={tasks?.find(task => task?.taskId === taskId)?.finishedAt}
+            ganttbarData={ganttbarData?.payload?.find(ganttbar => ganttbar?.ganttBarId === tasks?.find(task => task?.taskId === taskId)?.ganttBarId)}                   
+          />
+        </DropdownItem>
+
       </DropdownMenu>
     </Dropdown>
   );

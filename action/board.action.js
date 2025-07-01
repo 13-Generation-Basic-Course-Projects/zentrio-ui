@@ -36,6 +36,7 @@ import {
   updateCheckListDateByIdAndTaskIdService,
   updateGanttBarByGanttBarIdService,
   updateTaskByIdService,
+  updateTaskDateByIdAndTaskIdService,
   uploadCoverChecklistService,
 } from "@/service/board.service";
 import { revalidatePath } from "next/cache";
@@ -932,5 +933,29 @@ export const updateCheckListDateByIdAndTaskIdAction = async ({
     checklistId,
     token,
   });
+  return result;
+};
+ 
+// update task dateline action 
+// ✅ Receive full Date or ISO string
+export const updateTaskDateByIdAndTaskIdAction = async ({
+  taskId,
+  finishedAt
+}) => {
+  console.log("Request Body in update date task Action:", {
+    taskId,
+    finishedAt
+  });
+
+  const userToken = await Token();
+  const token = userToken.Credential;
+
+  const result = await updateTaskDateByIdAndTaskIdService({
+    taskId,
+    finishedAt,
+    token
+  });
+
+  revalidatePath("/taskDate");
   return result;
 };

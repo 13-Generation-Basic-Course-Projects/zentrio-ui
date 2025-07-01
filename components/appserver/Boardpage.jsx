@@ -59,6 +59,7 @@ export default function SystemBoard({
   myUserId,
   feedbackByTaskIds,
 }) {
+
   if (
     !boardData ||
     boardData.status >= 400 ||
