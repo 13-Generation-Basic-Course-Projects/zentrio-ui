@@ -247,7 +247,7 @@ const filteredMembers = members
           />
         </div>
         {/* Invite */}
-        {role == "ROLE_LEADER" || role == "MEMBER" ? (
+        {role == "ROLE_LEADER" || role == "ROLE_MEMBER" ? (
           ""
         ) : (
           <ModalInviteMember

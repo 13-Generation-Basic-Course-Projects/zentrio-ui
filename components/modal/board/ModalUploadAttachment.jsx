@@ -379,7 +379,7 @@ const ModalUploadAttachment = ({
                                     {/* Show indication if file has drive URL */}
                                     {item?.drive_url && (
                                       <p className="text-xs text-green-600">
-                                        📁 Google Drive File
+                                          Google Drive 
                                       </p>
                                     )}
                                   </div>

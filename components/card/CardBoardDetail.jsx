@@ -19,7 +19,7 @@ export default function CardBoardDetail({
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  let boardUrl = "#"; 
+  let boardUrl = "#";
   if (workspaceType === "other") {
     if (boardId) {
       boardUrl = `/dashboard/otherworkspace/${boardId}/board`;
@@ -29,7 +29,7 @@ export default function CardBoardDetail({
       boardUrl = `/dashboard/${workspaceId}/${boardId}/board`;
     }
   }
-  
+
   useEffect(() => {
     const fetchMembers = async () => {
       try {
@@ -40,7 +40,7 @@ export default function CardBoardDetail({
       } catch (err) {
         console.error("Failed to fetch members:", err);
         setError("Failed to load members");
-        setMembers([]); 
+        setMembers([]);
       } finally {
         setLoading(false);
       }
@@ -65,7 +65,7 @@ export default function CardBoardDetail({
               />
             ) : images ? (
               <img
-                src={images}
+                src={images || image }
                 alt={title || "Board cover image"}
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
               />
