@@ -25,7 +25,11 @@ export default function Otherworkspace({
       <div className=" w-full grid grid-cols-12 h-full">
         {/* board - this one scrolls */}
         <div className="col-span-9  flex flex-col overflow-hidden p-3 min-h-0">
-          <Bar title={"joined Boards"} btn={"see all"} />
+          <Bar
+            title={"joined Boards"}
+            btn={"see all"}
+            workspaceId={Workspaceid}
+          />
           <div className="grid grid-cols-3 gap-3 scrollbar-hidden px-2 pb-[200px] py-4 overflow-y-auto  flex-1 min-h-0">
             {boards.map((el, index) => (
               <CardBoard
