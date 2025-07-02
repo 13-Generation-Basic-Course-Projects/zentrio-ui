@@ -22,6 +22,7 @@ export default function DocumentLayout({
   boardName,
   preventUserImage,
   workspaceId,
+  boardName
 }) {
   const [activeTab, setActiveTab] = useState("personal");
   const pathname = usePathname();
@@ -47,7 +48,7 @@ export default function DocumentLayout({
     {
       key: "personal",
       title: "Personal",
-      content: <PrivateDocument boardId={boardId} />,
+      content: <PrivateDocument boardId={boardId}  boardName={boardName}/>,
       icon: (isActive) => (
         <svg
           width={14}
@@ -66,7 +67,7 @@ export default function DocumentLayout({
     {
       key: "public",
       title: "Public",
-      content: <PublicDocument boardId={boardId} />,
+      content: <PublicDocument boardId={boardId}  boardName={boardName}/>,
       icon: (isActive) => (
         <svg
           width={17}
@@ -146,7 +147,7 @@ export default function DocumentLayout({
       </div>
       {/* Tab Content Area */}
       {tokenFromGoogle == null ? (
-        <WelcomePage workspaceId={workspaceId} />
+        <WelcomePage workspaceId={workspaceId} boardName={boardName} />
       ) : (
         <main className="p-4 min-h-screen">
           <div className="mx-auto">
