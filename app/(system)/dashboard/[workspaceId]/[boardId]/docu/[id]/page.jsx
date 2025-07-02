@@ -68,6 +68,7 @@ export default async function page({ params }) {
     <div>
       <div className="p-4 ">
         <DocumentEachFolder
+         key={Date.now()}
           id={id}
           tokenFromGoogle={tokenFromGoogle}
           boardId={boardId}

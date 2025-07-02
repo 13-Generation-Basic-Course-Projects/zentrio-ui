@@ -14,7 +14,7 @@ const colorOptions = [
 ];
 
 export default function Myworkspace({
-  Workspaceid,
+  workspaceId,
   getBoardByWorkspaceId,
   createBoardAction,
   deleteBoardAction,
@@ -22,9 +22,8 @@ export default function Myworkspace({
   getBoardByIdAction,
   updateFavAction,
   memberData,
- 
 }) {
-  console.log("Workspace id in myworkspace: ", Workspaceid);
+  console.log("Workspace id in myworkspace: ", workspaceId);
   console.log("Data in my workspace: ", memberData);
 
   return (
@@ -33,7 +32,7 @@ export default function Myworkspace({
       !Array.isArray(getBoardByWorkspaceId?.payload) ? (
         <div className="w-full grid grid-cols-12 h-full">
           <div className="col-span-9 flex flex-col overflow-hidden p-3 min-h-0">
-            <Bar title="My Boards" btn="see all" />
+            <Bar title="My Boards" btn="see all" workspaceId={workspaceId} />
             <div className="flex flex-col items-center justify-center flex-1 py-10 text-center">
               <div className="w-[127px] h-[127px] mb-4">
                 <svg
@@ -95,13 +94,12 @@ export default function Myworkspace({
       ) : (
         <div className="w-full grid grid-cols-12 h-full">
           <div className="col-span-9 flex flex-col overflow-hidden p-3 min-h-0">
-            <Bar title="My Boards" btn="see all" />
+            <Bar title="My Boards" btn="see all" workspaceId={workspaceId} />
             <div className="grid grid-cols-3 gap-3 scrollbar-hidden px-2 pb-[200px] py-4 overflow-y-auto flex-1 min-h-0">
               {getBoardByWorkspaceId.payload.length > 0 ? (
                 <>
                   <CardBoardEmpty
-                    
-                    Workspaceid={Workspaceid}
+                    Workspaceid={workspaceId}
                     createBoardAction={createBoardAction}
                   />
                   {getBoardByWorkspaceId.payload
@@ -123,9 +121,8 @@ export default function Myworkspace({
                         board.image?.startsWith("data:")
                       ) {
                         image = board.image; // External URL or data URI
-                      
                       } else {
-                        image = "bg-gray-200"; 
+                        image = "bg-gray-200";
                       }
 
                       console.log("Board cover value:", board.cover);
@@ -140,7 +137,7 @@ export default function Myworkspace({
                           boardId={board?.boardId}
                           title={board?.title}
                           image={image}
-                          images = {board?.image}
+                          images={board?.image}
                           isFavourite={board?.isFavourite}
                           deleteBoardAction={deleteBoardAction}
                           updateNameBoardAction={updateNameBoardAction}
@@ -152,7 +149,7 @@ export default function Myworkspace({
                 </>
               ) : (
                 <CardBoardEmpty
-                  Workspaceid={Workspaceid}
+                  Workspaceid={workspaceId}
                   createBoardAction={createBoardAction}
                 />
               )}

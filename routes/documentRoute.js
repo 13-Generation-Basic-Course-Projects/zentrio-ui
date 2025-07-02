@@ -44,10 +44,16 @@ export const documentRouteGroup = {
   //new add route
   getAllDocumentByBoardId: (boardId) =>
     `${apiConfig.baseUrl}/documents/boards/${boardId}`,
-  postAttactment: (checklistId) =>
-    `${apiConfig.baseUrl}/attachments?checklistId=${checklistId}`,
+  // postAttactment: (checklistId) =>
+  //   `${apiConfig.baseUrl}/attachments?checklistId=${checklistId}`,
   postAttactment: (checklistId) =>
     `${apiConfig.baseUrl}/attachments?checklistId=${checklistId}`,
   getAttactment: (checklistId) =>
     `${apiConfig.baseUrl}/attachments/checklists/${checklistId}`,
+
+
+  //new
+
+  updateAttachment: (attachmentId, checklistId) =>
+    `${apiConfig.baseUrl}/attachments/${attachmentId}/checklists/${checklistId}`, // ✅ matches your backend
 };

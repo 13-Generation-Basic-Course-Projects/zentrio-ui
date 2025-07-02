@@ -29,6 +29,7 @@ export default function CardBoard({
   isFavourite,
   includesPathOtherWorkSpace,
   isFavBtn,
+  otherBoardImage,
 }) {
   
 
@@ -176,16 +177,17 @@ export default function CardBoard({
       </CardHeader>
 
       {/* Card Body: background image or placeholder */}
-      <CardBody className="overflow-visible py-2 ">
+     {/* Card Body: background image or placeholder */}
+     <CardBody className="overflow-visible py-2 ">
         <Link href={`/dashboard/${workspaceId}/${boardId}/board`}>
           {image && image.startsWith("bg-") ? (
             <div
               className={`rounded-xl w-full h-32 bg-cover bg-center ${image}`}
               aria-label={`Card background for ${title}`}
             />
-          ) : image ? (
+          ) : image ||  otherBoardImage ? (
             <img
-              src={images}
+              src={includesPathOtherWorkSpace ?  otherBoardImage : images}
               alt={images || "Board cover image"}
               className="w-full h-32 object-cover rounded-xl"
             />

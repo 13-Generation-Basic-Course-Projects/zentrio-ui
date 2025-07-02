@@ -15,8 +15,9 @@ import { toast } from "react-toastify";
 export function ModalRenameFileOrFolderInFolder({
   tokenFromGoogle,
   fileId,
-  successMessage = "File or folder renamed successfully.",
-  errorMessage = "Failed to rename the file or folder.",
+  successMessage,
+  errorMessage,
+  isFolder,
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [newName, setNewName] = useState("");
@@ -30,20 +31,32 @@ export function ModalRenameFileOrFolderInFolder({
       });
 
       if (updatedDoc?.status === "success" || updatedDoc?.success) {
-        toast.success(successMessage, {
-          position: "top-right",
-          duration: 4000,
-        });
+        toast.success(
+          successMessage ||
+            (isFolder
+              ? "Folder renamed successfully."
+              : "File renamed successfully."),
+          {
+            position: "top-right",
+            duration: 4000,
+          }
+        );
       } else {
         throw new Error("Deletion failed unexpectedly");
       }
       close();
     } catch (error) {
       console.error("Rename failed:", error);
-      toast.error(errorMessage, {
-        position: "top-right",
-        duration: 4000,
-      })
+      toast.error(
+        errorMessage ||
+          (isFolder
+            ? "Failed to rename the folder"
+            : "Failed to rename the file"),
+        {
+          position: "top-right",
+          duration: 4000,
+        }
+      );
     }
   };
 
