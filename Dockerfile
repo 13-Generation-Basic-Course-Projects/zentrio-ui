@@ -1,26 +1,31 @@
-# Install dependencies and build
-FROM node:18-alpine AS builder
-
+# 1. Build Stage
+FROM node:22.12.0 AS builder
 WORKDIR /app
 
+# Install dependencies
 COPY package*.json ./
-RUN npm ci
+RUN npm install
 
+# Copy project files
 COPY . .
+
+# Use extra memory if needed
+ENV NODE_OPTIONS="--max-old-space-size=6144"
+
+# Build the app (uses .env.production automatically if present)
 RUN npm run build
 
-# Standalone production image
-FROM node:18-alpine AS runner
-
+# 2. Runtime Image
+FROM node:22.12.0-bullseye-slim AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
+ENV PORT=3000
 
-# Copy only necessary files
-COPY --from=builder /app/public ./public
+# Copy only what's needed
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
-COPY --from=builder /app/.env.production .env
+COPY --from=builder /app/public ./public
 
 EXPOSE 3000
 
