@@ -33,7 +33,7 @@ export default function NotFound() {
       {/* max-h-[calc(100vh-1rem)]  overflow-y-auto scrollbar-hidden pb-[0px] */}
       <div className={`${tokens ? `mx-[0px]` : `mx-[80px]`} `}>
         {/* Hide NavbarLanding if token exists */}
-        {!tokens && <NavbarLanding />}
+        {!tokens && <NavbarLanding  tokens={tokens}/>}
         <div
           className={` h-screen mb-10 grid grid-cols-1 md:grid-cols-2 py-5 `}
         >

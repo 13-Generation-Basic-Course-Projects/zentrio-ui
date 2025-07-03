@@ -7,5 +7,7 @@ import { auth } from "../../auth";
 export default async function AuthLayout({ children }) {
   const session = await auth();
   console.log("aaa", session?.user);
-  return <div className={" font-poppin w-full"}>{children}</div>;
+  return <div className={" font-poppin w-full"}>{children}
+  
+  </div>;
 }

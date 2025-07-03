@@ -125,12 +125,6 @@ export default function BredCrumGanttChart({
                 {feature || "Feature"}
               </a>
             </li>
-            <li>/</li>
-            <li>
-              <a href="#" className="hover:text-blueActive">
-                {user || "User"}
-              </a>
-            </li>
           </ol>
         </nav>
 

@@ -80,6 +80,7 @@ export default function NotFoundTwo() {
       <div className="relative z-10 flex items-center justify-center min-h-screen p-4">
         <div className="max-w-6xl w-full text-center">
           {/* 404 Header with Illustration */}
+         
           <div className="mb-5">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-50 to-pink-50 rounded-full border border-purple-200 mb-8">
               <Sparkles className="h-4 w-4 text-purple-500" />
@@ -88,7 +89,12 @@ export default function NotFoundTwo() {
               </span>
             </div>
           </div>
-
+          <button
+            onClick={() => window.history.back()}
+            className="px-4 py-2 bg-primary text-white rounded-large hover:bg-primary-700 mb-5"
+          >
+            ← Back
+          </button>
           {/* Features Grid */}
           <div className="mb-16">
             <div className="flex items-center justify-center gap-3 mb-12">

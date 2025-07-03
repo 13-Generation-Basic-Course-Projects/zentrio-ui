@@ -78,8 +78,9 @@ export default function DrawerSeeAll({
                       key={i}
                       title={board?.title}
                       description={board?.description}
-                      image={board?.cover}
-                      images={board?.image}
+                      // image={board?.image}
+                      image={board?.image}
+                      images={board?.imageUrl}
                       boardId={board?.boardId || board?.id}
                       workspaceId={workspaceId}
                       workspaceType={workspaceType}
