@@ -11,8 +11,10 @@ import {
   fetchDocumentsByBoardService,
   fetchPublicDocumentsService,
   getAllDocumentByBoardIdSerivce,
+  getAttachmentService,
   getAttactmentService,
   getFileByFolderIdService,
+  postAttachmentService,
   postAttactmentService,
   privateDocumentByIdService,
   publicDocumentByIdService,
@@ -274,16 +276,34 @@ export const getAllDocumentByBoardIdAction = async (boardId) => {
 /* new add
  * post attactment
  */
+
+
 export const postAttactmentAction = async (checklistId, details) => {
+  console.log("detailssssssssss", details);
   const userToken = await Token();
   const token = userToken.Credential;
-  const result = await postAttactmentService({
+  console.log("token in post attactment action", token);
+  const result = await postAttachmentService({
     checklistId,
     details,
     token,
   });
   console.log("Get all attachments action : ", result);
-  revalidatePath("/docu");
+  // revalidatePath("/docu");
+  return result;
+};
+/* new add
+ * get attachment
+ */
+export const getAttachmentAction = async (checklistId) => {
+  console.log("CHECKLIST ID IN ACTION PRINT ATTACHMENTS:", checklistId);
+  const userToken = await Token();
+  const token = userToken.Credential;
+  const result = await getAttachmentService({
+    checklistId,
+    token,
+  });
+  console.log("RESULT IN ACTION PRINT ATTACHMENTS:", result);
   return result;
 };
 /* new add
@@ -292,6 +312,7 @@ export const postAttactmentAction = async (checklistId, details) => {
 export const getAttactmentAction = async (checklistId) => {
   const userToken = await Token();
   const token = userToken.Credential;
+  console.log("checklistId aaaa", checklistId);
   const result = await getAttactmentService({
     checklistId,
     token,

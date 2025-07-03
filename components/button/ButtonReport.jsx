@@ -24,7 +24,8 @@ export const BtnPreview = ({ report }) => {
     <>
       <Button
         onPress={onOpen}
-        className="flex items-center gap-2 bg-white text-btn-sm border border-primary"
+        className={`flex items-center gap-2 bg-white text-btn-sm border border-primary ${report?.payload?.groupedTasks.length == 0 ? `cursor-not-allowed` : ``}`}
+        disabled={report?.payload?.groupedTasks.length == 0}
       >
         <span>
           <svg

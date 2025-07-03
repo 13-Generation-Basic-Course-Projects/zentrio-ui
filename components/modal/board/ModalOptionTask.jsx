@@ -25,6 +25,7 @@ import PopupActionTaskMove from "@/components/popup/PopupActionTaskMove";
 import PopupActionTaskMoveComplete from "@/components/popup/PopupActionTaskMoveCompleted";
 
 import ModalEditDateTask from "./ModalEditDateTask";
+import PopupActionTaskMoveInProgress from "@/components/popup/PopupActionTaskMoveInProgress";
 
 // icon components directly in the same file
 const AddNoteIcon = (props) => (

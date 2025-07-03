@@ -128,19 +128,6 @@ export const getCommentByCheckListIdAction = async (checklistId) => {
   const userToken = await Token();
   const token = userToken.Credential;
 
-  if (
-    !checklistId ||
-    !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
-      checklistId
-    )
-  ) {
-    console.warn(`Invalid checklistId: ${checklistId}`);
-    return {
-      success: false,
-      data: [],
-      error: "Invalid checklistId",
-    };
-  }
 
   try {
     const result = await getCommentByCheckListIdService({
@@ -766,7 +753,6 @@ export const getTaskByTaskIdAction = async (taskId) => {
     taskId,
     token,
   });
-  revalidatePath("/member");
   console.log("getTaskByTaskIdAction result: ", result);
   return result;
 };

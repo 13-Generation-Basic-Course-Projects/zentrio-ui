@@ -27,6 +27,34 @@ export async function doSocialLogin(formData) {
 /*
  * login
  */
+
+// export async function zentrioLoginCredentailAction(data) {
+//   try {
+//     const { email, password } = data;
+//     const res = await loginZentrioCredentailService({ email, password });
+//     console.log("7777777", res);
+//     if (res?.success) {
+//       try {
+//         const { email, password } = data;
+//         await signIn("credentials", {
+//           email,
+//           password,
+//           redirect: false,
+//         });
+//       } catch (e) {
+//         console.log("err at login creadentail", e);
+
+//       }
+//       return res;
+//     }
+//   } catch (error) {
+//     console.log("Login error:", error);
+//     return { ok: false, error: "Server error" };
+//   }
+// }
+
+//au
+
 export async function zentrioLoginCredentailAction(data) {
   try {
     const { email, password } = data;
@@ -44,6 +72,11 @@ export async function zentrioLoginCredentailAction(data) {
         console.log("err at login creadentail", e);
       }
       return res;
+    } else {
+      return {
+        success: false,
+        error: res?.error || "Invalid email or password",
+      }
     }
   } catch (error) {
     console.log("Login error:", error);

@@ -12,6 +12,7 @@ import {
 import uploadIcon from "@/assets/uploadicon.svg";
 import Image from "next/image";
 import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 export default function ModalUploadFileInFolder({
   isOpen,
@@ -23,6 +24,7 @@ export default function ModalUploadFileInFolder({
   const [selectedFile, setSelectedFile] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
   const inputRef = useRef(null);
+  const router = useRouter();
 
   const handleFileSelect = (event) => {
     const file = event.target.files?.[0];
@@ -54,6 +56,8 @@ export default function ModalUploadFileInFolder({
       formData.append("folderId", folderId);
       formData.append("file", selectedFile);
 
+      console.log("folderId ", folderId);
+
       const res = await fetch("/api/upload-to-folder", {
         method: "POST",
         body: formData,
@@ -72,6 +76,8 @@ export default function ModalUploadFileInFolder({
       })
       setFileName("");
       setSelectedFile(null);
+
+      router.refresh();
       onClose();
     } catch (error) {
       console.error("Upload failed:", error);

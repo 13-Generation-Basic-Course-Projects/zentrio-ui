@@ -357,8 +357,6 @@ export const updateFavBoardByIdService = async ({
       headers: {
         Authorization: `Bearer ${token}`,
       },
-      next: { tags: ["workspace"] }
-
     });
 
     // if (!res.ok) {
@@ -776,7 +774,7 @@ export const getOtherWorkSpaceJoinedService = async (token) => {
       },
     });
     const data = await res.json();
-    //console.log("📥 Backend responded with favboard:", data);
+    console.log("📥 Backend responded with other", data);
 
     return data; // just return the data, don’t redirect here
   } catch (error) {

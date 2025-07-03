@@ -15,6 +15,7 @@ import {
   moveTaskOrderAction,
 } from "@/action/board.action";
 import KanbanDrawer from "./ArchiveDrawer";
+import BredCrumKanban from "../bredcrum/BredcrumKanban";
 
 // Placeholder component
 const UserAvater = ({ image }) => (
@@ -581,13 +582,23 @@ export default function KanbanBoard({
 
   return (
     <div className="w-full h-screen flex flex-col">
-      <BredCrum
+      {/* <BredCrum
         board={boardData?.payload.title || "Hikko Design"}
         feature={"Board"}
         header={boardData?.payload.title || "Hikko Design"}
         modal={modal}
         workspaceId={workspaceId}
+      /> */}
+
+      <BredCrumKanban
+        board={boardData?.payload.title || "Hikko Design"}
+        feature={"Board"}
+        header={boardData?.payload.title || "Hikko Design"}
+        modal={modal}
+        boardId={boardId}
+        workspaceId={workspaceId}
       />
+
       <StackedUser image={allMemberInBoard} />
       <div className=" w-full flex justify-start items-center mt-5">
         <KanbanDrawer />
@@ -1007,9 +1018,9 @@ export default function KanbanBoard({
                                   <div className="col-span-4 p-2">
                                     <CardDateChecklist
                                       date={
-                                        card.startedAt
+                                        card.finishedAt
                                           ? new Date(
-                                              card.startedAt
+                                              card.finishedAt
                                             ).toLocaleDateString()
                                           : "N/A"
                                       }

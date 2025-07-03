@@ -1,7 +1,6 @@
 "use client";
 
-import { getAllDocumentByBoardIdAction } from "@/action/document.action";
-import { postAttactmentAction } from "@/action/document.action";
+import React, { useEffect, useState } from "react";
 import {
   Modal,
   ModalBody,
@@ -10,7 +9,11 @@ import {
   useDraggable,
 } from "@heroui/modal";
 import { Button, Input } from "@heroui/react";
-import React, { useEffect, useState } from "react";
+import {
+  getAllDocumentByBoardIdAction,
+  postAttactmentAction,
+} from "@/action/document.action";
+import { toast } from "react-toastify";
 
 const ModalUploadAttachment = ({
   isOpen,
@@ -18,9 +21,10 @@ const ModalUploadAttachment = ({
   boardId,
   checklistId,
   onAttachmentSelected,
-  role, // Add role prop for potential integration with other components
+  role,
 }) => {
   if (!isOpen) return null;
+
   const targetRef = React.useRef(null);
   const { moveProps } = useDraggable({
     targetRef,
@@ -36,11 +40,24 @@ const ModalUploadAttachment = ({
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(null);
 
+  const isValidUrl = (url) => {
+    try {
+      new URL(url);
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
   const handleApply = () => {
     const trimmedLink = link.trim();
-    if (trimmedLink !== "") {
+    if (trimmedLink !== "" && isValidUrl(trimmedLink)) {
       setAppliedLinks((prev) => [...prev, trimmedLink]);
       setLink("");
+      setError(null);
+    } else {
+      setError("Please enter a valid URL");
+      toast.error("Invalid URL", { position: "top-right", autoClose: 4000 });
     }
   };
 
@@ -49,106 +66,91 @@ const ModalUploadAttachment = ({
   };
 
   const handleSelect = (file) => {
-    console.log("Selecting file:", file);
-    console.log("Current selected:", selectedFiles);
-
     setSelectedFiles((prev) => {
-      const isAlreadySelected = prev.some((selectedFile) => {
-        if (selectedFile.id && file.id) {
-          return selectedFile.id === file.id;
-        }
-        return (
-          selectedFile.title === file.title &&
-          selectedFile.creationDate === file.creationDate &&
-          selectedFile.description === file.description
-        );
-      });
-
+      const isAlreadySelected = prev.some(
+        (selectedFile) => selectedFile.documentId === file.documentId
+      );
       if (isAlreadySelected) {
-        return prev.filter((selectedFile) => {
-          if (selectedFile.id && file.id) {
-            return selectedFile.id !== file.id;
-          }
-          return !(
-            selectedFile.title === file.title &&
-            selectedFile.creationDate === file.creationDate &&
-            selectedFile.description === file.description
-          );
-        });
-      } else {
-        return [...prev, file];
+        return prev.filter(
+          (selectedFile) => selectedFile.documentId !== file.documentId
+        );
       }
+      return [...prev, file];
     });
   };
 
   const handleUpload = async () => {
-    // No role restriction for upload; all users can upload
-    if (!checklistId) {
-      console.error("ChecklistId is required for upload");
-      setError("Checklist ID is required.");
+    if (role === "ROLE_MEMBER") {
+      setError("You do not have permission to upload attachments");
+      toast.error("You do not have permission to upload attachments", {
+        position: "top-right",
+        autoClose: 4000,
+      });
       return;
     }
 
     if (selectedFiles.length === 0 && appliedLinks.length === 0) {
-      console.log("No files or links selected");
-      setError("Please select a file or link to upload.");
-      return;
-    }
-
-    if (selectedFiles.length > 1 || appliedLinks.length > 1) {
-      setError("Only one attachment is allowed per checklist.");
+      setError("Please select at least one file or link");
+      toast.error("Please select at least one file or link", {
+        position: "top-right",
+        autoClose: 4000,
+      });
       return;
     }
 
     setUploading(true);
     setError(null);
 
+    const documentIds = selectedFiles.map((file) => file.documentId);
+    // Extract drive URLs from selected files
+    const driveUrls = selectedFiles
+      .filter((file) => file.drive_url)
+      .map((file) => file.drive_url);
+
+    const detailsPayload = {
+      details: {
+        ...(documentIds.length > 0 && {
+          documentIds: documentIds.join(","),
+        }),
+        ...(appliedLinks.length > 0 && {
+          links: appliedLinks.join(","),
+        }),
+        ...(driveUrls.length > 0 && {
+          drive_url: driveUrls.join(","),
+        }),
+      },
+    };
+
+    console.log(
+      "Sending attachment payload:",
+      JSON.stringify(detailsPayload, null, 2)
+    );
+
     try {
-      let details = {
-        additionalProp1: "",
-        additionalProp2: "",
-        additionalProp3: "",
-      };
-
-      if (selectedFiles.length > 0) {
-        const file = selectedFiles[0];
-        details = {
-          additionalProp1: file.title || file.description || "Untitled Document",
-          additionalProp2: "file",
-          additionalProp3: file.description || "",
-          documentId: file.id, // Include documentId if required by backend
-        };
-      } else if (appliedLinks.length > 0) {
-        const link = appliedLinks[0];
-        details = {
-          additionalProp1: link,
-          additionalProp2: "link",
-          additionalProp3: link,
-        };
-      }
-
-      console.log("Uploading with details:", { details });
-
-      const result = await postAttactmentAction(checklistId, { details });
-
-      if (result) {
-        console.log("Upload successful:", result);
-
-        if (onAttachmentSelected) {
-          onAttachmentSelected({
-            files: selectedFiles,
-            links: appliedLinks,
-            result: result,
-          });
-        }
-
+      const result = await postAttactmentAction(checklistId, detailsPayload);
+      if (result.success) {
+        onAttachmentSelected(result.payload);
         setSelectedFiles([]);
         setAppliedLinks([]);
         onClose();
+        toast.success("Attachment uploaded successfully", {
+          position: "top-right",
+          autoClose: 2500,
+        });
+      } else {
+        throw new Error(
+          result.detail || result.error || "Failed to upload attachment"
+        );
       }
     } catch (error) {
-      console.error("Upload failed:", error);
-      setError("Failed to upload attachment. Please try again.");
+      const errorMessage = error.message.includes("JSON parse error")
+        ? "Invalid data format sent to server. Please ensure links are valid URLs."
+        : error.message || "Failed to upload attachment";
+      setError(errorMessage);
+      toast.error(errorMessage, {
+        position: "top-right",
+        autoClose: 4000,
+      });
     } finally {
       setUploading(false);
     }
@@ -166,7 +168,7 @@ const ModalUploadAttachment = ({
         hour: "2-digit",
         minute: "2-digit",
       }).format(date);
-    } catch (error) {
+    } catch {
       return "Invalid date";
     }
   };
@@ -208,9 +210,10 @@ const ModalUploadAttachment = ({
       docx: "https://cdn-icons-png.flaticon.com/128/2991/2991108.png",
       xlsx: "https://cdn-icons-png.flaticon.com/128/2504/2504768.png",
       pptx: "https://cdn-icons-png.flaticon.com/128/2875/2875416.png",
+      default: "https://cdn-icons-png.flaticon.com/128/833/833524.png",
     };
     const simpleType = getSimpleDocumentType(documentType);
-    const src = icons[simpleType] || icons.docx;
+    const src = icons[simpleType] || icons.default;
     return (
       <img
         src={src}
@@ -223,16 +226,9 @@ const ModalUploadAttachment = ({
   }
 
   const isFileSelected = (file) => {
-    return selectedFiles.some((selectedFile) => {
-      if (selectedFile.id && file.id) {
-        return selectedFile.id === file.id;
-      }
-      return (
-        selectedFile.title === file.title &&
-        selectedFile.creationDate === file.creationDate &&
-        selectedFile.description === file.description
-      );
-    });
+    return selectedFiles.some(
+      (selectedFile) => selectedFile.documentId === file.documentId
+    );
   };
 
   useEffect(() => {
@@ -241,11 +237,16 @@ const ModalUploadAttachment = ({
         setLoading(true);
         try {
           const allDocument = await getAllDocumentByBoardIdAction(boardId);
-          console.log("Fetched documents: ", allDocument);
-          setDocuments(allDocument || []);
+          console.log("Fetched documents:", allDocument);
+          setDocuments(allDocument?.payload || []);
         } catch (error) {
           console.error("Error fetching documents:", error);
           setDocuments([]);
+          setError("Failed to load documents");
+          toast.error("Failed to load documents", {
+            position: "top-right",
+            autoClose: 4000,
+          });
         } finally {
           setLoading(false);
         }
@@ -259,6 +260,7 @@ const ModalUploadAttachment = ({
       setSelectedFiles([]);
       setAppliedLinks([]);
       setError(null);
+      setLink("");
     }
   }, [isOpen]);
 
@@ -268,8 +270,7 @@ const ModalUploadAttachment = ({
       onOpenChange={onClose}
       size="xl"
       ref={targetRef}
-      className="h-[600px] overflow-auto scrollbar-hidden"
-    >
+      className="h-[600px] overflow-auto scrollbar-hidden">
       <ModalContent>
         {(onClose) => (
           <>
@@ -281,16 +282,14 @@ const ModalUploadAttachment = ({
                     width="30"
                     height="30"
                     fill="none"
-                    viewBox="0 0 30 30"
-                  >
+                    viewBox="0 0 30 30">
                     <path fill="url(#pattern0_3611_140426)" d="M0 0h30v30H0z" />
                     <defs>
                       <pattern
                         id="pattern0_3611_140426"
                         width="1"
                         height="1"
-                        patternContentUnits="objectBoundingBox"
-                      >
+                        patternContentUnits="objectBoundingBox">
                         <use
                           xlinkHref="#image0_3611_140426"
                           transform="scale(.00195)"
@@ -299,12 +298,11 @@ const ModalUploadAttachment = ({
                     </defs>
                   </svg>
                 </div>
-                <p>Upload</p>
+                <p>Upload Attachment</p>
               </div>
             </ModalHeader>
             <ModalBody>
               <div className="text-title">
-                {/* Error message display */}
                 {error && (
                   <div className="text-sm text-red-500 p-2 bg-gray-50 rounded border border-red-200 mb-4">
                     <div className="flex items-center">
@@ -312,8 +310,7 @@ const ModalUploadAttachment = ({
                         className="h-4 w-4 mr-2 text-red-500"
                         fill="none"
                         stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
+                        viewBox="0 0 24 24">
                         <path
                           strokeLinecap="round"
                           strokeLinejoin="round"
@@ -348,18 +345,18 @@ const ModalUploadAttachment = ({
                 <div>
                   {loading ? (
                     <div className="border-1 rounded-large p-5 mt-6 h-[250px] flex items-center justify-center">
-                      <p>Loading documents...</p>
+                      <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-blue-500"></div>
+                      <p className="ml-2">Loading documents...</p>
                     </div>
                   ) : (
                     <div className="border-1 rounded-large p-5 mt-6 h-[250px] overflow-auto scrollbar-hidden text-caption">
-                      {documents?.payload && documents.payload.length > 0 ? (
-                        documents.payload.map((item, index) => {
+                      {documents.length > 0 ? (
+                        documents.map((item, index) => {
                           const isSelected = isFileSelected(item);
-
                           return (
                             <div
                               key={
-                                item.id ||
+                                item.documentId ||
                                 `${item.title}-${item.creationDate}-${index}`
                               }
                               className={`flex flex-col mb-4 cursor-pointer transition-colors ${
@@ -367,19 +364,25 @@ const ModalUploadAttachment = ({
                                   ? "bg-title/10 text-primary/80 p-2 rounded-large"
                                   : "hover:bg-title/5 hover:text-title/50 p-2 rounded-large"
                               }`}
-                              onClick={() => handleSelect(item)}
-                            >
+                              onClick={() => handleSelect(item)}>
                               <div className="flex justify-between items-center text-h6">
                                 <div className="flex items-center space-x-2 flex-1 min-w-0">
                                   <FileIcon documentType={item?.documentType} />
-                                  <p
-                                    className="truncate"
-                                    title={item?.description || item?.title}
-                                  >
-                                    {item?.description ||
-                                      item?.title ||
-                                      "Untitled Document"}
-                                  </p>
+                                  <div className="flex-1 min-w-0">
+                                    <p
+                                      className="truncate"
+                                      title={item?.description || item?.title}>
+                                      {item?.description ||
+                                        item?.title ||
+                                        "Untitled Document"}
+                                    </p>
+                                    {/* Show indication if file has drive URL */}
+                                    {item?.drive_url && (
+                                      <p className="text-xs text-green-600">
+                                          Google Drive 
+                                      </p>
+                                    )}
+                                  </div>
                                 </div>
                                 <p className="text-title/50 text-caption-tiny ml-2 flex-shrink-0">
                                   {formatDate(item?.creationDate)}
@@ -416,14 +419,14 @@ const ModalUploadAttachment = ({
                             ],
                             innerWrapper: "bg-transparent",
                           }}
-                          placeholder="Attach link here"
+                          placeholder="Attach link here (e.g., https://example.com)"
                           radius="lg"
                         />
                       </div>
                       <Button
                         className="rounded-large bg-primary text-white hover:bg-primary/90"
                         onClick={handleApply}
-                      >
+                        disabled={role === "ROLE_MEMBER" || !link.trim()}>
                         Apply
                       </Button>
                     </div>
@@ -432,28 +435,24 @@ const ModalUploadAttachment = ({
                         {appliedLinks.map((item, index) => (
                           <div
                             key={index}
-                            className="flex justify-between items-center p-2 bg-gray-100 rounded-large"
-                          >
+                            className="flex justify-between items-center p-2 bg-gray-100 rounded-large">
                             <a
                               href={item}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-blue-600 underline break-all"
-                            >
+                              className="text-blue-600 underline break-all">
                               {item}
                             </a>
                             <button
                               onClick={() => handleDelete(index)}
                               className="hover:text-progress-red text-caption ml-4"
-                              aria-label="Delete link"
-                            >
+                              aria-label="Delete link">
                               <svg
                                 width="18"
                                 height="20"
                                 viewBox="0 0 18 20"
                                 fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
+                                xmlns="http://www.w3.org/2000/svg">
                                 <path
                                   d="M15.25 4.58337L14.7336 12.9376C14.6016 15.0721 14.5356 16.1393 14.0006 16.9066C13.7361 17.286 13.3955 17.6061 13.0006 17.8467C12.2018 18.3334 11.1325 18.3334 8.99395 18.3334C6.8526 18.3334 5.78192 18.3334 4.98254 17.8458C4.58733 17.6048 4.24666 17.284 3.98224 16.9041C3.4474 16.1355 3.38288 15.0668 3.25384 12.9293L2.75 4.58337"
                                   stroke="#FF2D55"
@@ -477,22 +476,32 @@ const ModalUploadAttachment = ({
                 <p className="text-title font-semibold mt-8">
                   Selected Files: {selectedFiles.length} | Links:{" "}
                   {appliedLinks.length}
+                  {selectedFiles.filter((file) => file.drive_url).length > 0 &&
+                    ` | Drive Files: ${
+                      selectedFiles.filter((file) => file.drive_url).length
+                    }`}
                 </p>
                 {selectedFiles.length > 0 || appliedLinks.length > 0 ? (
                   <div className="flex flex-col space-y-3 mt-4 h-[150px] overflow-auto scrollbar-hidden">
                     {selectedFiles.map((file, index) => (
                       <div
                         key={`file-${index}`}
-                        className="p-3 bg-blue-100 rounded-medium flex justify-between items-center"
-                      >
+                        className="p-3 bg-blue-100 rounded-medium flex justify-between items-center">
                         <div className="flex items-center space-x-2">
                           <FileIcon documentType={file.documentType} />
                           <div>
                             <p className="font-medium">
-                              {file.title || file.description}
+                              {file.description ||
+                                file.title ||
+                                "Untitled Document"}
                             </p>
                             <p className="text-caption text-gray-600">
                               {formatDate(file.creationDate)} • File
+                              {file.drive_url && (
+                                <span className="text-green-600 ml-1">
+                                  • Google Drive
+                                </span>
+                              )}
                             </p>
                           </div>
                         </div>
@@ -503,14 +512,13 @@ const ModalUploadAttachment = ({
                             );
                           }}
                           className="hover:text-progress-red text-caption ml-4"
-                        >
+                          aria-label="Remove file">
                           <svg
                             width="18"
                             height="20"
                             viewBox="0 0 18 20"
                             fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
+                            xmlns="http://www.w3.org/2000/svg">
                             <path
                               d="M15.25 4.58337L14.7336 12.9376C14.6016 15.0721 14.5356 16.1393 14.0006 16.9066C13.7361 17.286 13.3955 17.6061 13.0006 17.8467C12.2018 18.3334 11.1325 18.3334 8.99395 18.3334C6.8526 18.3334 5.78192 18.3334 4.98254 17.8458C4.58733 17.6048 4.24666 17.284 3.98224 16.9041C3.4474 16.1355 3.38288 15.0668 3.25384 12.9293L2.75 4.58337"
                               stroke="#FF2D55"
@@ -530,8 +538,7 @@ const ModalUploadAttachment = ({
                     {appliedLinks.map((link, index) => (
                       <div
                         key={`link-${index}`}
-                        className="p-3 bg-green-100 rounded-medium flex justify-between items-center"
-                      >
+                        className="p-3 bg-green-100 rounded-medium flex justify-between items-center">
                         <div>
                           <p className="font-medium text-blue-600 underline break-all">
                             {link}
@@ -541,14 +548,13 @@ const ModalUploadAttachment = ({
                         <button
                           onClick={() => handleDelete(index)}
                           className="hover:text-progress-red text-caption ml-4"
-                        >
+                          aria-label="Remove link">
                           <svg
                             width="18"
                             height="20"
                             viewBox="0 0 18 20"
                             fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
+                            xmlns="http://www.w3.org/2000/svg">
                             <path
                               d="M15.25 4.58337L14.7336 12.9376C14.6016 15.0721 14.5356 16.1393 14.0006 16.9066C13.7361 17.286 13.3955 17.6061 13.0006 17.8467C12.2018 18.3334 11.1325 18.3334 8.99395 18.3334C6.8526 18.3334 5.78192 18.3334 4.98254 17.8458C4.58733 17.6048 4.24666 17.284 3.98224 16.9041C3.4474 16.1355 3.38288 15.0668 3.25384 12.9293L2.75 4.58337"
                               stroke="#FF2D55"
@@ -573,18 +579,19 @@ const ModalUploadAttachment = ({
                     </p>
                   </div>
                 )}
+                <Button
+                  color="primary"
+                  radius="full"
+                  onPress={handleUpload}
+                  isLoading={uploading}
+                  isDisabled={
+                    role === "ROLE_MEMBER" ||
+                    (selectedFiles.length === 0 && appliedLinks.length === 0)
+                  }
+                  className="mt-4 w-full">
+                  {uploading ? "Uploading..." : "Upload"}
+                </Button>
               </div>
-              <Button
-                color="primary"
-                radius="full"
-                onPress={handleUpload}
-                isLoading={uploading}
-                isDisabled={
-                  selectedFiles.length === 0 && appliedLinks.length === 0
-                }
-              >
-                {uploading ? "Uploading..." : "Upload"}
-              </Button>
             </ModalBody>
           </>
         )}

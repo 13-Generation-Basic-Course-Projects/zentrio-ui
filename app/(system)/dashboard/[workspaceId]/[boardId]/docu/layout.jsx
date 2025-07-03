@@ -8,6 +8,7 @@ import { auth } from "@/auth";
 import DocumentAutherize from "@/components/appserver/Documentpage";
 import { preventImage } from "@/constant/preventimage";
 import { Token } from "@/constant/token";
+import { ToastContainer } from "react-toastify";
 
 export default async function BoardLayout({ children, params }) {
   const session = await auth();
@@ -50,6 +51,7 @@ export default async function BoardLayout({ children, params }) {
         boardName={boardName}
       />
       <div>{children}</div>
+      <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
 }

@@ -488,7 +488,7 @@ export const deleteTaskService = async (taskId, boardId, ganttbarId, token) => {
       },
     });
     const data = await res.json();
-    // console.log("📥 Backend responded with delete:", data);
+    console.log("📥 Backend responded with delete:", data);
 
     return data;
   } catch (error) {
@@ -1224,52 +1224,27 @@ export const updateCheckListDateByIdAndTaskIdService = async ({
 };
 
 
-/* add new service for update date in checklist */
-export const updateTaskDateByIdAndTaskIdService = async ({
-  taskId,
-  finishedAt,
-  token,
-}) => {
-  console.log("Token in update checklist service: ", token);
-  console.log("Request Body in update date task service: ", {
-    taskId,
-    finishedAt,
-  });
 
-  const url = taskRouteGroup.updateDateLineTask();
-  console.log("Request URL", url);
+export const reAssignTeamLeaderService = async (taskId,assigneeId, token) => {
+  try {
+    console.log("from service", 
+      taskId,assigneeId,
+      token
+    );
+    const url = boardRouteGroup.reAssignTeamLeader(taskId,assigneeId);
+    console.log(url);
+    const res = await fetch(url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const result = await res.json();
+    console.log("📥 Backend responded with reassign team leader:", result);
 
-  const response = await fetch(url, {
-    method: "PUT",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      taskId,
-      finishedAt,
-    }),
-  });
-
-  const isNoContent = response.status === 204;
-
-  let data = null;
-  if (!isNoContent) {
-    try {
-      data = await response.json(); // ✅ Only read once
-    } catch (e) {
-      console.error("Failed to parse JSON:", e);
-      data = {};
-    }
+    return result;
+  } catch (error) {
+    throw error;
   }
-
-  if (!response.ok) {
-    console.error("Backend error response update date task: ", data);
-    if (response.status === 401 || response.status === 403) {
-      throw new Error("You have no permission on this task");
-    }
-    throw new Error(data?.message || `Failed to update date task: ${response.status}`);
-  }
-
-  return isNoContent ? { success: true } : data;
 };

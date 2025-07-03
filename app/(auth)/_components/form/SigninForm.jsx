@@ -34,8 +34,12 @@ export const SigninForm = () => {
     const result = await zentrioLoginCredentailAction(data);
     if (result?.success) {
       router.push("/workspace");
+    }else{
+      setBackendError(result?.detail || "Invalid email or password");
     }
   };
+  
+  const [backendError, setBackendError] = useState("");
 
   return (
     <div className="w-full h-screen flex items-center justify-center">
@@ -103,7 +107,7 @@ export const SigninForm = () => {
             </div>
 
             {/* Remember Me and Forgot Password */}
-            <div className="flex items-center justify-end -mt-[10px]">
+            <div className="flex items-center justify-end -mt-[10px] hidden">
               {/* <div className="flex items-center gap-7 text-description">
                 <Checkbox
                   label="Remember Me"
@@ -111,6 +115,15 @@ export const SigninForm = () => {
                   className="text-[16px] w-[12px] text-description"
                 /> Remember Me
               </div> */}
+              <Link href="/forgot-password" className="text-[16px] text-danger">
+                Forgot Password?
+              </Link>
+            </div>
+            {/* fanau */}
+            <div className="flex items-center justify-between -mt-[10px] h-[24px]">
+              <div className="text-danger text-sm">
+                {backendError ? <p>{backendError}</p> : <span>&nbsp;</span>}
+              </div>
               <Link href="/forgot-password" className="text-[16px] text-danger">
                 Forgot Password?
               </Link>
