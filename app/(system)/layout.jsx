@@ -27,6 +27,7 @@ import {
 } from "@/action/notification.action";
 import OneSignalInitializer from "@/components/onesignal/OneSignalInitializer";
 import ModalNotification from "@/components/modal/noti/ModalNotification";
+import { apiConfig } from "@/constant/baseurl";
 //import { LoadingBarContainer } from "react-top-loading-bar";
 export const metadata = {
   title: "Zentrio | Task Mangement",
