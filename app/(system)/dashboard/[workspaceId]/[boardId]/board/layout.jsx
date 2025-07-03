@@ -278,7 +278,6 @@ export default async function BoardLayout({ children, params }) {
     const myUserId = getUserDetials?.payload?.userId;
 
     console.log("allMemberInBoard",allMemberInBoard)
-    console.log("aaaaaaaa",myUserId);
 
     return (
       <div>

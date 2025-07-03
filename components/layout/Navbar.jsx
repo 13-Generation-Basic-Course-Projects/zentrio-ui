@@ -6,7 +6,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import logo from "../../public/image/Zentrio-Logo.png";
 
-export const NavbarLanding = () => {
+export const NavbarLanding = ({ tokens }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
 
@@ -18,7 +18,7 @@ export const NavbarLanding = () => {
   const isActiveRoute = (route) => {
     return pathname === route;
   };
-
+console.log("tokens",tokens)
   return (
     <div className="w-[] md:w-full h-[70px] bg-white shadow-sm rounded-full mx-auto mt-[30px] px-4 sm:px-6 relative">
       <div className="flex justify-between items-center h-full">
@@ -34,39 +34,39 @@ export const NavbarLanding = () => {
         <nav className="hidden md:flex justify-between items-center w-[250px] font-medium text-body-lg">
           <Link
             href="/"
-            className={`hover:text-primary transition-all ${
-              isActiveRoute("/") ? "text-primary font-semibold" : ""
-            }`}
+            className={`hover:text-primary transition-all ${isActiveRoute("/") ? "text-primary font-semibold" : ""
+              }`}
           >
             Home
           </Link>
           <Link
             href="/aboutus"
-            className={`hover:text-primary transition-all ${
-              isActiveRoute("/aboutus") ? "text-primary font-semibold" : ""
-            }`}
+            className={`hover:text-primary transition-all ${isActiveRoute("/aboutus") ? "text-primary font-semibold" : ""
+              }`}
           >
             About us
           </Link>
           <Link
             href="/contact"
-            className={`hover:text-primary transition-all ${
-              isActiveRoute("/contact") ? "text-primary font-semibold" : ""
-            }`}
+            className={`hover:text-primary transition-all ${isActiveRoute("/contact") ? "text-primary font-semibold" : ""
+              }`}
           >
             Contact
           </Link>
         </nav>
+        {tokens ? "" :
 
-        {/* Desktop Buttons (hidden on mobile) */}
-        <div className="hidden min-[400px]:flex gap-2 sm:gap-[10px] ">
-          <Button className=" bg-transparent text-primary border-none font-semibold rounded-full text-[16px] sm:px-[26px] py-2 px-4">
-            <Link href="/login">Login</Link>
-          </Button>
-          <Button className="bg-primary text-white border-none font-semibold text-[16px] rounded-full sm:px-[26px] py-2 px-4">
-            <Link href="/register">Register</Link>
-          </Button>
-        </div>
+          (
+            <div className="hidden min-[400px]:flex gap-2 sm:gap-[10px] ">
+              <Button className=" bg-transparent text-primary border-none font-semibold rounded-full text-[16px] sm:px-[26px] py-2 px-4">
+                <Link href="/login">Login</Link>
+              </Button>
+              <Button className="bg-primary text-white border-none font-semibold text-[16px] rounded-full sm:px-[26px] py-2 px-4">
+                <Link href="/register">Register</Link>
+              </Button>
+            </div>
+          )
+        }
 
         {/* Mobile Menu Button (visible only on mobile) */}
         <button
@@ -105,37 +105,35 @@ export const NavbarLanding = () => {
           <nav className="flex flex-col items-center space-y-4 w-full">
             <Link
               href="/"
-              className={`hover:text-primary transition-all ${
-                isActiveRoute("/") ? "text-primary font-semibold" : ""
-              }`}
+              className={`hover:text-primary transition-all ${isActiveRoute("/") ? "text-primary font-semibold" : ""
+                }`}
             >
               Home
             </Link>
             <Link
               href="/aboutus"
-              className={`hover:text-primary transition-all ${
-                isActiveRoute("/aboutus") ? "text-primary font-semibold" : ""
-              }`}
+              className={`hover:text-primary transition-all ${isActiveRoute("/aboutus") ? "text-primary font-semibold" : ""
+                }`}
             >
               About us
             </Link>
             <Link
               href="/contact"
-              className={`hover:text-primary transition-all ${
-                isActiveRoute("/contact") ? "text-primary font-semibold" : ""
-              }`}
+              className={`hover:text-primary transition-all ${isActiveRoute("/contact") ? "text-primary font-semibold" : ""
+                }`}
             >
               Contact
             </Link>
           </nav>
-          <div className="min-[400px]:hidden flex flex-col items-center space-y-2 mt-4 w-full max-w-[200px]">
-            <Button className="text-primary border-none font-semibold text-[16px] rounded-full sm:px-[26px] py-2 px-4 w-full">
-              <Link href="/login">Login</Link>
-            </Button>
-            <Button className="bg-primary text-white border-none font-semibold text-[16px] rounded-full sm:px-[26px] py-2 px-4 w-full">
-              <Link href="/register">Register</Link>
-            </Button>
-          </div>
+          {tokens ? "" :
+            (<div className="min-[400px]:hidden flex flex-col items-center space-y-2 mt-4 w-full max-w-[200px]">
+              <Button className="text-primary border-none font-semibold text-[16px] rounded-full sm:px-[26px] py-2 px-4 w-full">
+                <Link href="/login">Login</Link>
+              </Button>
+              <Button className="bg-primary text-white border-none font-semibold text-[16px] rounded-full sm:px-[26px] py-2 px-4 w-full">
+                <Link href="/register">Register</Link>
+              </Button>
+            </div>)}
         </div>
       )}
     </div>
