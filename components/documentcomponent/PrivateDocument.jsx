@@ -110,8 +110,7 @@ export default function Privatedocument({
                 placeholder="Select order"
                 selectedKey={sortOrder}
                 onSelectionChange={(key) => setSortOrder(key)}
-                className="text-default-700/50 dark:placeholder:text-white/60 bg-gray-100 rounded-medium"
-              >
+                className="text-default-700/50 dark:placeholder:text-white/60 bg-gray-100 rounded-medium">
                 {sortOptions.map((option) => (
                   <AutocompleteItem key={option.key} textValue={option.label}>
                     {option.label}
@@ -223,8 +222,7 @@ export const SearchIcon = (props) => (
     role="presentation"
     viewBox="0 0 24 24"
     width="1em"
-    {...props}
-  >
+    {...props}>
     <path
       d="M11.5 21C16.7467 21 21 16.7467 21 11.5C21 6.25329 16.7467 2 11.5 2C6.25329 2 2 6.25329 2 11.5C2 16.7467 6.25329 21 11.5 21Z"
       stroke="currentColor"
