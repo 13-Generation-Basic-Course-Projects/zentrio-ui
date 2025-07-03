@@ -9,6 +9,7 @@ import SidebarRenderer from "@/components/sidebar/SidebarRenderer";
 import CardWelcomeComponent from "@/components/card/CardWelcome";
 import SmallCalendar from "@/components/testcomponent/SmallCalendar";
 import { loginThirdPartyService } from "@/service/auth.service";
+
 export const metadata = {
   title: "Zentrio | Task Mangement",
   description: "Welcome to Zentrio Cambodia",
@@ -40,6 +41,7 @@ export default async function OverviewLayout({ children }) {
         {/* Children section - takes remaining height */}
         <div className=" overflow-hidden flex-1 min-h-0  ">{children}</div>
       </div>
+      
     </div>
   );
 }
