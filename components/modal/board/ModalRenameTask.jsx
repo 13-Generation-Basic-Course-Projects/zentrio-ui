@@ -15,9 +15,13 @@ import {
   updateTaskByIdAction,
 } from "@/action/board.action";
 import { toast } from "react-toastify";
+import { useRealtime } from "@/hooks/useRealtime";
 
 export function ModalRenameTask({ taskId, boardId }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+  // Real-time connection
+  const { emitEvent } = useRealtime(boardId);
   const [newName, setNewName] = useState("");
   const [taskData, setTaskData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -166,6 +170,14 @@ export function ModalRenameTask({ taskId, boardId }) {
       );
 
       console.log("REsult from updateTaskByIdAction:", result);
+
+      if (result.success) {
+        // Emit real-time event for task title update
+        emitEvent('task-updated', {
+          taskId: taskId,
+          updatedTask: { title: title }
+        });
+      }
 
       toast.success("Task updated successfully", {
         position: "top-right",

@@ -13,6 +13,7 @@ import {
 } from "@heroui/react";
 import { toast, ToastContainer } from "react-toastify";
 import { deleteTaskAction } from "@/action/board.action";
+import { useRealtime } from "@/hooks/useRealtime";
 export default function PopupActionTask({
   title,
   icon,
@@ -30,6 +31,9 @@ export default function PopupActionTask({
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
+  // Real-time connection
+  const { emitEvent } = useRealtime(boardId);
+
   const targetRef = React.useRef(null);
   const { moveProps } = useDraggable({
     targetRef,
@@ -41,14 +45,24 @@ export default function PopupActionTask({
     try {
       const result = await deleteTaskAction(taskId, boardId, ganttBarId);
       console.log("respon delete", result);
-      toast.success("Task deleted successfully!", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-      });
+      
+      if (result.success) {
+        // Emit real-time event for task deletion
+        emitEvent('task-deleted', {
+          taskId: taskId,
+          boardId: boardId,
+          ganttBarId: ganttBarId
+        });
+        
+        toast.success("Task deleted successfully!", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+      }
     } catch (error) {
       console.error("Delete failed", error);
       toast.error("Failed to delete task!", {

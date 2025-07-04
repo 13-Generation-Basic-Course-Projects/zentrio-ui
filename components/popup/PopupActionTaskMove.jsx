@@ -16,6 +16,8 @@ import {
   changeStageToUnderReviewAction,
   deleteTaskAction,
 } from "@/action/board.action";
+import { useRealtime } from "@/hooks/useRealtime";
+
 export default function PopupActionTaskMove({
   title,
   icon,
@@ -32,6 +34,9 @@ export default function PopupActionTaskMove({
   boardId,
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+  // Real-time connection
+  const { emitEvent } = useRealtime(boardId);
 
   const targetRef = React.useRef(null);
   const { moveProps } = useDraggable({
@@ -55,6 +60,12 @@ export default function PopupActionTaskMove({
         });
       }
     else{
+      // Emit real-time event for task stage change
+      emitEvent('task-updated', {
+        taskId: taskId,
+        updatedTask: { stage: 'UNDER_REVIEW' }
+      });
+      
       toast.success("Task move stage successfully!", {
         position: "top-right",
         autoClose: 3000,

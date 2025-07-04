@@ -31,7 +31,7 @@ export const getTaskByBoardIdAndGanttBarIdService = async ({
     const data = await res.json();
     console.log("📥 Backend responded with:", data);
 
-    return data; // just return the data, don’t redirect here
+    return data; // just return the data, don't redirect here
   } catch (error) {
     console.error("bug", error.message);
     throw error;
@@ -54,7 +54,7 @@ export const getGanttBarByGanttChartIdService = async ({ ganttChartId, token }) 
     const data = await res.json();
     console.log("📥 Backend responded with:", data);
 
-    return data; // just return the data, don’t redirect here
+    return data; // just return the data, don't redirect here
   } catch (error) {
     console.error("Login service error:", error.message);
     throw error;
@@ -78,7 +78,7 @@ export const getGanttChartByBoardIdService = async ({ boardId, token }) => {
     const data = await res.json();
     console.log("📥 Backend responded with:", data);
 
-    return data; // just return the data, don’t redirect here
+    return data; // just return the data, don't redirect here
   } catch (error) {
     console.error("Login service error:", error.message);
     throw error;
@@ -256,6 +256,7 @@ export const deleteNoteInCalendarService = async ({calendarId, taskId, token }) 
         accept: "*/*",
         Authorization: `Bearer ${token}`,
       },
+      next: { tags: ["calendar"] },
     });
     const data = await res.json();
     // console.log("Service - deleteNoteInCalendar (successful data):", data);
@@ -291,6 +292,7 @@ export const updateNoteInCalendarService = async ({
         tillDate,
         taskId,
       }),
+      next: { tags: ["calendar"] },
     });
 
     if (!res.ok) {
@@ -326,7 +328,7 @@ export const getChecklistByTaskIdService = async ({ taskId, token }) => {
     const data = await res.json();
     // console.log("📥 Backend responded checklist with:", data);
 
-    return data; // just return the data, don’t redirect here
+    return data; // just return the data, don't redirect here
   } catch (error) {
     console.error("Login service error:", error.message);
     throw error;

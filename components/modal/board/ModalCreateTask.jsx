@@ -23,6 +23,7 @@ import { taskFormSchema } from "@/lib/schemas/createTaskSchema";
 import { createTaskByBoardIdAndGanttChartIdAction } from "@/action/board.action";
 import { toast } from "react-toastify";
 import PopupActionNoGanttChart from "@/components/popup/PopupActionNoGanttChart";
+import { useRealtime } from "@/hooks/useRealtime";
 
 export default function ModalCreateTask({
   input,
@@ -35,6 +36,9 @@ export default function ModalCreateTask({
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [apiError, setApiError] = useState(null);
+
+  // Real-time connection
+  const { emitEvent } = useRealtime(boardId);
 
   const {
     control,
@@ -383,6 +387,25 @@ const onSubmit = async (data) => {
     toast.success(`"${data.title}"\nTask created successfully!`, {
       position: "top-right",
       autoClose: 3000,
+    });
+
+    // Emit real-time event for task creation
+    emitEvent('task-created', {
+      taskId: result.payload?.taskId || `temp-${Date.now()}`,
+      title: data.title,
+      description: data.description,
+      startedAt: taskStart.toISOString(),
+      finishedAt: taskEnd.toISOString(),
+      boardId: boardId,
+      ganttBarId: data.ganttBarId,
+      leaderId: data.teamLeader || null,
+      stage: 'TO_DO', // New tasks start in TO_DO
+      taskOrder: result.payload?.taskOrder || 1,
+      creator: {
+        userId: userId,
+        username: allMemberInBoard?.find(m => m.userId === userId)?.username || 'Unknown',
+        imageUrl: allMemberInBoard?.find(m => m.userId === userId)?.profileImage || null
+      }
     });
 
     reset();

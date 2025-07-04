@@ -3,5 +3,5 @@ export const apiConfig = {
   baseUrl: process.env.NEXT_PUBLIC_API_URL || 
            process.env.NODE_ENV === 'production' 
              ? 'https://kshrd.zentrio.pro/api/v1'  // Your production domain
-             : 'http://localhost:8080/api/v1',
+             : 'http://35.240.211.25:9100/api/v1',
 };

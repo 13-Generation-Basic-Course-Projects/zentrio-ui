@@ -20,6 +20,7 @@ const url = reactGroup.createReact();
     Authorization: `Bearer ${token}`,
   },
   body: JSON.stringify(payload),
+  next: { tags: ["announcements"] },
 });
 const data = await res.json(); 
 }

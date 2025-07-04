@@ -22,6 +22,9 @@ export const getTaskByBoardIdAndGanttBarIdService = async ({
     );
     const res = await fetch(url, {
       method: "GET",
+      next: {
+        tags: ["tasks"],
+      },
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -45,6 +48,9 @@ export const getCheckListByTaskIdService = async ({ taskId, token }) => {
     const url = checklistRouteGroup.getCheckListByTaskId(taskId);
     const res = await fetch(url, {
       method: "GET",
+      next: {
+        tags: ["checklists"],
+      },
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -68,6 +74,9 @@ export const getMemberByBoardIdService = async ({ boardId, token }) => {
     const url = boardRouteGroup.getMemberByBoardId(boardId);
     const res = await fetch(url, {
       method: "GET",
+      next: {
+        tags: ["members"],
+      },
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -128,6 +137,9 @@ export const getCommentByCheckListIdService = async ({
       boardRouteGroup.getCommentByCheckListId(checkListId),
       {
         method: "GET",
+        next: {
+          tags: ["comments"],
+        },
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -159,6 +171,9 @@ export const getAllGanttBarByGanttChartIDService = async ({
     const url = ganttRouteGroup.getAllGanttBarByGanttChartID(ganttChartId);
     const res = await fetch(url, {
       method: "GET",
+      next: {
+        tags: ["gantt"],
+      },
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -272,6 +287,7 @@ export const createTaskByBoardIdAndGanttChartIdService = async ({
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(payload),
+    next: { tags: ["tasks"] },
   });
 
   // if (!res.ok) {
@@ -310,6 +326,7 @@ export const createGanttChartByBoardIdService = async ({
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({ title: data.title, boardId: boardId }),
+      next: { tags: ["gantt"] },
     });
     const result = await res.json();
     console.log("📥 Backend responded with gantbar:", result);
@@ -418,6 +435,7 @@ export const editCommmentService = async ({ data, token }) => {
         content: data.content,
         checklistId: data.checklistId,
       }),
+      next: { tags: ["comments"] },
     });
     const result = await res.json();
     console.log("📥 Backend responded with comment reply:", result);
@@ -459,6 +477,9 @@ export const getTaskByBoardIdService = async ({ boardId, token }) => {
     const url = boardRouteGroup.getTaskByBoardId(boardId);
     const res = await fetch(url, {
       method: "GET",
+      next: {
+        tags: ["tasks"],
+      },
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -486,6 +507,7 @@ export const deleteTaskService = async (taskId, boardId, ganttbarId, token) => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
+      next: { tags: ["tasks"] },
     });
     const data = await res.json();
     console.log("📥 Backend responded with delete:", data);
@@ -645,6 +667,7 @@ export const changeStatusTaskService = async (taskId, token, type) => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
+      next: { tags: ["tasks"] },
     });
     const data = await res.json();
     console.log("📥 Backend responded with change status:", data);
@@ -691,6 +714,7 @@ export const FeedBackService = async (taskId, token, comment) => {
         comment: comment.comment,
         taskId: taskId,
       }),
+      next: { tags: ["tasks"] },
     });
     const data = await res.json();
     console.log("📥 Backend responded with change feedback:", data);
@@ -713,6 +737,7 @@ export const deleteMemberService = async (boardId, userId, token) => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
+      next: { tags: ["members"] },
     });
     const data = await res.json();
     console.log("📥 Backend responded with delete user:", data);
@@ -808,6 +833,7 @@ export const updateTaskByIdService = async ({
       boardId,
       ganttBarId,
     }),
+    next: { tags: ["tasks"] },
   });
   const data = await response.json();
   console.log("err update", data);
@@ -965,6 +991,9 @@ export const getTaskByTaskIdService = async ({ taskId, token }) => {
 
   const response = await fetch(url, {
     method: "GET",
+    next: {
+      tags: ["tasks"],
+    },
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -1098,6 +1127,7 @@ export const leaveTheBoardService = async (boardId, token) => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
+      next: { tags: ["boards"] },
     });
     const data = await res.json();
     console.log("📥 Backend responded with leave the baord", data);
@@ -1166,6 +1196,9 @@ export const getFeedBackByTaskIdService = async ({ taskId, token }) => {
     const url = boardRouteGroup.getFeedBackByTaskId(taskId);
     const res = await fetch(url, {
       method: "GET",
+      next: {
+        tags: ["feedback"],
+      },
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -1207,6 +1240,7 @@ export const updateCheckListDateByIdAndTaskIdService = async ({
       finishedAt,
       checklistId,
     }),
+    next: { tags: ["checklists"] },
   });
 
   if (!response.ok) {

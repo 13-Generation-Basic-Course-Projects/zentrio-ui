@@ -43,6 +43,7 @@ import { toast } from "react-toastify";
 import { CameraIcon } from "lucide-react";
 import { CardCheckList } from "@/components/card/CardChecklist";
 import FeedbackDisplay from "./FeedbackOfTask";
+import { useRealtime } from "@/hooks/useRealtime";
 
 const initialState = {
   activeTab: "add",
@@ -804,6 +805,8 @@ const ModalDetailChecklist = ({
   imageChecklist,
   feedbackByTaskIds,
 }) => {
+  // Real-time connection
+  const { emitEvent } = useRealtime(boardId);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const { state, dispatch, shouldStayOpen } = useChecklistData(
     checklistId,
@@ -883,6 +886,13 @@ const ModalDetailChecklist = ({
       const result = await chageStatusCheckListAction(id, newStatus);
       if (result.success) {
         setCurrentStatus(newStatus); // Update UI on success
+        
+        // Emit real-time event for checklist status update
+        emitEvent('checklist-updated', {
+          taskId: taskId,
+          checklistId: id,
+          updatedChecklist: { status: newStatus }
+        });
       } else {
         console.error("Failed to update status:", result.error);
       }
@@ -1243,55 +1253,7 @@ const ModalDetailChecklist = ({
                   {role === "ROLE_MEMBER" ? (
                     ""
                   ) : (
-                    <div className="flex items-center justify-between gap-4 p-4 bg-white">
-                      {isEditingTitle ? (
-                        <div className="flex-1 min-w-0">
-                          <input
-                            type="text"
-                            value={newTitle}
-                            onChange={handleTitleChange}
-                            onKeyDown={handleSubmitTitle}
-                            className="w-full px-4 py-3 text-lg font-medium text-gray-900 focus:outline-none "
-                            placeholder="Enter checklist title..."
-                            autoFocus
-                            disabled={loading}
-                            aria-label="Checklist title input"
-                            maxLength={100} // Prevent extremely long titles
-                          />
-                          {loading && (
-                            <div className="mt-2 flex items-center text-sm text-gray-500">
-                              <div className="animate-spin h-4 w-4 "></div>
-                              Saving...
-                            </div>
-                          )}
-                        </div>
-                      ) : (
-                        <div
-                          onClick={handleEditTitleClick}
-                          className="flex-1 min-w-0 cursor-pointer group"
-                          role="button"
-                          tabIndex={0}
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter" || e.key === " ") {
-                              e.preventDefault();
-                              handleEditTitleClick();
-                            }
-                          }}
-                          aria-label="Click to edit checklist title"
-                        >
-                          <div className="p-3 ">
-                            <h1 className="text-lg font-medium text-gray-900 break-words leading-relaxed">
-                              {newTitle || title || (
-                                <span className="text-gray-500 italic">
-                                  Click to add title...
-                                </span>
-                              )}
-                            </h1>
-                          </div>
-                        </div>
-                      )}
-
-                      <div className="flex-shrink-0">
+                    <div className="flex-shrink-0">
                         <PopupAction
                           title={<Trash />}
                           color={"text-blue-600"}
@@ -1305,7 +1267,6 @@ const ModalDetailChecklist = ({
                           taskId={taskId}
                         />
                       </div>
-                    </div>
                   )}
 
                   {/* this date picker  */}

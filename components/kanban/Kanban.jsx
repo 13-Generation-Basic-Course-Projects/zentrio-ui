@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { StackedUser } from "../useravatar/StackUser";
 import BredCrum from "../bredcrum/MyBredcrum";
 import ModalDetailChecklist from "../modal/board/ModalDetailChecklist";
@@ -16,6 +16,7 @@ import {
 } from "@/action/board.action";
 import KanbanDrawer from "./ArchiveDrawer";
 import BredCrumKanban from "../bredcrum/BredcrumKanban";
+import { useRealtime } from "@/hooks/useRealtime";
 
 // Placeholder component
 const UserAvater = ({ image }) => (
@@ -138,8 +139,39 @@ export default function KanbanBoard({
   const [error, setError] = useState(null);
   const [isUpdating, setIsUpdating] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
+  
+  // Preserve UI state across re-renders
+  const [expandedTasks, setExpandedTasks] = useState(new Set());
+  const [openModals, setOpenModals] = useState(new Set());
+  const previousTasksRef = useRef(null);
 
-  // Load columns from API data
+  // Real-time connection
+  const {
+    isConnected,
+    lastMessage,
+    connectionError,
+    emitEvent,
+  } = useRealtime(boardId);
+
+  // Memoize transformed columns to prevent unnecessary re-renders
+  const transformedColumns = useMemo(() => {
+    if (!tasks || !boardId) {
+      return [];
+    }
+    
+    const columns = transformApiToColumns(tasks, checklistbyTaskIds);
+    
+    // Preserve expanded state from previous render
+    columns.forEach(column => {
+      column.cards.forEach(card => {
+        card.expanded = expandedTasks.has(card.id);
+      });
+    });
+    
+    return columns;
+  }, [tasks, checklistbyTaskIds, boardId, expandedTasks]);
+
+  // Load columns from API data (only when there are actual changes)
   useEffect(() => {
     if (!boardId) {
       setError("Board ID is missing");
@@ -148,16 +180,242 @@ export default function KanbanBoard({
     }
 
     if (tasks) {
-      const transformedColumns = transformApiToColumns(
-        tasks,
-        checklistbyTaskIds
-      );
-      setColumns(transformedColumns);
+      // Only update if tasks have actually changed
+      const tasksString = JSON.stringify(tasks);
+      if (previousTasksRef.current !== tasksString) {
+        previousTasksRef.current = tasksString;
+        setColumns(transformedColumns);
+      }
       setLoading(false);
     } else {
       setLoading(false);
     }
-  }, [tasks, JSON.stringify(checklistbyTaskIds), boardId]);
+  }, [transformedColumns, boardId]);
+
+  // Update columns when expandedTasks changes
+  useEffect(() => {
+    if (columns.length > 0) {
+      console.log('Updating columns due to expandedTasks change:', Array.from(expandedTasks));
+      setColumns(prevColumns => {
+        const updatedColumns = prevColumns.map(column => ({
+          ...column,
+          cards: column.cards.map(card => {
+            const isExpanded = expandedTasks.has(card.id);
+            console.log(`Card ${card.id} expanded: ${isExpanded}`);
+            return {
+              ...card,
+              expanded: isExpanded
+            };
+          })
+        }));
+        console.log('Updated columns:', updatedColumns);
+        return updatedColumns;
+      });
+    }
+  }, [expandedTasks]);
+
+  // Real-time event listeners
+  useEffect(() => {
+    if (!lastMessage || !isConnected) return;
+
+    const { type, data } = lastMessage;
+
+    switch (type) {
+      case 'task-created':
+        console.log('Received task-created event:', data);
+        setColumns(prevColumns => {
+          const newColumns = [...prevColumns];
+          const { taskId, title, description, startedAt, finishedAt, stage, taskOrder, creator, leaderId } = data;
+          
+          // Calculate duration
+          let duration = "N/A";
+          if (startedAt && finishedAt) {
+            const start = new Date(startedAt);
+            const end = new Date(finishedAt);
+            const diffTime = Math.abs(end - start);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            duration = `${diffDays} day${diffDays !== 1 ? "s" : ""}`;
+          }
+          
+          // Map stage to column
+          const stageToColumnMap = {
+            TO_DO: "todo",
+            IN_PROGRESS: "in-progress",
+            UNDER_REVIEW: "under-review",
+            COMPLETED: "done",
+          };
+          const columnId = stageToColumnMap[stage] || "todo";
+          
+          // Create new card
+          const newCard = {
+            id: taskId,
+            title: title,
+            description: description,
+            label: null,
+            comment: 0,
+            attachment: 0,
+            duration: duration,
+            order: taskOrder,
+            expanded: false,
+            checklists: [],
+            assignees: creator.imageUrl ? [creator.imageUrl] : [],
+            startedAt: startedAt,
+            finishedAt: finishedAt,
+            status: 'PENDING',
+            stage: stage,
+            creator: creator,
+            teamLeader: leaderId ? allMemberInBoard?.find(m => m.userId === leaderId) : null
+          };
+          
+          // Add to appropriate column
+          const targetColumn = newColumns.find(col => col.id === columnId);
+          if (targetColumn) {
+            targetColumn.cards.push(newCard);
+            // Sort by order
+            targetColumn.cards.sort((a, b) => a.order - b.order);
+          }
+          
+          return newColumns;
+        });
+        break;
+
+      case 'task-moved':
+        console.log('Received task-moved event:', data);
+        setColumns(prevColumns => {
+          const newColumns = [...prevColumns];
+          const { taskId, fromColumn, toColumn, newOrder } = data;
+          
+          // Find the task in the source column
+          const sourceColumn = newColumns.find(col => col.id === fromColumn);
+          const targetColumn = newColumns.find(col => col.id === toColumn);
+          
+          if (sourceColumn && targetColumn) {
+            // Find and remove the task from source column
+            const taskIndex = sourceColumn.cards.findIndex(card => card.id === taskId);
+            if (taskIndex !== -1) {
+              const [movedTask] = sourceColumn.cards.splice(taskIndex, 1);
+              
+              // Preserve expanded state
+              movedTask.expanded = expandedTasks.has(taskId);
+              
+              // Update task stage if moving to different column
+              if (fromColumn !== toColumn) {
+                const columnStageMap = {
+                  todo: "TO_DO",
+                  "in-progress": "IN_PROGRESS",
+                  "under-review": "UNDER_REVIEW",
+                  done: "COMPLETED",
+                };
+                movedTask.stage = columnStageMap[toColumn];
+              }
+              
+              // Insert task at new position in target column
+              const insertIndex = Math.min(newOrder - 1, targetColumn.cards.length);
+              targetColumn.cards.splice(insertIndex, 0, movedTask);
+              
+              // Reorder all cards in target column
+              targetColumn.cards = targetColumn.cards.map((card, index) => ({
+                ...card,
+                order: index + 1,
+              }));
+            }
+          }
+          
+          return newColumns;
+        });
+        break;
+
+      case 'task-updated':
+        console.log('Received task-updated event:', data);
+        setColumns(prevColumns => {
+          return prevColumns.map(column => ({
+            ...column,
+            cards: column.cards.map(card => {
+              if (card.id === data.taskId) {
+                return { 
+                  ...card, 
+                  ...data.updatedTask,
+                  expanded: expandedTasks.has(card.id) // Preserve expanded state
+                };
+              }
+              return card;
+            }),
+          }));
+        });
+        break;
+
+      case 'checklist-created':
+        console.log('Received checklist-created event:', data);
+        setColumns(prevColumns => {
+          return prevColumns.map(column => ({
+            ...column,
+            cards: column.cards.map(card => {
+              if (card.id === data.taskId) {
+                const newChecklist = {
+                  checklistId: data.checklistId,
+                  title: data.title,
+                  description: data.description,
+                  status: data.status,
+                  cover: null,
+                  createdAt: data.createdAt,
+                  updatedAt: data.updatedAt,
+                  checklistOrder: data.checklistOrder,
+                  startedAt: data.startedAt,
+                  finishedAt: data.finishedAt,
+                  taskId: data.taskId,
+                  createdBy: "current-user-id",
+                  members: []
+                };
+                
+                return {
+                  ...card,
+                  checklists: [...(card.checklists || []), newChecklist],
+                  expanded: expandedTasks.has(card.id) // Preserve expanded state
+                };
+              }
+              return card;
+            }),
+          }));
+        });
+        break;
+
+      case 'checklist-updated':
+        console.log('Received checklist-updated event:', data);
+        setColumns(prevColumns => {
+          return prevColumns.map(column => ({
+            ...column,
+            cards: column.cards.map(card => {
+              if (card.id === data.taskId && card.checklists) {
+                return {
+                  ...card,
+                  checklists: card.checklists.map(checklist =>
+                    checklist.checklistId === data.checklistId
+                      ? { ...checklist, ...data.updatedChecklist }
+                      : checklist
+                  ),
+                  expanded: expandedTasks.has(card.id) // Preserve expanded state
+                };
+              }
+              return card;
+            }),
+          }));
+        });
+        break;
+
+      case 'task-deleted':
+        console.log('Received task-deleted event:', data);
+        setColumns(prevColumns => {
+          return prevColumns.map(column => ({
+            ...column,
+            cards: column.cards.filter(card => card.id !== data.taskId)
+          }));
+        });
+        break;
+
+      default:
+        break;
+    }
+  }, [lastMessage, isConnected]);
 
   const findChecklistDetails = (checklistId) => {
     for (let colIndex = 0; colIndex < columns.length; colIndex++) {
@@ -190,18 +448,29 @@ export default function KanbanBoard({
   };
 
   const toggleTaskExpansion = (cardId) => {
-    setColumns((prev) =>
-      prev.map((column) => ({
-        ...column,
-        cards: (column.cards || []).map((card) =>
-          card.id === cardId ? { ...card, expanded: !card.expanded } : card
-        ),
-      }))
-    );
+    console.log('Toggling expansion for card:', cardId);
+    console.log('Current expandedTasks:', Array.from(expandedTasks));
+    
+    setExpandedTasks(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(cardId)) {
+        newSet.delete(cardId);
+        console.log('Removing card from expanded tasks');
+      } else {
+        newSet.add(cardId);
+        console.log('Adding card to expanded tasks');
+      }
+      console.log('New expandedTasks:', Array.from(newSet));
+      return newSet;
+    });
   };
 
   const addChecklist = (cardId, checklistData) => {
     if (!checklistData?.description?.trim()) return;
+    
+    // Add to expanded tasks to keep the card expanded
+    setExpandedTasks(prev => new Set([...prev, cardId]));
+    
     const newChecklistId = `${cardId}-checklist-${Date.now()}`;
     setColumns((prev) =>
       prev.map((column) => ({
@@ -488,6 +757,14 @@ export default function KanbanBoard({
           console.log(
             `Task order updated: ${draggedId} from ${oldOrder} to ${newOrder}`
           );
+
+          // Emit real-time event for updates to other users
+          emitEvent('task-moved', {
+            taskId: draggedId,
+            fromColumn: sourceColumnId,
+            toColumn: targetColumnId,
+            newOrder
+          });
         } catch (error) {
           console.log("Backend update failed:", error.message);
           setErrorMessage("Failed to update task. Please try again.");
@@ -572,6 +849,12 @@ export default function KanbanBoard({
             ),
           }))
         );
+
+        // Emit real-time event for updates to other users
+        emitEvent('task-updated', {
+          taskId,
+          updatedTask: { status: newStatus }
+        });
       } else {
         console.error("Failed to update task status:", result.error);
       }
@@ -603,6 +886,20 @@ export default function KanbanBoard({
       <div className=" w-full flex justify-start items-center mt-5">
         <KanbanDrawer />
       </div>
+      
+      {/* Connection status indicator */}
+      <div className="flex items-center gap-2 px-4 py-2">
+        <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`}></div>
+        <span className="text-sm text-gray-600">
+          {isConnected ? 'Real-time connected' : connectionError ? 'Connection failed' : 'Connecting...'}
+        </span>
+        {connectionError && (
+          <span className="text-xs text-red-500 ml-2">
+            {connectionError}
+          </span>
+        )}
+      </div>
+      
       {isUpdating && (
         <div className="text-blue-500 p-2">Updating task order...</div>
       )}
@@ -860,129 +1157,11 @@ export default function KanbanBoard({
                               </div>
                             </div>
                           </div>
-                          {card.expanded && (
-                            <div
-                              className="p-2"
-                              onDragOver={(e) =>
-                                handleDragOver(e, {
-                                  targetColumnId: column.id,
-                                  targetCardId: card.id,
-                                  targetIndex: (card.checklists || []).length,
-                                  type: "checklist",
-                                })
-                              }
-                              onDrop={handleDrop}
-                            >
-                              {(card.checklists || []).map(
-                                (checklist, checklistIndex) => {
-                                  const isChecklistDragging =
-                                    draggedItem?.id === checklist.checklistId;
-                                  const isChecklistHoverMakeSpace =
-                                    hoverInfo?.type === "checklist" &&
-                                    hoverInfo?.targetCardId === card.id &&
-                                    hoverInfo?.targetIndex === checklistIndex;
-                                  const isChecklistDropZoneHovered =
-                                    hoverInfo?.type === "checklist" &&
-                                    hoverInfo?.targetCardId === card.id &&
-                                    hoverInfo?.targetIndex === checklistIndex;
-
-                                  return (
-                                    <div
-                                      key={checklist.checklistId}
-                                      id={checklist.checklistId}
-                                    >
-                                      <div
-                                        className={`h-1 w-full transition-all duration-200 ease-in-out rounded ${
-                                          isChecklistDropZoneHovered
-                                            ? "bg-green-200 h-6 border-2 border-dashed border-green-500"
-                                            : ""
-                                        }`}
-                                        onDragOver={(e) =>
-                                          handleDragOver(e, {
-                                            targetColumnId: column.id,
-                                            targetCardId: card.id,
-                                            targetIndex: checklistIndex,
-                                            type: "checklist",
-                                          })
-                                        }
-                                        onDrop={handleDrop}
-                                      />
-                                      <div
-                                        className={`mb-1 cursor-grab active:cursor-grabbing bg-white transition-all duration-200 ease-in-out rounded-xl shadow-sm`}
-                                        style={{
-                                          opacity: isChecklistDragging
-                                            ? 0.5
-                                            : 1,
-                                          transform: isChecklistDragging
-                                            ? "scale(1.05)"
-                                            : isChecklistHoverMakeSpace
-                                            ? "translateY(4px)"
-                                            : "none",
-                                        }}
-                                        draggable
-                                        onDragStart={(e) =>
-                                          handleDragStart(e, {
-                                            id: checklist.checklistId,
-                                            type: "checklist",
-                                            sourceColumnId: column.id,
-                                            sourceCardId: card.id,
-                                            sourceIndex: checklistIndex,
-                                          })
-                                        }
-                                        onDragEnd={handleDragEnd}
-                                      >
-                                        <ModalDetailChecklist
-                                          boardId={boardId}
-                                          taskId={card.id}
-                                          id={checklist?.checklistId}
-                                          taskTitle={card.title}
-                                          title={checklist.title}
-                                          startDate={
-                                            checklist.startedAt
-                                              ? new Date(
-                                                  checklist.startedAt
-                                                ).toLocaleDateString()
-                                              : "N/A"
-                                          }
-                                          status={checklist.status}
-                                          image={
-                                            checklist.members &&
-                                            checklist.members.length > 0
-                                              ? checklist.members[0].imageUrl
-                                              : card.assignees[0] || ""
-                                          }
-                                          description={checklist.description}
-                                          checklistId={checklist?.checklistId}
-                                          members={checklist.members || []}
-                                          createdAt={checklist.createdAt}
-                                          updatedAt={checklist.updatedAt}
-                                          finishedAt={checklist.finishedAt}
-                                          member={checklist.members}
-                                          preventUserImage={preventUserImage}
-                                          allMemberInBoard={allMemberInBoard}
-                                          leaderId={
-                                            tasks.find(
-                                              (task) => task.taskId === card.id
-                                            )?.teamLeader?.userId || null
-                                          }
-                                          role={role}
-                                          imageChecklist={checklist?.cover}
-                                          feedbackByTaskIds={feedbackByTaskIds}
-                                        />
-                                      </div>
-                                    </div>
-                                  );
-                                }
-                              )}
+                          {(() => {
+                            console.log(`Rendering card ${card.id}, expanded: ${card.expanded}`);
+                            return card.expanded && (
                               <div
-                                className={`h-1 w-full transition-all duration-200 ease-in-out rounded ${
-                                  hoverInfo?.type === "checklist" &&
-                                  hoverInfo?.targetCardId === card.id &&
-                                  hoverInfo?.targetIndex ===
-                                    (card.checklists || []).length
-                                    ? "bg-green-200 h-6 border-2 border-dashed border-green-500"
-                                    : ""
-                                }`}
+                                className="p-2"
                                 onDragOver={(e) =>
                                   handleDragOver(e, {
                                     targetColumnId: column.id,
@@ -992,48 +1171,173 @@ export default function KanbanBoard({
                                   })
                                 }
                                 onDrop={handleDrop}
-                              />
-                              <div className="pb-3 pt-1 px-3">
-                                <div className="grid grid-cols-12">
-                                  <div
-                                    className={`col-span-8 flex items-center`}
-                                  >
-                                    {role == "ROLE_MEMBER" || role == "ROLE_MANAGER" ? (
-                                      ""
-                                    ) : (
-                                      <ModalCreateChecklist
-                                        buttonText="New checklist"
-                                        modalTitle="Create Checklist"
-                                        taskid={card.id}
-                                        startedAt={card.startedAt}
-                                        finishedAt={card.finishedAt}
-                                        stage={
-                                          tasks.find(
-                                            (task) => task.taskId === card.id
-                                          )?.stage || "TO DO"
-                                        }
-                                      />
-                                    )}
-                                  </div>
-                                  <div className="col-span-4 p-2">
-                                    <CardDateChecklist
-                                      date={
-                                        card.finishedAt
-                                          ? new Date(
-                                              card.finishedAt
-                                            ).toLocaleDateString()
+                              >
+                                {(card.checklists || []).map(
+                                  (checklist, checklistIndex) => {
+                                    const isChecklistDragging =
+                                      draggedItem?.id === checklist.checklistId;
+                                    const isChecklistHoverMakeSpace =
+                                      hoverInfo?.type === "checklist" &&
+                                      hoverInfo?.targetCardId === card.id &&
+                                      hoverInfo?.targetIndex === checklistIndex;
+                                    const isChecklistDropZoneHovered =
+                                      hoverInfo?.type === "checklist" &&
+                                      hoverInfo?.targetCardId === card.id &&
+                                      hoverInfo?.targetIndex === checklistIndex;
+
+                                    return (
+                                      <div
+                                        key={checklist.checklistId}
+                                        id={checklist.checklistId}
+                                      >
+                                        <div
+                                          className={`h-1 w-full transition-all duration-200 ease-in-out rounded ${
+                                            isChecklistDropZoneHovered
+                                              ? "bg-green-200 h-6 border-2 border-dashed border-green-500"
+                                              : ""
+                                          }`}
+                                          onDragOver={(e) =>
+                                            handleDragOver(e, {
+                                              targetColumnId: column.id,
+                                              targetCardId: card.id,
+                                              targetIndex: checklistIndex,
+                                              type: "checklist",
+                                            })
+                                          }
+                                          onDrop={handleDrop}
+                                        />
+                                        <div
+                                          className={`mb-1 cursor-grab active:cursor-grabbing bg-white transition-all duration-200 ease-in-out rounded-xl shadow-sm`}
+                                          style={{
+                                            opacity: isChecklistDragging
+                                              ? 0.5
+                                              : 1,
+                                            transform: isChecklistDragging
+                                              ? "scale(1.05)"
+                                              : isChecklistHoverMakeSpace
+                                              ? "translateY(4px)"
+                                              : "none",
+                                          }}
+                                          draggable
+                                          onDragStart={(e) =>
+                                            handleDragStart(e, {
+                                              id: checklist.checklistId,
+                                              type: "checklist",
+                                              sourceColumnId: column.id,
+                                              sourceCardId: card.id,
+                                              sourceIndex: checklistIndex,
+                                            })
+                                          }
+                                          onDragEnd={handleDragEnd}
+                                        >
+                                          <ModalDetailChecklist
+                                            boardId={boardId}
+                                            taskId={card.id}
+                                            id={checklist?.checklistId}
+                                            taskTitle={card.title}
+                                            title={checklist.title}
+                                            startDate={
+                                              checklist.startedAt
+                                                ? new Date(
+                                                    checklist.startedAt
+                                                  ).toLocaleDateString()
+                                                : "N/A"
+                                            }
+                                            status={checklist.status}
+                                            image={
+                                              checklist.members &&
+                                              checklist.members.length > 0
+                                                ? checklist.members[0].imageUrl
+                                                : card.assignees[0] || ""
+                                            }
+                                            description={checklist.description}
+                                            checklistId={checklist?.checklistId}
+                                            members={checklist.members || []}
+                                            createdAt={checklist.createdAt}
+                                            updatedAt={checklist.updatedAt}
+                                            finishedAt={checklist.finishedAt}
+                                            member={checklist.members}
+                                            preventUserImage={preventUserImage}
+                                            allMemberInBoard={allMemberInBoard}
+                                            leaderId={
+                                              tasks.find(
+                                                (task) => task.taskId === card.id
+                                              )?.teamLeader?.userId || null
+                                            }
+                                            role={role}
+                                            imageChecklist={checklist?.cover}
+                                            feedbackByTaskIds={feedbackByTaskIds}
+                                          />
+                                        </div>
+                                      </div>
+                                    );
+                                  }
+                                )}
+                                <div
+                                  className={`h-1 w-full transition-all duration-200 ease-in-out rounded ${
+                                    hoverInfo?.type === "checklist" &&
+                                    hoverInfo?.targetCardId === card.id &&
+                                    hoverInfo?.targetIndex ===
+                                      (card.checklists || []).length
+                                      ? "bg-green-200 h-6 border-2 border-dashed border-green-500"
+                                      : ""
+                                  }`}
+                                  onDragOver={(e) =>
+                                    handleDragOver(e, {
+                                      targetColumnId: column.id,
+                                      targetCardId: card.id,
+                                      targetIndex: (card.checklists || []).length,
+                                      type: "checklist",
+                                    })
+                                  }
+                                  onDrop={handleDrop}
+                                />
+                                <div className="pb-3 pt-1 px-3">
+                                  <div className="grid grid-cols-12">
+                                    <div
+                                      className={`col-span-8 flex items-center`}
+                                    >
+                                      {role == "ROLE_MEMBER" || role == "ROLE_MANAGER" ? (
+                                        ""
+                                      ) : (
+                                        <ModalCreateChecklist
+                                          buttonText="New checklist"
+                                          modalTitle="Create Checklist"
+                                          taskid={card.id}
+                                          startedAt={card.startedAt}
+                                          finishedAt={card.finishedAt}
+                                          stage={
+                                            tasks.find(
+                                              (task) => task.taskId === card.id
+                                            )?.stage || "TO DO"
+                                          }
+                                          boardId={boardId}
+                                        />
+                                      )}
+                                    </div>
+                                    <div className="col-span-4 p-2">
+                                      <CardDateChecklist
+                                        date={
+                                          card.finishedAt
+                                            ? new Date(
+                                                card.finishedAt
+                                              ).toLocaleDateString()
                                           : "N/A"
                                       }
                                     />
+                                    </div>
                                   </div>
                                 </div>
                               </div>
-                            </div>
-                          )}
+                            );
+                          })()}
                         </div>
                         <div className="flex items-center justify-center ">
                           <button
-                            onClick={() => toggleTaskExpansion(card.id)}
+                            onClick={() => {
+                              console.log('Expand/collapse button clicked for card:', card.id);
+                              toggleTaskExpansion(card.id);
+                            }}
                             className="text-gray-400 hover:text-gray-600 p-1 rounded hover:bg-gray-100 p-4 rounded-large"
                           >
                             {card.expanded ? (

@@ -38,7 +38,7 @@ import {
   updateTaskByIdService,
   uploadCoverChecklistService,
 } from "@/service/board.service";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { sendNotificationToUserIdAction } from "./notification.action";
 import {
   sendNotificationToSpecificArrayIdService,
@@ -197,7 +197,8 @@ export const createTaskByBoardIdAndGanttChartIdAction = async (
       data,
       token,
     });
-    revalidatePath("/task");
+    revalidateTag("tasks");
+    revalidateTag("gantt");
     return { success: true, data: result };
   } catch (error) {
     console.error("Create task action error:", error.message);
@@ -224,7 +225,7 @@ export const createGanttChartByBoardIdAction = async (data, boardId) => {
       data,
       token,
     });
-    revalidatePath("/gantbar");
+    revalidateTag("gantt");
     return { success: true, data: result };
   } catch (error) {
     console.error("Create task action error:", error.message);
@@ -248,7 +249,7 @@ export const createCheckListAction = async (taskId, data) => {
       data,
       token,
     });
-    revalidatePath("/checklist");
+    revalidateTag("checklists");
     return result;
   } catch (error) {
     console.log("Create checklist action error:", error.message);
@@ -287,7 +288,7 @@ export const postCommentByCheckListIdAction = async (data, checklistId) => {
       data,
       token,
     });
-    revalidatePath("/comment");
+    revalidateTag("comments");
     return { success: true, data: result };
   } catch (error) {
     console.error("Create task action error:", error.message);
@@ -306,7 +307,7 @@ export const editCommmentAction = async (data) => {
       data,
       token,
     });
-    revalidatePath("/comment");
+    revalidateTag("comments");
     return { success: true, data: result };
   } catch (error) {
     console.error("put comment action error:", error.message);
@@ -354,7 +355,8 @@ export const deleteTaskAction = async (taskId, boardId, ganttBarId) => {
   const userToken = await Token();
   const token = userToken?.Credential;
   const result = await deleteTaskService(taskId, boardId, ganttBarId, token);
-  revalidatePath("/task");
+  revalidateTag("tasks");
+  revalidateTag("gantt");
   // console.log("📥 Backend responded with delete action", result);
 
   return result;
@@ -376,7 +378,8 @@ export const assignMemberInChecklistAction = async (
     ganttBarId,
     token
   );
-  revalidatePath("/task");
+  revalidateTag("tasks");
+  revalidateTag("members");
   // console.log("📥 Backend responded with delete action", result);
 
   return result;
@@ -389,8 +392,14 @@ export const moveTaskOrderAction = async (boardId, newId, oldId) => {
   const userToken = await Token();
   const token = userToken?.Credential;
   const result = await moveTaskOrderService(boardId, newId, oldId, token);
-  revalidatePath("/task");
-  // console.log("📥 Backend responded with delete action", result);
+  revalidateTag("tasks");
+  
+  // Emit WebSocket event for real-time updates
+  if (result.success && typeof window !== 'undefined') {
+    // This will be handled by the client-side WebSocket hook
+    console.log("Task order updated, WebSocket event will be emitted by client");
+  }
+  
   return result;
 };
 
@@ -453,7 +462,8 @@ export const createTaskByBoardIdAndGanttChartIdAction = async (
       }
     }
 
-    revalidatePath("/task");
+    revalidateTag("tasks");
+    revalidateTag("gantt");
     return { success: true, data: result };
   } catch (error) {
     console.error("Create task action error:", error.message);
@@ -504,7 +514,8 @@ export const assignLeaderAction = async (taskId, assignId) => {
       }
     }
 
-    revalidatePath("/assignLd");
+    revalidateTag("tasks");
+    revalidateTag("members");
     return { success: true, data: result };
   } catch (error) {
     console.error("Assign leader action error:", error.message);
@@ -532,7 +543,8 @@ export const declineLeaderAction = async (taskId, assignId) => {
     });
 
     console.log("Decline leader result:", JSON.stringify(result, null, 2));
-    revalidatePath("/assignLd");
+    revalidateTag("tasks");
+    revalidateTag("members");
     return { success: true, data: result };
   } catch (error) {
     console.error("Decline leader action error:", error.message, error.stack);
@@ -579,7 +591,8 @@ export const assignMemberToChecklistAction = async (
     assignedTo,
     token
   );
-  revalidatePath("/checklist");
+  revalidateTag("checklists");
+  revalidateTag("members");
   // console.log("📥 Backend responded with delete action", result);
   return result;
 };
@@ -590,7 +603,8 @@ export const changeStageToUnderReviewAction = async (taskId, stage) => {
   const userToken = await Token();
   const token = userToken?.Credential;
   const result = await changeStageToUnderReviewService(taskId, token, stage);
-  revalidatePath("/checklist");
+  revalidateTag("tasks");
+  revalidateTag("checklists");
   console.log("status action complete fix", taskId, stage);
   return result;
 };
@@ -601,7 +615,8 @@ export const FeedBackAction = async (taskId, comment) => {
   const userToken = await Token();
   const token = userToken?.Credential;
   const result = await FeedBackService(taskId, token, comment);
-  revalidatePath("/checklist");
+  revalidateTag("tasks");
+  revalidateTag("feedback");
 
   return result;
 };
@@ -612,7 +627,7 @@ export const deleteMemberAction = async (boardId, userId) => {
   const userToken = await Token();
   const token = userToken?.Credential;
   const result = await deleteMemberService(boardId, userId, token);
-  revalidatePath("/member");
+  revalidateTag("members");
   return result;
 };
 /*
@@ -629,7 +644,7 @@ export const chageStatusCheckListAction = async (checklistId, type) => {
   const userToken = await Token();
   const token = userToken?.Credential;
   const result = await chageStatusCheckListService(checklistId, token, type);
-  revalidatePath("/checklist");
+  revalidateTag("checklists");
   console.log("status action", checklistId, type);
   return result;
 };
@@ -660,7 +675,8 @@ export const updateTaskByIdAction = async (
     ganttBarId,
     token,
   });
-  revalidatePath("/member");
+  revalidateTag("tasks");
+  revalidateTag("gantt");
   return result;
 };
 
@@ -678,7 +694,8 @@ export const deleteCheckListByTaskIdAction = async (checkListId, taskId) => {
     taskId,
     token,
   });
-  revalidatePath("/member");
+  revalidateTag("checklists");
+  revalidateTag("tasks");
   return result;
 };
 
@@ -718,7 +735,8 @@ export const updateCheckListByIdAndTaskIdAction = async (
     token
   );
 
-  revalidatePath("/member");
+  revalidateTag("checklists");
+  revalidateTag("tasks");
   console.log("Update checklist in action: ", result);
   return result;
 };
@@ -735,7 +753,7 @@ export const deleteCommentBycmtIdAction = async (commentId) => {
     commentId,
     token,
   });
-  revalidatePath("/member");
+  revalidateTag("comments");
   console.log("deleteCommentBycmtIdAction result: ", result);
   return result;
 };
@@ -797,7 +815,7 @@ export const uploadCoverChecklistAction = async (checklistId, file) => {
     file,
     token,
   });
-  revalidatePath("/member");
+  revalidateTag("checklists");
   console.log("uploadCoverChecklistAction result: ", result);
   return result;
 };
@@ -809,7 +827,14 @@ export const changeStatusTaskAction = async (taskId, type) => {
   const userToken = await Token();
   const token = userToken?.Credential;
   const result = await changeStatusTaskService(taskId, token, type);
-  revalidatePath("/checklist");
+  revalidateTag("tasks");
+  
+  // Emit WebSocket event for real-time updates
+  if (result.success && typeof window !== 'undefined') {
+    // This will be handled by the client-side WebSocket hook
+    console.log("Task status updated, WebSocket event will be emitted by client");
+  }
+  
   console.log("status action task fix bug", taskId, type);
   return result;
 };
@@ -821,7 +846,8 @@ export const leaveTheBoardAction = async (boardId) => {
   const userToken = await Token();
   const token = userToken?.Credential;
   const result = await leaveTheBoardService(boardId, token);
-  revalidatePath("/board");
+  revalidateTag("boards");
+  revalidateTag("members");
 
   return result;
 };
@@ -880,7 +906,8 @@ export const assignLeaderNewAction = async (taskId, leaderId, pmId) => {
       console.warn("No boardId in result or assignment failed:", result);
     }
 
-    revalidatePath("/assignLd");
+    revalidateTag("tasks");
+    revalidateTag("members");
     return { success: true, data: result };
   } catch (error) {
     console.error("Assign leader action error:", error.message);

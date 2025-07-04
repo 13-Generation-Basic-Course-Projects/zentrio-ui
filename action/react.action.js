@@ -2,7 +2,7 @@
 
 import { Token } from "@/constant/token"
 import { createReactService, unReactService, updateReactService } from "@/service/react.service";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 
 
@@ -14,7 +14,8 @@ export const reactAction =  async({reaction,announId})=>{
     const  result =  await createReactService({token,
         reaction: reaction.label.toUpperCase(),
         announId});
-         revalidatePath("/creatReact")
+         revalidateTag("reactions");
+         revalidateTag("announcements");
     return result
 
 }
@@ -27,7 +28,8 @@ export const unreactAction =  async({reactId})=>{
     const  result =  await unReactService({
         token,
         reactId});
-          revalidatePath("/deleteReact")
+          revalidateTag("reactions");
+          revalidateTag("announcements");
     return result
 
 }
@@ -46,7 +48,8 @@ export const updateReactAction =  async({reactId,reactType,announId})=>{
         reactType: reactType.toUpperCase(),
         announId
     });
-      revalidatePath("/updateReact")
+      revalidateTag("reactions");
+      revalidateTag("announcements");
     return result
 
 }

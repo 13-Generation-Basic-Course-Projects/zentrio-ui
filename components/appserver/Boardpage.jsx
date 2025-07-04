@@ -257,6 +257,7 @@ export default function SystemBoard({
       ),
       content: (
         <KanbanBoard
+          key={`kanban-${boardId}`}
           role={role}
           modal={modalComponents}
           tasks={tasks}
@@ -360,6 +361,7 @@ export default function SystemBoard({
 
       content: (
         <GanttChart
+          key={`gantt-${boardId}`}
           modal={ganttModal}
           ganttbar={ganttbar}
           ganttChartName={ganttChartName}

@@ -8,7 +8,7 @@ import {
   sendNotificationForAllUserService,
   sendNotificationToUserIdService,
 } from "@/service/notification.service";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 export const sendNotificationForAllUserAction = async ({ data }) => {
   const userToken = await Token();
@@ -36,7 +36,7 @@ export const sendNotificationToUserIdAction = async (
       data,
       token
     );
-    revalidatePath("/noti");
+    revalidateTag("notifications");
     return result;
   } catch (error) {
     console.error("Failed to send notification to user:", error);
@@ -77,7 +77,7 @@ export const deleteNotificationByIdAction = async (notificationId) => {
     }
 
     const result = await deleteNotificationByIdService(notificationId, token);
-    revalidatePath("/notification");
+    revalidateTag("notifications");
 
     // Ensure the result is a plain object
     const plainResult = {
@@ -104,7 +104,7 @@ export const deleteAllNotificationAction = async () => {
     }
 
     const result = await deleteAllNotificationService(token);
-    revalidatePath("/notification");
+    revalidateTag("notifications");
     const plainResult = {
       success: true,
     };

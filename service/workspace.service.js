@@ -152,6 +152,7 @@ export const updateWorkspaceByIdService = async ({
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(bodyPayload),
+    next: { tags: ["workspaces"] },
   });
 
   // Handle non-JSON error responses safely
@@ -324,6 +325,7 @@ export const updateBoardByIdService = async ({
       cover,
       workspaceId,
     }),
+    next: { tags: ["boards"] },
   });
 
   if (!res.ok) {
@@ -357,6 +359,7 @@ export const updateFavBoardByIdService = async ({
       headers: {
         Authorization: `Bearer ${token}`,
       },
+      next: { tags: ["boards"] },
     });
 
     // if (!res.ok) {
@@ -752,7 +755,7 @@ export const getFavoriteBoardService = async (userId, token) => {
     const data = await res.json();
     //console.log("📥 Backend responded with favboard:", data);
 
-    return data; // just return the data, don’t redirect here
+    return data; // just return the data, don't redirect here
   } catch (error) {
     //console.error("bug", error.message);
     throw error;
@@ -776,7 +779,7 @@ export const getOtherWorkSpaceJoinedService = async (token) => {
     const data = await res.json();
     console.log("📥 Backend responded with other", data);
 
-    return data; // just return the data, don’t redirect here
+    return data; // just return the data, don't redirect here
   } catch (error) {
     //console.error("bug", error.message);
     throw error;
@@ -801,7 +804,7 @@ export const getMemberByBoardIdService = async ({ boardId, token }) => {
     const data = await res.json();
     //console.log("📥 Backend responded with member by board id:", data);
 
-    return data; // just return the data, don’t redirect here
+    return data; // just return the data, don't redirect here
   } catch (error) {
     //console.error("bug", error.message);
     throw error;

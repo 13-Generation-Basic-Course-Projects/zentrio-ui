@@ -17,6 +17,7 @@ export const createAnnouncementByBoardIdService = async ({
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({ title, description, boardId }),
+    next: { tags: ["announcements"] },
   });
   const data = await res.json();
   //console.log("create announcement", data);
@@ -59,6 +60,9 @@ export const getAllAnnouncementByBoardIdService = async ({
   const url = announcementRouteGroup.getAllAnnouncementByBoardId(boardId);
   const res = await fetch(url, {
     method: "GET",
+    next: {
+      tags: ["announcements"],
+    },
     headers: {
       accept: "*/*",
       Authorization: `Bearer ${token}`,
@@ -117,7 +121,8 @@ export const updateAnnouncementByIdService = async ({announId, description, titl
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify(payload)
+    body: JSON.stringify(payload),
+    next: { tags: ["announcements"] },
   });
   const data = await res.json();
   //console.log("update data", data);

@@ -17,6 +17,7 @@ import { parseDate, getLocalTimeZone, today } from "@internationalized/date";
 import { checklistSchema } from "@/lib/schemas/createCheckListSchema";
 import { createCheckListAction } from "@/action/board.action";
 import { toast, ToastContainer } from "react-toastify";
+import { useRealtime } from "@/hooks/useRealtime";
 
 export default function ModalCreateChecklist({
   onSubmit,
@@ -26,8 +27,12 @@ export default function ModalCreateChecklist({
   finishedAt,
   startedAt,
   stage,
+  boardId,
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+  // Real-time connection
+  const { emitEvent } = useRealtime(boardId);
 
   // Memoize all computed values to prevent recalculation
   const {
@@ -136,6 +141,20 @@ export default function ModalCreateChecklist({
       if (result.status == 200) {
         // Show success toast
         toast.success("Checklist created successfully!");
+
+        // Emit real-time event for checklist creation
+        emitEvent('checklist-created', {
+          checklistId: result.payload?.checklistId || `temp-${Date.now()}`,
+          taskId: taskid,
+          title: data.title,
+          description: data.description || "",
+          startedAt: transformedData.startedAt,
+          finishedAt: transformedData.finishedAt,
+          status: "PENDING",
+          checklistOrder: result.payload?.checklistOrder || 1,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        });
       } else if (result.status === 403) {
         console.log("err mss", result);
         toast.error(`Error: ${result?.detail}`);
