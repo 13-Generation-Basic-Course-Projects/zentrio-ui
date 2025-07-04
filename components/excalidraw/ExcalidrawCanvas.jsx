@@ -19,7 +19,7 @@ export default function ExcalidrawCanvas() {
 
       {}
       <div className="h-[70vh]">
-          <ExcalidrawLib />
+          <ExcalidrawLib /> {/* use: npm install/yarn add react react-dom @excalidraw/excalidraw */}
       </div>
     </>
   );
