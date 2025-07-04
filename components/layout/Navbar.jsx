@@ -5,8 +5,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import logo from "../../public/image/Zentrio-Logo.png";
+import { Chip } from "@heroui/react";
 
-export const NavbarLanding = () => {
+
+export const NavbarLanding = ({ tokens }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
 
@@ -18,7 +20,8 @@ export const NavbarLanding = () => {
   const isActiveRoute = (route) => {
     return pathname === route;
   };
-
+  console.log("tokens", tokens);
+  
   return (
     <div className="w-[] md:w-full h-[70px] bg-white shadow-sm rounded-full mx-auto mt-[30px] px-4 sm:px-6 relative">
       <div className="flex justify-between items-center h-full">
@@ -31,7 +34,7 @@ export const NavbarLanding = () => {
         </Link>
 
         {/* Desktop Navigation (hidden on mobile) */}
-        <nav className="hidden md:flex justify-between items-center w-[250px] font-medium text-body-lg">
+        <nav className="hidden md:flex justify-between items-center w-[350px] font-medium text-body-lg">
           <Link
             href="/"
             className={`hover:text-primary transition-all ${
@@ -56,17 +59,36 @@ export const NavbarLanding = () => {
           >
             Contact
           </Link>
+          <Link
+            href="/draw"
+            className={`hover:text-primary transition-all relative ${
+              isActiveRoute("/draw") ? "text-primary font-semibold" : ""
+            }`}
+          >
+            Draw
+            <Chip
+              classNames={{
+                base: "left-[72.5%] top-[40%] bg-gradient-to-br from-primary to-primary/5 border-small border-white/50 shadow-pink-500/30 absolute scale-[0.6]",
+                content: "drop-shadow shadow-black text-white",
+              }}
+              variant="shadow"
+            >
+              So Fun
+            </Chip>
+          </Link>
         </nav>
-
-        {/* Desktop Buttons (hidden on mobile) */}
-        <div className="hidden min-[400px]:flex gap-2 sm:gap-[10px] ">
-          <Button className=" bg-transparent text-primary border-none font-semibold rounded-full text-[16px] sm:px-[26px] py-2 px-4">
-            <Link href="/login">Login</Link>
-          </Button>
-          <Button className="bg-primary text-white border-none font-semibold text-[16px] rounded-full sm:px-[26px] py-2 px-4">
-            <Link href="/register">Register</Link>
-          </Button>
-        </div>
+        {tokens ? (
+          ""
+        ) : (
+          <div className="hidden min-[400px]:flex gap-2 sm:gap-[10px] ">
+            <Button className=" bg-transparent text-primary border-none font-semibold rounded-full text-[16px] sm:px-[26px] py-2 px-4">
+              <Link href="/login">Login</Link>
+            </Button>
+            <Button className="bg-primary text-white border-none font-semibold text-[16px] rounded-full sm:px-[26px] py-2 px-4">
+              <Link href="/register">Register</Link>
+            </Button>
+          </div>
+        )}
 
         {/* Mobile Menu Button (visible only on mobile) */}
         <button
@@ -127,15 +149,36 @@ export const NavbarLanding = () => {
             >
               Contact
             </Link>
+            <Link
+            href="/draw"
+            className={`hover:text-primary transition-all relative ${
+              isActiveRoute("/draw") ? "text-primary font-semibold" : ""
+            }`}
+          >
+            Draw
+            <Chip
+              classNames={{
+                base: "left-[72.5%] top-[40%] bg-gradient-to-br from-primary to-primary/5 border-small border-white/50 shadow-pink-500/30 absolute scale-[0.6]",
+                content: "drop-shadow shadow-black text-white",
+              }}
+              variant="shadow"
+            >
+              So Fun
+            </Chip>
+          </Link>
           </nav>
-          <div className="min-[400px]:hidden flex flex-col items-center space-y-2 mt-4 w-full max-w-[200px]">
-            <Button className="text-primary border-none font-semibold text-[16px] rounded-full sm:px-[26px] py-2 px-4 w-full">
-              <Link href="/login">Login</Link>
-            </Button>
-            <Button className="bg-primary text-white border-none font-semibold text-[16px] rounded-full sm:px-[26px] py-2 px-4 w-full">
-              <Link href="/register">Register</Link>
-            </Button>
-          </div>
+          {tokens ? (
+            ""
+          ) : (
+            <div className="min-[400px]:hidden flex flex-col items-center space-y-2 mt-4 w-full max-w-[200px]">
+              <Button className="text-primary border-none font-semibold text-[16px] rounded-full sm:px-[26px] py-2 px-4 w-full">
+                <Link href="/login">Login</Link>
+              </Button>
+              <Button className="bg-primary text-white border-none font-semibold text-[16px] rounded-full sm:px-[26px] py-2 px-4 w-full">
+                <Link href="/register">Register</Link>
+              </Button>
+            </div>
+          )}
         </div>
       )}
     </div>

@@ -11,8 +11,10 @@ import {
   fetchDocumentsByBoardService,
   fetchPublicDocumentsService,
   getAllDocumentByBoardIdSerivce,
+  getAttachmentService,
   getAttactmentService,
   getFileByFolderIdService,
+  postAttachmentService,
   postAttactmentService,
   privateDocumentByIdService,
   publicDocumentByIdService,
@@ -25,7 +27,7 @@ import { revalidatePath } from "next/cache";
 export const getDocumentsByBoardAction = async (boardId) => {
   const userToken = await Token();
   const token = userToken.Credential;
-  
+
   const documents = await fetchDocumentsByBoardService(boardId, token);
 
   return documents;
@@ -52,8 +54,6 @@ export const getFileByFolderIdAction = async (accessToken, folderId) => {
     token,
   });
 
-  revalidatePath("/document");
-
   return files;
 };
 
@@ -76,29 +76,21 @@ export const downloadDocumentByDocumentIdAction = async (
 };
 
 // Download as zip action
-export const downloadAllFilesAsZipAction = async (
+export const downloadAllFilesAsZipAction = async ({
   documentId,
-  accessTokenFromGoogle
-) => {
+  accessToken,
+}) => {
   const userToken = await Token();
   const token = userToken.Credential;
 
-  const { status, blob, filename } = await downloadAllFilesAsZipService({
+  const { blob, filename } = await downloadAllFilesAsZipService({
     documentId,
-    accessToken: accessTokenFromGoogle,
+    accessToken,
     token,
   });
 
-  console.log(
-    "document id:",
-    documentId,
-    accessTokenFromGoogle,
-    token,
-    "Status:",
-    status
-  );
   revalidatePath("/docu");
-  return { status, blob, filename };
+  return { blob, filename };
 };
 
 // Create
@@ -167,52 +159,8 @@ export const createDocumentByUploadAction = async (
     token,
     tokenFromGoogle
   );
-  revalidatePath("/document");
+  revalidatePath("/docu");
   return document;
-};
-
-// Upload to folder action
-export const uploadDocumentToFolderAction = async (
-  file,
-  folderId,
-  tokenFromGoogle
-) => {
-  const userToken = await Token();
-  const token = userToken.Credential;
-
-  const document = await uploadDocumentToFolderServie(
-    file,
-    folderId,
-    token,
-    tokenFromGoogle
-  );
-  revalidatePath("/document");
-
-  return document;
-};
-
-export const createDriveFileAction = async ({
-  name,
-  folderId,
-  fileType,
-  token: tokenFromGoogle,
-}) => {
-  try {
-    const userToken = await Token();
-    const token = userToken.Credential;
-
-    const document = await createDriveFileService(
-      name,
-      folderId,
-      fileType,
-      token,
-      tokenFromGoogle
-    );
-    return document;
-  } catch (error) {
-    console.error("Error creting file: ", error);
-    throw error;
-  }
 };
 
 // Delete
@@ -251,16 +199,32 @@ export const updateDocumentNameByIdAction = async (
 
 // public document (update)
 export const publicDocumentByIdAction = async (documentId, tokenFromGoogle) => {
-  const userToken = await Token();
-  const token = userToken.Credential;
+  try {
+    const userToken = await Token();
+    const token = userToken.Credential;
 
-  const updated = await publicDocumentByIdService(
-    documentId,
-    token,
-    tokenFromGoogle
-  );
-  revalidatePath("/docu");
-  return updated;
+    const updated = await publicDocumentByIdService(
+      documentId,
+      token,
+      tokenFromGoogle
+    );
+
+    revalidatePath("/docu");
+
+    if (updated?.success) {
+      return { success: true, message: "Document made public successfully." };
+    } else {
+      return {
+        success: false,
+        message: updated?.message || "Failed to make document public.",
+      };
+    }
+  } catch (error) {
+    return {
+      success: false,
+      message: error.message || "Unexpected error while making public.",
+    };
+  }
 };
 
 // Private document (update)
@@ -268,16 +232,32 @@ export const privateDocumentByIdAction = async (
   documentId,
   tokenFromGoogle
 ) => {
-  const userToken = await Token();
-  const token = userToken.Credential;
+  try {
+    const userToken = await Token();
+    const token = userToken.Credential;
 
-  const updated = await privateDocumentByIdService(
-    documentId,
-    token,
-    tokenFromGoogle
-  );
-  revalidatePath("/docu");
-  return updated;
+    const updated = await privateDocumentByIdService(
+      documentId,
+      token,
+      tokenFromGoogle
+    );
+
+    revalidatePath("/docu");
+
+    if (updated?.success) {
+      return { success: true, message: "Document made private successfully." };
+    } else {
+      return {
+        success: false,
+        message: updated?.message || "Failed to make document private.",
+      };
+    }
+  } catch (error) {
+    return {
+      success: false,
+      message: error.message || "Unexpected error while making private.",
+    };
+  }
 };
 
 /* new add
@@ -296,16 +276,34 @@ export const getAllDocumentByBoardIdAction = async (boardId) => {
 /* new add
  * post attactment
  */
+
+
 export const postAttactmentAction = async (checklistId, details) => {
+  console.log("detailssssssssss", details);
   const userToken = await Token();
   const token = userToken.Credential;
-  const result = await postAttactmentService({
+  console.log("token in post attactment action", token);
+  const result = await postAttachmentService({
     checklistId,
     details,
     token,
   });
   console.log("Get all attachments action : ", result);
-  revalidatePath("/docu");
+  // revalidatePath("/docu");
+  return result;
+};
+/* new add
+ * get attachment
+ */
+export const getAttachmentAction = async (checklistId) => {
+  console.log("CHECKLIST ID IN ACTION PRINT ATTACHMENTS:", checklistId);
+  const userToken = await Token();
+  const token = userToken.Credential;
+  const result = await getAttachmentService({
+    checklistId,
+    token,
+  });
+  console.log("RESULT IN ACTION PRINT ATTACHMENTS:", result);
   return result;
 };
 /* new add
@@ -314,6 +312,7 @@ export const postAttactmentAction = async (checklistId, details) => {
 export const getAttactmentAction = async (checklistId) => {
   const userToken = await Token();
   const token = userToken.Credential;
+  console.log("checklistId aaaa", checklistId);
   const result = await getAttactmentService({
     checklistId,
     token,

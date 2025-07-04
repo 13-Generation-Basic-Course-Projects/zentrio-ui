@@ -14,6 +14,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import ModalDelete from "../modal/ModalDelete";
 import { StackedUser } from "../useravatar/StackUser";
 import { getMemberByBoardIdAction } from "@/action/board.action";
+import { toast } from "react-toastify";
 
 export default function CardBoard({
   title,
@@ -28,7 +29,10 @@ export default function CardBoard({
   isFavourite,
   includesPathOtherWorkSpace,
   isFavBtn,
+  otherBoardImage,
 }) {
+  
+
   const pathname = usePathname();
   const searchParams = useSearchParams();
   console.log("is fav", isFavBtn);
@@ -48,6 +52,7 @@ export default function CardBoard({
   const [newTitle, setNewTitle] = useState("");
 
   /* Function to handle rename confirmation */
+  
 
   const handleTitleUpdate = async () => {
     if (newTitle.trim() === "") return; // Skip if empty
@@ -61,19 +66,22 @@ export default function CardBoard({
 
       /* Step 2: Update only the title, keep others */
       await updateNameBoardAction(boardId, {
-        title: newTitle, // New title
-        description: existingBoard.description, // Preserve old description
-        cover: existingBoard.cover, // Preserve old cover image
-        workspaceId: existingBoard.workspaceId, // Preserve workspace ID
+        title: newTitle,
+        description: existingBoard.description,
+        cover: existingBoard.cover,
+        workspaceId: existingBoard.workspaceId,
       });
 
-      console.log("✅ Board title updated to:", newTitle);
+      console.log("Board title updated to:", newTitle);
+      toast.success("You have successfully updated the board title");
     } catch (error) {
-      console.error("❌ Failed to update board title:", error);
+      toast.error("Failed to update the board title");
+      console.error(" Failed to update board title:", error);
     }
 
     setEditing(false); // Hide input after update
   };
+
   // fong
   const [members, setMembers] = useState([]); // State to store members
   const [loading, setLoading] = useState(true); // State for loading
@@ -87,7 +95,7 @@ export default function CardBoard({
         const allMemberInBoard = membersResponse?.payload || [];
         setMembers(allMemberInBoard);
       } catch (err) {
-        console.error("❌ Failed to fetch members:", err);
+        console.error("Failed to fetch members:", err);
         setError("Failed to load members");
         setMembers([]); // Fallback to empty array
       } finally {
@@ -147,11 +155,14 @@ export default function CardBoard({
                   isFavourite: newFavoriteStatus,
                 });
 
-                console.log(
-                  `✅ Favorite status updated to ${newFavoriteStatus}`
+                toast.success(
+                  newFavoriteStatus
+                    ? "Added to favorites"
+                    : "Removed from favorites"
                 );
               } catch (error) {
-                console.error("❌ Failed to update favorite status:", error);
+                console.error(" Failed to update favorite status:", error);
+                toast.error(" Failed to update favorite status");
                 setFavorited(!newFavoriteStatus); // Revert if error
               }
             }}
@@ -166,16 +177,17 @@ export default function CardBoard({
       </CardHeader>
 
       {/* Card Body: background image or placeholder */}
-      <CardBody className="overflow-visible py-2 ">
+     {/* Card Body: background image or placeholder */}
+     <CardBody className="overflow-visible py-2 ">
         <Link href={`/dashboard/${workspaceId}/${boardId}/board`}>
           {image && image.startsWith("bg-") ? (
             <div
               className={`rounded-xl w-full h-32 bg-cover bg-center ${image}`}
               aria-label={`Card background for ${title}`}
             />
-          ) : image ? (
+          ) : image ||  otherBoardImage ? (
             <img
-              src={images}
+              src={includesPathOtherWorkSpace ?  otherBoardImage : images}
               alt={images || "Board cover image"}
               className="w-full h-32 object-cover rounded-xl"
             />
@@ -232,9 +244,16 @@ export default function CardBoard({
                     messageUndo="Cancel"
                     messageDo="Delete"
                     action={async () => {
-                      await deleteBoardAction(boardId, workspaceId);
-                      console.log("Delete confirmed!");
-                      setIsDeleteOpen(false);
+                      try {
+                        await deleteBoardAction(boardId, workspaceId);
+                        toast.success("Board deleted successfully");
+                        console.log("Delete confirmed!");
+                      } catch (error) {
+                        console.error(" Failed to delete board:", error);
+                        toast.error(" Failed to delete board");
+                      } finally {
+                        setIsDeleteOpen(false);
+                      }
                     }}
                   />
                 </>

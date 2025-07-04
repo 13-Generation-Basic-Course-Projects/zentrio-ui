@@ -6,6 +6,7 @@ import { CardContent } from "../ui/card";
 import { Plus, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import CardCreateModal from "./CardCreateModal";
+import Link from "next/link";
 
 export default function CardCreateAnnouncement({
   boardId,
@@ -22,7 +23,6 @@ export default function CardCreateAnnouncement({
   const managerMember = boardMember?.find((member) =>
     member.roles?.some((role) => role === "ROLE_MANAGER")
   );
-  // console.log("anal", Announcements?.payload);
 
   return (
     <div className="mx-auto px-2 py-1">
@@ -52,7 +52,17 @@ export default function CardCreateAnnouncement({
           <div className="p-3">
             <div className="flex items-center gap-3">
               {managerMember && (
-                <div className="relative w-11 h-11">
+                <Link
+                  href={{
+                    pathname: `/profile/${managerMember.userId}`,
+                    query: {
+                      name: managerMember.username,
+                      boardId: boardId,
+                      profileImage: managerMember.profileImage,
+                    },
+                  }}
+                  className="relative w-11 h-11"
+                >
                   <div className="w-full h-full rounded-full overflow-hidden bg-gradient-to-r from-[#59BAD5] to-[#4AB5D1] p-0.5">
                     <div className="w-full h-full rounded-full overflow-hidden bg-white">
                       <img
@@ -62,8 +72,8 @@ export default function CardCreateAnnouncement({
                       />
                     </div>
                   </div>
-                  <div className="absolute bottom-0.5 right-0 w-3 h-3 bg-green-500 rounded-full border-[2px] border-white" />
-                </div>
+                  {/* <div className="absolute bottom-0.5 right-0 w-3 h-3 bg-green-500 rounded-full border-[2px] border-white" /> */}
+                </Link>
               )}
 
               <div className="flex-1">
@@ -82,41 +92,6 @@ export default function CardCreateAnnouncement({
                 </div>
               </div>
             </div>
-
-            {/* Enhanced Action Buttons */}
-            {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {quickActions.map((action) => {
-                const Icon = action.icon;
-                return (
-                  <Button
-                    key={action.id}
-                    variant="ghost"
-                    className={`p-6 h-auto flex flex-col items-center gap-3 rounded-2xl border-2 border-gray-100 hover:border-[#59BAD5]/30 transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-[#59BAD5]/10 group ${action.bgColor}`}
-                    onClick={toggleModal}
-                    onMouseEnter={() => setHoveredAction(action.id)}
-                    onMouseLeave={() => setHoveredAction(null)}
-                  >
-                    <div
-                      className={`w-12 h-12 rounded-xl bg-gradient-to-r ${
-                        action.color
-                      } flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 ${
-                        hoveredAction === action.id ? "scale-110" : ""
-                      }`}
-                    >
-                      <Icon className="w-6 h-6 text-white" />
-                    </div>
-                    <div className="text-center">
-                      <div className="font-semibold text-gray-900 group-hover:text-gray-800 transition-colors">
-                        {action.label}
-                      </div>
-                      <div className="text-xs text-gray-500 group-hover:text-gray-600 transition-colors mt-1">
-                        {action.description}
-                      </div>
-                    </div>
-                  </Button>
-                );
-              })}
-            </div> */}
           </div>
 
           {isModalOpen && (

@@ -135,15 +135,11 @@ export default function Reportpage({ modal, report, version }) {
     return String(convert / 86400000).split('.')[0];
   })
 
-  console.log("Seng Ngoun is gay: ", getVersion?.map((item) => item?.data))
-  console.log("Username: ", Object.values(report?.payload)?.map((item) => item?.data?.boardData?.createdBy?.username))
-  console.log("Be not Gay: ", Object.entries(report?.payload)?.map((item) => item?.data?.version))
-  console.log("ah hong tix tix: ", dateForCreate)
   return (
     <>
       <div className="p-5">
         <BredCrum
-          board={"Hikoko Design"}
+          board={ report?.payload?.boardData?.title}
           feature={"Reports"}
           header={"Reports"}
           modal={modal}

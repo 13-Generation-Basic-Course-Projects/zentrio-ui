@@ -167,10 +167,6 @@ const FeedbackDisplay = ({ taskTitle, matchingFeedback }) => {
             <h4 className="text-lg font-medium text-gray-900 mb-2">
               No feedback yet
             </h4>
-            <p className="text-gray-500 max-w-sm mx-auto">
-              Be the first to share your thoughts on this task. Your feedback
-              helps improve collaboration.
-            </p>
           </div>
         )}
       </div>

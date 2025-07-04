@@ -9,10 +9,9 @@ import {
   useDisclosure,
 } from "@heroui/react";
 
-import { useRouter } from "next/navigation";
-import { deleteDocumentAction } from "@/action/document.action";
 import { toast } from "react-toastify";
 import { deleteFileByFileIdAction } from "@/action/drive.action";
+import { useRouter } from "next/navigation";
 export default function PopupActionDeleteDriveFile({
   title,
   icon,
@@ -22,38 +21,47 @@ export default function PopupActionDeleteDriveFile({
   massageUndo,
   massageDo,
   fileId,
+  isFolder,
+  action,
   accessToken,
   color,
   swapButton,
-  action,
-  successMessage = "File or folder deleted successfully.",
-  errorMessage = "Failed to delete the file or folder",
+  successMessage,
+  errorMessage,
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   console.log(accessToken);
-  const router = useRouter();
   const handleDelete = async () => {
     try {
-      const result = await deleteFileByFileIdAction({fileId, accessToken});
+      const result = await deleteFileByFileIdAction({ fileId, accessToken });
       if (result?.status === "success" || result?.success) {
-        toast.success(successMessage, {
-          position: "top-right",
-          duration: 4000,
-        });
-        router.refresh(); // Refresh only on success
+        toast.success(
+          successMessage ||
+            (isFolder
+              ? "Folder deleted successfully."
+              : "File deleted successfully."),
+          {
+            position: "top-right",
+            duration: 4000,
+          }
+        );
       } else {
         throw new Error("Deletion failed unexpectedly");
       }
     } catch (error) {
       console.error("Delete failed:", error);
       toast.error(
-        `${errorMessage}: ${error.message || "Unknown error"}`,
+        errorMessage ||
+        (isFolder
+          ? "Failed to delete the folder"
+          : "Failed to delete the file"
+        ),
         {
           position: "top-right",
-          duration: 4000,
+          autoClose: 4000
         }
-      );
+      )
     }
   };
 

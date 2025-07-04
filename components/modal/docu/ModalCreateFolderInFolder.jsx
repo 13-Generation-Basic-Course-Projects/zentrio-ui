@@ -11,10 +11,9 @@ import {
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { folderSchema } from "@/lib/schemas/documentSchema";
-import {
-  createDriveFileAction,
-  createFolderAction,
-} from "@/action/document.action";
+import { createDriveFileAction } from "@/action/drive.action";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 export default function ModalCreateFolderInFolder({
   isOpen,
@@ -22,7 +21,6 @@ export default function ModalCreateFolderInFolder({
   folderId,
   tokenFromGoogle,
 }) {
-
   const {
     register,
     handleSubmit,
@@ -31,6 +29,8 @@ export default function ModalCreateFolderInFolder({
   } = useForm({
     resolver: zodResolver(folderSchema),
   });
+
+  const router = useRouter();
 
   const onSubmit = async (data) => {
     try {
@@ -41,12 +41,38 @@ export default function ModalCreateFolderInFolder({
         token: tokenFromGoogle,
       });
 
-      console.log("Folder Created:", createdFolder);
+      console.log("createdFolder: ", createdFolder);
+
+      if (
+        createdFolder?.status === "ACCEPTED" ||
+        createdFolder?.success === true
+      ) {
+        toast.success("Folder created successfully!", {
+          position: "top-right",
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      }
+
+      router.refresh();
 
       reset();
       onClose();
     } catch (error) {
       console.error("Error creating folder:", error);
+      toast.error("Failed to create folder. Please try again.", {
+        position: "top-right",
+        autoClose: 4000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+      });
     }
   };
 

@@ -126,7 +126,7 @@ export const PDFPreviewer = ({ report }) => {
                 <div
                   key={`thumbnail-${pageNum}`}
                   onClick={() => scrollToPage(pageNum)}
-                  className={`h-[260px] w-48 relative mb-5 cursor-pointer ${
+                  className={`h-[257px] w-[188px] flex relative mb-5 cursor-pointer ${
                     currentPage === pageNum ? "border-2 border-blue-500" : ""
                   }`}
                 >

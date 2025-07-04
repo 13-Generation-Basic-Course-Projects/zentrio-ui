@@ -7,14 +7,18 @@ import {
 } from "@/action/member.action";
 import { preventImage } from "@/constant/preventimage";
 import { getCurrentUserProfileAction } from "@/action/profile.action";
-import { getMemberByBoardIdAction } from "@/action/board.action";
+import { getBoardByBoardIdAction, getMemberByBoardIdAction } from "@/action/board.action";
 import { getOtherWorkSpaceJoinedAction } from "@/action/workspace.action";
 
 //useage route : http://localhost:3000/dashboard/1/1/member
 export default async function Member({ params }) {
   const boardId = params.boardId;
   const workspaceId = params.workspaceId;
-  console.log("Board ID in app:", boardId);
+
+  const boardData= await getBoardByBoardIdAction(boardId);
+  const boardName= boardData?.payload?.title;
+  console.log("Board ID in app:", boardName);
+
 
   const boardMember = await getBoardMemberAction(boardId);
   console.log("Fetched board members:", boardMember);
@@ -73,6 +77,7 @@ export default async function Member({ params }) {
       workspaceId={workspaceId}
       allMemberInBoard={allMemberInBoard}
       currentUserProfile={currentUserProfile}
+      boardName={boardName}
     />
   );
 }

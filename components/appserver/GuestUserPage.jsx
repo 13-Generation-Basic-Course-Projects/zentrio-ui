@@ -286,6 +286,7 @@ export default function GuestKanbanBoardCompo({
                                       role="ROLE_GUEST"
                                       style={{ pointerEvents: "none" }} // Disable all pointer events
                                       isModalDisabled={true}
+                                      imageChecklist={checklist?.cover}
                                     />
                                   </div>
                                 </div>

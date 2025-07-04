@@ -9,22 +9,54 @@ import {
   useDisclosure,
 } from "@heroui/react";
 import { updateFileNameByFileIdAction } from "@/action/drive.action";
+import { toast } from "react-toastify";
 
 /* rename foc in document */
-export function ModalRenameFileOrFolderInFolder({ fileId, tokenFromGoogle }) {
+export function ModalRenameFileOrFolderInFolder({
+  tokenFromGoogle,
+  fileId,
+  successMessage,
+  errorMessage,
+  isFolder,
+}) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [newName, setNewName] = useState("");
 
   const handleSave = async (close) => {
     try {
-      await updateFileNameByFileIdAction({
-        fileId,
+      const updatedDoc = await updateFileNameByFileIdAction({
         tokenFromGoogle,
+        fileId,
         newName,
       });
+
+      if (updatedDoc?.status === "success" || updatedDoc?.success) {
+        toast.success(
+          successMessage ||
+            (isFolder
+              ? "Folder renamed successfully."
+              : "File renamed successfully."),
+          {
+            position: "top-right",
+            duration: 4000,
+          }
+        );
+      } else {
+        throw new Error("Deletion failed unexpectedly");
+      }
       close();
     } catch (error) {
       console.error("Rename failed:", error);
+      toast.error(
+        errorMessage ||
+          (isFolder
+            ? "Failed to rename the folder"
+            : "Failed to rename the file"),
+        {
+          position: "top-right",
+          duration: 4000,
+        }
+      );
     }
   };
 
@@ -58,7 +90,6 @@ export function ModalRenameFileOrFolderInFolder({ fileId, tokenFromGoogle }) {
                       value={newName}
                       onChange={(e) => {
                         setNewName(e.target.value);
-                        console.log("Input changed to:", e.target.value);
                       }}
                     />
                   </div>

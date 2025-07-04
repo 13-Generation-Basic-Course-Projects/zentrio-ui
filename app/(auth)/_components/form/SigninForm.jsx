@@ -14,6 +14,7 @@ import GoogleLogin from "../LoginForm";
 import { signIn } from "../../../../auth";
 import { loginSchema } from "../../../../lib/schemas/loginSchema";
 import { zentrioLoginCredentailAction } from "../../../../action/auth.action";
+import { toast, ToastContainer } from "react-toastify";
 
 export const SigninForm = () => {
   const router = useRouter();
@@ -30,12 +31,30 @@ export const SigninForm = () => {
     resolver: zodResolver(loginSchema),
   });
 
+
+  const [isLoading, setIsLoading] = useState(false); //leap
+
   const onSubmit = async (data) => {
-    const result = await zentrioLoginCredentailAction(data);
-    if (result?.success) {
-      router.push("/workspace");
+    setIsLoading(true);
+    setBackendError(""); 
+
+    try {
+      const result = await zentrioLoginCredentailAction(data);
+
+      if (result?.success) {
+        router.push("/workspace");
+        toast.success("You have login successfully");
+      } else {
+        setBackendError(result?.detail || "Invalid email or password");
+        setIsLoading(false);
+      }
+    } catch (error) {
+      setBackendError("An unexpected error occurred. Please try again.");
+      setIsLoading(false);
+      console.error("Login error:", error);
     }
   };
+  const [backendError, setBackendError] = useState("");
 
   return (
     <div className="w-full h-screen flex items-center justify-center">
@@ -86,7 +105,8 @@ export const SigninForm = () => {
                     className="focus:outline-none bg-transparent border-none p-0 mr-0 transition-colors"
                     aria-label={
                       isPasswordVisible ? "Hide password" : "Show password"
-                    }>
+                    }
+                  >
                     {isPasswordVisible ? (
                       <EyeOff className="text-2xl text-primary pointer-events-none" />
                     ) : (
@@ -103,7 +123,7 @@ export const SigninForm = () => {
             </div>
 
             {/* Remember Me and Forgot Password */}
-            <div className="flex items-center justify-end -mt-[10px]">
+            <div className="flex items-center justify-end -mt-[10px] hidden">
               {/* <div className="flex items-center gap-7 text-description">
                 <Checkbox
                   label="Remember Me"
@@ -115,15 +135,49 @@ export const SigninForm = () => {
                 Forgot Password?
               </Link>
             </div>
+            {/* fanau */}
+            <div className="flex items-center justify-between -mt-[10px] h-[24px]">
+              <div className="text-danger text-sm">
+                {backendError ? <p>{backendError}</p> : <span>&nbsp;</span>}
+              </div>
+              <Link href="/forgot-password" className="text-[16px] text-danger">
+                Forgot Password?
+              </Link>
+            </div>
           </div>
 
           {/* Buttons and links */}
           <div className="flex flex-col gap-[10px] w-full mt-9">
-            <Button
+            {/* <Button
               type="submit"
               className="w-full h-[48px] max-w-none bg-primary text-white border-none text-[20px] capitalize font-semibold rounded-[10px]"
             >
               Login
+            </Button> */}
+            <Button
+              type="submit"
+              disabled={isLoading}
+              className="w-full h-[48px] max-w-none bg-primary text-white border-none text-[20px] capitalize font-semibold rounded-[10px] disabled:opacity-50 flex items-center justify-center gap-2"
+            >
+              {isLoading && (
+                <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                    fill="none"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  />
+                </svg>
+              )}
+              {isLoading ? "Login" : "Login"}
             </Button>
 
             <p className="text-center text-body my-1">
@@ -147,6 +201,7 @@ export const SigninForm = () => {
           <GoogleLogin />
         </div>
       </div>
+      <ToastContainer position="top-right" autoClose={4000} />
     </div>
   );
 };

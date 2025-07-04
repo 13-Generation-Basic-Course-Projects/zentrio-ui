@@ -16,6 +16,7 @@ import {
   useDisclosure,
   Card,
   DateRangePicker,
+  DatePicker,
 } from "@heroui/react";
 import { parseDate } from "@internationalized/date";
 import { IconAdd, StackedProfileChecklist } from "../../icon/everyicon";
@@ -31,10 +32,12 @@ import {
   updateCheckListByIdAndTaskIdAction,
   uploadCoverChecklistAction,
   chageStatusCheckListAction,
+  updateCheckListDateByIdAndTaskIdAction,
+  getTaskByTaskIdAction,
 } from "@/action/board.action";
 import PostCommentChecklist from "./PostCommentChecklist";
 import CommentChecklistSec from "./CommentChecklistSec";
-import { getAttactmentAction } from "@/action/document.action";
+import { getAttachmentAction, getAttactmentAction } from "@/action/document.action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { CameraIcon } from "lucide-react";
@@ -54,6 +57,7 @@ const initialState = {
   currentStatus: "IN_PROGRESS",
 };
 
+
 const reducer = (state, action) => {
   switch (action.type) {
     case "SET_ACTIVE_TAB":
@@ -68,9 +72,9 @@ const reducer = (state, action) => {
       return { ...state, loading: action.payload };
     case "SET_ERROR":
       return { ...state, error: action.payload };
-    case "SET_ATTENDMENTS":
+    case "SET_ATTACHMENTS":
       return { ...state, attachments: action.payload };
-    case "SET_ATTENDMENT_ERROR":
+    case "SET_ATTACHMENT_ERROR":
       return { ...state, attachmentError: action.payload };
     case "SET_CURRENT_STATUS":
       return { ...state, currentStatus: action.payload };
@@ -94,34 +98,45 @@ const useChecklistData = (checklistId, isOpen) => {
   const fetchAttachments = useCallback(async () => {
     if (!checklistId || fetchingRef.current) return;
     fetchingRef.current = true;
-    shouldStayOpen.current = true;
+
     dispatch({ type: "SET_LOADING", payload: true });
-    dispatch({ type: "SET_ATTENDMENT_ERROR", payload: null });
-    dispatch({ type: "SET_ATTENDMENTS", payload: [] });
+    dispatch({ type: "SET_ATTACHMENT_ERROR", payload: null });
+
     try {
-      const result = await getAttactmentAction(checklistId);
-      if (result.success) {
-        dispatch({ type: "SET_ATTENDMENTS", payload: [result.payload] });
+      const result = await getAttachmentAction(checklistId); // Fixed typo
+      console.log("RESULT IN MODAL:", result);
+
+      if (result.success && result.payload) {
+        // Convert single object to array for consistency
+        const attachments = Array.isArray(result.payload)
+          ? result.payload
+          : [result.payload];
+        dispatch({ type: "SET_ATTACHMENTS", payload: attachments });
       } else {
         dispatch({
-          type: "SET_ATTENDMENT_ERROR",
+          type: "SET_ATTACHMENT_ERROR",
           payload: result.error || "Failed to load attachments",
         });
       }
     } catch (err) {
       dispatch({
-        type: "SET_ATTENDMENT_ERROR",
+        type: "SET_ATTACHMENT_ERROR",
         payload:
-          err.status === 404
+          err?.status === 404
             ? "No attachments found"
             : "An unexpected error occurred",
       });
     } finally {
       dispatch({ type: "SET_LOADING", payload: false });
       fetchingRef.current = false;
-      shouldStayOpen.current = false;
     }
   }, [checklistId]);
+
+  useEffect(() => {
+    if (checklistId && !fetchingRef.current) {
+      fetchAttachments();
+    }
+  }, [fetchAttachments]);
 
   const fetchComments = useCallback(async () => {
     if (!checklistId || fetchingRef.current) return;
@@ -134,7 +149,7 @@ const useChecklistData = (checklistId, isOpen) => {
       const result = await getCommentByCheckListIdAction(checklistId);
       console.log("Fetched comments:", result);
       if (result.success) {
-        dispatch({ type: "SET_COMMENTS", payload: result.payload || [] }); // Use result.payload
+        dispatch({ type: "SET_COMMENTS", payload: result.payload || [] });
       } else {
         dispatch({
           type: "SET_ERROR",
@@ -162,7 +177,7 @@ const useChecklistData = (checklistId, isOpen) => {
       fetchComments();
       fetchAttachments();
     }
-  }, [checklistId, fetchComments, fetchAttachments]); // Removed isOpen dependency
+  }, [checklistId, fetchComments, fetchAttachments]);
 
   return { state, dispatch, shouldStayOpen };
 };
@@ -173,6 +188,7 @@ const useDescriptionEditor = (taskId, checklistId, isOpen) => {
   const [error, setError] = useState(null);
   const [checklistData, setChecklistData] = useState(null);
   const [taskStartedAt, setTaskStartedAt] = useState(null);
+  const [taskFinishedAt, setTaskFinishedAt] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [isEditingTitle, setIsEditingTitle] = useState(false);
@@ -185,42 +201,55 @@ const useDescriptionEditor = (taskId, checklistId, isOpen) => {
       taskId,
       checklistId,
     });
+
     if (isOpen && taskId && checklistId) {
       const fetchTask = async () => {
         try {
           setIsLoading(true);
+
+          // Fetch task by taskId
+          const taskDataByTaskId = await getTaskByTaskIdAction(taskId);
+
+          // Fetch checklist by taskId
           const response = await getCheckListByTaskIdAction({ taskId });
-          if (!response?.payload) {
-            throw new Error("No checklist data returned");
-          }
+          if (!response?.payload) throw new Error("No checklist data returned");
+
           const checklist = response.payload.find(
             (ch) => ch.checklistId === checklistId
           );
-          if (!checklist) {
-            throw new Error("Checklist not found");
-          }
-          console.log("Fetched checklist:", checklist);
+          if (!checklist) throw new Error("Checklist not found");
+
           setChecklistData(checklist);
-          setTaskStartedAt(
-            response.taskStartedAt || checklist.taskStartedAt || null
-          );
+
+          const checklistTaskId = checklist.taskId;
+
+          if (taskDataByTaskId?.payload?.taskId === checklistTaskId) {
+            const taskStartedAt = taskDataByTaskId?.payload?.startedAt;
+            const taskFinishedAt = taskDataByTaskId?.payload?.finishedAt;
+
+            setTaskStartedAt(taskStartedAt);
+            setTaskFinishedAt(taskFinishedAt);
+
+            console.log("✔ Task Start:", taskStartedAt);
+            console.log("✔ Task Finish:", taskFinishedAt);
+          }
+
+          // Setup date range
+          const startDate = checklist.startedAt
+            ? parseDate(
+                new Date(checklist.startedAt).toISOString().split("T")[0]
+              )
+            : null;
+
+          const endDate = checklist.finishedAt
+            ? parseDate(
+                new Date(checklist.finishedAt).toISOString().split("T")[0]
+              )
+            : null;
+
+          setDateRange({ start: startDate, end: endDate });
           setNewDescription(checklist.description || "");
           setNewTitle(checklist.title || "");
-          let startDate = null;
-          let endDate = null;
-          if (checklist.startedAt) {
-            const start = new Date(checklist.startedAt);
-            if (!isNaN(start.getTime())) {
-              startDate = parseDate(start.toISOString().split("T")[0]);
-            }
-          }
-          if (checklist.finishedAt) {
-            const end = new Date(checklist.finishedAt);
-            if (!isNaN(end.getTime())) {
-              endDate = parseDate(end.toISOString().split("T")[0]);
-            }
-          }
-          setDateRange({ start: startDate, end: endDate });
           setChangedFields(new Set());
         } catch (err) {
           setError(err.message || "Failed to load checklist data");
@@ -232,9 +261,11 @@ const useDescriptionEditor = (taskId, checklistId, isOpen) => {
           setIsLoading(false);
         }
       };
+
       fetchTask();
     }
   }, [isOpen, taskId, checklistId]);
+  
 
   const handleEditClick = () => {
     setIsEditing(true);
@@ -283,42 +314,120 @@ const useDescriptionEditor = (taskId, checklistId, isOpen) => {
     setError(null);
   }, []);
 
-  const handleDateRangeChange = useCallback(
-    (value) => {
-      console.log("DateRangePicker onChange:", value);
-      const now = new Date();
-      const start = value.start
-        ? new Date(value.start.year, value.start.month - 1, value.start.day)
-        : null;
-      if (start && start < now) {
-        console.log("Invalid start date (past):", start);
-        toast.error("Start date must be in the present or future", {
-          position: "top-right",
-          autoClose: 4000,
-        });
+  // const handleDateRangeChange = useCallback(
+  //   async (value) => {
+  //     console.log("DateRangePicker onChange raw:", value);
+
+  //     const end = value.end
+  //       ? new Date(value.end.year, value.end.month - 1, value.end.day)
+  //       : null;
+
+  //     console.log("Parsed End Date:", end?.toISOString());
+
+  //     if (!end) {
+  //       toast.error("Finish date is required");
+  //       return;
+  //     }
+
+  //     // Call backend to update finishedAt only
+  //     try {
+  //       if (checklistId) {
+  //         const res = await updateCheckListDateByIdAndTaskIdAction({
+  //           finishedAt: end.toISOString(),
+  //           checklistId,
+  //         });
+  //         console.log("✔ Checklist finishedAt updated:", res);
+  //         toast.success("Checklist deadline extended");
+  //       }
+  //     } catch (err) {
+  //       console.error("❌ Failed to update checklist:", err);
+  //       toast.error("Failed to update checklist date");
+  //     }
+
+  //     // Only update the end date in local state
+  //     setDateRange((prev) => ({
+  //       start: prev.start, // keep original start
+  //       end: value.end,
+  //     }));
+  //     setChangedFields((prev) => new Set(prev).add("finishedAt"));
+  //   },
+  //   [taskStartedAt, checklistId]
+  // );
+  const handleFinishedAtChange = useCallback(
+    async (value) => {
+      console.log("DatePicker onChange raw:", value);
+
+      if (!value) {
+        toast.error("Finish date is required");
         return;
       }
-      if (taskStartedAt && start) {
-        const taskStart = new Date(taskStartedAt);
-        if (!isNaN(taskStart.getTime()) && start < taskStart) {
-          console.log("Invalid start date (before task):", start);
-          toast.error("Start date cannot be before task's start time", {
-            position: "top-right",
-            autoClose: 4000,
-          });
-          return;
-        }
-      }
-      console.log("Updating dateRange:", {
-        start: value.start,
-        end: value.end,
-      });
-      setDateRange({ start: value.start, end: value.end });
-      setChangedFields((prev) =>
-        new Set(prev).add("startedAt").add("finishedAt")
+
+      const selectedDate = new Date(
+        value.year,
+        value.month - 1,
+        value.day,
+        17,
+        0,
+        0,
+        0
       );
+
+      if (isNaN(selectedDate.getTime())) {
+        toast.error("Invalid date selected");
+        return;
+      }
+
+      const todayDate = new Date();
+      todayDate.setHours(0, 0, 0, 0);
+      if (selectedDate < todayDate) {
+        toast.error("Finish date cannot be in the past");
+        return;
+      }
+
+      const taskStart = taskStartedAt ? new Date(taskStartedAt) : null;
+      const taskFinish = taskFinishedAt ? new Date(taskFinishedAt) : null;
+      if (
+        (taskStart && selectedDate < taskStart) ||
+        (taskFinish && selectedDate > taskFinish)
+      ) {
+        toast.error("Finish date must be within the task’s valid date range");
+        return;
+      }
+
+      if (
+        checklistData?.startedAt &&
+        selectedDate < new Date(checklistData.startedAt)
+      ) {
+        toast.error("Finish date cannot be before start date");
+        return;
+      }
+
+      try {
+        if (checklistId) {
+          const res = await updateCheckListDateByIdAndTaskIdAction({
+            finishedAt: selectedDate.toISOString(),
+            checklistId,
+          });
+          console.log("✔ Checklist finishedAt updated:", res);
+          toast.success("Checklist deadline extended");
+        }
+      } catch (err) {
+        console.error("❌ Failed to update checklist:", err);
+        toast.error("Failed to update checklist date");
+        return;
+      }
+
+      setDateRange((prev) => ({
+        start: prev.start,
+        end: {
+          year: value.year,
+          month: value.month,
+          day: value.day,
+        },
+      }));
+      setChangedFields((prev) => new Set(prev).add("finishedAt"));
     },
-    [taskStartedAt]
+    [checklistId, taskStartedAt, taskFinishedAt, checklistData?.startedAt]
   );
 
   const handleSaveTitle = useCallback(async () => {
@@ -642,7 +751,9 @@ const useDescriptionEditor = (taskId, checklistId, isOpen) => {
     setChangedFields(new Set());
     setError(null);
   };
-
+  const isOldChecklist = checklistData?.startedAt
+    ? new Date(checklistData.startedAt) < new Date("2025-01-01")
+    : false;
   return {
     taskData: checklistData,
     newDescription,
@@ -663,8 +774,10 @@ const useDescriptionEditor = (taskId, checklistId, isOpen) => {
     handleTitleChange,
     handleCancel,
     dateRange,
-    handleDateRangeChange,
+    handleFinishedAtChange,
     taskStartedAt,
+    taskFinishedAt,
+    isOldChecklist
   };
 };
 
@@ -699,6 +812,13 @@ const ModalDetailChecklist = ({
   const [totalCommentLength, setTotalCommentLength] = useState(0); // Add state
 
   console.log("hhhh", image);
+
+  const disablePastDates = (date) => {
+    const todayDate = today(getLocalTimeZone());
+    return isBefore(date, todayDate);
+  };
+
+
   const {
     taskData,
     newDescription,
@@ -719,9 +839,21 @@ const ModalDetailChecklist = ({
     handleTitleChange,
     handleCancel,
     dateRange,
-    handleDateRangeChange,
+    handleFinishedAtChange,
     taskStartedAt,
+    taskFinishedAt,
+    isOldChecklist
   } = useDescriptionEditor(taskId, checklistId, isOpen);
+ 
+
+  console.log("log taskStatedAt :", taskStartedAt);
+  console.log("log taskFinishedAt :", taskFinishedAt);
+  const minCalendarDate = taskStartedAt
+    ? parseDate(taskStartedAt.split("T")[0])
+    : undefined;
+  const maxCalendarDate = taskFinishedAt
+    ? parseDate(taskFinishedAt.split("T")[0])
+    : undefined;
 
   const fileIcons = {
     pdf: "https://cdn-icons-png.flaticon.com/128/4726/4726010.png",
@@ -924,8 +1056,7 @@ const ModalDetailChecklist = ({
       ?.flat() // Flatten the array of arrays into a single array
       .filter((feedback) => feedback?.taskId === taskId) || [];
 
-
-      console.log("this is role ",role);  
+  console.log("this is role ", role);
 
   return (
     <div>
@@ -1015,9 +1146,20 @@ const ModalDetailChecklist = ({
             <>
               <ModalHeader className="flex flex-row justify-between items-center sticky top-0 z-10 bg-white">
                 <div className="flex flex-wrap justify-start items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6.429 9.75 2.25 12l4.179 2.25m0-4.5 5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-4.179 2.25m0 0L21.75 12l-4.179 2.25m0 0 4.179 2.25L12 21.75 2.25 16.5l4.179-2.25m11.142 0-5.571 3-5.571-3" />
-                </svg>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="size-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M6.429 9.75 2.25 12l4.179 2.25m0-4.5 5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-4.179 2.25m0 0L21.75 12l-4.179 2.25m0 0 4.179 2.25L12 21.75 2.25 16.5l4.179-2.25m11.142 0-5.571 3-5.571-3"
+                    />
+                  </svg>
 
                   <p className="text-h5 font-medium break-words max-w-full">
                     {taskTitle || "Task Name"}
@@ -1063,25 +1205,25 @@ const ModalDetailChecklist = ({
                     alt="Checklist Image"
                     className="w-full h-full object-cover rounded-medium"
                   />
-                  {role === "ROLE_MEMBER" ? "": (
-
+                  {role === "ROLE_MEMBER" ? (
+                    ""
+                  ) : (
                     <>
-                    <input
-                    type="file"
-                    accept="image/*"
-                    ref={fileInputRef}
-                    className="hidden"
-                    onChange={handleImageUpload}
-                  />
-                  <button
-                    onClick={triggerFileInput}
-                    className="absolute bottom-2 right-2 bg-white p-2 rounded-full shadow-md hover:bg-gray-100"
-                    aria-label="Upload Image"
-                    disabled={loading}
-                  >
-                    <CameraIcon className="h-6 w-6 text-gray-600" />
-                  </button>
-                    
+                      <input
+                        type="file"
+                        accept="image/*"
+                        ref={fileInputRef}
+                        className="hidden"
+                        onChange={handleImageUpload}
+                      />
+                      <button
+                        onClick={triggerFileInput}
+                        className="absolute bottom-2 right-2 bg-white p-2 rounded-full shadow-md hover:bg-gray-100"
+                        aria-label="Upload Image"
+                        disabled={loading}
+                      >
+                        <CameraIcon className="h-6 w-6 text-gray-600" />
+                      </button>
                     </>
                   )}
                 </div>
@@ -1098,71 +1240,75 @@ const ModalDetailChecklist = ({
                 {/* newwwww */}
                 <div className="flex flex-col">
                   {/* title and delete button */}
-                  {role === "ROLE_MEMBER" ? "": (<div className="flex items-center justify-between gap-4 p-4 bg-white">
-                    {isEditingTitle ? (
-                      <div className="flex-1 min-w-0">
-                        <input
-                          type="text"
-                          value={newTitle}
-                          onChange={handleTitleChange}
-                          onKeyDown={handleSubmitTitle}
-                          className="w-full px-4 py-3 text-lg font-medium text-gray-900 focus:outline-none "
-                          placeholder="Enter checklist title..."
-                          autoFocus
-                          disabled={loading}
-                          aria-label="Checklist title input"
-                          maxLength={100} // Prevent extremely long titles
-                        />
-                        {loading && (
-                          <div className="mt-2 flex items-center text-sm text-gray-500">
-                            <div className="animate-spin h-4 w-4 "></div>
-                            Saving...
-                          </div>
-                        )}
-                      </div>
-                    ) : (
-                      <div
-                        onClick={handleEditTitleClick}
-                        className="flex-1 min-w-0 cursor-pointer group"
-                        role="button"
-                        tabIndex={0}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter" || e.key === " ") {
-                            e.preventDefault();
-                            handleEditTitleClick();
-                          }
-                        }}
-                        aria-label="Click to edit checklist title"
-                      >
-                        <div className="p-3 ">
-                          <h1 className="text-lg font-medium text-gray-900 break-words leading-relaxed">
-                            {newTitle || title || (
-                              <span className="text-gray-500 italic">
-                                Click to add title...
-                              </span>
-                            )}
-                          </h1>
+                  {role === "ROLE_MEMBER" ? (
+                    ""
+                  ) : (
+                    <div className="flex items-center justify-between gap-4 p-4 bg-white">
+                      {isEditingTitle ? (
+                        <div className="flex-1 min-w-0">
+                          <input
+                            type="text"
+                            value={newTitle}
+                            onChange={handleTitleChange}
+                            onKeyDown={handleSubmitTitle}
+                            className="w-full px-4 py-3 text-lg font-medium text-gray-900 focus:outline-none "
+                            placeholder="Enter checklist title..."
+                            autoFocus
+                            disabled={loading}
+                            aria-label="Checklist title input"
+                            maxLength={100} // Prevent extremely long titles
+                          />
+                          {loading && (
+                            <div className="mt-2 flex items-center text-sm text-gray-500">
+                              <div className="animate-spin h-4 w-4 "></div>
+                              Saving...
+                            </div>
+                          )}
                         </div>
-                      </div>
-                    )}
+                      ) : (
+                        <div
+                          onClick={handleEditTitleClick}
+                          className="flex-1 min-w-0 cursor-pointer group"
+                          role="button"
+                          tabIndex={0}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                              e.preventDefault();
+                              handleEditTitleClick();
+                            }
+                          }}
+                          aria-label="Click to edit checklist title"
+                        >
+                          <div className="p-3 ">
+                            <h1 className="text-lg font-medium text-gray-900 break-words leading-relaxed">
+                              {newTitle || title || (
+                                <span className="text-gray-500 italic">
+                                  Click to add title...
+                                </span>
+                              )}
+                            </h1>
+                          </div>
+                        </div>
+                      )}
 
-                    <div className="flex-shrink-0">
-                      <PopupAction
-                        title={<Trash />}
-                        color={"text-blue-600"}
-                        massageTitle={"Are you sure?"}
-                        massageBody={"You want to delete this checklist "}
-                        icon={<IconpopupDelete />}
-                        bgcolor={"bg-slate-red"}
-                        massageDo={"Yes, Delete"}
-                        massageUndo={"No, Cancel"}
-                        checkListId={id}
-                        taskId={taskId}
-                      />
+                      <div className="flex-shrink-0">
+                        <PopupAction
+                          title={<Trash />}
+                          color={"text-blue-600"}
+                          massageTitle={"Are you sure?"}
+                          massageBody={"You want to delete this checklist "}
+                          icon={<IconpopupDelete />}
+                          bgcolor={"bg-slate-red"}
+                          massageDo={"Yes, Delete"}
+                          massageUndo={"No, Cancel"}
+                          checkListId={id}
+                          taskId={taskId}
+                        />
+                      </div>
                     </div>
-                  </div>) }
-                  
-                 {/* this date picker  */}
+                  )}
+
+                  {/* this date picker  */}
                   <div className="flex flex-wrap justify-between items-center mt-5">
                     <StackedProfileChecklist
                       member={member || []}
@@ -1174,192 +1320,249 @@ const ModalDetailChecklist = ({
                       role={role}
                     />
                     <div className="max-w-[400px] w-full flex flex-row gap-4">
-                      <DateRangePicker
+                      <DatePicker
                         showMonthAndYearPickers
                         variant="inline"
                         size="sm"
-                        value={dateRange}
-                        onChange={handleDateRangeChange}
-                        isInvalid={
-                          dateRange.start &&
-                          (new Date(
-                            dateRange.start.year,
-                            dateRange.start.month - 1,
-                            dateRange.start.day
-                          ) < new Date() ||
-                            (taskStartedAt &&
-                              new Date(
-                                dateRange.start.year,
-                                dateRange.start.month - 1,
-                                dateRange.start.day
-                              ) < new Date(taskStartedAt)))
+                        onChange={handleFinishedAtChange}
+                        selectorButtonPlacement="end"
+                        label="Checklist Finish Date"
+                        disabled={loading || isOldChecklist}
+                        minValue={minCalendarDate}
+                        maxValue={maxCalendarDate}
+                        value={
+                          dateRange.end
+                            ? parseDate(
+                                `${dateRange.end.year}-${String(
+                                  dateRange.end.month
+                                ).padStart(2, "0")}-${String(
+                                  dateRange.end.day
+                                ).padStart(2, "0")}`
+                              )
+                            : null
                         }
-                        errorMessage={
-                          dateRange.start &&
-                          new Date(
-                            dateRange.start.year,
-                            dateRange.start.month - 1,
-                            dateRange.start.day
-                          ) < new Date()
-                            ? "Start date must be in the present or future"
-                            : dateRange.start &&
-                              taskStartedAt &&
-                              new Date(
-                                dateRange.start.year,
-                                dateRange.start.month - 1,
-                                dateRange.start.day
-                              ) < new Date(taskStartedAt)
-                            ? "Start date cannot be before task's start time"
-                            : ""
-                        }
-                        label="Checklist Dates"
-                        disabled={loading}
+                        shouldDisableDate={disablePastDates}
                       />
                     </div>
                   </div>
                 </div>
                 {/*  Description section */}
-                
+
                 <div className="flex flex-col space-y-3">
-                    <div className="flex flex-wrap justify-between items-center">
-                      <p className="text-h6 font-bold">Description</p>
-                      {/* Show edit button only for non-ROLE_MEMBER users */}
-                      {role !== "ROLE_MEMBER" && (
-                        <div
-                          className="p-1 cursor-pointer hover:bg-gray-100 rounded"
-                          onClick={handleEditClick}
-                          role="button"
-                          aria-label="Edit description"
+                  <div className="flex flex-wrap justify-between items-center">
+                    <p className="text-h6 font-bold">Description</p>
+                    {/* Show edit button only for non-ROLE_MEMBER users */}
+                    {role !== "ROLE_MEMBER" && (
+                      <div
+                        className="p-1 cursor-pointer hover:bg-gray-100 rounded"
+                        onClick={handleEditClick}
+                        role="button"
+                        aria-label="Edit description"
+                      >
+                        <svg
+                          width="15"
+                          height="15"
+                          viewBox="0 0 15 15"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
                         >
-                          <svg
-                            width="15"
-                            height="15"
-                            viewBox="0 0 15 15"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <g clipPath="url(#clip0_3611_138420)">
-                              <path
-                                d="M6.875 2.5H2.5C2.16848 2.5 1.85054 2.6317 1.61612 2.86612C1.3817 3.10054 1.25 3.41848 1.25 3.75V12.5C1.25 12.8315 1.3817 13.1495 1.61612 13.3839C1.85054 13.6183 2.16848 13.75 2.5 13.75H11.25C11.5815 13.75 11.8995 13.6183 12.1339 13.3839C12.3683 13.1495 12.5 12.8315 12.5 12.5V8.125"
-                                stroke="#143A47"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                              <path
-                                d="M11.5625 1.56252C11.8111 1.31388 12.1484 1.17419 12.5 1.17419C12.8516 1.17419 13.1889 1.31388 13.4375 1.56252C13.6861 1.81116 13.8258 2.14839 13.8258 2.50002C13.8258 2.85165 13.6861 3.18888 13.4375 3.43752L7.5 9.37502L5 10L5.625 7.50002L11.5625 1.56252Z"
-                                stroke="#143A47"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </g>
-                            <defs>
-                              <clipPath id="clip0_3611_138420">
-                                <rect width="15" height="15" fill="white" />
-                              </clipPath>
-                            </defs>
-                          </svg>
+                          <g clipPath="url(#clip0_3611_138420)">
+                            <path
+                              d="M6.875 2.5H2.5C2.16848 2.5 1.85054 2.6317 1.61612 2.86612C1.3817 3.10054 1.25 3.41848 1.25 3.75V12.5C1.25 12.8315 1.3817 13.1495 1.61612 13.3839C1.85054 13.6183 2.16848 13.75 2.5 13.75H11.25C11.5815 13.75 11.8995 13.6183 12.1339 13.3839C12.3683 13.1495 12.5 12.8315 12.5 12.5V8.125"
+                              stroke="#143A47"
+                              strokeWidth="1.5"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                            <path
+                              d="M11.5625 1.56252C11.8111 1.31388 12.1484 1.17419 12.5 1.17419C12.8516 1.17419 13.1889 1.31388 13.4375 1.56252C13.6861 1.81116 13.8258 2.14839 13.8258 2.50002C13.8258 2.85165 13.6861 3.18888 13.4375 3.43752L7.5 9.37502L5 10L5.625 7.50002L11.5625 1.56252Z"
+                              stroke="#143A47"
+                              strokeWidth="1.5"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </g>
+                          <defs>
+                            <clipPath id="clip0_3611_138420">
+                              <rect width="15" height="15" fill="white" />
+                            </clipPath>
+                          </defs>
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+                  {loading && !taskData && (
+                    <div className="text-sm text-gray-500 flex items-center">
+                      <div className="animate-spin rounded-full h-4 w-4 mr-2 border-t-2 border-blue-500"></div>
+                      Loading checklist data...
+                    </div>
+                  )}
+                  {error && !isEditing && (
+                    <div className="text-sm text-red-500 p-2 bg-gray-50 rounded">
+                      Error: {error}
+                    </div>
+                  )}
+                  {(!loading || taskData) && (
+                    <>
+                      {isEditing && role !== "ROLE_MEMBER" ? ( // Restrict editing UI to non-ROLE_MEMBER
+                        <div className="space-y-3">
+                          <textarea
+                            value={newDescription}
+                            onChange={handleDescriptionChange}
+                            onKeyDown={handleSubmitDecription}
+                            className="w-full p-3 resize-none border-none focus:ring-primary text-gray-700"
+                            rows="2"
+                            placeholder="Enter description..."
+                            autoFocus
+                            disabled={loading}
+                          />
+                          <div className="flex items-center justify-between">
+                            <div className="flex space-x-2">
+                              <button
+                                onClick={handleSaveDecription}
+                                disabled={loading || !newDescription?.trim()}
+                                className="text-btn-sm px-2 py-1 bg-primary text-white rounded-full hover:bg-blue-700 focus:ring-2 focus:ring-primary disabled:bg-gray-400 disabled:cursor-not-allowed"
+                              >
+                                {loading ? (
+                                  <>
+                                    <div className="animate-spin rounded-full h-4 w-4 mr-2 border-t-2 border-white inline-block"></div>
+                                    Saving...
+                                  </>
+                                ) : (
+                                  "Save"
+                                )}
+                              </button>
+                              <button
+                                onClick={handleCancel}
+                                disabled={loading}
+                                className="text-btn-sm px-2 py-1 bg-gray-300 text-gray-700 rounded-full hover:bg-gray-300 focus:ring-2 focus:ring-gray-500 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          </div>
+                          {error && (
+                            <div className="text-btn-sm text-red-500 p-2 bg-gray-50 rounded border border-red-200">
+                              <div className="flex items-center">
+                                <svg
+                                  className="h-4 w-4 mr-2 text-red-500"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                  />
+                                </svg>
+                                Error: {error}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <div
+                          onClick={
+                            role !== "ROLE_MEMBER" ? handleEditClick : undefined
+                          } // Disable click for ROLE_MEMBER
+                          className={`w-full p-3 ${
+                            role !== "ROLE_MEMBER"
+                              ? "cursor-pointer"
+                              : "cursor-default"
+                          } min-h-[100px]`}
+                        >
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              {taskData?.description ? (
+                                <span className="text-gray-700 whitespace-pre-wrap">
+                                  {taskData.description}
+                                </span>
+                              ) : (
+                                <span className="text-gray-400 italic">
+                                  {role !== "ROLE_MEMBER"
+                                    ? "Click to add description..."
+                                    : "No description available"}
+                                </span>
+                              )}
+                            </div>
+                          </div>
                         </div>
                       )}
-                    </div>
-                    {loading && !taskData && (
-                      <div className="text-sm text-gray-500 flex items-center">
-                        <div className="animate-spin rounded-full h-4 w-4 mr-2 border-t-2 border-blue-500"></div>
-                        Loading checklist data...
-                      </div>
-                    )}
-                    {error && !isEditing && (
-                      <div className="text-sm text-red-500 p-2 bg-gray-50 rounded">
-                        Error: {error}
-                      </div>
-                    )}
-                    {(!loading || taskData) && (
-                      <>
-                        {isEditing && role !== "ROLE_MEMBER" ? ( // Restrict editing UI to non-ROLE_MEMBER
-                          <div className="space-y-3">
-                            <textarea
-                              value={newDescription}
-                              onChange={handleDescriptionChange}
-                              onKeyDown={handleSubmitDecription}
-                              className="w-full p-3 resize-none border-none focus:ring-primary text-gray-700"
-                              rows="2"
-                              placeholder="Enter description..."
-                              autoFocus
-                              disabled={loading}
-                            />
-                            <div className="flex items-center justify-between">
-                              <div className="flex space-x-2">
-                                <button
-                                  onClick={handleSaveDecription}
-                                  disabled={loading || !newDescription?.trim()}
-                                  className="text-btn-sm px-2 py-1 bg-primary text-white rounded-full hover:bg-blue-700 focus:ring-2 focus:ring-primary disabled:bg-gray-400 disabled:cursor-not-allowed"
-                                >
-                                  {loading ? (
-                                    <>
-                                      <div className="animate-spin rounded-full h-4 w-4 mr-2 border-t-2 border-white inline-block"></div>
-                                      Saving...
-                                    </>
-                                  ) : (
-                                    "Save"
-                                  )}
-                                </button>
-                                <button
-                                  onClick={handleCancel}
-                                  disabled={loading}
-                                  className="text-btn-sm px-2 py-1 bg-gray-300 text-gray-700 rounded-full hover:bg-gray-300 focus:ring-2 focus:ring-gray-500 disabled:bg-gray-400 disabled:cursor-not-allowed"
-                                >
-                                  Cancel
-                                </button>
-                              </div>
-                            </div>
-                            {error && (
-                              <div className="text-btn-sm text-red-500 p-2 bg-gray-50 rounded border border-red-200">
-                                <div className="flex items-center">
-                                  <svg
-                                    className="h-4 w-4 mr-2 text-red-500"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                  >
-                                    <path
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      strokeWidth="2"
-                                      d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                                    />
-                                  </svg>
-                                  Error: {error}
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        ) : (
-                          <div
-                            onClick={role !== "ROLE_MEMBER" ? handleEditClick : undefined} // Disable click for ROLE_MEMBER
-                            className={`w-full p-3 ${role !== "ROLE_MEMBER" ? "cursor-pointer" : "cursor-default"} min-h-[100px]`}
-                          >
-                            <div className="flex items-start justify-between">
-                              <div className="flex-1">
-                                {taskData?.description ? (
-                                  <span className="text-gray-700 whitespace-pre-wrap">
-                                    {taskData.description}
-                                  </span>
-                                ) : (
-                                  <span className="text-gray-400 italic">
-                                    {role !== "ROLE_MEMBER" ? "Click to add description..." : "No description available"}
-                                  </span>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                      </>
-                    )}
+                    </>
+                  )}
                 </div>
-               
-               {/* this is  atteactment  + commment */}
-               
+
+                {/* this is  atteactment  + commment */}
+
+   {/* this is  atteactment  + commment */}
+
+   {state.selectedAttachment && (
+                  <div className="mt-4 p-3 border rounded-md border-gray-200">
+                    <p className="font-bold">
+                      Selected Attachment:{" "}
+                      <span>
+                        {state.selectedAttachment.details?.fileName ||
+                          "Unknown"}
+                      </span>
+                    </p>
+                    <div className="flex items-center gap-x-2">
+                      <img
+                        src={getFileIcon(
+                          state.selectedAttachment.details?.fileName
+                        )}
+                        alt={
+                          state.selectedAttachment.details?.fileName || "File"
+                        }
+                        className="h-5 w-5"
+                      />
+                      <a
+                        href={state.selectedAttachment.drive_url}
+                        target="_blank"
+                        rel="noreferrer noopener"
+                        className="text-blue-600 hover:text-blue-800">
+                        View
+                      </a>
+                      <Button
+                        onClick={() =>
+                          dispatch({
+                            type: "SET_SELECTED_ATTACHMENT",
+                            payload: null,
+                          })
+                        }
+                        className="ml-2 text-sm px-4 py-2 bg-red-600 text-white rounded-md">
+                        Remove
+                      </Button>
+                    </div>
+                  </div>
+                )}
+                <div className="flex gap-x-4 border-b border-gray-300 mt-3">
+                  <button
+                    className={`py-2 px-4 ${
+                      state.activeTab === "add"
+                        ? "border-b-2 border-blue-600 text-blue-600 font-bold"
+                        : "text-gray-600"
+                    }`}
+                    onClick={() =>
+                      dispatch({ type: "SET_ACTIVE_TAB", payload: "add" })
+                    }
+                    disabled={loading}>
+                    Add Attatchments
+                  </button>
+                  <button
+                    className={`py-2 px-4 ${
+                      state.activeTab === "all"
+                        ? "border-b-2 border-blue-600 text-blue-600 font-bold"
+                        : "text-gray-600"
+                    }`}
+                    onClick={() =>
+                      dispatch({ type: "SET_ACTIVE_TAB", payload: "all" })
+                    }
+                    disabled={state.loading}>
+                    All Attachments ({state.attachments.length})
+                  </button>
+                </div>
                 <div className="mt-4 mb-5">
                   {state.activeTab === "add" && (
                     <div className="space-y-4">
@@ -1369,8 +1572,7 @@ const ModalDetailChecklist = ({
                           className="w-full text-title/50 text-caption p-4 border rounded-medium border-gray-400 flex justify-between items-center cursor-pointer"
                           onClick={() =>
                             dispatch({ type: "SET_MODAL_OPEN", payload: true })
-                          }
-                        >
+                          }>
                           Choose file here...
                           <svg
                             width="18"
@@ -1378,8 +1580,7 @@ const ModalDetailChecklist = ({
                             viewBox="0 0 18 20"
                             fill="none"
                             xmlns="http://www.w3.org/2000/svg"
-                            className="inline-block cursor-pointer ml-2"
-                          >
+                            className="inline-block cursor-pointer ml-2">
                             <path
                               d="M3.33398 18.2243H15.0007C15.4427 18.2243 15.8666 18.0487 16.1792 17.7361C16.4917 17.4236 16.6673 16.9996 16.6673 16.5576V5.72428L12.5007 1.55762H5.00065C4.55862 1.55762 4.1347 1.73321 3.82214 2.04577C3.50958 2.35833 3.33398 2.78226 3.33398 3.22428V6.55762"
                               stroke="#59BAD5"
@@ -1396,6 +1597,7 @@ const ModalDetailChecklist = ({
                             />
                           </svg>
                         </div>
+                        {/* do it here */}
                         {state.isModalOpen && (
                           <ModalUploadAttachment
                             boardId={boardId}
@@ -1411,30 +1613,23 @@ const ModalDetailChecklist = ({
                           />
                         )}
                       </div>
-
-
-
-                      {/* comment */}
                       <div className="space-y-2">
                         <PostCommentChecklist checklistId={checklistId} />
-                      </div> 
-                      {/* comment */}
+                      </div>
                       {state.error ? (
                         <div
                           className={`text-center p-4 ${
                             state.error === "No comments yet"
                               ? "text-gray-500"
                               : "text-red-500"
-                          }`}
-                        >
+                          }`}>
                           {state.error}
                           {state.error !== "No comments yet" && (
                             <Button
                               onClick={() =>
                                 dispatch({ type: "SET_COMMENTS", payload: [] })
                               }
-                              className="ml-2 text-sm px-4 py-2 bg-blue-600 text-white rounded-full"
-                            >
+                              className="ml-2 text-sm px-4 py-2 bg-blue-600 text-white rounded-md">
                               Retry
                             </Button>
                           )}
@@ -1450,54 +1645,74 @@ const ModalDetailChecklist = ({
                   )}
                   {state.activeTab === "all" && (
                     <div className="h-[400px] overflow-auto scrollbar-hidden">
-                      {state.error ? (
+                      {state.loading ? (
+                        <div className="text-center p-4 text-gray-500">
+                          Loading attachments...
+                        </div>
+                      ) : state.attachmentError ? (
                         <div className="text-red-500 text-center p-4">
-                          {state.error}
-                          {state.error !== "No actions available" && (
+                          {state.attachmentError}
+                          {state.attachmentError !== "No attachments found" && (
                             <Button
                               onClick={() =>
-                                dispatch({ type: "SET_ACTIONS", payload: [] })
+                                dispatch({
+                                  type: "SET_ATTACHMENTS",
+                                  payload: [],
+                                })
                               }
-                              className="ml-2 text-sm px-4 py-2 bg-blue-600 text-white rounded-md"
-                            >
+                              className="ml-2 text-sm px-4 py-2 bg-blue-600 text-white rounded-md">
                               Retry
                             </Button>
                           )}
                         </div>
-                      ) : state.actions.length === 0 ? (
+                      ) : state.attachments.length === 0 ? (
                         <div className="text-center p-4 text-gray-500">
-                          No actions available.
+                          No attachments available.
                         </div>
                       ) : (
-                        state.actions.map((action) => (
+                        state.attachments.map((attachment) => (
                           <div
-                            key={action.actionId}
-                            className="mb-4 p-3 border rounded-md border-gray-200"
-                          >
+                            key={attachment.attachmentId}
+                            className="mb-4 p-3 border rounded-md border-gray-200">
                             <p className="text-sm text-gray-600">
                               Created on{" "}
-                              {new Date(action.createdAt).toLocaleString()}
+                              {new Date(attachment.createdAt).toLocaleString()}
                             </p>
                             <div className="mt-2 flex items-center gap-x-2">
                               <img
-                                src={getFileIcon(action.fileName)}
-                                alt={action.fileName || "File"}
+                                src={getFileIcon(attachment.details.links)}
+                                alt="Attachment"
                                 className="h-5 w-5"
                               />
-                              {action?.url ? (
-                                <a
-                                  href={action.url}
-                                  target="_blank"
-                                  rel="noreferrer noopener"
-                                  className="text-blue-600 hover:text-blue-800"
-                                >
-                                  {action.fileName || "Unnamed File"}
-                                </a>
+
+                              {attachment.details.links ? (
+                                <div className="flex flex-col space-y-1">
+                                  {attachment.details.links
+                                    .split(",")
+                                    .map((link, index) => (
+                                      <a
+                                        key={index}
+                                        href={link}
+                                        target="_blank"
+                                        rel="noreferrer noopener"
+                                        className="text-blue-600 hover:text-blue-800 break-all">
+                                        {link}
+                                      </a>
+                                    ))}
+                                </div>
                               ) : (
                                 <span className="text-gray-600">
-                                  {action.fileName || "Unnamed File"} (No link
+                                  Attachment {attachment.attachmentId} (No link
                                   available)
                                 </span>
+                              )}
+                            </div>
+
+                            <div className="bg-blue-300">
+                              {attachment?.details?.drive_url && (
+                                <a href={attachment.details.drive_url} target="_blank" rel="noreferrer noopener" className="text-blue-600 hover:text-blue-800">
+                                  Drive URL: {attachment.details.drive_url}
+                                </a>
                               )}
                             </div>
                           </div>
@@ -1506,7 +1721,6 @@ const ModalDetailChecklist = ({
                     </div>
                   )}
                 </div>
-                
               </ModalBody>
             </>
           )}

@@ -1,4 +1,5 @@
 import { ganttRouteGroup } from "@/routes/ganttRoute";
+import { revalidatePath } from "next/cache";
 
 /*
  *       GANTT BAR
@@ -123,34 +124,29 @@ export const createGanttBarsByGanttChartIdService = async ({
  */
 export const deleteGanttBarsByGanttChartIdService = async ({
   ganttChartId,
-  ganttbarId,
+  ganttBarId,
   token,
 }) => {
-  try {
-    // //console.log("from service", { ganttChartId, ganttbarId, token });
+  console.log("from service", { ganttChartId, ganttBarId, token });
 
-    const url = ganttRouteGroup.deleteGanttBar(ganttbarId, ganttChartId);
+  const url = ganttRouteGroup.deleteGanttBar(ganttBarId, ganttChartId);
 
-    const res = await fetch(url, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
+  const res = await fetch(url, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
-    const result = await res.json();
-    ////console.log("📥 Backend responded with:", result);
+  const result = await res.json();
+  console.log("📥 Backend responded with delete:", result);
 
-    return result;
-  } catch (error) {
-    //console.error("🐞 Error:", error.message);
-    throw error;
-  }
+  return result;
 };
 
 /*
- * create gantt bar by GantchartId
+ * update gantt by GantchartId
  */
 // src/service/gantt.service.js
 export async function updateGantChartBytIdService({
@@ -159,25 +155,64 @@ export async function updateGantChartBytIdService({
   data,
   token,
 }) {
+  console.log("from service", { ganttChartId, boardId, token, data });
+
+  const url = ganttRouteGroup.updateGanttChart(ganttChartId);
+
+  const res = await fetch(url, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ title: data.title, boardId }), // Moved body out of headers
+  });
+
+  const result = await res.json();
+  console.log("📥 Backend responded with:", result);
+
+  return { success: true, data: result };
+}
+
+
+
+/*
+ * update gantt bar by GantchartId
+ */
+export async function updateGantBarBytGantChartIdService({
+  ganttBarId,
+  ganttChartId,
+  title,
+  startedAt,
+  finishedAt,
+  face,
+  token,
+}) {
+  console.log("from service", {token,  ganttBarId,
+    ganttChartId,
+    title,
+    startedAt,
+    finishedAt,
+    face, });
+
+  const url = ganttRouteGroup.updateGanttBar(ganttBarId);
+
+  const res = await fetch(url, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({  
+      ganttChartId,
+      title,
+      startedAt,
+      finishedAt,
+      face,}), 
+  });
+
+  const result = await res.json();
+  console.log("📥 Backend responded with ganttbar update:", result);
   
-    console.log("from service", { ganttChartId, boardId, token, data });
-
-    const url = ganttRouteGroup.updateGanttChart(ganttChartId);
-
-    const res = await fetch(url, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ title: data.title, boardId }), // Moved body out of headers
-    });
-
-
-
-    const result = await res.json();
-    console.log("📥 Backend responded with:", result);
-
-    return { success: true, data: result };
-  
-};
+  return { success: true, data: result };
+}

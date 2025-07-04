@@ -1,5 +1,6 @@
 import { getMemberByBoardIdAction } from "@/action/board.action";
 import { getUserByUserIdAction } from "@/action/member.action";
+import NotFound from "@/app/not-found";
 import OtherUserProfile from "@/components/appserver/OtherProfilepage";
 import React from "react";
 
@@ -10,6 +11,7 @@ export default async function MemberProfile({ params, searchParams }) {
   console.log("Board ID:", boardId);
   console.log("User ID:", userId, "Board ID:", boardId);
 
+ 
 
 
   /*
@@ -17,11 +19,23 @@ export default async function MemberProfile({ params, searchParams }) {
    */
   const MemberDetails = await getMemberByBoardIdAction({ boardId });
   console.log("here is the member  details", MemberDetails);
+
   /*
    * getmember id
    */
   const userIdDetail = await getUserByUserIdAction(userId);
   console.log("userdetails", userIdDetail);
+
+  /*
+   * prevent when it is errorss spacific board id for fetching ;-;.
+   */
+  
+  if(boardId == undefined || MemberDetails.payload?.status == 400 || userIdDetail?.status == 400 ||userIdDetail?.title === "Bad Request"){
+    return (
+      <NotFound/>
+    )
+  }
+
   return (
     <OtherUserProfile
       MemberDetails={MemberDetails}

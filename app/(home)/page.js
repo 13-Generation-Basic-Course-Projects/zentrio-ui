@@ -37,14 +37,7 @@ const tools = [
 
 // //useage : http://localhost:3000/
 export default function Home() {
-  console.log("🔍 Environment Variables Debug (VS Code):");
   console.log("GOOGLE_CLIENT_ID:", process.env.GOOGLE_CLIENT_ID);
-  console.log("GOOGLE_CLIENT_SECRET:", process.env.GOOGLE_CLIENT_SECRET ? "Set" : "Not set");
-  console.log("NEXTAUTH_URL:", process.env.NEXTAUTH_URL);
-  console.log("NEXTAUTH_SECRET:", process.env.NEXTAUTH_SECRET ? "Set" : "Not set");
-  console.log("AUTH_TRUST_HOST:", process.env.AUTH_TRUST_HOST);
-  console.log("NODE_ENV:", process.env.NODE_ENV);
-  console.log("All env vars:", Object.keys(process.env).filter(key => key.includes('GOOGLE') || key.includes('NEXTAUTH')));
   return (
     <div className="w-full">
       <section className="relative h-auto bg-gradient-to-b from-[#bdeffc] to-slate overflow-hidden">

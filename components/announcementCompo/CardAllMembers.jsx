@@ -2,8 +2,13 @@
 
 import { Card, CardContent } from "../ui/card";
 import { UsersRound, Crown, Shield, User, Circle } from "lucide-react";
+import Link from "next/link";
 
-export default function CardAllMembers({ boardMember, preventUserImage }) {
+export default function CardAllMembers({
+  boardMember,
+  preventUserImage,
+  boardId,
+}) {
   const getRoleIcon = (roles) => {
     if (roles?.includes?.("ROLE_MANAGER") || roles === "ROLE_MANAGER")
       return <Crown className="w-3 h-3 text-amber-600" />;
@@ -28,12 +33,12 @@ export default function CardAllMembers({ boardMember, preventUserImage }) {
   };
 
   return (
-    <div className=" mx-auto p-2 ">
+    <div className="mx-auto p-2">
       <Card className="shadow-lg border-1 bg-white rounded-xl">
-        <CardContent className="p-6 ">
+        <CardContent className="p-6">
           {/* Header */}
-          <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-100 ">
-            <div className="flex items-center gap-3 ">
+          <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-100">
+            <div className="flex items-center gap-3">
               <div className="p-2 bg-[#59BAD5] rounded-xl">
                 <UsersRound className="w-5 h-5 text-white" />
               </div>
@@ -60,59 +65,75 @@ export default function CardAllMembers({ boardMember, preventUserImage }) {
                 <p className="text-gray-500">No members found</p>
               </div>
             ) : (
-              boardMember?.map((member, index) => (
-                <div
-                  key={member.userId || index}
-                  className="group flex items-center justify-between p-4 rounded-xl hover:bg-gradient-to-r hover:from-[#59BAD5]/5 hover:to-[#59BAD5]/10 transition-all duration-200 border border-transparent hover:border-[#59BAD5]/20"
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="relative">
-                      <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-white shadow-md ring-2 ring-gray-100 group-hover:ring-[#59BAD5]/30 transition-all duration-200">
-                        {member.profileImage || preventUserImage ? (
-                          <img
-                            src={member.profileImage || preventUserImage}
-                            alt={member.username || member.name}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <div className="w-full h-full bg-gradient-to-br from-[#59BAD5] to-[#4AA5C1] flex items-center justify-center text-white font-semibold text-sm">
-                            {(member.username || member.name || "U")
-                              .charAt(0)
-                              .toUpperCase()}
+              boardMember?.map((member, index) => {
+                const profileLink = {
+                  pathname: `/profile/${member.userId}`,
+                  query: {
+                    name: member.username || member.name,
+                    boardId: boardId || "",
+                    profileImage: member.profileImage || preventUserImage,
+                  },
+                };
+
+                return (
+                  <div
+                    key={member.userId || index}
+                    className="group flex items-center justify-between p-4 rounded-xl hover:bg-gradient-to-r hover:from-[#59BAD5]/5 hover:to-[#59BAD5]/10 transition-all duration-200 border border-transparent hover:border-[#59BAD5]/20"
+                  >
+                    <div className="flex items-center gap-4">
+                      {/* Avatar wrapped in Link */}
+                      <Link href={profileLink}>
+                        <div className="relative cursor-pointer">
+                          <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-white shadow-md ring-2 ring-gray-100 group-hover:ring-[#59BAD5]/30 transition-all duration-200">
+                            {member.profileImage || preventUserImage ? (
+                              <img
+                                src={member.profileImage || preventUserImage}
+                                alt={member.username || member.name}
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <div className="w-full h-full bg-gradient-to-br from-[#59BAD5] to-[#4AA5C1] flex items-center justify-center text-white font-semibold text-sm">
+                                {(member.username || member.name || "U")
+                                  .charAt(0)
+                                  .toUpperCase()}
+                              </div>
+                            )}
                           </div>
-                        )}
-                      </div>
-                      {/* Status indicator */}
-                      <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-green-500 rounded-full border-2 border-white shadow-sm">
-                        <Circle className="w-full h-full text-green-500 fill-current" />
+                          {/* Status indicator */}
+                          {/* <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-green-500 rounded-full border-2 border-white shadow-sm">
+                            <Circle className="w-full h-full text-green-500 fill-current" />
+                          </div> */}
+                        </div>
+                      </Link>
+
+                      <div className="flex-1">
+                        {/* Username wrapped in Link */}
+                        <Link href={profileLink}>
+                          <h3 className="font-semibold text-gray-900 group-hover:text-[#59BAD5] transition-colors cursor-pointer">
+                            {member.username || member.name || "Unknown User"}
+                          </h3>
+                        </Link>
+
+                        <div className="flex items-center gap-2">
+                          <span
+                            className={`inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full border ${getRoleColor(
+                              member.roles
+                            )}`}
+                          >
+                            {getRoleIcon(member.roles)}
+                            {formatRole(member.roles)}
+                          </span>
+                        </div>
                       </div>
                     </div>
 
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <h3 className="font-semibold text-gray-900 group-hover:text-[#59BAD5] transition-colors">
-                          {member.username || member.name || "Unknown User"}
-                        </h3>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span
-                          className={`inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full border ${getRoleColor(
-                            member.roles
-                          )}`}
-                        >
-                          {getRoleIcon(member.roles)}
-                          {formatRole(member.roles)}
-                        </span>
-                      </div>
+                    {/* Hover indicator */}
+                    <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                      <div className="w-2 h-2 bg-[#59BAD5] rounded-full"></div>
                     </div>
                   </div>
-
-                  {/* Hover indicator */}
-                  <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                    <div className="w-2 h-2 bg-[#59BAD5] rounded-full"></div>
-                  </div>
-                </div>
-              ))
+                );
+              })
             )}
           </div>
         </CardContent>

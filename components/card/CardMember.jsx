@@ -44,7 +44,7 @@ const CardMember = ({ members = [], preventUserImage }) => {
             size="md"
             className="text-gray-500 dark:text-gray-300 p-0 h-auto min-w-0"
           >
-            See All
+            
           </Button>
         </CardHeader>
 
@@ -96,9 +96,7 @@ const CardMember = ({ members = [], preventUserImage }) => {
                         )}
                       </div>
                       {/* Status indicator */}
-                      <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-green-500 rounded-full border-2 border-white shadow-sm">
-                        <Circle className="w-full h-full text-green-500 fill-current" />
-                      </div>
+                      {/* NO MORE */}
                     </div>
 
                     <div>

@@ -33,6 +33,7 @@ import {
   moveTaskOrderService,
   postCommentByCheckListIdService,
   updateCheckListByIdAndTaskIdService,
+  updateCheckListDateByIdAndTaskIdService,
   updateGanttBarByGanttBarIdService,
   updateTaskByIdService,
   uploadCoverChecklistService,
@@ -43,6 +44,7 @@ import {
   sendNotificationToSpecificArrayIdService,
   sendNotificationToUserIdService,
 } from "@/service/notification.service";
+import { getBoardMemberAction } from "./member.action";
 
 console.log("test actions must create folders");
 /*
@@ -125,19 +127,6 @@ export const getCommentByCheckListIdAction = async (checklistId) => {
   const userToken = await Token();
   const token = userToken.Credential;
 
-  if (
-    !checklistId ||
-    !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
-      checklistId
-    )
-  ) {
-    console.warn(`Invalid checklistId: ${checklistId}`);
-    return {
-      success: false,
-      data: [],
-      error: "Invalid checklistId",
-    };
-  }
 
   try {
     const result = await getCommentByCheckListIdService({
@@ -429,6 +418,8 @@ export const createTaskByBoardIdAndGanttChartIdAction = async (
       token,
     });
 
+    console.log("DDDDDDdddatatahhhhhhhhhhhhhhhhh", data);
+
     // Extract taskId
     const taskId = result.payload?.taskId;
     if (!taskId || typeof taskId !== "string") {
@@ -474,6 +465,10 @@ export const assignLeaderAction = async (taskId, assignId) => {
   try {
     const userToken = await Token();
     const token = userToken?.Credential;
+
+    // leader token not pm token ??
+
+    console.log("token in assignLeaderAction:", token);
     if (!token) {
       throw new Error("No authentication token found");
     }
@@ -483,6 +478,8 @@ export const assignLeaderAction = async (taskId, assignId) => {
       assignId,
       token,
     });
+
+    console.log("Assign leader result:", JSON.stringify(result, null, 2));
 
     // Send notification
     if (result.payload?.boardId) {
@@ -755,7 +752,6 @@ export const getTaskByTaskIdAction = async (taskId) => {
     taskId,
     token,
   });
-  revalidatePath("/member");
   console.log("getTaskByTaskIdAction result: ", result);
   return result;
 };
@@ -900,6 +896,26 @@ export const getFeedBackByTaskIdAction = async ({ taskId }) => {
   //console.log(token);
   const result = await getFeedBackByTaskIdService({
     taskId,
+    token,
+  });
+  return result;
+};
+
+/* add new action for update date in checklist */
+export const updateCheckListDateByIdAndTaskIdAction = async ({
+  finishedAt,
+  checklistId,
+}) => {
+  console.log("Request Body in update date checklist Action: ", {
+    finishedAt,
+    checklistId,
+  });
+  const userToken = await Token();
+  const token = userToken.Credential;
+
+  const result = await updateCheckListDateByIdAndTaskIdService({
+    finishedAt,
+    checklistId,
     token,
   });
   return result;

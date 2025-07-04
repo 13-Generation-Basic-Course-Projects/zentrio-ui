@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import React, { useState, useEffect } from "react";
 
 import clearday from "@/assets/weathericon/clear-day.png";
 import clearnight from "@/assets/weathericon/clear-night.png";
@@ -10,21 +11,11 @@ import heavyrain from "@/assets/weathericon/heavy-showers.png";
 import thunderstorm from "@/assets/weathericon/thunderstorm-showers.png";
 import cloudyday from "@/assets/weathericon/partly-cloudy-day.png";
 import cloudynight from "@/assets/weathericon/partly-cloudy-night.png";
-
 import clock from "@/assets/clock.png";
-import React, { useState, useEffect } from "react";
 
-// Format current day/time
+// Format current time
 function formatDateTime(date) {
-  const days = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  ];
+  const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
   const d = new Date(date);
   const hours = d.getHours();
   const hour12 = hours % 12 === 0 ? 12 : hours % 12;
@@ -40,72 +31,57 @@ function formatDateTime(date) {
   };
 }
 
-// Return gradient background based on weather type and time
+// Get background gradient
 function getWeatherColor(condition, hour) {
   const isDay = hour >= 6 && hour < 18;
-
   switch (condition) {
     case "Clear":
     case "Sunny":
-      return isDay
-        ? "from-[#56CCF2] to-[#2F80ED]" // Bright sky blue to royal blue
-        : "from-[#0F2027] via-[#203A43] to-[#2C5364]"; // Deep night gradient
-
+      return isDay ? "from-[#A8EDFF] to-[#4FB4FF]" : "from-[#14415A] to-[#1C5A7A]";
     case "Clouds":
-      return isDay
-        ? "from-[#BBD2C5] via-[#536976] to-[#292E49]" // Light cloudy to steel blue
-        : "from-[#2C3E50] to-[#4CA1AF]"; // Cool dusk shades
-
+    case "Broken Clouds":
+      return isDay ? "from-[#B3E5F6] to-[#5CB8F0]" : "from-[#1C3D59] to-[#2D628A]";
     case "Overcast":
-      return "from-[#757F9A] to-[#D7DDE8]"; // Overcast greyish-blue
-
+      return isDay ? "from-[#A0D6E9] to-[#4D9FD6]" : "from-[#173548] to-[#2C5F80]";
     case "Rain":
     case "Drizzle":
-      return "from-[#3a7bd5] to-[#00d2ff]"; // Fresh rain blue shades
-
+      return isDay ? "from-[#7AD3F2] to-[#369DDC]" : "from-[#0F2E44] to-[#235B82]";
     case "Thunderstorm":
     case "Lightning":
-      return "from-[#141E30] to-[#243B55]"; // Dark stormy blues
-
+      return isDay ? "from-[#5AB4E0] to-[#2479C3]" : "from-[#0B263A] to-[#1E4F7A]";
     case "Snow":
-      return "from-[#E0EAFC] to-[#CFDEF3]"; // Soft icy whites & blues
-
+      return isDay ? "from-[#D4F5FF] to-[#9DDCF9]" : "from-[#2A4D65] to-[#5A9BC3]";
     default:
-      return "from-[#B2FEFA] to-[#0ED2F7]"; // fallback: refreshing cyan shades
+      return isDay ? "from-[#A8EDFF] to-[#4FB4FF]" : "from-[#14415A] to-[#1C5A7A]";
   }
 }
 
-// Return icon path based on weather condition
+// Get icon based on condition and time
 function getCustomWeatherIcon(condition, hour) {
   const isDay = hour >= 6 && hour < 18;
-
   switch (condition) {
     case "Clear":
     case "Sunny":
       return isDay ? clearday : clearnight;
-
     case "Clouds":
       return isDay ? cloudyday : cloudynight;
-
     case "Overcast":
       return overcast;
-
     case "Rain":
     case "Drizzle":
       return heavyrain;
-
     case "Thunderstorm":
     case "Lightning":
       return thunderstorm;
-
     default:
-      return cloudy; // fallback for unknown condition
+      return cloudy;
   }
 }
 
 export default function ClockWeather() {
   const [time, setTime] = useState(new Date());
   const [weather, setWeather] = useState(null);
+  const [tomorrowForecast, setTomorrowForecast] = useState(null);
 
   useEffect(() => {
     const interval = setInterval(() => setTime(new Date()), 1000);
@@ -113,12 +89,11 @@ export default function ClockWeather() {
   }, []);
 
   useEffect(() => {
-    const apiKey = "247a59dc9dfeb4159eb6e357fc7d0e41"; // replace with your API key
+    const apiKey = "247a59dc9dfeb4159eb6e357fc7d0e41";
     const city = "Phnom Penh";
 
-    fetch(
-      `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`
-    )
+    // Current weather
+    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`)
       .then((res) => res.json())
       .then((data) => {
         if (data.cod !== 200) {
@@ -128,6 +103,23 @@ export default function ClockWeather() {
         setWeather(data);
       })
       .catch((err) => console.error("Weather fetch error:", err));
+
+    // 5-day forecast (every 3 hours)
+    fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=metric&appid=${apiKey}`)
+      .then((res) => res.json())
+      .then((data) => {
+        const now = new Date();
+        const tomorrow = new Date();
+        tomorrow.setDate(now.getDate() + 1);
+        const tomorrowStr = tomorrow.toISOString().split("T")[0];
+
+        const forecast = data.list.find((entry) =>
+          entry.dt_txt.startsWith(tomorrowStr)
+        );
+
+        setTomorrowForecast(forecast);
+      })
+      .catch((err) => console.error("Forecast fetch error:", err));
   }, []);
 
   const { day, date, hour, minute, ampm, hour24 } = formatDateTime(time);
@@ -172,9 +164,9 @@ export default function ClockWeather() {
             </div>
             {feelsLike && humidity && (
               <div className="text-sm mt-1">
-                {`Feels like: ${Math.round(
-                  feelsLike
-                )}°C | Humidity: ${humidity}%`}
+                {`Feels like: ${Math.round(feelsLike)}°C`}
+                <br />
+                {`Humidity: ${humidity}%`}
               </div>
             )}
           </div>
@@ -193,15 +185,28 @@ export default function ClockWeather() {
         <div className="text-2xl font-bold">{date.split("/")[1]}</div>
       </div>
 
-      {/* Footer */}
-      <div className="col-span-3 bg-white shadow-sm rounded-2xl p-4 flex justify-between items-center">
-        <div className="flex items-center gap-2 text-2xl font-bold">
-          <Image src={clock} alt="clock" width={30} height={30} />
-          {hour}:{minute} <span className="text-base font-normal">{ampm}</span>
+      {/* Footer - Tomorrow's Forecast */}
+      <div className="col-span-3 bg-gradient-to-r from-primary to-white shadow-sm rounded-2xl p-4 flex justify-between items-center">
+        <div className="flex items-center gap-2">
+          {tomorrowForecast?.weather?.[0]?.main && (
+            <Image
+              src={getCustomWeatherIcon(tomorrowForecast.weather[0].main, 12)}
+              alt="Tomorrow Icon"
+              width={36}
+              height={36}
+            />
+          )}
+          <div className="text-sm">
+            <div className="text-gray-800 font-semibold">Tomorrow</div>
+            <div className="text-white capitalize">
+              {tomorrowForecast?.weather?.[0]?.description || "--"}
+            </div>
+          </div>
         </div>
-        <div className="text-sm text-right text-gray-600">
-          <div>{date}</div>
-          <div className="text-primary">{day}</div>
+        <div className="text-right text-gray-700 text-lg font-bold">
+          {tomorrowForecast?.main?.temp
+            ? `${Math.round(tomorrowForecast.main.temp)}°C`
+            : "--"}
         </div>
       </div>
     </div>
