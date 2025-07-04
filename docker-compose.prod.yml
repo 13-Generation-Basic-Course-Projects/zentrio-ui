@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  zentrio-frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: zentrio-frontend
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-https://kshrd.zentrio.pro/api/v1}
+      - NEXTAUTH_URL=${NEXTAUTH_URL:-https://kshrd.zentrio.pro}
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - NEXT_PUBLIC_ONESIGNAL_APP_ID=${NEXT_PUBLIC_ONESIGNAL_APP_ID}
+    networks:
+      - zentrio-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  zentrio-network:
+    driver: bridge 
