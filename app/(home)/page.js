@@ -44,7 +44,7 @@ export default function Home() {
         {/* <div className="absolute top-4 right-10 hidden">
           <Logout />
         </div> */}
-        <div className=" lg:mx-[50px] relative z-50 max-w-screen-xl xl:mx-auto">
+        <div className=" lg:mx-[50px] relative z-50 max-w-screen-xl xl:mx-auto px-[40px]">
           <NavbarLanding />
         </div>
         {/* Floating Chat Bubbles */}
@@ -64,7 +64,7 @@ export default function Home() {
                 {/* Absolutely positioned image at bottom-left of text */}
                 <img
                   className="absolute bottom-3 left-[-40px] translate-y-full mt-1 w-12 h-12 rounded-full border-8 border-white"
-                  src="https://media.kasperskydaily.com/wp-content/uploads/sites/92/2024/04/09102942/real-or-fake-image-analysis-and-provenance-01.jpg"
+                  src="https://imgur.com/QL7eXSw.png"
                   alt="profile user"
                   width={60}
                   height={60}
@@ -86,7 +86,7 @@ export default function Home() {
               </span>
               <img
                 className="absolute bottom-3 right-[-25px] translate-y-full mt-1 w-12 h-12 rounded-full border-8 border-white"
-                src="https://hips.hearstapps.com/hmg-prod/images/itv-fake-release-date-plot-67f50504048bc.jpg?crop=0.563xw:1.00xh;0,0&resize=1200:*"
+                src="https://imgur.com/njTf0PN.png"
                 alt="profile user"
                 width={60}
                 height={60}
@@ -107,7 +107,7 @@ export default function Home() {
               </span>
               <img
                 className="absolute bottom-3 right-[-25px] translate-y-full mt-1 w-12 h-12 rounded-full border-8 border-white"
-                src="https://www.adobe.com/acrobat/hub/media_173d13651460eb7e12c0ef4cf8410e0960a20f0ee.jpeg?width=750&format=jpeg&optimize=medium"
+                src="https://imgur.com/qQwgHMS.png"
                 alt="profile user"
                 width={60}
                 height={60}
@@ -128,7 +128,7 @@ export default function Home() {
                 {/* Absolutely positioned image at bottom-left of text */}
                 <img
                   className="absolute bottom-3 left-[-40px] translate-y-full mt-1 w-12 h-12 rounded-full border-8 border-white"
-                  src="https://media.kasperskydaily.com/wp-content/uploads/sites/92/2024/04/09102942/real-or-fake-image-analysis-and-provenance-01.jpg"
+                  src="https://imgur.com/lSqTaeF.png"
                   alt="profile user"
                   width={60}
                   height={60}
@@ -151,7 +151,7 @@ export default function Home() {
                   <svg
                     width="27"
                     height="27"
-                    className="absolute left-[3.5%] bottom-[0%]"
+                    className="absolute left-[3.5%] bottom-[0%] max-[1000px]:hidden"
                     viewBox="0 0 27 27"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
