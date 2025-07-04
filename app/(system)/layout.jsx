@@ -27,6 +27,7 @@ import {
 } from "@/action/notification.action";
 import OneSignalInitializer from "@/components/onesignal/OneSignalInitializer";
 import ModalNotification from "@/components/modal/noti/ModalNotification";
+import { ToastContainer } from "react-toastify";
 //import { LoadingBarContainer } from "react-top-loading-bar";
 export const metadata = {
   title: "Zentrio | Task Mangement",
@@ -102,5 +103,7 @@ export default async function SystemLayout({ children, params }) {
       // </LoadingBarContainer>
     );
   }
-  return <div className="w-full  ">{children}</div>;
+  return <div className="w-full  ">{children}
+  
+  </div>;
 }
