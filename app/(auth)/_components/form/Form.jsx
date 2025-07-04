@@ -10,9 +10,10 @@ import { Eye, EyeOff } from "lucide-react";
 import { resendOtpForgotPasswordAction, zentrioForgotPasswordAction } from "@/action/auth.action";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { resetPasswordSchema } from "@/lib/schemas/resetPasswordSchema";
+import { toast } from "react-toastify";
 
 
-export const ForgetPass = () => {
+/* export const ForgetPass = () => {
   const [formData, setFormData] = useState({
     email: "",
   });
@@ -121,6 +122,162 @@ export const ForgetPass = () => {
             className="w-full bg-primary text-white max-w-none border-none mt-12 h-[48px] rounded-[10px] capitalize font-semibold text-[20px]">
               <p className="text-h6">Submit</p>
           </Button>
+        </form>
+      </div>
+    </div>
+  );
+}; */
+
+
+
+
+//new code by leap, this add toast and
+export const ForgetPass = () => {
+  const [formData, setFormData] = useState({
+    email: "",
+  });
+  const [isLoading, setIsLoading] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+  const router = useRouter();
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  const onSubmit = async (email) => {
+    const type = "RESET";
+    setIsLoading(true);
+
+    try {
+      const result = await resendOtpForgotPasswordAction({ email, type });
+
+      if (result?.success) {
+        toast.success("OTP sent successfully! Check your email!");
+        router.push(`/verify?email=${encodeURIComponent(email)}&type=RESET`);
+      } else {
+        toast.error(
+          "Oops, we couldn't send the OTP. It looks like this email might not be registered. Please try again or sign up!"
+        );
+        setIsLoading(false);
+      }
+    } catch (err) {
+      toast.error("Something went wrong. Please give it another try!");
+      setIsLoading(false);
+      console.error("Submit failed", err);
+    }
+  };
+
+  return (
+    <div className="w-full h-screen flex items-center justify-center">
+      <div className="w-[1728px] h-[1117px] flex items-center justify-center">
+        <form
+          onSubmit={handleSubmit((data) => onSubmit(data.email))}
+          className="w-[640px] h-fit bg-forgot-gradient px-[55px] py-[40px] rounded-[20px] shadow-sm gap-[50px]"
+        >
+          <div>
+            <Link
+              href="/login"
+              className="flex items-center gap-3 pb-[5%] text-body-sm text-primary"
+            >
+              <svg
+                width="18"
+                height="12"
+                viewBox="0 0 18 12"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M2 6L17 5.99976"
+                  stroke="#59BAD5"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M6 1L1.70711 5.29289C1.37377 5.62623 1.20711 5.79289 1.20711 6C1.20711 6.20711 1.37377 6.37377 1.70711 6.70711L6 11"
+                  stroke="#59BAD5"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              <p>Back to Login</p>
+            </Link>
+            <div className="flex flex-col gap-4">
+              <p className="text-h1 text-primary">
+                <span className="font-semibold text-[40px]">
+                  Forgot your password?
+                </span>
+              </p>
+              <p className="text-body text-[#787486] mb-14">
+                Don’t worry, happens to all of us. Enter your email below to
+                recover your password
+              </p>
+            </div>
+          </div>
+          <div className="flex flex-col gap-4 w-full">
+            <div className="w-full">
+              <div>
+                <AuthInput
+                  key="outside"
+                  type="text"
+                  label="Email"
+                  labelPlacement="outside"
+                  placeholder="Email"
+                  className="text-foreground"
+                  {...register("email", {
+                    required: "Email is required",
+                    pattern: {
+                      value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                      message: "Invalid email format",
+                    },
+                  })}
+                />
+                {errors.email && (
+                  <p className="text-sm text-red-500 mt-1">
+                    {errors.email.message}
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            disabled={isLoading}
+            className={`w-full bg-primary text-white max-w-none border-none mt-12 h-[48px] rounded-[10px] capitalize font-semibold text-[20px] flex items-center justify-center ${
+              isLoading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+          >
+            {isLoading && (
+              <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                  fill="none"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                />
+              </svg>
+            )}
+            {isLoading ? "Submit" : "Submit"}
+          </button>
         </form>
       </div>
     </div>

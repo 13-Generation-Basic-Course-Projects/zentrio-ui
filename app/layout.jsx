@@ -3,6 +3,7 @@ import "./globals.css";
 import { Provider } from "@radix-ui/react-tooltip";
 import OneSignalInitializer from "@/components/onesignal/OneSignalInitializer";
 import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const metadata = {
   title: "Zentrio | 안녕하세요",

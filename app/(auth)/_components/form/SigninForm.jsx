@@ -14,7 +14,7 @@ import GoogleLogin from "../LoginForm";
 import { signIn } from "../../../../auth";
 import { loginSchema } from "../../../../lib/schemas/loginSchema";
 import { zentrioLoginCredentailAction } from "../../../../action/auth.action";
-import { toast, ToastContainer } from "react-toastify";
+import { toast} from "react-toastify";
 
 export const SigninForm = () => {
   const router = useRouter();
@@ -36,24 +36,36 @@ export const SigninForm = () => {
 
   const onSubmit = async (data) => {
     setIsLoading(true);
-    setBackendError(""); 
+    setBackendError("");
+    const toastId = toast.loading("Logging you in...");
 
     try {
       const result = await zentrioLoginCredentailAction(data);
 
       if (result?.success) {
+        toast.success("Welcome back! You've logged in successfully!", {
+          id: toastId,
+        });
         router.push("/workspace");
-        toast.success("You have login successfully");
       } else {
+        toast.error(
+          result?.detail ||
+            "Oops, that email or password doesn't seem right. Please try again!",
+          { id: toastId }
+        );
         setBackendError(result?.detail || "Invalid email or password");
         setIsLoading(false);
       }
     } catch (error) {
+      toast.error("Oh no, something went wrong. Please try again!", {
+        id: toastId,
+      });
       setBackendError("An unexpected error occurred. Please try again.");
       setIsLoading(false);
       console.error("Login error:", error);
     }
   };
+
   const [backendError, setBackendError] = useState("");
 
   return (
@@ -140,7 +152,7 @@ export const SigninForm = () => {
               <div className="text-danger text-sm">
                 {backendError ? <p>{backendError}</p> : <span>&nbsp;</span>}
               </div>
-              <Link href="/forgot-password" className="text-[16px] text-danger">
+              <Link href="/forgot-password" className="text-[16px] text-title/50 hover:text-primary">
                 Forgot Password?
               </Link>
             </div>
@@ -201,7 +213,7 @@ export const SigninForm = () => {
           <GoogleLogin />
         </div>
       </div>
-      <ToastContainer position="top-right" autoClose={4000} />
+    
     </div>
   );
 };
