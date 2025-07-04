@@ -39,6 +39,7 @@ export const uploadMultiImgByBoardIdAction = async (boardId, image, announcement
     boardId,
     image,
     token,
+    announcementId
   });
   return result;
 };
