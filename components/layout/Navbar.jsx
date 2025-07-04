@@ -20,13 +20,13 @@ export const NavbarLanding = ({ tokens }) => {
   };
 console.log("tokens",tokens)
   return (
-    <div className="w-[] md:w-full h-[70px] bg-white shadow-sm rounded-full mx-auto mt-[30px] px-4 sm:px-6 relative">
+    <div className="md:w-full h-[70px] bg-white shadow-sm rounded-full mx-auto mt-[30px] px-4 sm:px-6 relative">
       <div className="flex justify-between items-center h-full">
         <Link href="/">
           <Image
             src={logo}
             alt="Zentrio Logo"
-            className="w-[50px] sm:w-[60px] md:w-[144px]"
+            className="w-[120px] sm:w-[135px] md:w-[144px]"
           />
         </Link>
 
