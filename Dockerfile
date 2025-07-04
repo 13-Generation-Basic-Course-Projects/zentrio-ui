@@ -33,10 +33,19 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 USER nextjs
 
-
 EXPOSE 3000
 
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
+ENV NODE_ENV=production
+
+# Environment variables that should be set at runtime
+# These will be overridden by docker-compose or deployment platform
+ENV NEXT_PUBLIC_API_URL=""
+ENV NEXTAUTH_URL=""
+ENV NEXTAUTH_SECRET=""
+ENV GOOGLE_CLIENT_ID=""
+ENV GOOGLE_CLIENT_SECRET=""
+ENV NEXT_PUBLIC_ONESIGNAL_APP_ID=""
 
 CMD ["node", "server.js"]
