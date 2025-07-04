@@ -31,8 +31,8 @@ export const createAnnouncementByBoardIdAction = async (payload = {}) => {
   return result;
 };
 
-export const uploadMultiImgByBoardIdAction = async (boardId, image) => {
-  console.log("kakakak", image);
+export const uploadMultiImgByBoardIdAction = async (boardId, image, announcementId) => {
+  console.log("kakakak",announcementId);
   const userToken = await Token();
   const token = userToken.Credential;
   const result = await uploadMultiImgByBoardIdService({

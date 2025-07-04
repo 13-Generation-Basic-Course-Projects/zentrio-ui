@@ -23,34 +23,32 @@ export const createAnnouncementByBoardIdService = async ({
   return data;
 };
 
-export const uploadMultiImgByBoardIdService = async ({ boardId, image, token }) => {
-  const url = announcementRouteGroup.uploadMultiImgByBoardId(boardId);
-  //console.log("url",url)
-  const formData = new FormData();
-  formData.append("boardId", boardId);
+export const uploadMultiImgByBoardIdService = async ({ boardId, image, token, announcementId }) => {
+  const url = announcementRouteGroup.uploadMultiImgByBoardId(boardId, announcementId);
+  console.log("url", url, "token", token);
 
-  // Safely loop if imageFiles is array
+  const formData = new FormData();
+
   if (Array.isArray(image)) {
     image.forEach((file) => {
-      formData.append("files", file); // Make sure this matches your backend field name
+      formData.append("files", file);
     });
   }
-  //console.log("kakak",formData)
 
   const res = await fetch(url, {
     method: "POST",
     headers: {
-         "accept": "*/*",
-      Authorization: `Bearer ${token}`,
+      accept: "*/*",
+      Authorization: `Bearer ${token}`, // ✅ JWT required
     },
     body: formData,
-
   });
 
   const data = await res.json();
-  //console.log("img announcement", data);
+  console.log("img announcement", data);
   return data;
 };
+
 
 export const getAllAnnouncementByBoardIdService = async ({
   boardId,

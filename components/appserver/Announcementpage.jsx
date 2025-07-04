@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useRef, useEffect, useCallback } from "react";
 import CartPostAnnouncement from "../announcementCompo/CardPostAnnouncement";
 import CardCreateAnnouncement from "../announcementCompo/CardCreateAnnouncement";
 import CardAllMembers from "../announcementCompo/CardAllMembers";
@@ -10,6 +10,8 @@ import Image from "next/image";
 import nothing from "@/assets/nothingbox.png";
 import DrawerPinAnnoun from "../announcementCompo/DrawerPinAnnoun";
 import { Button } from "../ui/button";
+import SockJS from "sockjs-client";
+import { Stomp } from "@stomp/stompjs";
 
 export default function Announcementpage({
   boardId,
@@ -18,45 +20,195 @@ export default function Announcementpage({
   currentUserProfile,
 }) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-
-  // console.log("All announcement", Announcements);
-  // console.log("kdetttt", boardId);
-  // console.log("kdetkoooo", boardMember);
-  // console.log("user", currentUserProfile);
   const preventUserImage = preventImage.noProfile;
 
   const currentUserBoardInfo = boardMember.find(
     (member) => member.userId === currentUserProfile?.payload?.user?.userId
   );
-  // console.log("gggg", currentUserProfile?.payload?.user?.userId);
-  // console.log("info", currentUserBoardInfo);
   const currentUserRoles = currentUserBoardInfo?.roles || [];
-  // console.log("ss", currentUserRoles);
   const isProjectManager = currentUserRoles.includes("ROLE_MANAGER");
-  // console.log("rolemamam", isProjectManager);
 
-  // Sort announcements: pinned first, then by date (newest first)
+  const initialAnnouncements = (Announcements && Announcements.payload) || [];
+  const initialCommentsMap = initialAnnouncements.reduce((acc, ann) => {
+    acc[ann.announcementId] = ann.comments || [];
+    return acc;
+  }, {});
+
+  const [announcements, setAnnouncements] = useState(initialAnnouncements);
+  const [commentsMap, setCommentsMap] = useState(initialCommentsMap);
+  const [isConnected, setIsConnected] = useState(false);
+
   const sortedAnnouncements = useMemo(() => {
-    if (!Announcements?.payload || Announcements.payload.length === 0) {
-      return Announcements;
-    }
+    if (!announcements || announcements.length === 0) return [];
 
-    const sorted = [...Announcements.payload].sort((a, b) => {
-      // First priority: pinned status (pinned items first)
+    return [...announcements].sort((a, b) => {
       if (a.isPinned && !b.isPinned) return -1;
       if (!a.isPinned && b.isPinned) return 1;
 
-      // Second priority: creation date (newest first)
       const dateA = new Date(a.createdAt || a.created_at || 0);
       const dateB = new Date(b.createdAt || b.created_at || 0);
       return dateB - dateA;
     });
+  }, [announcements]);
 
-    return {
-      ...Announcements,
-      payload: sorted,
+  const stompClientRef = useRef(null);
+
+  // WebSocket connection setup
+  useEffect(() => {
+    if (!boardId) return;
+
+    const socket = new SockJS("http://localhost:8080/ws");
+    const stompClient = Stomp.over(socket);
+    stompClientRef.current = stompClient;
+
+    stompClient.connect(
+      {},
+      () => {
+        setIsConnected(true);
+      },
+      (error) => {
+        console.error("WebSocket connection error:", error);
+        setIsConnected(false);
+      }
+    );
+
+    return () => {
+      if (stompClientRef.current && stompClientRef.current.connected) {
+        stompClientRef.current.disconnect(() => {
+          setIsConnected(false);
+        });
+      }
     };
-  }, [Announcements]);
+  }, [boardId]);
+
+  // Announcement subscription
+  useEffect(() => {
+    const stompClient = stompClientRef.current;
+    if (!stompClient || !isConnected) return;
+
+    const announcementSubscription = stompClient.subscribe(
+      `/topic/board/${boardId}/announcements`,
+      (message) => {
+        const payload = JSON.parse(message.body);
+        const type = payload.type;
+        const announcement = payload.announcement;
+        const announcementId = payload.announcementId;
+
+        setAnnouncements((prev) => {
+          switch (type) {
+            case "CREATED":
+              if (!prev.find((a) => a.announcementId === announcement.announcementId)) {
+                setCommentsMap((prevComments) => ({
+                  ...prevComments,
+                  [announcement.announcementId]: [],
+                }));
+                return [...prev, announcement];
+              }
+              return prev;
+
+            case "UPDATED":
+              return prev.map((a) =>
+                a.announcementId === announcement.announcementId ? { ...announcement } : a
+              );
+
+            case "DELETED":
+              setCommentsMap((prevComments) => {
+                const copy = { ...prevComments };
+                delete copy[announcementId];
+                return copy;
+              });
+              return prev.filter((a) => a.announcementId !== announcementId);
+
+            default:
+              return prev;
+          }
+        });
+      }
+    );
+
+    return () => {
+      if (announcementSubscription) {
+        announcementSubscription.unsubscribe();
+      }
+    };
+  }, [boardId, isConnected]);
+
+  // Enhanced comment subscription with better error handling
+  useEffect(() => {
+    const stompClient = stompClientRef.current;
+    if (!stompClient || !isConnected) return;
+
+    const commentSubscription = stompClient.subscribe(
+      `/topic/board/${boardId}/comments`,
+      (message) => {
+        try {
+          const payload = JSON.parse(message.body);
+          const type = payload.type || "CREATED";
+          const comment = payload.comment || payload;
+          const commentId = payload.commentId;
+          const announcementId = comment?.announcementId || payload.announcementId;
+
+          setCommentsMap((prev) => {
+            const prevComments = prev[announcementId] || [];
+            const currentCommentId = comment.id || commentId;
+
+            let newState;
+            switch (type) {
+              case "CREATED":
+                if (prevComments.find((c) => c.id === currentCommentId)) {
+                  return prev;
+                }
+                newState = { 
+                  ...prev, 
+                  [announcementId]: [...prevComments, comment] 
+                };
+                break;
+
+              case "UPDATED":
+                newState = {
+                  ...prev,
+                  [announcementId]: prevComments.map((c) => 
+                    c.id === currentCommentId ? { ...comment } : c
+                  ),
+                };
+                break;
+
+              case "DELETED":
+                newState = {
+                  ...prev,
+                  [announcementId]: prevComments.filter((c) => c.id !== commentId),
+                };
+                break;
+
+              default:
+                return prev;
+            }
+
+            return newState;
+          });
+        } catch (error) {
+          console.error('Error processing comment message:', error);
+        }
+      }
+    );
+
+    return () => {
+      if (commentSubscription) {
+        commentSubscription.unsubscribe();
+      }
+    };
+  }, [boardId, isConnected]);
+
+  // Memoize the commentsMap to ensure CartPostAnnouncement re-renders when it changes
+  const memoizedCommentsMap = useMemo(() => commentsMap, [commentsMap]);
+
+  // Callback to handle comment updates from child components
+  const handleCommentUpdate = useCallback((announcementId, newComment) => {
+    setCommentsMap((prev) => ({
+      ...prev,
+      [announcementId]: [...(prev[announcementId] || []), newComment],
+    }));
+  }, []);
 
   return (
     <>
@@ -64,7 +216,7 @@ export default function Announcementpage({
         isOpen={isDrawerOpen}
         onOpenChange={setIsDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
-        announcements={sortedAnnouncements.payload}
+        announcements={sortedAnnouncements}
       />
 
       <div className="grid grid-cols-12 w-full h-screen pt-2">
@@ -73,14 +225,6 @@ export default function Announcementpage({
             onClick={() => setIsDrawerOpen(true)}
             className="bg-gradient-to-r from-[#49bbda] to-[#0a8dbd] text-white shadow-lg hover:shadow-xl transition-all rounded-medium"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              className="size-6"
-            >
-              <path d="M16.881 4.345A23.112 23.112 0 0 1 8.25 6H7.5a5.25 5.25 0 0 0-.88 10.427 21.593 21.593 0 0 0 1.378 3.94c.464 1.004 1.674 1.32 2.582.796l.657-.379c.88-.508 1.165-1.593.772-2.468a17.116 17.116 0 0 1-.628-1.607c1.918.258 3.76.75 5.5 1.446A21.727 21.727 0 0 0 18 11.25c0-2.414-.393-4.735-1.119-6.905ZM18.26 3.74a23.22 23.22 0 0 1 1.24 7.51 23.22 23.22 0 0 1-1.41 7.992.75.75 0 1 0 1.409.516 24.555 24.555 0 0 0 1.415-6.43 2.992 2.992 0 0 0 .836-2.078c0-.807-.319-1.54-.836-2.078a24.65 24.65 0 0 0-1.415-6.43.75.75 0 1 0-1.409.516c.059.16.116.321.17.483Z" />
-            </svg>
             Pinned
           </Button>
         </div>
@@ -92,32 +236,27 @@ export default function Announcementpage({
                 boardMember={boardMember}
                 Announcements={Announcements}
                 preventUserImage={preventUserImage}
+                onCommentUpdate={handleCommentUpdate}
               />
             )}
           </div>
 
           <div className="w-full h-full">
             <div>
-              {sortedAnnouncements?.payload &&
-              sortedAnnouncements?.payload.length > 0 ? (
+              {sortedAnnouncements.length > 0 ? (
                 <CartPostAnnouncement
-                  Announcements={sortedAnnouncements}
+                  Announcements={{ payload: sortedAnnouncements }}
+                  commentsMap={memoizedCommentsMap}
                   currentUserProfile={currentUserProfile}
                   boardId={boardId}
                   preventUserImage={preventUserImage}
                   boardMember={boardMember}
+                  onCommentUpdate={handleCommentUpdate}
                 />
               ) : (
                 <div className="flex flex-col items-center justify-center h-[70vh] text-gray-500">
-                  <Image
-                    src={nothing}
-                    alt="No Announcements"
-                    width={100}
-                    height={100}
-                  />
-                  <p className="text-xl text-primary font-medium mt-4">
-                    Nothing has announcement
-                  </p>
+                  <Image src={nothing} alt="No Announcements" width={100} height={100} />
+                  <p className="text-xl text-primary font-medium mt-4">Nothing has announcement</p>
                 </div>
               )}
             </div>
@@ -125,11 +264,7 @@ export default function Announcementpage({
         </div>
 
         <div className="col-span-4">
-          <CardAllMembers
-            boardMember={boardMember}
-            preventUserImage={preventUserImage}
-            boardId={boardId}
-          />
+          <CardAllMembers boardMember={boardMember} preventUserImage={preventUserImage} boardId={boardId} />
           <ClockWeather />
         </div>
       </div>

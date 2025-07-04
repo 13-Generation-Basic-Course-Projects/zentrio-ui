@@ -61,15 +61,16 @@ export default function CardCreateModal({
 
     setLoading(true);
     try {
-      if (images.length > 0) {
-        await uploadMultiImgByBoardIdAction(boardId, images);
-      }
+     
 
       const announcement = await createAnnouncementByBoardIdAction({
         title,
         description,
         boardId,
       });
+       if (images.length > 0) {
+        await uploadMultiImgByBoardIdAction(boardId, images, announcement?.payload?.announcementId);
+      }
 
       // Check status and show toast
       if (announcement?.success) {
