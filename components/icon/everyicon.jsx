@@ -708,3 +708,5 @@ export function IconFolder({}) {
     </svg>
   );
 }
+
+// Language Icons

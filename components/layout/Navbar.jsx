@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { Button } from "@heroui/react";
+import { Button, Chip } from "@heroui/react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -31,7 +31,7 @@ console.log("tokens",tokens)
         </Link>
 
         {/* Desktop Navigation (hidden on mobile) */}
-        <nav className="hidden md:flex justify-between items-center w-[250px] font-medium text-body-lg">
+        <nav className="hidden md:flex justify-between items-center w-[350px] font-medium text-body-lg">
           <Link
             href="/"
             className={`hover:text-primary transition-all ${isActiveRoute("/") ? "text-primary font-semibold" : ""
@@ -52,6 +52,22 @@ console.log("tokens",tokens)
               }`}
           >
             Contact
+          </Link>
+          <Link
+            href="/compiler"
+            className={`relative hover:text-primary transition-all ${isActiveRoute("/compiler") ? "text-primary font-semibold" : ""
+              }`}
+          >
+            Playground
+            <Chip
+              classNames={{
+                base: "left-[90.0%] top-[40%] bg-gradient-to-br from-primary to-primary/5 border-small border-white/50 shadow-pink-500/30 absolute scale-[0.6]",
+                content: "drop-shadow shadow-black text-white",
+              }}
+              variant="shadow"
+            >
+              Coding
+            </Chip>
           </Link>
         </nav>
         {tokens ? "" :
@@ -123,6 +139,22 @@ console.log("tokens",tokens)
                 }`}
             >
               Contact
+            </Link>
+            <Link
+              href="/compiler"
+              className={`relative hover:text-primary transition-all ${isActiveRoute("/compiler") ? "text-primary font-semibold" : ""
+                }`}
+            >
+              Playground
+              <Chip
+              classNames={{
+                base: "left-[90.0%] top-[40%] bg-gradient-to-br from-primary to-primary/5 border-small border-white/50 shadow-pink-500/30 absolute scale-[0.6]",
+                content: "drop-shadow shadow-black text-white",
+              }}
+              variant="shadow"
+            >
+              Coding
+            </Chip>
             </Link>
           </nav>
           {tokens ? "" :
