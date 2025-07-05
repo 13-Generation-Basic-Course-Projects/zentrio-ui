@@ -265,7 +265,6 @@ export const MonthlyChart = ({ report }) => {
 
   const monthlyStageData = generateMonthlyStageData(report?.payload);
 
-  console.log("Monthly: ", monthlyStageData);
 
   useEffect(() => {
     if (chartRef.current) {
