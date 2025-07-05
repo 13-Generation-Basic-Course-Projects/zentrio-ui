@@ -584,9 +584,9 @@ export default function MyCalender({ tasks, workspaceId, boardName }) {
       />
 
       {/* Main content grid */}
-      <div className="flex flex-1 overflow-hidden scrollbar-hidden gap-4">
+      <div className="flex flex-col lg:flex-row flex-1 overflow-hidden gap-4 relative">
         {/* Calendar Section */}
-        <div className="flex-1 overflow-y-auto scrollbar-hidden max-w-[75%]">
+        <div className="w-full lg:w-3/4 overflow-y-auto scrollbar-hidden">
           {/* Top navigation */}
           <div className="grid grid-cols-2 mt-4 mb-6 px-2 sticky top-0 z-10 bg-white">
             <div>
@@ -617,6 +617,65 @@ export default function MyCalender({ tasks, workspaceId, boardName }) {
           </div>
 
           <div className="relative">
+            <style jsx>{`
+              .fc-daygrid-day-frame {
+                min-height: 10px !important;
+                height: 10px !important;
+              }
+
+              .fc-scrollgrid-sync-inner {
+                height: 60px !important;
+              }
+
+              .fc-daygrid-event {
+                font-size: 11px !important;
+                padding: 1px 3px !important;
+                margin: 1px 0 !important;
+              }
+
+              @media (max-width: 640px) {
+                .fc-daygrid-day-frame {
+                  min-height: 45px !important;
+                  height: 45px !important;
+                }
+
+                .fc-scrollgrid-sync-inner {
+                  height: 45px !important;
+                }
+
+                .fc-daygrid-day-number {
+                  font-size: 12px !important;
+                  padding: 2px !important;
+                }
+
+                .fc-daygrid-event {
+                  font-size: 10px !important;
+                  padding: 0px 2px !important;
+                  margin: 0px 0 !important;
+                }
+              }
+
+              @media (max-width: 480px) {
+                .fc-daygrid-day-frame {
+                  min-height: 10px !important;
+                  height: 10px !important;
+                }
+
+                .fc-scrollgrid-sync-inner {
+                  height: 40px !important;
+                }
+
+                .fc-daygrid-day-number {
+                  font-size: 11px !important;
+                  padding: 1px !important;
+                }
+
+                .fc-daygrid-event {
+                  font-size: 9px !important;
+                  padding: 0px 1px !important;
+                }
+              }
+            `}</style>
             <FullCalendar
               ref={calendarRef}
               plugins={[
@@ -627,7 +686,7 @@ export default function MyCalender({ tasks, workspaceId, boardName }) {
               ]}
               headerToolbar={false}
               initialView="dayGridMonth"
-              dayHeaderFormat={{ weekday: "long" }}
+              dayHeaderFormat={{ weekday: "short" }}
               events={events}
               eventContent={renderEventContent}
               datesSet={(arg) => setCurrentTitle(arg.view.title)}
@@ -636,24 +695,32 @@ export default function MyCalender({ tasks, workspaceId, boardName }) {
               selectable={true}
               select={(info, jsEvent) => handleDateSelect({ ...info, jsEvent })}
               displayEventTime={false}
+              dayMaxEvents={2}
+              moreLinkClick="popover"
             />
           </div>
         </div>
 
         {/* Sidebar Section */}
-        <div className="w-[25%] flex flex-col gap-5 overflow-y-auto scrollbar-hidden absolute top-12 right-1 p-4">
-          <CardTaskCalender
-            tasks={mappedTasks}
-            activeTaskId={activeTaskId}
-            onTaskClick={(dateStr, taskId) => handleTaskClick(dateStr, taskId)}
-          />
-          <CardTCommentCalender
-            selectedTaskId={selectedTaskId}
-            selectedTask={selectedTask}
-            taskColorMap={taskColorMap}
-            noteRefreshKey={noteRefreshKey}
-            onNoteUpdate={refetchTaskNotes} // Pass the refetch function
-          />
+        <div className="w-full lg:w-1/4 flex flex-col gap-5 overflow-y-auto scrollbar-hidden p-4 h-full">
+          <div>
+            <CardTaskCalender
+              tasks={mappedTasks}
+              activeTaskId={activeTaskId}
+              onTaskClick={(dateStr, taskId) =>
+                handleTaskClick(dateStr, taskId)
+              }
+            />
+          </div>
+          <div>
+            <CardTCommentCalender
+              selectedTaskId={selectedTaskId}
+              selectedTask={selectedTask}
+              taskColorMap={taskColorMap}
+              noteRefreshKey={noteRefreshKey}
+              onNoteUpdate={refetchTaskNotes}
+            />
+          </div>
         </div>
 
         {/* Note input overlay */}
@@ -688,7 +755,7 @@ export default function MyCalender({ tasks, workspaceId, boardName }) {
             };
 
             return (
-              <div className="absolute z-50 w-[50%] bottom-32 left-0 right-36 mx-auto">
+              <div className="fixed z-50 w-[90%] sm:w-[70%] md:w-[60%] lg:w-[50%] bottom-10 left-1/2 transform -translate-x-1/2">
                 <input
                   type="text"
                   value={noteValue}
@@ -712,8 +779,6 @@ export default function MyCalender({ tasks, workspaceId, boardName }) {
             );
           })()}
       </div>
-
-      <ToastContainer position="top-center" autoClose={4000} />
     </div>
   );
 }

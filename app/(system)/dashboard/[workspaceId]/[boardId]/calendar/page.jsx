@@ -7,6 +7,7 @@ import {
 } from "@/action/calendarV2.action";
 import { auth } from "@/auth";
 import MyCalender from "@/components/appserver/Calenderpage";
+import { ToastContainer } from "react-toastify";
 
 const FALLBACK_STRING = "No data available";
 const FALLBACK_ARRAY = [];
@@ -37,7 +38,12 @@ export default async function Calendar({ params }) {
     // Step 4: Render the calendar component
     return (
       <div>
-        <MyCalender tasks={allTasks} workspaceId={workspaceId} boardName={boardName}/>
+        <MyCalender
+          tasks={allTasks}
+          workspaceId={workspaceId}
+          boardName={boardName}
+        />
+        <ToastContainer position="top-right" autoClose="4000" />
       </div>
     );
   } catch (error) {

@@ -36,8 +36,8 @@ export default function BredCrum({ board, feature, user, header, modal,workspace
 
         <div className=" grid grid-cols-1 md:grid-cols-2  ">
           <div>
-            <p className="text-h1 text-titles font-semibold">{header}</p>
-          </div>
+            <p className="text-h6 sm:text-h1 text-titles font-semibold">{header}</p>
+          </div> 
           {/* apis */}
           <div className=" flex items-center justify-start md:justify-end  gap-3 ">
             {modal &&
