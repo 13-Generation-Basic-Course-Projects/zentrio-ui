@@ -58,8 +58,8 @@ export default function ProfileLayout({
   const [localPreview, setLocalPreview] = useState(null);
   const [serverImage, setServerImage] = useState(data?.profileImage);
   const [isCompressing, setIsCompressing] = useState(false);
-  const [isUploading, setIsUploading] = useState(false);
   const [compressionProgress, setCompressionProgress] = useState(0);
+  const [isUploading, setIsUploading] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [error, setError] = useState("");
   const [dragActive, setDragActive] = useState(false);
@@ -334,12 +334,12 @@ export default function ProfileLayout({
       <div className="w-full sticky top-0 z-[20] px-4 sm:px-6 lg:px-10 py-2">
         <div className="relative">
           <Image
-            className="w-full rounded-xl h-32 sm:h-40 md:h-48 lg:h-56 object-cover"
+            className="w-full rounded-xl h-32 sm:h-40 md:h-48 lg:h-52 object-cover"
             src={coverProfile}
             alt="cover profile"
           />
           <Button
-            className="absolute top-2 left-2 sm:left-4 backdrop-blur-sm bg-white/20 border-white/30 text-xs sm:text-sm"
+            className="absolute top-2 left-2 sm:left-2 backdrop-blur-sm bg-white/20 border-white/30 text-xs sm:text-sm"
             size="sm"
             color="primary"
             variant="bordered"

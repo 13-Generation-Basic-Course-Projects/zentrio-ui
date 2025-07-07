@@ -96,55 +96,104 @@ export default function ActiveBoards({ userAchievement }) {
           />
         </div>
 
-        {/* Column Headers */}
-        <div className="grid grid-cols-12 text-body-sm font-semibold text-description bg-gray-100 p-4">
+        {/* Column Headers - Hidden on mobile */}
+        <div className="hidden md:grid grid-cols-12 text-body-sm font-semibold text-description bg-gray-100 p-4">
           <span className="col-span-4">Board Name</span>
           <span className="col-span-4">Tasks Progress</span>
           <span className="col-span-4 text-right">Completion</span>
         </div>
 
         {/* Board List */}
-        <ul className="p-4 space-y-4">
+        <ul className="p-2 md:p-4 space-y-3 md:space-y-4">
           {processedBoards.length > 0 ? (
             processedBoards.map((board) => (
               <li
                 key={board.id}
-                className="grid grid-cols-12 items-center gap-4">
-                {/* Board Info */}
-                <div className="flex items-center gap-3 col-span-4">
-                  <div
-                    className={`w-10 h-10 rounded-full flex items-center justify-center ${board.textColor} font-semibold ${board.color}`}>
-                    {board.initial}
+                className="block md:grid md:grid-cols-12 md:items-center md:gap-4 p-3 md:p-0  rounded-lg md:rounded-none"
+              >
+                {/* Mobile Layout */}
+                <div className="md:hidden space-y-3">
+                  {/* Board Info */}
+                  <div className="flex items-center gap-3">
+                    <div
+                      className={`w-10 h-10 rounded-full flex items-center justify-center ${board.textColor} font-semibold ${board.color} flex-shrink-0`}
+                    >
+                      {board.initial}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="font-medium text-sm" title={board.title}>
+                        {board.title}
+                      </p>
+                      <p className="text-xs text-description">
+                        Role: {board.role}
+                      </p>
+                      <p className="text-xs text-description">
+                        Total: {board.totalTasks} tasks
+                      </p>
+                    </div>
+                    <div className="text-right flex-shrink-0">
+                      <span
+                        className={`text-lg font-semibold ${board.textColor}`}
+                      >
+                        {board.completionPercent}%
+                      </span>
+                    </div>
                   </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="font-medium truncate" title={board.title}>
-                      {board.title}
-                    </p>
-                    <p className="text-body-sm text-description">
-                      Role: {board.role}
-                    </p>
-                    <p className="text-body-sm text-description">
-                      Totals: {board.totalTasks} tasks
-                    </p>
+
+                  {/* Task Progress */}
+                  <div>
+                    <div className="text-xs text-gray-600 mb-1">
+                      {board.completedTasks} / {board.totalTasks} tasks
+                      completed
+                    </div>
+                    <ProgressBar
+                      percent={board.completionPercent}
+                      color={board.progressColor}
+                    />
                   </div>
                 </div>
 
-                {/* Task Progress */}
-                <div className="col-span-7">
-                  <div className="text-sm text-gray-600 mb-1">
-                    {board.completedTasks} / {board.totalTasks} tasks
+                {/* Desktop Layout */}
+                <div className="hidden md:contents">
+                  {/* Board Info */}
+                  <div className="flex items-center gap-3 col-span-4">
+                    <div
+                      className={`w-10 h-10 rounded-full flex items-center justify-center ${board.textColor} font-semibold ${board.color}`}
+                    >
+                      {board.initial}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="font-medium truncate" title={board.title}>
+                        {board.title}
+                      </p>
+                      <p className="text-body-sm text-description">
+                        Role: {board.role}
+                      </p>
+                      <p className="text-body-sm text-description">
+                        Totals: {board.totalTasks} tasks
+                      </p>
+                    </div>
                   </div>
-                  <ProgressBar
-                    percent={board.completionPercent}
-                    color={board.progressColor}
-                  />
-                </div>
 
-                {/* Completion Rate */}
-                <div className="col-span-1 text-right">
-                  <span className={`text-lg font-semibold ${board.textColor}`}>
-                    {board.completionPercent}%
-                  </span>
+                  {/* Task Progress */}
+                  <div className="col-span-7">
+                    <div className="text-sm text-gray-600 mb-1">
+                      {board.completedTasks} / {board.totalTasks} tasks
+                    </div>
+                    <ProgressBar
+                      percent={board.completionPercent}
+                      color={board.progressColor}
+                    />
+                  </div>
+
+                  {/* Completion Rate */}
+                  <div className="col-span-1 text-right">
+                    <span
+                      className={`text-lg font-semibold ${board.textColor}`}
+                    >
+                      {board.completionPercent}%
+                    </span>
+                  </div>
                 </div>
               </li>
             ))
