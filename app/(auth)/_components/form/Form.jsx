@@ -48,14 +48,17 @@ export const ForgetPass = () => {
 
   return (
     <div className="w-full h-screen flex items-center justify-center">
-      <div className="w-[1728px] h-[1117px]  flex items-center justify-center">
+      <div className="w-[1728px] h-[1117px] flex items-center justify-center">
         <form
           onSubmit={handleSubmit((data) => onSubmit(data.email))}
-          className="w-[640px] h-fit bg-forgot-gradient px-[55px] py-[40px] rounded-[20px] shadow-sm gap-[50px]">
+          className="w-[640px] h-fit bg-forgot-gradient px-[55px] py-[40px] rounded-[20px] shadow-sm gap-[50px]
+              max-[700px]:w-[570px] max-[650px]:w-[500px] max-[550px]:w-[400px] max-[450px]:w-[350px]  max-[400px]:w-[300px] max-[350px]:w-[250px] max-[300px]:w-[230px] max-[250px]:w-[200px]
+              max-[610px]:px-[40px] max-[350px]:px-[25px] max-[320px]:mt-[200px] 
+          ">
           <div>
             <Link
               href="/login"
-              className="flex items-center gap-3 pb-[5%] text-body-sm text-primary">
+              className="flex items-center gap-3 pb-[5%] max-[325px]:pb-[0%] text-body-sm text-primary">
               <svg
                 width="18"
                 height="12"
@@ -81,9 +84,11 @@ export const ForgetPass = () => {
             </Link>
             <div className="flex flex-col gap-4">
               <p className="text-h1 text-primary">
-                <span className="font-semibold text-[40px]">Forgot your password?</span>
+                <span className="font-semibold text-[40px] max-[660px]:text-[30px] max-[550px]:text-[25px]
+                max-[450px]:text-[20px] max-[400px]:text-[16px] 
+                ">Forgot your password?</span>
               </p>
-              <p className="text-body text-[#787486] mb-14">
+              <p className="text-body text-[#787486] mb-14 max-[500px]:mb-[25px] max-[420px]:text-[14px] max-[320px]:text-[13px]">
                 Don’t worry, happens to all of us. Enter your email below to
                 recover your password
               </p>
@@ -118,12 +123,13 @@ export const ForgetPass = () => {
 
           <Button
             type="submit"
-            className="w-full bg-primary text-white max-w-none border-none mt-12 h-[48px] rounded-[10px] capitalize font-semibold text-[20px]">
-              <p className="text-h6">Submit</p>
+            className="w-full bg-primary text-white max-w-none border-none mt-12 max-[500px]:mt-[25px] h-[48px] rounded-[10px] capitalize font-semibold text-[20px] ">
+              <p className="text-h6 max-[350px]:text-[13px]">Submit</p>
           </Button>
         </form>
       </div>
     </div>
+
   );
 };
 

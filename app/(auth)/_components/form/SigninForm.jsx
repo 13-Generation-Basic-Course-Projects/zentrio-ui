@@ -31,12 +31,11 @@ export const SigninForm = () => {
     resolver: zodResolver(loginSchema),
   });
 
-
   const [isLoading, setIsLoading] = useState(false); //leap
 
   const onSubmit = async (data) => {
     setIsLoading(true);
-    setBackendError(""); 
+    setBackendError("");
 
     try {
       const result = await zentrioLoginCredentailAction(data);
@@ -57,17 +56,28 @@ export const SigninForm = () => {
   const [backendError, setBackendError] = useState("");
 
   return (
-    <div className="w-full h-screen flex items-center justify-center">
-      <div className="w-[540px] p-[40px] rounded-[20px] shadow-sm bg-login-gradient flex flex-col gap-[50px]">
-        <Form onSubmit={handleSubmit(onSubmit)} noValidate>
+    <div className="flex items-center justify-center p-4 sm:p-0">
+      <div
+        className="w-[540px] max-[700px]:w-[500px] max-[600px]:w-[450px] max-[500px]:w-[400px] max-[430px]:w-[360px] max-[380px]:w-[300px] max-[330px]:w-[260px] max-[280px]:w-[220px] 
+                mt-[50px] sm:mt-[100px] md:mt-[150px] mb-[50px] md:mb-[150px]
+                p-6 sm:p-8 md:p-[40px] max-[440px]:mt-8 max-[430px]:mt-[80px] max-[400px]:mt-[150px] max-[380px]:mt-[200px] max-[330px]:mt-[360px]
+                rounded-[20px] shadow-sm bg-login-gradient flex flex-col gap-8 sm:gap-[40px] md:gap-[50px] "
+      >
+        <Form
+          onSubmit={handleSubmit(onSubmit)}
+          noValidate
+          className="z-20 w-full max-w-[480px] mx-auto px-4 sm:px-4 md:px-0 max-[425px]:px-2"
+        >
           <div>
-            <p className="text-[55px] text-primary font-bold">Login</p>
-            <p className="text-body text-[#787486] mb-10">
+            <p className="text-[28px] xs:text-[30px] sm:text-[36px] md:text-[40px] text-primary font-bold">
+              Login
+            </p>
+            <p className="text-body text-[#787486] max-[433px]:text-[14px] mb-4">
               Login to access your Zentrio account
             </p>
           </div>
 
-          <div className="flex flex-col gap-[20px] w-full">
+          <div className="flex flex-col gap-3 xs:gap-4 sm:gap-5 md:gap-[20px] w-full">
             {/* Email input */}
             <div>
               <AuthInput
@@ -76,12 +86,12 @@ export const SigninForm = () => {
                 name="email"
                 labelPlacement="outside"
                 placeholder="Email"
-                className="text-foreground "
+                className="text-foreground text-sm xs:text-base"
                 {...register("email")}
                 error={errors.email?.message}
               />
               {errors.email && (
-                <p className="text-danger text-sm mt-1">
+                <p className="text-danger text-xs xs:text-sm mt-1">
                   {errors.email.message}
                 </p>
               )}
@@ -95,7 +105,7 @@ export const SigninForm = () => {
                 name="password"
                 labelPlacement="outside"
                 placeholder="Password"
-                className="text-foreground"
+                className="text-foreground text-sm xs:text-base"
                 {...register("password")}
                 error={errors.password?.message}
                 endContent={
@@ -108,59 +118,46 @@ export const SigninForm = () => {
                     }
                   >
                     {isPasswordVisible ? (
-                      <EyeOff className="text-2xl text-primary pointer-events-none" />
+                      <EyeOff className="text-xl xs:text-2xl text-primary pointer-events-none" />
                     ) : (
-                      <Eye className="text-2xl text-primary pointer-events-none" />
+                      <Eye className="text-xl xs:text-2xl text-primary pointer-events-none" />
                     )}
                   </button>
                 }
               />
               {errors.password && (
-                <p className="text-danger text-sm mt-1">
+                <p className="text-danger text-xs xs:text-sm mt-1">
                   {errors.password.message}
                 </p>
               )}
             </div>
 
             {/* Remember Me and Forgot Password */}
-            <div className="flex items-center justify-end -mt-[10px] hidden">
-              {/* <div className="flex items-center gap-7 text-description">
-                <Checkbox
-                  label="Remember Me"
-                  {...register("rememberMe")}
-                  className="text-[16px] w-[12px] text-description"
-                /> Remember Me
-              </div> */}
-              <Link href="/forgot-password" className="text-[16px] text-danger">
-                Forgot Password?
-              </Link>
-            </div>
-            {/* fanau */}
-            <div className="flex items-center justify-between -mt-[10px] h-[24px]">
-              <div className="text-danger text-sm">
+            <div className="flex items-center justify-between -mt-1 xs:-mt-2 sm:-mt-[8px] md:-mt-[10px] h-4 xs:h-5 sm:h-6 md:h-[24px]">
+              <div className="text-danger text-xs xs:text-sm">
                 {backendError ? <p>{backendError}</p> : <span>&nbsp;</span>}
               </div>
-              <Link href="/forgot-password" className="text-[16px] text-danger">
+              <Link
+                href="/forgot-password"
+                className="text-[13px] xs:text-sm max-[425px]:text-[14px] max-[260px]:text-[12px] sm:text-[15px] md:text-[16px] text-danger"
+              >
                 Forgot Password?
               </Link>
             </div>
           </div>
 
           {/* Buttons and links */}
-          <div className="flex flex-col gap-[10px] w-full mt-9">
-            {/* <Button
-              type="submit"
-              className="w-full h-[48px] max-w-none bg-primary text-white border-none text-[20px] capitalize font-semibold rounded-[10px]"
-            >
-              Login
-            </Button> */}
+          <div className="flex flex-col gap-2 sm:gap-[8px] md:gap-[10px] w-full mt-4 xs:mt-6 sm:mt-7 md:mt-9">
             <Button
               type="submit"
               disabled={isLoading}
-              className="w-full h-[48px] max-w-none bg-primary text-white border-none text-[20px] capitalize font-semibold rounded-[10px] disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full h-11 xs:h-12 sm:h-[44px] md:h-[48px] max-w-none bg-primary text-white border-none text-base xs:text-lg sm:text-[19px] md:text-[20px] capitalize font-semibold rounded-[10px] disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {isLoading && (
-                <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                <svg
+                  className="animate-spin h-4 w-4 xs:h-5 xs:w-5"
+                  viewBox="0 0 24 24"
+                >
                   <circle
                     className="opacity-25"
                     cx="12"
@@ -177,27 +174,32 @@ export const SigninForm = () => {
                   />
                 </svg>
               )}
-              {isLoading ? "Login" : "Login"}
+              {isLoading ? "Logging in..." : "Login"}
             </Button>
 
-            <p className="text-center text-body my-1">
+            <p className="text-center my-1 text-[13px] text-sm xs:text-base sm:text-[15px] md:text-[16px] max-[425px]:text-[14px] max-[260px]:text-[12px]">
               No Account?{" "}
-              <Link href="/register" className="text-primary">
+              <Link
+                href="/register"
+                className="text-primary underline-offset-2 hover:underline"
+              >
                 Sign up
               </Link>
             </p>
 
-            <div className="text-center">
+            <div className="text-center mt-4 sm:mt-5">
               <div className="flex items-center gap-2">
                 <hr className="flex-grow border-t border-gray-300" />
-                <p className="text-[16px] text-[#787486]">Or Login with</p>
+                <p className="text-[13px] xs:text-sm sm:text-[15px] md:text-[16px] text-[#787486] whitespace-nowrap max-[425px]:text-[14px] max-[260px]:text-[12px]">
+                  Or Login with
+                </p>
                 <hr className="flex-grow border-t border-gray-300" />
               </div>
             </div>
           </div>
         </Form>
 
-        <div className="flex justify-center -mt-10">
+        <div className="flex justify-center -mt-6 sm:-mt-8 md:-mt-10">
           <GoogleLogin />
         </div>
       </div>

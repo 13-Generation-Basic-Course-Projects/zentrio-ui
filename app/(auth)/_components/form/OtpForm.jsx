@@ -105,7 +105,10 @@ export const OtpForm = () => {
       <div className="w-[1728px] h-[1117px] flex items-center justify-center">
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="w-[640px] h-fit bg-verify-gradient px-[55px] py-[40px] rounded-[20px] shadow-lg flex flex-col gap-[50px] shadow-sm">
+          className="w-[640px] h-fit bg-verify-gradient px-[55px] py-[40px] rounded-[20px] shadow-lg flex flex-col gap-[50px] shadow-sm
+           max-[700px]:w-[570px] max-[650px]:w-[500px] max-[550px]:w-[400px] max-[450px]:w-[350px] max-[400px]:w-[300px] max-[350px]:w-[270px]
+           max-[300px]:w-[230px] max-[250px]:w-[200px] max-[610px]:px-[40px] max-[350px]:px-[25px] max-[325px]:mt-[130px]
+          ">
           <div>
             <Link
               href="/login"
@@ -133,18 +136,19 @@ export const OtpForm = () => {
               </svg>
               <p>Back to Sign in</p>
             </Link>
-            <div className="flex flex-col gap-4">
-              <p className="text-h2 text-primary font-bold">
+            <div className="flex flex-col gap-4 max-[550px]:-mb-[20px] max-[500px]:-mb-[40px] max-[400px]:-mb-[45px] max-[300px]:-mb-[55px]">
+              <p className=" text-primary font-bold text-[32px] max-[660px]:text-[30px] max-[550px]:text-[25px]
+                max-[450px]:text-[20px] max-[400px]:text-[16px] ">
                 Please check your email
               </p>
-              <p className="text-body text-primary">
+              <p className="text-body text-primary max-[500px]:mb-[25px] max-[420px]:text-[14px] max-[320px]:text-[13px]">
                 We’ve sent a code to <span> </span>
                 {email}.
               </p>
             </div>
           </div>
 
-          <div className="flex flex-col gap-[15px] w-full">
+          <div className="flex flex-col gap-[15px] w-full max-[550px]:-mb-[20px] max-[400px]:-mb-[30px] max-[300px]:-mb-[40px]">
             <div className="flex w-full justify-between">
               {otpValues.map((value, index) => (
                 <input
@@ -157,7 +161,7 @@ export const OtpForm = () => {
                   onChange={(e) => handleOtpChange(e.target.value, index)}
                   onKeyDown={(e) => handleKeyDown(e, index)}
                   maxLength={1}
-                  className="rounded-[15px] w-16 h-16 text-center border-[1.5px] border-primary focus:outline-none focus:ring-2 focus:ring-primary text-primary font-semibold text-body"
+                  className="rounded-[15px] max-[560px]:w-[50px] max-[560px]:h-[50px] max-[500px]:w-[40px] max-[500px]:h-[40px] max-[500px]:rounded-[10px] max-[400px]:w-[30px] max-[400px]:h-[30px] max-[300px]:w-[23px] max-[300px]:h-[23px] max-[300px]:rounded-[5px] w-16 h-16 text-center border-[1.5px] border-primary focus:outline-none focus:ring-2 focus:ring-primary text-primary font-semibold text-body"
                 />
               ))}
             </div>
@@ -167,17 +171,17 @@ export const OtpForm = () => {
           </div>
           {/* <Input id="username" className="col-span-3" /> */}
           <input type="hidden" id="email" name="email" />
-          <div className="w-full flex flex-col gap-[10px]">
+          <div className="w-full flex flex-col gap-[10px] max-[550px]:-mb-[20px] max-[400px]:-mb-[35px] max-[300px]:-mb-[45px]">
             <Button
               type="submit"
-              className="w-full bg-primary text-white max-w-none rounded-[10px] h-[48px] text-[20px] capitalize font-semibold"
+              className="w-full bg-primary text-white max-w-none rounded-[10px] h-[48px] text-[20px] capitalize font-semibold "
             >
               Submit
             </Button>
           </div>
 
           <div className="w-full">
-            <div className="text-center text-semibold">
+            <div className="text-center text-semibold ">
               <CountdownTimer duration={180} onResend={handleResend} />
             </div>
           </div>

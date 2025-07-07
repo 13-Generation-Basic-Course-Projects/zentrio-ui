@@ -74,7 +74,7 @@ export const CountdownTimer = ({ duration = 180, onResend }) => {
       onClick={handleClick}
       onKeyDown={(e) => e.key === "Enter" && handleClick()}
       aria-disabled={loading || remainingTime > 0}
-      className={`text-body ${
+      className={`text-body max-[420px]:text-[14px] max-[320px]:text-[13px] ${
         remainingTime === 0 && !loading
           ? "text-primary underline cursor-pointer"
           : "text-gray-500 cursor-default"

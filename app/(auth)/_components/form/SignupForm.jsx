@@ -54,20 +54,31 @@ export const SignUpForm = () => {
   };
 
   return (
-    <div className="w-full h-fit flex items-center justify-center">
-      <div className="w-[580px] bg-signup-gradient p-[40px] rounded-[20px] shadow-sm gap-[50px]">
+    <div className="w-full min-h-screen flex items-center justify-center px-4">
+      <div
+        className="w-[540px] max-[700px]:w-[500px] max-[600px]:w-[450px] max-[500px]:w-[400px] max-[430px]:w-[360px] max-[380px]:w-[300px] max-[330px]:w-[260px] max-[280px]:w-[220px] 
+                mt-[50px] max-[1120px]:mt-[600px] max-[1290px]:mt-[500px] max-[810px]:mt-[450px]
+                mb-[50px] sm:mb-[100px] md:mb-[150px] max-[330px]:mt-[640px] max-[640px]:mt-[250px] min-[1300px]:mt-[400px]
+                p-6 sm:p-8 md:p-[40px] max-[430px]:mt-[360px] max-[400px]:mt-[400px] max-[375px]:mt-[480px]
+                rounded-[20px] shadow-sm bg-login-gradient flex flex-col gap-8 sm:gap-[40px] md:gap-[50px]"
+      >
+        {/* sm:mt-[100px] md:mt-[370px] */}
         <Form onSubmit={handleSubmit(onSubmit)}>
+          {/* Header */}
           <div>
             <p className="text-h1 text-primary">
-              <span className="font-bold text-[55px]">Sign up</span>
+              <span className="font-bold text-[28px] xs:text-[30px] sm:text-[36px] md:text-[40px]">
+                Sign up
+              </span>
             </p>
-            <p className="text-body text-[#787486] mb-10">
+            <p className="text-body text-[#787486] mb-6 max-[433px]:text-[14px]">
               Let’s get you all set up so you can access your personal account
             </p>
           </div>
 
-          <div className="gap-[50px] flex flex-col w-full">
-            <div className="gap-[20px] flex flex-col">
+          {/* Form Fields */}
+          <div className="flex flex-col gap-6 sm:gap-10 w-full">
+            <div className="flex flex-col gap-4 sm:gap-5">
               {/* Username */}
               <div className="w-full">
                 <AuthInput
@@ -117,9 +128,9 @@ export const SignUpForm = () => {
                       onClick={() => toggleVisibility("password")}
                     >
                       {isVisible.password ? (
-                        <EyeOff className="text-2xl text-primary" />
+                        <EyeOff className="text-xl sm:text-2xl text-primary" />
                       ) : (
-                        <Eye className="text-2xl text-primary" />
+                        <Eye className="text-xl sm:text-2xl text-primary" />
                       )}
                     </button>
                   }
@@ -147,9 +158,9 @@ export const SignUpForm = () => {
                       onClick={() => toggleVisibility("confirmPassword")}
                     >
                       {isVisible.confirmPassword ? (
-                        <EyeOff className="text-2xl text-primary" />
+                        <EyeOff className="text-xl sm:text-2xl text-primary" />
                       ) : (
-                        <Eye className="text-2xl text-primary" />
+                        <Eye className="text-xl sm:text-2xl text-primary" />
                       )}
                     </button>
                   }
@@ -162,38 +173,41 @@ export const SignUpForm = () => {
                 )}
               </div>
 
-              {/* Terms Checkbox */}
-              <div className="flex items-center gap-7 -mt-[10px]">
+              {/* Terms */}
+              <div className="flex items-start gap-7 ">
                 <Checkbox
                   type="checkbox"
                   id="terms"
-                  className="text-[16px] w-[12px] text-description cursor-pointer"
+                  className="text-[16px] w-4 h-4 mt-1 text-description cursor-pointer"
                   {...register("termsAccepted")}
                 />
-                <label htmlFor="terms" className="text-[#787486] text-[16px]">
+                <label
+                  htmlFor="terms"
+                  className="text-[#787486] text-[13px] xs:text-sm max-[425px]:text-[14px] max-[260px]:text-[12px] sm:text-[15px] md:text-[16px] leading-snug"
+                >
                   I agree to all the <span className="text-primary">Terms</span>{" "}
                   and <span className="text-primary">Privacy Policies</span>
                 </label>
               </div>
               {errors.termsAccepted && (
-                <p className="text-red-500 text-sm -mt-4">
+                <p className="text-red-500 text-sm -mt-3">
                   {errors.termsAccepted.message}
                 </p>
               )}
             </div>
 
-            {/* Submit + Redirect */}
-            <div className="flex flex-col gap-[10px]">
+            {/* Submit + Links */}
+            <div className="flex flex-col gap-3">
               <Button
                 type="submit"
-                className="w-full bg-primary text-bgColor text-[20px] max-w-none border-none rounded-[10px] h-[48px] capitalize font-semibold"
+                className="w-full bg-primary text-bgColor text-sm xs:text-base sm:text-[15px] md:text-[16px] max-[425px]:text-[14px] max-[260px]:text-[12px] max-w-none border-none rounded-[10px] h-[46px] sm:h-[48px] capitalize font-semibold"
               >
                 Create account
               </Button>
 
-              <p className="text-center text-body my-1">
+              <p className="text-center text-[13px] xs:text-sm sm:text-[15px] md:text-[16px] text-[#787486] whitespace-nowrap max-[425px]:text-[14px] max-[260px]:text-[12px] my-1">
                 Have an account?{" "}
-                <Link href="/login" className="text-primary text-body">
+                <Link href="/login" className="text-primary">
                   Sign in
                 </Link>
               </p>
@@ -202,7 +216,9 @@ export const SignUpForm = () => {
               <div className="text-center">
                 <div className="flex items-center gap-2">
                   <hr className="flex-grow border-t border-gray-300" />
-                  <p className="text-body-sm text-[#787486]">Or Sign up with</p>
+                  <p className="text-[13px] xs:text-sm sm:text-[15px] md:text-[16px] text-[#787486] whitespace-nowrap max-[425px]:text-[14px] max-[260px]:text-[12px]">
+                    Or Sign up with
+                  </p>
                   <hr className="flex-grow border-t border-gray-300" />
                 </div>
               </div>
@@ -210,8 +226,8 @@ export const SignUpForm = () => {
           </div>
         </Form>
 
-        {/* Google login */}
-        <div className="flex justify-center mt-4">
+        {/* Google Login */}
+        <div className="flex justify-center -mt-6 sm:-mt-8 md:-mt-10">
           <GoogleLogin />
         </div>
       </div>
