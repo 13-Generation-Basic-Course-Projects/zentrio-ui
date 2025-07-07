@@ -15,7 +15,7 @@ export default function ProfileComponentOther({
   console.log("detail the member", MemberDetails);
   console.log("88", userIdDetail);
   return (
-    <div className="min-h-screen p-2">
+    <div className="h-screen p-2 overflow-y-scroll scrollbar-hidden">
       <div className="grid grid-cols-1 md:grid-cols-[43%_55%] gap-2 ">
         {/* Left Column: Profile Details */}
         <div className="max-h-[calc(100vh-12rem)] overflow-y-auto scrollbar-hidden  pb-[350px] p-2">

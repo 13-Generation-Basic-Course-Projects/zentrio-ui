@@ -19,6 +19,7 @@ import BredCrum from "../bredcrum/MyBredcrum";
 import { preventImage } from "@/constant/preventimage";
 import OtherAchievmentTab from "./OtherAchievmentTab";
 import OtherProfileTab from "./OtherProfileTab";
+import { getBoardByIdAction } from "@/action/board.action";
 
 export default function OtherProfileLayout({
   user,
@@ -28,6 +29,7 @@ export default function OtherProfileLayout({
   userName,
   MemberDetails,
   userIdDetail,
+  boardName
 }) {
   const searchParams = useSearchParams();
   const params = useParams(); // Get params from the URL path
@@ -121,40 +123,37 @@ export default function OtherProfileLayout({
   const preventProfile = preventImage.noProfile;
 
   console.log("detail member in specific", MemberDetails?.payload);
+  
 
   return (
     <>
       <div className="w-full sticky top-0 z-[20] px-10 py-2 ">
-        <BredCrum
-          board={"Hikko Design"}
-          feature={"Members"}
-          user={displayName}
-        />
+        <BredCrum board={boardName} feature={"Members"} user={displayName} />
         <div className="relative">
           <Image
-            className="w-full rounded-xl"
+            className="w-full rounded-xl h-32 sm:h-40 md:h-40 lg:h-44 object-cover mt-2"
             src={coverProfile}
             alt="cover profile"
           />
 
           <Button
-            className="absolute top-2 left-0"
-            size="md"
+            className="absolute top-2 left-2 px-2 py-1 sm:px-3 sm:py-2 md:px-4 md:py-2 gap-1 flex items-center"
+            size="sm"
             color="primary"
             variant="bordered"
             onClick={() => {
               if (window.history.length > 1) {
-                window.history.back(); // Go back if possible
+                window.history.back();
               } else {
-                window.location.href = "/dashboard"; // Fallback URL
+                window.location.href = "/dashboard";
               }
             }}
           >
-            <IconReturnLeft strokeWidth={2} size={5} color={"currentColor"} />
-            Go Back
+            <IconReturnLeft strokeWidth={2} size={4} color={"currentColor"} />
+            <span className="text-xs sm:text-sm md:text-base">Go Back</span>
           </Button>
 
-          <div className="absolute bottom-[-60px] left-1/2 -translate-x-1/2 w-28 h-28 rounded-full border-2 border-desc p-0.5 group  bg-white shadow overflow-hidden">
+          <div className="absolute bottom-[-40px] sm:bottom-[-50px] md:bottom-[-60px] left-1/2 -translate-x-1/2 w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full border-2 border-desc p-0.5 group bg-white shadow overflow-hidden">
             {displayProfileImage ? (
               <img
                 className="rounded-full w-full h-full object-cover"
@@ -175,23 +174,23 @@ export default function OtherProfileLayout({
           <h1 className="text-body-sm font-bold">{displayName}</h1>
 
           {/* Display member information */}
-          <div className="flex justify-center gap-6 text-sm text-gray-600 mt-2">
-            <p className="flex items-center gap-1">
+          <div className="flex flex-col md:flex-row justify-center gap-2 md:gap-6 text-sm text-gray-600 mt-2 text-center md:text-left">
+            <p className="flex items-center justify-center md:justify-start gap-1">
               <IconJob strokeWidth={1} size={4} color={"currentColor"} />
               {getPrimaryRole(roles)}
             </p>
-            <p className="flex items-center gap-1">
+            <p className="flex items-center justify-center md:justify-start gap-1">
               <IconMap strokeWidth={1} size={4} color={"currentColor"} />
               Phnom Penh
             </p>
-            <p className="flex items-center gap-1">
+            <p className="flex items-center justify-center md:justify-start gap-1">
               <IconDate strokeWidth={1} size={4} color={"currentColor"} />
               Started 07-May-2025
             </p>
           </div>
 
           {/* Additional member info */}
-          <div className="flex flex-col gap-3 items-center justify-center">
+          <div className="flex flex-col gap-3 items-center justify-center mb-2">
             {email && <div className="mt-2 text-sm text-gray-500">{email}</div>}
 
             <div className="hidden flex items-center gap-3">

@@ -1,4 +1,7 @@
-import { getMemberByBoardIdAction } from "@/action/board.action";
+import {
+  getBoardByBoardIdAction,
+  getMemberByBoardIdAction,
+} from "@/action/board.action";
 import { getUserByUserIdAction } from "@/action/member.action";
 import NotFound from "@/app/not-found";
 import OtherUserProfile from "@/components/appserver/OtherProfilepage";
@@ -11,7 +14,11 @@ export default async function MemberProfile({ params, searchParams }) {
   console.log("Board ID:", boardId);
   console.log("User ID:", userId, "Board ID:", boardId);
 
- 
+  /*
+   * get all board by id
+   */
+  const boards = await getBoardByBoardIdAction(boardId);
+  const boardName = boards?.payload?.title || "Unknown Board";
 
 
   /*
@@ -29,11 +36,14 @@ export default async function MemberProfile({ params, searchParams }) {
   /*
    * prevent when it is errorss spacific board id for fetching ;-;.
    */
-  
-  if(boardId == undefined || MemberDetails.payload?.status == 400 || userIdDetail?.status == 400 ||userIdDetail?.title === "Bad Request"){
-    return (
-      <NotFound/>
-    )
+
+  if (
+    boardId == undefined ||
+    MemberDetails.payload?.status == 400 ||
+    userIdDetail?.status == 400 ||
+    userIdDetail?.title === "Bad Request"
+  ) {
+    return <NotFound />;
   }
 
   return (
@@ -41,6 +51,7 @@ export default async function MemberProfile({ params, searchParams }) {
       MemberDetails={MemberDetails}
       userId={userId}
       userIdDetail={userIdDetail?.payload}
+      boardName={boardName}
     />
   );
 }

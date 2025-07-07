@@ -15,6 +15,7 @@ export default function OtherUserProfile({
   MemberDetails,
   userId,
   userIdDetail,
+  boardName,
 }) {
   const searchParams = useSearchParams();
   const name = searchParams.get("name");
@@ -27,7 +28,7 @@ export default function OtherUserProfile({
       userName={"Jack Ma"}
       userId={userId}
       userIdDetail={userIdDetail}
-      
+      boardName={boardName}
       profile={
         <OtherProfileTab
           MemberDetails={MemberDetails}
