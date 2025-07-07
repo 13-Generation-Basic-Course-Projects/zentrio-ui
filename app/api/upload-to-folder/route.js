@@ -1,3 +1,11 @@
+export const config = {
+  api: {
+    bodyParser: false,
+    sizeLimit: "20mb",
+  },
+};
+
+import { apiConfig } from "@/constant/baseurl";
 import { Token } from "@/constant/token";
 
 export async function POST(req) {
@@ -21,7 +29,7 @@ export async function POST(req) {
     const driveFormData = new FormData();
     driveFormData.append("file", file);
 
-    const url = `http://localhost:8080/api/v1/files/upload-image-to-drive?token=${tokenFromGoogle}&folderId=${folderId}`;
+    const url = `${apiConfig.baseUrl}/files/upload-image-to-drive?token=${tokenFromGoogle}&folderId=${folderId}`;
 
     const res = await fetch(url, {
       method: "POST",

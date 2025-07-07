@@ -188,3 +188,12 @@ export const getChecklistByTaskIdAction = async (taskId) => {
     throw error;
   }
 };
+
+export const deleteCalendarV2ByIdAction = async ({ calendarId, token }) => {
+  const result = await deleteCalendarV2ByIdService({
+    calendarId,
+    token,
+  });
+  revalidateTag("calendar");
+  return result;
+};

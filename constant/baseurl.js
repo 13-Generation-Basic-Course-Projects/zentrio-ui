@@ -1,11 +1,7 @@
 export const apiConfig = {
-  // baseUrl: `http://54.206.116.87:9100/api/v1`,
-  // baseUrl: `http://34.124.235.228:9100/api/v1`,
-  // baseUrl: `http://3.107.183.213:9100/api/v1`,
-  // baseUrl: `http://34.124.235.228:9100/api/v1`,
-  // baseUrl: `http://localhost:8080/api/v1`,
-  // baseUrl: `http://16.176.18.10:9100/api/v1`,
-  // baseUrl: `http://54.206.116.87:9100/api/v1`,
-  // baseUrl: `http://3.107.183.213:9100/api/v1`,
-  baseUrl: `http://34.124.235.228:9100/api/v1`,
+  // Use environment variable for API URL with fallbacks
+  baseUrl: process.env.NEXT_PUBLIC_API_URL || 
+           process.env.NODE_ENV === 'production' 
+             ? 'https://team.zentrio.pro/api/v1'  // Your production domain
+             : 'http://35.240.211.25:9100/api/v1',
 };

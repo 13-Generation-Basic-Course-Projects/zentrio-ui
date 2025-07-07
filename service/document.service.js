@@ -9,6 +9,9 @@ export const fetchDocumentService = async (id, token) => {
   try {
     const res = await fetch(documentRouteGroup.getDocumentById(id), {
       method: "GET",
+      next: {
+        tags: ["documents"],
+      },
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -39,6 +42,9 @@ export const fetchPublicDocumentsService = async (boardId, token) => {
       documentRouteGroup.getPublicDocumentsByBoard(boardId),
       {
         method: "GET",
+        next: {
+          tags: ["documents"],
+        },
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -70,6 +76,9 @@ export const fetchDocumentsByBoardService = async (boardId, token) => {
       documentRouteGroup.getAllDocumentsByBoard(boardId),
       {
         method: "GET",
+        next: {
+          tags: ["documents"],
+        },
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -105,10 +114,13 @@ export const getFileByFolderIdService = async ({
       documentRouteGroup.getFileByFolderId(folderId, accessToken),
       {
         method: "GET",
+        next: {
+          tags: ["documents"],
+          revalidate: 60,
+        },
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
-          next: { revalidate: 60 },
         },
       }
     );
@@ -246,6 +258,7 @@ export const deleteDocumentService = async ({
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
+        next: { tags: ["documents"] },
       }
     );
 
@@ -281,6 +294,7 @@ export const createDocumentService = async (data, token) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
+      next: { tags: ["documents"] },
     });
 
     if (!res.ok) {
@@ -317,6 +331,7 @@ export const createDocumentByUploadService = async (
           Authorization: `Bearer ${token}`,
         },
         body: formData,
+        next: { tags: ["documents"] },
       }
     );
 
@@ -485,6 +500,9 @@ export const getAllDocumentByBoardIdSerivce = async ({ boardId, token }) => {
 
     const res = await fetch(url, {
       method: "GET",
+      next: {
+        tags: ["documents"],
+      },
       headers: {
         Accept: "*/*",
         Authorization: `Bearer ${token}`,
@@ -509,39 +527,13 @@ export const getAllDocumentByBoardIdSerivce = async ({ boardId, token }) => {
 /* new add
  * post attactment
  */
-export const postAttactmentService = async ({
-  checklistId,
-  details,
-  token,
-}) => {
-  try {
-    const url = documentRouteGroup.postAttactment(checklistId);
 
-    const res = await fetch(url, {
-      method: "POST",
-      headers: {
-        Accept: "*/*",
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-        body: JSON.stringify({
-          details: details,
-        }),
-      },
-    });
-
-    const result = await res.json();
-
-    return result;
-  } catch (error) {
-    console.error("Error : ", error.message);
-  }
-};
 
 /* new add
  * post attactment
  */
 export const getAttactmentService = async ({ checklistId, token }) => {
-  try {
+  
     const url = documentRouteGroup.getAttactment(checklistId);
     console.log("Fetching from URL:", url);
 
@@ -556,6 +548,30 @@ export const getAttactmentService = async ({ checklistId, token }) => {
 
     console.log("Response status:", res.status);
     console.log("Response ok:", res.ok);
+    const result = await res.json();
+    console.log("in serviceee fetch data", result);
+    return result;
+};
+
+
+
+
+
+
+
+export const getAttachmentService = async ({ checklistId, token }) => {
+  try {
+    const url = documentRouteGroup.getAttactment(checklistId);
+    console.log("Fetching from URL:", url);
+
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        Accept: "*/*",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
     // Check if the response is ok (status 200-299)
     if (!res.ok) {
@@ -585,3 +601,79 @@ export const getAttactmentService = async ({ checklistId, token }) => {
     };
   }
 };
+
+//au
+export const postAttachmentService = async ({
+  checklistId,
+  details,
+  token,
+}) => {
+  try {
+    // 1. Get existing attachment
+    const existingAttachments = await getAttachmentService({
+      checklistId,
+      token,
+    });
+
+    console.log("exxxxxxxxxxxx", existingAttachments);
+
+    const hasExisting =
+      existingAttachments?.success && existingAttachments?.payload;
+    const attachmentId =
+      existingAttachments?.payload?.attachmentId;
+
+    console.log("aaaaaaaaaaaaa", attachmentId);
+    const method = hasExisting ? "PUT" : "POST";
+    const url = hasExisting
+      ? documentRouteGroup.updateAttachment(attachmentId, checklistId)
+      : documentRouteGroup.postAttactment(checklistId);
+
+    if (!url) throw new Error("URL could not be resolved");
+
+    console.log(`Sending ${method} to:`, url);
+
+    const res = await fetch(url, {
+      method,
+      headers: {
+        Accept: "*/*",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(details),
+    });
+
+    const result = await res.json();
+    return result;
+  } catch (error) {
+    console.error("Error in postAttachmentService:", error.message);
+    throw error;
+  }
+};
+
+// export const postAttachmentService = async ({ checklistId, details, token }) => {
+
+
+//   console.log("DEtaila dataaaaaaaaaaaaaaaaaa", details);
+  
+//   try {
+//     const url = documentRouteGroup.postAttactment(checklistId);
+  
+//       console.log("url in post attachment service", url);
+//       console.log("token in post attachment service", token);
+//       console.log("checklist id", checklistId);
+//     const res = await fetch(url, {
+//       method: "POST",
+//       headers: {
+//         Accept: "*/*",
+//         "Content-Type": "application/json",
+//         Authorization: `Bearer ${token}`,
+//       },
+//       body: JSON.stringify(details), // Remove the extra wrapping
+//     });
+
+//     const result = await res.json();
+//     return result;
+//   } catch (error) {
+//     console.error("Error : ", error.message);
+//   }
+// };

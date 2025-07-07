@@ -8,11 +8,22 @@ import {
   DropdownItem,
   Button,
 } from "@heroui/react";
-export default function ModalSaveAs({ board , report}) {
+
+export default function ModalSaveAs({
+  board,
+  report = { payload: { groupedTasks: [] } },
+}) {
+  const isDisabled = report?.payload?.groupedTasks?.length === 0;
+
   return (
-    <Dropdown className="p-0 bg-transparent borde-none">
+    <Dropdown className="p-0 bg-transparent border-none">
       <DropdownTrigger>
-        <Button className="flex items-center gap-2 bg-white text-btn-sm border border-primary">
+        <Button
+          className={`flex items-center gap-2 bg-white text-btn-sm border border-primary ${
+            isDisabled ? "cursor-not-allowed" : ""
+          }`}
+          disabled={isDisabled}
+        >
           <span>
             <svg
               viewBox="0 0 24 24"
@@ -29,10 +40,14 @@ export default function ModalSaveAs({ board , report}) {
       </DropdownTrigger>
       <DropdownMenu
         aria-label="Dynamic Actions"
-        className="p-0 bg-transparent borde-none"
+        className="p-0 bg-transparent border-none"
       >
-        <DropdownItem className="p-0 bg-transparent borde-none">
-          <CardBoardReport boardId={board} reports={report?.payload}/>
+        <DropdownItem className="p-0 bg-transparent border-none">
+          <CardBoardReport
+            boardId={board}
+            reports={report?.payload}
+            allDataReport={report}
+          />
         </DropdownItem>
       </DropdownMenu>
     </Dropdown>

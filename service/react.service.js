@@ -10,7 +10,7 @@ const url = reactGroup.createReact();
       announcementId: announId,
     };
 
-    //console.log("postReact", payload)
+    
 
   const res = await fetch(url, {
   method: "POST",
@@ -20,6 +20,7 @@ const url = reactGroup.createReact();
     Authorization: `Bearer ${token}`,
   },
   body: JSON.stringify(payload),
+  next: { tags: ["announcements"] },
 });
 const data = await res.json(); 
 }
@@ -27,8 +28,7 @@ const data = await res.json();
 
 export  const  unReactService= async ({token,reactId})=>{
 const url = reactGroup.unReact(reactId);
-//console.log("unreactid",reactId)
-//console.log("urlReact", url)
+
   const res = await fetch(url, {
   method: "DELETE",
   headers: {
@@ -47,10 +47,7 @@ const url = reactGroup.unReact(reactId);
 
 export  const  updateReactService= async ({token,reactId, reactType,announId})=>{
 const url = reactGroup.updateReact(reactId);
-//console.log("unreactid",reactId);
-//console.log("unreactType",reactType);
-//console.log("urlReact", url);
-//console.log("kkkk", token);
+
 
  const payload = {
       reactType: reactType,

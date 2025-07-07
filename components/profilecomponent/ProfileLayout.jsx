@@ -38,7 +38,7 @@ export default function ProfileLayout({
 }) {
   const data = currentUserProfile?.payload?.user || {};
 
-  console.log("Current User Profile:", currentUserProfile);
+  //console.log("Current User Profile:", currentUserProfile);
 
   const tabItems = [
     { key: "profile", title: "Profile", content: profile },
@@ -151,8 +151,8 @@ export default function ProfileLayout({
     setError("");
 
     try {
-      console.log(`Original file: ${file.name}`);
-      console.log(`Original size: ${formatFileSize(file.size)}`);
+      //console.log(`Original file: ${file.name}`);
+      //console.log(`Original size: ${formatFileSize(file.size)}`);
 
       // Determine compression settings based on file size
       let compressionOptions;
@@ -199,13 +199,13 @@ export default function ProfileLayout({
       clearInterval(progressInterval);
       setCompressionProgress(100);
 
-      console.log(`Compressed size: ${formatFileSize(compressedFile.size)}`);
-      console.log(
-        `Compression ratio: ${(
-          (1 - compressedFile.size / file.size) *
-          100
-        ).toFixed(1)}%`
-      );
+      //console.log(`Compressed size: ${formatFileSize(compressedFile.size)}`);
+      //console.log(
+      //   `Compression ratio: ${(
+      //     (1 - compressedFile.size / file.size) *
+      //     100
+      //   ).toFixed(1)}%`
+      // );
 
       const reader = new FileReader();
       reader.onload = () => {
@@ -216,7 +216,7 @@ export default function ProfileLayout({
       };
       reader.readAsDataURL(compressedFile);
     } catch (error) {
-      console.error("Error compressing image:", error);
+      //console.error("Error compressing image:", error);
       setError("Failed to process the image. Please try a different image.");
       setIsCompressing(false);
       setCompressionProgress(0);
@@ -304,7 +304,7 @@ export default function ProfileLayout({
               setImgSrc("");
             }, 1500);
           } catch (error) {
-            console.error("Upload error:", error);
+            //console.error("Upload error:", error);
             setError("Failed to upload image. Please try again.");
           } finally {
             setIsUploading(false);
@@ -314,7 +314,7 @@ export default function ProfileLayout({
         0.85
       );
     } catch (error) {
-      console.error("Error saving cropped image:", error);
+      //console.error("Error saving cropped image:", error);
       setError("Failed to save the image. Please try again.");
       setIsUploading(false);
     }

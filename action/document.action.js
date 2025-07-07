@@ -11,15 +11,17 @@ import {
   fetchDocumentsByBoardService,
   fetchPublicDocumentsService,
   getAllDocumentByBoardIdSerivce,
+  getAttachmentService,
   getAttactmentService,
   getFileByFolderIdService,
+  postAttachmentService,
   postAttactmentService,
   privateDocumentByIdService,
   publicDocumentByIdService,
   updateDocumentNameByIdService,
   uploadDocumentToFolderServie,
 } from "@/service/document.service";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 // Get
 export const getDocumentsByBoardAction = async (boardId) => {
@@ -87,7 +89,7 @@ export const downloadAllFilesAsZipAction = async ({
     token,
   });
 
-  revalidatePath("/docu");
+  revalidateTag("documents");
   return { blob, filename };
 };
 
@@ -112,7 +114,7 @@ export const createFolderAction = async (
 
   const folder = await createDocumentService(folderData, token);
 
-  revalidatePath("/document");
+  revalidateTag("documents");
   return folder;
 };
 
@@ -135,7 +137,7 @@ export const createFileAction = async ({
     };
 
     const createdDocument = await createDocumentService(data, token);
-    revalidatePath("/document");
+    revalidateTag("documents");
     return createdDocument;
   } catch (error) {
     console.error("Error creating file:", error);
@@ -157,7 +159,7 @@ export const createDocumentByUploadAction = async (
     token,
     tokenFromGoogle
   );
-  revalidatePath("/docu");
+  revalidateTag("documents");
   return document;
 };
 
@@ -171,7 +173,7 @@ export const deleteDocumentAction = async (accessToken, documentId) => {
     token,
   });
 
-  revalidatePath("/docu");
+  revalidateTag("documents");
   return document;
 };
 
@@ -191,7 +193,7 @@ export const updateDocumentNameByIdAction = async (
     token,
     tokenFromGoogle
   );
-  revalidatePath("/docu");
+  revalidateTag("documents");
   return updated;
 };
 
@@ -207,7 +209,7 @@ export const publicDocumentByIdAction = async (documentId, tokenFromGoogle) => {
       tokenFromGoogle
     );
 
-    revalidatePath("/docu");
+    revalidateTag("documents");
 
     if (updated?.success) {
       return { success: true, message: "Document made public successfully." };
@@ -240,7 +242,7 @@ export const privateDocumentByIdAction = async (
       tokenFromGoogle
     );
 
-    revalidatePath("/docu");
+    revalidateTag("documents");
 
     if (updated?.success) {
       return { success: true, message: "Document made private successfully." };
@@ -274,16 +276,34 @@ export const getAllDocumentByBoardIdAction = async (boardId) => {
 /* new add
  * post attactment
  */
+
+
 export const postAttactmentAction = async (checklistId, details) => {
+  console.log("detailssssssssss", details);
   const userToken = await Token();
   const token = userToken.Credential;
-  const result = await postAttactmentService({
+  console.log("token in post attactment action", token);
+  const result = await postAttachmentService({
     checklistId,
     details,
     token,
   });
   console.log("Get all attachments action : ", result);
-  revalidatePath("/docu");
+  // revalidatePath("/docu");
+  return result;
+};
+/* new add
+ * get attachment
+ */
+export const getAttachmentAction = async (checklistId) => {
+  console.log("CHECKLIST ID IN ACTION PRINT ATTACHMENTS:", checklistId);
+  const userToken = await Token();
+  const token = userToken.Credential;
+  const result = await getAttachmentService({
+    checklistId,
+    token,
+  });
+  console.log("RESULT IN ACTION PRINT ATTACHMENTS:", result);
   return result;
 };
 /* new add
@@ -292,6 +312,7 @@ export const postAttactmentAction = async (checklistId, details) => {
 export const getAttactmentAction = async (checklistId) => {
   const userToken = await Token();
   const token = userToken.Credential;
+  console.log("checklistId aaaa", checklistId);
   const result = await getAttactmentService({
     checklistId,
     token,

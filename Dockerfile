@@ -1,26 +1,29 @@
 FROM node:22.12.0 AS builder
 
+# Set the working directory
 WORKDIR /app
 
-# Copy .env file for build-time variables
-COPY .env* ./
-
 COPY package*.json ./
+
+# Install production dependencies
 RUN npm install
+
+# Copy the rest of the application files
 COPY . .
-# Set memory limit for build
+
 ENV NODE_OPTIONS="--max-old-space-size=6144"
 
+# Build the application
 RUN npm run build
-
 FROM node:22.12.0-bullseye-slim AS runner
-
-# Copy .env file for runtime variables (if needed)
-COPY --from=builder /app/.env* ./standalone/
 
 COPY --from=builder /app/.next/standalone ./standalone
 COPY --from=builder /app/public ./standalone/public
 COPY --from=builder /app/.next/static ./standalone/.next/static
 
+# Expose the Next.js default port
 EXPOSE 3000
+
+# Start the Next.js app
 CMD ["node", "./standalone/server.js"]
+

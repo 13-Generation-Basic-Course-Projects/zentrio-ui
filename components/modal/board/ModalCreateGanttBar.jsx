@@ -106,7 +106,7 @@ export default function ModalCreateGanttBar({ input, ganttChartId }) {
   //             toast.dismiss(id);
   //             activeToasts.current.delete(id);
   //           } catch (err) {
-  //             console.warn("Toast dismiss error:", err);
+  //             //console.warn("Toast dismiss error:", err);
   //           }
   //         }
   //       });
@@ -124,11 +124,11 @@ export default function ModalCreateGanttBar({ input, ganttChartId }) {
   //     };
 
   //     activeToasts.current.add(toastId);
-  //     console.log(`Showing toast: ${type} - ${message}`); // Debugging
+  //     //console.log(`Showing toast: ${type} - ${message}`); // Debugging
   //     return toast[type](message, toastOptions);
   //   } catch (error) {
-  //     console.error("Toast error:", error);
-  //     console.log(`${type.toUpperCase()}: ${message}`);
+  //     //console.error("Toast error:", error);
+  //     //console.log(`${type.toUpperCase()}: ${message}`);
   //   }
   // }, []);
 
@@ -142,7 +142,7 @@ export default function ModalCreateGanttBar({ input, ganttChartId }) {
             toast.dismiss(id);
             activeToasts.current.delete(id);
           } catch (err) {
-            console.warn("Toast dismiss error:", err);
+            //console.warn("Toast dismiss error:", err);
           }
         }
       });
@@ -160,11 +160,11 @@ export default function ModalCreateGanttBar({ input, ganttChartId }) {
     };
 
     activeToasts.current.add(toastId);
-    console.log(`Showing toast: ${type} - ${message}`);
+    //console.log(`Showing toast: ${type} - ${message}`);
     return toast[type](message, toastOptions);
   } catch (error) {
-    console.error("Toast error:", error);
-    console.log(`${type.toUpperCase()}: ${message}`);
+    //console.error("Toast error:", error);
+    //console.log(`${type.toUpperCase()}: ${message}`);
   }
 }, []);
 
@@ -182,7 +182,7 @@ const handleModalClose = useCallback(() => {
         toast.dismiss(toastId);
       }
     } catch (err) {
-      console.warn("Toast cleanup error:", err);
+      //console.warn("Toast cleanup error:", err);
     } finally {
       // Always remove from tracking
       activeToasts.current.delete(toastId);
@@ -309,7 +309,7 @@ const handleModalClose = useCallback(() => {
       };
     });
 
-    console.log("Sending payload to action:", payload);
+    //console.log("Sending payload to action:", payload);
 
     try {
       const result = await createGanttBarsByGanttChartIdAction({
@@ -317,7 +317,7 @@ const handleModalClose = useCallback(() => {
         data: payload,
       });
 
-      console.log("API result:", result);
+      //console.log("API result:", result);
 
       const titles = pendingItems.map((item) => item.title).join(", ");
 
@@ -347,7 +347,7 @@ const handleModalClose = useCallback(() => {
         );
       }
     } catch (err) {
-      console.error("Failed to create Gantt bars:", err);
+      //console.error("Failed to create Gantt bars:", err);
       showToast(
         "error",
         `Failed to create Gantt bars: ${err.message || "Unknown error"}`,
@@ -375,7 +375,7 @@ const handleModalClose = useCallback(() => {
   //         toast.dismiss(toastId);
   //       }
   //     } catch (err) {
-  //       console.warn("Toast cleanup error:", err);
+  //       //console.warn("Toast cleanup error:", err);
   //     } finally {
   //       // Always remove from our tracking
   //       activeToasts.current.delete(toastId);
@@ -401,10 +401,10 @@ const handleModalClose = useCallback(() => {
       const diffTime = endDate.getTime() - startDate.getTime();
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-      console.log(`Validation: diffDays = ${diffDays}`);
+      //console.log(`Validation: diffDays = ${diffDays}`);
 
       if (diffDays < 7) {
-        console.log("Validation: Duration < 7 days");
+        //console.log("Validation: Duration < 7 days");
 
         // Defer the toast to avoid render-time state updates
         setTimeout(() => {
@@ -421,7 +421,7 @@ const handleModalClose = useCallback(() => {
         return "End date must be at least 7 days after start date";
       }
 
-      console.log("Validation: Duration valid");
+      //console.log("Validation: Duration valid");
       return null;
     },
     [showToast]
@@ -452,7 +452,7 @@ const handleModalClose = useCallback(() => {
             const diffTime = endDate.getTime() - startDate.getTime();
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-            console.log(`OnChange validation: diffDays = ${diffDays}`);
+            //console.log(`OnChange validation: diffDays = ${diffDays}`);
 
             // Only show toast if validation fails
             if (diffDays < 6) {

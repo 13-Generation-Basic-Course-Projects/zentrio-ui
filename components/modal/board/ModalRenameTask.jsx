@@ -145,15 +145,15 @@ export function ModalRenameTask({ taskId, boardId }) {
       const boardIdValue = taskData.boardId;
       const ganttBarId = taskData.ganttBarId;
 
-      console.log("Sending update payload to updateTaskByIdAction:", {
-        taskId,
-        title,
-        description,
-        startedAt,
-        finishedAt,
-        boardId: boardIdValue,
-        ganttBarId,
-      });
+      // console.log("Sending update payload to updateTaskByIdAction:", {
+      //   taskId,
+      //   title,
+      //   description,
+      //   startedAt,
+      //   finishedAt,
+      //   boardId: boardIdValue,
+      //   ganttBarId,
+      // });
 
       const result = await updateTaskByIdAction(
         taskId,
@@ -165,7 +165,7 @@ export function ModalRenameTask({ taskId, boardId }) {
         ganttBarId
       );
 
-      console.log("REsult from updateTaskByIdAction:", result);
+      // console.log("REsult from updateTaskByIdAction:", result);
 
       toast.success("Task updated successfully", {
         position: "top-right",
@@ -190,7 +190,7 @@ export function ModalRenameTask({ taskId, boardId }) {
       close();
       return result;
     } catch (err) {
-      console.error("Update error:", err, "Response:", err.message);
+      // console.error("Update error:", err, "Response:", err.message);
       setError(err.message);
       toast.error(`Failed to update task: ${err.message || "Bad Request"}`, {
         position: "top-right",
@@ -258,7 +258,7 @@ export function ModalRenameTask({ taskId, boardId }) {
                       value={newName}
                       onChange={(e) => {
                         setNewName(e.target.value);
-                        console.log("Input changed to:", e.target.value);
+                        // console.log("Input changed to:", e.target.value);
                       }}
                     />
                   </div>

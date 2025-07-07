@@ -1,5 +1,5 @@
 "use client";
-import React, { useMemo, useCallback } from "react";
+import React, { useMemo, useCallback, useState } from "react";
 import {
   Modal,
   ModalContent,
@@ -16,7 +16,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { parseDate, getLocalTimeZone, today } from "@internationalized/date";
 import { checklistSchema } from "@/lib/schemas/createCheckListSchema";
 import { createCheckListAction } from "@/action/board.action";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 export default function ModalCreateChecklist({
   onSubmit,
@@ -26,8 +27,17 @@ export default function ModalCreateChecklist({
   finishedAt,
   startedAt,
   stage,
+  boardId,
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    startedAt: "",
+    finishedAt: "",
+  });
 
   // Memoize all computed values to prevent recalculation
   const {
@@ -111,52 +121,23 @@ export default function ModalCreateChecklist({
     };
   }, []);
 
-  // Handle form submission
-  const onFormSubmit = async (data) => {
+  const handleSubmitForm = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+
     try {
-      // Transform the data to match the backend's expected format
-      const transformedData = {
-        title: data.title,
-        description: data.description || "",
-        startedAt: new Date(
-          data.duration.start + "T00:00:00.000Z"
-        ).toISOString(),
-        finishedAt: new Date(
-          data.duration.end + "T23:59:59.999Z"
-        ).toISOString(),
-        taskId: taskid,
-      };
-
-      console.log("Transformed submit data", transformedData);
-
-      // Call the createCheckListAction
-      const result = await createCheckListAction(taskid, transformedData);
-      console.log("hello checklist result", result);
-      console.log("result form", result);
-      if (result.status == 200) {
-        // Show success toast
+      const result = await createCheckListAction(taskid, formData);
+      if (result.success) {
         toast.success("Checklist created successfully!");
-      } else if (result.status === 403) {
-        console.log("err mss", result);
-        toast.error(`Error: ${result?.detail}`);
+        onOpenChange(false);
+        router.refresh();
+      } else {
+        toast.error(result.error || "Failed to create checklist");
       }
-
-      // Call onSubmit prop if provided
-      if (onSubmit) onSubmit(transformedData);
-
-      // Close modal and reset form on success
-      reset();
-      onOpenChange(false); // Explicitly close modal
     } catch (error) {
-      console.error("Form submission error:", error);
-
-      // Extract error message from backend response or use a default
-      const errorMessage = error.response?.data?.detail
-        ? error.response.data.detail
-        : error.message || "An unexpected error occurred.";
-
-      // Show error toast
-      toast.error(`Error: ${errorMessage}`);
+      toast.error("An error occurred while creating checklist");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -182,7 +163,7 @@ export default function ModalCreateChecklist({
                     {modalTitle}
                   </ModalHeader>
                   <ModalBody>
-                    <form onSubmit={handleSubmit(onFormSubmit)}>
+                    <form onSubmit={handleSubmit(handleSubmitForm)}>
                       <div className="flex flex-col gap-3">
                         <label className="text-sm font-medium text-title">
                           Title <span className="text-progress-red">*</span>
@@ -217,7 +198,7 @@ export default function ModalCreateChecklist({
                                 ? parseDate(field.value.end)
                                 : parseDate(defaultEnd);
                             } catch (error) {
-                              console.error("Date parsing error:", error);
+                              //console.error("Date parsing error:", error);
                               startValue = parseDate(defaultStart);
                               endValue = parseDate(defaultEnd);
                             }
@@ -284,7 +265,7 @@ export default function ModalCreateChecklist({
                           color="primary"
                           radius="full"
                           isDisabled={isSubmitting || !!errors.title}
-                          isLoading={isSubmitting}
+                          isLoading={isLoading}
                         >
                           Save
                         </Button>
@@ -295,15 +276,6 @@ export default function ModalCreateChecklist({
               )}
             </ModalContent>
           </Modal>
-          <ToastContainer
-            position="top-right"
-            autoClose={2000}
-            hideProgressBar={false}
-            closeOnClick
-            pauseOnHover
-            draggable
-            theme="colored"
-          />
         </>
       )}
     </>

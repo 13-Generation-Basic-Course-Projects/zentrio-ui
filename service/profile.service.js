@@ -5,6 +5,9 @@ export const getCurrentUserProfileService = async ({ token }) => {
   const response = await fetch(
     profileRouteGroup.getCurrentUserProfile(),
     {
+      next: {
+        tags: ["profile"],
+      },
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -19,7 +22,7 @@ export const getCurrentUserProfileService = async ({ token }) => {
   return data;
 };
 
-export const updateUserProfileService = async ({ token, userData }) => {
+export const updateUserProfileService = async (userData, token) => {
   const response = await fetch(
     profileRouteGroup.updateCurrentUserProfile(),
     {
@@ -29,9 +32,9 @@ export const updateUserProfileService = async ({ token, userData }) => {
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(userData),
+      next: { tags: ["profile"] },
     }
   );
-
   const data = await response.json();
   return data;
 };
@@ -41,6 +44,9 @@ export const updateUserProfileService = async ({ token, userData }) => {
 
 export const getUserAchievementService = async ({ token }) => {
   const response = await fetch(profileRouteGroup.getCurrentUserAchievement(), {
+    next: {
+      tags: ["achievements"],
+    },
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -130,6 +136,9 @@ export const updateAchievementService = async ({ token, payload }) => {
 // call route to config
 export const getPreviewProfileService = async ({ token }) => {
   const response = await fetch(profileRouteGroup.getPreviewProfile(), {
+    next: {
+      tags: ["profile"],
+    },
     headers: {
       Authorization: `Bearer ${token}`,
     },

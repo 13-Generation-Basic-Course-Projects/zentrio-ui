@@ -27,11 +27,39 @@ export async function doSocialLogin(formData) {
 /*
  * login
  */
+
+// export async function zentrioLoginCredentailAction(data) {
+//   try {
+//     const { email, password } = data;
+//     const res = await loginZentrioCredentailService({ email, password });
+//     //console.log("7777777", res);
+//     if (res?.success) {
+//       try {
+//         const { email, password } = data;
+//         await signIn("credentials", {
+//           email,
+//           password,
+//           redirect: false,
+//         });
+//       } catch (e) {
+//         //console.log("err at login creadentail", e);
+
+//       }
+//       return res;
+//     }
+//   } catch (error) {
+//     //console.log("Login error:", error);
+//     return { ok: false, error: "Server error" };
+//   }
+// }
+
+//au
+
 export async function zentrioLoginCredentailAction(data) {
   try {
     const { email, password } = data;
     const res = await loginZentrioCredentailService({ email, password });
-    console.log("7777777", res);
+    //console.log("7777777", res);
     if (res?.success) {
       try {
         const { email, password } = data;
@@ -41,12 +69,17 @@ export async function zentrioLoginCredentailAction(data) {
           redirect: false,
         });
       } catch (e) {
-        console.log("err at login creadentail", e);
+        //console.log("err at login creadentail", e);
       }
       return res;
+    } else {
+      return {
+        success: false,
+        error: res?.error || "Invalid email or password",
+      }
     }
   } catch (error) {
-    console.log("Login error:", error);
+    //console.log("Login error:", error);
     return { ok: false, error: "Server error" };
   }
 }
@@ -75,11 +108,11 @@ export async function zentrioOtpAction({ email, otp, type }) {
   try {
     const result = await otpZentrioService({ email, otp, type });
     if (!result?.ok) {
-      console.error("Failed to verify the otp");
+      //console.error("Failed to verify the otp");
     }
     return result;
   } catch (error) {
-    console.error("Failed to verify the otp");
+    //console.error("Failed to verify the otp");
   }
 }
 
@@ -89,16 +122,16 @@ export async function zentrioOtpAction({ email, otp, type }) {
 */
 
 export async function zentrioResendOtpAction({ email, type }) {
-  console.log("email in the action", email);
+  //console.log("email in the action", email);
 
   try {
     const result = await resendOtpZentrioService({ email, type });
     if (!result?.success) {
-      console.error("Failed to resend otp");
+      //console.error("Failed to resend otp");
     }
     return result;
   } catch (error) {
-    console.error("Failed to resend otp for VERIFY or RESET", error);
+    //console.error("Failed to resend otp for VERIFY or RESET", error);
     return { success: false, error: "Unexpected error" };
   }
 }
@@ -111,11 +144,11 @@ export async function resendOtpForgotPasswordAction({ email, type }) {
   try {
     const result = await resendOtpForgotPasswordService({ email, type });
     if (!result?.success) {
-      console.error("Failed to resend otp");
+      //console.error("Failed to resend otp");
     }
     return result;
   } catch (error) {
-    console.error("Failed to resend otp for VERIFY or RESET", error);
+    //console.error("Failed to resend otp for VERIFY or RESET", error);
     return { success: false,};
   }
 }
@@ -132,11 +165,11 @@ export async function zentrioLoginWithGoogle(idToken, provider) {
       // You can save token to localStorage, context, or use it directly
       redirect("/workspace");
     } else {
-      console.error("Login failed: No token received");
+      //console.error("Login failed: No token received");
       return null;
     }
   } catch (error) {
-    console.error("Login with Google failed:", error.message);
+    //console.error("Login with Google failed:", error.message);
     return null;
   }
 }
@@ -161,7 +194,7 @@ export async function zentrioForgotPasswordAction({
     }
     return { success: true };
   } catch (error) {
-    console.error("can't reset the new password ");
+    //console.error("can't reset the new password ");
     return { success: false };
   }
 }
@@ -179,4 +212,13 @@ export const doLogout = async () => {
 
   // Redirect to login page
   redirect("/");
+};
+
+export const loginCredentialAction = async ({ email, password }) => {
+  try {
+    const res = await loginCredentialService({ email, password });
+    return res;
+  } catch (e) {
+    return { success: false, error: e.message };
+  }
 };

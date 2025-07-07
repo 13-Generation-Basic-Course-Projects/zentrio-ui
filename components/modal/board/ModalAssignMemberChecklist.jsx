@@ -30,6 +30,7 @@ const assignMemberSchema = z.object({
 
 const preventPf = preventImage.noProfile;
 
+
 export function ModalAssignMemberToCheckLisk({
   allMemberInBoard,
   taskId,
@@ -75,7 +76,7 @@ export function ModalAssignMemberToCheckLisk({
         leaderId, // assignedBy (the leader who is assigning)
         data.userId // assignedTo (the selected member)
       );
-      console.log("result assignmember", result);
+      //console.log("result assignmember", result);
       if (result.success) {
         toast.success("Member assigned successfully!");
         if (onLeaderAssigned && result.updatedTask) {
@@ -112,7 +113,7 @@ export function ModalAssignMemberToCheckLisk({
     reset();
   };
 
-  console.log("data member", allMemberInBoard);
+  //console.log("data member", allMemberInBoard);
 
   return (
     <>
@@ -169,74 +170,83 @@ export function ModalAssignMemberToCheckLisk({
                     <label className="text-sm font-medium text-title">
                       Select Member <span className="text-progress-red">*</span>
                     </label>
-                    <Select
-                      {...register("userId")}
-                      placeholder="Select a member"
-                      className={`border rounded-small text-caption ${
-                        errors.userId
-                          ? "border-progress-red"
-                          : "border-gray-300"
-                      }`}
-                      onSelectionChange={(keys) => {
-                        const userId = Array.from(keys)[0];
-                        setValue("userId", userId);
-                      }}
-                      defaultSelectedKeys={
-                        currentLeader?.userId ? [currentLeader.userId] : []
-                      }
-                      isInvalid={!!errors.userId}
-                      errorMessage={errors.userId?.message}
-                      renderValue={(items) => {
-                        return items.map((item) => {
-                          const member = allMemberInBoard.find(
-                            (m) => m.userId === item.key
-                          );
-                          if (!member) return null;
+                    {allMemberInBoard?.filter(
+                      (member) =>
+                        member.userId !== leaderId &&
+                        !member.roles?.includes("ROLE_MANAGER")
+                    ).length === 0 ? (
+                      <p className="text-caption text-gray-500">
+                        No eligible members available to assign.
+                      </p>
+                    ) : (
+                      <Select
+                        {...register("userId")}
+                        placeholder="Select a member"
+                        className={`border rounded-small text-caption ${
+                          errors.userId
+                            ? "border-progress-red"
+                            : "border-gray-300"
+                        }`}
+                        onSelectionChange={(keys) => {
+                          const userId = Array.from(keys)[0];
+                          setValue("userId", userId);
+                        }}
+                        defaultSelectedKeys={
+                          currentLeader?.userId ? [currentLeader.userId] : []
+                        }
+                        isInvalid={!!errors.userId}
+                        errorMessage={errors.userId?.message}
+                        renderValue={(items) => {
+                          return items.map((item) => {
+                            const member = allMemberInBoard.find(
+                              (m) => m.userId === item.key
+                            );
+                            if (!member) return null;
 
-                          return (
-                            <div
-                              key={item.key}
-                              className="flex items-center gap-2"
+                            return (
+                              <div
+                                key={item.key}
+                                className="flex items-center gap-2"
+                              >
+                                <img
+                                  src={member.profileImage || preventPf}
+                                  alt={member.username}
+                                  width={24}
+                                  height={24}
+                                  className="rounded-full object-cover"
+                                />
+                                <span>{member.username}</span>
+                              </div>
+                            );
+                          });
+                        }}
+                      >
+                        {allMemberInBoard
+                          ?.filter(
+                            (member) =>
+                              member.userId !== leaderId &&
+                              !member.roles?.includes("ROLE_MANAGER")
+                          )
+                          .map((member) => (
+                            <SelectItem
+                              key={member.userId}
+                              value={member.userId}
+                              textValue={member.username}
                             >
-                              <img
-                                src={member.profileImage || preventPf}
-                                alt={member.username}
-                                width={24}
-                                height={24}
-                                className="rounded-full object-cover"
-                              />
-                              <span>{member.username}</span>
-                            </div>
-                          );
-                        });
-                      }}
-                    >
-                      {allMemberInBoard?.map((member) => (
-                        <SelectItem
-                          key={member.userId}
-                          value={member.userId}
-                          textValue={member.username}
-                        >
-                          <div
-                            className={`flex items-center gap-2 ${
-                              member.userId === leaderId ||
-                              member.roles?.includes("ROLE_MANAGER")
-                                ? `hidden`
-                                : ``
-                            }`}
-                          >
-                            <img
-                              src={member.profileImage || preventPf}
-                              alt={member.username}
-                              width={24}
-                              height={24}
-                              className="rounded-full object-cover"
-                            />
-                            <span>{member.username}</span>
-                          </div>
-                        </SelectItem>
-                      ))}
-                    </Select>
+                              <div className="flex items-center gap-2">
+                                <img
+                                  src={member.profileImage || preventPf}
+                                  alt={member.username}
+                                  width={24}
+                                  height={24}
+                                  className="rounded-full object-cover"
+                                />
+                                <span>{member.username}</span>
+                              </div>
+                            </SelectItem>
+                          ))}
+                      </Select>
+                    )}
                     {errors.userId && (
                       <p className="text-progress-red text-caption">
                         {errors.userId.message}

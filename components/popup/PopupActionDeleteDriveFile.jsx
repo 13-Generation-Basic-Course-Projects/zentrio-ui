@@ -11,6 +11,7 @@ import {
 
 import { toast } from "react-toastify";
 import { deleteFileByFileIdAction } from "@/action/drive.action";
+import { useRouter } from "next/navigation";
 export default function PopupActionDeleteDriveFile({
   title,
   icon,
@@ -20,12 +21,13 @@ export default function PopupActionDeleteDriveFile({
   massageUndo,
   massageDo,
   fileId,
+  isFolder,
   action,
   accessToken,
   color,
   swapButton,
-  successMessage = "File or folder deleted successfully.",
-  errorMessage = "Failed to delete the file or folder",
+  successMessage,
+  errorMessage,
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
@@ -34,19 +36,32 @@ export default function PopupActionDeleteDriveFile({
     try {
       const result = await deleteFileByFileIdAction({ fileId, accessToken });
       if (result?.status === "success" || result?.success) {
-        toast.success(successMessage, {
-          position: "top-right",
-          duration: 4000,
-        });
+        toast.success(
+          successMessage ||
+            (isFolder
+              ? "Folder deleted successfully."
+              : "File deleted successfully."),
+          {
+            position: "top-right",
+            duration: 4000,
+          }
+        );
       } else {
         throw new Error("Deletion failed unexpectedly");
       }
     } catch (error) {
       console.error("Delete failed:", error);
-      toast.error(`${errorMessage}: ${error.message || "Unknown error"}`, {
-        position: "top-right",
-        duration: 4000,
-      });
+      toast.error(
+        errorMessage ||
+        (isFolder
+          ? "Failed to delete the folder"
+          : "Failed to delete the file"
+        ),
+        {
+          position: "top-right",
+          autoClose: 4000
+        }
+      )
     }
   };
 

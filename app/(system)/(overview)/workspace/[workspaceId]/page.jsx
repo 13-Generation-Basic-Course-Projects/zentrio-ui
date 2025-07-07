@@ -109,7 +109,7 @@ export default async function WorkspaceSpcific({ params }) {
   return (
     <>
       <Myworkspace
-        Workspaceid={workspaceId}
+        workspaceId={workspaceId}
         getBoardByWorkspaceId={getBoardByWorkspaceId}
         createBoardAction={createBoardAction}
         deleteBoardAction={deleteBoardAction}
@@ -117,7 +117,6 @@ export default async function WorkspaceSpcific({ params }) {
         getBoardByIdAction={getBoardByIdAction}
         updateFavAction={updateFavBoardByIdAction}
         memberData={allMembers}
-       
       />
       ;
     </>

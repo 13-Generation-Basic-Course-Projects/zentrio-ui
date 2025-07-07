@@ -21,7 +21,7 @@ export const getGanttBarService = async ({ token }) => {
     const data = await res.json();
     //// //console.log("📥 Backend responded with:", data);
 
-    return data; // just return the data, don’t redirect here
+    return data; // just return the data, don't redirect here
   } catch (error) {
     //console.error("Login service error:", error.message);
     throw error;
@@ -46,7 +46,7 @@ export const getGanttBarByGanttChartIdService = async ({
     const data = await res.json();
     // //console.log("📥 Backend responded with:", data);
 
-    return data; // just return the data, don’t redirect here
+    return data; // just return the data, don't redirect here
   } catch (error) {
     //console.error("Login service error:", error.message);
     throw error;
@@ -73,7 +73,7 @@ export const getGanttChartByBoardIdService = async ({ boardId, token }) => {
     const data = await res.json();
     // //console.log("📥 Backend responded with:", data);
 
-    return data; // just return the data, don’t redirect here
+    return data; // just return the data, don't redirect here
   } catch (error) {
     //console.error("Login service error:", error.message);
     throw error;
@@ -107,6 +107,7 @@ export const createGanttBarsByGanttChartIdService = async ({
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(bodyToSend),
+      next: { tags: ["gantt"] },
     });
 
     const result = await res.json();
@@ -137,6 +138,7 @@ export const deleteGanttBarsByGanttChartIdService = async ({
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
+    next: { tags: ["gantt"] },
   });
 
   const result = await res.json();
@@ -165,7 +167,8 @@ export async function updateGantChartBytIdService({
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({ title: data.title, boardId }), // Moved body out of headers
+    body: JSON.stringify({ title: data.title, boardId }),
+    next: { tags: ["gantt"] },
   });
 
   const result = await res.json();
@@ -209,6 +212,7 @@ export async function updateGantBarBytGantChartIdService({
       startedAt,
       finishedAt,
       face,}), 
+    next: { tags: ["gantt"] },
   });
 
   const result = await res.json();
@@ -216,3 +220,18 @@ export async function updateGantBarBytGantChartIdService({
   
   return { success: true, data: result };
 }
+
+export const createGanttChartByBoardIdService = async ({ boardId, data, token }) => {
+  const url = ganttRouteGroup.createGanttChartByBoardId(boardId);
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+    next: { tags: ["gantt"] },
+  });
+  const result = await res.json();
+  return result;
+};

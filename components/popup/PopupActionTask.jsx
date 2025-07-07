@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 
 import {
   Modal,
@@ -11,8 +11,10 @@ import {
   useDisclosure,
   useDraggable,
 } from "@heroui/react";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { deleteTaskAction } from "@/action/board.action";
+import { useRouter } from "next/navigation";
+
 export default function PopupActionTask({
   title,
   icon,
@@ -27,8 +29,11 @@ export default function PopupActionTask({
   ganttBarId,
   taskId,
   boardId,
+  onClose,
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
 
   const targetRef = React.useRef(null);
   const { moveProps } = useDraggable({
@@ -38,27 +43,20 @@ export default function PopupActionTask({
   });
 
   const handleDelete = async () => {
+    setIsLoading(true);
     try {
       const result = await deleteTaskAction(taskId, boardId, ganttBarId);
-      console.log("respon delete", result);
-      toast.success("Task deleted successfully!", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-      });
+      if (result.success) {
+        toast.success("Task deleted successfully!");
+        onClose();
+        router.refresh();
+      } else {
+        toast.error(result.error || "Failed to delete task");
+      }
     } catch (error) {
-      console.error("Delete failed", error);
-      toast.error("Failed to delete task!", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-      });
+      toast.error("An error occurred while deleting task");
+    } finally {
+      setIsLoading(false);
     }
   };
 

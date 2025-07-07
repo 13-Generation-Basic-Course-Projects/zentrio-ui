@@ -73,4 +73,8 @@ export const boardRouteGroup = {
 
   getFeedBackByTaskId: (taskId) =>
     `${apiConfig.baseUrl}/feedback/tasks/${taskId}`,
+
+  //reassign team leader
+  reAssignTeamLeader: (taskId,assigneeId) =>
+    `${apiConfig.baseUrl}/tasks/${taskId}/members/${assigneeId}`,
 };

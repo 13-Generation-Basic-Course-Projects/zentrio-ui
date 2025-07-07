@@ -13,6 +13,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { folderSchema } from "@/lib/schemas/documentSchema";
 import { createDriveFileAction } from "@/action/drive.action";
 import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 export default function ModalCreateFolderInFolder({
   isOpen,
@@ -28,6 +29,8 @@ export default function ModalCreateFolderInFolder({
   } = useForm({
     resolver: zodResolver(folderSchema),
   });
+
+  const router = useRouter();
 
   const onSubmit = async (data) => {
     try {
@@ -54,6 +57,8 @@ export default function ModalCreateFolderInFolder({
           theme: "light",
         });
       }
+
+      router.refresh();
 
       reset();
       onClose();
