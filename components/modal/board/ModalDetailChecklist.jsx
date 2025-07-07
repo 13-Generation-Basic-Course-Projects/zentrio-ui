@@ -390,7 +390,7 @@ const useDescriptionEditor = (taskId, checklistId, isOpen) => {
         (taskStart && selectedDate < taskStart) ||
         (taskFinish && selectedDate > taskFinish)
       ) {
-        toast.error("Finish date must be within the task’s valid date range");
+        toast.error("Finish date must be within the task's valid date range");
         return;
       }
 
@@ -941,7 +941,7 @@ const ModalDetailChecklist = ({
   );
 
   const fileInputRef = useRef(null);
-  const MAX_FILE_SIZE = 5 * 1024 * 1024;
+  const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB
   const router = useRouter();
   const [previewImage, setPreviewImage] = useState(
     image || previewImage.noChecklistImage
@@ -958,7 +958,7 @@ const ModalDetailChecklist = ({
         return;
       }
       if (file.size > MAX_FILE_SIZE) {
-        toast.error("File size exceeds 5MB limit.", {
+        toast.error("File size exceeds 20MB limit.", {
           position: "top-right",
           autoClose: 4000,
         });

@@ -12,6 +12,10 @@ const nextConfig = {
   },
   experimental: {
     optimizePackageImports: [], // Empty array or list of package names
+    serverActions: {
+      bodySizeLimit: '20mb',
+    },
+    
   },
   output: "standalone",
   env: {
