@@ -56,7 +56,6 @@ export const getTaskByBoardIdAndGanttBarIdAction = async ({
 }) => {
   const userToken = await Token();
   const token = userToken.Credential;
-  //console.log(token);
   const result = await getTaskByBoardIdAndGanttBarIdService({
     boardId,
     ganttbarId,
@@ -86,7 +85,6 @@ export const getCheckListByTaskIdAction = async ({ taskId }) => {
 export const getMemberByBoardIdAction = async ({ boardId }) => {
   const userToken = await Token();
   const token = userToken.Credential;
-  //console.log(token);
   const result = await getMemberByBoardIdService({
     boardId,
     token,
@@ -105,7 +103,6 @@ export const inviteMemberToBoardAction = async ({
   try {
     const userToken = await Token();
     const token = userToken.Credential;
-    //console.log("Token retrieved:", token);
 
     const result = await inviteMemberToBoardService({
       boardId,
@@ -161,7 +158,7 @@ export const getCommentByCheckListIdAction = async (checklistId) => {
 export const getAllGanttBarByGanttChartIDAction = async ({ ganttChartId }) => {
   const userToken = await Token();
   const token = userToken.Credential;
-  //console.log(token);
+
   console.log("gantbar by gant chart ", ganttChartId);
   const result = await getAllGanttBarByGanttChartIDService({
     ganttChartId,
@@ -389,18 +386,25 @@ export const assignMemberInChecklistAction = async (
  *move the task
  */
 export const moveTaskOrderAction = async (boardId, newId, oldId) => {
-  const userToken = await Token();
-  const token = userToken?.Credential;
-  const result = await moveTaskOrderService(boardId, newId, oldId, token);
-  revalidateTag("tasks");
-  
-  // Emit WebSocket event for real-time updates
-  if (result.success && typeof window !== 'undefined') {
-    // This will be handled by the client-side WebSocket hook
-    console.log("Task order updated, WebSocket event will be emitted by client");
+  try {
+    const userToken = await Token();
+    const token = userToken?.Credential;
+    if (!token) {
+      throw new Error("No authentication token found");
+    }
+
+    const result = await moveTaskOrderService({
+      boardId,
+      newId,
+      oldId,
+      token,
+    });
+    revalidateTag("tasks");
+    return { success: true, data: result };
+  } catch (error) {
+    console.error("Move task action error:", error.message);
+    return { success: false, error: error.message };
   }
-  
-  return result;
 };
 
 /* fixed bug
@@ -824,19 +828,24 @@ export const uploadCoverChecklistAction = async (checklistId, file) => {
  * achange status task fix bugss
  */
 export const changeStatusTaskAction = async (taskId, type) => {
-  const userToken = await Token();
-  const token = userToken?.Credential;
-  const result = await changeStatusTaskService(taskId, token, type);
-  revalidateTag("tasks");
-  
-  // Emit WebSocket event for real-time updates
-  if (result.success && typeof window !== 'undefined') {
-    // This will be handled by the client-side WebSocket hook
-    console.log("Task status updated, WebSocket event will be emitted by client");
+  try {
+    const userToken = await Token();
+    const token = userToken?.Credential;
+    if (!token) {
+      throw new Error("No authentication token found");
+    }
+
+    const result = await changeStatusTaskService({
+      taskId,
+      type,
+      token,
+    });
+    revalidateTag("tasks");
+    return { success: true, data: result };
+  } catch (error) {
+    console.error("Change status action error:", error.message);
+    return { success: false, error: error.message };
   }
-  
-  console.log("status action task fix bug", taskId, type);
-  return result;
 };
 
 /*
@@ -943,6 +952,14 @@ export const updateCheckListDateByIdAndTaskIdAction = async ({
   const result = await updateCheckListDateByIdAndTaskIdService({
     finishedAt,
     checklistId,
+    token,
+  });
+  return result;
+};
+
+export const getBoardByIdAction = async ({ boardId, token }) => {
+  const result = await getBoardByIdService({
+    boardId,
     token,
   });
   return result;

@@ -22,7 +22,7 @@ export const getCurrentUserProfileService = async ({ token }) => {
   return data;
 };
 
-export const updateUserProfileService = async ({ token, userData }) => {
+export const updateUserProfileService = async (userData, token) => {
   const response = await fetch(
     profileRouteGroup.updateCurrentUserProfile(),
     {
@@ -35,7 +35,6 @@ export const updateUserProfileService = async ({ token, userData }) => {
       next: { tags: ["profile"] },
     }
   );
-
   const data = await response.json();
   return data;
 };

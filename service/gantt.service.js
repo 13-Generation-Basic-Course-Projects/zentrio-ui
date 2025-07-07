@@ -220,3 +220,18 @@ export async function updateGantBarBytGantChartIdService({
   
   return { success: true, data: result };
 }
+
+export const createGanttChartByBoardIdService = async ({ boardId, data, token }) => {
+  const url = ganttRouteGroup.createGanttChartByBoardId(boardId);
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+    next: { tags: ["gantt"] },
+  });
+  const result = await res.json();
+  return result;
+};

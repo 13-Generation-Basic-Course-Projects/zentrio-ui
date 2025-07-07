@@ -55,3 +55,16 @@ export const getUserByUserIdService = async ({ userId, token }) => {
     throw error;
   }
 };
+
+export const getAllMemberByBoardIdService = async ({ boardId, token }) => {
+  const url = memberRouteGroup.getAllMemberByBoardId(boardId);
+  const res = await fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  const data = await res.json();
+  return data;
+};

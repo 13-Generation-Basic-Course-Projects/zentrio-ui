@@ -47,7 +47,7 @@ export default function PopupActionTaskMoveInProgress({
 
     setIsSubmitting(true);
     try {
-      console.log({ taskId, comment });
+      //console.log({ taskId, comment });
       const result = await FeedBackAction(taskId, { comment, taskId });
       toast.success("Feedback submitted successfully!", {
         position: "top-right",
@@ -60,7 +60,7 @@ export default function PopupActionTaskMoveInProgress({
       setComment("");
       onOpenChange(false);
     } catch (error) {
-      console.error("Feedback submission failed", error);
+      //console.error("Feedback submission failed", error);
       toast.error("Failed to submit feedback!", {
         position: "top-right",
         autoClose: 3000,

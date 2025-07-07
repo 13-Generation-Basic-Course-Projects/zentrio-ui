@@ -119,7 +119,7 @@ export const deleteNotificationByIdService = async (notificationId, token) => {
       },
     });
 
-    //console.log("response", response);
+    
 
     return response;
   } catch (error) {

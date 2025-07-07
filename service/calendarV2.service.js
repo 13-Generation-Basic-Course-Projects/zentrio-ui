@@ -334,3 +334,17 @@ export const getChecklistByTaskIdService = async ({ taskId, token }) => {
     throw error;
   }
 };
+
+export const deleteCalendarV2ByIdService = async ({ calendarId, token }) => {
+  const url = calendarV2RouteGroup.deleteCalendarV2ById(calendarId);
+  const res = await fetch(url, {
+    method: "DELETE",
+    headers: {
+      accept: "*/*",
+      Authorization: `Bearer ${token}`,
+    },
+    next: { tags: ["calendar"] },
+  });
+  const data = await res.json();
+  return data;
+};

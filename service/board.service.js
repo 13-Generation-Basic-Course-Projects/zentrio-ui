@@ -370,23 +370,16 @@ export const createCheckListService = async ({ taskId, data, token }) => {
  * get board by board id
  */
 export const getBoardByBoardIdService = async ({ boardId, token }) => {
-  try {
-    console.log("token bos board ", token);
-    const url = boardRouteGroup.getBoardById(boardId);
-    const res = await fetch(url, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const data = await res.json();
-    // console.log("📥 Backend responded with board:", data);
-
-    return data;
-  } catch (error) {
-    throw error;
-  }
+  const url = boardRouteGroup.getBoardById(boardId);
+  const res = await fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  const data = await res.json();
+  return data;
 };
 /*
  * create comment

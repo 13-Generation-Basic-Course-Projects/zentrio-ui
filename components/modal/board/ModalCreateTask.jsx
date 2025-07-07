@@ -23,7 +23,7 @@ import { taskFormSchema } from "@/lib/schemas/createTaskSchema";
 import { createTaskByBoardIdAndGanttChartIdAction } from "@/action/board.action";
 import { toast } from "react-toastify";
 import PopupActionNoGanttChart from "@/components/popup/PopupActionNoGanttChart";
-import { useRealtime } from "@/hooks/useRealtime";
+import { useRouter } from "next/navigation";
 
 export default function ModalCreateTask({
   input,
@@ -35,10 +35,15 @@ export default function ModalCreateTask({
   userId,
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const router = useRouter();
   const [apiError, setApiError] = useState(null);
-
-  // Real-time connection
-  const { emitEvent } = useRealtime(boardId);
+  const [isLoading, setIsLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    startedAt: "",
+    finishedAt: "",
+  });
 
   const {
     control,
@@ -108,14 +113,14 @@ export default function ModalCreateTask({
       ganttEndDate.getDate()
     );
 
-    console.log(
-      "Today:",
-      todayStart,
-      "Gantt Start:",
-      ganttStart,
-      "Gantt End:",
-      ganttEnd
-    );
+    //console.log(
+    //   "Today:",
+    //   todayStart,
+    //   "Gantt Start:",
+    //   ganttStart,
+    //   "Gantt End:",
+    //   ganttEnd
+    // );
 
     if (ganttEnd < todayStart) {
       return "expired"; // Past end date
@@ -150,284 +155,30 @@ export default function ModalCreateTask({
     });
   };
 
-  // const onSubmit = async (data) => {
-  //   try {
-  //     setApiError(null);
+  const onSubmit = async (data) => {
+    setIsLoading(true);
 
-  //     // Validate ganttChartId
-  //     if (!ganttChartId || ganttChartId === "No data available") {
-  //       throw new Error("No valid Gantt chart available");
-  //     }
-
-  //     // Validate ganttBarId
-  //     const selectedGanttBar = ganttbar?.payload?.find(
-  //       (bar) => bar.ganttBarId === data.ganttBarId
-  //     );
-  //     if (!selectedGanttBar) {
-  //       throw new Error("Invalid Gantt bar ID selected");
-  //     }
-
-  //     // Updated: Only check for expired status, allow not_started
-  //     if (isGanttBarExpired(selectedGanttBar)) {
-  //       throw new Error("Cannot create task for an expired Gantt bar");
-  //     }
-
-  //     // Parse and adjust dates
-  //     const taskStart = new Date(data.dateRange.start);
-  //     const taskEnd = new Date(data.dateRange.end);
-
-  //     // Get current time and add 4 minutes
-  //     const now = new Date();
-  //     const fourMinutesMs = 4 * 60 * 1000; // 4 minutes in milliseconds
-  //     const nowPlusFourMinutes = new Date(now.getTime() + fourMinutesMs);
-
-  //     // For not_started Gantt bars, set task start time based on Gantt bar start date
-  //     const ganttBarStatus = getGanttBarStatus(selectedGanttBar);
-  //     if (ganttBarStatus === "not_started") {
-  //       // If Gantt bar hasn't started, use the Gantt bar's start date/time
-  //       const ganttStartDate = new Date(selectedGanttBar.startedAt);
-  //       taskStart.setHours(
-  //         ganttStartDate.getHours(),
-  //         ganttStartDate.getMinutes(),
-  //         ganttStartDate.getSeconds(),
-  //         ganttStartDate.getMilliseconds()
-  //       );
-  //     } else {
-  //       // For active Gantt bars, set taskStart to current time + 4 minutes on the selected start date
-  //       taskStart.setHours(
-  //         nowPlusFourMinutes.getHours(),
-  //         nowPlusFourMinutes.getMinutes(),
-  //         nowPlusFourMinutes.getSeconds(),
-  //         nowPlusFourMinutes.getMilliseconds()
-  //       );
-  //     }
-
-  //     // Set end date to end of day (23:59:59.999)
-  //     taskEnd.setHours(23, 59, 59, 999);
-
-  //     // Validate task dates against Gantt bar
-  //     const ganttStart = new Date(selectedGanttBar.startedAt);
-  //     const ganttEnd = new Date(selectedGanttBar.finishedAt);
-  //     if (taskStart < ganttStart) {
-  //       throw new Error(
-  //         `Task start date must be on or after Gantt bar start date (${ganttStart.toLocaleDateString()})`
-  //       );
-  //     }
-  //     if (taskEnd > ganttEnd) {
-  //       throw new Error(
-  //         `Task end date must be on or before Gantt bar end date (${ganttEnd.toLocaleDateString()})`
-  //       );
-  //     }
-
-  //     const payload = {
-  //       title: data.title,
-  //       description: data.description,
-  //       startedAt: taskStart.toISOString(),
-  //       finishedAt: taskEnd.toISOString(),
-  //       boardId: boardId,
-  //       ganttBarId: data.ganttBarId,
-  //       leaderId: data.teamLeader || null,
-  //     };
-
-  //     const result = await createTaskByBoardIdAndGanttChartIdAction(
-  //       payload,
-  //       boardId,
-  //       ganttChartId
-  //     );
-
-  //     // Note: The commented success check suggests the result structure may differ.
-  //     // Adjust based on actual API response.
-  //     if (result.status === 400) {
-  //       // throw new Error(result.detail || "Failed to create task");
-  //       toast.error(`"${data.title}"\nfailed create Task unsuccessfully!`, {
-  //         position: "top-right",
-  //         autoClose: 3000,
-  //       });
-  //     }
-
-  //     toast.success(`"${data.title}"\nTask created successfully!`, {
-  //       position: "top-right",
-  //       autoClose: 3000,
-  //     });
-
-  //     reset();
-  //     onOpenChange();
-  //   } catch (error) {
-  //     console.error("Error creating task:", error.message);
-  //     setApiError(
-  //       error.message.includes("Gantt bar")
-  //         ? `Gantt Bar Error: ${error.message}`
-  //         : `Error: ${error.message}`
-  //     );
-  //     toast.error(
-  //       error.message.includes("Gantt bar")
-  //         ? `Gantt Bar Error: ${error.message}`
-  //         : `Error: ${error.message}`,
-  //       {
-  //         position: "top-right",
-  //         autoClose: 3000,
-  //       }
-  //     );
-  //   }
-  // };
-// Fixed logic for setting task start time
-const onSubmit = async (data) => {
-  try {
-    setApiError(null);
-
-    // Validate ganttChartId
-    if (!ganttChartId || ganttChartId === "No data available") {
-      throw new Error("No valid Gantt chart available");
-    }
-
-    // Validate ganttBarId
-    const selectedGanttBar = ganttbar?.payload?.find(
-      (bar) => bar.ganttBarId === data.ganttBarId
-    );
-    if (!selectedGanttBar) {
-      throw new Error("Invalid Gantt bar ID selected");
-    }
-
-    // Updated: Only check for expired status, allow not_started
-    if (isGanttBarExpired(selectedGanttBar)) {
-      throw new Error("Cannot create task for an expired Gantt bar");
-    }
-
-    // Parse and adjust dates
-    const taskStart = new Date(data.dateRange.start);
-    const taskEnd = new Date(data.dateRange.end);
-
-    // Get current time and add 4 minutes
-    const now = new Date();
-    const fourMinutesMs = 4 * 60 * 1000; // 4 minutes in milliseconds
-    const nowPlusFourMinutes = new Date(now.getTime() + fourMinutesMs);
-
-    // Get Gantt bar start and end times
-    const ganttStartDate = new Date(selectedGanttBar.startedAt);
-    const ganttEndDate = new Date(selectedGanttBar.finishedAt);
-
-    // For not_started Gantt bars, set task start time based on Gantt bar start date
-    const ganttBarStatus = getGanttBarStatus(selectedGanttBar);
-    
-    if (ganttBarStatus === "not_started") {
-      // If Gantt bar hasn't started, use the Gantt bar's start date/time
-      taskStart.setHours(
-        ganttStartDate.getHours(),
-        ganttStartDate.getMinutes(),
-        ganttStartDate.getSeconds(),
-        ganttStartDate.getMilliseconds()
-      );
-    } else {
-      // For active Gantt bars, we need to be more careful
-      // Set task start time to the later of:
-      // 1. Current time + 4 minutes
-      // 2. Gantt bar start time (if it's later today)
-      
-      // Create a date with today's date but Gantt bar's time
-      const todayWithGanttTime = new Date(taskStart);
-      todayWithGanttTime.setHours(
-        ganttStartDate.getHours(),
-        ganttStartDate.getMinutes(),
-        ganttStartDate.getSeconds(),
-        ganttStartDate.getMilliseconds()
+    try {
+      const result = await createTaskByBoardIdAndGanttChartIdAction(
+        data,
+        boardId,
+        ganttChartId
       );
 
-      // Use the later of the two times
-      const effectiveStartTime = nowPlusFourMinutes > todayWithGanttTime 
-        ? nowPlusFourMinutes 
-        : todayWithGanttTime;
-
-      taskStart.setHours(
-        effectiveStartTime.getHours(),
-        effectiveStartTime.getMinutes(),
-        effectiveStartTime.getSeconds(),
-        effectiveStartTime.getMilliseconds()
-      );
-    }
-
-    // Set end date to end of day (23:59:59.999)
-    taskEnd.setHours(23, 59, 59, 999);
-
-    // Validate task dates against Gantt bar
-    if (taskStart < ganttStartDate) {
-      throw new Error(
-        `Task start time cannot be before Gantt bar start time (${ganttStartDate.toLocaleString()})`
-      );
-    }
-    if (taskEnd > ganttEndDate) {
-      throw new Error(
-        `Task end date must be on or before Gantt bar end date (${ganttEndDate.toLocaleDateString()})`
-      );
-    }
-
-    const payload = {
-      title: data.title,
-      description: data.description,
-      startedAt: taskStart.toISOString(),
-      finishedAt: taskEnd.toISOString(),
-      boardId: boardId,
-      ganttBarId: data.ganttBarId,
-      leaderId: data.teamLeader || null,
-    };
-
-    const result = await createTaskByBoardIdAndGanttChartIdAction(
-      payload,
-      boardId,
-      ganttChartId
-    );
-
-    if (result.status === 400) {
-      toast.error(`"${data.title}"\nfailed create Task unsuccessfully!`, {
-        position: "top-right",
-        autoClose: 3000,
-      });
-      return;
-    }
-
-    toast.success(`"${data.title}"\nTask created successfully!`, {
-      position: "top-right",
-      autoClose: 3000,
-    });
-
-    // Emit real-time event for task creation
-    emitEvent('task-created', {
-      taskId: result.payload?.taskId || `temp-${Date.now()}`,
-      title: data.title,
-      description: data.description,
-      startedAt: taskStart.toISOString(),
-      finishedAt: taskEnd.toISOString(),
-      boardId: boardId,
-      ganttBarId: data.ganttBarId,
-      leaderId: data.teamLeader || null,
-      stage: 'TO_DO', // New tasks start in TO_DO
-      taskOrder: result.payload?.taskOrder || 1,
-      creator: {
-        userId: userId,
-        username: allMemberInBoard?.find(m => m.userId === userId)?.username || 'Unknown',
-        imageUrl: allMemberInBoard?.find(m => m.userId === userId)?.profileImage || null
+      if (result.success) {
+        toast.success("Task created successfully!");
+        onOpenChange(false);
+        router.refresh();
+      } else {
+        toast.error(result.error || "Failed to create task");
       }
-    });
+    } catch (error) {
+      toast.error("An error occurred while creating task");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    reset();
-    onOpenChange();
-  } catch (error) {
-    console.error("Error creating task:", error.message);
-    setApiError(
-      error.message.includes("Gantt bar")
-        ? `Gantt Bar Error: ${error.message}`
-        : `Error: ${error.message}`
-    );
-    toast.error(
-      error.message.includes("Gantt bar")
-        ? `Gantt Bar Error: ${error.message}`
-        : `Error: ${error.message}`,
-      {
-        position: "top-right",
-        autoClose: 3000,
-      }
-    );
-  }
-};
   const handleClose = () => {
     reset();
     setApiError(null);
@@ -784,8 +535,8 @@ const onSubmit = async (data) => {
                       type="submit"
                       color="primary"
                       radius="full"
-                      isLoading={isSubmitting}
-                      isDisabled={isSubmitting}>
+                      isLoading={isLoading}
+                      isDisabled={isLoading}>
                       Save
                     </Button>
                   </div>
