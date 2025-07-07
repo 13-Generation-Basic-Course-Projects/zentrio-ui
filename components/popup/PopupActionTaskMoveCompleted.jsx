@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 
 import {
   Modal,
@@ -11,12 +11,14 @@ import {
   useDisclosure,
   useDraggable,
 } from "@heroui/react";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import {
-  changeStageToUnderReviewAction,
+  changeStatusTaskAction,
   deleteTaskAction,
 } from "@/action/board.action";
-export default function PopupActionTaskMoveComplete({
+import { useRouter } from "next/navigation";
+
+export default function PopupActionTaskMoveCompleted({
   title,
   icon,
   bgcolor,
@@ -30,8 +32,11 @@ export default function PopupActionTaskMoveComplete({
   ganttBarId,
   taskId,
   boardId,
+  onClose,
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
 
   const targetRef = React.useRef(null);
   const { moveProps } = useDraggable({
@@ -40,28 +45,21 @@ export default function PopupActionTaskMoveComplete({
     isDisabled: !isOpen,
   });
 
-  const handleDelete = async () => {
+  const handleComplete = async () => {
+    setIsLoading(true);
     try {
-      const result = await changeStageToUnderReviewAction(taskId, "COMPLETED");
-      console.log("respon delete", result);
-      toast.success("Task move stage successfully!", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-      });
+      const result = await changeStatusTaskAction(taskId, "COMPLETED");
+      if (result.success) {
+        toast.success("Task completed successfully!");
+        onClose();
+        router.refresh();
+      } else {
+        toast.error(result.error || "Failed to complete task");
+      }
     } catch (error) {
-      console.error("Delete failed", error);
-      toast.error("Failed to move task!", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-      });
+      toast.error("An error occurred while completing task");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -137,7 +135,7 @@ export default function PopupActionTaskMoveComplete({
                       <Button
                         className="bg-green-300 text-white font-semibold"
                         onPress={onClose}
-                        onClick={handleDelete}
+                        onClick={handleComplete}
                         // onPress={onClose}
                       >
                         <p className="text-white">{massageDo}</p>

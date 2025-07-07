@@ -36,7 +36,7 @@ export default function PopupActionInFolder({
       await deleteFileByFileIdAction({ fileId, accessToken });
       router.refresh();
     } catch (error) {
-      console.error("Delete failed", error);
+      //console.error("Delete failed", error);
     }
   };
 

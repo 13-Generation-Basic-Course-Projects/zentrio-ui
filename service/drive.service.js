@@ -166,6 +166,7 @@ export const uploadDocumentToFolderServie = async ({
         Authorization: `Bearer ${token}`,
       },
       body: formData,
+      next: { tags: ["documents"] },
     });
 
     if (!res.ok) {

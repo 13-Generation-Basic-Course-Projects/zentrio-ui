@@ -9,7 +9,7 @@ import {
   updateFileNameByFileIdService,
   uploadDocumentToFolderServie,
 } from "@/service/drive.service";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 export const createDriveFileAction = async ({
   name,
@@ -29,7 +29,7 @@ export const createDriveFileAction = async ({
       tokenFromGoogle,
     );
 
-    revalidatePath("/document");
+    revalidateTag("documents");
     return document;
   } catch (error) {
     console.error("Error creting file: ", error);
@@ -43,7 +43,7 @@ export const deleteFileByFileIdAction = async ({ fileId, accessToken }) => {
   const token = userToken.Credential;
 
   const file = await deleteFileByFileIdService({ accessToken, fileId, token });
-  revalidatePath('/document');
+  revalidateTag("documents");
 
   return file;
 };
@@ -87,7 +87,7 @@ export const updateFileNameByFileIdAction = async ({
     });
 
     console.log("✅ File name updated:", updated);
-    revalidatePath("/docu");
+    revalidateTag("documents");
     return updated;
   } catch (error) {
     console.error("❌ updateFileNameByFileIdAction error:", error.message);
@@ -130,7 +130,7 @@ export const uploadDocumentToFolderAction = async ({
     token,
   });
 
-  revalidatePath("/docu");
+  revalidateTag("documents");
 
   return document;
 };

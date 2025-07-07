@@ -1,0 +1,16 @@
+services:
+  zentrio-ui:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      NEXTAUTH_URL: https://kshrd.zentrio.pro
+      NEXT_PUBLIC_ONESIGNAL_APP_ID: eb585bc8-4e85-4114-8bbd-43d138858043
+      NEXTAUTH_SECRET: o3GN57QYdGHCncAnFyF5IqK/KKy7/gRLV9JNsivBG3U=
+      GOOGLE_CLIENT_ID: 512720315813-t8pf1ac1rcrsgqamcr1eagmjjaf5ak09.apps.googleusercontent.com
+      GOOGLE_CLIENT_SECRET: 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
+      AUTH_TRUST_HOST: "true"
+    restart: unless-stopped
+

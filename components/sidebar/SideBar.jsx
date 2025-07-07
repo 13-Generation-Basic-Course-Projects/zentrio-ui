@@ -27,7 +27,7 @@ import { Button } from "@heroui/react";
 import { BadgeMinus } from "lucide-react";
 
 export default function DashboardSidebar({ getWorKSpaceJoined}) {
-  console.log("workspace join inside bar", getWorKSpaceJoined);
+  //console.log("workspace join inside bar", getWorKSpaceJoined);
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { toggleSidebar } = useSidebar();
@@ -88,7 +88,7 @@ export default function DashboardSidebar({ getWorKSpaceJoined}) {
 
   const isTl = role === "ROLE_LEADER";
   const isMem = role === "ROLE_MEMBER";
-  console.log(" Current Role: ", role);
+  //console.log(" Current Role: ", role);
 
   const items = [
     {
@@ -377,7 +377,7 @@ export default function DashboardSidebar({ getWorKSpaceJoined}) {
     : items;
 
 
-  console.log("toggle: ", includesPathOtherWorkSpace);
+  //console.log("toggle: ", includesPathOtherWorkSpace);
 
   return (
     <Sidebar collapsible="icon" className="border-none rounded-tr-3xl bg-white">
