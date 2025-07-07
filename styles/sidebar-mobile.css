@@ -1,0 +1,39 @@
+/* Mobile-specific sidebar styles */
+@media (max-width: 768px) {
+  .sidebar-mobile {
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .sidebar-mobile.collapsed {
+    transform: translateX(-100%);
+  }
+  
+  .sidebar-mobile.expanded {
+    transform: translateX(0);
+  }
+  
+  /* Ensure sidebar content is properly sized on mobile */
+  .sidebar-content-mobile {
+    width: 100%;
+    max-width: 320px;
+  }
+  
+  /* Mobile menu button positioning */
+  .mobile-menu-button {
+    position: relative;
+    z-index: 30;
+  }
+  
+  /* Backdrop overlay */
+  .sidebar-backdrop {
+    transition: opacity 0.3s ease-in-out;
+  }
+}
+
+/* Tablet and desktop styles */
+@media (min-width: 769px) {
+  .sidebar-desktop {
+    position: relative;
+    z-index: auto;
+  }
+} 

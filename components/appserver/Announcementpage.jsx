@@ -28,7 +28,7 @@ export default function Announcementpage({
   const currentUserRoles = currentUserBoardInfo?.roles || [];
   const isProjectManager = currentUserRoles.includes("ROLE_MANAGER");
 
-  const initialAnnouncements = (Announcements && Announcements.payload) || [];
+  const initialAnnouncements = (Announcements?.payload) || [];
   const initialCommentsMap = initialAnnouncements.reduce((acc, ann) => {
     acc[ann.announcementId] = ann.comments || [];
     return acc;
@@ -36,11 +36,8 @@ export default function Announcementpage({
 
   const [announcements, setAnnouncements] = useState(initialAnnouncements);
   const [commentsMap, setCommentsMap] = useState(initialCommentsMap);
-  const [isConnected, setIsConnected] = useState(false);
 
   const sortedAnnouncements = useMemo(() => {
-    if (!announcements || announcements.length === 0) return [];
-
     return [...announcements].sort((a, b) => {
       if (a.isPinned && !b.isPinned) return -1;
       if (!a.isPinned && b.isPinned) return 1;
@@ -53,7 +50,7 @@ export default function Announcementpage({
 
   const stompClientRef = useRef(null);
 
-  // WebSocket connection setup
+  // ✅ Setup WebSocket + subscriptions
   useEffect(() => {
     if (!boardId) return;
 
@@ -64,145 +61,104 @@ export default function Announcementpage({
     stompClient.connect(
       {},
       () => {
-        setIsConnected(true);
+        // ✅ Subscribe only after successful connection
+        stompClient.subscribe(`/topic/board/${boardId}/announcements`, (message) => {
+          const payload = JSON.parse(message.body);
+          const { type, announcement, announcementId } = payload;
+
+          setAnnouncements((prev) => {
+            switch (type) {
+              case "CREATED":
+                if (!prev.find((a) => a.announcementId === announcement.announcementId)) {
+                  setCommentsMap((prevComments) => ({
+                    ...prevComments,
+                    [announcement.announcementId]: [],
+                  }));
+                  return [...prev, announcement];
+                }
+                return prev;
+
+              case "UPDATED":
+                return prev.map((a) =>
+                  a.announcementId === announcement.announcementId ? { ...announcement } : a
+                );
+
+              case "DELETED":
+                setCommentsMap((prevComments) => {
+                  const copy = { ...prevComments };
+                  delete copy[announcementId];
+                  return copy;
+                });
+                return prev.filter((a) => a.announcementId !== announcementId);
+
+              default:
+                return prev;
+            }
+          });
+        });
+
+        stompClient.subscribe(`/topic/board/${boardId}/comments`, (message) => {
+          try {
+            const payload = JSON.parse(message.body);
+            const { type = "CREATED", comment = payload.comment || payload, commentId, announcementId = comment?.announcementId || payload.announcementId } = payload;
+
+            setCommentsMap((prev) => {
+              const prevComments = prev[announcementId] || [];
+              const currentCommentId = comment.id || commentId;
+
+              let newState;
+              switch (type) {
+                case "CREATED":
+                  if (prevComments.find((c) => c.id === currentCommentId)) return prev;
+                  newState = {
+                    ...prev,
+                    [announcementId]: [...prevComments, comment],
+                  };
+                  break;
+
+                case "UPDATED":
+                  newState = {
+                    ...prev,
+                    [announcementId]: prevComments.map((c) =>
+                      c.id === currentCommentId ? { ...comment } : c
+                    ),
+                  };
+                  break;
+
+                case "DELETED":
+                  newState = {
+                    ...prev,
+                    [announcementId]: prevComments.filter((c) => c.id !== commentId),
+                  };
+                  break;
+
+                default:
+                  return prev;
+              }
+
+              return newState;
+            });
+          } catch (err) {
+            console.error("Comment WebSocket error:", err);
+          }
+        });
       },
       (error) => {
         console.error("WebSocket connection error:", error);
-        setIsConnected(false);
       }
     );
 
     return () => {
-      if (stompClientRef.current && stompClientRef.current.connected) {
-        stompClientRef.current.disconnect(() => {
-          setIsConnected(false);
+      if (stompClient && stompClient.connected) {
+        stompClient.disconnect(() => {
+          console.log("Disconnected");
         });
       }
     };
   }, [boardId]);
 
-  // Announcement subscription
-  useEffect(() => {
-    const stompClient = stompClientRef.current;
-    if (!stompClient || !isConnected) return;
-
-    const announcementSubscription = stompClient.subscribe(
-      `/topic/board/${boardId}/announcements`,
-      (message) => {
-        const payload = JSON.parse(message.body);
-        const type = payload.type;
-        const announcement = payload.announcement;
-        const announcementId = payload.announcementId;
-
-        setAnnouncements((prev) => {
-          switch (type) {
-            case "CREATED":
-              if (!prev.find((a) => a.announcementId === announcement.announcementId)) {
-                setCommentsMap((prevComments) => ({
-                  ...prevComments,
-                  [announcement.announcementId]: [],
-                }));
-                return [...prev, announcement];
-              }
-              return prev;
-
-            case "UPDATED":
-              return prev.map((a) =>
-                a.announcementId === announcement.announcementId ? { ...announcement } : a
-              );
-
-            case "DELETED":
-              setCommentsMap((prevComments) => {
-                const copy = { ...prevComments };
-                delete copy[announcementId];
-                return copy;
-              });
-              return prev.filter((a) => a.announcementId !== announcementId);
-
-            default:
-              return prev;
-          }
-        });
-      }
-    );
-
-    return () => {
-      if (announcementSubscription) {
-        announcementSubscription.unsubscribe();
-      }
-    };
-  }, [boardId, isConnected]);
-
-  // Enhanced comment subscription with better error handling
-  useEffect(() => {
-    const stompClient = stompClientRef.current;
-    if (!stompClient || !isConnected) return;
-
-    const commentSubscription = stompClient.subscribe(
-      `/topic/board/${boardId}/comments`,
-      (message) => {
-        try {
-          const payload = JSON.parse(message.body);
-          const type = payload.type || "CREATED";
-          const comment = payload.comment || payload;
-          const commentId = payload.commentId;
-          const announcementId = comment?.announcementId || payload.announcementId;
-
-          setCommentsMap((prev) => {
-            const prevComments = prev[announcementId] || [];
-            const currentCommentId = comment.id || commentId;
-
-            let newState;
-            switch (type) {
-              case "CREATED":
-                if (prevComments.find((c) => c.id === currentCommentId)) {
-                  return prev;
-                }
-                newState = { 
-                  ...prev, 
-                  [announcementId]: [...prevComments, comment] 
-                };
-                break;
-
-              case "UPDATED":
-                newState = {
-                  ...prev,
-                  [announcementId]: prevComments.map((c) => 
-                    c.id === currentCommentId ? { ...comment } : c
-                  ),
-                };
-                break;
-
-              case "DELETED":
-                newState = {
-                  ...prev,
-                  [announcementId]: prevComments.filter((c) => c.id !== commentId),
-                };
-                break;
-
-              default:
-                return prev;
-            }
-
-            return newState;
-          });
-        } catch (error) {
-          console.error('Error processing comment message:', error);
-        }
-      }
-    );
-
-    return () => {
-      if (commentSubscription) {
-        commentSubscription.unsubscribe();
-      }
-    };
-  }, [boardId, isConnected]);
-
-  // Memoize the commentsMap to ensure CartPostAnnouncement re-renders when it changes
   const memoizedCommentsMap = useMemo(() => commentsMap, [commentsMap]);
 
-  // Callback to handle comment updates from child components
   const handleCommentUpdate = useCallback((announcementId, newComment) => {
     setCommentsMap((prev) => ({
       ...prev,
@@ -229,42 +185,44 @@ export default function Announcementpage({
           </Button>
         </div>
         <div className="col-span-7">
-          <div className="pt-0 ">
-            {isProjectManager && (
-              <CardCreateAnnouncement
-                boardId={boardId}
-                boardMember={boardMember}
-                Announcements={Announcements}
-                preventUserImage={preventUserImage}
-                onCommentUpdate={handleCommentUpdate}
-              />
-            )}
-          </div>
+          {isProjectManager && (
+            <CardCreateAnnouncement
+              boardId={boardId}
+              boardMember={boardMember}
+              Announcements={Announcements}
+              preventUserImage={preventUserImage}
+              onCommentUpdate={handleCommentUpdate}
+            />
+          )}
 
           <div className="w-full h-full">
-            <div>
-              {sortedAnnouncements.length > 0 ? (
-                <CartPostAnnouncement
-                  Announcements={{ payload: sortedAnnouncements }}
-                  commentsMap={memoizedCommentsMap}
-                  currentUserProfile={currentUserProfile}
-                  boardId={boardId}
-                  preventUserImage={preventUserImage}
-                  boardMember={boardMember}
-                  onCommentUpdate={handleCommentUpdate}
-                />
-              ) : (
-                <div className="flex flex-col items-center justify-center h-[70vh] text-gray-500">
-                  <Image src={nothing} alt="No Announcements" width={100} height={100} />
-                  <p className="text-xl text-primary font-medium mt-4">Nothing has announcement</p>
-                </div>
-              )}
-            </div>
+            {sortedAnnouncements.length > 0 ? (
+              <CartPostAnnouncement
+                Announcements={{ payload: sortedAnnouncements }}
+                commentsMap={memoizedCommentsMap}
+                currentUserProfile={currentUserProfile}
+                boardId={boardId}
+                preventUserImage={preventUserImage}
+                boardMember={boardMember}
+                onCommentUpdate={handleCommentUpdate}
+              />
+            ) : (
+              <div className="flex flex-col items-center justify-center h-[70vh] text-gray-500">
+                <Image src={nothing} alt="No Announcements" width={100} height={100} />
+                <p className="text-xl text-primary font-medium mt-4">
+                  Nothing has announcement
+                </p>
+              </div>
+            )}
           </div>
         </div>
 
         <div className="col-span-4">
-          <CardAllMembers boardMember={boardMember} preventUserImage={preventUserImage} boardId={boardId} />
+          <CardAllMembers
+            boardMember={boardMember}
+            preventUserImage={preventUserImage}
+            boardId={boardId}
+          />
           <ClockWeather />
         </div>
       </div>
