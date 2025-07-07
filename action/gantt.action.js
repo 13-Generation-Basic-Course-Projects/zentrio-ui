@@ -9,7 +9,7 @@ import {
   updateGantBarBytGantChartIdService,
   updateGantChartBytIdService,
 } from "@/service/gantt.service";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 console.log("test actions must create folders");
 /*
  * get ganttbar
@@ -78,7 +78,7 @@ export const createGanttBarsByGanttChartIdAction = async ({
       data: validatedPayload, // Pass the validated payload
       token,
     });
-    revalidatePath("/gantbar");
+    revalidateTag("gantt");
     return result;
   } catch (error) {
     console.error("❌ Validation error or action failed:", error);
@@ -104,6 +104,7 @@ export const updateGanttChartByIdAction = async ({
     data,
     token,
   });
+  revalidateTag("gantt");
   return result;
 };
 
@@ -123,7 +124,7 @@ export const deleteGanttBarsByGanttChartIdAction = async ({
     ganttBarId, 
     token,
   });
-  revalidatePath("/gantbar");
+  revalidateTag("gantt");
   return result;
 };
 
@@ -153,6 +154,6 @@ export const updateGantBarBytGantChartIdAction = async ({
     face,
     token,
   });
-  revalidatePath("/gantbar");                  
+  revalidateTag("gantt");                  
   return result;
 };

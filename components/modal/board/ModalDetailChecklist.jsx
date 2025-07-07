@@ -104,7 +104,7 @@ const useChecklistData = (checklistId, isOpen) => {
 
     try {
       const result = await getAttachmentAction(checklistId); // Fixed typo
-      console.log("RESULT IN MODAL:", result);
+      //console.log("RESULT IN MODAL:", result);
 
       if (result.success && result.payload) {
         // Convert single object to array for consistency
@@ -147,7 +147,7 @@ const useChecklistData = (checklistId, isOpen) => {
     dispatch({ type: "SET_COMMENTS", payload: [] });
     try {
       const result = await getCommentByCheckListIdAction(checklistId);
-      console.log("Fetched comments:", result);
+      //console.log("Fetched comments:", result);
       if (result.success) {
         dispatch({ type: "SET_COMMENTS", payload: result.payload || [] });
       } else {
@@ -196,11 +196,11 @@ const useDescriptionEditor = (taskId, checklistId, isOpen) => {
   const [changedFields, setChangedFields] = useState(new Set());
 
   useEffect(() => {
-    console.log("useDescriptionEditor useEffect:", {
-      isOpen,
-      taskId,
-      checklistId,
-    });
+    //console.log("useDescriptionEditor useEffect:", {
+    //   isOpen,
+    //   taskId,
+    //   checklistId,
+    // });
 
     if (isOpen && taskId && checklistId) {
       const fetchTask = async () => {
@@ -230,8 +230,8 @@ const useDescriptionEditor = (taskId, checklistId, isOpen) => {
             setTaskStartedAt(taskStartedAt);
             setTaskFinishedAt(taskFinishedAt);
 
-            console.log("✔ Task Start:", taskStartedAt);
-            console.log("✔ Task Finish:", taskFinishedAt);
+            //console.log("✔ Task Start:", taskStartedAt);
+            //console.log("✔ Task Finish:", taskFinishedAt);
           }
 
           // Setup date range
@@ -278,7 +278,7 @@ const useDescriptionEditor = (taskId, checklistId, isOpen) => {
   };
 
   const handleCancel = () => {
-    console.log("Cancel clicked - reverting changes");
+    //console.log("Cancel clicked - reverting changes");
     setIsEditing(false);
     setIsEditingTitle(false);
     setNewDescription(checklistData?.description || "");
@@ -316,13 +316,13 @@ const useDescriptionEditor = (taskId, checklistId, isOpen) => {
 
   // const handleDateRangeChange = useCallback(
   //   async (value) => {
-  //     console.log("DateRangePicker onChange raw:", value);
+  //     //console.log("DateRangePicker onChange raw:", value);
 
   //     const end = value.end
   //       ? new Date(value.end.year, value.end.month - 1, value.end.day)
   //       : null;
 
-  //     console.log("Parsed End Date:", end?.toISOString());
+  //     //console.log("Parsed End Date:", end?.toISOString());
 
   //     if (!end) {
   //       toast.error("Finish date is required");
@@ -336,11 +336,11 @@ const useDescriptionEditor = (taskId, checklistId, isOpen) => {
   //           finishedAt: end.toISOString(),
   //           checklistId,
   //         });
-  //         console.log("✔ Checklist finishedAt updated:", res);
+  //         //console.log("✔ Checklist finishedAt updated:", res);
   //         toast.success("Checklist deadline extended");
   //       }
   //     } catch (err) {
-  //       console.error("❌ Failed to update checklist:", err);
+  //       //console.error("❌ Failed to update checklist:", err);
   //       toast.error("Failed to update checklist date");
   //     }
 
@@ -355,7 +355,7 @@ const useDescriptionEditor = (taskId, checklistId, isOpen) => {
   // );
   const handleFinishedAtChange = useCallback(
     async (value) => {
-      console.log("DatePicker onChange raw:", value);
+      //console.log("DatePicker onChange raw:", value);
 
       if (!value) {
         toast.error("Finish date is required");
@@ -390,7 +390,7 @@ const useDescriptionEditor = (taskId, checklistId, isOpen) => {
         (taskStart && selectedDate < taskStart) ||
         (taskFinish && selectedDate > taskFinish)
       ) {
-        toast.error("Finish date must be within the task’s valid date range");
+        toast.error("Finish date must be within the task's valid date range");
         return;
       }
 
@@ -408,11 +408,11 @@ const useDescriptionEditor = (taskId, checklistId, isOpen) => {
             finishedAt: selectedDate.toISOString(),
             checklistId,
           });
-          console.log("✔ Checklist finishedAt updated:", res);
+          //console.log("✔ Checklist finishedAt updated:", res);
           toast.success("Checklist deadline extended");
         }
       } catch (err) {
-        console.error("❌ Failed to update checklist:", err);
+        //console.error("❌ Failed to update checklist:", err);
         toast.error("Failed to update checklist date");
         return;
       }
@@ -431,9 +431,9 @@ const useDescriptionEditor = (taskId, checklistId, isOpen) => {
   );
 
   const handleSaveTitle = useCallback(async () => {
-    console.log("handleSaveTitle called with changedFields:", [
-      ...changedFields,
-    ]);
+   //console.log("handleSaveTitle called with changedFields:", [
+    //   ...changedFields,
+    // ]);
     if (changedFields.has("title") && !newTitle?.trim()) {
       setError("Title cannot be empty.");
       toast.error("Title cannot be empty", {
@@ -519,10 +519,10 @@ const useDescriptionEditor = (taskId, checklistId, isOpen) => {
         taskId: checklistData.taskId,
       };
 
-      console.log(
-        "Sending update title to updateCheckListByIdAndTaskIdAction:",
-        payload
-      );
+      //console.log(
+      //   "Sending update title to updateCheckListByIdAndTaskIdAction:",
+      //   payload
+      // );
 
       const result = await updateCheckListByIdAndTaskIdAction(
         checklistId,
@@ -574,9 +574,9 @@ const useDescriptionEditor = (taskId, checklistId, isOpen) => {
     changedFields,
   ]);
   const handleSaveDecription = useCallback(async () => {
-    console.log("handleSaveDescription called with changedFields:", [
-      ...changedFields,
-    ]);
+    // console.log("handleSaveDescription called with changedFields:", [
+    //   ...changedFields,
+    // ]);
     if (changedFields.has("description") && !newDescription?.trim()) {
       setError("Description cannot be empty.");
       toast.error("Description cannot be empty", {
@@ -661,10 +661,10 @@ const useDescriptionEditor = (taskId, checklistId, isOpen) => {
         taskId: checklistData.taskId,
       };
 
-      console.log(
-        "Sending update description to updateCheckListByIdAndTaskIdAction:",
-        payload
-      );
+      //console.log(
+      //   "Sending update description to updateCheckListByIdAndTaskIdAction:",
+      //   payload
+      // );
 
       const result = await updateCheckListByIdAndTaskIdAction(
         checklistId,
@@ -811,7 +811,7 @@ const ModalDetailChecklist = ({
   );
   const [totalCommentLength, setTotalCommentLength] = useState(0); // Add state
 
-  console.log("hhhh", image);
+  //console.log("hhhh", image);
 
   const disablePastDates = (date) => {
     const todayDate = today(getLocalTimeZone());
@@ -846,8 +846,8 @@ const ModalDetailChecklist = ({
   } = useDescriptionEditor(taskId, checklistId, isOpen);
  
 
-  console.log("log taskStatedAt :", taskStartedAt);
-  console.log("log taskFinishedAt :", taskFinishedAt);
+  //console.log("log taskStatedAt :", taskStartedAt);
+  //console.log("log taskFinishedAt :", taskFinishedAt);
   const minCalendarDate = taskStartedAt
     ? parseDate(taskStartedAt.split("T")[0])
     : undefined;
@@ -884,10 +884,10 @@ const ModalDetailChecklist = ({
       if (result.success) {
         setCurrentStatus(newStatus); // Update UI on success
       } else {
-        console.error("Failed to update status:", result.error);
+        //console.error("Failed to update status:", result.error);
       }
     } catch (error) {
-      console.error("Error updating status:", error.message);
+      //console.error("Error updating status:", error.message);
     }
   };
 
@@ -913,7 +913,7 @@ const ModalDetailChecklist = ({
       (sum, comment) => sum + (comment.content?.length || 0),
       0
     );
-    console.log("Calculated totalCommentLength:", totalLength);
+    //console.log("Calculated totalCommentLength:", totalLength);
     setTotalCommentLength(totalLength);
   }, [state.comments]);
 
@@ -1028,7 +1028,7 @@ const ModalDetailChecklist = ({
 
   useEffect(() => {
     if (!taskId || !checklistId) {
-      console.error("Missing required props:", { taskId, checklistId });
+      //console.error("Missing required props:", { taskId, checklistId });
       toast.error("Invalid task or checklist ID", {
         position: "top-right",
         autoClose: 4000,
@@ -1046,17 +1046,17 @@ const ModalDetailChecklist = ({
     ? imageChecklist
     : "https://media.sproutsocial.com/uploads/2024/01/facebook-cover-image.svg";
 
-  console.log("Rendering CardCheckList with:", {
-    commentCount: state.comments.length,
-    totalCommentLength,
-  });
+  //console.log("Rendering CardCheckList with:", {
+  //   commentCount: state.comments.length,
+  //   totalCommentLength,
+  // });
 
   const matchingFeedback =
     feedbackByTaskIds
       ?.flat() // Flatten the array of arrays into a single array
       .filter((feedback) => feedback?.taskId === taskId) || [];
 
-  console.log("this is role ", role);
+  //console.log("this is role ", role);
 
   return (
     <div>
@@ -1243,55 +1243,7 @@ const ModalDetailChecklist = ({
                   {role === "ROLE_MEMBER" ? (
                     ""
                   ) : (
-                    <div className="flex items-center justify-between gap-4 p-4 bg-white">
-                      {isEditingTitle ? (
-                        <div className="flex-1 min-w-0">
-                          <input
-                            type="text"
-                            value={newTitle}
-                            onChange={handleTitleChange}
-                            onKeyDown={handleSubmitTitle}
-                            className="w-full px-4 py-3 text-lg font-medium text-gray-900 focus:outline-none "
-                            placeholder="Enter checklist title..."
-                            autoFocus
-                            disabled={loading}
-                            aria-label="Checklist title input"
-                            maxLength={100} // Prevent extremely long titles
-                          />
-                          {loading && (
-                            <div className="mt-2 flex items-center text-sm text-gray-500">
-                              <div className="animate-spin h-4 w-4 "></div>
-                              Saving...
-                            </div>
-                          )}
-                        </div>
-                      ) : (
-                        <div
-                          onClick={handleEditTitleClick}
-                          className="flex-1 min-w-0 cursor-pointer group"
-                          role="button"
-                          tabIndex={0}
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter" || e.key === " ") {
-                              e.preventDefault();
-                              handleEditTitleClick();
-                            }
-                          }}
-                          aria-label="Click to edit checklist title"
-                        >
-                          <div className="p-3 ">
-                            <h1 className="text-lg font-medium text-gray-900 break-words leading-relaxed">
-                              {newTitle || title || (
-                                <span className="text-gray-500 italic">
-                                  Click to add title...
-                                </span>
-                              )}
-                            </h1>
-                          </div>
-                        </div>
-                      )}
-
-                      <div className="flex-shrink-0">
+                    <div className="flex-shrink-0">
                         <PopupAction
                           title={<Trash />}
                           color={"text-blue-600"}
@@ -1305,7 +1257,6 @@ const ModalDetailChecklist = ({
                           taskId={taskId}
                         />
                       </div>
-                    </div>
                   )}
 
                   {/* this date picker  */}

@@ -23,7 +23,7 @@ export async function refreshGoogleAccessToken(refreshToken) {
 
   if (!response.ok) {
     const errorData = await response.json();
-    console.error("Token refresh failed:", errorData);
+    //console.error("Token refresh failed:", errorData);
     throw new Error(`Failed to refresh access token: ${response.status}`);
   }
 
@@ -103,10 +103,10 @@ export const {
             token.username =
               backendResponse.payload.user?.username || token.username;
           } else {
-            console.error("Backend login failed:", backendResponse?.message);
+            //console.error("Backend login failed:", backendResponse?.message);
           }
         } catch (error) {
-          console.error("Error calling loginGoogleService:", error.message);
+          //console.error("Error calling loginGoogleService:", error.message);
         }
       }
 

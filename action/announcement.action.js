@@ -12,7 +12,7 @@ import {
   updateAnnouncementByIdService,
   uploadMultiImgByBoardIdService,
 } from "@/service/annoncement.service";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 export const createAnnouncementByBoardIdAction = async (payload = {}) => {
   const { title, description, boardId } = payload;
@@ -27,7 +27,7 @@ export const createAnnouncementByBoardIdAction = async (payload = {}) => {
     boardId,
     token,
   });
-  revalidatePath("/create");
+  revalidateTag("announcements");
   return result;
 };
 
@@ -58,7 +58,7 @@ export const deleteAnnouncementByIdAction = async (id) => {
   const userToken = await Token();
   const token = userToken.Credential;
   const result = await deleteAnnouncementByIdService(id, token);
-  revalidatePath("/delete");
+  revalidateTag("announcements");
   return result;
 };
 
@@ -68,7 +68,7 @@ export const pinedAnnouncementByIdAction = async (announId) => {
   const userToken = await Token();
   const token = userToken.Credential;
   const result = await pinedAnnouncementByIdService(announId, token);
-  revalidatePath("/update");
+  revalidateTag("announcements");
   return result;
 };
 
@@ -89,7 +89,7 @@ export const updateAnnouncementByIdAction = async (
     boardId,
     token,
   });
-  revalidatePath("/update");
+  revalidateTag("announcements");
   return result;
 };
 
@@ -107,7 +107,8 @@ export const createCommentByAnnouncementIdAction = async ({
     announcementId,
     token,
   });
-  revalidatePath("/create");
+  revalidateTag("announcements");
+  revalidateTag("comments");
   console.log("reeee", result);
   return result;
 };
@@ -127,7 +128,8 @@ export const editCommentByIdAction = async ({
     commentId,
     token,
   });
-  revalidatePath("/update");
+  revalidateTag("announcements");
+  revalidateTag("comments");
   return result;
 };
 
@@ -137,6 +139,7 @@ export const deleteCommentByIdAction = async ({ commentId }) => {
   const userToken = await Token();
   const token = userToken.Credential;
   const result = await deleteCommentByIdService({ commentId, token });
-  revalidatePath("/detele");
+  revalidateTag("announcements");
+  revalidateTag("comments");
   return result;
 };

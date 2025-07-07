@@ -131,7 +131,7 @@ The Nginx configuration includes:
 - **Gzip compression** for better performance
 - **Security headers** (CSP, X-Frame-Options, etc.)
 - **Static file caching** for better performance
-- **WebSocket support** for real-time features
+- **Real-time updates** via Next.js cache revalidation
 - **OneSignal service worker** support
 
 ## Troubleshooting

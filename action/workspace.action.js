@@ -44,7 +44,7 @@ export const createWorkspaceAction = async (payload = {}) => {
   });
 
   // revalidate tag related to workspaces
-  revalidatePath("/workspaces");
+  revalidateTag("workspaces");
   return result;
 };
 
@@ -70,7 +70,7 @@ export const deleteWorkspaceByIdAction = async (id) => {
   const result = await deleteWorkspaceByIdService({ id, token });
 
   // revalidate tag related to workspaces
-  revalidatePath("/workspaces");
+  revalidateTag("workspaces");
   return result;
 };
 
@@ -96,7 +96,7 @@ export const updateWorkspaceByIdAction = async (id, payload = {}) => {
   });
 
   // revalidate tag related to workspaces
-  revalidatePath("/workspaces");
+  revalidateTag("workspaces");
   return result;
 };
 
@@ -151,7 +151,8 @@ export const updateBoardByIdAction = async (boardId, payload = {}) => {
     token,
   });
 
-  revalidatePath("/boards");
+  revalidateTag("boards");
+  revalidateTag("workspaces");
   return result;
 };
 
@@ -236,7 +237,8 @@ export const createBoardAction = async (payload = {}) => {
     token,
   });
 
-  revalidatePath("boards");
+  revalidateTag("boards");
+  revalidateTag("workspaces");
   console.log("Results create board in action:", result.payload);
   return result.payload;
 };
@@ -263,7 +265,8 @@ export const deleteBoardAction = async (id, workspaceId) => {
   const result = await deleteBoardService({ id, workspaceId, token });
 
   // revalidate tag related to workspaces
-  revalidatePath("/boards");
+  revalidateTag("boards");
+  revalidateTag("workspaces");
   return result;
 };
 /**
@@ -311,7 +314,8 @@ export const uploadImageBoardAction = async ({ boardId, image }) => {
     image,
     token,
   });
-  revalidatePath("/workspaces");
+  revalidateTag("boards");
+  revalidateTag("workspaces");
   return result;
 };
 

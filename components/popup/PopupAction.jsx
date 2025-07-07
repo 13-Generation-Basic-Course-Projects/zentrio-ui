@@ -33,7 +33,7 @@ export default function PopupAction({
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-  console.log(accessToken);
+  //console.log(accessToken);
   const router = useRouter();
   const handleDelete = async () => {
     try {
@@ -48,7 +48,7 @@ export default function PopupAction({
         throw new Error("Deletion failed unexpectedly");
       }
     } catch (error) {
-      console.error("Delete failed:", error);
+      //console.error("Delete failed:", error);
       toast.error(
         "Failed to delete checklist: " + (error.message || "Unknown error"),
         {

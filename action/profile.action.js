@@ -9,7 +9,7 @@ import {
   updateProfileImageService,
   updateUserProfileService,
 } from "@/service/profile.service";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 export const getCurrentUserProfileAction = async () => {
   const userToken = await Token();
@@ -43,7 +43,7 @@ export const updateUserProfileAction = async (data) => {
       token,
       userData: data,
     });
-    revalidatePath("/profile");
+    revalidateTag("profile");
     return updatedData;
   } catch (err) {
     console.error("Error in updateUserProfileAction:", err);
@@ -56,7 +56,8 @@ export const updateAchievementAction = async (payload) => {
   const userToken = await Token();
   const token = userToken.Credential;
   const result = await updateAchievementService({ token, payload });
-  revalidatePath("/profile");
+  revalidateTag("profile");
+  revalidateTag("achievements");
   return result;
 };
 
@@ -85,6 +86,6 @@ export const updateProfileImageAction = async ({formData}) => {
   const userToken = await Token();
   const token = userToken.Credential;
   const result = await updateProfileImageService({ token, formData });
-  revalidatePath("/updateProfile");
+  revalidateTag("profile");
   return result;
 };

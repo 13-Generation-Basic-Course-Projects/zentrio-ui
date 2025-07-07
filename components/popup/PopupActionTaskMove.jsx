@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 
 import {
   Modal,
@@ -11,11 +11,14 @@ import {
   useDisclosure,
   useDraggable,
 } from "@heroui/react";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import {
   changeStageToUnderReviewAction,
   deleteTaskAction,
+  moveTaskOrderAction,
 } from "@/action/board.action";
+import { useRouter } from "next/navigation";
+
 export default function PopupActionTaskMove({
   title,
   icon,
@@ -30,8 +33,11 @@ export default function PopupActionTaskMove({
   ganttBarId,
   taskId,
   boardId,
+  onClose,
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
 
   const targetRef = React.useRef(null);
   const { moveProps } = useDraggable({
@@ -40,31 +46,22 @@ export default function PopupActionTaskMove({
     isDisabled: !isOpen,
   });
 
-  const handleDelete = async () => {
-    
-      const result = await changeStageToUnderReviewAction(
-        taskId,
-        "UNDER_REVIEW"
-      );
-      console.log("respon delete", result);
-      if(result?.title === "Bad Request" || result?.status == 400){
-        toast.error(`Task move stage unsuccessfull ${result?.detail}`, {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-        });
+  const handleMove = async () => {
+    setIsLoading(true);
+    try {
+      const result = await moveTaskOrderAction(boardId, taskId, taskId);
+      if (result.success) {
+        toast.success("Task moved successfully!");
+        onClose();
+        router.refresh();
+      } else {
+        toast.error(result.error || "Failed to move task");
       }
-    else{
-      toast.success("Task move stage successfully!", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-      });
+    } catch (error) {
+      toast.error("An error occurred while moving task");
+    } finally {
+      setIsLoading(false);
     }
-    
   };
 
   return (
@@ -139,7 +136,7 @@ export default function PopupActionTaskMove({
                       <Button
                         className="bg-green-300 text-white font-semibold"
                         onPress={onClose}
-                        onClick={handleDelete}
+                        onClick={handleMove}
                         // onPress={onClose}
                       >
                         <p className="text-white">{massageDo}</p>

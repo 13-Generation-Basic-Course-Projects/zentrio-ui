@@ -21,7 +21,7 @@ export default function ModalCreateGanttChart({ boardId, ganttChartId }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   // React Hook Form setup with Zod resolver
-  console.log("log in modalgantchart", boardId);
+  //console.log("log in modalgantchart", boardId);
   const {
     control,
     handleSubmit,
@@ -37,7 +37,7 @@ export default function ModalCreateGanttChart({ boardId, ganttChartId }) {
 
   // Form submission handler
   const onSubmit = async (data) => {
-    console.log("Form data:", data);
+    //console.log("Form data:", data);
 
     // Call the action with form data and boardId
     const result = await createGanttChartByBoardIdAction(data, boardId);
@@ -47,7 +47,7 @@ export default function ModalCreateGanttChart({ boardId, ganttChartId }) {
     reset();
     onOpenChange();
   };
-  console.log("modal create gantchat", ganttChartId);
+  //console.log("modal create gantchat", ganttChartId);
   return (
     <>
       {!ganttChartId.includes("No data available") ? (

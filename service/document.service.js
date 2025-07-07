@@ -9,6 +9,9 @@ export const fetchDocumentService = async (id, token) => {
   try {
     const res = await fetch(documentRouteGroup.getDocumentById(id), {
       method: "GET",
+      next: {
+        tags: ["documents"],
+      },
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -39,6 +42,9 @@ export const fetchPublicDocumentsService = async (boardId, token) => {
       documentRouteGroup.getPublicDocumentsByBoard(boardId),
       {
         method: "GET",
+        next: {
+          tags: ["documents"],
+        },
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -70,6 +76,9 @@ export const fetchDocumentsByBoardService = async (boardId, token) => {
       documentRouteGroup.getAllDocumentsByBoard(boardId),
       {
         method: "GET",
+        next: {
+          tags: ["documents"],
+        },
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -105,10 +114,13 @@ export const getFileByFolderIdService = async ({
       documentRouteGroup.getFileByFolderId(folderId, accessToken),
       {
         method: "GET",
+        next: {
+          tags: ["documents"],
+          revalidate: 60,
+        },
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
-          next: { revalidate: 60 },
         },
       }
     );
@@ -246,6 +258,7 @@ export const deleteDocumentService = async ({
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
+        next: { tags: ["documents"] },
       }
     );
 
@@ -281,6 +294,7 @@ export const createDocumentService = async (data, token) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
+      next: { tags: ["documents"] },
     });
 
     if (!res.ok) {
@@ -317,6 +331,7 @@ export const createDocumentByUploadService = async (
           Authorization: `Bearer ${token}`,
         },
         body: formData,
+        next: { tags: ["documents"] },
       }
     );
 
@@ -485,6 +500,9 @@ export const getAllDocumentByBoardIdSerivce = async ({ boardId, token }) => {
 
     const res = await fetch(url, {
       method: "GET",
+      next: {
+        tags: ["documents"],
+      },
       headers: {
         Accept: "*/*",
         Authorization: `Bearer ${token}`,

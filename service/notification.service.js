@@ -87,6 +87,9 @@ export const getNotificationForUserIdService = async ({ userId, token }) => {
   const url = notificationRouteGroup.getNotificationForUserId(userId);
 
   const response = await fetch(url, {
+    next: {
+      tags: ["notifications"],
+    },
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json", // It's good practice to include Content-Type even for GET requests if applicable
@@ -116,7 +119,7 @@ export const deleteNotificationByIdService = async (notificationId, token) => {
       },
     });
 
-    //console.log("response", response);
+    
 
     return response;
   } catch (error) {
