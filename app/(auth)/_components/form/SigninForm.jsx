@@ -53,7 +53,6 @@ export const SigninForm = () => {
     } catch (error) {
       setBackendError("An unexpected error occurred. Please try again.");
       setIsLoading(false);
-      console.error("Login error:", error);
     }
   };
   const [backendError, setBackendError] = useState("");
