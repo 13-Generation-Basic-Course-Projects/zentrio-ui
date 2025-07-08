@@ -33,7 +33,7 @@ export default function PopupAction({
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-  console.log(accessToken);
+    (accessToken);
   const router = useRouter();
   const handleDelete = async () => {
     try {

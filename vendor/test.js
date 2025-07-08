@@ -1,1 +1,1 @@
-console.log("for third party library");
+  ("for third party library");

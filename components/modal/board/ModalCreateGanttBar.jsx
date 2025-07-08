@@ -124,11 +124,11 @@ export default function ModalCreateGanttBar({ input, ganttChartId }) {
   //     };
 
   //     activeToasts.current.add(toastId);
-  //     console.log(`Showing toast: ${type} - ${message}`); // Debugging
+  //       (`Showing toast: ${type} - ${message}`); // Debugging
   //     return toast[type](message, toastOptions);
   //   } catch (error) {
   //     console.error("Toast error:", error);
-  //     console.log(`${type.toUpperCase()}: ${message}`);
+  //       (`${type.toUpperCase()}: ${message}`);
   //   }
   // }, []);
 
@@ -160,11 +160,11 @@ export default function ModalCreateGanttBar({ input, ganttChartId }) {
     };
 
     activeToasts.current.add(toastId);
-    console.log(`Showing toast: ${type} - ${message}`);
+      (`Showing toast: ${type} - ${message}`);
     return toast[type](message, toastOptions);
   } catch (error) {
     console.error("Toast error:", error);
-    console.log(`${type.toUpperCase()}: ${message}`);
+      (`${type.toUpperCase()}: ${message}`);
   }
 }, []);
 
@@ -309,7 +309,7 @@ const handleModalClose = useCallback(() => {
       };
     });
 
-    console.log("Sending payload to action:", payload);
+      ("Sending payload to action:", payload);
 
     try {
       const result = await createGanttBarsByGanttChartIdAction({
@@ -317,7 +317,7 @@ const handleModalClose = useCallback(() => {
         data: payload,
       });
 
-      console.log("API result:", result);
+        ("API result:", result);
 
       const titles = pendingItems.map((item) => item.title).join(", ");
 
@@ -401,10 +401,10 @@ const handleModalClose = useCallback(() => {
       const diffTime = endDate.getTime() - startDate.getTime();
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-      console.log(`Validation: diffDays = ${diffDays}`);
+        (`Validation: diffDays = ${diffDays}`);
 
       if (diffDays < 7) {
-        console.log("Validation: Duration < 7 days");
+          ("Validation: Duration < 7 days");
 
         // Defer the toast to avoid render-time state updates
         setTimeout(() => {
@@ -421,7 +421,7 @@ const handleModalClose = useCallback(() => {
         return "End date must be at least 7 days after start date";
       }
 
-      console.log("Validation: Duration valid");
+        ("Validation: Duration valid");
       return null;
     },
     [showToast]
@@ -452,7 +452,7 @@ const handleModalClose = useCallback(() => {
             const diffTime = endDate.getTime() - startDate.getTime();
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-            console.log(`OnChange validation: diffDays = ${diffDays}`);
+              (`OnChange validation: diffDays = ${diffDays}`);
 
             // Only show toast if validation fails
             if (diffDays < 6) {

@@ -21,7 +21,7 @@ export default function UpdateDateChecklist({
   });
 
   const handleDateChange = (newRange) => {
-    console.log("DateRangePicker onChange newRange:", {
+      ("DateRangePicker onChange newRange:", {
       start: newRange?.start
         ? `${newRange.start.year}-${newRange.start.month}-${newRange.start.day}`
         : null,
@@ -34,8 +34,8 @@ export default function UpdateDateChecklist({
   };
 
   const handleSave = async () => {
-    console.log("=== SAVING DATES ===");
-    console.log("Current dateRange:", dateRange);
+      ("=== SAVING DATES ===");
+      ("Current dateRange:", dateRange);
 
     // Convert CalendarDate to ISO string for API
     const startedAtISO = dateRange.start
@@ -45,9 +45,9 @@ export default function UpdateDateChecklist({
       ? toDate(dateRange.end).toISOString()
       : null;
 
-    console.log("Converted to ISO:");
-    console.log("- Started At:", startedAtISO);
-    console.log("- Finished At:", finishedAtISO);
+      ("Converted to ISO:");
+      ("- Started At:", startedAtISO);
+      ("- Finished At:", finishedAtISO);
 
     try {
       await updateCheckListByIdAndTaskIdAction(
@@ -58,17 +58,17 @@ export default function UpdateDateChecklist({
         finishedAtISO,
         taskId
       );
-      console.log("✅ Successfully updated checklist dates");
+        ("✅ Successfully updated checklist dates");
     } catch (err) {
       console.error("❌ Failed to update checklist:", err);
     }
   };
 
   const handleKeyDown = (e) => {
-    console.log("Key pressed:", e.key);
+      ("Key pressed:", e.key);
     if (e.key === "Enter") {
       e.preventDefault();
-      console.log("Enter key detected - triggering save");
+        ("Enter key detected - triggering save");
       handleSave();
     }
   };

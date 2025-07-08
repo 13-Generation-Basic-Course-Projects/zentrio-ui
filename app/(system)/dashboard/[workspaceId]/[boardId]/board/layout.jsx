@@ -32,7 +32,7 @@ async function fetchGanttChartId(boardId) {
     const ganttchartByBoardId = await getGanttChartByBoardIdAction({ boardId });
     return ganttchartByBoardId?.payload?.ganttChartId || FALLBACK_STRING;
   } catch (error) {
-    console.error("Error fetching gantt chart by board ID:", error);
+    // console.error("Error fetching gantt chart by board ID:", error);
     return FALLBACK_STRING;
   }
 }
@@ -43,7 +43,7 @@ async function fetchGanttChartName(boardId) {
     const ganttchartByBoardId = await getGanttChartByBoardIdAction({ boardId });
     return ganttchartByBoardId?.payload?.title || FALLBACK_STRING;
   } catch (error) {
-    console.error("Error fetching gantt chart by board ID:", error);
+    // console.error("Error fetching gantt chart by board ID:", error);
     return FALLBACK_STRING;
   }
 }
@@ -61,7 +61,7 @@ export default async function BoardLayout({ children, params }) {
    */
   const ganttChartId = await fetchGanttChartId(boardId);
   const ganttChartName = await fetchGanttChartName(boardId);
-  console.log("test gant chart id", ganttChartId);
+  //   ("test gant chart id", ganttChartId);
 
   try {
     const session = await auth();
@@ -74,7 +74,7 @@ export default async function BoardLayout({ children, params }) {
       const ganttbarResponse = await getGanttBarAction();
       ganttbar = ganttbarResponse || FALLBACK_OBJECT;
     } catch (error) {
-      console.error("Error fetching gantt bar:", error);
+      // console.error("Error fetching gantt bar:", error);
     }
 
     /*
@@ -84,7 +84,7 @@ export default async function BoardLayout({ children, params }) {
     try {
       ganttchartByBoardId = await getGanttChartByBoardIdAction({ boardId });
     } catch (error) {
-      console.error("Error fetching gantt chart by board ID:", error);
+      // console.error("Error fetching gantt chart by board ID:", error);
     }
 
     /*
@@ -98,10 +98,10 @@ export default async function BoardLayout({ children, params }) {
         });
         ganttBarByGanttChartId = ganttBarResponse || FALLBACK_OBJECT;
       } else {
-        console.warn("No gantt chart ID found, skipping gantt bar fetch");
+        // console.warn("No gantt chart ID found, skipping gantt bar fetch");
       }
     } catch (error) {
-      console.error("Error fetching gantt bar by chart ID:", error);
+      // console.error("Error fetching gantt bar by chart ID:", error);
     }
 
     /*
@@ -112,7 +112,7 @@ export default async function BoardLayout({ children, params }) {
       const membersResponse = await getMemberByBoardIdAction({ boardId });
       allMemberInBoard = membersResponse?.payload || FALLBACK_ARRAY;
     } catch (error) {
-      console.error("Error fetching members:", error);
+      // console.error("Error fetching members:", error);
     }
 
     /*
@@ -126,7 +126,7 @@ export default async function BoardLayout({ children, params }) {
         });
       }
     } catch (error) {
-      console.error("Error fetching all gantt bars:", error);
+      // console.error("Error fetching all gantt bars:", error);
     }
 
     const ganttBars = allGanttBar?.payload || FALLBACK_ARRAY;
@@ -153,10 +153,10 @@ export default async function BoardLayout({ children, params }) {
           allTasks.push(...taskPayload);
         }
       } catch (error) {
-        console.error(
-          `Error fetching tasks for gantt bar ${ganttBarId}:`,
-          error
-        );
+        // console.error(
+        //   `Error fetching tasks for gantt bar ${ganttBarId}:`,
+        //   error
+        // );
       }
     }
 
@@ -173,10 +173,10 @@ export default async function BoardLayout({ children, params }) {
             }
             return null;
           } catch (error) {
-            console.error(
-              `Error fetching checklist for task ${task?.taskId}:`,
-              error
-            );
+            // console.error(
+            //   `Error fetching checklist for task ${task?.taskId}:`,
+            //   error
+            // );
             return null;
           }
         });
@@ -184,7 +184,7 @@ export default async function BoardLayout({ children, params }) {
         checklistbyTaskIds = resolvedChecklists.filter(Boolean);
       }
     } catch (error) {
-      console.error("Error processing checklists:", error);
+      // console.error("Error processing checklists:", error);
     }
 
     /*
@@ -203,10 +203,10 @@ export default async function BoardLayout({ children, params }) {
             }
             return null;
           } catch (error) {
-            console.error(
-              `Error fetching feedback for task ${task?.taskId}:`,
-              error
-            );
+            // console.error(
+            //   `Error fetching feedback for task ${task?.taskId}:`,
+            //   error
+            // );
             return null;
           }
         });
@@ -214,7 +214,7 @@ export default async function BoardLayout({ children, params }) {
         feedbackByTaskIds = resolvedFeedback.filter(Boolean);
       }
     } catch (error) {
-      console.error("Error processing feedback:", error);
+      // console.error("Error processing feedback:", error);
     }
 
     /*
@@ -224,25 +224,25 @@ export default async function BoardLayout({ children, params }) {
     const imageUser = currentUserProfile?.payload?.user?.profileImage;
     const noImage = preventImage.noProfile;
     const preventUserImage = imageUser == null ? noImage : imageUser;
-    console.log("what inside layout and userprofile", imageUser);
+    //   ("what inside layout and userprofile", imageUser);
 
     /*
      * Get board by board id
      */
     const boardData = await getBoardByBoardIdAction(boardId);
-    console.log("boardData", boardData);
+    //   ("boardData", boardData);
 
     /*
      * Get all tasks
      */
     const allTask = await getTaskByBoardIdAction(boardId);
-    console.log("task response", allTask);
+    //   ("task response", allTask);
 
     /*
      * Get workspace joined
      */
     const getWorKSpaceJoined = await getOtherWorkSpaceJoinedAction();
-    console.log("getWorKSpaceJoined other", getWorKSpaceJoined);
+    //   ("getWorKSpaceJoined other", getWorKSpaceJoined);
 
     // Search through all workspaces and their otherBoards to find the matching board
     let matchingBoard = null;
@@ -260,14 +260,14 @@ export default async function BoardLayout({ children, params }) {
       }
     }
 
-    console.log("matching board:", matchingBoard);
-    console.log("matching workspace:", matchingWorkspace);
+    //   ("matching board:", matchingBoard);
+    //   ("matching workspace:", matchingWorkspace);
 
     if (!matchingBoard) {
-      console.log("Board not found with ID:", boardId);
+      //   ("Board not found with ID:", boardId);
     } else {
-      console.log("Found board:", matchingBoard);
-      console.log("Board belongs to workspace:", matchingWorkspace.title);
+      //   ("Found board:", matchingBoard);
+      //   ("Board belongs to workspace:", matchingWorkspace.title);
     }
     const matchingBoardForNotPM = matchingBoard;
 
@@ -277,7 +277,7 @@ export default async function BoardLayout({ children, params }) {
     const getUserDetials = await getPreviewProfileAction();
     const myUserId = getUserDetials?.payload?.userId;
 
-    console.log("allMemberInBoard",allMemberInBoard)
+    //   ("allMemberInBoard",allMemberInBoard)
 
     return (
       <div>
@@ -310,7 +310,7 @@ export default async function BoardLayout({ children, params }) {
       </div>
     );
   } catch (error) {
-    console.error("Critical error in BoardLayout:", error);
+    // console.error("Critical error in BoardLayout:", error);
 
     return (
       <div>

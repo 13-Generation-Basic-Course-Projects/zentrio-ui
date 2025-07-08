@@ -7,7 +7,7 @@ export default function OtherProfileTab({
   userId,
   userIdDetail,
 }) {
-  console.log("helo in other profiletba", userIdDetail);
+  //  ("helo in other profiletba", userIdDetail);
   return (
     <div className="flex flex-col min-h-screen">
       <ProfileComponentOther

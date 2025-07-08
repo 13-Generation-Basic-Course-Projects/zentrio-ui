@@ -103,8 +103,8 @@ export default function ModalCreateWorkspace({ createWorkspace }) {
             `workspaceColor-${data.title}`,
             selectedOption.className
           );
-          console.log("Color that selected in workspace: ", selectedOption);
-          console.log(
+            ("Color that selected in workspace: ", selectedOption);
+            (
             "Saved color in localStorage:",
             localStorage.getItem(`workspaceColor-${data.title}`)
           );

@@ -19,7 +19,7 @@ export const getGanttBarService = async ({ token }) => {
       },
     });
     const data = await res.json();
-    //// //console.log("📥 Backend responded with:", data);
+    //// //  ("📥 Backend responded with:", data);
 
     return data; // just return the data, don't redirect here
   } catch (error) {
@@ -44,7 +44,7 @@ export const getGanttBarByGanttChartIdService = async ({
       },
     });
     const data = await res.json();
-    // //console.log("📥 Backend responded with:", data);
+    // //  ("📥 Backend responded with:", data);
 
     return data; // just return the data, don't redirect here
   } catch (error) {
@@ -71,7 +71,7 @@ export const getGanttChartByBoardIdService = async ({ boardId, token }) => {
       },
     });
     const data = await res.json();
-    // //console.log("📥 Backend responded with:", data);
+    // //  ("📥 Backend responded with:", data);
 
     return data; // just return the data, don't redirect here
   } catch (error) {
@@ -89,7 +89,7 @@ export const createGanttBarsByGanttChartIdService = async ({
   token,
 }) => {
   try {
-    //console.log("from service", { ganttChartId, data, token });
+    //  ("from service", { ganttChartId, data, token });
 
     const url = ganttRouteGroup.createGanttBar();
     const bodyToSend = data.map((item) => ({
@@ -111,7 +111,7 @@ export const createGanttBarsByGanttChartIdService = async ({
     });
 
     const result = await res.json();
-    //console.log("📥 Backend responded with gantbar:", result);
+    //  ("📥 Backend responded with gantbar:", result);
 
     return result;
   } catch (error) {
@@ -128,7 +128,7 @@ export const deleteGanttBarsByGanttChartIdService = async ({
   ganttBarId,
   token,
 }) => {
-  console.log("from service", { ganttChartId, ganttBarId, token });
+  //   ("from service", { ganttChartId, ganttBarId, token });
 
   const url = ganttRouteGroup.deleteGanttBar(ganttBarId, ganttChartId);
 
@@ -142,7 +142,7 @@ export const deleteGanttBarsByGanttChartIdService = async ({
   });
 
   const result = await res.json();
-  console.log("📥 Backend responded with delete:", result);
+  //   ("📥 Backend responded with delete:", result);
 
   return result;
 };
@@ -157,7 +157,7 @@ export async function updateGantChartBytIdService({
   data,
   token,
 }) {
-  console.log("from service", { ganttChartId, boardId, token, data });
+  //   ("from service", { ganttChartId, boardId, token, data });
 
   const url = ganttRouteGroup.updateGanttChart(ganttChartId);
 
@@ -172,7 +172,7 @@ export async function updateGantChartBytIdService({
   });
 
   const result = await res.json();
-  console.log("📥 Backend responded with:", result);
+  //   ("📥 Backend responded with:", result);
 
   return { success: true, data: result };
 }
@@ -191,12 +191,12 @@ export async function updateGantBarBytGantChartIdService({
   face,
   token,
 }) {
-  console.log("from service", {token,  ganttBarId,
-    ganttChartId,
-    title,
-    startedAt,
-    finishedAt,
-    face, });
+  //   ("from service", {token,  ganttBarId,
+  //   ganttChartId,
+  //   title,
+  //   startedAt,
+  //   finishedAt,
+  //   face, });
 
   const url = ganttRouteGroup.updateGanttBar(ganttBarId);
 
@@ -216,7 +216,7 @@ export async function updateGantBarBytGantChartIdService({
   });
 
   const result = await res.json();
-  console.log("📥 Backend responded with ganttbar update:", result);
+  //   ("📥 Backend responded with ganttbar update:", result);
   
   return { success: true, data: result };
 }

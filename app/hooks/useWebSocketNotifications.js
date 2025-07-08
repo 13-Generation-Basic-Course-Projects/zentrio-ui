@@ -10,7 +10,7 @@ export default function useWebSocketNotifications({userId}) {
   const [notifications, setNotifications] = useState([]);
   const [connected, setConnected] = useState(false);
 
-  console.log("uerId in useWebSocketNotifications:", userId);
+    ("uerId in useWebSocketNotifications:", userId);
 
   useEffect(() => {
     if (!userId) return; // wait until userId is ready
@@ -30,7 +30,7 @@ export default function useWebSocketNotifications({userId}) {
         // ✅ Initial fetch
         const result = await getNotificationForUserIdAction(userId);
 
-        console.log("notification result:", result);
+          ("notification result:", result);
 
         const raw = result?.payload ?? result?.data ?? [];
         const sorted = Array.isArray(raw)
@@ -43,19 +43,19 @@ export default function useWebSocketNotifications({userId}) {
         stompClient = new Client({
           // webSocketFactory: () => new SockJS("http://16.176.18.10:9100/ws"),
           webSocketFactory: () => new SockJS("http://localhost:8080/ws"),
-          debug: (str) => console.log("STOMP DEBUG:", str),
+          debug: (str) =>   ("STOMP DEBUG:", str),
           connectHeaders: { Authorization: `Bearer ${token}` },
           reconnectDelay: 5000,
           onConnect: () => {
             setConnected(true);
             stompClient.subscribe("/user/topic/notifications", (message) => {
               const notification = JSON.parse(message.body);
-              console.log("📨 Real-time Notification:", notification);
+                ("📨 Real-time Notification:", notification);
               setNotifications((prev) => [notification, ...prev]);
             });
             // stompClient.subscribe("/topic/all-notifications", (message) => {
             //   const notification = JSON.parse(message.body);
-            //   console.log("📨 Broadcast Notification:", notification);
+            //     ("📨 Broadcast Notification:", notification);
             //   setNotifications((prev) => [notification, ...prev]);
             // });
           },

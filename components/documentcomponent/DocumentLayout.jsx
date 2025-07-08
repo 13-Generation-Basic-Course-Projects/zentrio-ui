@@ -30,7 +30,7 @@ export default function DocumentLayout({
 
   // Check if the pathname starts with /docu/ (any document route)
   const isDocumentPage = pathname.includes("/docu/");
-  console.log(
+    (
     "Pathname:",
     pathname,
     "Path Segments:",

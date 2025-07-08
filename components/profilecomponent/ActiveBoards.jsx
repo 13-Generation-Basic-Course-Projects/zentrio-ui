@@ -6,7 +6,7 @@ import ProgressBar from "./ProgressBar";
 export default function ActiveBoards({ userAchievement }) {
   const boards = userAchievement?.payload?.boards || [];
 
-  console.log("userAchievement in ActiveBoards:", userAchievement);
+  //  ("userAchievement in ActiveBoards:", userAchievement);
 
   // Define color pairs for board avatars
   const colorPairs = [

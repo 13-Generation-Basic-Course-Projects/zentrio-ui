@@ -22,13 +22,13 @@ export default function BredCrumGanttChart({
 
   // Debug props on mount (optional, can remove if not needed)
   useEffect(() => {
-    console.log("BredCrumGanttChart props:", { ganttChartId, boardId, header });
+      ("BredCrumGanttChart props:", { ganttChartId, boardId, header });
   }, [ganttChartId, boardId, header]);
 
   // Focus input when editing starts
   useEffect(() => {
     if (isEditing && inputRef.current) {
-      console.log("Focusing input");
+        ("Focusing input");
       inputRef.current.focus();
       inputRef.current.select();
     }
@@ -36,7 +36,7 @@ export default function BredCrumGanttChart({
 
   // Handle double click
   const handleDoubleClick = (e) => {
-    console.log("Double-click triggered on:", e.target);
+      ("Double-click triggered on:", e.target);
     setIsEditing(true);
     setTempHeader(editableHeader);
   };
@@ -61,7 +61,7 @@ export default function BredCrumGanttChart({
       boardId,
       data: { title: trimmedHeader },
     });
-    console.log("result", result);
+      ("result", result);
     if (result.data.title !== "Forbidden" && result.data.title !== "Bad Request") {
       setEditableHeader(trimmedHeader);
       toast.success("Header updated successfully!");

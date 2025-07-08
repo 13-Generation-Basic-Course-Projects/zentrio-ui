@@ -8,7 +8,7 @@ import { revalidatePath, revalidateTag } from "next/cache";
 
 export const reactAction =  async({reaction,announId})=>{
 
-    console.log("✅ reactAction running:", reaction, announId);
+      ("✅ reactAction running:", reaction, announId);
     const userToken = await Token();
     const token = userToken.Credential;
     const  result =  await createReactService({token,
@@ -41,7 +41,7 @@ export const updateReactAction =  async({reactId,reactType,announId})=>{
     const userToken = await Token();
     const token = userToken.Credential;
 
-    console.log("updateReact: ",reactId, "type:", reactType, "annountid:", announId)
+      ("updateReact: ",reactId, "type:", reactType, "annountid:", announId)
     const  result =  await  updateReactService({
         token,
         reactId,

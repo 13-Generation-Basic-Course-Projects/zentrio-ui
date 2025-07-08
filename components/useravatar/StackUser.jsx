@@ -1,7 +1,7 @@
 import { preventImage } from "@/constant/preventimage";
 
 export function StackedUser({ image }) {
-  // console.log("in stackuser", image);
+  //   ("in stackuser", image);
   const noImage = preventImage.noProfile;
   const maxVisible = 4;
   const payload = image || []; // Fallback to empty array if undefined

@@ -20,7 +20,7 @@ export const getCalendarByBoardIdAndUserIdAction = async (boardId) => {
     const result = await getCalendarByBoardIdAndUserIdService({ boardId, token });
     return result;
   } catch (error) {
-    console.error("getCalendarByBoardIdAndUserIdAction error:", error);
+    // console.error("getCalendarByBoardIdAndUserIdAction error:", error);
     throw error;
   }
 };
@@ -36,7 +36,7 @@ export const getNoteInCalendarAction = async (calendarId) => {
     const result = await getNoteInCalendarService({ calendarId, token });
     return result;
   } catch (error) {
-    console.error("getNoteInCalendarAction error:", error);
+    // console.error("getNoteInCalendarAction error:", error);
     throw error;
   }
 };
@@ -52,7 +52,7 @@ export const getAllNotesFromCalendarByCurrentUserAction = async (taskId) => {
     const result = await getAllNotesFromCalendarByCurrentUserService({ taskId, token });
     return result;
   } catch (error) {
-    console.error("getAllNotesFromCalendarByCurrentUserAction error:", error);
+    // console.error("getAllNotesFromCalendarByCurrentUserAction error:", error);
     throw error;
   }
 };
@@ -79,7 +79,7 @@ export const createNoteInCalendarAction = async ({
     });
     return result;
   } catch (error) {
-    console.error("createNoteInCalendarAction error:", error);
+    // console.error("createNoteInCalendarAction error:", error);
     throw error;
   }
 };
@@ -108,7 +108,7 @@ export const updateNoteByIdFromCalendarAction = async ({
     });
     return result;
   } catch (error) {
-    console.error("updateNoteByIdFromCalendarAction error:", error);
+    // console.error("updateNoteByIdFromCalendarAction error:", error);
     throw error;
   }
 };

@@ -6,13 +6,13 @@ import { revalidatePath, revalidateTag } from "next/cache";
  * getTaskbyBoardId and GanttbarId
  */
 export const getTaskByBoardIdAndGanttBarIdAction = async (boardId, ganttBarId) => {
-  // console.log(
+  //   (
   //   "ganttBarId in getTaskByBoardIdAndGanttBarIdAction: ",
   //   ganttBarId
   // );
   const userToken = await Token();
   const token = userToken.Credential;
-  //console.log(token);
+  //  (token);
   const result = await getTaskByBoardIdAndGanttBarIdService({
     boardId,
     ganttBarId,
@@ -26,10 +26,10 @@ export const getTaskByBoardIdAndGanttBarIdAction = async (boardId, ganttBarId) =
  * get ganttbar by gantt chart id
  */
 export const getGanttBarByGanttChartIdAction = async (ganttChartId) => {
-  // console.log("ganttchartId  in calendar: ", ganttChartId);
+  //   ("ganttchartId  in calendar: ", ganttChartId);
   const userToken = await Token();
   const token = userToken.Credential;
-  console.log(token);
+    (token);
   const result = await getGanttBarByGanttChartIdService({
     ganttChartId,
     token,
@@ -41,10 +41,10 @@ export const getGanttBarByGanttChartIdAction = async (ganttChartId) => {
  * get ganttchart by boardId
  */
 export const getGanttChartByBoardIdAction = async (boardId) => {
-    // console.log("BoardId ingetGanttChartByBoardIdAction: ", boardId);
+    //   ("BoardId ingetGanttChartByBoardIdAction: ", boardId);
   const userToken = await Token();
   const token = userToken.Credential;
-  console.log(token);
+    (token);
 
   const result = await getGanttChartByBoardIdService({
     boardId,
@@ -64,10 +64,10 @@ export const createNoteInCalendarAction = async (
 ) => {
   const userToken = await Token();
   const token = userToken.Credential;
-  console.log("Action noted input:", noted);
-  console.log("Action startDate input:", startDate);
-  console.log("Action tillDate input:", tillDate);
-  console.log("Action taskId input:", taskId);
+    ("Action noted input:", noted);
+    ("Action startDate input:", startDate);
+    ("Action tillDate input:", tillDate);
+    ("Action taskId input:", taskId);
   
 
   const result = await createNoteInCalendarService({
@@ -89,7 +89,7 @@ export const createNoteInCalendarAction = async (
 
 
 export const getAllNoteInCalendarAction = async (taskId) => {
-  // console.log("Action - Received taskId (should be string):", taskId);
+  //   ("Action - Received taskId (should be string):", taskId);
   try {
     const userToken = await Token();
     const token = userToken.Credential;
@@ -139,11 +139,11 @@ export const updateNoteInCalendarAction = async ({
   tillDate,
   taskId
 }) => {
-  console.log("CalendarId in update action : ", calendarId);
-  console.log("noted in update action : ", noted);
-  console.log("startDate in update action : ", startDate);
-  console.log("tillDate in update action : ", tillDate);
-  console.log("taskId in update action : ", taskId);
+    ("CalendarId in update action : ", calendarId);
+    ("noted in update action : ", noted);
+    ("startDate in update action : ", startDate);
+    ("tillDate in update action : ", tillDate);
+    ("taskId in update action : ", taskId);
   try {
     const userToken = await Token();
     const token = userToken.Credential;
@@ -156,7 +156,7 @@ export const updateNoteInCalendarAction = async ({
       taskId,
       token: token,
     });
-    console.log("Result in updateNOteInCalendarService: ", result);
+      ("Result in updateNOteInCalendarService: ", result);
     revalidatePath("/calendar")
     return result;
   } catch (error) {

@@ -17,7 +17,7 @@ export default async function DashBoardLayout({ children, params }) {
     const myUserId = getUserDetails?.payload?.userId;
 
     // Debugging log to inspect structure
-    console.log("allMemberInBoard", membersResponse);
+      ("allMemberInBoard", membersResponse);
 
     // Check if myUserId exists in membersResponse.payload (not .data)
     const userExists = Array.isArray(membersResponse?.payload)
@@ -29,7 +29,7 @@ export default async function DashBoardLayout({ children, params }) {
       redirect(`/workspace/${workspaceId}`);
     }
 
-    console.log("this is the boardId", boardId);
+      ("this is the boardId", boardId);
 
     return <div>{children}</div>;
   } catch (error) {

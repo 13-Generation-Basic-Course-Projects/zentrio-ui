@@ -47,7 +47,7 @@ export default function PopupActionTaskMoveInProgress({
 
     setIsSubmitting(true);
     try {
-      console.log({ taskId, comment });
+        ({ taskId, comment });
       const result = await FeedBackAction(taskId, { comment, taskId });
       toast.success("Feedback submitted successfully!", {
         position: "top-right",

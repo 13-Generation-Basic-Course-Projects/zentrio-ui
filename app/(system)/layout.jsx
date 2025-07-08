@@ -28,34 +28,30 @@ import {
 import OneSignalInitializer from "@/components/onesignal/OneSignalInitializer";
 import ModalNotification from "@/components/modal/noti/ModalNotification";
 import { ToastContainer } from "react-toastify";
-//import { LoadingBarContainer } from "react-top-loading-bar";
+
 export const metadata = {
   title: "Zentrio | Task Mangement",
   description: "Welcome to Zentrio Cambodia",
 };
 
-//this layout is use for everything of workspace, and dashbaord .......
-
 export default async function SystemLayout({ children, params }) {
   const session = await auth();
   console.log("aaa", session);
+  
   if (session) {
     const boardId = params.id;
-    /*  call action get all workspace */
+    
+    /* call action get all workspace */
     const workspaceData = await getAllWorkspaceAction();
-    /*  call action get all workspace for users */
+    /* call action get all workspace for users */
     const workspaceUsersData = await getAllWorkspaceForUserAction();
 
-    /*
-     * This function is the main entry point for the profile page.
-     */
-
     const currentUserProfile = await getCurrentUserProfileAction();
+    
     /**
      * get board favorite
      */
     const getUserDetials = await getPreviewProfileAction();
-    //  console.log("getPreviewProfileAction", getUserDetials);
     const myUserId = getUserDetials?.payload?.userId;
     const imageUser = getUserDetials?.payload?.profileImage;
     const noImage = preventImage.noProfile;
@@ -67,14 +63,12 @@ export default async function SystemLayout({ children, params }) {
     console.log("myUserId", myUserId);
 
     //workspace other
-
     const getWorKSpaceJoined = await getOtherWorkSpaceJoinedAction();
     console.log("getWorKSpaceJoined", getWorKSpaceJoined);
 
     const notificationData = await getNotificationForUserIdAction(myUserId);
 
     return (
-      // <LoadingBarContainer>
       <SidebarProvider className="bg-bgColor">
         <OneSignalInitializer userId={myUserId} />
         <SidebarRenderer
@@ -86,24 +80,29 @@ export default async function SystemLayout({ children, params }) {
           getBoardByWorkspaceId={getAllBoardBywWorkspaceIdAction}
           getWorKSpaceJoined={getWorKSpaceJoined}
         />
-        <div
-          className={" font-poppin h-screen overflow-hidden  bg-white  w-full"}
-        >
-          {/* <SidebarTrigger className="fixed top-0  z-[30]" /> */}
-          <div className="w-full  ">
+        <div className="font-poppin h-screen overflow-hidden bg-white w-full">
+          {/* Mobile sidebar trigger - only show on small screens */}
+          <SidebarTrigger className="fixed top-4 left-4 z-[30] md:hidden" />
+          
+          <div className="w-full h-full flex flex-col">
             <NavbarWrapper
               user={session?.user}
               preventUserImage={preventUserImage}
               notificationData={notificationData}
             />
-            {children}
+            {/* Main content area with responsive padding */}
+            <div className="flex-1 overflow-hidden px-2 h-screen sm:px-4 lg:px-0">
+              {children}
+            </div>
           </div>
         </div>
       </SidebarProvider>
-      // </LoadingBarContainer>
     );
   }
-  return <div className="w-full  ">{children}
   
-  </div>;
+  return (
+    <div className="w-full min-h-screen">
+      {children}
+    </div>
+  );
 }

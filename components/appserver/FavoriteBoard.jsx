@@ -18,8 +18,8 @@ export default function MyFavoriteBoard({
   memberData,
   memberMap,
 }) {
-  console.log("log fav", myFavBoard);
-  console.log("memberDMap fav", memberMap);
+    ("log fav", myFavBoard);
+    ("memberDMap fav", memberMap);
 
 
   return (

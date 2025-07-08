@@ -22,7 +22,7 @@ export const getCalendarByBoardIdAndUserIdService = async ({ boardId, token }) =
         }
 
         const data = await res.json();
-        console.log("getCalendarByBoardIdAndUserId:", data);
+          ("getCalendarByBoardIdAndUserId:", data);
         return data;
     } catch (error) {
         console.error("Error fetching calendar data:", error.message);
@@ -50,7 +50,7 @@ export const getAllNotesFromCalendarByCurrentUserService = async ({ taskId, toke
         }
 
         const data = await res.json();
-        console.log("getAllNotesFromCalendarByCurrentUser:", data);
+          ("getAllNotesFromCalendarByCurrentUser:", data);
         return data;
     } catch (error) {
         console.error("Error fetching notes from calendar:", error.message);
@@ -78,7 +78,7 @@ export const getNoteInCalendarService = async ({ calendarId, token }) => {
     }
 
     const data = await res.json();
-    console.log("getNoteInCalendar:", data);
+      ("getNoteInCalendar:", data);
     return data;
   } catch (error) {
     console.error("Error fetching note in Calendar:", error.message);
@@ -119,7 +119,7 @@ export const createNoteInCalendarService = async ({
     }
 
     const data = await res.json();
-    console.log("createNoteInCalendar:", data);
+      ("createNoteInCalendar:", data);
     return data;
   } catch (error) {
     console.error("Error creating note in calendar:", error.message);
@@ -161,7 +161,7 @@ export const updateNoteByIdFromCalendarService = async ({
     }
 
     const data = await res.json();
-    console.log("updateNoteByIdFromCalendar:", data);
+      ("updateNoteByIdFromCalendar:", data);
     return data;
   } catch (error) {
     console.error("Error updating note by ID from calendar:", error.message);

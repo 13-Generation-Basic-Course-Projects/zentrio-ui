@@ -48,8 +48,8 @@ export default function CardBoardDetail({
 
     fetchMembers();
   }, [boardId]);
-  console.log("member in card board detail: ", members);
-  console.log("workspace id in card board detail: ", workspaceId);
+    ("member in card board detail: ", members);
+    ("workspace id in card board detail: ", workspaceId);
 
   return (
     <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-white to-gray-50 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-gray-100">

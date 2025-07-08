@@ -40,7 +40,7 @@ export default function PostCommentChecklist({ checklistId, onCommentPosted }) {
       });
 
       if (result.success) {
-        console.log("Comment posted successfully:", result.data);
+          ("Comment posted successfully:", result.data);
 
         // Clear the form
         reset();

@@ -174,9 +174,9 @@ export default function ActiveBoardsOther({
 
   const primaryRole = getPrimaryRole(userRoles);
 
-  console.log("ActiveBoardsOther", MemberDetails, userId);
-  console.log("User tasks:", userTasks);
-  console.log("Processed tasks:", processedTasks);
+    ("ActiveBoardsOther", MemberDetails, userId);
+    ("User tasks:", userTasks);
+    ("Processed tasks:", processedTasks);
 
   return (
     <div className="rounded-xl shadow bg-white flex flex-col min-h-screen">

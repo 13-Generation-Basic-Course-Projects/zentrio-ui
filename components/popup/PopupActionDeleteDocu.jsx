@@ -31,7 +31,7 @@ export default function PopupActionDeleteDocu({
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-  console.log(accessToken);
+    (accessToken);
   const handleDelete = async () => {
     try {
       const result = await deleteDocumentAction(accessToken, documentId);

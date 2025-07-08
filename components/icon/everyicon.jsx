@@ -258,7 +258,7 @@ export function StackedProfileChecklist({
   hidden,
   role,
 }) {
-  console.log("=====", allMemberChecklist);
+    ("=====", allMemberChecklist);
   const prevent = preventImage.noProfile;
   return (
     <div className="flex items-center space-x-[-14px]">
@@ -306,7 +306,7 @@ export function StackedProfileChecklist({
   );
 }
 export function StackedProfiles({ member }) {
-  console.log("=====", member);
+    ("=====", member);
   return (
     <div className="flex items-center space-x-[-14px]">
       <img

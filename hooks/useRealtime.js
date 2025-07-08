@@ -11,17 +11,17 @@ export const useRealtime = (boardId) => {
   const connect = useCallback(() => {
     if (!boardId || eventSourceRef.current) return;
 
-    console.log('Attempting to connect to real-time server for board:', boardId);
+    //   ('Attempting to connect to real-time server for board:', boardId);
 
     try {
       const url = `/api/realtime?boardId=${boardId}`;
-      console.log('Connecting to:', url);
+      //   ('Connecting to:', url);
       
       const eventSource = new EventSource(url);
       eventSourceRef.current = eventSource;
 
       eventSource.onopen = () => {
-        console.log('✅ Connected to real-time server');
+        //   ('✅ Connected to real-time server');
         setIsConnected(true);
         setConnectionError(null);
       };
@@ -30,15 +30,15 @@ export const useRealtime = (boardId) => {
         try {
           const data = JSON.parse(event.data);
           setLastMessage(data);
-          console.log('📨 Received real-time message:', data);
+          //   ('📨 Received real-time message:', data);
         } catch (error) {
-          console.error('❌ Error parsing real-time message:', error);
+          // console.error('❌ Error parsing real-time message:', error);
         }
       };
 
       eventSource.onerror = (event) => {
-        console.error('❌ Real-time connection error:', event);
-        console.error('EventSource readyState:', eventSource.readyState);
+        // console.error('❌ Real-time connection error:', event);
+        // console.error('EventSource readyState:', eventSource.readyState);
         setConnectionError('Connection failed');
         setIsConnected(false);
         
@@ -49,7 +49,7 @@ export const useRealtime = (boardId) => {
           // Try to reconnect after 5 seconds
           setTimeout(() => {
             if (boardId) {
-              console.log('🔄 Attempting to reconnect...');
+              //   ('🔄 Attempting to reconnect...');
               connect();
             }
           }, 5000);
@@ -65,7 +65,7 @@ export const useRealtime = (boardId) => {
 
   const disconnect = useCallback(() => {
     if (eventSourceRef.current) {
-      console.log('🔌 Disconnecting from real-time server');
+      //   ('🔌 Disconnecting from real-time server');
       eventSourceRef.current.close();
       eventSourceRef.current = null;
       setIsConnected(false);
@@ -86,7 +86,7 @@ export const useRealtime = (boardId) => {
   // Function to emit events (we'll use a separate API endpoint for this)
   const emitEvent = useCallback(async (eventType, data) => {
     try {
-      console.log('📤 Emitting event:', eventType, data);
+      //   ('📤 Emitting event:', eventType, data);
       
       const response = await fetch('/api/realtime/emit', {
         method: 'POST',
@@ -105,9 +105,9 @@ export const useRealtime = (boardId) => {
         throw new Error(`Failed to emit event: ${response.status} ${errorText}`);
       }
       
-      console.log('✅ Event emitted successfully');
+      //   ('✅ Event emitted successfully');
     } catch (error) {
-      console.error('❌ Error emitting event:', error);
+      // console.error('❌ Error emitting event:', error);
     }
   }, [boardId]);
 

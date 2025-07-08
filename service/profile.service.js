@@ -66,7 +66,7 @@ export const updateAchievementService = async ({ token, payload }) => {
   // Step 1: Check if existing data is present
   try {
     const existingData = await getUserAchievementService({ token });
-    console.log("Existing achievement data:", existingData);
+    //   ("Existing achievement data:", existingData);
 
     const details = existingData?.payload?.details || {};
     const ownBoard = details.ownBoard || [];
@@ -81,10 +81,10 @@ export const updateAchievementService = async ({ token, payload }) => {
       endpoint = profileRouteGroup.updateAchievementCurrentUser({ token });
     }
   } catch (err) {
-    console.warn(
-      "Error fetching existing achievements, defaulting to POST:",
-      err
-    );
+    // console.warn(
+    //   "Error fetching existing achievements, defaulting to POST:",
+    //   err
+    // );
     // Default method = POST
   }
 
@@ -108,10 +108,10 @@ export const updateAchievementService = async ({ token, payload }) => {
     requestBody.achievementId = achievementId;
   }
 
-  console.log(
-    `Sending ${method} request to ${endpoint} with body:`,
-    requestBody
-  );
+  //   (
+  //   `Sending ${method} request to ${endpoint} with body:`,
+  //   requestBody
+  // );
 
   // Step 3: Make request
   const response = await fetch(endpoint, {
@@ -125,7 +125,7 @@ export const updateAchievementService = async ({ token, payload }) => {
 
   if (!response.ok) {
     const errorResult = await response.json();
-    console.error("API error response:", errorResult);
+    // console.error("API error response:", errorResult);
     throw new Error(`${method} request failed`);
   }
 
@@ -158,8 +158,8 @@ export const getPreviewProfileService = async ({ token }) => {
 
 export const updateProfileImageService = async ({ token, formData }) => {
   const url =profileRouteGroup.updateProfileImgae();
-  ////console.log("url", url);
-  ////console.log("datakakak", formData);
+  ////  ("url", url);
+  ////  ("datakakak", formData);
   const response = await fetch(url,{
     method: "POST",
     headers: {
@@ -173,6 +173,6 @@ export const updateProfileImageService = async ({ token, formData }) => {
   }
 
   const data = await response.json();
-  ////console.log("vit_profile",data)
+  ////  ("vit_profile",data)
   return data;
 };

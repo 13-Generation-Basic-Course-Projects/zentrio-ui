@@ -60,7 +60,7 @@ const ImageViewer = ({ urls }) => {
         className="col-span-2 row-span-2 relative rounded-lg overflow-hidden cursor-pointer"
         onClick={(e) => {
           e.stopPropagation();
-          console.log('Image clicked:', 0);
+            ('Image clicked:', 0);
           setSelectedIndex(0);
         }}
       >
@@ -74,7 +74,7 @@ const ImageViewer = ({ urls }) => {
         className="relative rounded-lg overflow-hidden cursor-pointer transition-transform"
         onClick={(e) => {
           e.stopPropagation();
-          console.log('Image clicked:', 1);
+            ('Image clicked:', 1);
           setSelectedIndex(1);
         }}
       >
@@ -88,7 +88,7 @@ const ImageViewer = ({ urls }) => {
         className="relative rounded-lg overflow-hidden cursor-pointer transition-transform"
         onClick={(e) => {
           e.stopPropagation();
-          console.log('Image clicked:', 2);
+            ('Image clicked:', 2);
           setSelectedIndex(2);
         }}
       >
@@ -182,7 +182,7 @@ const ImageViewer = ({ urls }) => {
               }`}
               onClick={(e) => {
                 e.stopPropagation();
-                console.log('Image clicked:', index);
+                  ('Image clicked:', index);
                 setSelectedIndex(index);
               }}
             >

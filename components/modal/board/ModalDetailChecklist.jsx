@@ -105,7 +105,7 @@ const useChecklistData = (checklistId, isOpen) => {
 
     try {
       const result = await getAttachmentAction(checklistId); // Fixed typo
-      console.log("RESULT IN MODAL:", result);
+        ("RESULT IN MODAL:", result);
 
       if (result.success && result.payload) {
         // Convert single object to array for consistency
@@ -148,7 +148,7 @@ const useChecklistData = (checklistId, isOpen) => {
     dispatch({ type: "SET_COMMENTS", payload: [] });
     try {
       const result = await getCommentByCheckListIdAction(checklistId);
-      console.log("Fetched comments:", result);
+        ("Fetched comments:", result);
       if (result.success) {
         dispatch({ type: "SET_COMMENTS", payload: result.payload || [] });
       } else {
@@ -197,7 +197,7 @@ const useDescriptionEditor = (taskId, checklistId, isOpen) => {
   const [changedFields, setChangedFields] = useState(new Set());
 
   useEffect(() => {
-    console.log("useDescriptionEditor useEffect:", {
+      ("useDescriptionEditor useEffect:", {
       isOpen,
       taskId,
       checklistId,
@@ -231,8 +231,8 @@ const useDescriptionEditor = (taskId, checklistId, isOpen) => {
             setTaskStartedAt(taskStartedAt);
             setTaskFinishedAt(taskFinishedAt);
 
-            console.log("✔ Task Start:", taskStartedAt);
-            console.log("✔ Task Finish:", taskFinishedAt);
+              ("✔ Task Start:", taskStartedAt);
+              ("✔ Task Finish:", taskFinishedAt);
           }
 
           // Setup date range
@@ -279,7 +279,7 @@ const useDescriptionEditor = (taskId, checklistId, isOpen) => {
   };
 
   const handleCancel = () => {
-    console.log("Cancel clicked - reverting changes");
+      ("Cancel clicked - reverting changes");
     setIsEditing(false);
     setIsEditingTitle(false);
     setNewDescription(checklistData?.description || "");
@@ -317,13 +317,13 @@ const useDescriptionEditor = (taskId, checklistId, isOpen) => {
 
   // const handleDateRangeChange = useCallback(
   //   async (value) => {
-  //     console.log("DateRangePicker onChange raw:", value);
+  //       ("DateRangePicker onChange raw:", value);
 
   //     const end = value.end
   //       ? new Date(value.end.year, value.end.month - 1, value.end.day)
   //       : null;
 
-  //     console.log("Parsed End Date:", end?.toISOString());
+  //       ("Parsed End Date:", end?.toISOString());
 
   //     if (!end) {
   //       toast.error("Finish date is required");
@@ -337,7 +337,7 @@ const useDescriptionEditor = (taskId, checklistId, isOpen) => {
   //           finishedAt: end.toISOString(),
   //           checklistId,
   //         });
-  //         console.log("✔ Checklist finishedAt updated:", res);
+  //           ("✔ Checklist finishedAt updated:", res);
   //         toast.success("Checklist deadline extended");
   //       }
   //     } catch (err) {
@@ -356,7 +356,7 @@ const useDescriptionEditor = (taskId, checklistId, isOpen) => {
   // );
   const handleFinishedAtChange = useCallback(
     async (value) => {
-      console.log("DatePicker onChange raw:", value);
+        ("DatePicker onChange raw:", value);
 
       if (!value) {
         toast.error("Finish date is required");
@@ -409,7 +409,7 @@ const useDescriptionEditor = (taskId, checklistId, isOpen) => {
             finishedAt: selectedDate.toISOString(),
             checklistId,
           });
-          console.log("✔ Checklist finishedAt updated:", res);
+            ("✔ Checklist finishedAt updated:", res);
           toast.success("Checklist deadline extended");
         }
       } catch (err) {
@@ -432,7 +432,7 @@ const useDescriptionEditor = (taskId, checklistId, isOpen) => {
   );
 
   const handleSaveTitle = useCallback(async () => {
-    console.log("handleSaveTitle called with changedFields:", [
+      ("handleSaveTitle called with changedFields:", [
       ...changedFields,
     ]);
     if (changedFields.has("title") && !newTitle?.trim()) {
@@ -520,7 +520,7 @@ const useDescriptionEditor = (taskId, checklistId, isOpen) => {
         taskId: checklistData.taskId,
       };
 
-      console.log(
+        (
         "Sending update title to updateCheckListByIdAndTaskIdAction:",
         payload
       );
@@ -575,7 +575,7 @@ const useDescriptionEditor = (taskId, checklistId, isOpen) => {
     changedFields,
   ]);
   const handleSaveDecription = useCallback(async () => {
-    console.log("handleSaveDescription called with changedFields:", [
+      ("handleSaveDescription called with changedFields:", [
       ...changedFields,
     ]);
     if (changedFields.has("description") && !newDescription?.trim()) {
@@ -662,7 +662,7 @@ const useDescriptionEditor = (taskId, checklistId, isOpen) => {
         taskId: checklistData.taskId,
       };
 
-      console.log(
+        (
         "Sending update description to updateCheckListByIdAndTaskIdAction:",
         payload
       );
@@ -814,7 +814,7 @@ const ModalDetailChecklist = ({
   );
   const [totalCommentLength, setTotalCommentLength] = useState(0); // Add state
 
-  console.log("hhhh", image);
+    ("hhhh", image);
 
   const disablePastDates = (date) => {
     const todayDate = today(getLocalTimeZone());
@@ -849,8 +849,8 @@ const ModalDetailChecklist = ({
   } = useDescriptionEditor(taskId, checklistId, isOpen);
  
 
-  console.log("log taskStatedAt :", taskStartedAt);
-  console.log("log taskFinishedAt :", taskFinishedAt);
+    ("log taskStatedAt :", taskStartedAt);
+    ("log taskFinishedAt :", taskFinishedAt);
   const minCalendarDate = taskStartedAt
     ? parseDate(taskStartedAt.split("T")[0])
     : undefined;
@@ -923,7 +923,7 @@ const ModalDetailChecklist = ({
       (sum, comment) => sum + (comment.content?.length || 0),
       0
     );
-    console.log("Calculated totalCommentLength:", totalLength);
+      ("Calculated totalCommentLength:", totalLength);
     setTotalCommentLength(totalLength);
   }, [state.comments]);
 
@@ -1056,7 +1056,7 @@ const ModalDetailChecklist = ({
     ? imageChecklist
     : "https://media.sproutsocial.com/uploads/2024/01/facebook-cover-image.svg";
 
-  console.log("Rendering CardCheckList with:", {
+    ("Rendering CardCheckList with:", {
     commentCount: state.comments.length,
     totalCommentLength,
   });
@@ -1066,7 +1066,7 @@ const ModalDetailChecklist = ({
       ?.flat() // Flatten the array of arrays into a single array
       .filter((feedback) => feedback?.taskId === taskId) || [];
 
-  console.log("this is role ", role);
+    ("this is role ", role);
 
   return (
     <div>

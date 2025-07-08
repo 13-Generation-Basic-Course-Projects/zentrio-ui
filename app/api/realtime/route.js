@@ -6,7 +6,7 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const boardId = searchParams.get('boardId');
     
-    console.log('🔗 Real-time connection request for board:', boardId);
+      ('🔗 Real-time connection request for board:', boardId);
     
     if (!boardId) {
       console.error('❌ Board ID missing in request');
@@ -16,7 +16,7 @@ export async function GET(request) {
     const stream = new ReadableStream({
       start(controller) {
         const clientId = Date.now().toString();
-        console.log(`👤 Client ${clientId} connecting to board ${boardId}`);
+          (`👤 Client ${clientId} connecting to board ${boardId}`);
         
         // Store client
         if (!clients.has(boardId)) {
@@ -27,23 +27,23 @@ export async function GET(request) {
         // Send initial connection message
         const data = `data: ${JSON.stringify({ type: 'connected', clientId, boardId })}\n\n`;
         controller.enqueue(new TextEncoder().encode(data));
-        console.log(`✅ Client ${clientId} connected to board ${boardId}`);
+          (`✅ Client ${clientId} connected to board ${boardId}`);
 
         // Handle client disconnect
         request.signal.addEventListener('abort', () => {
-          console.log(`🔌 Client ${clientId} disconnected from board ${boardId}`);
+            (`🔌 Client ${clientId} disconnected from board ${boardId}`);
           const boardClients = clients.get(boardId);
           if (boardClients) {
             boardClients.delete(clientId);
             if (boardClients.size === 0) {
               clients.delete(boardId);
-              console.log(`🗑️ Removed empty board ${boardId}`);
+                (`🗑️ Removed empty board ${boardId}`);
             }
           }
         });
       },
       cancel() {
-        console.log('❌ Stream cancelled');
+          ('❌ Stream cancelled');
       }
     });
 
@@ -64,7 +64,7 @@ export async function GET(request) {
 
 // Function to broadcast to all clients in a board
 export function broadcastToBoard(boardId, data) {
-  console.log(`📢 Broadcasting to board ${boardId}:`, data);
+    (`📢 Broadcasting to board ${boardId}:`, data);
   
   const boardClients = clients.get(boardId);
   if (boardClients) {
@@ -76,7 +76,7 @@ export function broadcastToBoard(boardId, data) {
       try {
         controller.enqueue(encoder.encode(message));
         sentCount++;
-        console.log(`📤 Sent message to client ${clientId}`);
+          (`📤 Sent message to client ${clientId}`);
       } catch (error) {
         console.error(`❌ Error sending message to client ${clientId}:`, error);
         // Remove the failed client
@@ -84,8 +84,8 @@ export function broadcastToBoard(boardId, data) {
       }
     });
     
-    console.log(`✅ Broadcasted to ${sentCount} clients in board ${boardId}`);
+      (`✅ Broadcasted to ${sentCount} clients in board ${boardId}`);
   } else {
-    console.log(`⚠️ No clients found for board ${boardId}`);
+      (`⚠️ No clients found for board ${boardId}`);
   }
 } 

@@ -75,7 +75,7 @@ export const sendNotificationToUserIdService = async (
 
 export const getNotificationForUserIdService = async ({ userId, token }) => {
 
-  console.log("user id service", userId);
+  //   ("user id service", userId);
   // Validate userId to ensure it's not undefined or null before making the request
   if (!userId) {
     //console.error(
@@ -119,7 +119,7 @@ export const deleteNotificationByIdService = async (notificationId, token) => {
       },
     });
 
-    //console.log("response", response);
+    //  ("response", response);
 
     return response;
   } catch (error) {

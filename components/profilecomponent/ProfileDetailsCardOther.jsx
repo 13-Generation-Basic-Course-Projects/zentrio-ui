@@ -19,7 +19,7 @@ export default function ProfileDetailsCardOther({
   const userDetails =
     MemberDetails?.find((member) => member.userId === userId) || {};
 
-  console.log("7777", userIdDetail);
+  //  ("7777", userIdDetail);
 
   // Calculate task completion percentage
   const totalTasks = userDetails.tasks?.length || 0;

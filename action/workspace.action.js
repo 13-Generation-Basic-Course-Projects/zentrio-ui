@@ -28,7 +28,7 @@ import { revalidatePath, revalidateTag } from "next/cache";
  * 1. action for create workspaces
  */
 export const createWorkspaceAction = async (payload = {}) => {
-  console.log("Payload received:", payload);
+    ("Payload received:", payload);
   const { title, description } = payload;
 
   if (!title || !description) {
@@ -54,7 +54,7 @@ export const createWorkspaceAction = async (payload = {}) => {
 export const getAllWorkspaceAction = async () => {
   const userToken = await Token();
   const token = userToken.Credential;
-  console.log("wwwwwwww", token);
+    ("wwwwwwww", token);
   const result = await getAllWorkspacesService({ token });
 
   return result;
@@ -66,7 +66,7 @@ export const getAllWorkspaceAction = async () => {
 export const deleteWorkspaceByIdAction = async (id) => {
   const userToken = await Token();
   const token = userToken.Credential;
-  console.log("Delete id action : ", id);
+    ("Delete id action : ", id);
   const result = await deleteWorkspaceByIdService({ id, token });
 
   // revalidate tag related to workspaces
@@ -130,7 +130,7 @@ export const getBoardByIdAction = async (boardId) => {
 
 export const updateBoardByIdAction = async (boardId, payload = {}) => {
   const { title, description, cover, workspaceId } = payload;
-  console.log("🔁 Sending update payload in action:", {
+    ("🔁 Sending update payload in action:", {
     title,
     description,
     cover,
@@ -160,7 +160,7 @@ export const updateBoardByIdAction = async (boardId, payload = {}) => {
  * 3. Updated favourite of board by id
  */
 export const updateFavBoardByIdAction = async ({ boardId, isFavourite }) => {
-  console.log("🔁 Sending update favorite payload in action:", {
+    ("🔁 Sending update favorite payload in action:", {
     boardId,
     isFavourite,
   });
@@ -170,7 +170,7 @@ export const updateFavBoardByIdAction = async ({ boardId, isFavourite }) => {
   const userToken = await Token();
   const token = userToken.Credential;
 
-  console.log("🔐 Using token in action:", token);
+    ("🔐 Using token in action:", token);
 
   const result = await updateFavBoardByIdService({
     boardId,
@@ -209,7 +209,7 @@ export const createBoardAction = async (payload = {}) => {
     cover = payload.get("cover");
     workspaceId = payload.get("workspaceId");
 
-    console.log("Received FormData payload:", {
+      ("Received FormData payload:", {
       title,
       description,
       cover,
@@ -217,7 +217,7 @@ export const createBoardAction = async (payload = {}) => {
     });
   } else {
     ({ title, description, cover, workspaceId } = payload);
-    console.log("Received object payload:", {
+      ("Received object payload:", {
       title,
       description,
       cover,
@@ -239,7 +239,7 @@ export const createBoardAction = async (payload = {}) => {
 
   revalidateTag("boards");
   revalidateTag("workspaces");
-  console.log("Results create board in action:", result.payload);
+    ("Results create board in action:", result.payload);
   return result.payload;
 };
 
@@ -249,7 +249,7 @@ export const createBoardAction = async (payload = {}) => {
 export const getAllBoardBywWorkspaceIdAction = async (workspaceId) => {
   const userToken = await Token();
   const token = userToken.Credential;
-  console.log("workspace id in board action: ", workspaceId);
+    ("workspace id in board action: ", workspaceId);
   const result = await getBoardsByWorkspaceIdService({ workspaceId, token });
   return result;
 };
@@ -260,8 +260,8 @@ export const getAllBoardBywWorkspaceIdAction = async (workspaceId) => {
 export const deleteBoardAction = async (id, workspaceId) => {
   const userToken = await Token();
   const token = userToken.Credential;
-  console.log("Delete board id action : ", id);
-  console.log("workspaceId board id action : ", workspaceId);
+    ("Delete board id action : ", id);
+    ("workspaceId board id action : ", workspaceId);
   const result = await deleteBoardService({ id, workspaceId, token });
 
   // revalidate tag related to workspaces
@@ -277,7 +277,7 @@ export const deleteBoardAction = async (id, workspaceId) => {
 export const getFavoriteBoardAction = async (userId) => {
   const userToken = await Token();
   const token = userToken.Credential;
-  console.log("from uid", userId);
+    ("from uid", userId);
   const result = await getFavoriteBoardService(userId, token);
   return result;
 };
@@ -300,15 +300,15 @@ export const getMemberByBoardIdAction = async (boardId) => {
   const userToken = await Token();
   const token = userToken.Credential;
   const result = await getMemberByBoardIdService({ boardId, token });
-  console.log("Get member in action : ", result);
+    ("Get member in action : ", result);
   return result;
 };
 
 export const uploadImageBoardAction = async ({ boardId, image }) => {
-  console.log("kakakak", image);
+    ("kakakak", image);
   const userToken = await Token();
   const token = userToken.Credential;
-  console.log("sad token", token);
+    ("sad token", token);
   const result = await uploadImageBoardService({
     boardId,
     image,
@@ -323,11 +323,11 @@ export const uploadImageBoardAction = async ({ boardId, image }) => {
  * 7. Upload cover by board id
  */
 export const uploadBoardCoverAction = async (boardId, file) => {
-  console.log("upload boardId in action : ", boardId);
-  console.log("upload file in action : ", file);
+    ("upload boardId in action : ", boardId);
+    ("upload file in action : ", file);
   const userToken = await Token();
   const token = userToken.Credential;
   const result = await uploadBoardCoverService({ boardId, file, token });
-  console.log("upload cover in action : ", result);
+    ("upload cover in action : ", result);
   return result;
 };

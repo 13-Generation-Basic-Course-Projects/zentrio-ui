@@ -9,7 +9,7 @@ export async function POST(req) {
     const file = formData.get("file");
 
     if (!file || !tokenFromGoogle || !folderId) {
-      console.log("Missing:", { file, tokenFromGoogle, folderId });
+        ("Missing:", { file, tokenFromGoogle, folderId });
       return new Response(JSON.stringify({ error: "Missing input" }), {
         status: 400,
         headers: { "Content-Type": "application/json" },

@@ -27,7 +27,7 @@ export const deleteFileByFileIdService = async ({
 
     return data;
   } catch (error) {
-    console.error("Error in deleteFile:", error.message);
+    // console.error("Error in deleteFile:", error.message);
     return { status: error.status || 500, message: error.message };
   }
 };
@@ -70,7 +70,7 @@ export const downloadFileFromDriveService = async ({
 
     return { status: 200, blob, fileName };
   } catch (error) {
-    console.error("Error in downloadFileFromDrive:", error.message);
+    // console.error("Error in downloadFileFromDrive:", error.message);
     return { status: error.status || 500, message: error.message };
   }
 };
@@ -88,7 +88,7 @@ export const updateFileNameByFileIdService = async ({
       newName,
     });
 
-    console.log("url: ", url);
+    //   ("url: ", url);
 
     const res = await fetch(url, {
       method: "PATCH",
@@ -99,15 +99,15 @@ export const updateFileNameByFileIdService = async ({
     });
 
     if (!res.ok) {
-      const errorText = await res.text();
-      console.error("❌ Backend failed:", res.status, errorText);
+      // const errorText = await res.text();
+      // console.error("❌ Backend failed:", res.status, errorText);
       throw new Error(`Failed to update file name. Status: ${res.status}`);
     }
 
     const json = await res.json();
     return json;
   } catch (error) {
-    console.error("❌ updateFileNameByFileIdService error:", error.message);
+    // console.error("❌ updateFileNameByFileIdService error:", error.message);
     throw error;
   }
 };
@@ -130,14 +130,14 @@ export const getDriveFileByIdService = async ({
 
     if (!res.ok) {
       const errorText = await res.text();
-      console.error("❌ Backend failed:", res.status, errorText);
+      // console.error("❌ Backend failed:", res.status, errorText);
       throw new Error(`Failed to get drive file. Status: ${res.status}`);
     }
 
     const data = await res.json();
     return data;
   } catch (error) {
-    console.error("getDriveFileByIdService error: ", error.message);
+    // console.error("getDriveFileByIdService error: ", error.message);
     throw error;
   }
 };
@@ -171,13 +171,13 @@ export const uploadDocumentToFolderServie = async ({
 
     if (!res.ok) {
       const errorText = await res.text();
-      console.error("Error in uploadDocumentToFolderServie:", errorText);
+      // console.error("Error in uploadDocumentToFolderServie:", errorText);
       throw new Error(`Failed to upload file to folder: ${res.status}`);
     }
 
     return await res.json();
   } catch (error) {
-    console.error("Error in uploadDocumentToFolderServie:", error.message);
+    // console.error("Error in uploadDocumentToFolderServie:", error.message);
     throw error;
   }
 };

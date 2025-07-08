@@ -130,7 +130,7 @@ export default function GanttChart({
   const [viewRange, setViewRange] = useState({ start: null, end: null });
   const [isInitialized, setIsInitialized] = useState(false);
 
-  console.log("log gant bar again ", boardData);
+    ("log gant bar again ", boardData);
 
   // Stable reference for ganttbar to prevent unnecessary recalculations
   const stableGanttbar = useMemo(() => {
@@ -142,10 +142,10 @@ export default function GanttChart({
     const data = Array.isArray(stableGanttbar?.payload)
       ? stableGanttbar.payload
       : [];
-    console.log("Processing ganttbar.payload data: ", data);
+      ("Processing ganttbar.payload data: ", data);
 
     if (data.length === 0) {
-      console.log("No valid data found in ganttbar.payload");
+        ("No valid data found in ganttbar.payload");
       return {
         resources: [{ id: "default-phase", title: "" }],
         events: [],
@@ -261,8 +261,8 @@ export default function GanttChart({
 
     processedResources.sort((a, b) => a.title.localeCompare(b.title));
 
-    console.log("Dynamically Processed Resources:", processedResources);
-    console.log("Processed Events:", processedEvents);
+      ("Dynamically Processed Resources:", processedResources);
+      ("Processed Events:", processedEvents);
 
     return {
       resources: processedResources,
@@ -380,8 +380,8 @@ export default function GanttChart({
       start: dateInfo.startStr.split("T")[0],
       end: dateInfo.endStr.split("T")[0],
     });
-    console.log("View Title Updated:", dateInfo.view.title);
-    console.log(
+      ("View Title Updated:", dateInfo.view.title);
+      (
       "View Range Updated:",
       `${dateInfo.startStr.split("T")[0]} - ${dateInfo.endStr.split("T")[0]}`
     );

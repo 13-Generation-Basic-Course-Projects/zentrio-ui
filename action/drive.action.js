@@ -38,7 +38,7 @@ export const createDriveFileAction = async ({
 };
 
 export const deleteFileByFileIdAction = async ({ fileId, accessToken }) => {
-  console.log("deleteFileByFileIdAction input:", { fileId, accessToken });
+    ("deleteFileByFileIdAction input:", { fileId, accessToken });
   const userToken = await Token();
   const token = userToken.Credential;
 
@@ -86,7 +86,7 @@ export const updateFileNameByFileIdAction = async ({
       token, // internal JWT
     });
 
-    console.log("✅ File name updated:", updated);
+      ("✅ File name updated:", updated);
     revalidateTag("documents");
     return updated;
   } catch (error) {

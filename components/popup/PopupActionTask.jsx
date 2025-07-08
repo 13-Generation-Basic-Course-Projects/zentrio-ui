@@ -44,7 +44,7 @@ export default function PopupActionTask({
   const handleDelete = async () => {
     try {
       const result = await deleteTaskAction(taskId, boardId, ganttBarId);
-      console.log("respon delete", result);
+        ("respon delete", result);
       
       if (result.success) {
         // Emit real-time event for task deletion

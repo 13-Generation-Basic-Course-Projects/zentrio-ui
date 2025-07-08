@@ -23,7 +23,7 @@ export default function PopupActionNoGanttChart({
   // const router = useRouter();
 
   const handleConfirm = () => {
-    //console.log("Action confirmed for ganttChartId:", ganttChartId);
+    //  ("Action confirmed for ganttChartId:", ganttChartId);
 
     // Switch to the Kanban tab
     setActiveTab("calendar"); // Change to "calendar"  or "Kanban" blahh blahh blahh

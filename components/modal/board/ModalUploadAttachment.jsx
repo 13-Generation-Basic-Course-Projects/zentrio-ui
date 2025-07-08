@@ -121,7 +121,7 @@ const ModalUploadAttachment = ({
       },
     };
 
-    console.log(
+      (
       "Sending attachment payload:",
       JSON.stringify(detailsPayload, null, 2)
     );
@@ -237,7 +237,7 @@ const ModalUploadAttachment = ({
         setLoading(true);
         try {
           const allDocument = await getAllDocumentByBoardIdAction(boardId);
-          console.log("Fetched documents:", allDocument);
+            ("Fetched documents:", allDocument);
           setDocuments(allDocument?.payload || []);
         } catch (error) {
           console.error("Error fetching documents:", error);

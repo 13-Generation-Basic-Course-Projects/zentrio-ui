@@ -20,13 +20,13 @@ export const createAnnouncementByBoardIdService = async ({
     next: { tags: ["announcements"] },
   });
   const data = await res.json();
-  //console.log("create announcement", data);
+  //  ("create announcement", data);
   return data;
 };
 
 export const uploadMultiImgByBoardIdService = async ({ boardId, image, token }) => {
   const url = announcementRouteGroup.uploadMultiImgByBoardId(boardId);
-  //console.log("url",url)
+  //  ("url",url)
   const formData = new FormData();
   formData.append("boardId", boardId);
 
@@ -36,7 +36,7 @@ export const uploadMultiImgByBoardIdService = async ({ boardId, image, token }) 
       formData.append("files", file); // Make sure this matches your backend field name
     });
   }
-  //console.log("kakak",formData)
+  //  ("kakak",formData)
 
   const res = await fetch(url, {
     method: "POST",
@@ -49,7 +49,7 @@ export const uploadMultiImgByBoardIdService = async ({ boardId, image, token }) 
   });
 
   const data = await res.json();
-  //console.log("img announcement", data);
+  //  ("img announcement", data);
   return data;
 };
 
@@ -69,15 +69,15 @@ export const getAllAnnouncementByBoardIdService = async ({
     },
   });
   const data = await res.json();
-  //console.log("get all announcements", data);
+  //  ("get all announcements", data);
   return data;
 };
 
 export const deleteAnnouncementByIdService = async (id, token) => {
-  //console.log("Delete id service : ", id, token);
+  //  ("Delete id service : ", id, token);
   
     const url = announcementRouteGroup.deleteAnnouncementById(id);
-    //console.log(url)
+    //  (url)
     const res = await fetch(url, {
       method: "DELETE",
       headers: {
@@ -86,14 +86,14 @@ export const deleteAnnouncementByIdService = async (id, token) => {
     });
 
     const data = await res.json();
-    //console.log("backend respone", data)
+    //  ("backend respone", data)
     return data;
   
   
 };
 
 export const pinedAnnouncementByIdService = async (announId, token) => {
-  //console.log("pin id service",announId);
+  //  ("pin id service",announId);
 
   const url = announcementRouteGroup.pinedAnnouncementById(announId);
   const res = await fetch(url, {
@@ -108,7 +108,7 @@ export const pinedAnnouncementByIdService = async (announId, token) => {
 };
 
 export const updateAnnouncementByIdService = async ({announId, description, title, boardId, token}) => {
-  //console.log("update announ service",announId, description, title, boardId, token);
+  //  ("update announ service",announId, description, title, boardId, token);
   const payload={
     description: description,
     title: title,
@@ -125,13 +125,13 @@ export const updateAnnouncementByIdService = async ({announId, description, titl
     next: { tags: ["announcements"] },
   });
   const data = await res.json();
-  //console.log("update data", data);
+  //  ("update data", data);
   return data; 
 };
 
 export const createCommentByAnnouncementIdService = async ({ content, announcementId, token }) => {
-  //console.log("tokennnnnnnnnnnn",token);
-  //console.log("idddddddddd",announcementId);
+  //  ("tokennnnnnnnnnnn",token);
+  //  ("idddddddddd",announcementId);
   const url = announcementRouteGroup.createCommentByAnnouncementId(announcementId);
   const res = await fetch(url, {
     method: "POST",
@@ -147,7 +147,7 @@ export const createCommentByAnnouncementIdService = async ({ content, announceme
 };
 
 export const editCommentByIdService = async ({ content, announId, commentId, token }) => {
-  //console.log("Service Commentpu1",commentId, content);
+  //  ("Service Commentpu1",commentId, content);
   const url = announcementRouteGroup.editCommentById(commentId);
   const res = await fetch(url, {
     method: "PUT",
@@ -160,12 +160,12 @@ export const editCommentByIdService = async ({ content, announId, commentId, tok
       announcementId: announId }),
   });
   const data = await res.json();
-  //console.log("Service Commentpu2",data);
+  //  ("Service Commentpu2",data);
   return data;
 };
 
 export const deleteCommentByIdService = async ({ commentId, token }) => {
-  // //console.log("Service Commentd1",commentId, token);
+  // //  ("Service Commentd1",commentId, token);
   const url = announcementRouteGroup.deleteCommentById(commentId);
   const res = await fetch(url, {
     method: "DELETE",
@@ -174,6 +174,6 @@ export const deleteCommentByIdService = async ({ commentId, token }) => {
       },
   });
   const data = await res.json();
-  // //console.log("Service Commentd2", data);
+  // //  ("Service Commentd2", data);
   return data;
 };

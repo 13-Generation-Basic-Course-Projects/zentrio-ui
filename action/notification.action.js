@@ -45,7 +45,7 @@ export const sendNotificationToUserIdAction = async (
 };
 
 export const getNotificationForUserIdAction = async (userId) => {
-  console.log("userrrrrrrrrrrrrrrrrrrrrrrrr id Action", userId);
+    ("userrrrrrrrrrrrrrrrrrrrrrrrr id Action", userId);
   try {
     const userToken = await Token();
     const token = userToken.Credential; // Assuming Credential is the property holding the token

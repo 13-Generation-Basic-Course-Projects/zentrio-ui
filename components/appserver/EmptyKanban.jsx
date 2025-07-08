@@ -25,13 +25,13 @@ export function EmptyKanban() {
       <Image
         src={Task3D}
         alt="3D UI Workflow Design"
-        className=" size-[526px] absolute bottom-4 right-10"
-        priority
+        className=" w-[350px]    absolute bottom-4 right-10"
+        
       />
       <Image
         src={Clock3D}
         alt="3D Clock Design"
-        className="  size-[169px] absolute bottom-2 right-4"
+        className="  size-[169px] lg:size-[200px] absolute bottom-2 right-4"
         priority
       />
     </div>

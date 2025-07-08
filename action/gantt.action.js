@@ -10,14 +10,14 @@ import {
   updateGantChartBytIdService,
 } from "@/service/gantt.service";
 import { revalidatePath, revalidateTag } from "next/cache";
-console.log("test actions must create folders");
+  ("test actions must create folders");
 /*
  * get ganttbar
  */
 export const getGanttBarAction = async () => {
   const userToken = await Token();
   const token = userToken.Credential;
-  console.log(token);
+    (token);
   const result = await getGanttBarService({
     token,
   });
@@ -29,7 +29,7 @@ export const getGanttBarAction = async () => {
 export const getGanttBarByGanttChartIdAction = async ({ ganttChartId }) => {
   const userToken = await Token();
   const token = userToken.Credential;
-  console.log(token);
+    (token);
   const result = await getGanttBarByGanttChartIdService({
     ganttChartId,
     token,
@@ -43,7 +43,7 @@ export const getGanttBarByGanttChartIdAction = async ({ ganttChartId }) => {
 export const getGanttChartByBoardIdAction = async ({ boardId }) => {
   const userToken = await Token();
   const token = userToken.Credential;
-  console.log(token);
+    (token);
 
   const result = await getGanttChartByBoardIdService({
     boardId,
@@ -67,11 +67,11 @@ export const createGanttBarsByGanttChartIdAction = async ({
   // 1. Validate the incoming payload using Zod schema
   try {
     const validatedPayload = payload.map((item) => ganttBarSchema.parse(item));
-    console.log("✅ Payload validated successfully:", validatedPayload);
+      ("✅ Payload validated successfully:", validatedPayload);
 
     const userToken = await Token(); // Assuming Token() is defined elsewhere
     const token = userToken.Credential;
-    console.log(token);
+      (token);
 
     const result = await createGanttBarsByGanttChartIdService({
       ganttChartId,
@@ -96,7 +96,7 @@ export const updateGanttChartByIdAction = async ({
 }) => {
   const userToken = await Token();
   const token = userToken.Credential;
-  console.log(token);
+    (token);
 
   const result = await updateGantChartBytIdService({
     ganttChartId,
@@ -117,7 +117,7 @@ export const deleteGanttBarsByGanttChartIdAction = async ({
 }) => {
   const userToken = await Token();
   const token = userToken.Credential;
-  console.log(token);
+    (token);
 
   const result = await deleteGanttBarsByGanttChartIdService({
     ganttChartId,
@@ -142,7 +142,7 @@ export const updateGantBarBytGantChartIdAction = async ({
 }) => {
   const userToken = await Token();
   const token = userToken.Credential;
-  console.log(token);
+    (token);
 
   const result = await updateGantBarBytGantChartIdService({
     

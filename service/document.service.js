@@ -28,7 +28,7 @@ export const fetchDocumentService = async (id, token) => {
 
     return await res.json();
   } catch (error) {
-    console.error("Error in fetchDocumentService:", error.message);
+    // console.error("Error in fetchDocumentService:", error.message);
     return { status: error.status || 500, payload: [] }; // Fallback for other errors
   }
 };
@@ -62,7 +62,7 @@ export const fetchPublicDocumentsService = async (boardId, token) => {
 
     return await res.json();
   } catch (error) {
-    console.error("Error in fetchPublicDocumentsService:", error.message);
+    // console.error("Error in fetchPublicDocumentsService:", error.message);
     return { status: error.status || 500, payload: [] }; // Fallback for other errors
   }
 };
@@ -96,7 +96,7 @@ export const fetchDocumentsByBoardService = async (boardId, token) => {
 
     return await res.json();
   } catch (error) {
-    console.error("Error in fetchDocumentsByBoardService:", error.message);
+    // console.error("Error in fetchDocumentsByBoardService:", error.message);
     return { status: error.status || 500, payload: [] }; // Fallback for other errors
   }
 };
@@ -134,10 +134,10 @@ export const getFileByFolderIdService = async ({
     }
 
     const data = await res.json();
-    console.log("📥 Backend responded with:", data);
+    //   ("📥 Backend responded with:", data);
     return data;
   } catch (error) {
-    console.error("Error in getFileByFolderIdService:", error.message);
+    // console.error("Error in getFileByFolderIdService:", error.message);
     return { status: error.status || 500, payload: [] }; // Fallback for other errors
   }
 };
@@ -186,10 +186,10 @@ export const downloadDocumentByDocumentIdService = async ({
 
     return { status: 200, blob, fileName };
   } catch (error) {
-    console.error(
-      "Error in downloadDocumentByDocumentIdService:",
-      error.message
-    );
+    // console.error(
+    //   "Error in downloadDocumentByDocumentIdService:",
+    //   error.message
+    // );
     return { status: error.status || 500, blob: null, fileName: null }; // Fallback for other errors
   }
 };
@@ -204,7 +204,7 @@ export const downloadAllFilesAsZipService = async ({
 }) => {
   try {
     const url = documentRouteGroup.downloadAllFilesAsZip({ documentId, accessToken });
-    console.log("url: ", url)
+    //   ("url: ", url)
     const res = await fetch(url, {
       method: "GET",
       headers: {
@@ -236,7 +236,7 @@ export const downloadAllFilesAsZipService = async ({
 
     return { status: 200, blob, fileName };
   } catch (error) {
-    console.error("Error in downloadAllFilesAsZip:", error.message);
+    // console.error("Error in downloadAllFilesAsZip:", error.message);
     return { status: error.status || 500, message: error.message };
   }
 };
@@ -271,10 +271,10 @@ export const deleteDocumentService = async ({
     }
 
     const data = await res.json();
-    console.log("📥 Backend responded with:", data);
+    //   ("📥 Backend responded with:", data);
     return data;
   } catch (error) {
-    console.error("Error in deleteDocumentService:", error.message);
+    // console.error("Error in deleteDocumentService:", error.message);
     return { status: error.status || 500, message: error.message }; // Fallback for other errors
   }
 };
@@ -285,7 +285,7 @@ export const deleteDocumentService = async ({
 export const createDocumentService = async (data, token) => {
   try {
     const url = documentRouteGroup.createDocument();
-    console.log("Creating document with data:", data);
+    //   ("Creating document with data:", data);
 
     const res = await fetch(url, {
       method: "POST",
@@ -299,13 +299,13 @@ export const createDocumentService = async (data, token) => {
 
     if (!res.ok) {
       const errorText = await res.text();
-      console.error("Error details:", errorText);
+      // console.error("Error details:", errorText);
       throw new Error(`Failed to create document: ${res.status}`);
     }
 
     return await res.json();
   } catch (error) {
-    console.error("Error in createDocumentService:", error.message);
+    // console.error("Error in createDocumentService:", error.message);
     throw error; // Rethrow to handle in action or component
   }
 };
@@ -337,13 +337,13 @@ export const createDocumentByUploadService = async (
 
     if (!res.ok) {
       const errorText = await res.text();
-      console.error("Error in createDocumentByUploadService:", errorText);
+      // console.error("Error in createDocumentByUploadService:", errorText);
       throw new Error(`Failed to upload document: ${res.status}`);
     }
 
     return await res.json();
   } catch (error) {
-    console.error("Error in createDocumentByUploadService:", error.message);
+    // console.error("Error in createDocumentByUploadService:", error.message);
     throw error;
   }
 };
@@ -381,7 +381,7 @@ export const createDriveFileService = async (
 
     return await res.json();
   } catch (error) {
-    console.error("Error in createDriveFileService:", error.message);
+    // console.error("Error in createDriveFileService:", error.message);
     throw error; // Rethrow to handle in action or component
   }
 };
@@ -420,7 +420,7 @@ export const updateDocumentNameByIdService = async (
 
     return await res.json();
   } catch (error) {
-    console.error("Error in updateDocumentNameByIdService:", error.message);
+    // console.error("Error in updateDocumentNameByIdService:", error.message);
     throw error; // Rethrow to handle in action or component
   }
 };
@@ -458,7 +458,7 @@ export const publicDocumentByIdService = async (
 
     return await res.json();
   } catch (error) {
-    console.error("Error in publicDocumentByIdService: ", error.message);
+    // console.error("Error in publicDocumentByIdService: ", error.message);
     throw error;
   }
 };
@@ -486,7 +486,7 @@ export const privateDocumentByIdService = async (
 
     return await res.json();
   } catch (error) {
-    console.error("Error in privateDocumentByIdService: ", error.message);
+    // console.error("Error in privateDocumentByIdService: ", error.message);
     throw error;
   }
 };
@@ -520,7 +520,7 @@ export const getAllDocumentByBoardIdSerivce = async ({ boardId, token }) => {
 
     return await res.json();
   } catch (error) {
-    console.error("Error in getAllDocumentByBoardIdSerivce: ", error.message);
+    // console.error("Error in getAllDocumentByBoardIdSerivce: ", error.message);
   }
 };
 
@@ -535,7 +535,7 @@ export const getAllDocumentByBoardIdSerivce = async ({ boardId, token }) => {
 export const getAttactmentService = async ({ checklistId, token }) => {
   
     const url = documentRouteGroup.getAttactment(checklistId);
-    console.log("Fetching from URL:", url);
+    //   ("Fetching from URL:", url);
 
     const res = await fetch(url, {
       method: "GET",
@@ -546,10 +546,10 @@ export const getAttactmentService = async ({ checklistId, token }) => {
       },
     });
 
-    console.log("Response status:", res.status);
-    console.log("Response ok:", res.ok);
+    //   ("Response status:", res.status);
+    //   ("Response ok:", res.ok);
     const result = await res.json();
-    console.log("in serviceee fetch data", result);
+    //   ("in serviceee fetch data", result);
     return result;
 };
 
@@ -562,7 +562,7 @@ export const getAttactmentService = async ({ checklistId, token }) => {
 export const getAttachmentService = async ({ checklistId, token }) => {
   try {
     const url = documentRouteGroup.getAttactment(checklistId);
-    console.log("Fetching from URL:", url);
+    //   ("Fetching from URL:", url);
 
     const res = await fetch(url, {
       method: "GET",
@@ -591,10 +591,10 @@ export const getAttachmentService = async ({ checklistId, token }) => {
     }
 
     const result = await res.json();
-    console.log("in serviceee fetch data", result);
+    //   ("in serviceee fetch data", result);
     return result;
   } catch (error) {
-    console.error("Network error:", error.message);
+    // console.error("Network error:", error.message);
     return {
       success: false,
       error: `Network error: ${error.message}`,
@@ -615,14 +615,14 @@ export const postAttachmentService = async ({
       token,
     });
 
-    console.log("exxxxxxxxxxxx", existingAttachments);
+    //   ("exxxxxxxxxxxx", existingAttachments);
 
     const hasExisting =
       existingAttachments?.success && existingAttachments?.payload;
     const attachmentId =
       existingAttachments?.payload?.attachmentId;
 
-    console.log("aaaaaaaaaaaaa", attachmentId);
+    //   ("aaaaaaaaaaaaa", attachmentId);
     const method = hasExisting ? "PUT" : "POST";
     const url = hasExisting
       ? documentRouteGroup.updateAttachment(attachmentId, checklistId)
@@ -630,7 +630,7 @@ export const postAttachmentService = async ({
 
     if (!url) throw new Error("URL could not be resolved");
 
-    console.log(`Sending ${method} to:`, url);
+    //   (`Sending ${method} to:`, url);
 
     const res = await fetch(url, {
       method,
@@ -645,7 +645,7 @@ export const postAttachmentService = async ({
     const result = await res.json();
     return result;
   } catch (error) {
-    console.error("Error in postAttachmentService:", error.message);
+    // console.error("Error in postAttachmentService:", error.message);
     throw error;
   }
 };
@@ -653,14 +653,14 @@ export const postAttachmentService = async ({
 // export const postAttachmentService = async ({ checklistId, details, token }) => {
 
 
-//   console.log("DEtaila dataaaaaaaaaaaaaaaaaa", details);
+//     ("DEtaila dataaaaaaaaaaaaaaaaaa", details);
   
 //   try {
 //     const url = documentRouteGroup.postAttactment(checklistId);
   
-//       console.log("url in post attachment service", url);
-//       console.log("token in post attachment service", token);
-//       console.log("checklist id", checklistId);
+//         ("url in post attachment service", url);
+//         ("token in post attachment service", token);
+//         ("checklist id", checklistId);
 //     const res = await fetch(url, {
 //       method: "POST",
 //       headers: {

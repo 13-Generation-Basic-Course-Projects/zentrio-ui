@@ -8,7 +8,7 @@ import { memberRouteGroup, taskRouteGroup } from "@/routes/memberRoute";
 export const getBoardMembersService = async ({ boardId, token }) => {
   
     const url = memberRouteGroup.getBoardMembers(boardId);
-    //console.log("url member", url, boardId);
+    //  ("url member", url, boardId);
     const res = await fetch(url, {
       next: {
         tags: ["members"],
@@ -19,7 +19,7 @@ export const getBoardMembersService = async ({ boardId, token }) => {
       },
     });
     const data = await res.json();
-    // console.log("Raw member response:", data);
+    //   ("Raw member response:", data);
     return data;
   
 };
@@ -43,12 +43,12 @@ export const getUserByUserIdService = async ({ userId, token }) => {
 
     if (!res.ok) {
       const errorData = await res.json();
-      console.log("errorData", errorData);
+        ("errorData", errorData);
       return errorData;
     }
 
     const data = await res.json();
-    //console.log("Raw member response:", data);
+    //  ("Raw member response:", data);
     return data;
   } catch (error) {
     //console.error("❌ Failed to get members:", error.message);

@@ -39,7 +39,7 @@ export default function DrawerSeeAll({
       } else if (workspaceId) {
         const fetchBoards = async () => {
           const data = await getAllBoardBywWorkspaceIdAction(workspaceId);
-          console.log("Get all board in see all: ", data);
+            ("Get all board in see all: ", data);
           setBoards(data);
         };
         fetchBoards();

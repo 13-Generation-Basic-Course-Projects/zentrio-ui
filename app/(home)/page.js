@@ -37,7 +37,7 @@ const tools = [
 
 // //useage : http://localhost:3000/
 export default function Home() {
-  console.log("GOOGLE_CLIENT_ID:", process.env.GOOGLE_CLIENT_ID);
+    ("GOOGLE_CLIENT_ID:", process.env.GOOGLE_CLIENT_ID);
   return (
     <div className="w-full">
       <section className="relative h-auto bg-gradient-to-b from-[#bdeffc] to-slate overflow-hidden">

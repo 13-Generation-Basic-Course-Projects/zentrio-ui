@@ -12,6 +12,6 @@ export default async function GuestKanbanBoard({ params }) {
     boardId: boardId,
   });
 
-  console.log("testing the id", workspaceId, boardId);
+    ("testing the id", workspaceId, boardId);
   return <GuestKanbanBoardCompo data={data} />;
 }

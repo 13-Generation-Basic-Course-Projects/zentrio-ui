@@ -103,7 +103,7 @@ export default function GuestKanbanBoardCompo({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  console.log("data from kabanpage", data);
+    ("data from kabanpage", data);
 
   useEffect(() => {
     if (data) {

@@ -51,7 +51,7 @@ export default function PopupActionTaskMove({
         taskId,
         "UNDER_REVIEW"
       );
-      console.log("respon delete", result);
+        ("respon delete", result);
       if(result?.title === "Bad Request" || result?.status == 400){
         toast.error(`Task move stage unsuccessfull ${result?.detail}`, {
           position: "top-right",

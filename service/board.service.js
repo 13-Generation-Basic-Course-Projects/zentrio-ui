@@ -15,7 +15,7 @@ export const getTaskByBoardIdAndGanttBarIdService = async ({
   token,
 }) => {
   try {
-    //console.log("from service ", token);
+    //  ("from service ", token);
     const url = boardRouteGroup.getTaskByBoardAndGanttBarId(
       boardId,
       ganttbarId
@@ -31,7 +31,7 @@ export const getTaskByBoardIdAndGanttBarIdService = async ({
       },
     });
     const data = await res.json();
-    //console.log("📥 Backend responded with:", data);
+    //  ("📥 Backend responded with:", data);
 
     return data;
   } catch (error) {
@@ -44,7 +44,7 @@ export const getTaskByBoardIdAndGanttBarIdService = async ({
  */
 export const getCheckListByTaskIdService = async ({ taskId, token }) => {
   try {
-    //console.log("from service ", token);
+    //  ("from service ", token);
     const url = checklistRouteGroup.getCheckListByTaskId(taskId);
     const res = await fetch(url, {
       method: "GET",
@@ -57,7 +57,7 @@ export const getCheckListByTaskIdService = async ({ taskId, token }) => {
       },
     });
     const data = await res.json();
-    console.log("📥 Backend responded with:", data);
+    //   ("📥 Backend responded with:", data);
 
     return data;
   } catch (error) {
@@ -70,7 +70,7 @@ export const getCheckListByTaskIdService = async ({ taskId, token }) => {
  */
 export const getMemberByBoardIdService = async ({ boardId, token }) => {
   try {
-    //console.log("from service ", token);
+    //  ("from service ", token);
     const url = boardRouteGroup.getMemberByBoardId(boardId);
     const res = await fetch(url, {
       method: "GET",
@@ -83,7 +83,7 @@ export const getMemberByBoardIdService = async ({ boardId, token }) => {
       },
     });
     const data = await res.json();
-    //console.log("📥 Backend responded with:", data);
+    //  ("📥 Backend responded with:", data);
 
     return data;
   } catch (error) {
@@ -100,7 +100,7 @@ export const inviteMemberToBoardService = async ({
   token,
 }) => {
   try {
-    console.log("from service", { boardId, data, token });
+    //   ("from service", { boardId, data, token });
     const url = boardRouteGroup.inviteUserToBoard(boardId, workspaceId);
     const res = await fetch(url, {
       method: "POST", // Changed to POST to send invite data
@@ -111,7 +111,7 @@ export const inviteMemberToBoardService = async ({
       body: JSON.stringify(data), // Send the array of invites
     });
     const result = await res.json();
-    console.log("📥 Backend responded with invite member modal:", result);
+    //   ("📥 Backend responded with invite member modal:", result);
 
     // Ensure the response has a consistent structure
     return {
@@ -120,7 +120,7 @@ export const inviteMemberToBoardService = async ({
       error: res.ok ? null : result.error || "Failed to send invites",
     };
   } catch (error) {
-    console.error("Invite service error:", error.message);
+    // console.error("Invite service error:", error.message);
     return { success: false, error: error.message };
   }
 };
@@ -152,10 +152,10 @@ export const getCommentByCheckListIdService = async ({
     }
 
     const data = await response.json();
-    console.log("Service raw response:", data); // Log for debugging
+    //   ("Service raw response:", data); // Log for debugging
     return data; // Return the full response { success, payload, message, status, timestamp }
   } catch (error) {
-    console.error("Error in getCommentByCheckListIdService:", error);
+    // console.error("Error in getCommentByCheckListIdService:", error);
     throw error; // Rethrow to be handled by the action
   }
 };
@@ -167,7 +167,7 @@ export const getAllGanttBarByGanttChartIDService = async ({
   token,
 }) => {
   try {
-    //console.log("from service ", token);
+    //  ("from service ", token);
     const url = ganttRouteGroup.getAllGanttBarByGanttChartID(ganttChartId);
     const res = await fetch(url, {
       method: "GET",
@@ -180,7 +180,7 @@ export const getAllGanttBarByGanttChartIDService = async ({
       },
     });
     const data = await res.json();
-    console.log("📥 Backend responded with:", data);
+    //   ("📥 Backend responded with:", data);
 
     return data;
   } catch (error) {
@@ -209,13 +209,13 @@ export const createTaskByBoardIdAndGanttChartIdService = async ({
       boardId,
       ganttBarId: data.ganttBarId,
     };
-    console.log("Service payload:", payload);
-    console.log("Service params:", { boardId, ganttChartId, token });
+      ("Service payload:", payload);
+      ("Service params:", { boardId, ganttChartId, token });
     const url = boardRouteGroup.createTaskByBoardIdAndGanttBarId(
       boardId,
       ganttChartId
     );
-    console.log("Request URL:", url);
+      ("Request URL:", url);
 
     const res = await fetch(url, {
       method: "POST",
@@ -238,7 +238,7 @@ export const createTaskByBoardIdAndGanttChartIdService = async ({
     }
 
     const result = await res.json();
-    console.log("📥 Backend responded with loggg:", result);
+      ("📥 Backend responded with loggg:", result);
 
     return result;
   } catch (error) {
@@ -268,17 +268,17 @@ export const createTaskByBoardIdAndGanttChartIdService = async ({
     ganttBarId: data.ganttBarId,
   };
   // leaderId: data.leaderId || null, // Include leaderId
-  console.log("Service payload:", payload);
-  console.log("Service params: create task", {
-    boardId,
-    ganttChartId,
-    token,
-  });
+  //   ("Service payload:", payload);
+  //   ("Service params: create task", {
+  //   boardId,
+  //   ganttChartId,
+  //   token,
+  // });
   const url = boardRouteGroup.createTaskByBoardIdAndGanttBarId(
     boardId,
     ganttChartId
   );
-  console.log("Request URL:", url);
+  //   ("Request URL:", url);
 
   const res = await fetch(url, {
     method: "POST",
@@ -302,8 +302,8 @@ export const createTaskByBoardIdAndGanttChartIdService = async ({
   // }
 
   const result = await res.json();
-  console.log("result from post task", result);
-  console.log("Backend responded with:", JSON.stringify(result, null, 2));
+  //   ("result from post task", result);
+  //   ("Backend responded with:", JSON.stringify(result, null, 2));
 
   return result;
 };
@@ -317,7 +317,7 @@ export const createGanttChartByBoardIdService = async ({
   token,
 }) => {
   try {
-    console.log("from service", { boardId, data, token });
+    //   ("from service", { boardId, data, token });
     const url = ganttRouteGroup.createGanttChart();
     const res = await fetch(url, {
       method: "POST",
@@ -329,7 +329,7 @@ export const createGanttChartByBoardIdService = async ({
       next: { tags: ["gantt"] },
     });
     const result = await res.json();
-    console.log("📥 Backend responded with gantbar:", result);
+    //   ("📥 Backend responded with gantbar:", result);
 
     return data;
   } catch (error) {
@@ -342,7 +342,7 @@ export const createGanttChartByBoardIdService = async ({
  */
 export const createCheckListService = async ({ taskId, data, token }) => {
   try {
-    console.log("from service", { taskId, data, token });
+    //   ("from service", { taskId, data, token });
     const url = boardRouteGroup.createCheckListBytaskId();
     const res = await fetch(url, {
       method: "POST",
@@ -359,7 +359,7 @@ export const createCheckListService = async ({ taskId, data, token }) => {
       }),
     });
     const result = await res.json();
-    console.log("📥 Backend responded with checklist:", result);
+    //   ("📥 Backend responded with checklist:", result);
 
     return data;
   } catch (error) {
@@ -371,7 +371,7 @@ export const createCheckListService = async ({ taskId, data, token }) => {
  */
 export const getBoardByBoardIdService = async ({ boardId, token }) => {
   try {
-    console.log("token bos board ", token);
+    //   ("token bos board ", token);
     const url = boardRouteGroup.getBoardById(boardId);
     const res = await fetch(url, {
       method: "GET",
@@ -381,7 +381,7 @@ export const getBoardByBoardIdService = async ({ boardId, token }) => {
       },
     });
     const data = await res.json();
-    // console.log("📥 Backend responded with board:", data);
+    //   ("📥 Backend responded with board:", data);
 
     return data;
   } catch (error) {
@@ -397,7 +397,7 @@ export const postCommentByCheckListIdService = async ({
   token,
 }) => {
   try {
-    console.log("from service", { checklistId, data, token });
+      ("from service", { checklistId, data, token });
     const url = boardRouteGroup.postCommentByCheckListId();
     const res = await fetch(url, {
       method: "POST",
@@ -411,7 +411,7 @@ export const postCommentByCheckListIdService = async ({
       }),
     });
     const result = await res.json();
-    // console.log("📥 Backend responded with content:", result);
+    //   ("📥 Backend responded with content:", result);
 
     return data;
   } catch (error) {
@@ -423,7 +423,7 @@ export const postCommentByCheckListIdService = async ({
  */
 export const editCommmentService = async ({ data, token }) => {
   try {
-    console.log("service edit", data.content, data.checklistId);
+      ("service edit", data.content, data.checklistId);
     const url = boardRouteGroup.updateCommentById(data.commentId);
     const res = await fetch(url, {
       method: "PUT",
@@ -438,7 +438,7 @@ export const editCommmentService = async ({ data, token }) => {
       next: { tags: ["comments"] },
     });
     const result = await res.json();
-    console.log("📥 Backend responded with comment reply:", result);
+    //   ("📥 Backend responded with comment reply:", result);
 
     return data;
   } catch (error) {
@@ -453,9 +453,9 @@ export const assignUserRoleLeadeerToBoardService = async ({
   assignId,
   token,
 }) => {
-  console.log("from service", { taskId, assignId, token });
+  //   ("from service", { taskId, assignId, token });
   const url = boardRouteGroup.assignUserRoleLeaderToBoard(taskId, assignId);
-  console.log(url);
+  //   (url);
   const res = await fetch(url, {
     method: "POST",
     headers: {
@@ -464,7 +464,7 @@ export const assignUserRoleLeadeerToBoardService = async ({
     },
   });
   const result = await res.json();
-  console.log("📥 Backend responded with ld:", result);
+  //   ("📥 Backend responded with ld:", result);
 
   return result;
 };
@@ -473,7 +473,7 @@ export const assignUserRoleLeadeerToBoardService = async ({
  */
 export const getTaskByBoardIdService = async ({ boardId, token }) => {
   try {
-    //console.log("from service ", token);
+    //  ("from service ", token);
     const url = boardRouteGroup.getTaskByBoardId(boardId);
     const res = await fetch(url, {
       method: "GET",
@@ -486,7 +486,7 @@ export const getTaskByBoardIdService = async ({ boardId, token }) => {
       },
     });
     const data = await res.json();
-    //console.log("📥 Backend responded with boardtask:", data);
+    //  ("📥 Backend responded with boardtask:", data);
 
     return data;
   } catch (error) {
@@ -499,7 +499,7 @@ export const getTaskByBoardIdService = async ({ boardId, token }) => {
  */
 export const deleteTaskService = async (taskId, boardId, ganttbarId, token) => {
   try {
-    //console.log("from service ", token);
+    //  ("from service ", token);
     const url = boardRouteGroup.deleteTask(taskId, boardId, ganttbarId);
     const res = await fetch(url, {
       method: "DELETE",
@@ -510,7 +510,7 @@ export const deleteTaskService = async (taskId, boardId, ganttbarId, token) => {
       next: { tags: ["tasks"] },
     });
     const data = await res.json();
-    console.log("📥 Backend responded with delete:", data);
+    //   ("📥 Backend responded with delete:", data);
 
     return data;
   } catch (error) {
@@ -528,20 +528,20 @@ export const assignMemberInChecklistService = async ({
   token,
 }) => {
   try {
-    console.log("from service", {
-      checklistId,
-      taskId,
-      assignBy,
-      assignTo,
-      token,
-    });
+    //   ("from service", {
+    //   checklistId,
+    //   taskId,
+    //   assignBy,
+    //   assignTo,
+    //   token,
+    // });
     const url = boardRouteGroup.assignMemberInChecklist(
       checklistId,
       taskId,
       assignBy,
       assignTo
     );
-    console.log(url);
+    //   (url);
     const res = await fetch(url, {
       method: "POST",
       headers: {
@@ -550,7 +550,7 @@ export const assignMemberInChecklistService = async ({
       },
     });
     const result = await res.json();
-    console.log("📥 Backend responded with ld:", result);
+    //   ("📥 Backend responded with ld:", result);
 
     return result;
   } catch (error) {
@@ -562,14 +562,14 @@ export const assignMemberInChecklistService = async ({
  */
 export const moveTaskOrderService = async (boardId, newId, oldId, token) => {
   try {
-    console.log("from service", {
-      boardId,
-      newId,
-      oldId,
-      token,
-    });
+    //   ("from service", {
+    //   boardId,
+    //   newId,
+    //   oldId,
+    //   token,
+    // });
     const url = boardRouteGroup.moveTaskOrder(boardId, newId, oldId);
-    console.log(url);
+    //   (url);
     const res = await fetch(url, {
       method: "PUT",
       headers: {
@@ -578,7 +578,7 @@ export const moveTaskOrderService = async (boardId, newId, oldId, token) => {
       },
     });
     const result = await res.json();
-    console.log("📥 Backend responded with moveld:", result);
+    //   ("📥 Backend responded with moveld:", result);
 
     return result;
   } catch (error) {
@@ -597,13 +597,13 @@ export const assignMemberToChecklistService = async (
   token
 ) => {
   try {
-    console.log("from service", {
-      checklistId,
-      taskId,
-      assignedBy,
-      assignedTo,
-      token,
-    });
+    //   ("from service", {
+    //   checklistId,
+    //   taskId,
+    //   assignedBy,
+    //   assignedTo,
+    //   token,
+    // });
     const url = boardRouteGroup.assignMemberToChecklist(
       checklistId,
       taskId,
@@ -618,7 +618,7 @@ export const assignMemberToChecklistService = async (
       },
     });
     const result = await res.json();
-    console.log("📥 Backend responded with checklist:", result);
+    //   ("📥 Backend responded with checklist:", result);
 
     return result;
   } catch (error) {
@@ -631,12 +631,12 @@ export const assignMemberToChecklistService = async (
  */
 export const chageStatusCheckListService = async (checklistId, token, type) => {
   try {
-    //console.log("from service ", token);
+    //  ("from service ", token);
     const url = boardRouteGroup.chageStatusCheckListWhenHaveTeamLeader(
       checklistId,
       type
     );
-    console.log(url);
+    //   (url);
     const res = await fetch(url, {
       method: "PUT",
       headers: {
@@ -645,7 +645,7 @@ export const chageStatusCheckListService = async (checklistId, token, type) => {
       },
     });
     const data = await res.json();
-    console.log("📥 Backend responded with change status checklist:", data);
+    //   ("📥 Backend responded with change status checklist:", data);
 
     return data;
   } catch (error) {
@@ -658,9 +658,9 @@ export const chageStatusCheckListService = async (checklistId, token, type) => {
  */
 export const changeStatusTaskService = async (taskId, token, type) => {
   try {
-    //console.log("from service ", token);
-    const url = boardRouteGroup.changeStatusTask(taskId, type);
-    console.log(url);
+    //  ("from service ", token);
+    // const url = boardRouteGroup.changeStatusTask(taskId, type);
+    //   (url);
     const res = await fetch(url, {
       method: "PUT",
       headers: {
@@ -670,7 +670,7 @@ export const changeStatusTaskService = async (taskId, token, type) => {
       next: { tags: ["tasks"] },
     });
     const data = await res.json();
-    console.log("📥 Backend responded with change status:", data);
+    //   ("📥 Backend responded with change status:", data);
 
     return data;
   } catch (error) {
@@ -682,9 +682,9 @@ export const changeStatusTaskService = async (taskId, token, type) => {
  * cheng  task to underreview
  */
 export const changeStageToUnderReviewService = async (taskId, token, stage) => {
-  //console.log("from service ", token);
+  //  ("from service ", token);
   const url = boardRouteGroup.changeStagToUnderReview(taskId, stage);
-  console.log(url);
+  //   (url);
   const res = await fetch(url, {
     method: "PUT",
     headers: {
@@ -693,17 +693,17 @@ export const changeStageToUnderReviewService = async (taskId, token, stage) => {
     },
   });
   const data = await res.json();
-  console.log("📥 Backend responded with change status completed:", data);
+  //   ("📥 Backend responded with change status completed:", data);
 
   return data;
 };
 
 export const FeedBackService = async (taskId, token, comment) => {
   try {
-    console.log("from service of ", taskId);
-    console.log("from service of ", comment.comment);
+    //   ("from service of ", taskId);
+    //   ("from service of ", comment.comment);
     const url = boardRouteGroup.changeStageToInProgress();
-    console.log(url);
+    //   (url);
     const res = await fetch(url, {
       method: "POST",
       headers: {
@@ -717,7 +717,7 @@ export const FeedBackService = async (taskId, token, comment) => {
       next: { tags: ["tasks"] },
     });
     const data = await res.json();
-    console.log("📥 Backend responded with change feedback:", data);
+    //   ("📥 Backend responded with change feedback:", data);
 
     return data;
   } catch (error) {
@@ -729,7 +729,7 @@ export const FeedBackService = async (taskId, token, comment) => {
  */
 export const deleteMemberService = async (boardId, userId, token) => {
   try {
-    console.log("from service ", boardId, userId);
+    //   ("from service ", boardId, userId);
     const url = boardRouteGroup.deleteMemberByBoardId(boardId, userId);
     const res = await fetch(url, {
       method: "DELETE",
@@ -740,7 +740,7 @@ export const deleteMemberService = async (boardId, userId, token) => {
       next: { tags: ["members"] },
     });
     const data = await res.json();
-    console.log("📥 Backend responded with delete user:", data);
+    //   ("📥 Backend responded with delete user:", data);
 
     return data;
   } catch (error) {
@@ -753,7 +753,7 @@ export const deleteMemberService = async (boardId, userId, token) => {
  */
 export const checkEmailService = async (email) => {
   try {
-    console.log("from service ", boardId, userId);
+    //   ("from service ", boardId, userId);
     const url = boardRouteGroup.deleteMemberByBoardId(boardId, userId);
     const res = await fetch(url, {
       method: "DELETE",
@@ -763,7 +763,7 @@ export const checkEmailService = async (email) => {
       },
     });
     const data = await res.json();
-    console.log("📥 Backend responded with delete user:", data);
+    //   ("📥 Backend responded with delete user:", data);
 
     return data;
   } catch (error) {
@@ -775,7 +775,7 @@ export const checkEmailService = async (email) => {
  */
 export const checkEmailForClearService = async (email) => {
   try {
-    console.log("from service ", email);
+    //   ("from service ", email);
     const url = boardRouteGroup.checkEmailForClearToken(email);
     const res = await fetch(url, {
       method: "GET",
@@ -784,7 +784,7 @@ export const checkEmailForClearService = async (email) => {
       },
     });
     const data = await res.json();
-    console.log("📥 Backend responded with check user:", data);
+    //   ("📥 Backend responded with check user:", data);
 
     return data;
   } catch (error) {
@@ -806,16 +806,16 @@ export const updateTaskByIdService = async ({
   ganttBarId,
   token,
 }) => {
-  console.log(" taskId in updateTask service: ", taskId);
-  console.log("Data get for updateTaskByIdService:", {
-    taskId,
-    title,
-    description,
-    startedAt,
-    finishedAt,
-    boardId,
-    ganttBarId,
-  });
+  //   (" taskId in updateTask service: ", taskId);
+  //   ("Data get for updateTaskByIdService:", {
+  //   taskId,
+  //   title,
+  //   description,
+  //   startedAt,
+  //   finishedAt,
+  //   boardId,
+  //   ganttBarId,
+  // });
 
   const url = taskRouteGroup.updateTaskById(taskId);
 
@@ -836,7 +836,7 @@ export const updateTaskByIdService = async ({
     next: { tags: ["tasks"] },
   });
   const data = await response.json();
-  console.log("err update", data);
+  //   ("err update", data);
   return data;
 };
 
@@ -849,7 +849,7 @@ export const deleteCheckListByTaskIdService = async ({
   taskId,
   token,
 }) => {
-  console.log("Token in delete service task id delete: ", token);
+  //   ("Token in delete service task id delete: ", token);
 
   const url = checklistRouteGroup.deleteCheckListByTaskId(checkListId, taskId);
 
@@ -883,19 +883,19 @@ export const updateCheckListByIdAndTaskIdService = async (
   taskId,
   token
 ) => {
-  console.log("Token in update checklist service: ", token);
+  //   ("Token in update checklist service: ", token);
 
-  console.log("Request Body in update service: ", {
-    checklistId,
-    title,
-    description,
-    startedAt,
-    finishedAt,
-    taskId,
-  });
+  //   ("Request Body in update service: ", {
+  //   checklistId,
+  //   title,
+  //   description,
+  //   startedAt,
+  //   finishedAt,
+  //   taskId,
+  // });
 
   const url = checklistRouteGroup.updateCheckListByIdAndTaskId(checklistId);
-  console.log("Request URL", url);
+  //   ("Request URL", url);
   const response = await fetch(url, {
     method: "PUT",
     headers: {
@@ -913,7 +913,7 @@ export const updateCheckListByIdAndTaskIdService = async (
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));
-    console.error("Backend error response update checklist: ", error);
+    // console.error("Backend error response update checklist: ", error);
     if (response.status === 401 || response.status === 403) {
       throw new Error("Authentication required or token is invalid");
     }
@@ -926,9 +926,9 @@ export const updateCheckListByIdAndTaskIdService = async (
 };
 
 export const uploadImageBoardService = async ({ boardId, image, token }) => {
-  console.log("BoardId in upload image in board : ", boardId);
-  console.log("image in upload image in board : ", image);
-  console.log("token in upload image in board : ", token);
+  //   ("BoardId in upload image in board : ", boardId);
+  //   ("image in upload image in board : ", image);
+  //   ("token in upload image in board : ", token);
 
   const url = boardRouteGroup.uploadImageBoard(boardId);
 
@@ -958,10 +958,10 @@ export const uploadImageBoardService = async ({ boardId, image, token }) => {
  *  delete comment in checklist
  */
 export const deleteCommentBycmtIdService = async ({ commentId, token }) => {
-  console.log("delete service comment id delete: ", commentId);
+  //   ("delete service comment id delete: ", commentId);
 
   const url = checklistRouteGroup.deleteCommentBycmtId(commentId);
-  console.log("Delete url : ", url);
+  //   ("Delete url : ", url);
 
   const response = await fetch(url, {
     method: "DELETE",
@@ -984,10 +984,10 @@ export const deleteCommentBycmtIdService = async ({ commentId, token }) => {
  * task by task id
  */
 export const getTaskByTaskIdService = async ({ taskId, token }) => {
-  console.log("taskId getTaskByTaskIdService: ", taskId);
+  //   ("taskId getTaskByTaskIdService: ", taskId);
 
   const url = taskRouteGroup.getTaskByTaskId(taskId);
-  console.log("get task url : ", url);
+  //   ("get task url : ", url);
 
   const response = await fetch(url, {
     method: "GET",
@@ -1017,7 +1017,7 @@ export const getGuestUserDisplayKanbanService = async ({
   boardId,
 }) => {
   const url = boardRouteGroup.getGuestUserDisplayKanban(workspaceId, boardId);
-  console.log("get task url : ", url);
+  //   ("get task url : ", url);
 
   const response = await fetch(url, {
     method: "GET",
@@ -1027,7 +1027,7 @@ export const getGuestUserDisplayKanbanService = async ({
   });
 
   const data = await response.json();
-  console.log("data from guest", data);
+  //   ("data from guest", data);
   return data;
 };
 
@@ -1039,7 +1039,7 @@ export const getGuestUserDisplayKanbanService = async ({
   token
 ) => {
   const url = ganttRouteGroup.updateGanttBar(ganttbarId);
-  console.log("get task url : ", url);
+  //   ("get task url : ", url);
   const response = await fetch(url, {
     method: "PUT",
     headers: {
@@ -1049,7 +1049,7 @@ export const getGuestUserDisplayKanbanService = async ({
     },
   });
 
-  console.log("data from guest", data);
+  //   ("data from guest", data);
   return response.json();
 };
 //add new upload cover checklist
@@ -1058,20 +1058,20 @@ export const uploadCoverChecklistService = async ({
   file,
   token,
 }) => {
-  console.log("checklistId uploadCoverChecklistService: ", checklistId);
+  //   ("checklistId uploadCoverChecklistService: ", checklistId);
 
   const url = checklistRouteGroup.uploadCoverChecklist(checklistId);
-  console.log("upload cover url: ", url);
+  //   ("upload cover url: ", url);
 
   // Create FormData object
   const formData = new FormData();
   formData.append("file", file);
 
-  console.log("File details:", {
-    name: file.name,
-    size: file.size,
-    type: file.type,
-  });
+  //   ("File details:", {
+  //   name: file.name,
+  //   size: file.size,
+  //   type: file.type,
+  // });
 
   try {
     const response = await fetch(url, {
@@ -1083,7 +1083,7 @@ export const uploadCoverChecklistService = async ({
       body: formData,
     });
 
-    console.log("Upload response status:", response.status);
+    //   ("Upload response status:", response.status);
 
     if (!response.ok) {
       let errorMessage;
@@ -1098,15 +1098,15 @@ export const uploadCoverChecklistService = async ({
           response.statusText || `Upload failed with status ${response.status}`;
       }
 
-      console.error("Upload error:", errorMessage);
+      // console.error("Upload error:", errorMessage);
       throw new Error(errorMessage);
     }
 
     const result = await response.json();
-    console.log("Upload successful:", result);
+    //   ("Upload successful:", result);
     return result;
   } catch (error) {
-    console.error("Upload cover error:", error);
+    // console.error("Upload cover error:", error);
   }
 };
 
@@ -1119,7 +1119,7 @@ export const uploadCoverChecklistService = async ({
  */
 export const leaveTheBoardService = async (boardId, token) => {
   try {
-    //console.log("from service ", token);
+    //  ("from service ", token);
     const url = boardRouteGroup.leaveTheBoard(boardId);
     const res = await fetch(url, {
       method: "DELETE",
@@ -1130,7 +1130,7 @@ export const leaveTheBoardService = async (boardId, token) => {
       next: { tags: ["boards"] },
     });
     const data = await res.json();
-    console.log("📥 Backend responded with leave the baord", data);
+    //   ("📥 Backend responded with leave the baord", data);
 
     return data;
   } catch (error) {
@@ -1150,7 +1150,7 @@ export const assignUserRoleLeadeerNewToBoardService = async ({
   try {
     // Construct and log the endpoint
     const endpoint = `/api/v1/tasks/${taskId}/pm/${pmId}/members/${leaderId}`;
-    console.log("Calling endpoint:", endpoint);
+    //   ("Calling endpoint:", endpoint);
 
     const response = await fetch(endpoint, {
       method: "POST",
@@ -1172,7 +1172,7 @@ export const assignUserRoleLeadeerNewToBoardService = async ({
     //   }
     //   throw new Error(result.message || "Failed to assign leader");
     // }
-    console.log("nyfong nyfong", result);
+    //   ("nyfong nyfong", result);
     return {
       success: true,
       payload: result.payload || {
@@ -1183,7 +1183,7 @@ export const assignUserRoleLeadeerNewToBoardService = async ({
       },
     };
   } catch (error) {
-    console.error("Service error:", error.message);
+    // console.error("Service error:", error.message);
     return { success: false, error: error.message };
   }
 };
@@ -1192,7 +1192,7 @@ export const assignUserRoleLeadeerNewToBoardService = async ({
 
 export const getFeedBackByTaskIdService = async ({ taskId, token }) => {
   try {
-    //console.log("from service ", token);
+    //  ("from service ", token);
     const url = boardRouteGroup.getFeedBackByTaskId(taskId);
     const res = await fetch(url, {
       method: "GET",
@@ -1205,7 +1205,7 @@ export const getFeedBackByTaskIdService = async ({ taskId, token }) => {
       },
     });
     const data = await res.json();
-    console.log("📥 Backend responded with boardDatafeedback:", data);
+    //   ("📥 Backend responded with boardDatafeedback:", data);
 
     return data;
   } catch (error) {
@@ -1221,15 +1221,15 @@ export const updateCheckListDateByIdAndTaskIdService = async ({
  checklistId,
   token
 }) => {
-  console.log("Token in update checklist service: ", token);
+  //   ("Token in update checklist service: ", token);
 
-  console.log("Request Body in update date checklist service: ", {
-    finishedAt,
-   checklistId,
-  });
+  //   ("Request Body in update date checklist service: ", {
+  //   finishedAt,
+  //  checklistId,
+  // });
 
   const url = checklistRouteGroup.uploadChecklistDate();
-  console.log("Request URL", url);
+  //   ("Request URL", url);
   const response = await fetch(url, {
     method: "PUT",
     headers: {
@@ -1245,7 +1245,7 @@ export const updateCheckListDateByIdAndTaskIdService = async ({
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));
-    console.error("Backend error response update date checklist: ", error);
+    // console.error("Backend error response update date checklist: ", error);
     if (response.status === 401 || response.status === 403) {
       throw new Error("Authentication required or token is invalid");
     }
@@ -1261,12 +1261,13 @@ export const updateCheckListDateByIdAndTaskIdService = async ({
 
 export const reAssignTeamLeaderService = async (taskId,assigneeId, token) => {
   try {
-    console.log("from service", 
-      taskId,assigneeId,
-      token
-    );
+    //   ("from service", 
+    //   taskId,assigneeId,
+    //   token
+    // );
+    
     const url = boardRouteGroup.reAssignTeamLeader(taskId,assigneeId);
-    console.log(url);
+    //   (url);
     const res = await fetch(url, {
       method: "PUT",
       headers: {
@@ -1275,7 +1276,7 @@ export const reAssignTeamLeaderService = async (taskId,assigneeId, token) => {
       },
     });
     const result = await res.json();
-    console.log("📥 Backend responded with reassign team leader:", result);
+    //   ("📥 Backend responded with reassign team leader:", result);
 
     return result;
   } catch (error) {

@@ -46,7 +46,7 @@ import {
 } from "@/service/notification.service";
 import { getBoardMemberAction } from "./member.action";
 
-console.log("test actions must create folders");
+//   ("test actions must create folders");
 /*
  * getTaskbyBoardId and GanttbarId
  */
@@ -56,7 +56,7 @@ export const getTaskByBoardIdAndGanttBarIdAction = async ({
 }) => {
   const userToken = await Token();
   const token = userToken.Credential;
-  //console.log(token);
+  //  (token);
   const result = await getTaskByBoardIdAndGanttBarIdService({
     boardId,
     ganttbarId,
@@ -76,7 +76,7 @@ export const getCheckListByTaskIdAction = async ({ taskId }) => {
     taskId,
     token,
   });
-  console.log("Result in getCheckListByTaskIdAction: ", result);
+  //   ("Result in getCheckListByTaskIdAction: ", result);
   return result;
 };
 
@@ -86,7 +86,7 @@ export const getCheckListByTaskIdAction = async ({ taskId }) => {
 export const getMemberByBoardIdAction = async ({ boardId }) => {
   const userToken = await Token();
   const token = userToken.Credential;
-  //console.log(token);
+  //  (token);
   const result = await getMemberByBoardIdService({
     boardId,
     token,
@@ -105,7 +105,7 @@ export const inviteMemberToBoardAction = async ({
   try {
     const userToken = await Token();
     const token = userToken.Credential;
-    //console.log("Token retrieved:", token);
+    //  ("Token retrieved:", token);
 
     const result = await inviteMemberToBoardService({
       boardId,
@@ -116,7 +116,7 @@ export const inviteMemberToBoardAction = async ({
 
     return result; // { success: boolean, data?: any, error?: string }
   } catch (error) {
-    console.error("Invite action error:", error.message);
+    // console.error("Invite action error:", error.message);
     return { success: false, error: error.message };
   }
 };
@@ -134,7 +134,7 @@ export const getCommentByCheckListIdAction = async (checklistId) => {
       token,
     });
 
-    console.log("Raw service response:", result); // Log raw response
+    //   ("Raw service response:", result); // Log raw response
 
     return {
       success: result.success,
@@ -143,11 +143,11 @@ export const getCommentByCheckListIdAction = async (checklistId) => {
       message: result.message,
     };
   } catch (error) {
-    console.error("Error in getCommentByCheckListIdAction:", {
-      checklistId,
-      error: error.message,
-      response: error.response?.data,
-    });
+    // console.error("Error in getCommentByCheckListIdAction:", {
+    //   checklistId,
+    //   error: error.message,
+    //   response: error.response?.data,
+    // });
     return {
       success: false,
       data: [],
@@ -161,8 +161,8 @@ export const getCommentByCheckListIdAction = async (checklistId) => {
 export const getAllGanttBarByGanttChartIDAction = async ({ ganttChartId }) => {
   const userToken = await Token();
   const token = userToken.Credential;
-  //console.log(token);
-  console.log("gantbar by gant chart ", ganttChartId);
+  //  (token);
+  //   ("gantbar by gant chart ", ganttChartId);
   const result = await getAllGanttBarByGanttChartIDService({
     ganttChartId,
     token,
@@ -189,8 +189,8 @@ export const createTaskByBoardIdAndGanttChartIdAction = async (
     if (!token) {
       throw new Error("No authentication token found");
     }
-    console.log("Token retrieved:", token);
-    console.log("Data create form:", data);
+      ("Token retrieved:", token);
+      ("Data create form:", data);
     const result = await createTaskByBoardIdAndGanttChartIdService({
       boardId,
       ganttChartId,
@@ -218,8 +218,8 @@ export const createGanttChartByBoardIdAction = async (data, boardId) => {
     if (!token) {
       throw new Error("No authentication token found");
     }
-    console.log("boardId:", boardId);
-    //console.log("data create form", data);
+    //   ("boardId:", boardId);
+    //  ("data create form", data);
     const result = await createGanttChartByBoardIdService({
       boardId,
       data,
@@ -228,7 +228,7 @@ export const createGanttChartByBoardIdAction = async (data, boardId) => {
     revalidateTag("gantt");
     return { success: true, data: result };
   } catch (error) {
-    console.error("Create task action error:", error.message);
+    // console.error("Create task action error:", error.message);
     return { success: false, error: error.message };
   }
 };
@@ -243,7 +243,7 @@ export const createCheckListAction = async (taskId, data) => {
     if (!token) {
       throw new Error("No authentication token found");
     }
-    //console.log("data create form", data);
+    //  ("data create form", data);
     const result = await createCheckListService({
       taskId,
       data,
@@ -252,7 +252,7 @@ export const createCheckListAction = async (taskId, data) => {
     revalidateTag("checklists");
     return result;
   } catch (error) {
-    console.log("Create checklist action error:", error.message);
+    //   ("Create checklist action error:", error.message);
     return { success: false, error: error.message };
   }
 };
@@ -271,7 +271,7 @@ export const getBoardByBoardIdAction = async (boardId) => {
 
     return result;
   } catch (error) {
-    console.log("error:", error.message);
+    //   ("error:", error.message);
     return { success: false, error: error.message };
   }
 };
@@ -281,7 +281,7 @@ export const getBoardByBoardIdAction = async (boardId) => {
 export const postCommentByCheckListIdAction = async (data, checklistId) => {
   const userToken = await Token();
   const token = userToken?.Credential;
-  //console.log("data create form", data);
+  //  ("data create form", data);
   try {
     const result = await postCommentByCheckListIdService({
       checklistId,
@@ -291,7 +291,7 @@ export const postCommentByCheckListIdAction = async (data, checklistId) => {
     revalidateTag("comments");
     return { success: true, data: result };
   } catch (error) {
-    console.error("Create task action error:", error.message);
+    // console.error("Create task action error:", error.message);
     return { success: false, error: error.message };
   }
 };
@@ -301,7 +301,7 @@ export const postCommentByCheckListIdAction = async (data, checklistId) => {
 export const editCommmentAction = async (data) => {
   const userToken = await Token();
   const token = userToken?.Credential;
-  //console.log("data create form", data);
+  //  ("data create form", data);
   try {
     const result = await editCommmentService({
       data,
@@ -310,7 +310,7 @@ export const editCommmentAction = async (data) => {
     revalidateTag("comments");
     return { success: true, data: result };
   } catch (error) {
-    console.error("put comment action error:", error.message);
+    // console.error("put comment action error:", error.message);
     return { success: false, error: error.message };
   }
 };
@@ -323,7 +323,7 @@ export const editCommmentAction = async (data) => {
 export const assignLeaderAction = async (taskid, assignId) => {
   const userToken = await Token();
   const token = userToken?.Credential;
-  //console.log("data create form", taskid, assignId);
+  //  ("data create form", taskid, assignId);
 
   const result = await assignUserRoleLeadeerToBoardService({
     taskid,
@@ -357,7 +357,7 @@ export const deleteTaskAction = async (taskId, boardId, ganttBarId) => {
   const result = await deleteTaskService(taskId, boardId, ganttBarId, token);
   revalidateTag("tasks");
   revalidateTag("gantt");
-  // console.log("📥 Backend responded with delete action", result);
+  //   ("📥 Backend responded with delete action", result);
 
   return result;
 };
@@ -380,7 +380,7 @@ export const assignMemberInChecklistAction = async (
   );
   revalidateTag("tasks");
   revalidateTag("members");
-  // console.log("📥 Backend responded with delete action", result);
+  //   ("📥 Backend responded with delete action", result);
 
   return result;
 };
@@ -397,7 +397,7 @@ export const moveTaskOrderAction = async (boardId, newId, oldId) => {
   // Emit WebSocket event for real-time updates
   if (result.success && typeof window !== 'undefined') {
     // This will be handled by the client-side WebSocket hook
-    console.log("Task order updated, WebSocket event will be emitted by client");
+    //   ("Task order updated, WebSocket event will be emitted by client");
   }
   
   return result;
@@ -427,7 +427,7 @@ export const createTaskByBoardIdAndGanttChartIdAction = async (
       token,
     });
 
-    console.log("DDDDDDdddatatahhhhhhhhhhhhhhhhh", data);
+    //   ("DDDDDDdddatatahhhhhhhhhhhhhhhhh", data);
 
     // Extract taskId
     const taskId = result.payload?.taskId;
@@ -455,9 +455,9 @@ export const createTaskByBoardIdAndGanttChartIdAction = async (
           notificationData,
           token
         );
-        console.log("Notification result:", notiResult);
+        //   ("Notification result:", notiResult);
       } catch (error) {
-        console.warn("Failed to send notification:", error.message);
+        // console.warn("Failed to send notification:", error.message);
         // Continue execution as notification failure is non-critical
       }
     }
@@ -466,7 +466,7 @@ export const createTaskByBoardIdAndGanttChartIdAction = async (
     revalidateTag("gantt");
     return { success: true, data: result };
   } catch (error) {
-    console.error("Create task action error:", error.message);
+    // console.error("Create task action error:", error.message);
     return { success: false, error: error.message };
   }
 };
@@ -478,7 +478,7 @@ export const assignLeaderAction = async (taskId, assignId) => {
 
     // leader token not pm token ??
 
-    console.log("token in assignLeaderAction:", token);
+    //   ("token in assignLeaderAction:", token);
     if (!token) {
       throw new Error("No authentication token found");
     }
@@ -489,7 +489,7 @@ export const assignLeaderAction = async (taskId, assignId) => {
       token,
     });
 
-    console.log("Assign leader result:", JSON.stringify(result, null, 2));
+    //   ("Assign leader result:", JSON.stringify(result, null, 2));
 
     // Send notification
     if (result.payload?.boardId) {
@@ -508,9 +508,9 @@ export const assignLeaderAction = async (taskId, assignId) => {
           notificationData,
           token
         );
-        console.log("Notification result:", notiResult);
+        //   ("Notification result:", notiResult);
       } catch (error) {
-        console.warn("Failed to send notification:", error.message);
+        // console.warn("Failed to send notification:", error.message);
       }
     }
 
@@ -518,7 +518,7 @@ export const assignLeaderAction = async (taskId, assignId) => {
     revalidateTag("members");
     return { success: true, data: result };
   } catch (error) {
-    console.error("Assign leader action error:", error.message);
+    // console.error("Assign leader action error:", error.message);
     return { success: false, error: error.message };
   }
 };
@@ -530,11 +530,11 @@ export const declineLeaderAction = async (taskId, assignId) => {
       throw new Error("No authentication token found");
     }
 
-    console.log("Declining leader with:", {
-      taskId,
-      assignId,
-      token: token.substring(0, 10) + "...",
-    });
+    //   ("Declining leader with:", {
+    //   taskId,
+    //   assignId,
+    //   token: token.substring(0, 10) + "...",
+    // });
 
     const result = await declineUserRoleLeaderService({
       taskId,
@@ -542,12 +542,12 @@ export const declineLeaderAction = async (taskId, assignId) => {
       token,
     });
 
-    console.log("Decline leader result:", JSON.stringify(result, null, 2));
+    //   ("Decline leader result:", JSON.stringify(result, null, 2));
     revalidateTag("tasks");
     revalidateTag("members");
     return { success: true, data: result };
   } catch (error) {
-    console.error("Decline leader action error:", error.message, error.stack);
+    // console.error("Decline leader action error:", error.message, error.stack);
     return { success: false, error: error.message };
   }
 };
@@ -593,7 +593,7 @@ export const assignMemberToChecklistAction = async (
   );
   revalidateTag("checklists");
   revalidateTag("members");
-  // console.log("📥 Backend responded with delete action", result);
+  //   ("📥 Backend responded with delete action", result);
   return result;
 };
 /*
@@ -605,7 +605,7 @@ export const changeStageToUnderReviewAction = async (taskId, stage) => {
   const result = await changeStageToUnderReviewService(taskId, token, stage);
   revalidateTag("tasks");
   revalidateTag("checklists");
-  console.log("status action complete fix", taskId, stage);
+  //   ("status action complete fix", taskId, stage);
   return result;
 };
 /*
@@ -645,7 +645,7 @@ export const chageStatusCheckListAction = async (checklistId, type) => {
   const token = userToken?.Credential;
   const result = await chageStatusCheckListService(checklistId, token, type);
   revalidateTag("checklists");
-  console.log("status action", checklistId, type);
+  //   ("status action", checklistId, type);
   return result;
 };
 
@@ -662,7 +662,7 @@ export const updateTaskByIdAction = async (
   boardId,
   ganttBarId
 ) => {
-  console.log("👉 taskId in updateTask action: ", taskId);
+  //   ("👉 taskId in updateTask action: ", taskId);
   const userToken = await Token();
   const token = userToken?.Credential;
   const result = await updateTaskByIdService({
@@ -685,8 +685,8 @@ export const updateTaskByIdAction = async (
  * Delete checklist by specific tasks ID
  */
 export const deleteCheckListByTaskIdAction = async (checkListId, taskId) => {
-  console.log("checkListId in delete action task id delete: ", checkListId);
-  console.log("taskId in delete action task id delete: ", taskId);
+  //   ("checkListId in delete action task id delete: ", checkListId);
+  //   ("taskId in delete action task id delete: ", taskId);
   const userToken = await Token();
   const token = userToken?.Credential;
   const result = await deleteCheckListByTaskIdService({
@@ -715,15 +715,15 @@ export const updateCheckListByIdAndTaskIdAction = async (
   const userToken = await Token();
   const token = userToken?.Credential;
 
-  console.log("Checklist in upateChecklistByIdAndTaskIdAction: ", checkListId);
-  console.log("title in upateChecklistByIdAndTaskIdAction: ", title);
-  console.log(
-    "description in upateChecklistByIdAndTaskIdAction: ",
-    description
-  );
-  console.log("startedAt in upateChecklistByIdAndTaskIdAction: ", startedAt);
-  console.log("finishedAt in upateChecklistByIdAndTaskIdAction: ", finishedAt);
-  console.log("taskId in upateChecklistByIdAndTaskIdAction: ", taskId);
+  //   ("Checklist in upateChecklistByIdAndTaskIdAction: ", checkListId);
+  //   ("title in upateChecklistByIdAndTaskIdAction: ", title);
+  //   (
+  //   "description in upateChecklistByIdAndTaskIdAction: ",
+  //   description
+  // );
+  //   ("startedAt in upateChecklistByIdAndTaskIdAction: ", startedAt);
+  //   ("finishedAt in upateChecklistByIdAndTaskIdAction: ", finishedAt);
+  //   ("taskId in upateChecklistByIdAndTaskIdAction: ", taskId);
 
   const result = await updateCheckListByIdAndTaskIdService(
     checkListId,
@@ -737,7 +737,7 @@ export const updateCheckListByIdAndTaskIdAction = async (
 
   revalidateTag("checklists");
   revalidateTag("tasks");
-  console.log("Update checklist in action: ", result);
+  //   ("Update checklist in action: ", result);
   return result;
 };
 
@@ -745,7 +745,7 @@ export const updateCheckListByIdAndTaskIdAction = async (
  *  delete comment in checklist
  */
 export const deleteCommentBycmtIdAction = async (commentId) => {
-  console.log("delete action comment id delete: ", commentId);
+  //   ("delete action comment id delete: ", commentId);
 
   const userToken = await Token();
   const token = userToken?.Credential;
@@ -754,7 +754,7 @@ export const deleteCommentBycmtIdAction = async (commentId) => {
     token,
   });
   revalidateTag("comments");
-  console.log("deleteCommentBycmtIdAction result: ", result);
+  //   ("deleteCommentBycmtIdAction result: ", result);
   return result;
 };
 
@@ -762,7 +762,7 @@ export const deleteCommentBycmtIdAction = async (commentId) => {
  *  task by task id
  */
 export const getTaskByTaskIdAction = async (taskId) => {
-  console.log("taskId getTaskByTaskIdAction: ", taskId);
+  //   ("taskId getTaskByTaskIdAction: ", taskId);
 
   const userToken = await Token();
   const token = userToken?.Credential;
@@ -770,7 +770,7 @@ export const getTaskByTaskIdAction = async (taskId) => {
     taskId,
     token,
   });
-  console.log("getTaskByTaskIdAction result: ", result);
+  //   ("getTaskByTaskIdAction result: ", result);
   return result;
 };
 
@@ -781,13 +781,13 @@ export const getGuestUserDisplayKanbanAction = async ({
   workspaceId,
   boardId,
 }) => {
-  console.log("from guestrole: ", workspaceId, boardId);
+  //   ("from guestrole: ", workspaceId, boardId);
 
   const result = await getGuestUserDisplayKanbanService({
     workspaceId,
     boardId,
   });
-  console.log("getTaskByTaskIdAction result: ", result);
+  //   ("getTaskByTaskIdAction result: ", result);
   return result;
 };
 
@@ -802,12 +802,12 @@ export const updateGanttBarByGanttBarIdAction = async (ganttbarId, data) => {
     data,
     token
   );
-  console.log("update the chart ", result);
+  //   ("update the chart ", result);
 };
 //add new upload cover checklist
 export const uploadCoverChecklistAction = async (checklistId, file) => {
-  console.log("checklistId uploadCoverChecklistAction: ", checklistId);
-  console.log("file uploadCoverChecklistAction: ", file);
+  //   ("checklistId uploadCoverChecklistAction: ", checklistId);
+  //   ("file uploadCoverChecklistAction: ", file);
   const userToken = await Token();
   const token = userToken?.Credential;
   const result = await uploadCoverChecklistService({
@@ -816,7 +816,7 @@ export const uploadCoverChecklistAction = async (checklistId, file) => {
     token,
   });
   revalidateTag("checklists");
-  console.log("uploadCoverChecklistAction result: ", result);
+    ("uploadCoverChecklistAction result: ", result);
   return result;
 };
 
@@ -832,10 +832,10 @@ export const changeStatusTaskAction = async (taskId, type) => {
   // Emit WebSocket event for real-time updates
   if (result.success && typeof window !== 'undefined') {
     // This will be handled by the client-side WebSocket hook
-    console.log("Task status updated, WebSocket event will be emitted by client");
+    //   ("Task status updated, WebSocket event will be emitted by client");
   }
   
-  console.log("status action task fix bug", taskId, type);
+  //   ("status action task fix bug", taskId, type);
   return result;
 };
 
@@ -856,7 +856,7 @@ export const leaveTheBoardAction = async (boardId) => {
 export const assignLeaderNewAction = async (taskId, leaderId, pmId) => {
   try {
     // Log input parameters for debugging
-    console.log("assignLeaderNewAction inputs:", { taskId, leaderId, pmId });
+    //   ("assignLeaderNewAction inputs:", { taskId, leaderId, pmId });
 
     const userToken = await Token();
     const token = userToken?.Credential;
@@ -865,7 +865,7 @@ export const assignLeaderNewAction = async (taskId, leaderId, pmId) => {
     }
 
     // Log token for debugging (avoid in production)
-    console.log("Token:", token);
+    //   ("Token:", token);
 
     const result = await assignUserRoleLeadeerNewToBoardService({
       taskId,
@@ -875,7 +875,7 @@ export const assignLeaderNewAction = async (taskId, leaderId, pmId) => {
     });
 
     // Log service result
-    console.log("Service result:", result);
+      ("Service result:", result);
 
     // Send notification
     if (result.success && result.payload?.boardId) {
@@ -898,19 +898,19 @@ export const assignLeaderNewAction = async (taskId, leaderId, pmId) => {
           notificationData,
           token
         );
-        console.log("Notification result:", notiResult);
+        //   ("Notification result:", notiResult);
       } catch (error) {
-        console.warn("Failed to send notification:", error.message);
+        // console.warn("Failed to send notification:", error.message);
       }
     } else {
-      console.warn("No boardId in result or assignment failed:", result);
+      // console.warn("No boardId in result or assignment failed:", result);
     }
 
     revalidateTag("tasks");
     revalidateTag("members");
     return { success: true, data: result };
   } catch (error) {
-    console.error("Assign leader action error:", error.message);
+    // console.error("Assign leader action error:", error.message);
     return { success: false, error: error.message };
   }
 };
@@ -920,7 +920,7 @@ export const assignLeaderNewAction = async (taskId, leaderId, pmId) => {
 export const getFeedBackByTaskIdAction = async ({ taskId }) => {
   const userToken = await Token();
   const token = userToken.Credential;
-  //console.log(token);
+  //  (token);
   const result = await getFeedBackByTaskIdService({
     taskId,
     token,
@@ -933,10 +933,10 @@ export const updateCheckListDateByIdAndTaskIdAction = async ({
   finishedAt,
   checklistId,
 }) => {
-  console.log("Request Body in update date checklist Action: ", {
-    finishedAt,
-    checklistId,
-  });
+  //   ("Request Body in update date checklist Action: ", {
+  //   finishedAt,
+  //   checklistId,
+  // });
   const userToken = await Token();
   const token = userToken.Credential;
 

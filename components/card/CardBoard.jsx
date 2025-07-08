@@ -35,7 +35,7 @@ export default function CardBoard({
 
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  console.log("is fav", isFavBtn);
+    ("is fav", isFavBtn);
   /* Extract workspaceId and projectId from the current URL */
   const pathSegments = pathname.split("/");
   const workspaceId = pathSegments[2] || "defaultWorkspace";
@@ -72,7 +72,7 @@ export default function CardBoard({
         workspaceId: existingBoard.workspaceId,
       });
 
-      console.log("Board title updated to:", newTitle);
+        ("Board title updated to:", newTitle);
       toast.success("You have successfully updated the board title");
     } catch (error) {
       toast.error("Failed to update the board title");
@@ -105,7 +105,7 @@ export default function CardBoard({
 
     fetchMembers();
   }, [boardId]);
-  console.log("member", members);
+    ("member", members);
   return (
     <Card className="py-4 h-[340px] rounded-xl shadow-sm">
       {/* Card Header: shows editable title and favorite button */}
@@ -247,7 +247,7 @@ export default function CardBoard({
                       try {
                         await deleteBoardAction(boardId, workspaceId);
                         toast.success("Board deleted successfully");
-                        console.log("Delete confirmed!");
+                          ("Delete confirmed!");
                       } catch (error) {
                         console.error(" Failed to delete board:", error);
                         toast.error(" Failed to delete board");

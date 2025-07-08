@@ -298,7 +298,7 @@ export const Cover = ({ report, absolute }) => {
         checkList.done = checklistCount;
         break;
       default:
-        console.log("Unknown stage:", stage);
+          ("Unknown stage:", stage);
         break;
     }
   });
@@ -432,7 +432,7 @@ export const Cover = ({ report, absolute }) => {
     0
   );
 
-  console.log("Task: ", totalTasks);
+    ("Task: ", totalTasks);
 
   const taskData = [
     {
@@ -541,7 +541,7 @@ export const Cover = ({ report, absolute }) => {
 
   const flatData = flattenReportData(report);
 
-  console.log("Report: ", flattenReportData(report));
+    ("Report: ", flattenReportData(report));
 
   const [scale, setScale] = useState(1);
   const zoomRef = useRef(null);
@@ -867,7 +867,7 @@ export const FirstPage = ({
         checkList.done = checklistCount;
         break;
       default:
-        console.log("Unknown stage:", stage);
+          ("Unknown stage:", stage);
         break;
     }
   });
@@ -1001,7 +1001,7 @@ export const FirstPage = ({
     0
   );
 
-  console.log("Task: ", totalTasks);
+    ("Task: ", totalTasks);
 
   const taskData = [
     {
@@ -1110,7 +1110,7 @@ export const FirstPage = ({
 
   const flatData = flattenReportData(report);
 
-  console.log("Report: ", flattenReportData(report));
+    ("Report: ", flattenReportData(report));
 
   const [scale, setScale] = useState(1);
   const zoomRef = useRef(null);
@@ -1153,7 +1153,7 @@ export const FirstPage = ({
     });
   };
 
-  console.log("សម្តេចពុក: ", report.payload);
+    ("សម្តេចពុក: ", report.payload);
   return (
     <div
       className={`${absolute} ${
@@ -1672,7 +1672,7 @@ export const SecondPage = ({ report, pageNumber = 2, absolute }) => {
         checkList.done = checklistCount;
         break;
       default:
-        console.log("Unknown stage:", stage);
+          ("Unknown stage:", stage);
         break;
     }
   });
@@ -1806,7 +1806,7 @@ export const SecondPage = ({ report, pageNumber = 2, absolute }) => {
     0
   );
 
-  console.log("Task: ", totalTasks);
+    ("Task: ", totalTasks);
 
   const taskData = [
     {
@@ -1915,7 +1915,7 @@ export const SecondPage = ({ report, pageNumber = 2, absolute }) => {
 
   const flatData = flattenReportData(report);
 
-  console.log("Report: ", flattenReportData(report));
+    ("Report: ", flattenReportData(report));
 
   const [scale, setScale] = useState(1);
   const zoomRef = useRef(null);
@@ -2478,7 +2478,7 @@ export const ThirdPage = ({ report, pageNumber = 3, absolute }) => {
         checkList.done = checklistCount;
         break;
       default:
-        console.log("Unknown stage:", stage);
+          ("Unknown stage:", stage);
         break;
     }
   });
@@ -2612,7 +2612,7 @@ export const ThirdPage = ({ report, pageNumber = 3, absolute }) => {
     0
   );
 
-  console.log("Task: ", totalTasks);
+    ("Task: ", totalTasks);
 
   const taskData = [
     {
@@ -3219,7 +3219,7 @@ export const FourthPage = ({ absolute, report }) => {
         checkList.done = checklistCount;
         break;
       default:
-        console.log("Unknown stage:", stage);
+          ("Unknown stage:", stage);
         break;
     }
   });
@@ -3353,7 +3353,7 @@ export const FourthPage = ({ absolute, report }) => {
     0
   );
 
-  console.log("Task: ", totalTasks);
+    ("Task: ", totalTasks);
 
   const taskData = [
     {
@@ -3462,7 +3462,7 @@ export const FourthPage = ({ absolute, report }) => {
 
   const flatData = flattenReportData(report);
 
-  console.log("Report: ", flattenReportData(report));
+    ("Report: ", flattenReportData(report));
 
   const [scale, setScale] = useState(1);
   const zoomRef = useRef(null);

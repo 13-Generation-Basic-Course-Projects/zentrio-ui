@@ -149,7 +149,7 @@ export function ModalRenameTask({ taskId, boardId }) {
       const boardIdValue = taskData.boardId;
       const ganttBarId = taskData.ganttBarId;
 
-      console.log("Sending update payload to updateTaskByIdAction:", {
+        ("Sending update payload to updateTaskByIdAction:", {
         taskId,
         title,
         description,
@@ -169,7 +169,7 @@ export function ModalRenameTask({ taskId, boardId }) {
         ganttBarId
       );
 
-      console.log("REsult from updateTaskByIdAction:", result);
+        ("REsult from updateTaskByIdAction:", result);
 
       if (result.success) {
         // Emit real-time event for task title update
@@ -270,7 +270,7 @@ export function ModalRenameTask({ taskId, boardId }) {
                       value={newName}
                       onChange={(e) => {
                         setNewName(e.target.value);
-                        console.log("Input changed to:", e.target.value);
+                          ("Input changed to:", e.target.value);
                       }}
                     />
                   </div>

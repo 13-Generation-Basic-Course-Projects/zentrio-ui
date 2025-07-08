@@ -19,21 +19,21 @@ export default function Announcementpage({
 }) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  // console.log("All announcement", Announcements);
-  // console.log("kdetttt", boardId);
-  // console.log("kdetkoooo", boardMember);
-  // console.log("user", currentUserProfile);
+  //   ("All announcement", Announcements);
+  //   ("kdetttt", boardId);
+  //   ("kdetkoooo", boardMember);
+  //   ("user", currentUserProfile);
   const preventUserImage = preventImage.noProfile;
 
   const currentUserBoardInfo = boardMember.find(
     (member) => member.userId === currentUserProfile?.payload?.user?.userId
   );
-  // console.log("gggg", currentUserProfile?.payload?.user?.userId);
-  // console.log("info", currentUserBoardInfo);
+  ("gggg", currentUserProfile?.payload?.user?.userId);
+  //   ("info", currentUserBoardInfo);
   const currentUserRoles = currentUserBoardInfo?.roles || [];
-  // console.log("ss", currentUserRoles);
+  //   ("ss", currentUserRoles);
   const isProjectManager = currentUserRoles.includes("ROLE_MANAGER");
-  // console.log("rolemamam", isProjectManager);
+  //   ("rolemamam", isProjectManager);
 
   // Sort announcements: pinned first, then by date (newest first)
   const sortedAnnouncements = useMemo(() => {

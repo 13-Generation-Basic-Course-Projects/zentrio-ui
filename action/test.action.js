@@ -2,7 +2,7 @@
 import { Token } from "@/constant/token";
 const { testFetchService } = require("@/service/test.service");
 
-console.log("test actions must create folders");
+  ("test actions must create folders");
 /*
  * test
  */

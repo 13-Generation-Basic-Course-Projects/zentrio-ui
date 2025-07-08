@@ -97,7 +97,7 @@ export const getWorkspaceByIdService = async (id, token) => {
  * 4. for service Delete workspace by id -> deleteWorkspaceById: (id) => `${apiConfig.baseUrl}/api/v1/workspaces/${id}`,
  */
 export const deleteWorkspaceByIdService = async ({ id, token }) => {
-  //console.log("Delete id service : ", id);
+  //  ("Delete id service : ", id);
   try {
     const url = workspaceRouteGroup.deleteWorkspaceById(id);
     const res = await fetch(url, {
@@ -304,7 +304,7 @@ export const updateBoardByIdService = async ({
   workspaceId,
   token,
 }) => {
-  // //console.log("🔁 Sending update payload in service:", {
+  // //  ("🔁 Sending update payload in service:", {
   //   title,
   //   description,
   //   cover,
@@ -350,8 +350,8 @@ export const updateFavBoardByIdService = async ({
     boardId
   )}?isFavourite=${isFavourite}`;
 
-  //console.log("🔐 Using token in service:", token);
-  //console.log("🌐 Final request URL:", url);
+  //  ("🔐 Using token in service:", token);
+  //  ("🌐 Final request URL:", url);
 
   try {
     const res = await fetch(url, {
@@ -427,7 +427,7 @@ export const createBoardService = async ({
     if (cover) {
       formData.append("cover", cover);
     }
-    //console.log("FormData contents in service:", formData);
+    //  ("FormData contents in service:", formData);
 
     const res = await fetch(url, {
       next: {
@@ -635,7 +635,7 @@ export const getBoardsByWorkspaceIdService = async ({ workspaceId, token }) => {
 
   try {
     const url = boardRouteGroup.getBoardsByWorkspaceId(workspaceId);
-    //console.log("🌐 Fetching boards from:", url);
+    //  ("🌐 Fetching boards from:", url);
 
     const res = await fetch(url, {
       method: "GET",
@@ -713,7 +713,7 @@ export const getBoardsForCurrentUserService = async (token) => {
  * 16. Deleted board by id and workspace id
  */
 export const deleteBoardService = async ({ id, workspaceId, token }) => {
-  //console.log("WorkspaceId in delete board service: ", workspaceId);
+  //  ("WorkspaceId in delete board service: ", workspaceId);
   try {
     const url = boardRouteGroup.deleteBoard(id, workspaceId);
 
@@ -741,10 +741,10 @@ export const deleteBoardService = async ({ id, workspaceId, token }) => {
  * get all  favorite
  */
 export const getFavoriteBoardService = async (userId, token) => {
-  //console.log("service id", userId);
+  //  ("service id", userId);
   const url = boardRouteGroup.getFavoriteBoard(userId);
   try {
-    //console.log(url);
+    //  (url);
     const res = await fetch(url, {
       method: "GET",
       headers: {
@@ -753,7 +753,7 @@ export const getFavoriteBoardService = async (userId, token) => {
       },
     });
     const data = await res.json();
-    //console.log("📥 Backend responded with favboard:", data);
+    //  ("📥 Backend responded with favboard:", data);
 
     return data; // just return the data, don't redirect here
   } catch (error) {
@@ -768,7 +768,7 @@ export const getFavoriteBoardService = async (userId, token) => {
 export const getOtherWorkSpaceJoinedService = async (token) => {
   const url = workspaceRouteGroup.getOtherWorkSpaceJoined();
   try {
-    //console.log(url);
+    //  (url);
     const res = await fetch(url, {
       method: "GET",
       headers: {
@@ -777,7 +777,7 @@ export const getOtherWorkSpaceJoinedService = async (token) => {
       },
     });
     const data = await res.json();
-    console.log("📥 Backend responded with other", data);
+      ("📥 Backend responded with other", data);
 
     return data; // just return the data, don't redirect here
   } catch (error) {
@@ -793,7 +793,7 @@ export const getOtherWorkSpaceJoinedService = async (token) => {
 export const getMemberByBoardIdService = async ({ boardId, token }) => {
   const url = workspaceRouteGroup.getMemeberByBoardId(boardId);
   try {
-    //console.log(url);
+    //  (url);
     const res = await fetch(url, {
       method: "GET",
       headers: {
@@ -802,7 +802,7 @@ export const getMemberByBoardIdService = async ({ boardId, token }) => {
       },
     });
     const data = await res.json();
-    //console.log("📥 Backend responded with member by board id:", data);
+    //  ("📥 Backend responded with member by board id:", data);
 
     return data; // just return the data, don't redirect here
   } catch (error) {

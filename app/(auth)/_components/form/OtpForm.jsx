@@ -73,7 +73,7 @@ export const OtpForm = () => {
         type,
       });
 
-      console.log("result after submit", result);
+        ("result after submit", result);
 
       if (result?.success) {
         if (type === "RESET") {
@@ -89,10 +89,10 @@ export const OtpForm = () => {
 
 
   const handleResend = async () => {
-    console.log("Resend button  click !!!");
+      ("Resend button  click !!!");
     try {
       await zentrioResendOtpAction({ email, type });
-      console.log("OTP resent");
+        ("OTP resent");
     } catch (error) {
       console.error("Resend OTP failed", error);
     }

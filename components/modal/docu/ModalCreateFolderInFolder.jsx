@@ -41,7 +41,7 @@ export default function ModalCreateFolderInFolder({
         token: tokenFromGoogle,
       });
 
-      console.log("createdFolder: ", createdFolder);
+        ("createdFolder: ", createdFolder);
 
       if (
         createdFolder?.status === "ACCEPTED" ||

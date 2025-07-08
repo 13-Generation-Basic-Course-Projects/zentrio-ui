@@ -143,7 +143,7 @@ export default function TeamCardWelcome() {
       if (container.current) {
         swapy.current = createSwapy(container.current);
         swapy.current.onSwap((event) => {
-          console.log("swap", event);
+            ("swap", event);
         });
       }
     }, 100);

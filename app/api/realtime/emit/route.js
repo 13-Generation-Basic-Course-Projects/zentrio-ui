@@ -5,7 +5,7 @@ export async function POST(request) {
   try {
     const { boardId, eventType, data } = await request.json();
     
-    console.log('📤 Emit request received:', { boardId, eventType, data });
+      ('📤 Emit request received:', { boardId, eventType, data });
 
     if (!boardId || !eventType) {
       console.error('❌ Missing required fields:', { boardId, eventType });
@@ -22,7 +22,7 @@ export async function POST(request) {
       timestamp: new Date().toISOString(),
     });
 
-    console.log('✅ Event broadcasted successfully');
+      ('✅ Event broadcasted successfully');
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('❌ Error in emit route:', error);

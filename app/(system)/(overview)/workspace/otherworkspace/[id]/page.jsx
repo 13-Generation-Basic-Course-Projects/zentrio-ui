@@ -11,23 +11,23 @@ export default async function OtherWorkspace({ params }) {
   const workspaceId = await params.id;
   //workspace other
   const getWorKSpaceJoined = await getOtherWorkSpaceJoinedAction();
-  console.log("getWorKSpaceJoined other", getWorKSpaceJoined);
+    ("getWorKSpaceJoined other", getWorKSpaceJoined);
 
   // Filter the payload to get only the workspace matching the workspaceId
   const matchingWorkspace = getWorKSpaceJoined.payload.find(
     (workspace) => workspace.workspaceId === workspaceId
   );
 
-  console.log("Matching workspace:", matchingWorkspace?.otherBoards);
+    ("Matching workspace:", matchingWorkspace?.otherBoards);
   let allMembersInOther = [];
 
   // Extract board IDs from the matching workspace
   const boardIds =
     matchingWorkspace?.otherBoards?.map((board) => board.boardId) || [];
-  console.log("Board IDs in other workspace:", boardIds);
+    ("Board IDs in other workspace:", boardIds);
 
   if (boardIds.length === 0) {
-    console.log("No valid board IDs found.");
+      ("No valid board IDs found.");
   } else {
     // Fetch members for each board sequentially
     for (const boardId of boardIds) {
@@ -46,7 +46,7 @@ export default async function OtherWorkspace({ params }) {
         allMembersInOther.map((member) => [member.userId, member])
       ).values()
     );
-    console.log("Unique members in other workspace:", allMembersInOther);
+      ("Unique members in other workspace:", allMembersInOther);
   }
 
   return (

@@ -14,7 +14,7 @@ export function Notification() {
   const [notificationStatus, setNotificationStatus] = useState({}); // Track acceptance status
 
   const notifi = notifications;
-  console.log("Notifications:", notifi);
+    ("Notifications:", notifi);
 
   const handleAccept = async (notificationId, taskId, assignId) => {
     try {

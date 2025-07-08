@@ -132,12 +132,12 @@ export default function ModalCreateChecklist({
         taskId: taskid,
       };
 
-      console.log("Transformed submit data", transformedData);
+        ("Transformed submit data", transformedData);
 
       // Call the createCheckListAction
       const result = await createCheckListAction(taskid, transformedData);
-      console.log("hello checklist result", result);
-      console.log("result form", result);
+        ("hello checklist result", result);
+        ("result form", result);
       if (result.status == 200) {
         // Show success toast
         toast.success("Checklist created successfully!");
@@ -156,7 +156,7 @@ export default function ModalCreateChecklist({
           updatedAt: new Date().toISOString()
         });
       } else if (result.status === 403) {
-        console.log("err mss", result);
+          ("err mss", result);
         toast.error(`Error: ${result?.detail}`);
       }
 

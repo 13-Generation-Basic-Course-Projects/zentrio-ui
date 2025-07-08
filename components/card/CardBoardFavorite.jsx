@@ -66,7 +66,7 @@ export default function CardBoardFavorite({
                   boardId,
                   isFavourite: newFavoriteStatus,
                 });
-                console.log(
+                  (
                   `✅ Favorite status updated to ${newFavoriteStatus}`
                 );
               }
@@ -138,7 +138,7 @@ export default function CardBoardFavorite({
                   action={async () => {
                     if (deleteBoardAction && boardId && workspaceId) {
                       await deleteBoardAction(boardId, workspaceId);
-                      console.log("Delete confirmed!");
+                        ("Delete confirmed!");
                       setIsDeleteOpen(false);
                     }
                   }}

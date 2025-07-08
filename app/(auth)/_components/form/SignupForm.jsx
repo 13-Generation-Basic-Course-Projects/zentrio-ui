@@ -42,7 +42,7 @@ export const SignUpForm = () => {
 
   const onSubmit = async (data) => {
     const result = await zentrioRegisterAction(data);
-    console.log("Stored email:", result.email);
+      ("Stored email:", result.email);
     if (result?.email) {
       localStorage.setItem("userEmail", result.email);
       // or use Zustand here

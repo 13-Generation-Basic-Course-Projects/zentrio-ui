@@ -38,7 +38,7 @@ export default function ProfileLayout({
 }) {
   const data = currentUserProfile?.payload?.user || {};
 
-  console.log("Current User Profile:", currentUserProfile);
+    ("Current User Profile:", currentUserProfile);
 
   const tabItems = [
     { key: "profile", title: "Profile", content: profile },
@@ -151,8 +151,8 @@ export default function ProfileLayout({
     setError("");
 
     try {
-      console.log(`Original file: ${file.name}`);
-      console.log(`Original size: ${formatFileSize(file.size)}`);
+        (`Original file: ${file.name}`);
+        (`Original size: ${formatFileSize(file.size)}`);
 
       // Determine compression settings based on file size
       let compressionOptions;
@@ -199,8 +199,8 @@ export default function ProfileLayout({
       clearInterval(progressInterval);
       setCompressionProgress(100);
 
-      console.log(`Compressed size: ${formatFileSize(compressedFile.size)}`);
-      console.log(
+        (`Compressed size: ${formatFileSize(compressedFile.size)}`);
+        (
         `Compression ratio: ${(
           (1 - compressedFile.size / file.size) *
           100

@@ -136,7 +136,7 @@ export default function ModalCreateBoard({ Workspaceid }) {
 
    
     if (board?.id) {
-      console.log("Board ID:", board.id);
+        ("Board ID:", board.id);
     }
   };
  

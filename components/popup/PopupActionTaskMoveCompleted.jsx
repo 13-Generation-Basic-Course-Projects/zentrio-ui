@@ -47,7 +47,7 @@ export default function PopupActionTaskMoveComplete({
   const handleDelete = async () => {
     try {
       const result = await changeStageToUnderReviewAction(taskId, "COMPLETED");
-      console.log("respon delete", result);
+        ("respon delete", result);
       
       if (result.success) {
         // Emit real-time event for task stage change
