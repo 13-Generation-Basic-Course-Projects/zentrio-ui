@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Button, Checkbox, Form } from "@heroui/react";
@@ -18,6 +18,8 @@ import { toast, ToastContainer } from "react-toastify";
 
 export const SigninForm = () => {
   const router = useRouter();
+  const searchParam = useSearchParams();
+  const mail = searchParam.get('mail')
 
   // Only need "confirm" for password visibility in this form, right?
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -51,7 +53,6 @@ export const SigninForm = () => {
     } catch (error) {
       setBackendError("An unexpected error occurred. Please try again.");
       setIsLoading(false);
-      console.error("Login error:", error);
     }
   };
   const [backendError, setBackendError] = useState("");
@@ -74,6 +75,7 @@ export const SigninForm = () => {
                 type="text"
                 label="Email"
                 name="email"
+                defaultValue={mail ?? ''}
                 labelPlacement="outside"
                 placeholder="Email"
                 className="text-foreground "

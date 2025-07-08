@@ -25,7 +25,7 @@ export function EmptyKanban() {
       <Image
         src={Task3D}
         alt="3D UI Workflow Design"
-        className=" w-[350px]    absolute bottom-4 right-10"
+        className=" w-[350px]  absolute bottom-4 right-10"
         
       />
       <Image
