@@ -1,7 +1,33 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import { Input, Button } from "@heroui/react";
+import { useRouter } from "next/navigation";
+import {
+  getValueFromFooter,
+  SigninForm,
+} from "@/app/(auth)/_components/form/SigninForm";
 
 export default function Footer() {
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
+  const [field, setField] = useState("");
+
+  const handleChange = (e) => {
+    setField(e.target.value);
+  };
+
+  const router = useRouter();
+
+  const handleRoute = () => {
+    router.push(`/login?mail=${encodeURIComponent(field)}`);
+  };
+
   return (
     <div
       className="w-full  overflow-hidden mt-8 relative font-poppin "
@@ -58,10 +84,14 @@ export default function Footer() {
         <div className="w-full max-w-[500px] mt-8 px-4 max-[640px]:px-7">
           <form className="relative w-full">
             <input
+              onChange={handleChange}
               placeholder="Enter your email address"
               className="w-full rounded-[8px] py-3 md:py-[15px] max-[400px]:text-[10px] max-[330px]:text-[7px] text-body-sm px-4 md:px-6 outline-none border-none bg-bgColor"
             />
-            <Button className="bg-primary text-label-sm max-[400px]:text-[10px] max-[330px]:text-[7px] md:px-6 text-white border-none rounded-full px-4  absolute right-2 top-1/2 -translate-y-1/2 hover:-translate-y-1/2 hover:bg-primary-dark">
+            <Button
+              onPress={handleRoute}
+              className="bg-primary text-label-sm max-[400px]:text-[10px] max-[330px]:text-[7px] md:px-6 text-white border-none rounded-full px-4  absolute right-2 top-1/2 -translate-y-1/2 hover:-translate-y-1/2 hover:bg-primary-dark"
+            >
               Get Started
             </Button>
           </form>
@@ -70,34 +100,49 @@ export default function Footer() {
         <div className="grid max-[500px]:grid-cols-2 lg:grid-cols-2 md:grid-cols-1 sm:grid-col-2 gap-6 md:gap-6 mt-8 md:mt-16 w-[75%] px-4">
           <div className="grid lg:grid-cols-5 grid-cols-5 md:grid-cols-5 sm:grid-cols-5 max-[500px]:grid-cols-1 gap-2 lg:gap-4 text-caption-tiny text-xs md:text-base">
             <a
-              href="#"
+              href="/"
               className="hover:text-primary transition-colors whitespace-nowrap text-center"
+              onClick={() => {
+                window.location.pathname == "/" ? scrollToTop() : ``;
+              }}
             >
               Home
             </a>
             <a
-              href="#"
+              href="/aboutus"
               className="hover:text-primary transition-colors whitespace-nowrap text-center"
+              onClick={() => {
+                window.location.pathname == "/aboutus" ? scrollToTop() : ``;
+              }}
             >
-              Features
+              About us
             </a>
             <a
-              href="#"
+              href="/contact"
               className="hover:text-primary transition-colors whitespace-nowrap text-center"
+              onClick={() => {
+                window.location.pathname == "/contact" ? scrollToTop() : ``;
+              }}
             >
-              Pricing
+              Contact
             </a>
             <a
-              href="#"
+              href="/draw"
               className="hover:text-primary transition-colors whitespace-nowrap text-center"
+              onClick={() => {
+                window.location.pathname == "/draw" ? scrollToTop() : ``;
+              }}
             >
-              Integrations
+              Draw
             </a>
             <a
-              href="#"
+              href="/compiler"
               className="hover:text-primary transition-colors whitespace-nowrap text-center"
+              onClick={() => {
+                window.location.pathname == "/compiler" ? scrollToTop() : ``;
+              }}
             >
-              Support
+              Playground
             </a>
           </div>
 
@@ -121,16 +166,16 @@ export default function Footer() {
               Twitter
             </a>
             <a
-              href="#"
+              href="/login"
               className="hover:text-primary transition-colors whitespace-nowrap text-center"
             >
-              Facebook
+              Login
             </a>
             <a
-              href="#"
+              href="/register"
               className="hover:text-primary transition-colors whitespace-nowrap text-center"
             >
-              Discord
+              Register
             </a>
           </div>
         </div>
