@@ -31,6 +31,7 @@
     "@heroui/tabs": "^2.2.16",
     "@heroui/theme": "^2.4.15",
     "@hookform/resolvers": "^5.0.1",
+    "@monaco-editor/react": "^4.7.0",
     "@onesignal/node-onesignal": "^5.1.0-beta1",
     "@radix-ui/react-dialog": "^1.1.13",
     "@radix-ui/react-separator": "^1.1.6",

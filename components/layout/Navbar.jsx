@@ -34,7 +34,7 @@ export const NavbarLanding = ({ tokens }) => {
         </Link>
 
         {/* Desktop Navigation (hidden on mobile) */}
-        <nav className="hidden md:flex justify-between items-center w-[350px] font-medium text-body-lg">
+        <nav className="hidden md:flex justify-between items-center w-[580px] font-medium text-body-lg">
           <Link
             href="/"
             className={`hover:text-primary transition-all ${
@@ -74,6 +74,22 @@ export const NavbarLanding = ({ tokens }) => {
               variant="shadow"
             >
               So Fun
+            </Chip>
+          </Link>
+          <Link
+            href="/compiler"
+            className={`relative hover:text-primary transition-all ${isActiveRoute("/compiler") ? "text-primary font-semibold" : ""
+              }`}
+          >
+            Playground
+            <Chip
+              classNames={{
+                base: "left-[90.0%] top-[40%] bg-gradient-to-br from-primary to-primary/5 border-small border-white/50 shadow-pink-500/30 absolute scale-[0.6]",
+                content: "drop-shadow shadow-black text-white",
+              }}
+              variant="shadow"
+            >
+              Coding
             </Chip>
           </Link>
         </nav>
@@ -164,6 +180,22 @@ export const NavbarLanding = ({ tokens }) => {
               variant="shadow"
             >
               So Fun
+            </Chip>
+          </Link>
+          <Link
+            href="/compiler"
+            className={`relative hover:text-primary transition-all ${isActiveRoute("/compiler") ? "text-primary font-semibold" : ""
+              }`}
+          >
+            Playground
+            <Chip
+              classNames={{
+                base: "left-[90.0%] top-[40%] bg-gradient-to-br from-primary to-primary/5 border-small border-white/50 shadow-pink-500/30 absolute scale-[0.6]",
+                content: "drop-shadow shadow-black text-white",
+              }}
+              variant="shadow"
+            >
+              Coding
             </Chip>
           </Link>
           </nav>
