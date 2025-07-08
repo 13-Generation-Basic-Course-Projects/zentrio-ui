@@ -26,7 +26,7 @@ export default function CardCreateModal({
   const [loading, setLoading] = useState(false);
   const [focusedField, setFocusedField] = useState(null);
 
-  const MAX_SIZE_MB = 10;
+  const MAX_SIZE_MB = 20;
 
   const handleImageChange = (e) => {
     const newFiles = Array.from(e.target.files || []);

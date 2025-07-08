@@ -1,3 +1,10 @@
+export const config = {
+  api: {
+    bodyParser: false,
+    sizeLimit: "20mb",
+  },
+};
+
 import { apiConfig } from "@/constant/baseurl";
 import { Token } from "@/constant/token";
 
