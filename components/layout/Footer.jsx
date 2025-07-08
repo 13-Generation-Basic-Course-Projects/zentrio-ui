@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Input, Button } from "@heroui/react";
 import { useRouter } from "next/navigation";
 import {
@@ -25,7 +25,7 @@ export default function Footer() {
   const router = useRouter();
 
   const handleRoute = () => {
-    router.push(`/login?mail=${encodeURIComponent(field)}`);
+    router.push(`/login?mail=${encodeURIComponent(field) ?? ``}`);
   };
 
   return (
