@@ -122,7 +122,7 @@ export default function ModalCreateChecklist({
   }, []);
 
   const handleSubmitForm = async (e) => {
-    e.preventDefault();
+    // e.preventDefault();
     setIsLoading(true);
 
     try {

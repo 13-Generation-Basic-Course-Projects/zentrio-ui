@@ -3,6 +3,7 @@ import {
   getMemberByBoardIdAction,
 } from "@/action/board.action";
 import { getUserByUserIdAction } from "@/action/member.action";
+import { getUserAchievementAction } from "@/action/profile.action";
 import NotFound from "@/app/not-found";
 import OtherUserProfile from "@/components/appserver/OtherProfilepage";
 import React from "react";
@@ -26,6 +27,11 @@ export default async function MemberProfile({ params, searchParams }) {
    */
   const MemberDetails = await getMemberByBoardIdAction({ boardId });
   console.log("here is the member  details", MemberDetails);
+
+  /* 
+  * Get achievement for current user only achievement 
+  */
+  const userAchievement = await getUserAchievementAction();
 
   /*
    * getmember id
@@ -52,6 +58,7 @@ export default async function MemberProfile({ params, searchParams }) {
       userId={userId}
       userIdDetail={userIdDetail?.payload}
       boardName={boardName}
+      userAchievement={userAchievement}
     />
   );
 }

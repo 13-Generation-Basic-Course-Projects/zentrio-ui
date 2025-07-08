@@ -79,9 +79,7 @@ export const getPreviewProfileAction = async () => {
   return result;
 };
 
-
-
-export const updateProfileImageAction = async ({formData}) => {
+export const updateProfileImageAction = async ({ formData }) => {
   console.log("paylaod data", formData);
   const userToken = await Token();
   const token = userToken.Credential;

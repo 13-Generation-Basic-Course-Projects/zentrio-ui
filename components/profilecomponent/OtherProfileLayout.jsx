@@ -29,7 +29,8 @@ export default function OtherProfileLayout({
   userName,
   MemberDetails,
   userIdDetail,
-  boardName
+  boardName,
+  userAchievement,
 }) {
   const searchParams = useSearchParams();
   const params = useParams(); // Get params from the URL path
@@ -48,6 +49,7 @@ export default function OtherProfileLayout({
     MemberDetails?.payload?.[0] ||
     {};
 
+  console.log("Member data in other profile layout: ", memberData);
   const {
     userId,
     username,
@@ -103,6 +105,7 @@ export default function OtherProfileLayout({
           MemberDetails={MemberDetails}
           userId={userId}
           userIdDetail={userIdDetail}
+          userAchievement={userAchievement}
         />
       ),
     },
@@ -123,7 +126,6 @@ export default function OtherProfileLayout({
   const preventProfile = preventImage.noProfile;
 
   console.log("detail member in specific", MemberDetails?.payload);
-  
 
   return (
     <>
@@ -131,7 +133,7 @@ export default function OtherProfileLayout({
         <BredCrum board={boardName} feature={"Members"} user={displayName} />
         <div className="relative">
           <Image
-            className="w-full rounded-xl h-32 sm:h-40 md:h-40 lg:h-44 object-cover mt-2"
+            className="w-full rounded-xl h-32 sm:h-40 md:h-40 lg:h-52 object-cover mt-2"
             src={coverProfile}
             alt="cover profile"
           />
@@ -181,11 +183,17 @@ export default function OtherProfileLayout({
             </p>
             <p className="flex items-center justify-center md:justify-start gap-1">
               <IconMap strokeWidth={1} size={4} color={"currentColor"} />
-              Phnom Penh
+              {userIdDetail?.location}
             </p>
             <p className="flex items-center justify-center md:justify-start gap-1">
               <IconDate strokeWidth={1} size={4} color={"currentColor"} />
-              Started 07-May-2025
+              Started at{" "}
+              {userIdDetail?.createdAt &&
+                new Date(userIdDetail.createdAt).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                })}
             </p>
           </div>
 

@@ -13,6 +13,11 @@ export default function ActiveBoardsOther({
   const userTasks = userDetails.tasks || [];
   const userRoles = userDetails.roles || [];
   const createdAt = userAchievement?.payload?.createdAt?.split("T")[0] || "";
+  const taskPercent = userAchievement?.payload?.boards.completionRate;
+  const boardPercent = userAchievement?.payload?.completionRate;
+
+
+  console.log("userAchievementtttttt: ", userAchievement);
 
   // Define a set of base colors for task cards
   const colorPairs = [
@@ -214,14 +219,7 @@ export default function ActiveBoardsOther({
             <div className="flex justify-between text-xs text-gray-600">
               <span>Total Tasks: {userTasks.length}</span>
               <span>Categories: {Object.keys(groupedTasks).length}</span>
-              <span>
-                Avg Progress:{" "}
-                {Math.round(
-                  processedTasks.reduce((sum, task) => sum + task.percent, 0) /
-                    processedTasks.length
-                )}
-                %
-              </span>
+              <span>Avg Progress:{boardPercent}</span>
             </div>
           </div>
         )}
@@ -234,66 +232,51 @@ export default function ActiveBoardsOther({
       </div>
 
       {/* Scrollable Content */}
-      <div className="flex-1 overflow-y-auto">
-        <div className="p-4 min-h-0">
-          {userTasks.length === 0 ? (
-            <div className="text-center py-8 text-gray-500">
-              <p className="text-sm">No tasks assigned</p>
+      <ul className="space-y-3">
+        {processedTasks.map((task) => (
+          <li
+            key={task.id}
+            className="grid grid-cols-12 items-center gap-4 p-3 rounded-lg hover:bg-gray-50 transition-colors"
+          >
+            <div className="flex items-center gap-3 col-span-4 ">
+              <div
+                className={`w-10 h-10 rounded-full flex items-center justify-center ${task.textColor} font-semibold ${task.color} flex-shrink-0`}
+              >
+                {task.initial}
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="font-medium text-sm truncate">{task.name}</p>
+                <div className="flex items-center gap-2 text-xs text-description">
+                  <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full">
+                    {task.categoryDisplay}
+                  </span>
+                  <span
+                    className={`px-2 py-1 rounded-full ${
+                      task.priority === "high"
+                        ? "bg-red-100 text-red-700"
+                        : task.priority === "medium"
+                        ? "bg-yellow-100 text-yellow-700"
+                        : "bg-gray-100 text-gray-700"
+                    }`}
+                  >
+                    {task.priority}
+                  </span>
+                </div>
+                {task.assignedDate && (
+                  <p className="text-xs text-gray-500 mt-1">
+                    Assigned: {task.assignedDate}
+                  </p>
+                )}
+              </div>
             </div>
-          ) : (
-            <ul className="space-y-3">
-              {processedTasks.map((task) => (
-                <li
-                  key={task.id}
-                  className="grid grid-cols-12 items-center gap-4 p-3 rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                  <div className="flex items-center gap-3 col-span-4 ">
-                    <div
-                      className={`w-10 h-10 rounded-full flex items-center justify-center ${task.textColor} font-semibold ${task.color} flex-shrink-0`}
-                    >
-                      {task.initial}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="font-medium text-sm truncate">
-                        {task.name}
-                      </p>
-                      <div className="flex items-center gap-2 text-xs text-description">
-                        <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full">
-                          {task.categoryDisplay}
-                        </span>
-                        <span
-                          className={`px-2 py-1 rounded-full ${
-                            task.priority === "high"
-                              ? "bg-red-100 text-red-700"
-                              : task.priority === "medium"
-                              ? "bg-yellow-100 text-yellow-700"
-                              : "bg-gray-100 text-gray-700"
-                          }`}
-                        >
-                          {task.priority}
-                        </span>
-                      </div>
-                      {task.assignedDate && (
-                        <p className="text-xs text-gray-500 mt-1">
-                          Assigned: {task.assignedDate}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                  {task.showProgress && (
-                    <div className="col-span-8">
-                      <ProgressBar
-                        percent={task.percent}
-                        color={task.progressColor}
-                      />
-                    </div>
-                  )}
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      </div>
+
+            {/* ✅ Always show ProgressBar */}
+            <div className="col-span-8">
+              <ProgressBar percent={taskPercent} color={task.progressColor} />
+            </div>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
