@@ -1,5 +1,6 @@
-import { getMemberByBoardIdAction } from "@/action/board.action";
+import { getBoardByBoardIdAction, getMemberByBoardIdAction } from "@/action/board.action";
 import { getUserByUserIdAction } from "@/action/member.action";
+import { getUserAchievementAction } from "@/action/profile.action";
 import NotFound from "@/app/not-found";
 import OtherUserProfile from "@/components/appserver/OtherProfilepage";
 import React from "react";
@@ -11,8 +12,17 @@ export default async function MemberProfile({ params, searchParams }) {
   console.log("Board ID:", boardId);
   console.log("User ID:", userId, "Board ID:", boardId);
 
- 
+  /*
+   * get all board by id
+   */
+  const boards = await getBoardByBoardIdAction(boardId);
+  const boardName = boards?.payload?.title || "Unknown Board";
 
+  /*
+   * Get achievement for current user only achievement
+   */
+  const userAchievement = await getUserAchievementAction();
+  console.log("lllllllllllllllllllllllllll:", userAchievement);
 
   /*
    * get member
@@ -29,11 +39,14 @@ export default async function MemberProfile({ params, searchParams }) {
   /*
    * prevent when it is errorss spacific board id for fetching ;-;.
    */
-  
-  if(boardId == undefined || MemberDetails.payload?.status == 400 || userIdDetail?.status == 400 ||userIdDetail?.title === "Bad Request"){
-    return (
-      <NotFound/>
-    )
+
+  if (
+    boardId == undefined ||
+    MemberDetails.payload?.status == 400 ||
+    userIdDetail?.status == 400 ||
+    userIdDetail?.title === "Bad Request"
+  ) {
+    return <NotFound />;
   }
 
   return (
@@ -41,6 +54,8 @@ export default async function MemberProfile({ params, searchParams }) {
       MemberDetails={MemberDetails}
       userId={userId}
       userIdDetail={userIdDetail?.payload}
+      boardName={boardName}
+      userAchievement={userAchievement}
     />
   );
 }

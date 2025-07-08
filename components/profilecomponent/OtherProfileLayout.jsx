@@ -28,6 +28,8 @@ export default function OtherProfileLayout({
   userName,
   MemberDetails,
   userIdDetail,
+  boardName,
+  userAchievement,
 }) {
   const searchParams = useSearchParams();
   const params = useParams(); // Get params from the URL path
@@ -101,6 +103,8 @@ export default function OtherProfileLayout({
           MemberDetails={MemberDetails}
           userId={userId}
           userIdDetail={userIdDetail}
+          userAchievement={userAchievement}
+          boardName={boardName}
         />
       ),
     },

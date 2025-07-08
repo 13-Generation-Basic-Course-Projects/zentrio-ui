@@ -67,6 +67,7 @@ export const getUserAchievementAction = async () => {
   const result = await getUserAchievementService({
     token,
   });
+  console.log("resulttttttttt: ", result);
   return result;
 };
 
