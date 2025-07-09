@@ -19,14 +19,14 @@ export const createAnnouncementByBoardIdService = async ({
     body: JSON.stringify({ title, description, boardId }),
     next: { tags: ["announcements"] },
   });
+
   const data = await res.json();
   return data;
-};
+};  
 
-export const uploadMultiImgByBoardIdService = async ({ boardId, image, token }) => {
-  const url = announcementRouteGroup.uploadMultiImgByBoardId(boardId);
+export const uploadMultiImgByBoardIdService = async ({ boardId, image, token,announcementId }) => {
+  const url = announcementRouteGroup.uploadMultiImgByBoardId(boardId,announcementId);
   const formData = new FormData();
-  formData.append("boardId", boardId);
 
   if (Array.isArray(image)) {
     image.forEach((file) => {
@@ -63,6 +63,7 @@ export const getAllAnnouncementByBoardIdService = async ({
       Authorization: `Bearer ${token}`,
     },
   });
+
   const data = await res.json();
   return data;
 };
@@ -78,8 +79,6 @@ export const deleteAnnouncementByIdService = async (id, token) => {
 
     const data = await res.json();
     return data;
-  
-  
 };
 
 export const pinedAnnouncementByIdService = async (announId, token) => {
@@ -91,6 +90,7 @@ export const pinedAnnouncementByIdService = async (announId, token) => {
       Authorization: `Bearer ${token}`,
     },
   });
+
   const data = await res.json();
   return data;
 };
@@ -111,6 +111,7 @@ export const updateAnnouncementByIdService = async ({announId, description, titl
     body: JSON.stringify(payload),
     next: { tags: ["announcements"] },
   });
+
   const data = await res.json();
   return data; 
 };
@@ -126,6 +127,7 @@ export const createCommentByAnnouncementIdService = async ({ content, announceme
     },
     body: JSON.stringify({content,announcementId }),
   });
+
   const data = await res.json();
   return data;
 };
@@ -142,6 +144,7 @@ export const editCommentByIdService = async ({ content, announId, commentId, tok
       { content,
       announcementId: announId }),
   });
+
   const data = await res.json();
   return data;
 };
@@ -154,6 +157,7 @@ export const deleteCommentByIdService = async ({ commentId, token }) => {
         Authorization: `Bearer ${token}`,
       },
   });
+
   const data = await res.json();
   return data;
 };
@@ -170,6 +174,7 @@ export const createAnnouncementService = async ({ title, description, boardId, t
     body: JSON.stringify({ title, description, boardId }),
     next: { tags: ["announcements"] },
   });
+  
   const data = await res.json();
   return data;
 };
