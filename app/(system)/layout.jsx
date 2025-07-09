@@ -38,7 +38,7 @@ export const metadata = {
 
 export default async function SystemLayout({ children, params }) {
   const session = await auth();
-  console.log("aaa", session);
+    ("aaa", session);
   if (session) {
     const boardId = params.id;
     /*  call action get all workspace */
@@ -55,21 +55,21 @@ export default async function SystemLayout({ children, params }) {
      * get board favorite
      */
     const getUserDetials = await getPreviewProfileAction();
-    //  console.log("getPreviewProfileAction", getUserDetials);
+    //    ("getPreviewProfileAction", getUserDetials);
     const myUserId = getUserDetials?.payload?.userId;
     const imageUser = getUserDetials?.payload?.profileImage;
     const noImage = preventImage.noProfile;
     const preventUserImage = imageUser == null ? noImage : imageUser;
-    console.log("what inside layout and userprofile", imageUser);
+      ("what inside layout and userprofile", imageUser);
 
     const myFavBoard = await getFavoriteBoardAction(myUserId);
-    console.log("getFavoriteBoardAction", myFavBoard);
-    console.log("myUserId", myUserId);
+      ("getFavoriteBoardAction", myFavBoard);
+      ("myUserId", myUserId);
 
     //workspace other
 
     const getWorKSpaceJoined = await getOtherWorkSpaceJoinedAction();
-    console.log("getWorKSpaceJoined", getWorKSpaceJoined);
+      ("getWorKSpaceJoined", getWorKSpaceJoined);
 
     const notificationData = await getNotificationForUserIdAction(myUserId);
 

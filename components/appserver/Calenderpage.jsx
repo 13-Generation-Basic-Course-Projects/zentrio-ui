@@ -131,7 +131,7 @@ export default function MyCalender({ tasks, workspaceId, boardName }) {
       }
 
       setNotes(allNotes);
-      // console.log(" Fetched all notes:", allNotes);
+      //   (" Fetched all notes:", allNotes);
     } catch (error) {
       console.error(" Error in fetchAllNotes:", error);
     } finally {
@@ -157,7 +157,7 @@ export default function MyCalender({ tasks, workspaceId, boardName }) {
         return [...otherTaskNotes, ...taskNotes];
       });
 
-      // console.log(` Refetched notes for task ${taskId}:`, taskNotes);
+      //   (` Refetched notes for task ${taskId}:`, taskNotes);
       return taskNotes;
     } catch (error) {
       console.error(` Error refetching notes for task ${taskId}:`, error);
@@ -458,11 +458,11 @@ export default function MyCalender({ tasks, workspaceId, boardName }) {
       });
 
     const displayEnd = new Date(realEnd || event.end);
-    console.log("Display end in calendar is: ", displayEnd);
+      ("Display end in calendar is: ", displayEnd);
     const formattedDate = `${formatDate(event.start)} - ${formatDate(
       displayEnd
     )}`;
-    // console.log("formattedDate in calendar is: ", formattedDate);
+    //   ("formattedDate in calendar is: ", formattedDate);
 
     // COMMENT EVENT BLOCK
     if (type === "comment") {
@@ -522,9 +522,9 @@ export default function MyCalender({ tasks, workspaceId, boardName }) {
    );
     const endDate = normalizeDateToDay(adjustedEndDate);
 
-    console.log("Start date:", startDate);
-    console.log("Adjusted end date:", adjustedEndDate);
-    console.log("Display end in calendar is:", endDate);
+      ("Start date:", startDate);
+      ("Adjusted end date:", adjustedEndDate);
+      ("Display end in calendar is:", endDate);
 
     // Filter: only show between start and adjusted end (inclusive)
     if (

@@ -5,6 +5,9 @@ export const getCurrentUserProfileService = async ({ token }) => {
   const response = await fetch(
     profileRouteGroup.getCurrentUserProfile(),
     {
+      next: {
+        tags: ["profile"],
+      },
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -19,7 +22,7 @@ export const getCurrentUserProfileService = async ({ token }) => {
   return data;
 };
 
-export const updateUserProfileService = async ({ token, userData }) => {
+export const updateUserProfileService = async (userData, token) => {
   const response = await fetch(
     profileRouteGroup.updateCurrentUserProfile(),
     {
@@ -29,9 +32,9 @@ export const updateUserProfileService = async ({ token, userData }) => {
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(userData),
+      next: { tags: ["profile"] },
     }
   );
-
   const data = await response.json();
   return data;
 };
@@ -41,6 +44,9 @@ export const updateUserProfileService = async ({ token, userData }) => {
 
 export const getUserAchievementService = async ({ token }) => {
   const response = await fetch(profileRouteGroup.getCurrentUserAchievement(), {
+    next: {
+      tags: ["achievements"],
+    },
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -59,7 +65,7 @@ export const updateAchievementService = async ({ token, payload }) => {
   // Step 1: Check if existing data is present
   try {
     const existingData = await getUserAchievementService({ token });
-    console.log("Existing achievement data:", existingData);
+      ("Existing achievement data:", existingData);
 
     const details = existingData?.payload?.details || {};
     const ownBoard = details.ownBoard || [];
@@ -101,7 +107,7 @@ export const updateAchievementService = async ({ token, payload }) => {
     requestBody.achievementId = achievementId;
   }
 
-  console.log(
+    (
     `Sending ${method} request to ${endpoint} with body:`,
     requestBody
   );
@@ -130,6 +136,9 @@ export const updateAchievementService = async ({ token, payload }) => {
 // call route to config
 export const getPreviewProfileService = async ({ token }) => {
   const response = await fetch(profileRouteGroup.getPreviewProfile(), {
+    next: {
+      tags: ["profile"],
+    },
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -148,8 +157,8 @@ export const getPreviewProfileService = async ({ token }) => {
 
 export const updateProfileImageService = async ({ token, formData }) => {
   const url =profileRouteGroup.updateProfileImgae();
-  ////console.log("url", url);
-  ////console.log("datakakak", formData);
+  ////  ("url", url);
+  ////  ("datakakak", formData);
   const response = await fetch(url,{
     method: "POST",
     headers: {
@@ -163,6 +172,6 @@ export const updateProfileImageService = async ({ token, formData }) => {
   }
 
   const data = await response.json();
-  ////console.log("vit_profile",data)
+  ////  ("vit_profile",data)
   return data;
 };

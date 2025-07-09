@@ -19,7 +19,7 @@ import { checkEmailForClearAction } from "@/action/board.action";
 import DrawerGanttBarFetch from "../Gantt/DrawerGanttBar";
 
 const clearAllCookies = () => {
-  console.log(" Starting to clear all cookies...");
+  //  (" Starting to clear all cookies...");
 
   // Get all cookies and clear them
   document.cookie.split(";").forEach((cookie) => {
@@ -36,9 +36,9 @@ const clearAllCookies = () => {
   try {
     localStorage.clear();
     sessionStorage.clear();
-    console.log(" All cookies and storage cleared successfully");
+    //  (" All cookies and storage cleared successfully");
   } catch (error) {
-    console.warn(" Could not clear storage:", error);
+    //console.warn(" Could not clear storage:", error);
   }
 };
 
@@ -67,7 +67,7 @@ export default function SystemBoard({
     return <NotFound />;
   }
 
-  console.log("feedbackByTaskIds", feedbackByTaskIds);
+  //  ("feedbackByTaskIds", feedbackByTaskIds);
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const email = searchParams.get("email");
@@ -76,18 +76,18 @@ export default function SystemBoard({
   const pathSegments = pathname.split("/");
   const boardIdFromURL = pathSegments[3];
 
-  console.log("Board ID:", boardIdFromURL);
-  console.log("Email from URL:", email);
-  console.log(
-    "Current user email:",
-    currentUserProfile?.user?.email || currentUserProfile?.email
-  );
+  //  ("Board ID:", boardIdFromURL);
+  //  ("Email from URL:", email);
+  //  (
+  //   "Current user email:",
+  //   currentUserProfile?.user?.email || currentUserProfile?.email
+  // );
 
   useEffect(() => {
     const handleEmailCheck = async () => {
       // Check if email exists in URL
       if (!email) {
-        console.log("❌ No email found in URL, no action needed");
+        //  ("❌ No email found in URL, no action needed");
         return;
       }
 
@@ -97,25 +97,25 @@ export default function SystemBoard({
         currentUserProfile?.email ||
         currentUserProfile?.payload?.user?.email;
 
-      console.log("📧 Comparing emails:");
-      console.log("  - URL email:", email);
-      console.log("  - Current user email:", currentUserEmail);
+      //  ("📧 Comparing emails:");
+      //  ("  - URL email:", email);
+      //  ("  - Current user email:", currentUserEmail);
 
       // If emails are the same, do nothing
       if (email === currentUserEmail) {
-        console.log("✅ Email matches current user - no action needed");
-        console.log("🔒 Cookies will remain intact");
+        //  ("✅ Email matches current user - no action needed");
+        //  ("🔒 Cookies will remain intact");
         return;
       }
 
       // If emails are different, proceed with clearing
-      console.log("⚠️ Email is different from current user");
-      console.log("🔍 Checking if URL email exists in database...");
+      //  ("⚠️ Email is different from current user");
+      //  ("🔍 Checking if URL email exists in database...");
 
       try {
         const result = await checkEmailForClearAction(email);
 
-        console.log("📋 Backend response:", result);
+        //  ("📋 Backend response:", result);
 
         // Check if the URL email exists in database
         if (
@@ -124,31 +124,31 @@ export default function SystemBoard({
           result.payload &&
           result.payload.userId
         ) {
-          console.log("✅ URL email user found in database!");
-          console.log("👤 URL email user details:", {
-            userId: result.payload.userId,
-            username: result.payload.username,
-            email: result.payload.email,
-          });
+          // //  ("✅ URL email user found in database!");
+          // //  ("👤 URL email user details:", {
+          //   userId: result.payload.userId,
+          //   username: result.payload.username,
+          //   email: result.payload.email,
+          // });
 
-          console.log(
-            "🧹 Different user detected - clearing cookies and storage..."
-          );
+          //   (
+          //   "🧹 Different user detected - clearing cookies and storage..."
+          // );
           clearAllCookies();
 
-          console.log("🎉 Cookies cleared successfully for different user");
+          //  ("🎉 Cookies cleared successfully for different user");
 
           // Optional: Redirect after clearing
           setTimeout(() => {
-            console.log("🔄 Redirecting to login...");
+            //  ("🔄 Redirecting to login...");
             window.location.href = "/login";
           }, 1500);
         } else {
-          console.log("❌ URL email user not found in database");
-          console.log("🔒 No cookies cleared - user doesn't exist");
+          //  ("❌ URL email user not found in database");
+          //  ("🔒 No cookies cleared - user doesn't exist");
         }
       } catch (error) {
-        console.error("💥 Error checking URL email:", error);
+        //console.error("💥 Error checking URL email:", error);
       }
     };
 
@@ -157,7 +157,7 @@ export default function SystemBoard({
   }, [email, currentUserProfile]); // Run when email or current user changes
 
   const [activeTab, setActiveTab] = useState("kanban");
-  console.log(matchingBoardForNotPM, "roleeeeee");
+  //  (matchingBoardForNotPM, "roleeeeee");
 
   // Get role from matchingBoardForNotPM with priority logic
   const getUserRole = (roles) => {
@@ -185,9 +185,7 @@ export default function SystemBoard({
       ? "ROLE_MANAGER"
       : getUserRole(matchingBoardForNotPM?.role) || user.role || "ROLE_MEMBER";
 
-  console.log("data board", boardData);
-  console.log("data fav", boardData?.payload?.isFavourite);
-  console.log("user role from board:", role);
+
 
   const favBoard = boardData?.payload?.isFavourite;
 
@@ -257,6 +255,7 @@ export default function SystemBoard({
       ),
       content: (
         <KanbanBoard
+          key={`kanban-${boardId}`}
           role={role}
           modal={modalComponents}
           tasks={tasks}
@@ -360,6 +359,7 @@ export default function SystemBoard({
 
       content: (
         <GanttChart
+          key={`gantt-${boardId}`}
           modal={ganttModal}
           ganttbar={ganttbar}
           ganttChartName={ganttChartName}

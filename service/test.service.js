@@ -1,5 +1,5 @@
 "use server";
-console.log("test services must create folders");
+  ("test services must create folders");
 
 import { auth } from "../auth";
 import { testRouteGroup } from "@/routes/testRoute";
@@ -28,7 +28,7 @@ export const testFetchService = async ({ token }) => {
       //  body: JSON.stringify({ email, password }),
     });
     const data = await res.json();
-    console.log("📥 Backend responded with:", data);
+      ("📥 Backend responded with:", data);
 
     return data; // just return the data, don’t redirect here
   } catch (error) {

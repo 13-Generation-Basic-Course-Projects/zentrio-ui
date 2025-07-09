@@ -5,7 +5,7 @@ import { Card, CardHeader, CardBody, Button } from "@heroui/react";
 import { Crown, Shield, User, Circle, UsersRound } from "lucide-react";
 
 const CardMember = ({ members = [], preventUserImage }) => {
-  console.log("Members in CardMember:", members);
+    ("Members in CardMember:", members);
 
   const getRoleIcon = (roles) => {
     if (roles?.includes?.("ROLE_MANAGER") || roles === "ROLE_MANAGER")

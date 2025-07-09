@@ -104,7 +104,7 @@ export default function ModalCreateTask({
       ganttEndDate.getDate()
     );
 
-    console.log(
+      (
       "Today:",
       todayStart,
       "Gantt Start:",

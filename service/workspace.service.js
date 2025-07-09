@@ -97,76 +97,34 @@ export const getWorkspaceByIdService = async (id, token) => {
  * 4. for service Delete workspace by id -> deleteWorkspaceById: (id) => `${apiConfig.baseUrl}/api/v1/workspaces/${id}`,
  */
 export const deleteWorkspaceByIdService = async ({ id, token }) => {
-  //console.log("Delete id service : ", id);
-  try {
-    const url = workspaceRouteGroup.deleteWorkspaceById(id);
-    const res = await fetch(url, {
-      method: "DELETE",
-      headers: {
-        Accept: "*/*",
-        // "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      next: { tags: ["workspaces"] },
-      body: JSON.stringify({ id }),
-    });
-
-    if (!res.ok) {
-      const errorData = await res.json();
-      throw new Error(
-        errorData.message || `Request failed with status ${res.status}`
-      );
-    }
-
-    const data = await res.json();
-    return data;
-  } catch (error) {
-    //console.error("❌ Failed to delete workspace by id:", error.message);
-    throw error;
-  }
+  const url = workspaceRouteGroup.deleteWorkspaceById(id);
+  const res = await fetch(url, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    next: { tags: ["workspaces"] },
+  });
+  const data = await res.json();
+  return data;
 };
 
 /*
  * 5. for service Update workspace by id -> updateWorkspaceById: (id) => `${apiConfig.baseUrl}/workspaces/${id}`,
  */
-export const updateWorkspaceByIdService = async ({
-  id,
-  title,
-  description,
-  token,
-}) => {
-  if (!id) throw new Error("Workspace ID is required in service");
-
+export const updateWorkspaceByIdService = async ({ id, bodyPayload, token }) => {
   const url = workspaceRouteGroup.updateWorkspaceById(id);
-
-  // Prepare payload with only provided fields
-  const bodyPayload = {};
-  if (title !== undefined) bodyPayload.title = title;
-  if (description !== undefined) bodyPayload.description = description;
-
   const res = await fetch(url, {
     method: "PUT",
     headers: {
-      // Accept: "application/json",
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(bodyPayload),
+    next: { tags: ["workspaces"] },
   });
-
-  // Handle non-JSON error responses safely
-  const text = await res.text();
-  let data;
-  try {
-    data = JSON.parse(text);
-  } catch {
-    throw new Error(`Update failed: ${res.status} ${res.statusText}`);
-  }
-
-  if (!res.ok) {
-    throw new Error(data.message || `Update failed: ${res.status}`);
-  }
-
+  const data = await res.json();
   return data;
 };
 
@@ -303,7 +261,7 @@ export const updateBoardByIdService = async ({
   workspaceId,
   token,
 }) => {
-  // //console.log("🔁 Sending update payload in service:", {
+  // //  ("🔁 Sending update payload in service:", {
   //   title,
   //   description,
   //   cover,
@@ -324,6 +282,7 @@ export const updateBoardByIdService = async ({
       cover,
       workspaceId,
     }),
+    next: { tags: ["boards"] },
   });
 
   if (!res.ok) {
@@ -348,8 +307,8 @@ export const updateFavBoardByIdService = async ({
     boardId
   )}?isFavourite=${isFavourite}`;
 
-  //console.log("🔐 Using token in service:", token);
-  //console.log("🌐 Final request URL:", url);
+  //  ("🔐 Using token in service:", token);
+  //  ("🌐 Final request URL:", url);
 
   try {
     const res = await fetch(url, {
@@ -357,6 +316,7 @@ export const updateFavBoardByIdService = async ({
       headers: {
         Authorization: `Bearer ${token}`,
       },
+      next: { tags: ["boards"] },
     });
 
     // if (!res.ok) {
@@ -424,7 +384,7 @@ export const createBoardService = async ({
     if (cover) {
       formData.append("cover", cover);
     }
-    //console.log("FormData contents in service:", formData);
+    //  ("FormData contents in service:", formData);
 
     const res = await fetch(url, {
       next: {
@@ -632,7 +592,7 @@ export const getBoardsByWorkspaceIdService = async ({ workspaceId, token }) => {
 
   try {
     const url = boardRouteGroup.getBoardsByWorkspaceId(workspaceId);
-    //console.log("🌐 Fetching boards from:", url);
+    //  ("🌐 Fetching boards from:", url);
 
     const res = await fetch(url, {
       method: "GET",
@@ -710,7 +670,7 @@ export const getBoardsForCurrentUserService = async (token) => {
  * 16. Deleted board by id and workspace id
  */
 export const deleteBoardService = async ({ id, workspaceId, token }) => {
-  //console.log("WorkspaceId in delete board service: ", workspaceId);
+  //  ("WorkspaceId in delete board service: ", workspaceId);
   try {
     const url = boardRouteGroup.deleteBoard(id, workspaceId);
 
@@ -738,10 +698,10 @@ export const deleteBoardService = async ({ id, workspaceId, token }) => {
  * get all  favorite
  */
 export const getFavoriteBoardService = async (userId, token) => {
-  //console.log("service id", userId);
+  //  ("service id", userId);
   const url = boardRouteGroup.getFavoriteBoard(userId);
   try {
-    //console.log(url);
+    //  (url);
     const res = await fetch(url, {
       method: "GET",
       headers: {
@@ -750,9 +710,9 @@ export const getFavoriteBoardService = async (userId, token) => {
       },
     });
     const data = await res.json();
-    //console.log("📥 Backend responded with favboard:", data);
+    //  ("📥 Backend responded with favboard:", data);
 
-    return data; // just return the data, don’t redirect here
+    return data; // just return the data, don't redirect here
   } catch (error) {
     //console.error("bug", error.message);
     throw error;
@@ -765,7 +725,7 @@ export const getFavoriteBoardService = async (userId, token) => {
 export const getOtherWorkSpaceJoinedService = async (token) => {
   const url = workspaceRouteGroup.getOtherWorkSpaceJoined();
   try {
-    //console.log(url);
+    //  (url);
     const res = await fetch(url, {
       method: "GET",
       headers: {
@@ -774,9 +734,9 @@ export const getOtherWorkSpaceJoinedService = async (token) => {
       },
     });
     const data = await res.json();
-    console.log("📥 Backend responded with other", data);
+      ("📥 Backend responded with other", data);
 
-    return data; // just return the data, don’t redirect here
+    return data; // just return the data, don't redirect here
   } catch (error) {
     //console.error("bug", error.message);
     throw error;
@@ -790,7 +750,7 @@ export const getOtherWorkSpaceJoinedService = async (token) => {
 export const getMemberByBoardIdService = async ({ boardId, token }) => {
   const url = workspaceRouteGroup.getMemeberByBoardId(boardId);
   try {
-    //console.log(url);
+    //  (url);
     const res = await fetch(url, {
       method: "GET",
       headers: {
@@ -799,9 +759,9 @@ export const getMemberByBoardIdService = async ({ boardId, token }) => {
       },
     });
     const data = await res.json();
-    //console.log("📥 Backend responded with member by board id:", data);
+    //  ("📥 Backend responded with member by board id:", data);
 
-    return data; // just return the data, don’t redirect here
+    return data; // just return the data, don't redirect here
   } catch (error) {
     //console.error("bug", error.message);
     throw error;

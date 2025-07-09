@@ -13,16 +13,16 @@ export default async function WorkspaceArea() {
    * get board favorite
    */
   const getUserDetials = await getPreviewProfileAction();
-  //  console.log("getPreviewProfileAction", getUserDetials);
+  //    ("getPreviewProfileAction", getUserDetials);
   const myUserId = getUserDetials?.payload?.userId;
   const imageUser = getUserDetials?.payload?.profileImage;
   const noImage = preventImage.noProfile;
   const preventUserImage = imageUser == null ? noImage : imageUser;
-  console.log("what inside layout and userprofile", imageUser);
+    ("what inside layout and userprofile", imageUser);
 
   const myFavBoard = await getFavoriteBoardAction(myUserId);
-  console.log("getFavoriteBoardAction in favorite", myFavBoard);
-  console.log("myUserId", myUserId);
+    ("getFavoriteBoardAction in favorite", myFavBoard);
+    ("myUserId", myUserId);
 
   let allMembers = [];
 
@@ -30,10 +30,10 @@ export default async function WorkspaceArea() {
     const boardIds = myFavBoard?.payload
       .filter((board) => board.boardId)
       .map((board) => board.boardId);
-    console.log("Board IDs in page workspace:", boardIds);
+      ("Board IDs in page workspace:", boardIds);
 
     if (boardIds.length === 0) {
-      console.log("No valid board IDs found.");
+        ("No valid board IDs found.");
     } else {
       // Fetch members sequentially
       for (const boardId of boardIds) {
@@ -57,10 +57,10 @@ export default async function WorkspaceArea() {
         return unique;
       }, []);
 
-      console.log("Members in page fav workspace:", allMembers);
+        ("Members in page fav workspace:", allMembers);
     }
   } else {
-    console.log("No boards found in workspace.");
+      ("No boards found in workspace.");
   }
 
   let memberMap = {};
@@ -81,7 +81,7 @@ export default async function WorkspaceArea() {
       }
     }
 
-    console.log("Final board members map:", memberMap);
+      ("Final board members map:", memberMap);
   }
 
   return (

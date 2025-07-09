@@ -25,7 +25,7 @@ export default async function BoardLayout({ children, params }) {
   // const tokenFromGoogle = "ya29.a0AW4XtxjmO36PU4vEhXhB6gyXpb_Um9wMecy153P4YRr7lbQaC5zR0qVTHvsNpKsmcSrt9ofkJ4633QrkEglksfLYbUF_YKfQWVpRgULGi4RTN_pa-J-8EQWOCkcjanCB6EkpvRisb_zSI5PcSOOTmXjmwG0Heh9HS42cPFlrygaCgYKARASARcSFQHGX2MiTyWDkwYvZZfQWcsybwPyeA0177";
   const tokenFromGoogle = token;
 
-  console.log("debug", tokenFromGoogle);
+    ("debug", tokenFromGoogle);
   //pf
   /*
    * This function is the main entry point for the profile page.
@@ -36,7 +36,7 @@ export default async function BoardLayout({ children, params }) {
   const preventUserImage = imageUser == null ? noImage : imageUser;
 
   const { id } = params;
-  console.log("this is the boardid", boardId);
+    ("this is the boardid", boardId);
   return (
     <div>
       <DocumentAutherize

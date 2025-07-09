@@ -3,7 +3,7 @@ import ProfileComponent from "./ProfileComponent";
 
 export default function ProfileTab({ currentUserProfile, userAchievement }) {
 
-  console.log("user achievement", userAchievement);
+    ("user achievement", userAchievement);
 
   return (
     <div className="flex flex-col min-h-screen">

@@ -106,7 +106,7 @@ export default function Memberpage({
   const [selectedUserId, setSelectedUserId] = useState(null);
 
   const openModal = (id) => {
-    console.log("Opening modal for userId:", id);
+      ("Opening modal for userId:", id);
     setSelectedUserId(id);
     setIsModalOpen(true);
   };
@@ -174,8 +174,8 @@ const filteredMembers = members
   //prevent pf
   const preventProfile = preventImage.noProfile;
 
-  console.log("board id in memberpage", boardId);
-  console.log("currentUserProfile", currentUserProfile);
+    ("board id in memberpage", boardId);
+    ("currentUserProfile", currentUserProfile);
   // checkrole
   // Function to find the role for a given boardId
   const findRoleByBoardId = (boardId, userProfile) => {
@@ -203,7 +203,7 @@ const filteredMembers = members
     currentUserProfile
   );
 
-  console.log(
+    (
     "role for current user depend on boardid",
     userRoleBaseOnCurrentUser
   );

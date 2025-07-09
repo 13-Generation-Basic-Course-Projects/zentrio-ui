@@ -10,6 +10,7 @@ import CommentIcon from "@/assets/commentIcon.svg";
 import Image from "next/image";
 import { chageStatusCheckListWhenHaveTeamLeaderAction } from "@/action/board.action";
 import { useState } from "react";
+import TagStatusChecklist from "../tag/TagStatus";
 
 export const CardCheckList = ({
   title,
@@ -29,7 +30,7 @@ export const CardCheckList = ({
 }) => {
   const finishedAtRaw = finishedAt;
   const FormattedFinishDate = finishedAtRaw.split("T")[0];
-  console.log("imageChecklist", member);
+    ("imageChecklist", member);
   const [imageLoading, setImageLoading] = useState(true);
   const [imageError, setImageError] = useState(false);
 
@@ -96,19 +97,9 @@ export const CardCheckList = ({
               )}
             </div>
 
-            <p
-              className={`${
-                status === "In Progress"
-                  ? "text-yellow-500"
-                  : status === "Completed"
-                  ? "text-green-500"
-                  : status === "Overdue"
-                  ? "text-red-500"
-                  : "text-black"
-              }`}
-            >
-              {status}
-            </p>
+          
+
+            <TagStatusChecklist status={status} />
           </div>
         </CardHeader>
         {/* Body */}

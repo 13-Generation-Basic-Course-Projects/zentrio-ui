@@ -14,8 +14,8 @@ export default function DocumentAutherize({
   workspaceId,
   docIdPage,
 }) {
-  console.log("object workId", workspaceId);
-  console.log("google", tokenFromGoogle);
+    ("object workId", workspaceId);
+    ("google", tokenFromGoogle);
   return (
     <>
       <DocumentLayout

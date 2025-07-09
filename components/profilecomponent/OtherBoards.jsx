@@ -3,8 +3,8 @@ import { IconEllipsisVertical } from "../icon/everyicon";
 
 export default function OtherBoards({ currentUserProfile, userAchievement }) {
   const otherBoards = currentUserProfile?.payload?.joinedBoards || [];
-  console.log("otherBoards", otherBoards);
-  console.log("my data", currentUserProfile);
+    ("otherBoards", otherBoards);
+    ("my data", currentUserProfile);
   // const boards = [
   //   { role: "Owner", color: "bg-gray-300", date: "01-Jan-2025 to 01-May-2025" },
   //   {

@@ -120,7 +120,7 @@ export default function OtherProfileLayout({
   // Prevent profile fallback
   const preventProfile = preventImage.noProfile;
 
-  console.log("detail member in specific", MemberDetails?.payload);
+    ("detail member in specific", MemberDetails?.payload);
 
   return (
     <>

@@ -21,6 +21,6 @@ export const getReportVersionByReportIdAction = async ({ reportId }) => {
     const userToken = await Token();
     const zentrioToken = userToken.Credential;
     const result = await getReportVersionByReportIdService({ reportId, zentrioToken });
-    console.log("Version: ", result)
+      ("Version: ", result)
     return result;
 }

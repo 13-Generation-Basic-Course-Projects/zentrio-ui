@@ -31,17 +31,17 @@ export default async function WorkspaceSpcific({ params }) {
     const boardIds = getBoardByWorkspaceId.payload
       .filter((board) => board.boardId) // Ensure valid boardId
       .map((board) => board.boardId);
-    console.log("Board IDs in page workspace:", boardIds);
+      ("Board IDs in page workspace:", boardIds);
 
     if (boardIds.length === 0) {
-      console.log("No valid board IDs found.");
+        ("No valid board IDs found.");
       return;
     }
     const memberPromises = boardIds.map(
       (boardId) => getMemeberByBoardIdAction(boardId) 
     );
     const membersResponses = await Promise.allSettled(memberPromises);
-    console.log("Members Response:", membersResponses);
+      ("Members Response:", membersResponses);
     
     allMembers = membersResponses
       .filter((result) => result.status === "fulfilled")
@@ -56,9 +56,9 @@ export default async function WorkspaceSpcific({ params }) {
         return unique;
       }, []);
 
-    console.log("Members in page workspace:", allMembers);
+      ("Members in page workspace:", allMembers);
   } else {
-    console.log("No boards found in workspace.");
+      ("No boards found in workspace.");
   } */
     let allMembers = [];
 
@@ -69,10 +69,10 @@ export default async function WorkspaceSpcific({ params }) {
       const boardIds = getBoardByWorkspaceId.payload
         .filter((board) => board.boardId)
         .map((board) => board.boardId);
-      console.log("Board IDs in page workspace:", boardIds);
+        ("Board IDs in page workspace:", boardIds);
 
       if (boardIds.length === 0) {
-        console.log("No valid board IDs found.");
+          ("No valid board IDs found.");
       } else {
         // Fetch members sequentially
         for (const boardId of boardIds) {
@@ -99,10 +99,10 @@ export default async function WorkspaceSpcific({ params }) {
           return unique;
         }, []);
 
-        console.log("Members in page workspace:", allMembers);
+          ("Members in page workspace:", allMembers);
       }
     } else {
-      console.log("No boards found in workspace.");
+        ("No boards found in workspace.");
     }
    
    

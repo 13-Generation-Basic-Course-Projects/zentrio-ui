@@ -129,9 +129,9 @@ export default function ModalOptionWorkspace({
 
   const [deleteType, setDeleteType] = useState(null);
 
-  console.log("workspaceTitle:", workspaceTitle);
-  console.log("workspaceUserTitle test:", workspaceUserTitle);
-  console.log("workspaceUserId test:", workspaceUserId);
+    ("workspaceTitle:", workspaceTitle);
+    ("workspaceUserTitle test:", workspaceUserTitle);
+    ("workspaceUserId test:", workspaceUserId);
   return (
     <>
       <Dropdown>

@@ -75,13 +75,13 @@ export default function CardTCommentCalender({
     }
 
     try {
-      console.log("CardTCommentCalender - Fetching notes for Task ID:", taskId);
+        ("CardTCommentCalender - Fetching notes for Task ID:", taskId);
 
       const response = await getAllNoteInCalendarAction(taskId);
       const newNotes = response?.payload || [];
 
       setNotes(newNotes);
-      console.log(
+        (
         "CardTCommentCalender - Notes fetched successfully:",
         newNotes
       );
@@ -133,7 +133,7 @@ export default function CardTCommentCalender({
           taskId: noteData.taskId,
         });
 
-        console.log("Note updated successfully:", result);
+          ("Note updated successfully:", result);
 
         // Optimized local state update
         setNotes((prevNotes) =>
@@ -165,10 +165,10 @@ export default function CardTCommentCalender({
       }
 
       try {
-        console.log("Deleting note:", { calendarId, taskId });
+          ("Deleting note:", { calendarId, taskId });
 
         const result = await deleteNoteInCalendarAction(calendarId, taskId);
-        console.log("Note deleted successfully:", result);
+          ("Note deleted successfully:", result);
 
         // Optimistically remove from local state instead of refetching
         setNotes((prevNotes) =>

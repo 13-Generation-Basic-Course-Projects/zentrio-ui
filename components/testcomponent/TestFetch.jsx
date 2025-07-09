@@ -1,7 +1,7 @@
 import React from "react";
 
 export default function TestFetch({ dataProp }) {
-  console.log("aaaa", dataProp);
+    ("aaaa", dataProp);
 
   return (
     <div className="p-10 mx-auto">

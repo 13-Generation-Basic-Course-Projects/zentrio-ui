@@ -88,7 +88,7 @@ export const updateFileNameByFileIdService = async ({
       newName,
     });
 
-    console.log("url: ", url);
+      ("url: ", url);
 
     const res = await fetch(url, {
       method: "PATCH",
@@ -166,6 +166,7 @@ export const uploadDocumentToFolderServie = async ({
         Authorization: `Bearer ${token}`,
       },
       body: formData,
+      next: { tags: ["documents"] },
     });
 
     if (!res.ok) {

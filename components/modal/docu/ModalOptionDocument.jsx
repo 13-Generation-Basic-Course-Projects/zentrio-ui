@@ -190,7 +190,7 @@ export default function ModalOptionDocument({
         accessToken
       );
 
-      console.log("Downloading file:", fileName);
+        ("Downloading file:", fileName);
 
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");

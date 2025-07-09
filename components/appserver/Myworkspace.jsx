@@ -23,8 +23,8 @@ export default function Myworkspace({
   updateFavAction,
   memberData,
 }) {
-  console.log("Workspace id in myworkspace: ", workspaceId);
-  console.log("Data in my workspace: ", memberData);
+    ("Workspace id in myworkspace: ", workspaceId);
+    ("Data in my workspace: ", memberData);
 
   return (
     <>
@@ -125,9 +125,9 @@ export default function Myworkspace({
                         image = "bg-gray-200";
                       }
 
-                      console.log("Board cover value:", board.cover);
-                      console.log("Final image value for board:", image);
-                      console.log("Id board in my workspace:", board.boardId);
+                        ("Board cover value:", board.cover);
+                        ("Final image value for board:", image);
+                        ("Id board in my workspace:", board.boardId);
 
                       return (
                         <CardBoard

@@ -17,11 +17,11 @@ export default async function Member({ params }) {
 
   const boardData= await getBoardByBoardIdAction(boardId);
   const boardName= boardData?.payload?.title;
-  console.log("Board ID in app:", boardName);
+    ("Board ID in app:", boardName);
 
 
   const boardMember = await getBoardMemberAction(boardId);
-  console.log("Fetched board members:", boardMember);
+    ("Fetched board members:", boardMember);
   //pf
   /*
    * This function is the main entry point for the profile page.
@@ -35,7 +35,7 @@ export default async function Member({ params }) {
    */
   //workspace other
   const getWorKSpaceJoined = await getOtherWorkSpaceJoinedAction();
-  console.log("getWorKSpaceJoined other", getWorKSpaceJoined);
+    ("getWorKSpaceJoined other", getWorKSpaceJoined);
   // Search through all workspaces and their otherBoards to find the matching board
   let matchingBoard = null;
   let matchingWorkspace = null;
@@ -52,19 +52,19 @@ export default async function Member({ params }) {
     }
   }
 
-  console.log("matching board:", matchingBoard);
-  console.log("matching workspace:", matchingWorkspace);
+    ("matching board:", matchingBoard);
+    ("matching workspace:", matchingWorkspace);
 
   if (!matchingBoard) {
-    console.log("Board not found with ID:", boardId);
+      ("Board not found with ID:", boardId);
   } else {
-    console.log("Found board:", matchingBoard);
-    console.log("Board belongs to workspace:", matchingWorkspace.title);
+      ("Found board:", matchingBoard);
+      ("Board belongs to workspace:", matchingWorkspace.title);
   }
   const matchingBoardForNotPM = matchingBoard;
   const membersResponse = await getMemberByBoardIdAction({ boardId });
   const allMemberInBoard = membersResponse?.payload || [];
-  console.log("vvvv", allMemberInBoard);
+    ("vvvv", allMemberInBoard);
 
   //curent user
 

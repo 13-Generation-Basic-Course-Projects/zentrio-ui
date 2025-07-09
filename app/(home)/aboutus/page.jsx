@@ -43,31 +43,34 @@ export default function AboutUs() {
   return (
     <div className="  gap-4 p-4 min-h-screen ">
       <div className=" ">
-        <section className="relative flex justify-center items-center gap-4 h-[740px]  ">
-          <div className="grid grid-cols-2">
+        <section className="relative flex justify-center items-center gap-4 h-[740px] max-[428px]:mt-[365px] max-[428px]:h-[10px]">
+          <div className="grid grid-cols-1 lg:grid-cols-2 w-full max-w-[1440px] gap-10 max-[501px]:px-10 ">
             <div className="imgBg1 flex items-start text-title text-center">
-              <div className="z-10 text-left w-[90%] p-5 flex flex-col gap-[95px] scale-[0.9] pl-8 pt-8">
-                <div className="flex flex-col gap-[30px]">
-                  <h1 className="text-h3 md:text-h2 lg:text-h1 font-bold mb-4">
-                    <span className="text-[64px]">We are from</span> <br />
-                    Korean Software HRD Center
+              <div className="z-10 text-left w-[90%] p-3 sm:p-5 flex flex-col gap-[40px] sm:gap-[60px] lg:gap-[95px] scale-[0.8] sm:scale-[0.9] lg:scale-[0.9] pl-4 sm:pl-8 pt-4 sm:pt-8">
+                <div className="flex flex-col gap-[15px] sm:gap-[20px] lg:gap-[30px]">
+                  <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-[52px] font-bold mb-2 sm:mb-4 leading-tight">
+                    <span className="max-[428px]:text-[18px]"s>We are from</span> <br />
+                    <span className="text-primary lg:text-[45px]">
+                      Korean Software HRD Center
+                    </span>
                   </h1>
-                  <div className="flex flex-col gap-[10px]">
-                    <p className="text-[24px] font-medium">
+
+                  <div className="flex flex-col gap-[5px] sm:gap-[10px]">
+                    <p className="text-base sm:text-lg md:text-xl lg:text-[24px] font-medium">
                       13<sup>th</sup> Generation Student Basic Course.
                     </p>
-                    <p className="text-[16px] text-description text-medium">
-                      We’re really confident with this project that can bring
+                    <p className="text-sm sm:text-base lg:text-[16px] text-description text-medium">
+                      We're really confident with this project that can bring
                       the best tool for software development.
                     </p>
                   </div>
                 </div>
                 <Button
-                  className="w-[168.06px] h-[50.06px] text-btn-sm text-[#FFFFFF] rounded-small"
+                  className="w-[140px] sm:w-[168.06px] h-[40px] sm:h-[50.06px] text-btn-sm text-[#FFFFFF] rounded-small"
                   type="button"
                 >
                   <Link href="/login">
-                    <span className="font-semibold text-body tracking-wide">
+                    <span className="font-semibold text-sm sm:text-body tracking-wide">
                       Get Started
                     </span>
                   </Link>
@@ -88,16 +91,20 @@ export default function AboutUs() {
               </div>
             </div>
 
-            <div className="imgBg2 flex items-start text-title text-center p-8">
-              <div className="z-10 border-2 rounded-large p-2  bg-bgColor/40 bg-blur backdrop-blur-md text-left ml-10 mt-14 pl-8 pr-14 flex flex-col gap-3">
+            <div className="imgBg2 flex items-start text-title text-center p-4 sm:p-8">
+              <div className="z-10 border-2 rounded-large p-2 bg-bgColor/40 bg-blur backdrop-blur-md text-left ml-4 sm:ml-10 mt-8 sm:mt-14 pl-4 sm:pl-8 pr-8 sm:pr-14 flex flex-col gap-3">
                 <Link href="https://kshrd.com.kh/" target="_blank">
-                  <p className="text-body text-blueActive font-semibold tracking-wide">
+                  <p className="text-sm sm:text-body text-blueActive font-semibold tracking-wide">
                     Our school
                   </p>
                 </Link>
                 <p className="text-primary flex flex-col">
-                  <span className="font-semibold text-h1">Korean Software</span>
-                  <span className="font-semibold text-h2">HRD Center</span>
+                  <span className="font-semibold text-lg sm:text-xl lg:text-h1">
+                    Korean Software
+                  </span>
+                  <span className="font-semibold text-base sm:text-lg lg:text-h2">
+                    HRD Center
+                  </span>
                 </p>
               </div>
               <img
@@ -107,19 +114,20 @@ export default function AboutUs() {
               />
             </div>
           </div>
-          <div className="absolute bottom-0 ">
+          <div className="absolute bottom-0 max-[428px]:hidden">
             <RoundText1 />
           </div>
         </section>
 
-        <section className="grid grid-row-1 sm:grid-cols-2 gap-4 ">
-          <div className="relative h-auto  overflow-hidden p-6 sm:p-10 flex  items-center right-0 justify-center ">
-            <div className="flex flex-col justify-center space-y-6 max-w-xl right-1">
-              <p className="text-h1 font-bold text-gradient text-left">
+        <section className="grid grid-cols-1 sm:grid-cols-2 gap-6 px-4 py-10 max-[1023px]:mt-[350px] max-[895px]:mt-[400px] max-[753px]:mt-[420px] max-[700px]:mt-[460px] ">
+          {/* Left Text Section */}
+          <div className="relative h-auto overflow-hidden p-4 sm:p-10 flex items-center justify-center">
+            <div className="flex flex-col justify-center space-y-6 w-full max-w-xl">
+              <p className="font-bold text-gradient text-left text-[28px] sm:text-[36px] md:text-[40px] lg:text-[48px]">
                 ZenTrio Founder
               </p>
 
-              <p className="text-base text-h4 leading-relaxed text-left w-[524px]">
+              <p className="text-base sm:text-lg md:text-[18px] leading-relaxed text-left max-w-full">
                 Jump in and let’s see how ZenTrio can make your workday feel
                 lighter. Let’s simplify your projects and get stuff done
                 together.
@@ -127,61 +135,71 @@ export default function AboutUs() {
             </div>
           </div>
 
-          {/* Instructor */}
-          <div className="w-[583.8px] h-full  scale-[1.2] rounded-xl p-10">
-            <div className="grid grid-cols-2 grid-rows-4 gap-4 h-full w-full relative">
-              <div className="absolute left-0 top-1/2 -translate-y-1/2 ml-0 z-10 scale-[0.8]">
+          {/* Right Instructor Section */}
+          <div className="w-full h-full rounded-xl p-4 sm:p-6 md:p-10 max-[428px]:-translate-x-[18px]">
+            <div className="grid grid-cols-2 grid-rows-4 gap-4 relative w-full max-w-full">
+              {/* RoundText3 SVG */}
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 z-10 scale-[0.8] sm:scale-[0.8] md:scale-[0.9]">
                 <RoundText3 />
               </div>
+
+              {/* Teacher 1 */}
               <div className="col-start-1 row-start-2 self-end place-self-end">
                 <Image
                   src={TeacherAtHRD}
                   alt=""
-                  className="w-44 h-fit object-cover rounded-2xl"
+                  className="w-32 sm:w-40 h-auto object-cover rounded-2xl"
                 />
               </div>
+
+              {/* Teacher 2 */}
               <div className="row-span-2 col-start-2 row-start-1 self-end relative">
                 <Image
                   src={TeacherNak}
                   alt=""
-                  className="rounded-2xl h-[217px] w-fit mb-[12%] shadow-sm"
+                  className="rounded-2xl h-[180px] sm:h-[217px] w-auto mb-[12%] shadow-sm"
                 />
-                <div className="absolute left-[-5%] bottom-[-5%] w-[242px] h-[83px] scale-[0.8] bg-bgColor/40 bg-blur backdrop-blur-sm rounded-[20px] flex flex-col justify-center items-center">
-                  <p className="text-center text-[24px] font-semibold text-bgColor">
+                <div className="absolute  bottom-[-5%] w-[200px] sm:w-[242px] h-[70px] sm:h-[83px] bg-bgColor/40 backdrop-blur-sm rounded-[20px] flex flex-col justify-center items-center scale-[0.9] max-[428px]:-left-[5px] max-[428px]:w-[170px] -left-[10.7px]">
+                  <p className="text-center text-[20px] sm:text-[24px] font-semibold text-bgColor max-[428px]:text-[16px]">
                     Kheng Sovannak
                   </p>
-                  <p className="text-center text-[18px] text-primary">
+                  <p className="text-center text-[16px] sm:text-[18px] text-primary">
                     IT Instructor
                   </p>
                 </div>
               </div>
+
+              {/* Teacher 3 */}
               <div className="row-span-2 col-start-2 row-start-3 relative">
                 <Image
                   src={TeacherDara}
                   alt=""
-                  className="rounded-3xl w-[218px] h-fit"
+                  className="rounded-3xl w-[180px] sm:w-[218px] h-auto"
                 />
-                <div className="absolute left-[13%] top-[30%] w-[152px] h-[83px] scale-[0.9] bg-bgColor/40 bg-blur backdrop-blur-sm rounded-[20px] flex flex-col justify-center items-center shadow-sm">
-                  <p className="text-center text-[24px] font-semibold text-bgColor">
+                <div className="absolute left-[14%] top-[30%] w-[140px] sm:w-[152px] h-[70px] sm:h-[83px] bg-bgColor/40 backdrop-blur-sm rounded-[20px] flex flex-col justify-center items-center shadow-sm max-[428px]:w-[140px] max-[428px]:-translate-x-[8.7px]">
+                  <p className="text-center text-[20px] sm:text-[24px] font-semibold text-bgColor max-[428px]:text-[16px]">
                     Tan Dara
                   </p>
-                  <p className="text-center text-[18px] text-primary">
+                  <p className="text-center text-[16px] sm:text-[18px] text-primary">
                     IT Instructor
                   </p>
                 </div>
               </div>
-              <div className="col-start-1 row-start-3 place-items-end ">
+
+              {/* HRD Logo */}
+              <div className="col-start-1 row-start-3 place-self-end">
                 <Image
                   src={LogoHRD}
                   alt=""
-                  className="rounded-2xl w-44 h-fit object-cover shadow-sm"
+                  className="rounded-2xl w-32 sm:w-44 h-auto object-cover shadow-sm"
                 />
               </div>
             </div>
           </div>
         </section>
+
         {/* feature */}
-        <section className="grid grid-cols-1 md:grid-cols-2 gap-6 px-4 py-10 relative z-10">
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-6 px-4 py-10 relative z-10  max-[428px]:-mt-[100px]">
           {/* Grid of Feature Cards */}
           <div className="grid grid-cols-2 gap-6 relative">
             {[
@@ -241,11 +259,13 @@ export default function AboutUs() {
                     alt="icon"
                     className="object-contain"
                   />
-                  <h3 className="text-xl font-semibold uppercase text-gradient">
+                  <h3 className="text-xl font-semibold uppercase text-gradient max-[428px]:hidden">
                     {card.title}
                   </h3>
                 </div>
-                <p className="mt-6 text-sm text-gradient">{card.desc}</p>
+                <p className="mt-6 text-sm text-gradient max-[428px]:hidden">
+                  {card.desc}
+                </p>
               </div>
             ))}
 
@@ -258,7 +278,7 @@ export default function AboutUs() {
           {/* Right Side Text Content */}
           <div className="flex items-center justify-center px-4">
             <div className="flex flex-col justify-center items-start space-y-6 max-w-xl ">
-              <p className="text-h1 font-bold text-gradient text-left">
+              <p className=" font-bold text-gradient text-left text-[28px] sm:text-[36px] md:text-[40px] lg:text-[48px]">
                 Effortless project management for teams.
               </p>
               <p className="text-base text-h4 leading-relaxed  text-left">
@@ -274,7 +294,7 @@ export default function AboutUs() {
           <div className="relative flex justify-center">
             <div className="flex flex-col justify-center items-start space-y-6 max-w-xl relative">
               {/* bg all logo */}
-              <div className="w-[1308px] h-[809px] absolute -z-50">
+              <div className="w-[1308px] h-[809px] absolute -z-50 max-[428px]:hidden">
                 <svg
                   width="1064"
                   height="544"
@@ -867,16 +887,16 @@ export default function AboutUs() {
                   </defs>
                 </svg>
               </div>
-              <p className="text-h1 font-bold text-gradient text-left">
+              <p className="font-bold text-gradient text-left max-[428px]:px-[33px] text-[28px] sm:text-[36px] md:text-[40px] lg:text-[48px] max-[428px]:-mb-[30px]">
                 “ ZenTrio turns management into progress. “
               </p>
-              <p className="text-gradient text-h1 text-left">
+              <p className="text-gradient text-left max-[428px]:px-[33px] text-[28px] sm:text-[36px] md:text-[40px] lg:text-[48px] max-[428px]:-mb-[170px]">
                 PVH class 안녕하세요
               </p>
-              <p className="text-base text-h4 leading-relaxed uppercase text-left">
+              <p className="text-base leading-relaxed uppercase text-left max-[428px]:px-[33px] text-[28px] sm:text-[36px] md:text-[40px] lg:text-[48px]">
                 ZenTrio Sponsored
               </p>
-              <div className="slideshow-container">
+              <div className="slideshow-container max-[428px]:-left-[50px] xl:-left-[100px]">
                 <div className="slideshow">
                   <div className="image-slide">
                     <img
@@ -902,10 +922,10 @@ export default function AboutUs() {
             </div>
           </div>
 
-          <div className="flex justify-center items-center ">
-            <div className="grid grid-cols-4  text-white text-sm text-center font-bold leading-6  ">
+          <div className="flex justify-center items-center max-[428px]:px-[33px]">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 text-white text-sm text-center font-bold leading-6">
               {/* 1 */}
-              <div className="box-content border-4 rounded-full bg-black overflow-hidden group auto-rows-auto relative">
+              <div className="box-content rounded-full overflow-hidden group auto-rows-auto relative max-[428px]:w-[250px] max-[428px]:left-[43px]">
                 <Image
                   src={fong}
                   alt="Example"
@@ -1027,7 +1047,7 @@ export default function AboutUs() {
               </div>
               {/* 2 */}
               <div className="flex flex-col space-y-8 justify-center items-center col-span-2  auto-rows-auto">
-                <div className="relative box-content w-[200px] h-[200px]  rounded-full overflow-hidden group mr-8 bg-indigo-300">
+                <div className="relative box-content w-[200px] h-[200px] rounded-full overflow-hidden group mr-8 bg-indigo-300 max-[428px]:w-[250px] max-[428px]:h-[250px] max-[428px]:left-[24px]">
                   <Image
                     src={minh}
                     alt="Circular"
@@ -1148,7 +1168,7 @@ export default function AboutUs() {
                 </div>
                 {/* 3 */}
                 <div className="relative box-content w-[251px] h-[180px] rounded-full overflow-hidden group">
-                  <div className="relative h-[300px] overflow-hidden rounded-lg group col-span-3 ">
+                  <div className="relative h-[300px] overflow-hidden rounded-lg group col-span-3 max-[428px]:w-[300px] max-[428px]:h-[300px]">
                     <Image
                       src={senghun}
                       alt="Profile pic"
@@ -1271,7 +1291,7 @@ export default function AboutUs() {
                 </div>
               </div>
               {/* 4 */}
-              <div className="relative box-content w-[180px] rounded-tl-[100px] rounded-bl-[150px] rounded-tr-[50px] rounded-br-[50px] overflow-hidden group   auto-rows-auto">
+              <div className="relative box-content w-[180px] rounded-tl-[100px] rounded-bl-[150px] rounded-tr-[50px] rounded-br-[50px] overflow-hidden group  auto-rows-auto ">
                 <Image
                   src={fanau}
                   alt="Example"
@@ -1391,7 +1411,7 @@ export default function AboutUs() {
                 </div>
               </div>
               {/* 5 */}
-              <div className="flex flex-row col-span-1  justify-center items-center auto-rows-auto">
+              <div className="flex flex-row col-span-1  justify-center items-center auto-rows-auto ">
                 <div className="relative box-content w-[180px] rounded-full rounded-br-none overflow-hidden group auto-rows-auto">
                   <Image
                     src={theara}
@@ -1638,7 +1658,7 @@ export default function AboutUs() {
 
               {/* 7 */}
               <div className="col-span-1">
-                <div className="relative box-content w-[161px]  h-[344px]   rounded-full overflow-hidden group ">
+                <div className="relative box-content w-[161px]  h-[344px]   rounded-full overflow-hidden group max-[428px]:left-[70px] max-[428px]:w-[200px] max-[428px]:h-[400px]">
                   <Image
                     src={visa}
                     alt="Example"
@@ -1759,7 +1779,7 @@ export default function AboutUs() {
                 </div>
               </div>
               {/* 4 */}
-              <div className="relative box-content col-span-2 w-[300px] h-[150px] rounded-full rounded-br-none overflow-hidden group">
+              <div className="relative box-content col-span-2 w-[300px] h-[150px] rounded-full rounded-br-none overflow-hidden group max-[428px]:left-[18px]">
                 <Image
                   src={leap}
                   alt="Example"
@@ -1879,7 +1899,6 @@ export default function AboutUs() {
                 </div>
               </div>
               {/* 5 */}
-
               <div className="relative col-span-2  h-[150px]  w-full rounded-full overflow-hidden group">
                 <Image
                   src={vit}
@@ -2004,24 +2023,25 @@ export default function AboutUs() {
           </div>
         </section>
 
-        <section className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-20">
-          <div className="text-white p-4 rounded col-span-2">
+        <section className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-20 px-4  ">
+          <div className="text-white p-2 sm:p-4 col-span-2">
             <div
-              className="relative w-full h-[400px] sm:h-[450px] md:h-[500px] lg:h-[515px] bg-center bg-cover rounded-[24px]"
+              className="relative w-full h-[320px] sm:h-[400px] md:h-[500px] lg:h-[515px] bg-center bg-cover rounded-[20px] sm:rounded-[24px]"
               style={{ backgroundImage: `url(${aboutus5.src})` }}
             >
-              <div className="absolute w-full h-full flex items-center p-5">
-                <div className="p-4 sm:p-6 md:p-10 max-w-xl space-y-6">
-                  <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-[50.6px] font-bold text-[#F3F7FB]">
+              <div className="absolute w-full h-full flex items-center p-4 sm:p-6 md:p-10">
+                <div className="space-y-4 sm:space-y-6 md:space-y-8 max-w-xl">
+                  <h2 className="text-xl sm:text-3xl md:text-4xl lg:text-[50.6px] font-bold text-[#F3F7FB] leading-tight">
                     Ready to Start Your Next Adventure
                   </h2>
 
-                  <p className="text-base sm:text-lg md:text-xl lg:text-[22.77px] text-[#EFFCFF] leading-relaxed">
-                    Join the Thrill today Unlocked and Discover the Thrill of
-                    Adventure with Thrillz
+                  <p className="text-sm sm:text-base md:text-lg lg:text-[22.77px] text-[#EFFCFF] leading-relaxed">
+                    Join the Thrill today and discover the excitement of
+                    adventure with Thrillz.
                   </p>
+
                   <Link href="/login">
-                    <Button className="bg-white text-[#59BAD5] hover:text-white text-sm sm:text-base md:text-[15.18px] font-normal rounded-[30px] px-6 py-2 ml-20">
+                    <Button className="bg-white text-[#59BAD5] hover:text-white text-sm sm:text-base md:text-[15.18px] font-normal rounded-full px-6 py-2 mt-2 sm:ml-10">
                       Get Start Now
                     </Button>
                   </Link>

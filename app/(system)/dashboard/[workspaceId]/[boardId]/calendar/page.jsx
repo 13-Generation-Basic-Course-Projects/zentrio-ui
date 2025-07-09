@@ -24,15 +24,15 @@ export default async function Calendar({ params }) {
   try {
     // Step 1: Get gantt chart ID from board
     const ganttChartId = await fetchGanttChartId(boardId);
-    console.log(" GanttChart ID:", ganttChartId);
+      (" GanttChart ID:", ganttChartId);
 
     // Step 2: Get all gantt bars from the gantt chart
     const ganttBars = await fetchGanttBars(ganttChartId);
-    console.log(" Gantt bars in calendar:", ganttBars);
+      (" Gantt bars in calendar:", ganttBars);
 
     // Step 3: Get all tasks from gantt bars
     const allTasks = await fetchAllTasks(boardId, ganttBars);
-    console.log(" All tasks in calendar:", allTasks);
+      (" All tasks in calendar:", allTasks);
 
     // Step 4: Render the calendar component
     return (

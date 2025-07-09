@@ -35,7 +35,7 @@ export default function Reportpage({ modal, report, version }) {
     }
   });
 
-  console.log(report?.payload);
+    (report?.payload);
 
   const tasks = [
     {
@@ -111,7 +111,7 @@ export default function Reportpage({ modal, report, version }) {
   const getVersion = version?.payload;
 
   const groupedTasks = report?.payload?.groupedTasks;
-  console.log("apple", groupedTasks);
+    ("apple", groupedTasks);
   if (groupedTasks == null) {
     return <></>;
   }

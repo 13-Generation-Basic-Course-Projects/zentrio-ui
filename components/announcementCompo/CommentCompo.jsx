@@ -147,7 +147,7 @@ export default function CommentCompo({
       </div>
     );
   }
-  console.log("booo",boardId)
+    ("booo",boardId)
 
   const commentsToShow = showAllComments ? comments : comments.slice(0, 1);
   const remainingCommentsCount = comments.length - 1;

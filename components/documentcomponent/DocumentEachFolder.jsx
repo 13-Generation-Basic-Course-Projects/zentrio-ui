@@ -26,7 +26,7 @@ export default function DocumentEachFolder({
   const [data] = useState(initialData);
   const [selectedDate, setSelectedDate] = useState(null);
 
-  console.log("breadcrumbFolders: ", breadcrumbFolders);
+    ("breadcrumbFolders: ", breadcrumbFolders);
 
   const sortOptions = [
     { key: "asc", label: "A-Z" },

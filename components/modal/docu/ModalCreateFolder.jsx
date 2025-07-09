@@ -69,7 +69,7 @@ export default function ModalCreateFolder({
   };
 
   if (!isOpen) return null;
-  console.log("board id in create folder", boardId);
+    ("board id in create folder", boardId);
   return (
     <>
       <Modal isOpen={isOpen} onOpenChange={onClose} size="xl">

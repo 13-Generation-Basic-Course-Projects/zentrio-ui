@@ -7,7 +7,7 @@ import { ModalEditProfile } from "../modal/profile/ModalEditProfileTab";
 import { ModalEditAchievment } from "../modal/profile/ModalEditAchievment";
 
 export default function Profilepage({ currentUserProfile, userAchievement }) {
-  console.log("object", userAchievement);
+    ("object", userAchievement);
   return (
     <div>
       <ProfileLayout

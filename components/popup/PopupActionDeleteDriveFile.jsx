@@ -31,7 +31,7 @@ export default function PopupActionDeleteDriveFile({
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-  console.log(accessToken);
+    (accessToken);
   const handleDelete = async () => {
     try {
       const result = await deleteFileByFileIdAction({ fileId, accessToken });

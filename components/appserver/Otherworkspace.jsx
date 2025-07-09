@@ -13,13 +13,13 @@ export default function Otherworkspace({
   updateFavAction,
   allMembersInOther,
 }) {
-  console.log("All members in other workspace : ", allMembersInOther);
-  console.log("Join board in other workspace : ", boards);
+    ("All members in other workspace : ", allMembersInOther);
+    ("Join board in other workspace : ", boards);
   const pathname = usePathname();
   const includesPathOtherWorkSpace = pathname.includes(
     "/workspace/otherworkspace"
   );
-  // console.log("is the the other workspace", includesPath);
+  //   ("is the the other workspace", includesPath);
   return (
     <>
       <div className=" w-full grid grid-cols-12 h-full">

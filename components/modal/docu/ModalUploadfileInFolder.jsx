@@ -56,7 +56,7 @@ export default function ModalUploadFileInFolder({
       formData.append("folderId", folderId);
       formData.append("file", selectedFile);
 
-      console.log("folderId ", folderId);
+        ("folderId ", folderId);
 
       const res = await fetch("/api/upload-to-folder", {
         method: "POST",

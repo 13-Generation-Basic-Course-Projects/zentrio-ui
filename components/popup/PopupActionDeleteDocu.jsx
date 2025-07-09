@@ -31,7 +31,7 @@ export default function PopupActionDeleteDocu({
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-  console.log(accessToken);
+  //  (accessToken);
   const handleDelete = async () => {
     try {
       const result = await deleteDocumentAction(accessToken, documentId);
@@ -50,7 +50,7 @@ export default function PopupActionDeleteDocu({
         throw new Error("Deletion failed unexpectedly");
       }
     } catch (error) {
-      console.error("Delete failed:", error);
+      //console.error("Delete failed:", error);
       toast.error(
         errorMessage ||
           (isFolder

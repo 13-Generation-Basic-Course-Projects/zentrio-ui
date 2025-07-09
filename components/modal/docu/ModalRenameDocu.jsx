@@ -90,7 +90,7 @@ export function ModalRenameFileOrFolder({
                       value={newName}
                       onChange={(e) => {
                         setNewName(e.target.value);
-                        console.log("Input changed to:", e.target.value);
+                          ("Input changed to:", e.target.value);
                       }}
                     />
                   </div>

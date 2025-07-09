@@ -171,7 +171,7 @@ export default function ModalNotification({ notificationData }) {
         throw new Error("Missing pmId, taskId, or assignId");
       }
 
-      console.log("handleAccept inputs:", { taskId, assignId, pmId });
+        ("handleAccept inputs:", { taskId, assignId, pmId });
 
       const result = await assignLeaderAction(taskId, assignId, pmId);
       if (!result.success) {
@@ -229,7 +229,7 @@ export default function ModalNotification({ notificationData }) {
         throw new Error("Missing pmId, taskId, or assignId");
       }
 
-      console.log("handleDecline inputs:", { taskId, assignId, pmId });
+        ("handleDecline inputs:", { taskId, assignId, pmId });
 
       const result = await declineLeaderAction(taskId, assignId, pmId);
       if (!result.success) {

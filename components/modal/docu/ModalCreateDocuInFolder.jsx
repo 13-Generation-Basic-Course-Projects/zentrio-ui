@@ -117,15 +117,15 @@ export default function ModalCreateDocuInFolder({
           token: tokenFromGoogle,
         };
 
-        console.log("Creating Google file with data: ", data);
+          ("Creating Google file with data: ", data);
 
         const result = await createDriveFileAction(data);
-        console.log("Create drive file result:", result);
+          ("Create drive file result:", result);
 
         const driveUrl = result?.payload?.webViewLink;
 
         if (driveUrl) {
-          console.log("Opening Google Drive URL:", driveUrl);
+            ("Opening Google Drive URL:", driveUrl);
           window.open(driveUrl, "_blank");
         } else {
           console.error("Drive URL missing from result:", result);
@@ -146,7 +146,7 @@ export default function ModalCreateDocuInFolder({
     }
   };
 
-  console.log("board in modal create doc", boardId);
+    ("board in modal create doc", boardId);
   return (
     <>
       <Dropdown

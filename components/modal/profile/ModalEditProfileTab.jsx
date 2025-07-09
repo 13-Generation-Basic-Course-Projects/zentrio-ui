@@ -47,7 +47,7 @@ export const gender = [
 ];
 
 export function ModalEditProfile({ currentUserProfile }) {
-  console.log("Current user profile in ModalEditProfile:", currentUserProfile);
+    ("Current user profile in ModalEditProfile:", currentUserProfile);
   const ownBoards = currentUserProfile?.payload?.ownBoards || [];
   const joinedBoards = currentUserProfile?.payload?.joinedBoards || [];
 
@@ -155,7 +155,7 @@ export function ModalEditProfile({ currentUserProfile }) {
 
     try {
       const response = await updateAchievementAction(payload); // API call with correct structure
-      console.log("Response after update achievement:", response);
+        ("Response after update achievement:", response);
       onOpenChange(false);
     } catch (error) {
       console.error("Error saving achievements:", error);

@@ -31,13 +31,13 @@ export const registerZentrioService = async ({
       }),
     });
     const data = await res.json();
-    console.log("📥 Backend responded with:", data);
+    //  ("📥 Backend responded with:", data);
     if (res?.status === 201 || res?.success) {
       redirect(`/verify?email=${email}`);
     }
     return data;
   } catch (error) {
-    console.error(" Failed to create board:", error.message);
+    //console.error(" Failed to create board:", error.message);
     throw error; // Re-throw if you want to handle it higher up
   }
 };
@@ -51,7 +51,7 @@ export const loginZentrioService = async (email, password) => {
     // login success: redirect without sensitive info
   } catch (err) {
     // show error message to user
-    console.log(err);
+    //  (err);
   }
 };
 /*
@@ -68,12 +68,12 @@ export const loginZentrioCredentailService = async ({ email, password }) => {
       body: JSON.stringify({ email, password }),
     });
     const data = await res.json();
-    console.log("📥 Backend responded with:", data);
-    console.log("BBBBB", data?.payload?.token);
+    //  ("📥 Backend responded with:", data);
+    //  ("BBBBB", data?.payload?.token);
 
     return data; // just return the data, don't redirect here
   } catch (error) {
-    console.error("Login service error:", error.message);
+    //console.error("Login service error:", error.message);
     throw error;
   }
 };
@@ -82,12 +82,12 @@ export const loginZentrioCredentailService = async ({ email, password }) => {
  * otp
  */
 export const otpZentrioService = async ({ email, otp, type }) => {
-  console.log("email:", email, "otp:", otp);
+  //  ("email:", email, "otp:", otp);
   try {
     // Get endpoint URL from your route builder
     const url = `${authRoute.otpUserRoute()}?email=${email}&otp=${otp}&type=${type}`;
 
-    console.log(url);
+    //  (url);
 
     const res = await fetch(url, {
       method: "POST",
@@ -98,7 +98,7 @@ export const otpZentrioService = async ({ email, otp, type }) => {
     const data = await res.json();
     return data;
   } catch (error) {
-    console.error(" Failed to create board:", error.message);
+    //console.error(" Failed to create board:", error.message);
     throw error; // Re-throw if you want to handle it higher up
   }
 };
@@ -106,8 +106,8 @@ export const otpZentrioService = async ({ email, otp, type }) => {
  * resend otp
  */
 export const resendOtpZentrioService = async ({ email, type }) => {
-  console.log("emaillllllllllllllllllllllll", email);
-  console.log("type in service", type);
+  //  ("emaillllllllllllllllllllllll", email);
+  //  ("type in service", type);
 
   const url = authRoute.resendOtpUserRoute();
 
@@ -122,19 +122,19 @@ export const resendOtpZentrioService = async ({ email, type }) => {
 
     const data = await res.json();
 
-    console.log("Backend response status:", res.status, "data:", data);
+    //  ("Backend response status:", res.status, "data:", data);
 
     if (res.status === 201 || data?.success) {
       return { success: true };
     } else {
-      console.error("OTP resend failed:", data);
+      //console.error("OTP resend failed:", data);
       return {
         success: false,
         error: data.detail || data.message || "Failed to resend OTP",
       };
     }
   } catch (err) {
-    console.error("OTP resend request error:", err);
+    //console.error("OTP resend request error:", err);
     return {
       success: false,
       error: "Failed to resend OTP. Please try again.",
@@ -150,7 +150,7 @@ export const resendOtpZentrioService = async ({ email, type }) => {
 export const loginGoogleService = async ({ idToken }) => {
   try {
     const url = `${apiConfig.baseUrl}/auths/login/third-party`;
-    console.log("Google ID Token:", idToken); // Debug
+    //  ("Google ID Token:", idToken); // Debug
     const response = await fetch(url, {
       method: "POST",
       headers: {
@@ -159,10 +159,10 @@ export const loginGoogleService = async ({ idToken }) => {
       body: JSON.stringify({ idToken, provider: "google" }),
     });
     const data = await response.json(); // Fix: Use 'response' instead of 'res'
-    console.log("Backend Response:", data); // Debug
+    //  ("Backend Response:", data); // Debug
     return data;
   } catch (error) {
-    console.error("Login service error:", error.message);
+    //console.error("Login service error:", error.message);
     throw error;
   }
 };
@@ -187,10 +187,10 @@ export const resendOtpForgotPasswordService = async ({ email, type }) => {
       throw new Error("Failed to send OTP");
     }
     const data = await res.json();
-    console.log("OTP sent response:", data);
+    //  ("OTP sent response:", data);
     return data;
   } catch (error) {
-    console.error("Can't reset password", error);
+    //console.error("Can't reset password", error);
     throw error;
   }
 };
@@ -222,7 +222,7 @@ export const forgotPasswordService = async ({
     const data = await res.json();
     return data;
   } catch (error) {
-    console.error("Can't reset password", error);
+    //console.error("Can't reset password", error);
     throw error;
   }
 };
@@ -230,10 +230,10 @@ export const forgotPasswordService = async ({
 export const loginGoogleService = async ({ idToken }) => {
   try {
     const url = `${apiConfig.baseUrl}/auths/login/third-party`;
-    console.log("🔍 Google Login Debug:");
-    console.log("URL:", url);
-    console.log("Google ID Token:", idToken ? "Present" : "Missing");
-    console.log("Backend URL:", apiConfig.baseUrl);
+    //  ("🔍 Google Login Debug:");
+    //  ("URL:", url);
+    //  ("Google ID Token:", idToken ? "Present" : "Missing");
+    //  ("Backend URL:", apiConfig.baseUrl);
     
     const response = await fetch(url, {
       method: "POST",
@@ -243,14 +243,14 @@ export const loginGoogleService = async ({ idToken }) => {
       body: JSON.stringify({ idToken, provider: "google" }),
     });
     
-    console.log("Backend Response Status:", response.status);
-    console.log("Backend Response Headers:", Object.fromEntries(response.headers.entries()));
+    //  ("Backend Response Status:", response.status);
+    //  ("Backend Response Headers:", Object.fromEntries(response.headers.entries()));
     
     const data = await response.json();
-    console.log("Backend Response Data:", data);
+    //  ("Backend Response Data:", data);
     
     if (!response.ok) {
-      console.error("❌ Backend request failed:", response.status, data);
+      //console.error("❌ Backend request failed:", response.status, data);
       return {
         success: false,
         message: data.message || `Backend error: ${response.status}`,
@@ -260,7 +260,7 @@ export const loginGoogleService = async ({ idToken }) => {
     }
     
     if (!data.success) {
-      console.error("❌ Backend authentication failed:", data);
+      //console.error("❌ Backend authentication failed:", data);
       return {
         success: false,
         message: data.message || "Backend authentication failed",
@@ -268,7 +268,7 @@ export const loginGoogleService = async ({ idToken }) => {
       };
     }
     
-    console.log("✅ Backend authentication successful:", data);
+    //  ("✅ Backend authentication successful:", data);
     return {
       success: true,
       payload: {
@@ -282,12 +282,25 @@ export const loginGoogleService = async ({ idToken }) => {
       },
     };
   } catch (error) {
-    console.error("❌ LoginGoogleService error:", error.message);
-    console.error("Error details:", error);
+    //console.error("❌ LoginGoogleService error:", error.message);
+    //console.error("Error details:", error);
     return {
       success: false,
       message: "Failed to authenticate with backend",
       error: error.message,
     };
   }
+};
+
+export const loginCredentialService = async ({ email, password }) => {
+  const url = authRoute.loginCredential();
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email, password }),
+  });
+  const data = await res.json();
+  return data;
 };

@@ -21,7 +21,7 @@ import {
   updateDocumentNameByIdService,
   uploadDocumentToFolderServie,
 } from "@/service/document.service";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 // Get
 export const getDocumentsByBoardAction = async (boardId) => {
@@ -89,7 +89,7 @@ export const downloadAllFilesAsZipAction = async ({
     token,
   });
 
-  revalidatePath("/docu");
+  revalidateTag("documents");
   return { blob, filename };
 };
 
@@ -110,11 +110,11 @@ export const createFolderAction = async (
     boardId,
   };
 
-  console.log("Payload to service:", folderData);
+    ("Payload to service:", folderData);
 
   const folder = await createDocumentService(folderData, token);
 
-  revalidatePath("/document");
+  revalidateTag("documents");
   return folder;
 };
 
@@ -137,7 +137,7 @@ export const createFileAction = async ({
     };
 
     const createdDocument = await createDocumentService(data, token);
-    revalidatePath("/document");
+    revalidateTag("documents");
     return createdDocument;
   } catch (error) {
     console.error("Error creating file:", error);
@@ -159,7 +159,7 @@ export const createDocumentByUploadAction = async (
     token,
     tokenFromGoogle
   );
-  revalidatePath("/docu");
+  revalidateTag("documents");
   return document;
 };
 
@@ -173,7 +173,7 @@ export const deleteDocumentAction = async (accessToken, documentId) => {
     token,
   });
 
-  revalidatePath("/docu");
+  revalidateTag("documents");
   return document;
 };
 
@@ -183,7 +183,7 @@ export const updateDocumentNameByIdAction = async (
   newName,
   tokenFromGoogle
 ) => {
-  console.log("tokekkek", tokenFromGoogle);
+    ("tokekkek", tokenFromGoogle);
   const userToken = await Token();
   const token = userToken.Credential;
 
@@ -193,7 +193,7 @@ export const updateDocumentNameByIdAction = async (
     token,
     tokenFromGoogle
   );
-  revalidatePath("/docu");
+  revalidateTag("documents");
   return updated;
 };
 
@@ -209,7 +209,7 @@ export const publicDocumentByIdAction = async (documentId, tokenFromGoogle) => {
       tokenFromGoogle
     );
 
-    revalidatePath("/docu");
+    revalidateTag("documents");
 
     if (updated?.success) {
       return { success: true, message: "Document made public successfully." };
@@ -242,7 +242,7 @@ export const privateDocumentByIdAction = async (
       tokenFromGoogle
     );
 
-    revalidatePath("/docu");
+    revalidateTag("documents");
 
     if (updated?.success) {
       return { success: true, message: "Document made private successfully." };
@@ -270,7 +270,7 @@ export const getAllDocumentByBoardIdAction = async (boardId) => {
     boardId,
     token,
   });
-  console.log("Get all doucemnt action : ", getAllDocument);
+    ("Get all doucemnt action : ", getAllDocument);
   return getAllDocument;
 };
 /* new add
@@ -279,16 +279,16 @@ export const getAllDocumentByBoardIdAction = async (boardId) => {
 
 
 export const postAttactmentAction = async (checklistId, details) => {
-  console.log("detailssssssssss", details);
+    ("detailssssssssss", details);
   const userToken = await Token();
   const token = userToken.Credential;
-  console.log("token in post attactment action", token);
+    ("token in post attactment action", token);
   const result = await postAttachmentService({
     checklistId,
     details,
     token,
   });
-  console.log("Get all attachments action : ", result);
+    ("Get all attachments action : ", result);
   // revalidatePath("/docu");
   return result;
 };
@@ -296,14 +296,14 @@ export const postAttactmentAction = async (checklistId, details) => {
  * get attachment
  */
 export const getAttachmentAction = async (checklistId) => {
-  console.log("CHECKLIST ID IN ACTION PRINT ATTACHMENTS:", checklistId);
+    ("CHECKLIST ID IN ACTION PRINT ATTACHMENTS:", checklistId);
   const userToken = await Token();
   const token = userToken.Credential;
   const result = await getAttachmentService({
     checklistId,
     token,
   });
-  console.log("RESULT IN ACTION PRINT ATTACHMENTS:", result);
+    ("RESULT IN ACTION PRINT ATTACHMENTS:", result);
   return result;
 };
 /* new add
@@ -312,12 +312,12 @@ export const getAttachmentAction = async (checklistId) => {
 export const getAttactmentAction = async (checklistId) => {
   const userToken = await Token();
   const token = userToken.Credential;
-  console.log("checklistId aaaa", checklistId);
+    ("checklistId aaaa", checklistId);
   const result = await getAttactmentService({
     checklistId,
     token,
   });
-  console.log("Get all attachments action : ", result);
+    ("Get all attachments action : ", result);
   return result;
 };
 ///

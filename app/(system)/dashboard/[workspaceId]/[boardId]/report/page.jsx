@@ -17,8 +17,8 @@ export default async function Report({ params }) {
   const boardMember = await getBoardMemberAction(boardId);
   const currentUserProfile = await getCurrentUserProfileAction();
 
-  console.log("boardMember", boardId);
-  console.log("currentUserProfile", currentUserProfile);
+    ("boardMember", boardId);
+    ("currentUserProfile", currentUserProfile);
   const getRoleByBoardId = (boardId, profile) => {
     // Check ownBoards
     const ownBoard = profile.payload.ownBoards.find(
@@ -41,10 +41,10 @@ export default async function Report({ params }) {
 
   // Get the role
   const role = getRoleByBoardId(boardId, currentUserProfile);
-  console.log("sadd", role);
+    ("sadd", role);
   const roleNeverJoined = null;
-  console.log("Report Version: ", reportVersionData.payload)
-  console.log("BoardId: ", boardId)
+    ("Report Version: ", reportVersionData.payload)
+    ("BoardId: ", boardId)
   return (
     <>
       <Reportpage

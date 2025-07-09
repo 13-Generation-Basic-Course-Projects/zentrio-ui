@@ -26,8 +26,8 @@ function ProfileDetailsCard({ currentUserProfile, userAchievement }) {
     return parseInt(completionRate.replace("%", ""));
   };
 
-  console.log("Achievement data:", userAchievement);
-  console.log("Extracted achievement payload:", achievementData);
+    ("Achievement data:", userAchievement);
+    ("Extracted achievement payload:", achievementData);
 
   return (
     <div className="flex flex-col gap-2 overflow-y-auto">

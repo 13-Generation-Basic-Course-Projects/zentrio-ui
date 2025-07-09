@@ -76,7 +76,7 @@ export function ModalAssignMemberToCheckLisk({
         leaderId, // assignedBy (the leader who is assigning)
         data.userId // assignedTo (the selected member)
       );
-      console.log("result assignmember", result);
+      //  ("result assignmember", result);
       if (result.success) {
         toast.success("Member assigned successfully!");
         if (onLeaderAssigned && result.updatedTask) {
@@ -113,7 +113,7 @@ export function ModalAssignMemberToCheckLisk({
     reset();
   };
 
-  console.log("data member", allMemberInBoard);
+  //  ("data member", allMemberInBoard);
 
   return (
     <>

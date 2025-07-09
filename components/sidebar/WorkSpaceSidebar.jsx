@@ -44,7 +44,7 @@ export default function WorkSpaceSideBar({
   updateNameWorkspace,
   getWorKSpaceJoined,
 }) {
-  console.log("ssss",workspaceData)
+  //  ("ssss",workspaceData)
   const pathname = usePathname();
   const { toggleSidebar } = useSidebar();
   const [selectedId, setSelectedId] = useState("");
@@ -79,7 +79,7 @@ export default function WorkSpaceSideBar({
       );
       return savedColor || colorOptions[index % colorOptions.length].className;
     } catch (e) {
-      console.warn("Failed to access localStorage:", e);
+      //console.warn("Failed to access localStorage:", e);
       return colorOptions[index % colorOptions.length].className;
     }
   };

@@ -7,7 +7,7 @@ import BredCrum from "../bredcrum/MyBredcrum";
 import { documentData } from "@/data/docu/documentData";
 import CardFolder, { CardFile } from "../card/CardDoc";
 export default function Privatedocument({ modal }) {
-  console.log(documentData);
+    (documentData);
 
   const data = documentData;
 

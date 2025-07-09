@@ -8,8 +8,8 @@ export default async function MemberProfile({ params, searchParams }) {
   const { boardId } = searchParams; // Query parameter
 
   const { userId } = params;
-  console.log("Board ID:", boardId);
-  console.log("User ID:", userId, "Board ID:", boardId);
+    ("Board ID:", boardId);
+    ("User ID:", userId, "Board ID:", boardId);
 
  
 
@@ -18,13 +18,13 @@ export default async function MemberProfile({ params, searchParams }) {
    * get member
    */
   const MemberDetails = await getMemberByBoardIdAction({ boardId });
-  console.log("here is the member  details", MemberDetails);
+    ("here is the member  details", MemberDetails);
 
   /*
    * getmember id
    */
   const userIdDetail = await getUserByUserIdAction(userId);
-  console.log("userdetails", userIdDetail);
+    ("userdetails", userIdDetail);
 
   /*
    * prevent when it is errorss spacific board id for fetching ;-;.

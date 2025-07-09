@@ -17,7 +17,7 @@ import { useState } from "react";
 export default function AllDocument({ boardId, documents, tokenFromGoogle ,boardName}) {
   // const data = documentData;
   const data = documents || [];
-  console.log("document in all document", documents);
+    ("document in all document", documents);
 
   const [sortOrder, setSortOrder] = useState("asc");
   const [searchTerm, setSearchTerm] = useState("");

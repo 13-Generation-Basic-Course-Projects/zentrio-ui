@@ -314,7 +314,7 @@ export default function KanbanBoard({
     e.stopPropagation();
 
     if (!draggedItem || !hoverInfo) {
-      console.log("No draggedItem or hoverInfo, aborting drop");
+        ("No draggedItem or hoverInfo, aborting drop");
       handleDragEnd(e);
       return;
     }
@@ -333,7 +333,7 @@ export default function KanbanBoard({
       type: dropTargetType,
     } = hoverInfo;
 
-    console.log("Drop initiated:", {
+      ("Drop initiated:", {
       draggedId,
       draggedType,
       sourceColumnId,
@@ -351,7 +351,7 @@ export default function KanbanBoard({
             ?.cards.find((c) => c.id === targetCardId)?.checklists[targetIndex]
             ?.checklistId)
     ) {
-      console.log("Dropped on same item, aborting");
+        ("Dropped on same item, aborting");
       handleDragEnd(e);
       return;
     }
@@ -382,7 +382,7 @@ export default function KanbanBoard({
         sourceIndex < 0 ||
         sourceIndex >= sourceCard.checklists.length
       ) {
-        console.log(
+          (
           "Invalid source checklist index or card missing:",
           sourceCardId,
           sourceIndex
@@ -394,14 +394,14 @@ export default function KanbanBoard({
     }
 
     if (!itemToMove) {
-      console.log("Failed to find item to move");
+        ("Failed to find item to move");
       handleDragEnd(e);
       return;
     }
 
     const targetCol = newColumns.find((col) => col.id === targetColumnId);
     if (!targetCol) {
-      console.log("Target column not found:", targetColumnId);
+        ("Target column not found:", targetColumnId);
       handleDragEnd(e);
       return;
     }
@@ -426,7 +426,7 @@ export default function KanbanBoard({
         // Calculate newOrder (1-based position in target column)
         const newOrder = insertIndex + 1;
 
-        console.log("Task move:", {
+          ("Task move:", {
           draggedId,
           oldOrder,
           newOrder,
@@ -473,7 +473,7 @@ export default function KanbanBoard({
                 stageResult.error || "Failed to update task stage"
               );
             }
-            console.log(`Task stage updated: ${draggedId} to ${newStage}`);
+              (`Task stage updated: ${draggedId} to ${newStage}`);
           }
 
           // Update order
@@ -485,11 +485,11 @@ export default function KanbanBoard({
           if (!orderResult.success) {
             throw new Error(orderResult.error || "Failed to update task order");
           }
-          console.log(
+            (
             `Task order updated: ${draggedId} from ${oldOrder} to ${newOrder}`
           );
         } catch (error) {
-          console.log("Backend update failed:", error.message);
+            ("Backend update failed:", error.message);
           setErrorMessage("Failed to update task. Please try again.");
           setColumns(columns); // Revert to previous state
           throw error;
@@ -522,7 +522,7 @@ export default function KanbanBoard({
         );
 
         setColumns(newColumns);
-        console.log(
+          (
           `Checklist moved: ${draggedId} to order ${insertIndex + 1}`
         );
       } else {
@@ -534,7 +534,7 @@ export default function KanbanBoard({
         return;
       }
     } catch (error) {
-      console.log("Drop error:", error.message);
+        ("Drop error:", error.message);
       setErrorMessage(
         error.message || "Failed to process drop. Please try again."
       );

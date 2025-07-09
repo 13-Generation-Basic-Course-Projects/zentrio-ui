@@ -132,8 +132,8 @@ export default function ModalOptionTask({
 }) {
   const iconClasses =
     "text-xl text-default-500 pointer-events-none flex-shrink-0";
-  console.log("task iddd", taskId);
-  console.log("taskkk", tasks);
+    ("task iddd", taskId);
+    ("taskkk", tasks);
   // Filter task by taskId and get ganttBarId
   const getGanttBarIdByTaskId = (taskId) => {
     const task = tasks?.find((task) => task?.taskId === taskId);
@@ -142,7 +142,7 @@ export default function ModalOptionTask({
 
   // Get the ganttBarId for current taskId
   const currentGanttBarId = getGanttBarIdByTaskId(taskId);
-  console.log("current gantbarid", currentGanttBarId);
+    ("current gantbarid", currentGanttBarId);
   return (
     <Dropdown className="-z-[10px]">
       <DropdownTrigger>

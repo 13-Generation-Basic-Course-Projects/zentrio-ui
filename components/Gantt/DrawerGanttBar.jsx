@@ -286,6 +286,7 @@ export default function DrawerGanttBarFetch({ ganttChartId }) {
                               ? "opacity-50 scale-95"
                               : "hover:-translate-y-1"
                           }`}
+                         
                         >
                           <div
                             className={`absolute inset-0 bg-gradient-to-r ${getPhaseColor(

@@ -16,7 +16,7 @@ export const getBoardMemberAction = async (boardId) => {
   const result = await getBoardMembersService({ boardId, token });
 
   // return result;
-  console.log("getBoardMembersAction result:", result);
+    ("getBoardMembersAction result:", result);
 
   return Array.isArray(result?.payload) ? result.payload : [];
 };
@@ -30,7 +30,7 @@ export const getUserByUserIdAction = async (userId) => {
   const result = await getUserByUserIdService({ userId, token });
 
   // return result;
-  console.log("getBoardMembersService depend on id result:", result);
+    ("getBoardMembersService depend on id result:", result);
 
   return result;
 };

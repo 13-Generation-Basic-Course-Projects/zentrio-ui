@@ -18,7 +18,7 @@ export const NavbarLanding = ({ tokens }) => {
   const isActiveRoute = (route) => {
     return pathname === route;
   };
-console.log("tokens",tokens)
+  ("tokens",tokens)
   return (
     <div className="md:w-full h-[70px] bg-white shadow-sm rounded-full mx-auto mt-[30px] px-4 sm:px-6 relative">
       <div className="flex justify-between items-center h-full">

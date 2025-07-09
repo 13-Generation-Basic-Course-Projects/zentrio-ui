@@ -12,6 +12,9 @@ import {
 import { IconpopupDelete } from "@/components/icon/Iconpopup";
 import { useRouter } from "next/navigation";
 import { deleteDocumentAction } from "@/action/document.action";
+import { createGanttChartByBoardIdAction } from "@/action/board.action";
+import { toast } from "react-toastify";
+
 export default function PopupActionNoGanttChart({
   accessToken,
   action,
@@ -19,17 +22,24 @@ export default function PopupActionNoGanttChart({
   setActiveTab,
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const router = useRouter();
 
-  // const router = useRouter();
-
-  const handleConfirm = () => {
-    //console.log("Action confirmed for ganttChartId:", ganttChartId);
-
-    // Switch to the Kanban tab
-    setActiveTab("calendar"); // Change to "calendar"  or "Kanban" blahh blahh blahh
-
-    // Close the modal
-    onOpenChange(false);
+  const handleConfirm = async () => {
+    try {
+      setIsLoading(true);
+      const result = await createGanttChartByBoardIdAction(data, boardId);
+      if (result.success) {
+        toast.success("Gantt chart created successfully!");
+        onClose();
+        router.refresh();
+      } else {
+        toast.error(result.error || "Failed to create gantt chart");
+      }
+    } catch (error) {
+      toast.error("An error occurred while creating gantt chart");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -79,7 +89,7 @@ export default function PopupActionNoGanttChart({
                     className={`bg-slate-blue-more text-white font-semibold`}
                     onPress={handleConfirm}
                   >
-                    <p className="text-blue-500">Yes, let’s go</p>
+                    <p className="text-blue-500">Yes, let's go</p>
                   </Button>
                 </form>
               </ModalFooter>

@@ -14,7 +14,7 @@ export function Notification() {
   const [notificationStatus, setNotificationStatus] = useState({}); // Track acceptance status
 
   const notifi = notifications;
-  console.log("Notifications:", notifi);
+  //  ("Notifications:", notifi);
 
   const handleAccept = async (notificationId, taskId, assignId) => {
     try {
@@ -40,7 +40,7 @@ export function Notification() {
         autoClose: 3000,
       });
     } catch (error) {
-      console.error("Error accepting leader role:", error.message);
+      //console.error("Error accepting leader role:", error.message);
       setNotificationStatus((prev) => ({
         ...prev,
         [notificationId]: { isLoading: false, isAccepted: false },

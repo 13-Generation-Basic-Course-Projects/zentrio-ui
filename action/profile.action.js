@@ -9,16 +9,16 @@ import {
   updateProfileImageService,
   updateUserProfileService,
 } from "@/service/profile.service";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 export const getCurrentUserProfileAction = async () => {
   const userToken = await Token();
   const token = userToken.Credential;
-  console.log("token", token);
+    ("token", token);
   const result = await getCurrentUserProfileService({
     token,
   });
-  console.log("Result current user action : ", result);
+    ("Result current user action : ", result);
   return result;
 };
 
@@ -43,7 +43,7 @@ export const updateUserProfileAction = async (data) => {
       token,
       userData: data,
     });
-    revalidatePath("/profile");
+    revalidateTag("profile");
     return updatedData;
   } catch (err) {
     console.error("Error in updateUserProfileAction:", err);
@@ -52,11 +52,12 @@ export const updateUserProfileAction = async (data) => {
 };
 
 export const updateAchievementAction = async (payload) => {
-  console.log("PAYLOAD DATA IN ACTION", payload);
+    ("PAYLOAD DATA IN ACTION", payload);
   const userToken = await Token();
   const token = userToken.Credential;
   const result = await updateAchievementService({ token, payload });
-  revalidatePath("/profile");
+  revalidateTag("profile");
+  revalidateTag("achievements");
   return result;
 };
 
@@ -81,10 +82,10 @@ export const getPreviewProfileAction = async () => {
 
 
 export const updateProfileImageAction = async ({formData}) => {
-  console.log("paylaod data", formData);
+    ("paylaod data", formData);
   const userToken = await Token();
   const token = userToken.Credential;
   const result = await updateProfileImageService({ token, formData });
-  revalidatePath("/updateProfile");
+  revalidateTag("profile");
   return result;
 };
