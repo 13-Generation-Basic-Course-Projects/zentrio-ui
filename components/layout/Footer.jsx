@@ -147,23 +147,13 @@ export default function Footer() {
           </div>
 
           <div className="grid lg:grid-cols-5 grid-cols-5 md:grid-cols-5 sm:grid-cols-5 max-[500px]:grid-cols-1 gap-2 lg:gap-4  text-caption-tiny text-xs  md:text-base">
+           
+           
             <a
-              href="#"
+              href="https://web.facebook.com/profile.php?id=61577829765221"
               className="hover:text-primary transition-colors whitespace-nowrap text-center"
             >
-              Instagram
-            </a>
-            <a
-              href="#"
-              className="hover:text-primary transition-colors whitespace-nowrap text-center"
-            >
-              LinkedIn
-            </a>
-            <a
-              href="#"
-              className="hover:text-primary transition-colors whitespace-nowrap text-center"
-            >
-              Twitter
+              Facebook
             </a>
             <a
               href="/login"

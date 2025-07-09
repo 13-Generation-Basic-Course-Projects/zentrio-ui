@@ -72,9 +72,9 @@ export default function AboutUs() {
                   type="button"
                 >
                   <Link href="/login">
-                    <span className="font-semibold text-sm sm:text-body tracking-wide">
+                    <p className="font-semibold text-sm sm:text-body tracking-wide">
                       Get Started
-                    </span>
+                    </p>
                   </Link>
                   <span>
                     <svg
