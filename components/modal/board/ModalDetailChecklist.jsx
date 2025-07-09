@@ -882,23 +882,61 @@ const ModalDetailChecklist = ({
   const [currentStatus, setCurrentStatus] = useState(status); // Initialize with status (PENDING)
 
   // Toggle status: PENDING/IN_PROGRESS -> DONE, DONE -> IN_PROGRESS
+  // const handleStatusChange = async () => {
+  //   const newStatus = currentStatus === "DONE" ? "IN_PROGRESS" : "DONE";
+  //   try {
+  //     const result = await chageStatusCheckListAction(id, newStatus);
+  //     if (result.success) {
+  //       setCurrentStatus(newStatus); // Update UI on success
+        
+  //       // Emit real-time event for checklist status update
+  //       emitEvent('checklist-updated', {
+  //         taskId: taskId,
+  //         checklistId: id,
+  //         updatedChecklist: { status: newStatus }
+  //       });
+  //     } else {
+  //       console.error("Failed to update status:", result.error);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error updating status:", error.message);
+  //   }
+  // };
   const handleStatusChange = async () => {
     const newStatus = currentStatus === "DONE" ? "IN_PROGRESS" : "DONE";
     try {
       const result = await chageStatusCheckListAction(id, newStatus);
       if (result.success) {
         setCurrentStatus(newStatus); // Update UI on success
-        
         // Emit real-time event for checklist status update
         emitEvent('checklist-updated', {
           taskId: taskId,
           checklistId: id,
           updatedChecklist: { status: newStatus }
         });
+        // Show success toast
+        toast.success(`Checklist status updated `, {
+          position: "top-right",
+          autoClose: 2000,
+        });
+        toast.info(`please wait the data is processing`, {
+          position: "top-right",
+          autoClose: 7000,
+        });
       } else {
+        // Show error toast
+        toast.error(`Failed to update status: ${result.error}`, {
+          position: "top-right",
+          autoClose: 4000,
+        });
         console.error("Failed to update status:", result.error);
       }
     } catch (error) {
+      // Show error toast for unexpected errors
+      toast.error(`Error updating status: ${error.message}`, {
+        position: "top-right",
+        autoClose: 4000,
+      });
       console.error("Error updating status:", error.message);
     }
   };

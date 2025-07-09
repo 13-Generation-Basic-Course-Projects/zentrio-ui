@@ -376,15 +376,19 @@ const onSubmit = async (data) => {
       ganttChartId
     );
 
-    if (result.status === 400) {
-      toast.error(`"${data.title}"\nfailed create Task unsuccessfully!`, {
-        position: "top-right",
-        autoClose: 3000,
-      });
-      return;
-    }
+    // if (result.status === 400) {
+    //   toast.error(`"${data.title}"\nfailed create Task unsuccessfully!`, {
+    //     position: "top-right",
+    //     autoClose: 3000,
+    //   });
+    //   return;
+    // }
 
     toast.success(`"${data.title}"\nTask created successfully!`, {
+      position: "top-right",
+      autoClose: 3000,
+    });
+    toast.info(`"please wait the data is processing!`, {
       position: "top-right",
       autoClose: 3000,
     });

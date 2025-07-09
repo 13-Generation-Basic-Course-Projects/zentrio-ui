@@ -53,8 +53,8 @@ export default async function BoardLayout({ children, params }) {
   const FALLBACK_STRING = "No data available";
   const FALLBACK_ARRAY = [];
   const FALLBACK_OBJECT = {};
-  const boardId = params?.boardId || FALLBACK_STRING;
-  const workspaceId = params?.workspaceId || FALLBACK_STRING;
+  const boardId = (await params)?.boardId || FALLBACK_STRING;
+  const workspaceId =(await params)?.workspaceId || FALLBACK_STRING;
 
   /*
    * Get ganttChartId using the utility function
