@@ -36,7 +36,7 @@ export const metadata = {
 
 export default async function SystemLayout({ children, params }) {
   const session = await auth();
-  console.log("aaa", session);
+  
   
   if (session) {
     const boardId = params.id;

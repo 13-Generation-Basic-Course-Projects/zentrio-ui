@@ -1106,11 +1106,11 @@ const ModalDetailChecklist = ({
       ?.flat() // Flatten the array of arrays into a single array
       .filter((feedback) => feedback?.taskId === taskId) || [];
 
-    ("this is role ", role);
+    console.log("this is role ", role);
 
   return (
     <>
-      {role == "ROLE_MEMBER" || role == "ROLE_MANAGER" ? (
+      {role == "ROLE_MEMBER" || role == "ROLE_MANAGER" || role == "ROLE_GUEST" ? (
         ""
       ) : (
         <div className="relative flex justify-end items-center">
