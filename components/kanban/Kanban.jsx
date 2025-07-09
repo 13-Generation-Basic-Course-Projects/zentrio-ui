@@ -17,7 +17,7 @@ import {
 import KanbanDrawer from "./ArchiveDrawer";
 import BredCrumKanban from "../bredcrum/BredcrumKanban";
 
-// Placeholder component
+// Placeholder UserAvater component
 const UserAvater = ({ image }) => (
   <img
     src={image}
@@ -74,7 +74,7 @@ const transformApiToColumns = (apiData, checklistbyTaskIds) => {
     if (task.startedAt && task.finishedAt) {
       const start = new Date(task.startedAt);
       const end = new Date(task.finishedAt);
-      const diffTime = Math.abs(end - start); // Fixed: Use start, not end-end
+      const diffTime = Math.abs(end - start);
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
       duration = `${diffDays} day${diffDays !== 1 ? "s" : ""}`;
     }
@@ -99,7 +99,7 @@ const transformApiToColumns = (apiData, checklistbyTaskIds) => {
       startedAt: task.startedAt,
       finishedAt: task.finishedAt,
       status: task.status,
-      stage: task.stage, // Added for stage tracking
+      stage: task.stage,
     };
 
     const column = columns.find((col) => col.id === columnId);
@@ -108,7 +108,6 @@ const transformApiToColumns = (apiData, checklistbyTaskIds) => {
     }
   });
 
-  // Sort cards by taskOrder within each column
   columns.forEach((column) => {
     column.cards.sort((a, b) => a.order - b.order);
   });
@@ -134,6 +133,8 @@ export default function KanbanBoard({
   const [hoverInfo, setHoverInfo] = useState(null);
   const [newSubtaskCardId, setNewSubtaskCardId] = useState(null);
   const [newSubtaskText, setNewSubtaskText] = useState("");
+ 
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isUpdating, setIsUpdating] = useState(false);
@@ -314,7 +315,6 @@ export default function KanbanBoard({
     e.stopPropagation();
 
     if (!draggedItem || !hoverInfo) {
-        ("No draggedItem or hoverInfo, aborting drop");
       handleDragEnd(e);
       return;
     }
@@ -333,15 +333,6 @@ export default function KanbanBoard({
       type: dropTargetType,
     } = hoverInfo;
 
-      ("Drop initiated:", {
-      draggedId,
-      draggedType,
-      sourceColumnId,
-      targetColumnId,
-      targetIndex,
-    });
-
-    // Check if dropping on the same item
     if (
       draggedId ===
       (dropTargetType === "card"
@@ -351,7 +342,6 @@ export default function KanbanBoard({
             ?.cards.find((c) => c.id === targetCardId)?.checklists[targetIndex]
             ?.checklistId)
     ) {
-        ("Dropped on same item, aborting");
       handleDragEnd(e);
       return;
     }
@@ -365,8 +355,7 @@ export default function KanbanBoard({
       return;
     }
 
-    // Extract the item to move
-    if (draggedType === "card") {
+    if (VHdraggedType === "card") {
       if (sourceIndex < 0 || sourceIndex >= sourceCol.cards.length) {
         handleDragEnd(e);
         return;
@@ -382,11 +371,6 @@ export default function KanbanBoard({
         sourceIndex < 0 ||
         sourceIndex >= sourceCard.checklists.length
       ) {
-          (
-          "Invalid source checklist index or card missing:",
-          sourceCardId,
-          sourceIndex
-        );
         handleDragEnd(e);
         return;
       }
@@ -394,14 +378,12 @@ export default function KanbanBoard({
     }
 
     if (!itemToMove) {
-        ("Failed to find item to move");
       handleDragEnd(e);
       return;
     }
 
     const targetCol = newColumns.find((col) => col.id === targetColumnId);
     if (!targetCol) {
-        ("Target column not found:", targetColumnId);
       handleDragEnd(e);
       return;
     }
@@ -411,7 +393,6 @@ export default function KanbanBoard({
         const maxIndex = targetCol.cards.length;
         const insertIndex = Math.max(0, Math.min(targetIndex, maxIndex));
 
-        // Map column IDs to stages
         const columnStageMap = {
           todo: "TO_DO",
           "in-progress": "IN_PROGRESS",
@@ -420,41 +401,25 @@ export default function KanbanBoard({
         };
         const newStage = columnStageMap[targetColumnId];
 
-        // Calculate oldOrder (current order of the dragged task)
         const oldOrder = itemToMove.order;
-
-        // Calculate newOrder (1-based position in target column)
         const newOrder = insertIndex + 1;
 
-          ("Task move:", {
-          draggedId,
-          oldOrder,
-          newOrder,
-          sourceColumnId,
-          targetColumnId,
-          newStage,
-        });
-
-        // Update stage if moved to a different column
         if (sourceColumnId !== targetColumnId) {
           itemToMove.stage = newStage;
         }
 
-        // Insert the dragged task at the target index
         targetCol.cards.splice(insertIndex, 0, itemToMove);
 
-        // Reassign taskOrder for all cards in the target column
         targetCol.cards = targetCol.cards.map((card, index) => ({
           ...card,
           order: index + 1,
         }));
 
-        // Optimistically update the state
         setColumns(newColumns);
 
         if (!boardId) {
           setErrorMessage("Board ID is missing. Cannot update task order.");
-          setColumns(columns); // Revert to original state
+          setColumns(columns);
           throw new Error("Board ID is missing");
         }
 
@@ -462,7 +427,6 @@ export default function KanbanBoard({
           setIsUpdating(true);
           setErrorMessage(null);
 
-          // Update stage if changed
           if (sourceColumnId !== targetColumnId) {
             const stageResult = await changeStatusTaskAction(
               draggedId,
@@ -473,10 +437,8 @@ export default function KanbanBoard({
                 stageResult.error || "Failed to update task stage"
               );
             }
-              (`Task stage updated: ${draggedId} to ${newStage}`);
           }
 
-          // Update order
           const orderResult = await moveTaskOrderAction(
             boardId,
             newOrder,
@@ -485,13 +447,9 @@ export default function KanbanBoard({
           if (!orderResult.success) {
             throw new Error(orderResult.error || "Failed to update task order");
           }
-            (
-            `Task order updated: ${draggedId} from ${oldOrder} to ${newOrder}`
-          );
         } catch (error) {
-            ("Backend update failed:", error.message);
           setErrorMessage("Failed to update task. Please try again.");
-          setColumns(columns); // Revert to previous state
+          setColumns(columns);
           throw error;
         } finally {
           setIsUpdating(false);
@@ -513,7 +471,6 @@ export default function KanbanBoard({
         targetCard.checklists.splice(insertIndex, 0, itemToMove);
         targetCard.expanded = true;
 
-        // Update checklist orders
         targetCard.checklists = targetCard.checklists.map(
           (checklist, index) => ({
             ...checklist,
@@ -522,19 +479,11 @@ export default function KanbanBoard({
         );
 
         setColumns(newColumns);
-          (
-          `Checklist moved: ${draggedId} to order ${insertIndex + 1}`
-        );
       } else {
-        console.warn("Invalid drop combination:", {
-          draggedType,
-          dropTargetType,
-        });
         handleDragEnd(e);
         return;
       }
     } catch (error) {
-        ("Drop error:", error.message);
       setErrorMessage(
         error.message || "Failed to process drop. Please try again."
       );
@@ -557,13 +506,11 @@ export default function KanbanBoard({
     return <div>Error: {error}</div>;
   }
 
-  // Toggle task status: PENDING/OVERDUE -> COMPLETED, COMPLETED -> OVERDUE
   const handleStatusChange = async (taskId, currentStatus) => {
     const newStatus = currentStatus === "COMPLETED" ? "OVERDUE" : "COMPLETED";
     try {
       const result = await changeStatusTaskAction(taskId, newStatus);
       if (result.success) {
-        // Update columns state
         setColumns((prev) =>
           prev.map((column) => ({
             ...column,
@@ -582,14 +529,6 @@ export default function KanbanBoard({
 
   return (
     <div className="w-full h-screen flex flex-col">
-      {/* <BredCrum
-        board={boardData?.payload.title || "Hikko Design"}
-        feature={"Board"}
-        header={boardData?.payload.title || "Hikko Design"}
-        modal={modal}
-        workspaceId={workspaceId}
-      /> */}
-
       <BredCrumKanban
         board={boardData?.payload.title || "Hikko Design"}
         feature={"Board"}
@@ -598,15 +537,14 @@ export default function KanbanBoard({
         boardId={boardId}
         workspaceId={workspaceId}
       />
-
       <StackedUser image={allMemberInBoard} />
-      <div className=" w-full flex justify-start items-center mt-5">
+      <div className="w-full flex justify-start items-center mt-5">
         <KanbanDrawer />
       </div>
       {isUpdating && (
         <div className="text-blue-500 p-2">Updating task order...</div>
       )}
-      {/* {errorMessage && <div className="text-red-500 p-2">{errorMessage}</div>} */}
+      {errorMessage && <div className="text-red-500 p-2">{errorMessage}</div>}
       <div className="pt-5 pb-2 grid grid-cols-4 gap-4">
         {(columns || []).map((column) => (
           <div
@@ -688,7 +626,7 @@ export default function KanbanBoard({
                             card.finishedAt &&
                             new Date(card.finishedAt) >= new Date()
                               ? "bg-white"
-                              : "bg-orange-50 "
+                              : "bg-orange-50"
                           }`}
                           style={{
                             opacity: isCardDragging ? 0.5 : 1,
@@ -759,9 +697,7 @@ export default function KanbanBoard({
                                     ) : null
                                   )}
                                 </div>
-                                {/* consider */}
-
-                                <div className="flex justify-end items-center  hidden">
+                                <div className="flex justify-end items-center hidden">
                                   <button
                                     onClick={() =>
                                       handleStatusChange(
@@ -801,7 +737,8 @@ export default function KanbanBoard({
                                         <path
                                           fillRule="evenodd"
                                           clipRule="evenodd"
-                                          d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+                                          d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5  duży
+                                      1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
                                         />
                                       </svg>
                                     ) : (
@@ -823,9 +760,7 @@ export default function KanbanBoard({
                                     )}
                                   </button>
                                 </div>
-                                {role == "ROLE_MEMBER" ? (
-                                  ""
-                                ) : (
+                                {role !== "ROLE_MEMBER" && (
                                   <ModalOptionTask
                                     role={role}
                                     key={"apple"}
@@ -860,9 +795,129 @@ export default function KanbanBoard({
                               </div>
                             </div>
                           </div>
-                          {card.expanded && (
+
+                          <div
+                            className="p-2"
+                            onDragOver={(e) =>
+                              handleDragOver(e, {
+                                targetColumnId: column.id,
+                                targetCardId: card.id,
+                                targetIndex: (card.checklists || []).length,
+                                type: "checklist",
+                              })
+                            }
+                            onDrop={handleDrop}
+                          >
+                            {(card.checklists || []).map(
+                              (checklist, checklistIndex) => {
+                                const isChecklistDragging =
+                                  draggedItem?.id === checklist.checklistId;
+                                const isChecklistHoverMakeSpace =
+                                  hoverInfo?.type === "checklist" &&
+                                  hoverInfo?.targetCardId === card.id &&
+                                  hoverInfo?.targetIndex === checklistIndex;
+                                const isChecklistDropZoneHovered =
+                                  hoverInfo?.type === "checklist" &&
+                                  hoverInfo?.targetCardId === card.id &&
+                                  hoverInfo?.targetIndex === checklistIndex;
+
+                                return (
+                                  <div
+                                    key={checklist.checklistId}
+                                    id={checklist.checklistId}
+                                  >
+                                    <div
+                                      className={`h-1 w-full transition-all duration-200 ease-in-out rounded ${
+                                        isChecklistDropZoneHovered
+                                          ? "bg-green-200 h-6 border-2 border-dashed border-green-500"
+                                          : ""
+                                      }`}
+                                      onDragOver={(e) =>
+                                        handleDragOver(e, {
+                                          targetColumnId: column.id,
+                                          targetCardId: card.id,
+                                          targetIndex: checklistIndex,
+                                          type: "checklist",
+                                        })
+                                      }
+                                      onDrop={handleDrop}
+                                    />
+                                    <div
+                                      className={`mb-1 cursor-grab active:cursor-grabbing bg-white transition-all duration-200 ease-in-out rounded-xl shadow-sm bg-pink-400 !p-0`}
+                                      style={{
+                                        opacity: isChecklistDragging ? 0.5 : 1,
+                                        transform: isChecklistDragging
+                                          ? "scale(1.05)"
+                                          : isChecklistHoverMakeSpace
+                                          ? "translateY(4px)"
+                                          : "none",
+                                      }}
+                                      draggable={card.expanded}
+                                      onDragStart={(e) =>
+                                        card.expanded &&
+                                        handleDragStart(e, {
+                                          id: checklist.checklistId,
+                                          type: "checklist",
+                                          sourceColumnId: column.id,
+                                          sourceCardId: card.id,
+                                          sourceIndex: checklistIndex,
+                                        })
+                                      }
+                                      onDragEnd={handleDragEnd}
+                                    >
+                                      <ModalDetailChecklist
+                                        boardId={boardId}
+                                        taskId={card.id}
+                                        id={checklist?.checklistId}
+                                        taskTitle={card.title}
+                                        title={checklist.title}
+                                        startDate={
+                                          checklist.startedAt
+                                            ? new Date(
+                                                checklist.startedAt
+                                              ).toLocaleDateString()
+                                            : "N/A"
+                                        }
+                                        status={checklist.status}
+                                        image={
+                                          checklist.members &&
+                                          checklist.members.length > 0
+                                            ? checklist.members[0].imageUrl
+                                            : card.assignees[0] || ""
+                                        }
+                                        description={checklist.description}
+                                        checklistId={checklist?.checklistId}
+                                        members={checklist.members || []}
+                                        createdAt={checklist.createdAt}
+                                        updatedAt={checklist.updatedAt}
+                                        finishedAt={checklist.finishedAt}
+                                        member={checklist.members}
+                                        preventUserImage={preventUserImage}
+                                        allMemberInBoard={allMemberInBoard}
+                                        leaderId={
+                                          tasks.find(
+                                            (task) => task.taskId === card.id
+                                          )?.teamLeader?.userId || null
+                                        }
+                                        role={role}
+                                        imageChecklist={checklist?.cover}
+                                        feedbackByTaskIds={feedbackByTaskIds}
+                                        hideImage={!card.expanded}
+                                      />
+                                    </div>
+                                  </div>
+                                );
+                              }
+                            )}
                             <div
-                              className="p-2"
+                              className={`h-1 w-full transition-all duration-200 ease-in-out rounded ${
+                                hoverInfo?.type === "checklist" &&
+                                hoverInfo?.targetCardId === card.id &&
+                                hoverInfo?.targetIndex ===
+                                  (card.checklists || []).length
+                                  ? "bg-green-200 h-6 border-2 border-dashed border-green-500"
+                                  : ""
+                              }`}
                               onDragOver={(e) =>
                                 handleDragOver(e, {
                                   targetColumnId: column.id,
@@ -872,148 +927,26 @@ export default function KanbanBoard({
                                 })
                               }
                               onDrop={handleDrop}
-                            >
-                              {(card.checklists || []).map(
-                                (checklist, checklistIndex) => {
-                                  const isChecklistDragging =
-                                    draggedItem?.id === checklist.checklistId;
-                                  const isChecklistHoverMakeSpace =
-                                    hoverInfo?.type === "checklist" &&
-                                    hoverInfo?.targetCardId === card.id &&
-                                    hoverInfo?.targetIndex === checklistIndex;
-                                  const isChecklistDropZoneHovered =
-                                    hoverInfo?.type === "checklist" &&
-                                    hoverInfo?.targetCardId === card.id &&
-                                    hoverInfo?.targetIndex === checklistIndex;
-
-                                  return (
-                                    <div
-                                      key={checklist.checklistId}
-                                      id={checklist.checklistId}
-                                    >
-                                      <div
-                                        className={`h-1 w-full transition-all duration-200 ease-in-out rounded ${
-                                          isChecklistDropZoneHovered
-                                            ? "bg-green-200 h-6 border-2 border-dashed border-green-500"
-                                            : ""
-                                        }`}
-                                        onDragOver={(e) =>
-                                          handleDragOver(e, {
-                                            targetColumnId: column.id,
-                                            targetCardId: card.id,
-                                            targetIndex: checklistIndex,
-                                            type: "checklist",
-                                          })
-                                        }
-                                        onDrop={handleDrop}
-                                      />
-                                      <div
-                                        className={`mb-1 cursor-grab active:cursor-grabbing bg-white transition-all duration-200 ease-in-out rounded-xl shadow-sm`}
-                                        style={{
-                                          opacity: isChecklistDragging
-                                            ? 0.5
-                                            : 1,
-                                          transform: isChecklistDragging
-                                            ? "scale(1.05)"
-                                            : isChecklistHoverMakeSpace
-                                            ? "translateY(4px)"
-                                            : "none",
-                                        }}
-                                        draggable
-                                        onDragStart={(e) =>
-                                          handleDragStart(e, {
-                                            id: checklist.checklistId,
-                                            type: "checklist",
-                                            sourceColumnId: column.id,
-                                            sourceCardId: card.id,
-                                            sourceIndex: checklistIndex,
-                                          })
-                                        }
-                                        onDragEnd={handleDragEnd}
-                                      >
-                                        <ModalDetailChecklist
-                                          boardId={boardId}
-                                          taskId={card.id}
-                                          id={checklist?.checklistId}
-                                          taskTitle={card.title}
-                                          title={checklist.title}
-                                          startDate={
-                                            checklist.startedAt
-                                              ? new Date(
-                                                  checklist.startedAt
-                                                ).toLocaleDateString()
-                                              : "N/A"
-                                          }
-                                          status={checklist.status}
-                                          image={
-                                            checklist.members &&
-                                            checklist.members.length > 0
-                                              ? checklist.members[0].imageUrl
-                                              : card.assignees[0] || ""
-                                          }
-                                          description={checklist.description}
-                                          checklistId={checklist?.checklistId}
-                                          members={checklist.members || []}
-                                          createdAt={checklist.createdAt}
-                                          updatedAt={checklist.updatedAt}
-                                          finishedAt={checklist.finishedAt}
-                                          member={checklist.members}
-                                          preventUserImage={preventUserImage}
-                                          allMemberInBoard={allMemberInBoard}
-                                          leaderId={
-                                            tasks.find(
-                                              (task) => task.taskId === card.id
-                                            )?.teamLeader?.userId || null
-                                          }
-                                          role={role}
-                                          imageChecklist={checklist?.cover}
-                                          feedbackByTaskIds={feedbackByTaskIds}
-                                        />
-                                      </div>
-                                    </div>
-                                  );
-                                }
-                              )}
-                              <div
-                                className={`h-1 w-full transition-all duration-200 ease-in-out rounded ${
-                                  hoverInfo?.type === "checklist" &&
-                                  hoverInfo?.targetCardId === card.id &&
-                                  hoverInfo?.targetIndex ===
-                                    (card.checklists || []).length
-                                    ? "bg-green-200 h-6 border-2 border-dashed border-green-500"
-                                    : ""
-                                }`}
-                                onDragOver={(e) =>
-                                  handleDragOver(e, {
-                                    targetColumnId: column.id,
-                                    targetCardId: card.id,
-                                    targetIndex: (card.checklists || []).length,
-                                    type: "checklist",
-                                  })
-                                }
-                                onDrop={handleDrop}
-                              />
+                            />
+                            {card.expanded && (
                               <div className="pb-3 pt-1 px-3">
                                 <div className="grid grid-cols-12">
-                                  <div
-                                    className={`col-span-8 flex items-center`}
-                                  >
-                                    {role == "ROLE_MEMBER" || role == "ROLE_MANAGER" ? (
-                                      ""
-                                    ) : (
-                                      <ModalCreateChecklist
-                                        buttonText="New checklist"
-                                        modalTitle="Create Checklist"
-                                        taskid={card.id}
-                                        startedAt={card.startedAt}
-                                        finishedAt={card.finishedAt}
-                                        stage={
-                                          tasks.find(
-                                            (task) => task.taskId === card.id
-                                          )?.stage || "TO DO"
-                                        }
-                                      />
-                                    )}
+                                  <div className="col-span-8 flex items-center">
+                                    {role !== "ROLE_MEMBER" &&
+                                      role !== "ROLE_MANAGER" && (
+                                        <ModalCreateChecklist
+                                          buttonText="New checklist"
+                                          modalTitle="Create Checklist"
+                                          taskid={card.id}
+                                          startedAt={card.startedAt}
+                                          finishedAt={card.finishedAt}
+                                          stage={
+                                            tasks.find(
+                                              (task) => task.taskId === card.id
+                                            )?.stage || "TO_DO"
+                                          }
+                                        />
+                                      )}
                                   </div>
                                   <div className="col-span-4 p-2">
                                     <CardDateChecklist
@@ -1028,10 +961,10 @@ export default function KanbanBoard({
                                   </div>
                                 </div>
                               </div>
-                            </div>
-                          )}
+                            )}
+                          </div>
                         </div>
-                        <div className="flex items-center justify-center ">
+                        <div className="flex items-center justify-center">
                           <button
                             onClick={() => toggleTaskExpansion(card.id)}
                             className="text-gray-400 hover:text-gray-600 p-1 rounded hover:bg-gray-100 p-4 rounded-large"

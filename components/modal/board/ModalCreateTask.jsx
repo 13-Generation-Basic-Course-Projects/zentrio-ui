@@ -657,7 +657,7 @@ const onSubmit = async (data) => {
                       />
                     </div>
                   )}
-
+                  <div className="w-full">
                   <Controller
                     name="ganttBarId"
                     control={control}
@@ -669,6 +669,7 @@ const onSubmit = async (data) => {
                         onChange={(e) => field.onChange(e.target.value)}
                         isInvalid={!!errors.ganttBarId}
                         errorMessage={errors.ganttBarId?.message}
+                        className="w-full"
                         classNames={{
                           trigger: `
                             bg-white 
@@ -679,6 +680,7 @@ const onSubmit = async (data) => {
                             rounded-small
                             px-3
                             py-6
+                            !w-full
                             ${errors.ganttBarId ? "border-red-500" : ""}
                           `,
                           value: "text-gray-500",
@@ -741,6 +743,7 @@ const onSubmit = async (data) => {
                       </Select>
                     )}
                   />
+                  </div>
 
                   <Controller
                     name="description"

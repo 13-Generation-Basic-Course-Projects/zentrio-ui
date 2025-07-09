@@ -41,7 +41,7 @@ export default async function Calendar({ params }) {
       </div>
     );
   } catch (error) {
-    console.error("❌ Error loading calendar page:", error);
+    // console.error("❌ Error loading calendar page:", error);
     return (
       <div className="flex items-center justify-center p-8">
         <div className="text-red-600 text-center">
@@ -62,7 +62,7 @@ export default async function Calendar({ params }) {
  */
 async function fetchGanttChartId(boardId) {
   if (!boardId || boardId === FALLBACK_STRING) {
-    console.warn("⚠️ Invalid board ID provided");
+    // console.warn("⚠️ Invalid board ID provided");
     return FALLBACK_STRING;
   }
 
@@ -71,13 +71,13 @@ async function fetchGanttChartId(boardId) {
     const ganttChartId = response?.payload?.ganttChartId;
 
     if (!ganttChartId) {
-      console.warn("⚠️ No gantt chart found for board:", boardId);
+      // console.warn("⚠️ No gantt chart found for board:", boardId);
       return FALLBACK_STRING;
     }
 
     return ganttChartId;
   } catch (error) {
-    console.error("❌ Error fetching gantt chart by board ID:", error);
+    // console.error("❌ Error fetching gantt chart by board ID:", error);
     return FALLBACK_STRING;
   }
 }
@@ -89,7 +89,7 @@ async function fetchGanttChartId(boardId) {
 async function fetchGanttBars(ganttChartId) {
   // Skip fetching if no valid gantt chart ID
   if (!ganttChartId || ganttChartId === FALLBACK_STRING) {
-    console.info(" No valid gantt chart ID, skipping gantt bars fetch");
+    // console.info(" No valid gantt chart ID, skipping gantt bars fetch");
     return FALLBACK_ARRAY;
   }
 
@@ -98,13 +98,13 @@ async function fetchGanttBars(ganttChartId) {
     const ganttBars = response?.payload || FALLBACK_ARRAY;
 
     if (!Array.isArray(ganttBars) || ganttBars.length === 0) {
-      console.info(" No gantt bars found for chart:", ganttChartId);
+      // console.info(" No gantt bars found for chart:", ganttChartId);
       return FALLBACK_ARRAY;
     }
 
     return ganttBars;
   } catch (error) {
-    console.error(" Error fetching gantt bars:", error);
+    // console.error(" Error fetching gantt bars:", error);
     return FALLBACK_ARRAY;
   }
 }
@@ -114,7 +114,7 @@ async function fetchGanttBars(ganttChartId) {
  */
 async function fetchAllTasks(boardId, ganttBars) {
   if (!Array.isArray(ganttBars) || ganttBars.length === 0) {
-    console.info(" No gantt bars available, returning empty tasks array");
+    // console.info(" No gantt bars available, returning empty tasks array");
     return FALLBACK_ARRAY;
   }
 
@@ -122,11 +122,11 @@ async function fetchAllTasks(boardId, ganttBars) {
   const ganttBarIds = ganttBars.map((bar) => bar?.ganttBarId).filter(Boolean);
 
   if (ganttBarIds.length === 0) {
-    console.warn(" No valid gantt bar IDs found");
+    // console.warn(" No valid gantt bar IDs found");
     return FALLBACK_ARRAY;
   }
 
-  console.info(` Fetching tasks from ${ganttBarIds.length} gantt bars`);
+  // console.info(` Fetching tasks from ${ganttBarIds.length} gantt bars`);
 
   const allTasks = [];
 
@@ -143,22 +143,22 @@ async function fetchAllTasks(boardId, ganttBars) {
       // Add tasks to collection if they exist and are valid
       if (Array.isArray(tasks) && tasks.length > 0) {
         allTasks.push(...tasks);
-        console.info(
-          ` Added ${tasks.length} tasks from gantt bar: ${ganttBarId}`
-        );
+        // console.info(
+        //   ` Added ${tasks.length} tasks from gantt bar: ${ganttBarId}`
+        // );
       } else {
-        console.info(` No tasks found for gantt bar: ${ganttBarId}`);
+        // console.info(` No tasks found for gantt bar: ${ganttBarId}`);
       }
     } catch (error) {
-      console.error(
-        ` Error fetching tasks for gantt bar ${ganttBarId}:`,
-        error
-      );
+      // console.error(
+      //   ` Error fetching tasks for gantt bar ${ganttBarId}:`,
+      //   error
+      // );
       // Continue with other gantt bars even if one fails
       continue;
     }
   }
 
-  console.info(` Total tasks collected: ${allTasks.length}`);
+  // console.info(` Total tasks collected: ${allTasks.length}`);
   return allTasks;
 }

@@ -324,13 +324,22 @@ const handleModalClose = useCallback(() => {
       if (result.status !== 400) {
         showToast(
           "success",
-          `Gantt bar(s) created successfully!\nItems: ${titles}`,
+          `Gantt bar(s) created successfully!\nItems: ${titles} `,
           {
             preventDuplicate: true,
-            autoClose: 4000,
+            autoClose: 2000,
+          }
+        );
+        showToast(
+          "info",
+          `Be  patient, please wait for the system to process the data.`,
+          {
+            preventDuplicate: true,
+            autoClose: 5000,
           }
         );
 
+        
         reset();
         setPendingItems([]);
         onOpenChange();

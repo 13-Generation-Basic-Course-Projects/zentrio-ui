@@ -596,7 +596,7 @@ export default function GanttChart({
           </div>
         )}
       </div>
-      <ToastContainer
+      {/* <ToastContainer
         position="top-right"
         autoClose={4000}
         hideProgressBar={false}
@@ -607,7 +607,7 @@ export default function GanttChart({
         draggable
         pauseOnHover
         theme="light"
-      />
+      /> */}
     </div>
   );
 }

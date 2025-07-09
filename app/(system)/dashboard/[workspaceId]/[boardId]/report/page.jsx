@@ -7,6 +7,8 @@ import { BtnPreview, BtnSaveAs } from "@/components/button/ButtonReport";
 import ModalSaveAs from "@/components/modal/rep/ModalSaveAs";
 import { Token } from "@/constant/token";
 import React from "react";
+import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css'
 
 export default async function Report({ params }) {
   // const boardId = `d4f6ed17-3f68-48b4-9cbb-fa141a2d2000`;
@@ -17,8 +19,6 @@ export default async function Report({ params }) {
   const boardMember = await getBoardMemberAction(boardId);
   const currentUserProfile = await getCurrentUserProfileAction();
 
-    ("boardMember", boardId);
-    ("currentUserProfile", currentUserProfile);
   const getRoleByBoardId = (boardId, profile) => {
     // Check ownBoards
     const ownBoard = profile.payload.ownBoards.find(
@@ -41,10 +41,7 @@ export default async function Report({ params }) {
 
   // Get the role
   const role = getRoleByBoardId(boardId, currentUserProfile);
-    ("sadd", role);
   const roleNeverJoined = null;
-    ("Report Version: ", reportVersionData.payload)
-    ("BoardId: ", boardId)
   return (
     <>
       <Reportpage
@@ -52,11 +49,12 @@ export default async function Report({ params }) {
         roleJoined={role}
         modal={[
           <BtnPreview key="btn-preview" report={reportData} />,
-          <ModalSaveAs key="modal-save-as" board={boardId} report={reportData}/>,
+          <ModalSaveAs key="modal-save-as" board={boardId} report={reportData} />,
         ]}
         report={reportData}
         version={reportVersionData}
       />
+      <ToastContainer />
     </>
   );
 }

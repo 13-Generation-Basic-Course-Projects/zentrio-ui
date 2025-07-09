@@ -27,6 +27,7 @@ export const CardCheckList = ({
   imageChecklist,
   totalCommentLength,
   matchingFeedback,
+  hideImage
 }) => {
   const finishedAtRaw = finishedAt;
   const FormattedFinishDate = finishedAtRaw.split("T")[0];
@@ -35,8 +36,8 @@ export const CardCheckList = ({
   const [imageError, setImageError] = useState(false);
 
   return (
-    <div className="">
-      <Card className="py-4 rounded-xl cursor-pointer hover:bg-blue-50 transition shadow-sm w-full">
+    
+      <Card className="py-4 rounded-xl cursor-pointer hover:bg-blue-50 transition shadow-sm !w-full ">
         {/* Header */}
         <CardHeader className="pb-0 pt-2 px-4 flex items-start flex-col">
           <div className="flex w-full justify-between items-center">
@@ -52,33 +53,38 @@ export const CardCheckList = ({
         {/* Body */}
         {
           <CardBody className="overflow-visible py-2">
-            <div className="relative w-full h-32">
-              {imageLoading && (
-                <div className="absolute inset-0 flex items-center justify-center bg-gray-100 rounded-xl">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-                </div>
-              )}
-              <img
-                src={imageChecklist}
-                alt={`Card background for ${title}`}
-                className={`object-cover rounded-xl w-full h-32 transition-opacity duration-300 ${
-                  imageLoading ? "opacity-0" : "opacity-100"
-                }`}
-                onLoad={() => setImageLoading(false)}
-                onError={() => {
-                  setImageLoading(false);
-                  setImageError(true);
-                }}
-                style={{ display: imageError ? "none" : "block" }}
-              />
-              {imageError && (
-                <div className="w-full h-32 bg-gray-200 rounded-xl flex items-center justify-center">
-                  <span className="text-gray-500 text-sm">
-                    Image not available
-                  </span>
-                </div>
-              )}
-            </div>
+            {
+              hideImage ? "": (
+                <div className="relative w-full h-32">
+                {imageLoading && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-gray-100 rounded-xl">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+                  </div>
+                )}
+                <img
+                  src={imageChecklist}
+                  alt={`Card background for ${title}`}
+                  className={`object-cover rounded-xl w-full h-32 transition-opacity duration-300 ${
+                    imageLoading ? "opacity-0" : "opacity-100"
+                  }`}
+                  onLoad={() => setImageLoading(false)}
+                  onError={() => {
+                    setImageLoading(false);
+                    setImageError(true);
+                  }}
+                  style={{ display: imageError ? "none" : "block" }}
+                />
+                {imageError && (
+                  <div className="w-full h-32 bg-gray-200 rounded-xl flex items-center justify-center">
+                    <span className="text-gray-500 text-sm">
+                      Image not available
+                    </span>
+                  </div>
+                )}
+              </div>
+              )
+            }
+           
           </CardBody>
         }
 
@@ -116,6 +122,6 @@ export const CardCheckList = ({
           </div>
         </CardFooter>
       </Card>
-    </div>
+ 
   );
 };

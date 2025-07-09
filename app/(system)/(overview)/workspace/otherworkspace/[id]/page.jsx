@@ -36,7 +36,7 @@ export default async function OtherWorkspace({ params }) {
         const members = response?.payload || [];
         allMembersInOther.push(...members);
       } catch (error) {
-        console.error(`Failed to fetch members for boardId ${boardId}:`, error);
+       
       }
     }
 

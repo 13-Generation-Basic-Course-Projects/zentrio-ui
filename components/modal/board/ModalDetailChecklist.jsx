@@ -44,6 +44,7 @@ import { CameraIcon } from "lucide-react";
 import { CardCheckList } from "@/components/card/CardChecklist";
 import FeedbackDisplay from "./FeedbackOfTask";
 import { useRealtime } from "@/hooks/useRealtime";
+import TrashComponent from "@/components/button/Trash";
 
 const initialState = {
   activeTab: "add",
@@ -804,6 +805,7 @@ const ModalDetailChecklist = ({
   isModalDisabled,
   imageChecklist,
   feedbackByTaskIds,
+  
 }) => {
   // Real-time connection
   const { emitEvent } = useRealtime(boardId);
@@ -1069,7 +1071,7 @@ const ModalDetailChecklist = ({
     ("this is role ", role);
 
   return (
-    <div>
+    <>
       {role == "ROLE_MEMBER" || role == "ROLE_MANAGER" ? (
         ""
       ) : (
@@ -1119,11 +1121,11 @@ const ModalDetailChecklist = ({
       )}
       <Button
         onPress={onOpen}
-        className="h-full w-full p-0"
+        className="h-full !w-full !p-0 max-w-none"
         fullWidth={true}
         disabled={loading || isModalDisabled}
       >
-        <div className="h-full w-full max-w-none px-0 bg-white">
+        <div className="h-full !w-full  !px-0 bg-white !p-0">
           <CardCheckList
             status={status || state.currentStatus}
             title={title || "Untitled"}
@@ -1147,14 +1149,14 @@ const ModalDetailChecklist = ({
         isOpen={isOpen}
         onOpenChange={handleOpenChange}
         size="5xl"
-        className="overflow-y-auto scrollbar-hidden max-h-[760px]"
+        className="overflow-y-auto scrollbar-hidden max-h-[760px] w-full"
         isDismissable={false}
         isKeyboardDismissDisabled={false}
       >
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-row justify-between items-center sticky top-0 z-10 bg-white">
+              <ModalHeader className="flex flex-row justify-between items-center sticky top-0 z-10 bg-white w-full">
                 <div className="flex flex-wrap justify-start items-center gap-2">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -1253,20 +1255,20 @@ const ModalDetailChecklist = ({
                   {role === "ROLE_MEMBER" ? (
                     ""
                   ) : (
-                    <div className="flex-shrink-0">
-                        <PopupAction
-                          title={<Trash />}
-                          color={"text-blue-600"}
-                          massageTitle={"Are you sure?"}
-                          massageBody={"You want to delete this checklist "}
-                          icon={<IconpopupDelete />}
-                          bgcolor={"bg-slate-red"}
-                          massageDo={"Yes, Delete"}
-                          massageUndo={"No, Cancel"}
-                          checkListId={id}
-                          taskId={taskId}
-                        />
-                      </div>
+                    <div className="">
+                    <PopupAction
+                      title={<TrashComponent />}
+                      color={"text-blue-600"}
+                      massageTitle={"Are you sure?"}
+                      massageBody={"You want to delete this checklist "}
+                      icon={<IconpopupDelete />}
+                      bgcolor={"bg-slate-red"}
+                      massageDo={"Yes, Delete"}
+                      massageUndo={"No, Cancel"}
+                      checkListId={id}
+                      taskId={taskId}
+                    />
+                  </div>
                   )}
 
                   {/* this date picker  */}
@@ -1457,9 +1459,9 @@ const ModalDetailChecklist = ({
 
                 {/* this is  atteactment  + commment */}
 
-   {/* this is  atteactment  + commment */}
+                {/* this is  atteactment  + commment */}
 
-   {state.selectedAttachment && (
+              {state.selectedAttachment && (
                   <div className="mt-4 p-3 border rounded-md border-gray-200">
                     <p className="font-bold">
                       Selected Attachment:{" "}
@@ -1687,7 +1689,7 @@ const ModalDetailChecklist = ({
           )}
         </ModalContent>
       </Modal>
-    </div>
+    </>
   );
 };
 

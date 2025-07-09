@@ -1,4 +1,5 @@
 "use client";
+
 import preImage from "@/assets/folderdynamiccolor.png";
 import thumbup from "@/assets/thumbupdynamiccolor.png";
 import logo from "@/public/image/Zentrio-Logo.png";
@@ -26,7 +27,7 @@ export default function CardCreateModal({
   const [loading, setLoading] = useState(false);
   const [focusedField, setFocusedField] = useState(null);
 
-  const MAX_SIZE_MB = 10;
+  const MAX_SIZE_MB = 20;
 
   const handleImageChange = (e) => {
     const newFiles = Array.from(e.target.files || []);
@@ -60,16 +61,16 @@ export default function CardCreateModal({
     if (!title || !description) return;
 
     setLoading(true);
-    try {
-      if (images.length > 0) {
-        await uploadMultiImgByBoardIdAction(boardId, images);
-      }
 
+    try {
       const announcement = await createAnnouncementByBoardIdAction({
         title,
         description,
         boardId,
       });
+        if (images.length > 0) {
+        await uploadMultiImgByBoardIdAction(boardId, images,announcement?.payload?.announcementId);
+      }
 
       // Check status and show toast
       if (announcement?.success) {
@@ -95,11 +96,11 @@ export default function CardCreateModal({
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
-      onClick={onClose} // Close modal when clicking outside content
+      onClick={onClose}
     >
       <Card
         className="w-full max-w-6xl bg-white rounded-3xl shadow-2xl border-0 overflow-hidden transform transition-all duration-300 scale-100 animate-in slide-in-from-bottom-4"
-        onClick={(e) => e.stopPropagation()} // Prevent closing modal on clicks inside
+        onClick={(e) => e.stopPropagation()}
       >
         <CardContent className="p-0 flex flex-col lg:flex-row min-h-[600px]">
           {/* Left Side - Modern Brand Section */}

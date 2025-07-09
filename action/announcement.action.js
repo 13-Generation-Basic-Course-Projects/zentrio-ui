@@ -16,11 +16,9 @@ import { revalidatePath, revalidateTag } from "next/cache";
 
 export const createAnnouncementByBoardIdAction = async (payload = {}) => {
   const { title, description, boardId } = payload;
-    ("pay", payload);
 
   const userToken = await Token();
   const token = userToken.Credential;
-    ("Calling service with:", { title, description, token, boardId });
   const result = await createAnnouncementByBoardIdService({
     title,
     description,
@@ -31,14 +29,14 @@ export const createAnnouncementByBoardIdAction = async (payload = {}) => {
   return result;
 };
 
-export const uploadMultiImgByBoardIdAction = async (boardId, image) => {
-  //   ("kakakak", image);
+export const uploadMultiImgByBoardIdAction = async (boardId, image ,announcementId) => {
   const userToken = await Token();
   const token = userToken.Credential;
   const result = await uploadMultiImgByBoardIdService({
     boardId,
     image,
     token,
+    announcementId
   });
   return result;
 };
@@ -54,7 +52,6 @@ export const getAllAnnouncementByBoardIdAction = async (boardId) => {
 };
 
 export const deleteAnnouncementByIdAction = async (id) => {
-  //   ("kdet", id);
   const userToken = await Token();
   const token = userToken.Credential;
   const result = await deleteAnnouncementByIdService(id, token);
@@ -63,8 +60,6 @@ export const deleteAnnouncementByIdAction = async (id) => {
 };
 
 export const pinedAnnouncementByIdAction = async (announId) => {
-  //   ("pined id", announId);
-
   const userToken = await Token();
   const token = userToken.Credential;
   const result = await pinedAnnouncementByIdService(announId, token);
@@ -78,7 +73,6 @@ export const updateAnnouncementByIdAction = async (
   title,
   boardId
 ) => {
-  //   ("update id annon", announId, description, title, boardId);
 
   const userToken = await Token();
   const token = userToken.Credential;
@@ -97,11 +91,9 @@ export const createCommentByAnnouncementIdAction = async ({
   content,
   announcementId,
 }) => {
-  //   ("raaa", content, announcementId);
+
   const userToken = await Token();
   const token = userToken.Credential;
-
-  //   ("toooken", token);
   const result = await createCommentByAnnouncementIdService({
     content,
     announcementId,
@@ -109,7 +101,6 @@ export const createCommentByAnnouncementIdAction = async ({
   });
   revalidateTag("announcements");
   revalidateTag("comments");
-  //   ("reeee", result);
   return result;
 };
 
@@ -118,7 +109,6 @@ export const editCommentByIdAction = async ({
   announId,
   commentId,
 }) => {
-  //   ("dddddd",announId)
 
   const userToken = await Token();
   const token = userToken.Credential;
@@ -134,8 +124,6 @@ export const editCommentByIdAction = async ({
 };
 
 export const deleteCommentByIdAction = async ({ commentId }) => {
-  //   ("Comment Actionpd",commentId);
-
   const userToken = await Token();
   const token = userToken.Credential;
   const result = await deleteCommentByIdService({ commentId, token });

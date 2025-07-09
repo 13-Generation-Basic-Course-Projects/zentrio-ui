@@ -1,10 +1,7 @@
 import React from 'react'
 import "../../styles/trash.css"
-export default function Trash() {
+export default function TrashComponent() {
   return (
-     
-
-     
     <>
       <div className="button">
         <svg

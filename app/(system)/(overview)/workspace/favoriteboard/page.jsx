@@ -42,10 +42,7 @@ export default async function WorkspaceArea() {
           const members = response?.payload || [];
           allMembers.push(...members);
         } catch (error) {
-          console.error(
-            `Failed to fetch members for boardId ${boardId}:`,
-            error
-          );
+         
         }
       }
 
@@ -76,7 +73,7 @@ export default async function WorkspaceArea() {
         const members = response?.payload || [];
         memberMap[boardId] = members;
       } catch (error) {
-        console.error(`Failed to fetch members for boardId ${boardId}:`, error);
+
         memberMap[boardId] = [];
       }
     }
