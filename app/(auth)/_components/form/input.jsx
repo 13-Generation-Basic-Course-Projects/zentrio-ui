@@ -14,7 +14,7 @@ export const AuthInput = extendVariants(Input, {
           "data-[focus=true]:border-primary data-[focus=true]:bordere-1",
           "shadow-none",
           // Responsive height
-          "h-[50px] xs:h-[54px] sm:h-[57px] md:h-[60px]",
+          "h-[45px] xs:h-[45px] sm:h-[45px] md:h-[50px]",
           "rounded-[9px]"
         ],
         input: [

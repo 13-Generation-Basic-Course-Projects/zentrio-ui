@@ -129,12 +129,10 @@ export const ForgetPass = () => {
         </form>
       </div>
     </div>
-
   );
 };
 
 export const SetNewPass = () => {
-
 
   const searchParams = useSearchParams(); 
   const email = searchParams.get("email")
