@@ -18,6 +18,7 @@ import Link from "next/link";
 import "animate.css";
 import AnimatedSection from "@/components/animation/AnimatedSection";
 import Logout from "../(auth)/_components/Logout";
+import TypewriterEffectSmoothDemo from "@/components/animation/TypewriterEffectSmoothDemo";
 
 //useage : http://localhost:3000/
 
@@ -37,7 +38,7 @@ const tools = [
 
 // //useage : http://localhost:3000/
 export default function Home() {
-  console.log("GOOGLE_CLIENT_ID:", process.env.GOOGLE_CLIENT_ID);
+  "GOOGLE_CLIENT_ID:", process.env.GOOGLE_CLIENT_ID;
   return (
     <div className="w-full">
       <section className="relative h-auto bg-gradient-to-b from-[#bdeffc] to-slate overflow-hidden">
@@ -53,18 +54,25 @@ export default function Home() {
             {/* Top Left */}
             <div className="animate__animated animate__fadeInDown animate__slow hidden sm:flex absolute top-[25%] left-[9%] items-center gap-2 bg-white bg-opacity-90 backdrop-blur-md shadow-md px-5 py-3 rounded-full z-30 max-w-screen-xl xl:mx-auto">
               <span className="text-sm text-primary font-medium flex items-center gap-1 relative">
-                <Image
-                  className="mx-2"
-                  src={shareImg}
-                  alt="share profile"
-                  width={20}
-                  height={20}
-                />
-                Sending a file project
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="size-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"
+                  />
+                </svg>
+                Work with heart
                 {/* Absolutely positioned image at bottom-left of text */}
                 <img
                   className="absolute bottom-3 left-[-40px] translate-y-full mt-1 w-12 h-12 rounded-full border-8 border-white"
-                  src="https://media.kasperskydaily.com/wp-content/uploads/sites/92/2024/04/09102942/real-or-fake-image-analysis-and-provenance-01.jpg"
+                  src="https://i.pinimg.com/236x/a3/1f/8e/a31f8e06e89d4ec031ba7150687030ce.jpg"
                   alt="profile user"
                   width={60}
                   height={60}
@@ -75,18 +83,25 @@ export default function Home() {
             {/* Top Right */}
             <div className="animate__animated animate__fadeInUp animate__slow hidden sm:flex absolute top-[35%] right-[6%] items-center gap-2 bg-white bg-opacity-90 backdrop-blur-md shadow-md px-5 py-3 rounded-full z-30">
               <span className="text-sm text-primary font-medium flex items-center gap-1">
-                <Image
-                  className="mx-2"
-                  src={shareImg}
-                  alt="share profile"
-                  width={20}
-                  height={20}
-                />
-                Sending a file project
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="size-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M9 17.25v1.007a3 3 0 0 1-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0 1 15 18.257V17.25m6-12V15a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 15V5.25m18 0A2.25 2.25 0 0 0 18.75 3H5.25A2.25 2.25 0 0 0 3 5.25m18 0V12a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 12V5.25"
+                  />
+                </svg>
+                Smart Work
               </span>
               <img
                 className="absolute bottom-3 right-[-25px] translate-y-full mt-1 w-12 h-12 rounded-full border-8 border-white"
-                src="https://hips.hearstapps.com/hmg-prod/images/itv-fake-release-date-plot-67f50504048bc.jpg?crop=0.563xw:1.00xh;0,0&resize=1200:*"
+                src="https://m.media-amazon.com/images/I/81AnsmwzaGL.png"
                 alt="profile user"
                 width={60}
                 height={60}
@@ -107,7 +122,7 @@ export default function Home() {
               </span>
               <img
                 className="absolute bottom-3 right-[-25px] translate-y-full mt-1 w-12 h-12 rounded-full border-8 border-white"
-                src="https://www.adobe.com/acrobat/hub/media_173d13651460eb7e12c0ef4cf8410e0960a20f0ee.jpeg?width=750&format=jpeg&optimize=medium"
+                src="https://i.pinimg.com/474x/a3/1f/8e/a31f8e06e89d4ec031ba7150687030ce.jpg"
                 alt="profile user"
                 width={60}
                 height={60}
@@ -117,18 +132,25 @@ export default function Home() {
             {/* Bottom Right */}
             <div className="animate__animated animate__fadeInUp animate__slow hidden sm:flex absolute top-[70%] right-[10%] items-center gap-2 bg-white bg-opacity-90 backdrop-blur-md shadow-md px-5 py-3 rounded-full z-30 ">
               <span className="text-sm text-primary font-medium flex items-center gap-1 relative">
-                <Image
-                  className="mx-2"
-                  src={shareImg}
-                  alt="share profile"
-                  width={20}
-                  height={20}
-                />
-                Sending a file project
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="size-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M15.042 21.672 13.684 16.6m0 0-2.51 2.225.569-9.47 5.227 7.917-3.286-.672Zm-7.518-.267A8.25 8.25 0 1 1 20.25 10.5M8.288 14.212A5.25 5.25 0 1 1 17.25 10.5"
+                  />
+                </svg>
+                Stay focus with the Ganttchart
                 {/* Absolutely positioned image at bottom-left of text */}
                 <img
                   className="absolute bottom-3 left-[-40px] translate-y-full mt-1 w-12 h-12 rounded-full border-8 border-white"
-                  src="https://media.kasperskydaily.com/wp-content/uploads/sites/92/2024/04/09102942/real-or-fake-image-analysis-and-provenance-01.jpg"
+                  src="https://is5-ssl.mzstatic.com/image/thumb/Purple124/v4/3d/32/20/3d322049-015a-0e3b-e512-583ac627d478/source/512x512bb.jpg"
                   alt="profile user"
                   width={60}
                   height={60}
@@ -143,7 +165,7 @@ export default function Home() {
           <div className="w-full flex flex-col justify-center items-center gap-[50px]">
             <div className="flex flex-col gap-[10px]">
               <div className="line-clamp-none md:line-clamp-3">
-                <h1 className="text-h4 sm:text-h3 lg:text-[64px] font-bold mb-4 relative">
+                {/* <h1 className="text-h4 sm:text-h3 lg:text-[64px] font-bold mb-4 relative">
                   Empower Your Team with <br />
                   <span className="text-primary h-[81px] border-2 border-primary bg-slate-blue border-dashed rounded-[10px] px-[20px]">
                     Zentrio
@@ -166,7 +188,8 @@ export default function Home() {
                     />
                   </svg>
                   Collaboration
-                </h1>
+                </h1> */}
+                <TypewriterEffectSmoothDemo />
               </div>
               <p className="text-sm sm:text-base lg:text-body-sm text-description max-w-xl mx-auto mb-6">
                 We bring your team together, no matter where they are. So we can
@@ -343,7 +366,8 @@ export default function Home() {
                 <p className="text-description">
                   Streamline your workflow with powerful, intuitive tools that
                   ensure every team member stays organized, aligned, and focused
-                  on their tasks.
+                  on their tasks. <span className="bg-gradient-to-r from-[#59BAD5] via-[#ABAAFF] to-[#59BAD5] bg-clip-text text-transparent">Zentrio</span> is currently built for laptop screens.
+                  Mobile version coming soon — stay tuned
                 </p>
               </div>
               <div className="">
