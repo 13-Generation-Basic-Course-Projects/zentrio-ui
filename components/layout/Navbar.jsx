@@ -419,8 +419,8 @@ export const NavbarLanding = ({ tokens }) => {
         </div>
 
         {/* Drawer Content */}
-        <div className="flex flex-col h-full justify-between p-6">
-          <nav className="flex flex-col space-y-6">
+        <div className="flex flex-col p-6">
+          <nav className="flex flex-col space-y-6 mb-8">
             <Link
               href="/"
               onClick={handleLinkClick}
@@ -488,7 +488,7 @@ export const NavbarLanding = ({ tokens }) => {
 
           {/* Mobile Login/Register Buttons */}
           {!tokens && (
-            <div className="flex flex-col space-y-3 mt-8 border-t pt-6">
+            <div className="flex flex-col space-y-3 border-t pt-6">
               <Button 
                 className="bg-transparent text-primary border-2 border-primary font-semibold text-[16px] rounded-full py-3 w-full hover:bg-primary/10 transition-colors"
                 onClick={handleLinkClick}

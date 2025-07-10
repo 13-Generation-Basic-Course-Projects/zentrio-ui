@@ -10,7 +10,7 @@ export default function RootLayout({ children }) {
   const isRoot = pathname === "/";
 
   return (
-    <div className="font-poppin  mx-auto">
+    <div className="font-poppin  mx-auto max-w-full overflow-x-hidden">
       <div
         className={isRoot ? "mx-0" : " lg:mx-[50px] max-w-screen-xl xl:mx-auto"}
       >

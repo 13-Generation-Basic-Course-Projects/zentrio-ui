@@ -40,7 +40,7 @@ const tools = [
 export default function Home() {
   "GOOGLE_CLIENT_ID:", process.env.GOOGLE_CLIENT_ID;
   return (
-    <div className="w-full">
+    <div className="w-full ">
       <section className="relative h-auto bg-gradient-to-b from-[#bdeffc] to-slate overflow-hidden">
         {/* <div className="absolute top-4 right-10 hidden">
           <Logout />
@@ -218,7 +218,7 @@ export default function Home() {
         </div>
 
         {/* Tools Section */}
-        <div className="mt-[20%] max-w-screen-xl xl:mx-auto">
+        {/* <div className="mt-[20%] max-w-screen-xl xl:mx-auto">
           <p className="text-center text-body-xs sm:text-body-sm lg:text-body-md mb-6">
             Get all the tools your team needs
           </p>
@@ -237,6 +237,38 @@ export default function Home() {
                 </p>
               </div>
             ))}
+          </div>
+        </div> */}
+
+        {/* new code */}
+        {/* Tools Section */}
+        {/* Tools Section */}
+        <div className="mt-[15%] sm:mt-[12%] lg:mt-[10%] xl:mt-[8%] max-w-screen-xl xl:mx-auto">
+          <p className="text-center text-body-xs sm:text-body-sm lg:text-body-md xl:text-body-lg mb-4 sm:mb-6 lg:mb-8 px-4">
+            Get all the tools your team needs
+          </p>
+          <div className="px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-4 lg:gap-6 max-w-4xl mx-auto">
+              {tools.map((tool) => (
+                <div
+                  key={tool.id}
+                  className="flex flex-col items-center justify-center sm:flex-row sm:justify-start w-full p-2 sm:p-3 rounded-lg hover:bg-gray-50 transition-colors duration-200 text-center sm:text-left"
+                >
+                  <div className="flex-shrink-0 mb-1 sm:mb-0">
+                    <Image
+                      src={tool.src}
+                      width={32}
+                      height={32}
+                      alt={tool.alt}
+                      className="w-6 sm:w-6 md:w-7 lg:w-8 h-6 sm:h-6 md:h-7 lg:h-8 mx-auto sm:mx-0"
+                    />
+                  </div>
+                  <p className="text-body-xs sm:text-body-sm lg:text-body-md font-semibold sm:ml-2 leading-tight">
+                    {tool.label}
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>

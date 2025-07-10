@@ -73,7 +73,7 @@ export const metadata = {
 export default function Layout({ children }) {
   return (
     <html lang="en">
-      <body className={`font-poppin`}>
+      <body className={`font-poppin `}>
         <NextTopLoader color="#59BAD5" showSpinner={false} />
         {/* <NextUIProvider> */}
         <Provider>{children}</Provider>
