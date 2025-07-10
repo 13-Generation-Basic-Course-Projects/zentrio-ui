@@ -61,8 +61,10 @@ export default async function page({ params }) {
       }
     }
   } catch (error) {
-    console.error("Server fetch error:", error);
+    // console.error("Server fetch error:", error);
   }
+
+  
 
   return (
     <div>

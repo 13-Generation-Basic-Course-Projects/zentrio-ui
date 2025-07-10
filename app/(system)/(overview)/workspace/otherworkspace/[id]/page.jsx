@@ -48,7 +48,7 @@ export default async function OtherWorkspace({ params }) {
     );
       ("Unique members in other workspace:", allMembersInOther);
   }
-
+  
   return (
     <Otherworkspace
       Workspaceid={workspaceId}

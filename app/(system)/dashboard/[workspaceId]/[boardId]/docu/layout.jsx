@@ -12,6 +12,7 @@ import { ToastContainer } from "react-toastify";
 
 export default async function BoardLayout({ children, params }) {
   const session = await auth();
+  const expr = session?.googleAuth.expiresAt; //for google document
   const boardId = (await params).boardId;
   const workspaceId = (await params).workspaceId;
 
@@ -37,6 +38,8 @@ export default async function BoardLayout({ children, params }) {
 
   const { id } = params;
     ("this is the boardid", boardId);
+
+    
   return (
     <div>
       <DocumentAutherize
@@ -49,6 +52,7 @@ export default async function BoardLayout({ children, params }) {
         workspaceId={workspaceId}
         docIdPagedocIdPage={id}
         boardName={boardName}
+        expr={expr}
       />
       <div>{children}</div>
       <ToastContainer position="top-right" autoClose={3000} />

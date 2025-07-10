@@ -6,6 +6,7 @@ import React from "react";
 import { getCurrentUserProfileAction } from "@/action/profile.action";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { auth } from "@/auth";
 
 
 export default async function page({params}) {
@@ -14,6 +15,10 @@ export default async function page({params}) {
   const Announcements = await getAllAnnouncementByBoardIdAction(boardId);
   const boardMember = await getBoardMemberAction(boardId);
   const currentUserProfile = await getCurrentUserProfileAction();
+
+
+  const session = await auth();
+  console.log("token",session)
   return (
     <div>
       <Announcementpage 

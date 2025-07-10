@@ -97,8 +97,9 @@ export default function Footer() {
           </form>
         </div>
 
-        <div className="grid max-[500px]:grid-cols-2 lg:grid-cols-2 md:grid-cols-1 sm:grid-col-2 gap-6 md:gap-6 mt-8 md:mt-16 w-[75%] px-4">
+        <div className="grid max-[500px]:grid-cols-2 lg:grid-cols-2 md:grid-cols-1 sm:grid-col-2 gap-6 md:gap-6 mt-8 md:mt-16 w-[55%] px-4 ">
           <div className="grid lg:grid-cols-5 grid-cols-5 md:grid-cols-5 sm:grid-cols-5 max-[500px]:grid-cols-1 gap-2 lg:gap-4 text-caption-tiny text-xs md:text-base">
+          
             <a
               href="/"
               className="hover:text-primary transition-colors whitespace-nowrap text-center"
@@ -135,7 +136,12 @@ export default function Footer() {
             >
               Draw
             </a>
-            <a
+          
+          </div>
+
+          <div className="grid lg:grid-cols-5 grid-cols-5 md:grid-cols-5 sm:grid-cols-5 max-[500px]:grid-cols-1 gap-2 lg:gap-4  text-caption-tiny text-xs  md:text-base">
+           
+          <a
               href="/compiler"
               className="hover:text-primary transition-colors whitespace-nowrap text-center"
               onClick={() => {
@@ -144,11 +150,6 @@ export default function Footer() {
             >
               Playground
             </a>
-          </div>
-
-          <div className="grid lg:grid-cols-5 grid-cols-5 md:grid-cols-5 sm:grid-cols-5 max-[500px]:grid-cols-1 gap-2 lg:gap-4  text-caption-tiny text-xs  md:text-base">
-           
-           
             <a
               href="https://web.facebook.com/profile.php?id=61577829765221"
               className="hover:text-primary transition-colors whitespace-nowrap text-center"
@@ -178,7 +179,7 @@ export default function Footer() {
 
         <div className="text-[#EFFCFF]  bg-gradient-to-t from-[#2E616F]/20 to-transparent w-full flex justify-center items-end overflow-hidden ">
           <p className="leading-[0.8] tracking-tight lg:text-[300px] md:text-[200px] sm:text-[150px] max-[640px]:text-[130px] max-[570px]:text-[120px] max-[480px]:text-[110px]  max-[400px]:text-[100px] max-[350px]:text-[90px]  max-[320px]:text-[80px] max-[290px]:text-[70px]  max-[250px]:text-[60px] max-[210px]:text-[50px] max-[180px]:text-[40px] max-[150px]:text-[30px]">
-            Zentrio
+            ZenTrio
           </p>
         </div>
       </div>
